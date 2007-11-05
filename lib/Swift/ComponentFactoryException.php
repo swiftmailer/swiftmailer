@@ -1,16 +1,16 @@
 <?php
 
 /**
- * An exception thrown when a component is referenced which doesn't exist.
+ * An exception thrown when an error occurs in the ComponentFactory/DI container.
  * @author Chris Corbyn
  * @package Swift
  * @subpackage DI
  */
-class Swift_NoSuchComponentException extends Exception
+class Swift_ComponentFactoryException extends Exception
 {
   
   /**
-   * Create a new NoSuchComponentException with $message.
+   * Create a new ComponentFactoryException with $message.
    * @param string $message
    */
   public function __construct($message)

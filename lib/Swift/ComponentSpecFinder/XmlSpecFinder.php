@@ -60,6 +60,57 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
   }
   
   /**
+   * Find component references, values, or collections in an element and set
+   * into a variable $v passed by-reference.
+   * Returns true if anything is set, or false if not.
+   * @param SimpleXMLElement $element
+   * @param Swift_ComponentFactory $factory
+   * @param mixed &$v
+   * @return boolean
+   */
+  private function _setValueByReference(SimpleXMLElement $element,
+      Swift_ComponentFactory $factory, &$v)
+  {
+    //Element contains a collection of values
+    if ($collection = array_shift($element->xpath("./collection")))
+    {
+      $v = array();
+      foreach ($collection->children() as $child)
+      {
+        switch($child->getName())
+        {
+          case 'value':
+            $v[] = $this->_valueOf($child);
+            break;
+          case 'componentRef':
+            $v[] = $factory->referenceFor((string) $child);
+            break;
+        }
+      }
+      return true;
+    }
+    // Element is a single value
+    elseif ($value = $this->_valueOf(array_shift(
+      $element->xpath("./value"))))
+    {
+      $v = $value;
+      return true;
+    }
+    //Element references another component
+    elseif ($componentRef = (string) array_shift(
+      $element->xpath("./componentRef")))
+    {
+      $v = $factory->referenceFor($componentRef);
+      return true;
+    }
+    //Nothing found
+    else
+    {
+      return false;
+    }
+  }
+  
+  /**
    * Try create the ComponentSpec for $componentName.
    * Returns NULL on failure.
    * @param string $componentName
@@ -68,85 +119,52 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
    */
   public function findSpecFor($componentName, Swift_ComponentFactory $factory)
   {
+    //If a <component> element with this name is found
     if ($component = array_shift($this->_xml->xpath(
       "/components/component[name='" . $componentName . "']")))
     {
+      //Cannot make a spec with no className
       if (!$className = (string) array_shift($component->xpath("./className")))
       {
         return null;
       }
+      
       $spec = $factory->newComponentSpec();
       
       $spec->setClassName($className);
       
+      //Loop over all <property> elements (possibly none)
       foreach ($component->xpath("./properties/property") as $property)
       {
         if ($key = (string) array_shift($property->xpath("./key")))
         {
-          if ($collection = array_shift($property->xpath("./collection")))
+          //Set property key and value where possible
+          if ($this->_setValueByReference($property, $factory, $valueRef))
           {
-            $array = array();
-            foreach ($collection->children() as $child)
-            {
-              switch($child->getName())
-              {
-                case 'value':
-                  $array[] = $this->_valueOf($child);
-                  break;
-                case 'componentRef':
-                  $array[] = $factory->referenceFor((string) $child);
-                  break;
-              }
-            }
-            $spec->setProperty($key, $array);
-          }
-          elseif ($value = $this->_valueOf(array_shift(
-            $property->xpath("./value"))))
-          {
-            $spec->setProperty($key, $value);
-          }
-          elseif ($componentRef = (string) array_shift(
-            $property->xpath("./componentRef")))
-          {
-            $spec->setProperty($key, $factory->referenceFor($componentRef));
+            $spec->setProperty($key, $valueRef);
           }
         }
       }
       
       $constructorArgs = array();
       
+      //Loop over all constructor arguments (possibly none)
       foreach ($component->xpath("./constructor/arg") as $arg)
       {
-        if ($collection = array_shift($arg->xpath("./collection")))
+        //Get value were possible
+        if ($this->_setValueByReference($arg, $factory, $valueRef))
         {
-          $array = array();
-          foreach ($collection->children() as $child)
-          {
-            switch($child->getName())
-            {
-              case 'value':
-                $array[] = $this->_valueOf($child);
-                break;
-              case 'componentRef':
-                $array[] = $factory->referenceFor((string) $child);
-                break;
-            }
-          }
-          $constructorArgs[] = $array;
+          $constructorArgs[] = $valueRef;
         }
-        elseif ($value = $this->_valueOf(array_shift($arg->xpath("./value"))))
+        else //Otherwise set null to maintain ordering
         {
-          $constructorArgs[] = $value;
-        }
-        elseif ($componentRef = (string) array_shift(
-          $arg->xpath("./componentRef")))
-        {
-          $constructorArgs[] = $factory->referenceFor($componentRef);
+          $constructorArgs[] = null;
         }
       }
       
       $spec->setConstructorArgs($constructorArgs);
       
+      //Determine if component should be a singleton
       if ($singleton = (string) array_shift($component->xpath("./singleton")))
       {
         if (in_array(strtolower($singleton), array('true', 'yes', 'on', '1')))

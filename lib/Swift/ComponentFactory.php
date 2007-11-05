@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/ClassLocator.php';
 require_once dirname(__FILE__) . '/ComponentReference.php';
 require_once dirname(__FILE__) . '/ComponentSpec.php';
 require_once dirname(__FILE__) . '/ComponentSpecFinder.php';
-require_once dirname(__FILE__) . '/NoSuchComponentException.php';
+require_once dirname(__FILE__) . '/ComponentFactoryException.php';
 
 /**
  * A factory class for the dependency injection container.
@@ -74,6 +74,7 @@ class Swift_ComponentFactory
    * Gets the specification for the given $componentName.
    * @param string $componentName
    * @return Swift_ComponentSpec
+   * @throws Swift_ComponentFactoryException If spec is not found
    */
   public function getComponentSpec($componentName)
   {
@@ -92,7 +93,7 @@ class Swift_ComponentFactory
       
       if (!$spec)
       {
-        throw new Swift_NoSuchComponentException(
+        throw new Swift_ComponentFactoryException(
           $componentName . ' does not exist');
       }
     }

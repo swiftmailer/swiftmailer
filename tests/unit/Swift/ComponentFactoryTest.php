@@ -6,7 +6,7 @@ require_once LIB_PATH . '/Swift/ComponentSpec.php';
 require_once LIB_PATH . '/Swift/ComponentReference.php';
 require_once LIB_PATH . '/Swift/ClassLocator.php';
 require_once LIB_PATH . '/Swift/ComponentSpecFinder.php';
-require_once LIB_PATH . '/Swift/NoSuchComponentException.php';
+require_once LIB_PATH . '/Swift/ComponentFactoryException.php';
 require_once dirname(__FILE__) . '/../../classes/EmptyClass.php';
 require_once dirname(__FILE__) . '/../../classes/EmptyInterface.php';
 require_once dirname(__FILE__) . '/../../classes/ConstructorInjectionClass.php';
@@ -232,7 +232,7 @@ class Swift_ComponentFactoryTest extends UnitTestCase
       $this->fail('An exception should have been thrown because a component ' .
         'named noSuchComponent is not registered.');
     }
-    catch (Swift_NoSuchComponentException $e)
+    catch (Swift_ComponentFactoryException $e)
     {
       $this->pass();
     }

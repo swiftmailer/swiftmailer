@@ -5,23 +5,6 @@ require_once dirname(__FILE__) . '/../../Spyc.php';
 
 /**
  * A ComponentSpecFinder which reads from a YAML file or markup.
- * The YAML takes the form:
- *
- * components:
- *   
- *   componentName1:
- *     className: ClassA
- *     constructorArgs:
- *       - arg1
- *       - arg2
- *     properties:
- *       prop1: foo
- *       prop2: bar
- *   
- *   componentName2:
- *     className: ClassB
- *     singleton: true
- *
  * @author Chris Corbyn
  * @package Swift
  * @subpackage DI

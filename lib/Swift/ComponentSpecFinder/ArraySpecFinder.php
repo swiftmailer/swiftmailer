@@ -5,54 +5,6 @@ require_once dirname(__FILE__) . '/../ComponentSpecFinder.php';
 
 /**
  * A ComponentSpecFinder which reads from a complex array.
- *
- * The array takes the form:
- * array ( componentName => array( ... ) )
- * 
- * Where array( ... ) contains the following keys:
- * - className (required)
- * - constructorArgs
- * - properties
- * - singleton
- * 
- * The properties and constructorArgs elements are arrays themselves where
- * each element must contain a 'value' key and may optionally contain a
- * 'component' key where the element references another component from the DI
- * container.
- *
- * For collections of values simply use a nested array where each nested array
- * element follows the same structure as a single value.
- *
- * Example:
- * $array = array(
- *  'component1' => array(
- *    'className' => 'ClassA',
- *    'constructorArgs' => array(
- *      //Single value
- *      array('value' => 'foo'),
- *      //Collection of values
- *      array(
- *        array('value' => 'bar'),
- *        array('value' => 'test')
- *      )
- *    ),
- *    //Component is a singleton
- *    'singleton' => true
- *  ),
- *  'component2' => array(
- *    'className' => 'ClassB',
- *    'properties' => array(
- *      //Single value referencing another component
- *      'property1' => array('value' => 'component1', 'component' => true),
- *      //Collection of values
- *      'property2' => array(
- *        array('value' => 'x'),
- *        array('value' => 'y')
- *      )
- *    )
- *  )
- * )
- *
  * @author Chris Corbyn
  * @package Swift
  * @subpackage DI

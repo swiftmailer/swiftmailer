@@ -57,6 +57,7 @@ class Swift_ComponentSpecFinder_ArraySpecFinderTest
       )
       
     );
+    
     return new Swift_ComponentSpecFinder_ArraySpecFinder($list);
   }
   
