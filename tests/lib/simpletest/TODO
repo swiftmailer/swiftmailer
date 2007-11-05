@@ -1,0 +1,42 @@
+TODO
+This is immediate stuff only for this iteration (1.0.1RC1) of 38 hours.
+
+$Id: TODO,v 1.515 2007/08/05 15:02:12 lastcraft Exp $
+
+Unit tester
+-----------
+Make sure expectException() works correctly with setUp() and tearDown() methods (3).
+
+Reporter
+--------
+Add Eclipse support to DefaultReporter (2).
+
+Mock objects
+------------
+Add throwOn() method for generating exceptions (4).
+
+Parser
+------
+Fix bug 1688238 with lost paths when absoluting a link (2).
+Fix bug 1671539 with assertText picking up JavaScript (1).
+Add U flag to regexes to allow unicode (3).
+
+Browser
+-------
+Acknowledge target attribute in base tag (3).
+Investigate bug 1706283 with incorrect proxy requests (3).
+Confirm bug 1656650 forms appearing as null is fixed (1).
+Fix bug 1642529 with radio buttons not working (3).
+Look at adding a file() loading command (4).
+
+Web tester
+----------
+Fix issue 1605972 missing isLink(), probably by changing docs (1).
+
+Documentation
+-------------
+Update core documentation snippets with the new features such as autoload (8).
+Extension docs (1).
+
+Build
+-----
