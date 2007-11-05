@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__FILE__) . '/../ComponentFactory.php';
+require_once dirname(__FILE__) . '/../ComponentFactoryException.php';
 require_once dirname(__FILE__) . '/../ComponentSpecFinder.php';
 
 /**
@@ -134,7 +135,7 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
       $spec->setClassName($className);
       
       //Loop over all <property> elements (possibly none)
-      foreach ($component->xpath("./properties/property") as $property)
+      foreach ($component->xpath("./properties/property") as $i => $property)
       {
         if ($key = (string) array_shift($property->xpath("./key")))
         {
@@ -143,22 +144,36 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
           {
             $spec->setProperty($key, $valueRef);
           }
+          else
+          {
+            throw new Swift_ComponentFactoryException(
+              'Missing value(s) for property ' . $key . ' in component ' .
+              $componentName);
+          }
+        }
+        else
+        {
+          throw new Swift_ComponentFactoryException(
+            'Missing <key> for property ' . $i . ' in component ' .
+            $componentName);
         }
       }
       
       $constructorArgs = array();
       
       //Loop over all constructor arguments (possibly none)
-      foreach ($component->xpath("./constructor/arg") as $arg)
+      foreach ($component->xpath("./constructor/arg") as $i => $arg)
       {
         //Get value were possible
         if ($this->_setValueByReference($arg, $factory, $valueRef))
         {
           $constructorArgs[] = $valueRef;
         }
-        else //Otherwise set null to maintain ordering
+        else //Throw an Exception because it's not possible to know what to do
         {
-          $constructorArgs[] = null;
+          throw new Swift_ComponentFactoryException(
+            'Failed getting value of constructor arg ' . $i . ' in component ' .
+            $componentName);
         }
       }
       
