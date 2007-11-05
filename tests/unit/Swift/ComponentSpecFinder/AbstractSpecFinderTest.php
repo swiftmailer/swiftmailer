@@ -70,6 +70,57 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
     $this->assertEqual('test', $constructorArgs[1][1]);
   }
   
+  public function testDefaultTypeIsString()
+  {
+    $spec = $this->_finder->findSpecFor('constructorBased', $this->_factory);
+    
+    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertEqual('ConstructorInjectionClass', $spec->getClassName());
+    $constructorArgs = $spec->getConstructorArgs();
+    $this->assertTrue(is_array($constructorArgs),
+      'Constructor arguments should be an array');
+    $this->assertTrue(is_string($constructorArgs[0]),
+      'Type should default to string');
+    $this->assertTrue(is_array($constructorArgs[1]),
+      'Argument 2 in constructor should be a collection');
+    $this->assertTrue(is_string($constructorArgs[1][0]),
+      'Type should default to string');
+    $this->assertTrue(is_string($constructorArgs[1][1]),
+      'Type should default to string');
+  }
+  
+  public function testIntegerType()
+  {
+    $spec = $this->_finder->findSpecFor('constructorBased', $this->_factory);
+    
+    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertEqual('ConstructorInjectionClass', $spec->getClassName());
+    $constructorArgs = $spec->getConstructorArgs();
+    $this->assertTrue(is_array($constructorArgs),
+      'Constructor arguments should be an array');
+    $this->assertTrue(is_array($constructorArgs[1]),
+      'Argument 2 in constructor should be a collection');
+    $this->assertTrue(is_integer($constructorArgs[1][2]),
+      'Integer value should be honoured');
+    $this->assertTrue(is_integer($constructorArgs[1][3]),
+      'Integer value should be honoured');
+  }
+  
+  public function testFloatType()
+  {
+    $spec = $this->_finder->findSpecFor('constructorBased', $this->_factory);
+    
+    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertEqual('ConstructorInjectionClass', $spec->getClassName());
+    $constructorArgs = $spec->getConstructorArgs();
+    $this->assertTrue(is_array($constructorArgs),
+      'Constructor arguments should be an array');
+    $this->assertTrue(is_array($constructorArgs[1]),
+      'Argument 2 in constructor should be a collection');
+    $this->assertTrue(is_float($constructorArgs[1][4]),
+      'Float value should be honoured');
+  }
+  
   public function testNullIsReturnedOnFailure()
   {
      $this->assertNull($this->_finder->findSpecFor('nothing', $this->_factory));

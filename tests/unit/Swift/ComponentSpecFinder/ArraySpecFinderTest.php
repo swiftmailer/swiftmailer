@@ -48,7 +48,10 @@ class Swift_ComponentSpecFinder_ArraySpecFinderTest
           //Collections added as non-associative array
           array(
             array('value' => 'bar'),
-            array('value' => 'test')
+            array('value' => 'test'),
+            array('value' => 100),
+            array('value' => 2),
+            array('value' => 0.5)
           )
         )
       )

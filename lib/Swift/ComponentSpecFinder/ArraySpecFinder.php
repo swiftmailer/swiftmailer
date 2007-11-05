@@ -1,5 +1,6 @@
 <?php
 
+require_once dirname(__FILE__) . '/../ComponentFactory.php';
 require_once dirname(__FILE__) . '/../ComponentSpecFinder.php';
 
 /**

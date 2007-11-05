@@ -39,7 +39,11 @@ class Swift_ComponentSpecFinder_YamlSpecFinderTest
     "      - { value: foo }\n" .
     "      -\n" .
     "        - { value: bar }\n" .
-    "        - { value: test }\n";
+    "        - { value: test }\n" .
+    "        - { value: 100 }\n" .
+    "        - { value: 2 }\n" . 
+    "        - { value: 0.5 }\n";
+    
     return new Swift_ComponentSpecFinder_YamlSpecFinder($yaml);
   }
   
