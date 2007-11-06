@@ -1,8 +1,9 @@
 <?php
 
 require_once dirname(__FILE__) . '/../../../config.php';
-require_once LIB_PATH . '/Swift/ComponentSpec.php';
-require_once LIB_PATH . '/Swift/ComponentFactory.php';
+
+require_once 'Swift/ComponentSpec.php';
+require_once 'Swift/ComponentFactory.php';
 
 abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
   extends UnitTestCase

@@ -1,7 +1,8 @@
 <?php
 
 require_once dirname(__FILE__) . '/../../config.php';
-require_once LIB_PATH . '/Swift/ComponentReference.php';
+
+require_once 'Swift/ComponentReference.php';
 
 class Swift_ComponentReferenceTest extends UnitTestCase
 {

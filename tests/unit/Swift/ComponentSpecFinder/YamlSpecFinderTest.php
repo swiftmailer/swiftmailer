@@ -1,9 +1,10 @@
 <?php
 
 require_once dirname(__FILE__) . '/../../../config.php';
-require_once dirname(__FILE__) . '/AbstractSpecFinderTest.php';
-require_once LIB_PATH . '/Swift/ComponentSpecFinder/YamlSpecFinder.php';
-require_once LIB_PATH . '/Swift/ComponentFactory.php';
+
+require_once 'Swift/ComponentSpecFinder/AbstractSpecFinderTest.php';
+require_once 'Swift/ComponentSpecFinder/YamlSpecFinder.php';
+require_once 'Swift/ComponentFactory.php';
 
 class Swift_ComponentSpecFinder_YamlSpecFinderTest
   extends Swift_ComponentSpecFinder_AbstractSpecFinderTest

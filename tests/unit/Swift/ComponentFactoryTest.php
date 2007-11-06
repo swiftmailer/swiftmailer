@@ -1,16 +1,17 @@
 <?php
 
 require_once dirname(__FILE__) . '/../../config.php';
-require_once LIB_PATH . '/Swift/ComponentFactory.php';
-require_once LIB_PATH . '/Swift/ComponentSpec.php';
-require_once LIB_PATH . '/Swift/ComponentReference.php';
-require_once LIB_PATH . '/Swift/ClassLocator.php';
-require_once LIB_PATH . '/Swift/ComponentSpecFinder.php';
-require_once LIB_PATH . '/Swift/ComponentFactoryException.php';
-require_once dirname(__FILE__) . '/../../classes/EmptyClass.php';
-require_once dirname(__FILE__) . '/../../classes/EmptyInterface.php';
-require_once dirname(__FILE__) . '/../../classes/ConstructorInjectionClass.php';
-require_once dirname(__FILE__) . '/../../classes/SetterInjectionClass.php';
+
+require_once 'Swift/ComponentFactory.php';
+require_once 'Swift/ComponentSpec.php';
+require_once 'Swift/ComponentReference.php';
+require_once 'Swift/ClassLocator.php';
+require_once 'Swift/ComponentSpecFinder.php';
+require_once 'Swift/ComponentFactoryException.php';
+require_once 'EmptyClass.php';
+require_once 'EmptyInterface.php';
+require_once 'ConstructorInjectionClass.php';
+require_once 'SetterInjectionClass.php';
 
 Mock::generate('Swift_ClassLocator', 'MockClassLocator');
 Mock::generate('Swift_ComponentSpecFinder', 'MockSpecFinder');
