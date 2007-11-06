@@ -27,9 +27,9 @@ class Swift_ComponentSpecFinder_XmlSpecFinderTest
     '  </component>' .
     
     '  <component>' .
-    '    <name>singletonComponent</name>' .
+    '    <name>sharedComponent</name>' .
     '    <className>stdClass</className>' .
-    '    <singleton>true</singleton>' .
+    '    <shared>true</shared>' .
     '  </component>' .
     
     '  <component>' .
@@ -40,7 +40,7 @@ class Swift_ComponentSpecFinder_XmlSpecFinderTest
     '        <key>prop1</key>' .
     '        <collection>' .
     '          <componentRef>empty</componentRef>' .
-    '          <componentRef>singletonComponent</componentRef>' .
+    '          <componentRef>sharedComponent</componentRef>' .
     '        </collection>' .
     '      </property>' .
     '      <property>' .

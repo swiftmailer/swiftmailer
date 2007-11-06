@@ -31,7 +31,7 @@ class Swift_ComponentSpec
    * True if the object should only be created once.
    * @var boolean
    */
-  private $_singleton = false;
+  private $_shared = false;
   
   /**
    * Set the class name to $className.
@@ -100,21 +100,21 @@ class Swift_ComponentSpec
   }
   
   /**
-   * Make this component a singleton, or turn singleton off.
-   * @param boolean $singleton
+   * Make this component a shared instance, or turn sharing off.
+   * @param boolean $shared
    */
-  public function setSingleton($singleton)
+  public function setShared($shared)
   {
-    $this->_singleton = $singleton;
+    $this->_shared = $shared;
   }
   
   /**
-   * Returns true if this component is a singleton.
+   * Returns true if this component is a shared instance.
    * @return boolean
    */
-  public function isSingleton()
+  public function isShared()
   {
-    return $this->_singleton;
+    return $this->_shared;
   }
   
 }

@@ -36,10 +36,10 @@ class Swift_ComponentFactory
   private $_specFinders = array();
   
   /**
-   * Registered instances (pseudo-singletons)
+   * Shared component instances
    * @var mixed[]
    */
-  private $_singletons = array();
+  private $_sharedInstances = array();
   
   /**
    * Creates a new instance of the ComponentSpec class.
@@ -176,18 +176,18 @@ class Swift_ComponentFactory
   {
     $spec = $this->getComponentSpec($componentName);
     
-    //If a pseudo-singleton is used, try to return a registered instance
+    //If a shared instances are used, try to return a registered instance
     // if not, reference it now
-    if ($spec->isSingleton())
+    if ($spec->isShared())
     {
-      if (isset($this->_singletons[$componentName]))
+      if (isset($this->_sharedInstances[$componentName]))
       {
-        return $this->_singletons[$componentName];
+        return $this->_sharedInstances[$componentName];
       }
       else
       {
         $o = null;
-        $this->_singletons[$componentName] =& $o;
+        $this->_sharedInstances[$componentName] =& $o;
       }
     }
     

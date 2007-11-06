@@ -23,9 +23,9 @@ class Swift_ComponentSpecFinder_ArraySpecFinderTest
         'className' => 'EmptyClass'
       ),
       
-      'singletonComponent' => array(
+      'sharedComponent' => array(
         'className' => 'stdClass',
-        'singleton' => true
+        'shared' => true
       ),
       
       'setterBased' => array(
@@ -33,8 +33,8 @@ class Swift_ComponentSpecFinder_ArraySpecFinderTest
         'properties' => array(
           //Collections are added as non-associative arrays
           'prop1' => array(
-            array('value' => 'empty', 'component' => true),
-            array('value' => 'singletonComponent', 'component' => true)
+            array('componentRef' => 'empty'),
+            array('componentRef' => 'sharedComponent')
           ),
           //Values are referenced by key 'value'
           'prop2' => array('value' => 'test')
@@ -43,7 +43,7 @@ class Swift_ComponentSpecFinder_ArraySpecFinderTest
       
       'constructorBased' => array(
         'className' => 'ConstructorInjectionClass',
-        'constructorArgs' => array(
+        'constructor' => array(
           //Values referenced by key 'value'
           array('value' => 'foo'),
           //Collections added as non-associative array

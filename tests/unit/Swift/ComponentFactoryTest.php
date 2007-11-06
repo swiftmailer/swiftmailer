@@ -211,11 +211,11 @@ class Swift_ComponentFactoryTest extends UnitTestCase
     $this->assertEqual('y', $o->getProp2());
   }
   
-  public function testSingleton()
+  public function testSharedInstances()
   {
     $spec = $this->_factory->newComponentSpec();
     $spec->setClassName('stdClass');
-    $spec->setSingleton(true);
+    $spec->setShared(true);
     
     $this->_factory->setComponentSpec('test', $spec);
     

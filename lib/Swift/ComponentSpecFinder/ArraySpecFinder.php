@@ -39,7 +39,8 @@ class Swift_ComponentSpecFinder_ArraySpecFinder
     $numValues = 0;
     foreach ($input as $k => $v)
     {
-      if (is_int($k) && is_array($v) && isset($v['value']))
+      if (is_array($v) && count($v) == 1
+        && (isset($v['value']) || isset($v['componentRef'])))
       {
         $numValues++;
       }
@@ -65,28 +66,32 @@ class Swift_ComponentSpecFinder_ArraySpecFinder
       
       if (!$this->_isCollection($v)) //Treat item as a single value
       {
-        if (!empty($v['component']))
+        if (count($v) == 1)
         {
-          $ret[$k] = $factory->referenceFor($v['value']);
-        }
-        else
-        {
-          $ret[$k] = $v['value'];
+          if (isset($v['componentRef']))
+          {
+            $ret[$k] = $factory->referenceFor($v['componentRef']);
+          }
+          elseif (isset($v['value']))
+          {
+            $ret[$k] = $v['value'];
+          }
         }
       }
       else //Treat item as a collection
       {
         foreach ($v as $vk => $vv)
         {
-          if (!is_array($vv) || !isset($vv['value']))
+          if (!is_array($vv) || count($vv) != 1)
           {
             continue;
           }
-          if (!empty($vv['component']))
+          
+          if (isset($vv['componentRef']))
           {
-            $ret[$k][$vk] = $factory->referenceFor($vv['value']);
+            $ret[$k][$vk] = $factory->referenceFor($vv['componentRef']);
           }
-          else
+          elseif (isset($vv['value']))
           {
             $ret[$k][$vk] = $vv['value'];
           }
@@ -122,10 +127,10 @@ class Swift_ComponentSpecFinder_ArraySpecFinder
       
       //Resolve all constructorArgs
       $constructorArgs = array();
-      if (isset($details['constructorArgs'])
-        && is_array($details['constructorArgs']))
+      if (isset($details['constructor'])
+        && is_array($details['constructor']))
       {
-        $constructorArgs = $this->_flatten($details['constructorArgs'], $factory);
+        $constructorArgs = $this->_flatten($details['constructor'], $factory);
       }
       $spec->setConstructorArgs($constructorArgs);
       
@@ -139,8 +144,8 @@ class Swift_ComponentSpecFinder_ArraySpecFinder
         }
       }
       
-      //Identify component as singleton or not
-      $spec->setSingleton(!empty($details['singleton']));
+      //Identify component as shared or not
+      $spec->setShared(!empty($details['shared']));
       
       return $spec;
     }

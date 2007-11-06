@@ -30,14 +30,14 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
     $this->assertEqual('EmptyClass', $spec->getClassName());
   }
   
-  public function testSingletonSpecFinding()
+  public function testSharedInstanceSpecFinding()
   {
-    $spec = $this->_finder->findSpecFor('singletonComponent', $this->_factory);
+    $spec = $this->_finder->findSpecFor('sharedComponent', $this->_factory);
     
     $this->assertIsA($spec, 'Swift_ComponentSpec');
     $this->assertEqual('stdClass', $spec->getClassName());
-    $this->assertTrue($spec->isSingleton(),
-      'Specification should be for a singleton');
+    $this->assertTrue($spec->isShared(),
+      'Specification should be for a shared instance');
   }
   
   public function testSetterBasedInjectionSpecFinding()
@@ -51,7 +51,7 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
     $this->assertIsA($prop1[0], 'Swift_ComponentReference');
     $this->assertEqual('empty', $prop1[0]->getComponentName());
     $this->assertIsA($prop1[1], 'Swift_ComponentReference');
-    $this->assertEqual('singletonComponent', $prop1[1]->getComponentName());
+    $this->assertEqual('sharedComponent', $prop1[1]->getComponentName());
     $this->assertEqual('test', $spec->getProperty('prop2'));
   }
   

@@ -22,21 +22,21 @@ class Swift_ComponentSpecFinder_YamlSpecFinderTest
     "  empty:\n" .
     "    className: EmptyClass\n" .
     "  \n" .
-    "  singletonComponent:\n" .
+    "  sharedComponent:\n" .
     "    className: stdClass\n" .
-    "    singleton: true\n" .
+    "    shared: true\n" .
     "  \n" .
     "  setterBased:\n" .
     "    className: SetterInjectionClass\n" .
     "    properties:\n" .
     "      prop1:\n" .
-    "        - { value: empty, component: true }\n" .
-    "        - { value: singletonComponent, component: true }\n" .
+    "        - { componentRef: empty }\n" .
+    "        - { componentRef: sharedComponent }\n" .
     "      prop2: { value: test }\n" .
     "  \n" .
     "  constructorBased:\n" .
     "    className: ConstructorInjectionClass\n" .
-    "    constructorArgs:\n" .
+    "    constructor:\n" .
     "      - { value: foo }\n" .
     "      -\n" .
     "        - { value: bar }\n" .

@@ -179,13 +179,11 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
       
       $spec->setConstructorArgs($constructorArgs);
       
-      //Determine if component should be a singleton
-      if ($singleton = (string) array_shift($component->xpath("./singleton")))
+      //Determine if component should be a shared component
+      if ($shared = (string) array_shift($component->xpath("./shared")))
       {
-        if (in_array(strtolower($singleton), array('true', 'yes', 'on', '1')))
-        {
-          $spec->setSingleton(true);
-        }
+        $spec->setShared(in_array(strtolower($shared),
+          array('true', 'yes', 'on', '1')));
       }
       
       return $spec;

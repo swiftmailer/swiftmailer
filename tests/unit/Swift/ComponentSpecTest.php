@@ -54,18 +54,18 @@ class Swift_ComponentSpecTest extends UnitTestCase
       $this->_spec->getProperties());
   }
   
-  public function testSetAndGetSingleton()
+  public function testSetAndGetShared()
   {
-    $this->assertFalse($this->_spec->isSingleton(),
-      'Singletons should be off by default');
+    $this->assertFalse($this->_spec->isShared(),
+      'Shared should be off by default');
     
-    $this->_spec->setSingleton(true);
-    $this->assertTrue($this->_spec->isSingleton(),
-      'Singleton should be turned on');
+    $this->_spec->setShared(true);
+    $this->assertTrue($this->_spec->isShared(),
+      'Shared should be turned on');
     
-    $this->_spec->setSingleton(false);
-    $this->assertFalse($this->_spec->isSingleton(),
-      'Singleton should be turned off');
+    $this->_spec->setShared(false);
+    $this->assertFalse($this->_spec->isShared(),
+      'Shared should be turned off');
   }
   
 }
