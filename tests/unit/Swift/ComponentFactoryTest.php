@@ -32,6 +32,19 @@ class Swift_ComponentFactoryTest extends UnitTestCase
     $this->assertIsA($spec, 'Swift_ComponentSpec');
   }
   
+  public function testNewComponentSpecWithArgs()
+  {
+    $spec = $this->_factory->newComponentSpec(
+      'SomeClass', array(), array('foo' => 'bar'), true);
+    
+    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertEqual('SomeClass', $spec->getClassName());
+    $this->assertEqual(array(), $spec->getConstructorArgs());
+    $this->assertEqual(array('foo' => 'bar'), $spec->getProperties());
+    $this->assertTrue($spec->isShared(),
+      'ComponentSpec should be for a shared component');
+  }
+  
   public function testReferenceFor()
   {
     $ref = $this->_factory->referenceFor('test');

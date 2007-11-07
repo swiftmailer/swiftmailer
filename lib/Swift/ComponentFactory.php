@@ -45,9 +45,11 @@ class Swift_ComponentFactory
    * Creates a new instance of the ComponentSpec class.
    * @return Swift_ComponentSpec
    */
-  public function newComponentSpec()
+  public function newComponentSpec($className = null, $constructorArgs = array(),
+    $properties = array(), $shared = false)
   {
-    return new Swift_ComponentSpec();
+    return new Swift_ComponentSpec($className, $constructorArgs, $properties,
+      $shared);
   }
   
   /**

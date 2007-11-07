@@ -34,6 +34,22 @@ class Swift_ComponentSpec
   private $_shared = false;
   
   /**
+   * Creates a new ComponentSpec.
+   * @param string $className
+   * @param mixed[] $constructorArgs
+   * @param mixed[] $properties
+   * @param boolean $shared
+   */
+  public function __construct($className = null, $constructorArgs = array(),
+    $properties = array(), $shared = false)
+  {
+    $this->_className = $className;
+    $this->_constructorArgs = $constructorArgs;
+    $this->_properties = $properties;
+    $this->_shared = $shared;
+  }
+  
+  /**
    * Set the class name to $className.
    * @param string $className
    */
