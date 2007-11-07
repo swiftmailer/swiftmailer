@@ -241,27 +241,18 @@ class Crafty_ComponentFactory
     //Get the Reflector
     $class = $this->classOf($componentName);
     
-    //If the class has a constructor, use the constructor aguments,
-    // otherwise instantiate with no arguments
-    if ($class->getConstructor())
+    //Determine constructor params
+    if (!is_array($constructorArgs))
     {
-      //Allow arguments to be given at runtime
-      if (!is_array($constructorArgs))
-      {
-        $injectedArgs = $this->_resolveDependencies(
-          $spec->getConstructorArgs());
-      }
-      else
-      {
-        $injectedArgs = $this->_resolveDependencies($constructorArgs);
-      }
-       
-      $o = $class->newInstanceArgs($injectedArgs);
+      $injectedArgs = $this->_resolveDependencies(
+        $spec->getConstructorArgs());
     }
     else
     {
-      $o = $class->newInstance();
+      $injectedArgs = $this->_resolveDependencies($constructorArgs);
     }
+     
+    $o = $class->newInstanceArgs($injectedArgs);
     
     return $o;
   }
