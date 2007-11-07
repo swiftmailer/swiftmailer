@@ -10,8 +10,8 @@ require_once dirname(__FILE__) . '/../ComponentSpecFinder.php';
  * @package Swift
  * @subpackage DI
  */
-class Swift_ComponentSpecFinder_XmlSpecFinder
-  implements Swift_ComponentSpecFinder
+class Crafty_ComponentSpecFinder_XmlSpecFinder
+  implements Crafty_ComponentSpecFinder
 {
   
   /**
@@ -65,12 +65,12 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
    * into a variable $v passed by-reference.
    * Returns true if anything is set, or false if not.
    * @param SimpleXMLElement $element
-   * @param Swift_ComponentFactory $factory
+   * @param Crafty_ComponentFactory $factory
    * @param mixed &$v
    * @return boolean
    */
   private function _setValueByReference(SimpleXMLElement $element,
-      Swift_ComponentFactory $factory, &$v)
+      Crafty_ComponentFactory $factory, &$v)
   {
     //Element contains a collection of values
     if ($collection = array_shift($element->xpath("./collection")))
@@ -115,10 +115,10 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
    * Try create the ComponentSpec for $componentName.
    * Returns NULL on failure.
    * @param string $componentName
-   * @param Swift_ComponentFactory $factory
-   * @return Swift_ComponentSpec
+   * @param Crafty_ComponentFactory $factory
+   * @return Crafty_ComponentSpec
    */
-  public function findSpecFor($componentName, Swift_ComponentFactory $factory)
+  public function findSpecFor($componentName, Crafty_ComponentFactory $factory)
   {
     //If a <component> element with this name is found
     if ($component = array_shift($this->_xml->xpath(
@@ -146,14 +146,14 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
           }
           else
           {
-            throw new Swift_ComponentFactoryException(
+            throw new Crafty_ComponentFactoryException(
               'Missing value(s) for property ' . $key . ' in component ' .
               $componentName);
           }
         }
         else
         {
-          throw new Swift_ComponentFactoryException(
+          throw new Crafty_ComponentFactoryException(
             'Missing <key> for property ' . $i . ' in component ' .
             $componentName);
         }
@@ -171,7 +171,7 @@ class Swift_ComponentSpecFinder_XmlSpecFinder
         }
         else //Throw an Exception because it's not possible to know what to do
         {
-          throw new Swift_ComponentFactoryException(
+          throw new Crafty_ComponentFactoryException(
             'Failed getting value of constructor arg ' . $i . ' in component ' .
             $componentName);
         }

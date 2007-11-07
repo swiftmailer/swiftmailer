@@ -2,10 +2,10 @@
 
 require_once dirname(__FILE__) . '/../../../config.php';
 
-require_once 'Swift/ComponentSpec.php';
-require_once 'Swift/ComponentFactory.php';
+require_once 'Crafty/ComponentSpec.php';
+require_once 'Crafty/ComponentFactory.php';
 
-abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
+abstract class Crafty_ComponentSpecFinder_AbstractSpecFinderTest
   extends UnitTestCase
 {
   
@@ -26,7 +26,7 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
   {
     $spec = $this->_finder->findSpecFor('empty', $this->_factory);
     
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
     $this->assertEqual('EmptyClass', $spec->getClassName());
   }
   
@@ -34,7 +34,7 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
   {
     $spec = $this->_finder->findSpecFor('sharedComponent', $this->_factory);
     
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
     $this->assertEqual('stdClass', $spec->getClassName());
     $this->assertTrue($spec->isShared(),
       'Specification should be for a shared instance');
@@ -44,13 +44,13 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
   {
     $spec = $this->_finder->findSpecFor('setterBased', $this->_factory);
     
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
     $this->assertEqual('SetterInjectionClass', $spec->getClassName());
     $prop1 = $spec->getProperty('prop1');
     $this->assertTrue(is_array($prop1), 'Property prop1 should be a collection');
-    $this->assertIsA($prop1[0], 'Swift_ComponentReference');
+    $this->assertIsA($prop1[0], 'Crafty_ComponentReference');
     $this->assertEqual('empty', $prop1[0]->getComponentName());
-    $this->assertIsA($prop1[1], 'Swift_ComponentReference');
+    $this->assertIsA($prop1[1], 'Crafty_ComponentReference');
     $this->assertEqual('sharedComponent', $prop1[1]->getComponentName());
     $this->assertEqual('test', $spec->getProperty('prop2'));
   }
@@ -59,7 +59,7 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
   {
     $spec = $this->_finder->findSpecFor('constructorBased', $this->_factory);
     
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
     $this->assertEqual('ConstructorInjectionClass', $spec->getClassName());
     $constructorArgs = $spec->getConstructorArgs();
     $this->assertTrue(is_array($constructorArgs),
@@ -75,7 +75,7 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
   {
     $spec = $this->_finder->findSpecFor('constructorBased', $this->_factory);
     
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
     $this->assertEqual('ConstructorInjectionClass', $spec->getClassName());
     $constructorArgs = $spec->getConstructorArgs();
     $this->assertTrue(is_array($constructorArgs),
@@ -94,7 +94,7 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
   {
     $spec = $this->_finder->findSpecFor('constructorBased', $this->_factory);
     
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
     $this->assertEqual('ConstructorInjectionClass', $spec->getClassName());
     $constructorArgs = $spec->getConstructorArgs();
     $this->assertTrue(is_array($constructorArgs),
@@ -111,7 +111,7 @@ abstract class Swift_ComponentSpecFinder_AbstractSpecFinderTest
   {
     $spec = $this->_finder->findSpecFor('constructorBased', $this->_factory);
     
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
     $this->assertEqual('ConstructorInjectionClass', $spec->getClassName());
     $constructorArgs = $spec->getConstructorArgs();
     $this->assertTrue(is_array($constructorArgs),

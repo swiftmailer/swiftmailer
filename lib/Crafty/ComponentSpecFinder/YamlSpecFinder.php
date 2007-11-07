@@ -9,8 +9,8 @@ require_once dirname(__FILE__) . '/../../Spyc.php';
  * @package Swift
  * @subpackage DI
  */
-class Swift_ComponentSpecFinder_YamlSpecFinder
-  extends Swift_ComponentSpecFinder_ArraySpecFinder
+class Crafty_ComponentSpecFinder_YamlSpecFinder
+  extends Crafty_ComponentSpecFinder_ArraySpecFinder
 {
   
   /**

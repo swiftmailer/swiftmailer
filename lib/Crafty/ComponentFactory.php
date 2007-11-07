@@ -14,24 +14,24 @@ require_once dirname(__FILE__) . '/ComponentFactoryException.php';
  * @package Swift
  * @subpackage DI
  */
-class Swift_ComponentFactory
+class Crafty_ComponentFactory
 {
   
   /**
    * ComponentSpec collection.
-   * @var Swift_ComponentSpec[]
+   * @var Crafty_ComponentSpec[]
    */
   private $_specs = array();
   
   /**
    * ClassLocator collection.
-   * @var Swift_ClassLocator[]
+   * @var Crafty_ClassLocator[]
    */
   private $_classLocators = array();
   
   /**
    * ComponentSpecFinder collection.
-   * @var Swift_ComponentSpecFinder[]
+   * @var Crafty_ComponentSpecFinder[]
    */
   private $_specFinders = array();
   
@@ -43,31 +43,31 @@ class Swift_ComponentFactory
   
   /**
    * Creates a new instance of the ComponentSpec class.
-   * @return Swift_ComponentSpec
+   * @return Crafty_ComponentSpec
    */
   public function newComponentSpec($className = null, $constructorArgs = array(),
     $properties = array(), $shared = false)
   {
-    return new Swift_ComponentSpec($className, $constructorArgs, $properties,
+    return new Crafty_ComponentSpec($className, $constructorArgs, $properties,
       $shared);
   }
   
   /**
    * Creates a new ComponentReference for the given $componentName.
    * @param string $componentName
-   * @return Swift_ComponentReference
+   * @return Crafty_ComponentReference
    */
   public function referenceFor($componentName)
   {
-    return new Swift_ComponentReference($componentName);
+    return new Crafty_ComponentReference($componentName);
   }
   
   /**
    * Sets the specification for the given $componentName.
    * @param string $componentName
-   * @param Swift_ComponentSpec The specification for $componentName
+   * @param Crafty_ComponentSpec The specification for $componentName
    */
-  public function setComponentSpec($componentName, Swift_ComponentSpec $spec)
+  public function setComponentSpec($componentName, Crafty_ComponentSpec $spec)
   {
     $this->_specs[$componentName] = $spec;
   }
@@ -75,8 +75,8 @@ class Swift_ComponentFactory
   /**
    * Gets the specification for the given $componentName.
    * @param string $componentName
-   * @return Swift_ComponentSpec
-   * @throws Swift_ComponentFactoryException If spec is not found
+   * @return Crafty_ComponentSpec
+   * @throws Crafty_ComponentFactoryException If spec is not found
    */
   public function getComponentSpec($componentName)
   {
@@ -95,7 +95,7 @@ class Swift_ComponentFactory
       
       if (!$spec)
       {
-        throw new Swift_ComponentFactoryException(
+        throw new Crafty_ComponentFactoryException(
           $componentName . ' does not exist');
       }
     }
@@ -106,9 +106,9 @@ class Swift_ComponentFactory
   /**
    * Register a new ClassLocator for finding and loading class files.
    * @param string $key
-   * @param Swift_ClassLocator The ClassLocator to register
+   * @param Crafty_ClassLocator The ClassLocator to register
    */
-  public function registerClassLocator($key, Swift_ClassLocator $locator)
+  public function registerClassLocator($key, Crafty_ClassLocator $locator)
   {
     $this->_classLocators[$key] = $locator;
   }
@@ -116,9 +116,9 @@ class Swift_ComponentFactory
   /**
    * Registers a new ComponentSpec finder in this factory.
    * @param string $key
-   * @param Swift_ComponentSpecFinder The spec finder instance
+   * @param Crafty_ComponentSpecFinder The spec finder instance
    */
-  public function registerSpecFinder($key, Swift_ComponentSpecFinder $finder)
+  public function registerSpecFinder($key, Crafty_ComponentSpecFinder $finder)
   {
     $this->_specFinders[$key] = $finder;
   }
@@ -131,7 +131,7 @@ class Swift_ComponentFactory
    */
   private function _isDependency($input)
   {
-    return ($input instanceof Swift_ComponentReference);
+    return ($input instanceof Crafty_ComponentReference);
   }
   
   /**

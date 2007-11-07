@@ -2,17 +2,17 @@
 
 require_once dirname(__FILE__) . '/../../../config.php';
 
-require_once 'Swift/ComponentSpecFinder/AbstractSpecFinderTest.php';
-require_once 'Swift/ComponentSpecFinder/YamlSpecFinder.php';
-require_once 'Swift/ComponentFactory.php';
+require_once 'Crafty/ComponentSpecFinder/AbstractSpecFinderTest.php';
+require_once 'Crafty/ComponentSpecFinder/YamlSpecFinder.php';
+require_once 'Crafty/ComponentFactory.php';
 
-class Swift_ComponentSpecFinder_YamlSpecFinderTest
-  extends Swift_ComponentSpecFinder_AbstractSpecFinderTest
+class Crafty_ComponentSpecFinder_YamlSpecFinderTest
+  extends Crafty_ComponentSpecFinder_AbstractSpecFinderTest
 {
   
   public function getFactory()
   {
-    return new Swift_ComponentFactory();
+    return new Crafty_ComponentFactory();
   }
   
   public function getFinder()
@@ -45,7 +45,7 @@ class Swift_ComponentSpecFinder_YamlSpecFinderTest
     "        - { value: 2 }\n" . 
     "        - { value: 0.5 }\n";
     
-    return new Swift_ComponentSpecFinder_YamlSpecFinder($yaml);
+    return new Crafty_ComponentSpecFinder_YamlSpecFinder($yaml);
   }
   
 }

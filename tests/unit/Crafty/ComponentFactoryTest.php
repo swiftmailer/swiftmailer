@@ -2,34 +2,34 @@
 
 require_once dirname(__FILE__) . '/../../config.php';
 
-require_once 'Swift/ComponentFactory.php';
-require_once 'Swift/ComponentSpec.php';
-require_once 'Swift/ComponentReference.php';
-require_once 'Swift/ClassLocator.php';
-require_once 'Swift/ComponentSpecFinder.php';
-require_once 'Swift/ComponentFactoryException.php';
+require_once 'Crafty/ComponentFactory.php';
+require_once 'Crafty/ComponentSpec.php';
+require_once 'Crafty/ComponentReference.php';
+require_once 'Crafty/ClassLocator.php';
+require_once 'Crafty/ComponentSpecFinder.php';
+require_once 'Crafty/ComponentFactoryException.php';
 require_once 'EmptyClass.php';
 require_once 'EmptyInterface.php';
 require_once 'ConstructorInjectionClass.php';
 require_once 'SetterInjectionClass.php';
 
-Mock::generate('Swift_ClassLocator', 'MockClassLocator');
-Mock::generate('Swift_ComponentSpecFinder', 'MockSpecFinder');
+Mock::generate('Crafty_ClassLocator', 'MockClassLocator');
+Mock::generate('Crafty_ComponentSpecFinder', 'MockSpecFinder');
 
-class Swift_ComponentFactoryTest extends UnitTestCase
+class Crafty_ComponentFactoryTest extends UnitTestCase
 {
   
   private $_factory;
   
   public function setUp()
   {
-    $this->_factory = new Swift_ComponentFactory();
+    $this->_factory = new Crafty_ComponentFactory();
   }
   
   public function testNewComponentSpec()
   {
     $spec = $this->_factory->newComponentSpec();
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
   }
   
   public function testNewComponentSpecWithArgs()
@@ -37,7 +37,7 @@ class Swift_ComponentFactoryTest extends UnitTestCase
     $spec = $this->_factory->newComponentSpec(
       'SomeClass', array(), array('foo' => 'bar'), true);
     
-    $this->assertIsA($spec, 'Swift_ComponentSpec');
+    $this->assertIsA($spec, 'Crafty_ComponentSpec');
     $this->assertEqual('SomeClass', $spec->getClassName());
     $this->assertEqual(array(), $spec->getConstructorArgs());
     $this->assertEqual(array('foo' => 'bar'), $spec->getProperties());
@@ -48,7 +48,7 @@ class Swift_ComponentFactoryTest extends UnitTestCase
   public function testReferenceFor()
   {
     $ref = $this->_factory->referenceFor('test');
-    $this->assertIsA($ref, 'Swift_ComponentReference');
+    $this->assertIsA($ref, 'Crafty_ComponentReference');
     $this->assertEqual('test', $ref->getComponentName());
   }
   
@@ -246,7 +246,7 @@ class Swift_ComponentFactoryTest extends UnitTestCase
       $this->fail('An exception should have been thrown because a component ' .
         'named noSuchComponent is not registered.');
     }
-    catch (Swift_ComponentFactoryException $e)
+    catch (Crafty_ComponentFactoryException $e)
     {
       $this->pass();
     }

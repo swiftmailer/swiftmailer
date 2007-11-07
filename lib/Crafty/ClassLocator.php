@@ -6,7 +6,7 @@
  * @package Swift
  * @subpackage DI
  */
-interface Swift_ClassLocator
+interface Crafty_ClassLocator
 {
   
   /**

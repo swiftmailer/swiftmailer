@@ -8,16 +8,16 @@ require_once dirname(__FILE__) . '/ComponentFactory.php';
  * @package Swift
  * @subpackage DI
  */
-interface Swift_ComponentSpecFinder
+interface Crafty_ComponentSpecFinder
 {
   
   /**
    * Try to find and create a specification for $componentName.
    * Returns NULL on failure.
    * @param string $componentName
-   * @param Swift_ComponentFactory The factory currently instantiated
-   * @return Swift_ComponentSpec
+   * @param Crafty_ComponentFactory The factory currently instantiated
+   * @return Crafty_ComponentSpec
    */
-  public function findSpecFor($componentName, Swift_ComponentFactory $factory);
+  public function findSpecFor($componentName, Crafty_ComponentFactory $factory);
   
 }

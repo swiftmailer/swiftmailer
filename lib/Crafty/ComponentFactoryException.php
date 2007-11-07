@@ -6,7 +6,7 @@
  * @package Swift
  * @subpackage DI
  */
-class Swift_ComponentFactoryException extends Exception
+class Crafty_ComponentFactoryException extends Exception
 {
   
   /**

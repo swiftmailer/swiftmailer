@@ -2,16 +2,16 @@
 
 require_once dirname(__FILE__) . '/../../config.php';
 
-require_once 'Swift/ComponentSpec.php';
+require_once 'Crafty/ComponentSpec.php';
 
-class Swift_ComponentSpecTest extends UnitTestCase
+class Crafty_ComponentSpecTest extends UnitTestCase
 {
   
   private $_spec;
   
   public function setUp()
   {
-    $this->_spec = new Swift_ComponentSpec();
+    $this->_spec = new Crafty_ComponentSpec();
   }
   
   public function testSetAndGetClassName()

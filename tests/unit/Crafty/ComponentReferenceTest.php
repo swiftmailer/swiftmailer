@@ -2,17 +2,17 @@
 
 require_once dirname(__FILE__) . '/../../config.php';
 
-require_once 'Swift/ComponentReference.php';
+require_once 'Crafty/ComponentReference.php';
 
-class Swift_ComponentReferenceTest extends UnitTestCase
+class Crafty_ComponentReferenceTest extends UnitTestCase
 {
   
   public function testGetComponentName()
   {
-    $ref = new Swift_ComponentReference('test');
+    $ref = new Crafty_ComponentReference('test');
     $this->assertEqual('test', $ref->getComponentName());
     
-    $ref = new Swift_ComponentReference('other');
+    $ref = new Crafty_ComponentReference('other');
     $this->assertEqual('other', $ref->getComponentName());
   }
   

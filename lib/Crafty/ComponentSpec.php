@@ -6,7 +6,7 @@
  * @package Swift
  * @subpackage DI
  */
-class Swift_ComponentSpec
+class Crafty_ComponentSpec
 {
   
   /**

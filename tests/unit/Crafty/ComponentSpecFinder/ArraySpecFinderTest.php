@@ -2,17 +2,17 @@
 
 require_once dirname(__FILE__) . '/../../../config.php';
 
-require_once 'Swift/ComponentSpecFinder/AbstractSpecFinderTest.php';
-require_once 'Swift/ComponentSpecFinder/ArraySpecFinder.php';
-require_once 'Swift/ComponentFactory.php';
+require_once 'Crafty/ComponentSpecFinder/AbstractSpecFinderTest.php';
+require_once 'Crafty/ComponentSpecFinder/ArraySpecFinder.php';
+require_once 'Crafty/ComponentFactory.php';
 
-class Swift_ComponentSpecFinder_ArraySpecFinderTest
-  extends Swift_ComponentSpecFinder_AbstractSpecFinderTest
+class Crafty_ComponentSpecFinder_ArraySpecFinderTest
+  extends Crafty_ComponentSpecFinder_AbstractSpecFinderTest
 {
   
   public function getFactory()
   {
-    return new Swift_ComponentFactory();
+    return new Crafty_ComponentFactory();
   }
   
   public function getFinder()
@@ -59,7 +59,7 @@ class Swift_ComponentSpecFinder_ArraySpecFinderTest
       
     );
     
-    return new Swift_ComponentSpecFinder_ArraySpecFinder($list);
+    return new Crafty_ComponentSpecFinder_ArraySpecFinder($list);
   }
   
 }

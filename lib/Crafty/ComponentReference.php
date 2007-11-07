@@ -6,7 +6,7 @@
  * @package Swift
  * @subpackage DI
  */
-class Swift_ComponentReference
+class Crafty_ComponentReference
 {
   
   /**

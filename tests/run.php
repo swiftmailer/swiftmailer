@@ -2,11 +2,21 @@
 
 error_reporting(E_ALL); ini_set('display_errors', true);
 
+require_once dirname(__FILE__) . '/config.php';
 require_once dirname(__FILE__) . '/lib/simpletest/unit_tester.php';
 require_once dirname(__FILE__) . '/lib/simpletest/mock_objects.php';
 require_once dirname(__FILE__) . '/lib/simpletest/reporter.php';
 
-$test_class = $argv[1];
+$scandirs = array( UNIT_TEST_DIR );
+
+if (isset($argv[1]))
+{
+  $test_class = $argv[1];
+}
+else
+{
+  $test_class = 'Crafty_ComponentFactoryTest';
+}
 
 require_once dirname(__FILE__) . '/unit/' .
   str_replace('_', '/', $test_class) . '.php';

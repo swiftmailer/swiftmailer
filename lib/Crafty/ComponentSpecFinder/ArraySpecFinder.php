@@ -9,8 +9,8 @@ require_once dirname(__FILE__) . '/../ComponentSpecFinder.php';
  * @package Swift
  * @subpackage DI
  */
-class Swift_ComponentSpecFinder_ArraySpecFinder
-  implements Swift_ComponentSpecFinder
+class Crafty_ComponentSpecFinder_ArraySpecFinder
+  implements Crafty_ComponentSpecFinder
 {
   
   /**
@@ -51,10 +51,10 @@ class Swift_ComponentSpecFinder_ArraySpecFinder
   /**
    * Flatten out all array values from the spec into their single values.
    * @param array $input
-   * @param Swift_ComponentFactory $factory
+   * @param Crafty_ComponentFactory $factory
    * @return array
    */
-  private function _flatten(array $input, Swift_ComponentFactory $factory)
+  private function _flatten(array $input, Crafty_ComponentFactory $factory)
   {
     $ret = array();
     foreach ($input as $k => $v)
@@ -105,10 +105,10 @@ class Swift_ComponentSpecFinder_ArraySpecFinder
    * Find and create the ComponentSpec for the given $componentName.
    * Returns NULL if no ComponentSpec can be found.
    * @param string $componentName
-   * @param Swift_ComponentFactory $factory
-   * @return Swift_ComponentSpec
+   * @param Crafty_ComponentFactory $factory
+   * @return Crafty_ComponentSpec
    */
-  public function findSpecFor($componentName, Swift_ComponentFactory $factory)
+  public function findSpecFor($componentName, Crafty_ComponentFactory $factory)
   {
     //Look for component in the array
     if (isset($this->_list[$componentName]))

@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . '/../ClassLocator.php';
  * @package Swift
  * @subpackage DI
  */
-class Swift_ClassLocator_PearClassLocator implements Swift_ClassLocator
+class Crafty_ClassLocator_PearClassLocator implements Crafty_ClassLocator
 {
   
   /**
