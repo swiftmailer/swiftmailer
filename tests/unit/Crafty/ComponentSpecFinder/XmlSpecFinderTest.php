@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../config.php';
-
 require_once 'Crafty/ComponentSpecFinder/AbstractSpecFinderTest.php';
 require_once 'Crafty/ComponentSpecFinder/XmlSpecFinder.php';
 require_once 'Crafty/ComponentFactory.php';

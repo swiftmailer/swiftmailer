@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../config.php';
-
 require_once 'Crafty/ComponentSpec.php';
 
 class Crafty_ComponentSpecTest extends UnitTestCase
