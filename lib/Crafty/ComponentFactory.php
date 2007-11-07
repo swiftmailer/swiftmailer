@@ -11,8 +11,7 @@ require_once dirname(__FILE__) . '/ComponentFactoryException.php';
  * Reads from specifications for components and creates configured instances
  * based upon them.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 class Crafty_ComponentFactory
 {
@@ -60,6 +59,19 @@ class Crafty_ComponentFactory
   public function referenceFor($componentName)
   {
     return new Crafty_ComponentReference($componentName);
+  }
+  
+  /**
+   * Create a new ComponentReflector for the given class with the given
+   * properties.
+   * @param string $className
+   * @param mixed[] $properties
+   * @return Crafty_ComponentReflector
+   * @access private
+   */
+  private function _newComponentReflector($className, array $properties)
+  {
+    return new Crafty_ComponentReflector($className, $properties);
   }
   
   /**
@@ -167,18 +179,51 @@ class Crafty_ComponentFactory
   }
   
   /**
-   * Create an instance of the given component.
+   * Get a ReflectionClass decorated to provide setter-based injection
+   * components during instantiation.
    * @param string $componentName
-   * @param mixed[] $constructorArgs, optional
-   * @param mixed[] Associative array of properties, optional
-   * @return mixed
+   * @return Crafty_ComponentReflector
    */
-  public function create($componentName, $constructorArgs = null,
-    $properties = null)
+  public function classOf($componentName)
   {
     $spec = $this->getComponentSpec($componentName);
     
-    //If a shared instances are used, try to return a registered instance
+    $className = $spec->getClassName();
+    
+    //Load the class file
+    foreach ($this->_classLocators as $locator)
+    {
+      if ($locator->classExists($className))
+      {
+        $locator->includeClass($className);
+        break;
+      }
+    }
+    
+    //Apply properties
+    $properties = array();
+    
+    foreach ($spec->getProperties() as $key => $value)
+    {
+      $properties[$key] = $this->_resolveDependencies($value);
+    }
+    
+    $class = $this->_newComponentReflector($className, $properties);
+    
+    return $class;
+  }
+  
+  /**
+   * Create an instance of the given component.
+   * @param string $componentName
+   * @param mixed[] $constructorArgs, optional
+   * @return object
+   */
+  public function create($componentName, $constructorArgs = null)
+  {
+    $spec = $this->getComponentSpec($componentName);
+    
+    //If shared instances are used, try to return a registered instance
     // if not, reference it now
     if ($spec->isShared())
     {
@@ -193,19 +238,8 @@ class Crafty_ComponentFactory
       }
     }
     
-    $className = $spec->getClassName();
-    
-    //Load the class file
-    foreach ($this->_classLocators as $locator)
-    {
-      if ($locator->classExists($className))
-      {
-        $locator->includeClass($className);
-        break;
-      }
-    }
-    
-    $class = new ReflectionClass($className);
+    //Get the Reflector
+    $class = $this->classOf($componentName);
     
     //If the class has a constructor, use the constructor aguments,
     // otherwise instantiate with no arguments
@@ -221,29 +255,12 @@ class Crafty_ComponentFactory
       {
         $injectedArgs = $this->_resolveDependencies($constructorArgs);
       }
-      
+       
       $o = $class->newInstanceArgs($injectedArgs);
     }
     else
     {
       $o = $class->newInstance();
-    }
-    
-    //Allow runtime injection of properties
-    if (!is_array($properties))
-    {
-      $properties = $spec->getProperties();
-    }
-    
-    //Run setter-based injection
-    foreach ($properties as $key => $value)
-    {
-      $setter = 'set' . ucfirst($key);
-      if ($class->hasMethod($setter))
-      {
-        $injectedValue = $this->_resolveDependencies($value);
-        $class->getMethod($setter)->invoke($o, $injectedValue);
-      }
     }
     
     return $o;

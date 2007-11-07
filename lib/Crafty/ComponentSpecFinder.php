@@ -5,8 +5,7 @@ require_once dirname(__FILE__) . '/ComponentFactory.php';
 /**
  * A ComponentSpec finding interface when no such component is registered.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 interface Crafty_ComponentSpecFinder
 {

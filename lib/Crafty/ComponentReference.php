@@ -3,8 +3,7 @@
 /**
  * Provides information about a component referenced within the DI container.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 class Crafty_ComponentReference
 {

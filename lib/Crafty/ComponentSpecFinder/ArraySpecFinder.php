@@ -6,8 +6,7 @@ require_once dirname(__FILE__) . '/../ComponentSpecFinder.php';
 /**
  * A ComponentSpecFinder which reads from a complex array.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 class Crafty_ComponentSpecFinder_ArraySpecFinder
   implements Crafty_ComponentSpecFinder

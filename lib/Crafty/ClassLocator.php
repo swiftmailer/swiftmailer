@@ -3,8 +3,7 @@
 /**
  * ClassLocator interface for searching for and including class files.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 interface Crafty_ClassLocator
 {

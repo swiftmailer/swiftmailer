@@ -3,8 +3,7 @@
 /**
  * Spefication container for the Dependency Injection factory to operate.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 class Crafty_ComponentSpec
 {

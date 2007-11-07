@@ -5,8 +5,7 @@ require_once dirname(__FILE__) . '/../ClassLocator.php';
 /**
  * A ClassLocator based on Pear naming conventions.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 class Crafty_ClassLocator_PearClassLocator implements Crafty_ClassLocator
 {

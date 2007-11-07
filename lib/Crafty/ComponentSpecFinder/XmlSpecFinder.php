@@ -7,8 +7,7 @@ require_once dirname(__FILE__) . '/../ComponentSpecFinder.php';
 /**
  * A ComponentSpecFinder which reads from a XML file or markup.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 class Crafty_ComponentSpecFinder_XmlSpecFinder
   implements Crafty_ComponentSpecFinder

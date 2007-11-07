@@ -6,8 +6,7 @@ require_once dirname(__FILE__) . '/../../Spyc.php';
 /**
  * A ComponentSpecFinder which reads from a YAML file or markup.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 class Crafty_ComponentSpecFinder_YamlSpecFinder
   extends Crafty_ComponentSpecFinder_ArraySpecFinder

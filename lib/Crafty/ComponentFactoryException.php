@@ -3,8 +3,7 @@
 /**
  * An exception thrown when an error occurs in the ComponentFactory/DI container.
  * @author Chris Corbyn
- * @package Swift
- * @subpackage DI
+ * @package Crafty
  */
 class Crafty_ComponentFactoryException extends Exception
 {

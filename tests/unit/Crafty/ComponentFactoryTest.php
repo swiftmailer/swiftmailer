@@ -7,6 +7,7 @@ require_once 'Crafty/ComponentSpec.php';
 require_once 'Crafty/ComponentReference.php';
 require_once 'Crafty/ClassLocator.php';
 require_once 'Crafty/ComponentSpecFinder.php';
+require_once 'Crafty/ComponentReflector.php';
 require_once 'Crafty/ComponentFactoryException.php';
 require_once 'EmptyClass.php';
 require_once 'EmptyInterface.php';
@@ -24,6 +25,7 @@ class Crafty_ComponentFactoryTest extends UnitTestCase
   public function setUp()
   {
     $this->_factory = new Crafty_ComponentFactory();
+    //$o = $this->_factory->classOf('car')->newInstance('R110 ADC');
   }
   
   public function testNewComponentSpec()
@@ -83,6 +85,17 @@ class Crafty_ComponentFactoryTest extends UnitTestCase
     $this->_factory->registerClassLocator('two', $locator2);
     
     $o = $this->_factory->create('testClass');
+  }
+  
+  public function testClassOf()
+  {
+    $spec = $this->_factory->newComponentSpec();
+    $spec->setClassName('stdClass');
+    
+    $this->_factory->setComponentSpec('test', $spec);
+    
+    $class = $this->_factory->classOf('test');
+    $this->assertIsA($class, 'Crafty_ComponentReflector');
   }
   
   public function testCreateReturnsCorrectType()
@@ -204,22 +217,6 @@ class Crafty_ComponentFactoryTest extends UnitTestCase
     $o = $this->_factory->create('test', array('x', 'y'));
     
     $this->assertIsA($o, 'ConstructorInjectionClass');
-    $this->assertEqual('x', $o->getProp1());
-    $this->assertEqual('y', $o->getProp2());
-  }
-  
-  public function testRuntimeSetterInjection()
-  {
-    $spec = $this->_factory->newComponentSpec();
-    $spec->setClassName('SetterInjectionClass');
-    $spec->setProperty('prop1', 'foo');
-    $spec->setProperty('prop2', 'bar');
-    
-    $this->_factory->setComponentSpec('test', $spec);
-    
-    $o = $this->_factory->create('test', null, array('prop1'=>'x', 'prop2'=>'y'));
-    
-    $this->assertIsA($o, 'SetterInjectionClass');
     $this->assertEqual('x', $o->getProp1());
     $this->assertEqual('y', $o->getProp2());
   }
