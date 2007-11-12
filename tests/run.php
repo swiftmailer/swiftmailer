@@ -15,7 +15,7 @@ if (isset($argv[1]))
 }
 else
 {
-  $test_class = 'Crafty_ComponentFactoryTest';
+  $test_class = null;
 }
 
 require_once dirname(__FILE__) . '/unit/' .
