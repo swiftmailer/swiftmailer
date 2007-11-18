@@ -123,7 +123,11 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
           */
     
     
-    $string = 'foo' . "\r\n" . 'bar' . "\r\n" . 'test' . "\r\n";
+    $string =
+    'foo' . "\r\n" .
+    'bar' . "\r\n" .
+    'test' . "\r\n";
+    
     $this->assertEqual($string, $this->_encoder->encodeString($string));
   }
   
