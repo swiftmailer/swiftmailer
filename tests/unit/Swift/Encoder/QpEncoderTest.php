@@ -167,6 +167,9 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
     'AB' . "=\r\n" .               //76 *
     'CDEFGHIJKLMNOPQRSTUVWXYZ';    //24
     
+    $this->fail(
+      "This is WRONG! It's the encoded lines which must be no more than 76 chars"
+      );
     $this->assertEqual($output, $this->_encoder->encodeString($input));
   }
   
