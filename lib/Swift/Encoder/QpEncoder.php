@@ -31,6 +31,12 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 {
   
   /**
+   * The character set being encoded.
+   * @var string
+   */
+  private $_charset;
+  
+  /**
    * True if the multibyte encoding library is present.
    * @var boolean
    * @access private
@@ -38,10 +44,12 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   private $_hasMb = false;
   
   /**
-   * Creates a new QpEncoder.
+   * Creates a new QpEncoder for the given charset.
+   * @param string $charset
    */
-  public function __construct()
+  public function __construct($charset = null)
   {
+    $this->_charset = $charset;
     $this->_hasMb = (
       function_exists('mb_subtr')
       && function_exists('mb_strlen')
@@ -56,11 +64,10 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    * $firstLineOffset.
    *
    * @param string $string to encode
-   * @param string $charset used
    * @param int $firstLineOffset
    * @return string
    */
-  public function encodeString($string, $charset = null, $firstLineOffset = 0)
+  public function encodeString($string, $firstLineOffset = 0)
   {
     $lines = explode("\r\n", $string);
     foreach ($lines as $i => $line)
@@ -69,8 +76,8 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       $wrappedLines = array();
       do
       {
-        $wrappedLines[] = $this->_substr($line, 0, 76, $charset);
-        $line = $this->_substr($line, 76, null, $charset);
+        $wrappedLines[] = $this->_substr($line, 0, 76, $this->_charset);
+        $line = $this->_substr($line, 76, null, $this->_charset);
       }
       while (0 != strlen($line));
       
