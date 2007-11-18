@@ -127,7 +127,7 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
     $this->assertEqual($string, $this->_encoder->encodeString($string));
   }
   
-  public function testLinesLongerThan76BytesAreSoftBroken()
+  public function testLinesLongerThan76CharactersAreSoftBroken()
   {
     /*
     (5)   (Soft Line Breaks) The Quoted-Printable encoding
