@@ -75,7 +75,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   
   /**
    * Takes an unencoded string and produces a QP encoded string from it.
-   * QP encoded strings have a maximum line length of 76 *characters*.
+   * QP encoded strings have a maximum line length of 76 characters.
    * If the first line needs to be shorter, indicate the difference with
    * $firstLineOffset.
    *
