@@ -7,9 +7,11 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
   
   private $_encoder;
   
+  private $_charset = 'utf-8';
+  
   public function setUp()
   {
-    $this->_encoder = new Swift_Encoder_QpEncoder();
+    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charset);
   }
   
   /* -- RFC 2045, 6.7 --
@@ -168,6 +170,109 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
     'BCDEFGHIJKLMNOPQRSTUVWXYZ';             //26
     
     $this->assertEqual($output, $this->_encoder->encodeString($input));
+  }
+  
+  public function testBytesBelowPermittedRangeAreEncoded()
+  {
+    /*
+    According to Rule (1 & 2)
+    */
+    
+    for ($ordinal = 0; $ordinal < 33; ++$ordinal)
+    {
+      $char = chr($ordinal);
+      $this->assertEqual(
+        sprintf('=%02X', $ordinal), $this->_encoder->encodeString($char)
+        );
+    }
+  }
+  
+  public function testDecimalByte61IsEncoded()
+  {
+    /*
+    According to Rule (1 & 2)
+    */
+    
+    $this->assertEqual('=3D', $this->_encoder->encodeString('='));
+  }
+  
+  public function testBytesAbovePermittedRangeAreEncoded()
+  {
+    /*
+    According to Rule (1 & 2)
+    */
+    
+    for ($i = 0; $i < 100; ++$i)
+    {
+      $ordinal = rand(127, 255);
+      $char = chr($ordinal);
+      $this->assertEqual(
+        sprintf('=%02X', $ordinal), $this->_encoder->encodeString($char)
+        );
+    }
+  }
+  
+  public function testFirstLineLengthCanBeDifferent()
+  {
+    $input =
+    'abcdefghijklmnopqrstuvwxyz' .           //26
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //52
+    '1234567890' .                           //62
+    'abcdefghijklmn' .                       //76 *
+    'opqrstuvwxyz' .                         //12
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //38
+    '1234567890' .                           //48
+    'abcdefghijklmnopqrstuvwxyz' .           //74
+    'AB' .                                   //76 *
+    'CDEFGHIJKLMNOPQRSTUVWXYZ';              //24
+    
+    $output =
+    'abcdefghijklmnopqrstuvwxyz' .           //26
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //52
+    '1' . "=\r\n" .                          //54 *
+    '234567890' .                            //9
+    'abcdefghijklmnopqrstuvwxyz' .           //35
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //61
+    '1234567890' .                           //71
+    'abcd' . "=\r\n" .                       //76 *
+    'efghijklmnopqrstuvwxyz' .               //22
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ';            //48
+    
+    $this->assertEqual(
+      $output, $this->_encoder->encodeString($input, 22),
+      '%s: First line should start at offset 22 so can only have max length 54'
+      );
+  }
+  
+  public function testEncodingAndDecodingAgain()
+  {
+    $lipsum =
+    'Код одно гринспана руководишь на. Его вы знания движение. Ты две начать ' .
+    'одиночку, сказать основатель удовольствием но миф. Бы какие система тем. ' .
+    'Полностью использует три мы, человек клоунов те нас, бы давать творческую' .
+    ' эзотерическая шеф.' .
+    'Мог не помнить никакого сэкономленного, две либо какие пишите бы. Должен ' .
+    'компанию кто те, этот заключалась проектировщик не ты. Глупые периоды ты' .
+    ' для. Вам который хороший он. Те любых кремния концентрируются мог, ' .
+    'собирать принадлежите без вы.' .
+
+    'Джоэла меньше хорошего вы миф, за тем году разработки. Даже управляющим ' .
+    'руководители был не. Три коде выпускать заботиться ну. То его система ' .
+    'удовольствием безостановочно, или ты главной процессорах. Мы без джоэл ' .
+    'знания получат, статьи остальные мы ещё.' .
+    'Них русском касается поскольку по, образование должником ' .
+    'систематизированный ну мои. Прийти кандидата университет но нас, для бы ' .
+    'должны никакого, биг многие причин интервьюирования за. ' .
+    'Тем до плиту почему. Вот учёт такие одного бы, об биг разным внешних ' .
+    'промежуток. Вас до какому возможностей безответственный, были погодите бы' .
+    ' его, по них глупые долгий количества.';
+    
+    $encodedLipsum = $this->_encoder->encodeString($lipsum);
+    
+    $this->assertEqual(
+      quoted_printable_decode($encodedLipsum), $lipsum,
+      '%s: Encoded string should decode back to original string'
+      );
   }
   
 }

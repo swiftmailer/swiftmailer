@@ -74,7 +74,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   }
   
   /**
-   * Takes an unencoded string and produce a QP encoded string from it.
+   * Takes an unencoded string and produces a QP encoded string from it.
    * QP encoded strings have a maximum line length of 76 *characters*.
    * If the first line needs to be shorter, indicate the difference with
    * $firstLineOffset.
@@ -85,63 +85,54 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    */
   public function encodeString($string, $firstLineOffset = 0)
   {
-    //RFC 2045, 6.7 (4)
+    //RFC 2045, 6.7 (4) -- Treat lines in their canonical form
     $lines = explode("\r\n", $string);
     
-    foreach ($lines as $i => $line)
+    //Apply rules line-for-line
+    foreach ($lines as $lineNumber => $line)
     {
-      $lineEncoded = '';
       $wrappedLines = array();
+      $lineEncoded = '';
       
-      while (0 != strlen($line))
+      //RFC 2045, 6.7 (1 & 2) -- Encode bytes except those permitted
+      while (false !== $charEncoded = $this->_encodeCharacter(
+        $this->_shiftCharacter($line)))
       {
-        $char = $this->_substr($line, 0, 1, $this->_charset);
-        $line = $this->_substr($line, 1, null, $this->_charset);
-        
-        //RFC 2045, 6.7 (1 & 2)
-        $charEncoded = '';
-        for ($bytePos = 0; $bytePos < strlen($char); $bytePos++)
+        //76 -1 to account for = needed for possible soft break
+        $maxLength = 75 - $firstLineOffset;
+        //Stop using an offset if already line wrapped
+        if (0 != count($wrappedLines) || 0 != $lineNumber)
         {
-          $byte = $char{$bytePos};
-          $octet = ord($byte);
-          
-          if (!in_array($octet, $this->_permittedBytes))
-          {
-            $charEncoded .= sprintf('=%02X', $octet);
-          }
-          else
-          {
-            $charEncoded .= $byte;
-          }
+          $firstLineOffset = 0;
         }
-        
-        $maxLength = 75;
         
         //RFC 2045, 6.7 (3)
         if (0 == strlen($line))
         {
-          $maxLength = 76;
+          //End of line so no need to account for a possible soft break
+          ++$maxLength;
           
-          $lastOctet = ord(substr($charEncoded, -1));
-          if (in_array($lastOctet, $this->_lwsp))
+          $lastOrdinal = ord(substr($charEncoded, -1));
+          if (in_array($lastOrdinal, $this->_lwsp))
           {
-            $charEncodedLwsp = substr($charEncoded, 0, -1) . sprintf('=%02X', $lastOctet);
+            $charEncodedLwsp = substr($charEncoded, 0, -1) .
+              sprintf('=%02X', $lastOrdinal);
             
-            //If soft break is going to occur after encoding LWSP, soft break before
+            //If soft break is going to occur after encoding LWSP
+            // then soft break before and don't encode instead
             if (strlen($lineEncoded . $charEncodedLwsp) > $maxLength)
             {
               $wrappedLines[] = $lineEncoded;
               $lineEncoded = '';
             }
-            else //Fix LWSP encoding
+            else //Force ending LWSP encoding
             {
               $charEncoded = $charEncodedLwsp;
             }
           }
         }
         
-        //RFC 2045, 6.7 (5)
-        // Leaving room for =
+        //RFC 2045, 6.7 (5) -- Soft line breaks before 76 chars
         if (strlen($lineEncoded . $charEncoded) > $maxLength)
         {
           $wrappedLines[] = $lineEncoded;
@@ -151,16 +142,55 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         $lineEncoded .= $charEncoded;
       }
       
-      if (strlen($lineEncoded) != 0)
-      {
-        $wrappedLines[] = $lineEncoded;
-      }
+      $wrappedLines[] = $lineEncoded;
       
-      $lines[$i] = implode("=\r\n", $wrappedLines);
+      $lines[$lineNumber] = implode("=\r\n", $wrappedLines);
     }
     
     //RFC 2045, 6.7 (4)
     return implode("\r\n", $lines);
+  }
+  
+  /**
+   * Shift a single character off the start of the string and shorten by 1.
+   * The character may contain more than a single byte.
+   * @param string &$string
+   * @return string
+   */
+  private function _shiftCharacter(&$string)
+  {
+    $char = $this->_substr($string, 0, 1, $this->_charset);
+    $string = $this->_substr($string, 1, null, $this->_charset);
+    return $char;
+  }
+  
+  /**
+   * Encode a single character (maybe multi-byte).
+   * @param string $char
+   * @return string
+   */
+  private function _encodeCharacter($char)
+  {
+    if (!is_string($char))
+    {
+      return false;
+    }
+    
+    $charEncoded = '';
+    
+    foreach (unpack('C*', $char) as $octet)
+    {
+      if (!in_array($octet, $this->_permittedBytes))
+      {
+        $charEncoded .= sprintf('=%02X', $octet);
+      }
+      else
+      {
+        $charEncoded .= pack('C', $octet);
+      }
+    }
+    
+    return $charEncoded;
   }
   
   /**
