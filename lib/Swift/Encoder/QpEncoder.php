@@ -44,6 +44,18 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   private $_hasMb = false;
   
   /**
+   * Linear whitespace bytes.
+   * @var int[]
+   */
+  private $_lwsp = array();
+  
+  /**
+   * Bytes to allow through the encoder without being translated.
+   * @var int[]
+   */
+  private $_permittedBytes = array();
+  
+  /**
    * Creates a new QpEncoder for the given charset.
    * @param string $charset
    */
@@ -54,6 +66,10 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       function_exists('mb_subtr')
       && function_exists('mb_strlen')
       && function_exists('mb_internal_encoding')
+      );
+    $this->_lwsp = array(0x09, 0x20);
+    $this->_permittedBytes = array_merge(
+      $this->_lwsp, range(0x21, 0x3C), range(0x3E, 0x7E)
       );
   }
   
@@ -69,35 +85,81 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    */
   public function encodeString($string, $firstLineOffset = 0)
   {
+    //RFC 2045, 6.7 (4)
     $lines = explode("\r\n", $string);
+    
     foreach ($lines as $i => $line)
     {
-      //RFC 2045, sect 6.7 (5)
+      $lineEncoded = '';
       $wrappedLines = array();
-      do
-      {
-        $wrappedLines[] = $this->_substr($line, 0, 76, $this->_charset);
-        $line = $this->_substr($line, 76, null, $this->_charset);
-      }
-      while (0 != strlen($line));
       
-      foreach ($wrappedLines as $j => $wrappedLine)
+      while (0 != strlen($line))
       {
-        $lastByte = ord(substr($wrappedLine, -1));
+        $char = $this->_substr($line, 0, 1, $this->_charset);
+        $line = $this->_substr($line, 1, null, $this->_charset);
         
-        //RFC 2045, sect 6.7 (3)
-        if (in_array($lastByte, array(0x09, 0x20)))
+        //RFC 2045, 6.7 (1 & 2)
+        $charEncoded = '';
+        for ($bytePos = 0; $bytePos < strlen($char); $bytePos++)
         {
-          $wrappedLine = substr($wrappedLine, 0, -1) . sprintf('=%02X', $lastByte);
+          $byte = $char{$bytePos};
+          $octet = ord($byte);
+          
+          if (!in_array($octet, $this->_permittedBytes))
+          {
+            $charEncoded .= sprintf('=%02X', $octet);
+          }
+          else
+          {
+            $charEncoded .= $byte;
+          }
         }
         
-        $wrappedLines[$j] = $wrappedLine;
+        $maxLength = 75;
+        
+        //RFC 2045, 6.7 (3)
+        if (0 == strlen($line))
+        {
+          $maxLength = 76;
+          
+          $lastOctet = ord(substr($charEncoded, -1));
+          if (in_array($lastOctet, $this->_lwsp))
+          {
+            $charEncodedLwsp = substr($charEncoded, 0, -1) . sprintf('=%02X', $lastOctet);
+            
+            //If soft break is going to occur after encoding LWSP, soft break before
+            if (strlen($lineEncoded . $charEncodedLwsp) > $maxLength)
+            {
+              $wrappedLines[] = $lineEncoded;
+              $lineEncoded = '';
+            }
+            else //Fix LWSP encoding
+            {
+              $charEncoded = $charEncodedLwsp;
+            }
+          }
+        }
+        
+        //RFC 2045, 6.7 (5)
+        // Leaving room for =
+        if (strlen($lineEncoded . $charEncoded) > $maxLength)
+        {
+          $wrappedLines[] = $lineEncoded;
+          $lineEncoded = '';
+        }
+        
+        $lineEncoded .= $charEncoded;
       }
       
-      //RFC 2045, sect 6.7 (5)
+      if (strlen($lineEncoded) != 0)
+      {
+        $wrappedLines[] = $lineEncoded;
+      }
+      
       $lines[$i] = implode("=\r\n", $wrappedLines);
     }
     
+    //RFC 2045, 6.7 (4)
     return implode("\r\n", $lines);
   }
   

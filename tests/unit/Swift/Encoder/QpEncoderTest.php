@@ -144,32 +144,29 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
           */
     
     $input =
-    'abcdefghijklmnopqrstuvwxyz' . //26
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' . //52
-    '1234567890' .                 //62
-    'abcdefghijklmn' .             //76 *
-    'opqrstuvwxyz' .               //12
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' . //38
-    '1234567890' .                 //48
-    'abcdefghijklmnopqrstuvwxyz' . //74
-    'AB' .                         //76 *
-    'CDEFGHIJKLMNOPQRSTUVWXYZ';    //24
+    'abcdefghijklmnopqrstuvwxyz' .           //26
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //52
+    '1234567890' .                           //62
+    'abcdefghijklmn' .                       //76 *
+    'opqrstuvwxyz' .                         //12
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //38
+    '1234567890' .                           //48
+    'abcdefghijklmnopqrstuvwxyz' .           //74
+    'AB' .                                   //76 *
+    'CDEFGHIJKLMNOPQRSTUVWXYZ';              //24
     
     $output =
-    'abcdefghijklmnopqrstuvwxyz' . //26
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' . //52
-    '1234567890' .                 //62
-    'abcdefghijklmn' . "=\r\n" .   //76 *
-    'opqrstuvwxyz' .               //12
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' . //38
-    '1234567890' .                 //48
-    'abcdefghijklmnopqrstuvwxyz' . //74
-    'AB' . "=\r\n" .               //76 *
-    'CDEFGHIJKLMNOPQRSTUVWXYZ';    //24
+    'abcdefghijklmnopqrstuvwxyz' .           //26
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //52
+    '1234567890' .                           //62
+    'abcdefghijklm' . "=\r\n" .              //76 *
+    'nopqrstuvwxyz' .                        //13
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //39
+    '1234567890' .                           //49
+    'abcdefghijklmnopqrstuvwxyz' . "=\r\n" . //76 *
+    'A' .                                    //1
+    'BCDEFGHIJKLMNOPQRSTUVWXYZ';             //26
     
-    $this->fail(
-      "This is WRONG! It's the encoded lines which must be no more than 76 chars"
-      );
     $this->assertEqual($output, $this->_encoder->encodeString($input));
   }
   
