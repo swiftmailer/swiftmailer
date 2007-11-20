@@ -42,6 +42,7 @@ class Swift_Encoder_Base64Encoder implements Swift_Encoder
    */
   public function encodeString($string, $firstLineOffset = 0)
   {
+    return trim(chunk_split(base64_encode($string), 76));
   }
   
 }
