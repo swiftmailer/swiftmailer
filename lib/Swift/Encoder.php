@@ -36,4 +36,13 @@ interface Swift_Encoder
    */
   public function encodeString($string, $firstLineOffset = 0);
   
+  /**
+   * Encode $in to $out.
+   * @param Swift_ByteStream $in
+   * @param Swift_ByteStream $out
+   * @param int $firstLineOffset
+   */
+  public function encodeByteStream(
+    Swift_ByteStream $in, Swift_ByteStream $out, $firstLineOffset = 0);
+  
 }

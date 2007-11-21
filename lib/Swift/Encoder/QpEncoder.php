@@ -20,6 +20,7 @@
 
 
 require_once dirname(__FILE__) . '/../Encoder.php';
+require_once dirname(__FILE__) . '/../ByteStream.php';
 
 /**
  * Handles Quoted Printable (QP) Encoding in Swift Mailer.
@@ -106,7 +107,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
           $firstLineOffset = 0;
         }
         
-        //RFC 2045, 6.7 (3)
+        //RFC 2045, 6.7 (3) -- No LWSP at line ending
         if (0 == strlen($line))
         {
           //End of line so no need to account for a possible soft break
@@ -149,6 +150,17 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     
     //RFC 2045, 6.7 (4)
     return implode("\r\n", $lines);
+  }
+  
+  /**
+   * Encode stream $in to stream $out.
+   * @param Swift_ByteStream $in
+   * @param Swift_ByteStream $out
+   * @param int $firstLineOffset
+   */
+  public function encodeByteStream(
+    Swift_ByteStream $in, Swift_ByteStream $out, $firstLineOffset = 0)
+  {
   }
   
   /**

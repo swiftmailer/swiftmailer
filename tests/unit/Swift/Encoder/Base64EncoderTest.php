@@ -1,6 +1,11 @@
 <?php
 
+require_once 'Swift/DelegatedExpectation.php';
+
 require_once 'Swift/Encoder/Base64Encoder.php';
+require_once 'Swift/ByteStream.php';
+
+Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
 
 class Swift_Encoder_Base64EncoderTest extends UnitTestCase
 {
@@ -25,7 +30,7 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
   years.
   */
   
-  public function testInputOutputRatioIs3to4Bytes()
+  public function testStringInputOutputRatioIs3to4Bytes()
   {
     /*
     RFC 2045, 6.8
@@ -38,20 +43,33 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
          */
     
     $this->assertEqual(
-      4, strlen($this->_encoder->encodeString('123')),
+      'MTIz', $this->_encoder->encodeString('123'),
       '%s: 3 bytes of input should yield 4 bytes of output'
       );
     $this->assertEqual(
-      8, strlen($this->_encoder->encodeString('123456')),
+      'MTIzNDU2', $this->_encoder->encodeString('123456'),
       '%s: 6 bytes in input should yield 8 bytes of output'
       );
     $this->assertEqual(
-      12, strlen($this->_encoder->encodeString('123456789')),
+      'MTIzNDU2Nzg5', $this->_encoder->encodeString('123456789'),
       '%s: 9 bytes in input should yield 12 bytes of output'
       );
   }
   
-  public function testCharactersInOutput()
+  public function testStreamInputOutputRatioIs3To4Bytes()
+  {
+    $actorStream = new Swift_MockByteStream();
+    $actorStream->setReturnValueAt(0, 'read', '123');
+    $actorStream->setReturnValueAt(1, 'read', false);
+    
+    $criticStream = new Swift_MockByteStream();
+    $criticStream->expectCallCount('write', 1);
+    $criticStream->expectAt(0, 'write', array('MTIz'));
+    
+    $this->_encoder->encodeByteStream($actorStream, $criticStream);
+  }
+  
+  public function testCharactersInStringOutput()
   {
     /*
     RFC 2045, 6.8
@@ -103,7 +121,48 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
     }
   }
   
-  public function testPadLength()
+  public function testCharactersInStreamOutput()
+  {
+    $actorStream = new Swift_MockByteStream();
+    
+    $input = '';
+    $length = 0;
+    $returnCount = 0;
+    
+    for ($ordinal = 0; $ordinal < 256; ++$ordinal)
+    {
+      $input .= pack('C', $ordinal);
+      ++$length;
+      if (3 == $length)
+      {
+        $actorStream->setReturnValueAt($returnCount++, 'read', $input);
+        $input = '';
+        $length = 0;
+      }
+    }
+    
+    if (0 != $length)
+    {
+      $actorStream->setReturnValueAt($returnCount++, 'read', $input);
+    }
+    
+    $actorStream->setReturnValueAt($returnCount++, 'read', false);
+    
+    $criticStream = new Swift_MockByteStream();
+    $criticStream->expectCallCount('write', $returnCount - 1);
+    
+    for ($i = 0; $i < $returnCount - 1; ++$i)
+    {
+      $criticStream->expectAt($i, 'write', array(
+        new Swift_DelegatedExpectation(array($this, '_outputBytesInRange'),
+        '%s: Output bytes must be in A-Z, a-z, 0-9, /, + or ='))
+        );
+    }
+    
+    $this->_encoder->encodeByteStream($actorStream, $criticStream);
+  }
+  
+  public function testStringPadLength()
   {
     /*
     RFC 2045, 6.8
@@ -153,7 +212,60 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
     }
   }
   
-  public function testMaximumLineLengthIs76Characters()
+  public function testStreamPadLength()
+  {
+    for ($i = 0; $i < 30; ++$i)
+    {
+      $actorStream = new Swift_MockByteStream();
+      $actorStream->setReturnValueAt(0, 'read', pack('C', rand(0, 255)));
+      $actorStream->setReturnValueAt(1, 'read', false);
+      
+      $criticStream = new Swift_MockByteStream();
+      $criticStream->expectCallCount('write', 1);
+      $criticStream->expectAt(0, 'write', array(
+        new Swift_DelegatedExpectation(array($this, '_testDoublePad'),
+        '%s: A single byte should have 2 bytes of padding'))
+        );
+      
+      $this->_encoder->encodeByteStream($actorStream, $criticStream);
+    }
+    
+    for ($i = 0; $i < 30; ++$i)
+    {
+      $actorStream = new Swift_MockByteStream();
+      $actorStream->setReturnValueAt(
+        0, 'read', pack('C*', rand(0, 255), rand(0, 255)));
+      $actorStream->setReturnValueAt(1, 'read', false);
+      
+      $criticStream = new Swift_MockByteStream();
+      $criticStream->expectCallCount('write', 1);
+      $criticStream->expectAt(0, 'write', array(
+        new Swift_DelegatedExpectation(array($this, '_testSinglePad'),
+        '%s: Two bytes should have 1 byte of padding'))
+        );
+      
+      $this->_encoder->encodeByteStream($actorStream, $criticStream);
+    }
+    
+    for ($i = 0; $i < 30; ++$i)
+    {
+      $actorStream = new Swift_MockByteStream();
+      $actorStream->setReturnValueAt(
+        0, 'read', pack('C*', rand(0, 255), rand(0, 255), rand(0, 255)));
+      $actorStream->setReturnValueAt(1, 'read', false);
+      
+      $criticStream = new Swift_MockByteStream();
+      $criticStream->expectCallCount('write', 1);
+      $criticStream->expectAt(0, 'write', array(
+        new Swift_DelegatedExpectation(array($this, '_testNoPad'),
+        '%s: Three bytes should have no padding'))
+        );
+      
+      $this->_encoder->encodeByteStream($actorStream, $criticStream);
+    }
+  }
+  
+  public function testMaximumStringLineLengthIs76Characters()
   {
     /*
          The encoded output stream must be represented in lines of no more
@@ -170,17 +282,89 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
     '1234567890' .
     'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     
-    $output = $this->_encoder->encodeString($input);
+    $output =
+    'YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQk' .          //38
+    'NERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1' . "\r\n" . //76 *
+    'Njc4OTBhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3' .          //38
+    'h5ekFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFla' . "\r\n" . //76 *
+    'MTIzNDU2Nzg5MEFCQ0RFRkdISUpLTE1OT1BRUl' .          //38
+    'NUVVZXWFla';                                       //48
     
-    $lines = explode("\r\n", $output);
-    
-    foreach ($lines as $line)
-    {
-      $this->assertTrue(
-        76 >= strlen($line),
-        '%s: Lines should be no more than 76 characters'
+    $this->assertEqual(
+      $output, $this->_encoder->encodeString($input),
+      '%s: Lines should be no more than 76 characters'
       );
+  }
+  
+  public function testMaximumStreamLineLengthIs76Characters()
+  {
+    //
+  }
+  
+  public function testFirstStringLineLengthCanBeDifferent()
+  {
+    $input =
+    'abcdefghijklmnopqrstuvwxyz' .
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .
+    '1234567890' .
+    'abcdefghijklmnopqrstuvwxyz' .
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .
+    '1234567890' .
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    $output =
+    'YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQk' .          //38
+    'NERUZHSElKS0xNTk9QU' . "\r\n" .                    //57 *
+    'VJTVFVWV1hZWjEyMzQ1Njc4OTBhYmNkZWZnaGl' .          //38
+    'qa2xtbm9wcXJzdHV2d3h5ekFCQ0RFRkdISUpLT' . "\r\n" . //76 *
+    'E1OT1BRUlNUVVZXWFlaMTIzNDU2Nzg5MEFCQ0R' .          //38
+    'FRkdISUpLTE1OT1BRUlNUVVZXWFla';                    //67
+    
+    $this->assertEqual(
+      $output, $this->_encoder->encodeString($input, 19),
+      '%s: First line offset is 19 so first line should be 57 chars long'
+      );
+  }
+  
+  public function testFirstStreamLineLengthCanBeDifferent()
+  {
+    //
+  }
+  
+  // -- Delegated expectation checks
+  
+  //--delegated
+  public function _outputBytesInRange($output)
+  {
+    $outputBytes = unpack('C*', $output);
+    
+    foreach ($outputBytes as $byte)
+    {
+      if (!in_array($byte, $this->_allowedOutputBytes))
+      {
+        return false;
+      }
     }
+    
+    return true;
+  }
+  
+  //--delegated
+  public function _testSinglePad($output)
+  {
+    return preg_match('~^[a-zA-Z0-9/\+]{3}=$~', $output);
+  }
+  
+  //--delegated
+  public function _testDoublePad($output)
+  {
+    return preg_match('~^[a-zA-Z0-9/\+]{2}==$~', $output);
+  }
+  
+  //--delegated
+  public function _testNoPad($output)
+  {
+    return preg_match('~^[a-zA-Z0-9/\+]{4}$~', $output);
   }
   
 }

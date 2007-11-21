@@ -20,6 +20,7 @@
 
 
 require_once dirname(__FILE__) . '/../Encoder.php';
+require_once dirname(__FILE__) . '/../ByteStream.php';
 
 /**
  * Handles Base 64 Encoding in Swift Mailer.
@@ -42,7 +43,31 @@ class Swift_Encoder_Base64Encoder implements Swift_Encoder
    */
   public function encodeString($string, $firstLineOffset = 0)
   {
-    return trim(chunk_split(base64_encode($string), 76));
+    $encodedString = base64_encode($string);
+    $firstLine = '';
+    
+    if (0 != $firstLineOffset)
+    {
+      $firstLine = substr($encodedString, 0, 76 - $firstLineOffset) . "\r\n";
+      $encodedString = substr($encodedString, 76 - $firstLineOffset);
+    }
+    
+    return $firstLine . trim(chunk_split($encodedString, 76, "\r\n"));
+  }
+  
+  /**
+   * Encode stream $in to stream $out.
+   * @param Swift_ByteStream $in
+   * @param Swift_ByteStream $out
+   * @param int $firstLineOffset
+   */
+  public function encodeByteStream(
+    Swift_ByteStream $in, Swift_ByteStream $out, $firstLineOffset = 0)
+  {
+    while (false !== $bytes = $in->read(8190))
+    {
+      $out->write(base64_encode($bytes));
+    }
   }
   
 }

@@ -11,7 +11,10 @@ define('SWEETY_PHP_EXE', '/usr/bin/php-cli');
 //The path to this file
 define('SWEETY_HOME', dirname(__FILE__));
 //The path to the libs being tested
-define('SWEETY_INCLUDE_PATH', SWEETY_HOME . '/../lib');
+define('SWEETY_INCLUDE_PATH',
+  SWEETY_HOME . '/../lib' . PATH_SEPARATOR .
+  SWEETY_HOME . '/expectations'
+  );
 //The path to the main test suite
 define('SWEETY_LIB_PATH', SWEETY_HOME . '/lib');
 //The path to simpletest
