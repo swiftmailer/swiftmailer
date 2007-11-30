@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Swift/DelegatedExpectation.php';
-
 require_once 'Swift/Encoder/Base64Encoder.php';
 require_once 'Swift/ByteStream.php';
 
@@ -12,16 +10,9 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
   
   private $_encoder;
   
-  private $_allowedOutputBytes = array();
-  
   public function setUp()
   {
     $this->_encoder = new Swift_Encoder_Base64Encoder();
-    
-    $this->_allowedOutputBytes = array_merge(
-      array(ord('='), ord("\r"), ord("\n"), ord('/'), ord('+')),
-      range(ord('A'), ord('Z')), range(ord('a'), ord('z')), range(ord('0'), ord('9'))
-      );
   }
   
   /*
@@ -58,108 +49,15 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
   
   public function testStreamInputOutputRatioIs3To4Bytes()
   {
-    $actorStream = new Swift_MockByteStream();
-    $actorStream->setReturnValueAt(0, 'read', '123');
-    $actorStream->setReturnValueAt(1, 'read', false);
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', '123');
+    $os->setReturnValueAt(1, 'read', false);
     
-    $criticStream = new Swift_MockByteStream();
-    $criticStream->expectCallCount('write', 1);
-    $criticStream->expectAt(0, 'write', array('MTIz'));
+    $is = new Swift_MockByteStream();
+    $is->expectCallCount('write', 1);
+    $is->expectAt(0, 'write', array('MTIz'));
     
-    $this->_encoder->encodeByteStream($actorStream, $criticStream);
-  }
-  
-  public function testCharactersInStringOutput()
-  {
-    /*
-    RFC 2045, 6.8
-    
-      Each 6-bit group is used as an index into an array of 64 printable
-         characters.  The character referenced by the index is placed in the
-         output string.  These characters, identified in Table 1, below, are
-         selected so as to be universally representable, and the set excludes
-         characters with particular significance to SMTP (e.g., ".", CR, LF)
-         and to the multipart boundary delimiters defined in RFC 2046 (e.g.,
-         "-").
-    
-    Value Encoding  Value Encoding  Value Encoding  Value Encoding
-        0 A            17 R            34 i            51 z
-        1 B            18 S            35 j            52 0
-        2 C            19 T            36 k            53 1
-        3 D            20 U            37 l            54 2
-        4 E            21 V            38 m            55 3
-        5 F            22 W            39 n            56 4
-        6 G            23 X            40 o            57 5
-        7 H            24 Y            41 p            58 6
-        8 I            25 Z            42 q            59 7
-        9 J            26 a            43 r            60 8
-       10 K            27 b            44 s            61 9
-       11 L            28 c            45 t            62 +
-       12 M            29 d            46 u            63 /
-       13 N            30 e            47 v
-       14 O            31 f            48 w         (pad) =
-       15 P            32 g            49 x
-       16 Q            33 h            50 y
-       */
-    
-    $input = '';
-    for ($ordinal = 0; $ordinal < 256; ++$ordinal)
-    {
-      $input .= pack('C', $ordinal);
-    }
-    
-    $output = $this->_encoder->encodeString($input);
-    
-    $outputBytes = unpack('C*', $output);
-    
-    foreach ($outputBytes as $byte)
-    {
-      $this->assertTrue(
-        in_array($byte, $this->_allowedOutputBytes),
-        '%s: Output bytes must be in A-Z, a-z, 0-9, /, + or ='
-        );
-    }
-  }
-  
-  public function testCharactersInStreamOutput()
-  {
-    $actorStream = new Swift_MockByteStream();
-    
-    $input = '';
-    $length = 0;
-    $returnCount = 0;
-    
-    for ($ordinal = 0; $ordinal < 256; ++$ordinal)
-    {
-      $input .= pack('C', $ordinal);
-      ++$length;
-      if (3 == $length)
-      {
-        $actorStream->setReturnValueAt($returnCount++, 'read', $input);
-        $input = '';
-        $length = 0;
-      }
-    }
-    
-    if (0 != $length)
-    {
-      $actorStream->setReturnValueAt($returnCount++, 'read', $input);
-    }
-    
-    $actorStream->setReturnValueAt($returnCount++, 'read', false);
-    
-    $criticStream = new Swift_MockByteStream();
-    $criticStream->expectCallCount('write', $returnCount - 1);
-    
-    for ($i = 0; $i < $returnCount - 1; ++$i)
-    {
-      $criticStream->expectAt($i, 'write', array(
-        new Swift_DelegatedExpectation(array($this, '_outputBytesInRange'),
-        '%s: Output bytes must be in A-Z, a-z, 0-9, /, + or ='))
-        );
-    }
-    
-    $this->_encoder->encodeByteStream($actorStream, $criticStream);
+    $this->_encoder->encodeByteStream($os, $is);
   }
   
   public function testStringPadLength()
@@ -216,52 +114,52 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
   {
     for ($i = 0; $i < 30; ++$i)
     {
-      $actorStream = new Swift_MockByteStream();
-      $actorStream->setReturnValueAt(0, 'read', pack('C', rand(0, 255)));
-      $actorStream->setReturnValueAt(1, 'read', false);
+      $os = new Swift_MockByteStream();
+      $os->setReturnValueAt(0, 'read', pack('C', rand(0, 255)));
+      $os->setReturnValueAt(1, 'read', false);
       
-      $criticStream = new Swift_MockByteStream();
-      $criticStream->expectCallCount('write', 1);
-      $criticStream->expectAt(0, 'write', array(
-        new Swift_DelegatedExpectation(array($this, '_testDoublePad'),
-        '%s: A single byte should have 2 bytes of padding'))
-        );
+      $is = new Swift_MockByteStream();
+      $is->expectCallCount('write', 1);
+      $is->expectAt(0, 'write', array(new PatternExpectation(
+        '~^[a-zA-Z0-9/\+]{2}==$~',
+        '%s: A single byte should have 2 bytes of padding'
+        )));
       
-      $this->_encoder->encodeByteStream($actorStream, $criticStream);
+      $this->_encoder->encodeByteStream($os, $is);
     }
     
     for ($i = 0; $i < 30; ++$i)
     {
-      $actorStream = new Swift_MockByteStream();
-      $actorStream->setReturnValueAt(
+      $os = new Swift_MockByteStream();
+      $os->setReturnValueAt(
         0, 'read', pack('C*', rand(0, 255), rand(0, 255)));
-      $actorStream->setReturnValueAt(1, 'read', false);
+      $os->setReturnValueAt(1, 'read', false);
       
-      $criticStream = new Swift_MockByteStream();
-      $criticStream->expectCallCount('write', 1);
-      $criticStream->expectAt(0, 'write', array(
-        new Swift_DelegatedExpectation(array($this, '_testSinglePad'),
-        '%s: Two bytes should have 1 byte of padding'))
-        );
+      $is = new Swift_MockByteStream();
+      $is->expectCallCount('write', 1);
+      $is->expectAt(0, 'write', array(new PatternExpectation(
+        '~^[a-zA-Z0-9/\+]{3}=$~',
+        '%s: Two bytes should have 1 byte of padding'
+        )));
       
-      $this->_encoder->encodeByteStream($actorStream, $criticStream);
+      $this->_encoder->encodeByteStream($os, $is);
     }
     
     for ($i = 0; $i < 30; ++$i)
     {
-      $actorStream = new Swift_MockByteStream();
-      $actorStream->setReturnValueAt(
+      $os = new Swift_MockByteStream();
+      $os->setReturnValueAt(
         0, 'read', pack('C*', rand(0, 255), rand(0, 255), rand(0, 255)));
-      $actorStream->setReturnValueAt(1, 'read', false);
+      $os->setReturnValueAt(1, 'read', false);
       
-      $criticStream = new Swift_MockByteStream();
-      $criticStream->expectCallCount('write', 1);
-      $criticStream->expectAt(0, 'write', array(
-        new Swift_DelegatedExpectation(array($this, '_testNoPad'),
-        '%s: Three bytes should have no padding'))
-        );
+      $is = new Swift_MockByteStream();
+      $is->expectCallCount('write', 1);
+      $is->expectAt(0, 'write', array(new PatternExpectation(
+        '~^[a-zA-Z0-9/\+]{4}$~',
+        '%s: Three bytes should have no padding'
+        )));
       
-      $this->_encoder->encodeByteStream($actorStream, $criticStream);
+      $this->_encoder->encodeByteStream($os, $is);
     }
   }
   
@@ -298,7 +196,28 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
   
   public function testMaximumStreamLineLengthIs76Characters()
   {
-    //
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
+    $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
+    $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
+    $os->setReturnValueAt(3, 'read', '890ABCDEFGHI'); //48
+    $os->setReturnValueAt(4, 'read', 'JKLMNOPQRSTU'); //60
+    $os->setReturnValueAt(5, 'read', 'VWXYZ1234567'); //72
+    $os->setReturnValueAt(6, 'read', 'abcdefghijkl'); //84
+    
+    $os->setReturnValueAt(7, 'read', false);
+    
+    $is = new Swift_MockByteStream();
+    $is->expectCallCount('write', 7);
+    $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
+    $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32
+    $is->expectAt(2, 'write', array('eXphYmMxMjM0NTY3'));               //48
+    $is->expectAt(3, 'write', array('ODkwQUJDREVGR0hJ'));               //64
+    $is->expectAt(4, 'write', array('SktMTU5PUFFS' . "\r\n" . 'U1RV')); //76*, 4
+    $is->expectAt(5, 'write', array('VldYWVoxMjM0NTY3'));               //20
+    $is->expectAt(6, 'write', array('YWJjZGVmZ2hpamts'));               //36
+    
+    $this->_encoder->encodeByteStream($os, $is);
   }
   
   public function testFirstStringLineLengthCanBeDifferent()
@@ -328,43 +247,28 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
   
   public function testFirstStreamLineLengthCanBeDifferent()
   {
-    //
-  }
-  
-  // -- Delegated expectation checks
-  
-  //--delegated
-  public function _outputBytesInRange($output)
-  {
-    $outputBytes = unpack('C*', $output);
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
+    $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
+    $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
+    $os->setReturnValueAt(3, 'read', '890ABCDEFGHI'); //48
+    $os->setReturnValueAt(4, 'read', 'JKLMNOPQRSTU'); //60
+    $os->setReturnValueAt(5, 'read', 'VWXYZ1234567'); //72
+    $os->setReturnValueAt(6, 'read', 'abcdefghijkl'); //84
     
-    foreach ($outputBytes as $byte)
-    {
-      if (!in_array($byte, $this->_allowedOutputBytes))
-      {
-        return false;
-      }
-    }
+    $os->setReturnValueAt(7, 'read', false);
     
-    return true;
-  }
-  
-  //--delegated
-  public function _testSinglePad($output)
-  {
-    return preg_match('~^[a-zA-Z0-9/\+]{3}=$~', $output);
-  }
-  
-  //--delegated
-  public function _testDoublePad($output)
-  {
-    return preg_match('~^[a-zA-Z0-9/\+]{2}==$~', $output);
-  }
-  
-  //--delegated
-  public function _testNoPad($output)
-  {
-    return preg_match('~^[a-zA-Z0-9/\+]{4}$~', $output);
+    $is = new Swift_MockByteStream();
+    $is->expectCallCount('write', 7);
+    $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
+    $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32
+    $is->expectAt(2, 'write', array('eXphYmMxMjM0NTY3'));               //48
+    $is->expectAt(3, 'write', array('ODkwQUJDR' . "\r\n" . 'EVGR0hJ')); //57*, 7
+    $is->expectAt(4, 'write', array('SktMTU5PUFFSU1RV'));               //23
+    $is->expectAt(5, 'write', array('VldYWVoxMjM0NTY3'));               //39
+    $is->expectAt(6, 'write', array('YWJjZGVmZ2hpamts'));               //55
+    
+    $this->_encoder->encodeByteStream($os, $is, 19);
   }
   
 }

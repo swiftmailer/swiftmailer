@@ -62,11 +62,33 @@ class Swift_Encoder_Base64Encoder implements Swift_Encoder
    * @param int $firstLineOffset
    */
   public function encodeByteStream(
-    Swift_ByteStream $in, Swift_ByteStream $out, $firstLineOffset = 0)
+    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0)
   {
-    while (false !== $bytes = $in->read(8190))
+    $remainder = 0;
+    
+    while (false !== $bytes = $os->read(8190))
     {
-      $out->write(base64_encode($bytes));
+      $encoded = base64_encode($bytes);
+      $encodedTransformed = '';
+      $maxLineLength = 76 - $remainder - $firstLineOffset;
+      
+      while ($maxLineLength < strlen($encoded))
+      {
+        $encodedTransformed .= substr($encoded, 0, $maxLineLength) . "\r\n";
+        $firstLineOffset = 0;
+        $encoded = substr($encoded, $maxLineLength);
+        $maxLineLength = 76;
+        $remainder = 0;
+      }
+      
+      if (0 < $remainingLength = strlen($encoded))
+      {
+        $remainder += $remainingLength;
+        $encodedTransformed .= $encoded;
+        $encoded = null;
+      }
+      
+      $is->write($encodedTransformed);
     }
   }
   
