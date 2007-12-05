@@ -252,7 +252,28 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     According to Rule (1 & 2)
     */
     
-    
+    foreach (range(0, 32) as $ordinal)
+    { 
+      $char = chr($ordinal);
+      
+      $os = new Swift_MockByteStream();
+      
+      $charStream = new Swift_MockCharacterStream();
+      $charStream->expectOnce('flushContents');
+      $charStream->expectOnce('importByteStream', array($os));
+      
+      $charStream->setReturnValueAt(0, 'read', $char);
+      $charStream->setReturnValueAt(1, 'read', false);
+      
+      $is = new Swift_MockByteStream();
+      $is->expectCallCount('write', 1);
+      $is->expectAt(0, 'write', array(sprintf('=%02X', $ordinal)));
+      
+      $encoder = new Swift_Encoder_QpEncoder($this->_charset,
+        $charStream);
+      
+      $encoder->encodeByteStream($os, $is);
+    }
   }
   
   public function testDecimalByte61IsEncoded()
@@ -261,6 +282,25 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     According to Rule (1 & 2)
     */
     
+    $char = chr(61);
+    
+    $os = new Swift_MockByteStream();
+      
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importByteStream', array($os));
+      
+    $charStream->setReturnValueAt(0, 'read', $char);
+    $charStream->setReturnValueAt(1, 'read', false);
+      
+    $is = new Swift_MockByteStream();
+    $is->expectCallCount('write', 1);
+    $is->expectAt(0, 'write', array(sprintf('=%02X', 61)));
+      
+    $encoder = new Swift_Encoder_QpEncoder($this->_charset,
+      $charStream);
+      
+    $encoder->encodeByteStream($os, $is);
   }
   
   public function testBytesAbovePermittedRangeAreEncoded()
@@ -269,6 +309,28 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     According to Rule (1 & 2)
     */
     
+    foreach (range(127, 255) as $ordinal)
+    { 
+      $char = chr($ordinal);
+      
+      $os = new Swift_MockByteStream();
+      
+      $charStream = new Swift_MockCharacterStream();
+      $charStream->expectOnce('flushContents');
+      $charStream->expectOnce('importByteStream', array($os));
+      
+      $charStream->setReturnValueAt(0, 'read', $char);
+      $charStream->setReturnValueAt(1, 'read', false);
+      
+      $is = new Swift_MockByteStream();
+      $is->expectCallCount('write', 1);
+      $is->expectAt(0, 'write', array(sprintf('=%02X', $ordinal)));
+      
+      $encoder = new Swift_Encoder_QpEncoder($this->_charset,
+        $charStream);
+      
+      $encoder->encodeByteStream($os, $is);
+    }
   }
   
   public function testFirstLineLengthCanBeDifferent()

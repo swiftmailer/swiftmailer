@@ -295,6 +295,24 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       {
         $deferredLwspChar = $thisChar;
       }
+      elseif(in_array(ord($thisChar), $this->_lwspBytes)
+        && false === $nextChar)
+      {
+        $write = sprintf('=%02X', ord($thisChar));
+        $writeLength = strlen($write);
+        
+        if ($maxLineLength < $lineLength + $writeLength)
+        {
+          $write = "=\r\n" . $write;
+          $lineLength = $writeLength;
+          $lineCount++;
+        }
+        else
+        {
+          $lineLength += $writeLength;
+        }
+        call_user_func($callback, $write);
+      }
       //Currently looking at CRLF
       elseif ($this->_crlfChars['CR'] == $thisChar
         && $this->_crlfChars['LF'] == $nextChar)
