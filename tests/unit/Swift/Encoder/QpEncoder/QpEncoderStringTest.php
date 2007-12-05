@@ -1,16 +1,22 @@
 <?php
 
 require_once 'Swift/Encoder/QpEncoder.php';
+require_once 'Swift/CharacterStream.php';
 
-class Swift_Encoder_QpEncoderTest extends UnitTestCase
+Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
+
+class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
 {
   
   private $_encoder;
   private $_charset = 'utf-8';
+  private $_charStream;
   
   public function setUp()
   {
-    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charset);
+    $this->_charStream = new Swift_MockCharacterStream();
+    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charset,
+      $this->_charStream);
   }
   
   /* -- RFC 2045, 6.7 --

@@ -1,16 +1,22 @@
 <?php
 
 require_once 'Swift/Encoder/QpEncoder.php';
+require_once 'Swift/CharacterStream.php';
+
+Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 
 class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
 {
   
   private $_encoder;
   private $_charset = 'utf-8';
+  private $_charStream;
   
   public function setUp()
   {
-    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charset);
+    $this->_charStream = new Swift_MockCharacterStream();
+    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charset,
+      $this->_charStream);
   }
   
   public function testEncodingAndDecodingLongUtf8String()

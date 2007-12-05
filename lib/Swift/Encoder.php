@@ -18,6 +18,8 @@
  
  */
 
+require_once dirname(__FILE__) . '/ByteStream.php';
+
 
 /**
  * Interface for all Encoder schemes.
