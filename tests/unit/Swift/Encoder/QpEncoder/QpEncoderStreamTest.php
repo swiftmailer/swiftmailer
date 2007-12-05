@@ -217,7 +217,33 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
           line break in the encoded text.
           */
     
+    $os = new Swift_MockByteStream();
     
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importByteStream', array($os));
+    
+    $is = new Swift_MockByteStream();
+    
+    $seq = 0;
+    for (; $seq <= 140; ++$seq)
+    {
+      $charStream->setReturnValueAt($seq, 'read', 'a');
+      
+      if (75 == $seq)
+      {
+        $is->expectAt($seq, 'write', array("=\r\n" . 'a'));
+      }
+      else
+      {
+        $is->expectAt($seq, 'write', array('a'));
+      }
+    }
+    $charStream->setReturnValueAt($seq, 'read', false);
+    $is->expectCallCount('write', $seq);
+    
+    $encoder = new Swift_Encoder_QpEncoder($this->_charset, $charStream);
+    $encoder->encodeByteStream($os, $is);
   }
   
   public function testBytesBelowPermittedRangeAreEncoded()
@@ -247,6 +273,33 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
   
   public function testFirstLineLengthCanBeDifferent()
   {
+    $os = new Swift_MockByteStream();
+    
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importByteStream', array($os));
+    
+    $is = new Swift_MockByteStream();
+    
+    $seq = 0;
+    for (; $seq <= 140; ++$seq)
+    {
+      $charStream->setReturnValueAt($seq, 'read', 'a');
+      
+      if (53 == $seq || 53 + 75 == $seq)
+      {
+        $is->expectAt($seq, 'write', array("=\r\n" . 'a'));
+      }
+      else
+      {
+        $is->expectAt($seq, 'write', array('a'));
+      }
+    }
+    $charStream->setReturnValueAt($seq, 'read', false);
+    $is->expectCallCount('write', $seq);
+    
+    $encoder = new Swift_Encoder_QpEncoder($this->_charset, $charStream);
+    $encoder->encodeByteStream($os, $is, 22);
   }
   
 }

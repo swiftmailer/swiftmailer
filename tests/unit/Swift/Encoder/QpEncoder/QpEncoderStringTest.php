@@ -46,12 +46,8 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
           respectively).
           */
     
-    for ($ordinal = 33; $ordinal <= 126; ++$ordinal)
+    foreach (array_merge(range(33, 60), range(62, 126)) as $ordinal)
     {
-      if (61 == $ordinal)
-      {
-        continue;
-      }
       $char = chr($ordinal);
       $this->assertIdentical($char, $this->_encoder->encodeString($char));
     }
@@ -183,7 +179,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
     According to Rule (1 & 2)
     */
     
-    for ($ordinal = 0; $ordinal < 33; ++$ordinal)
+    foreach (range(0, 32) as $ordinal)
     {
       $char = chr($ordinal);
       $this->assertEqual(
@@ -207,9 +203,8 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
     According to Rule (1 & 2)
     */
     
-    for ($i = 0; $i < 100; ++$i)
+    foreach (range(127, 255) as $ordinal)
     {
-      $ordinal = rand(127, 255);
       $char = chr($ordinal);
       $this->assertEqual(
         sprintf('=%02X', $ordinal), $this->_encoder->encodeString($char)

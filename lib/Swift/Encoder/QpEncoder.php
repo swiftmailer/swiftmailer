@@ -225,7 +225,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     
     //Encode the CharacterStream using an append method as a callback
     $this->_encodeCharacterStreamCallback($this->_charStream,
-      array($this, '_appendToTemporaryInputByteStream')
+      array($this, '_appendToTemporaryInputByteStream'), $firstLineOffset
       );
     
     //Unset the temporary ByteStream
@@ -251,17 +251,25 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    * internal callback method to append bytes to the output.
    * @param Swift_CharacterStream $charStream to read from
    * @param callback $callback for appending
+   * @param int $firstlineOffset
    * @access private
    */
   private function _encodeCharacterStreamCallback(
-    Swift_CharacterStream $charStream, $callback)
+    Swift_CharacterStream $charStream, $callback, $firstLineOffset = 0)
   {
     $nextChar = null;
     $deferredLwspChar = null;
     $expectedLfChar = false;
+    $lineLength = 0;
+    $lineCount = 0;
     
     do
     {
+      if (0 < $lineCount)
+      {
+        $firstLineOffset = 0;
+      }
+      
       //If just starting, read from stream, else use $nextChar from last loop
       $thisChar = is_null($nextChar) ? $charStream->read(1) : $nextChar;
       
@@ -274,6 +282,12 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       //Always have knowledge of at least two chars at a time
       $nextChar = $charStream->read(1);
       $thisCharEncoded = $this->_encodeCharacter($thisChar);
+      
+      $maxLineLength = 76 - $firstLineOffset;
+      if (false !== $nextChar)
+      {
+        $maxLineLength--;
+      }
       
       //Currently looking at LWSP followed by CR
       if (in_array(ord($thisChar), $this->_lwspBytes)
@@ -288,9 +302,33 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         //If a LWSP char was deferred due to the CR
         if (!is_null($deferredLwspChar))
         {
-          call_user_func($callback, sprintf('=%02X', ord($deferredLwspChar)));
+          $write = sprintf('=%02X', ord($deferredLwspChar));
+          $writeLength = strlen($write);
+          if ($maxLineLength < $lineLength + $writeLength)
+          {
+            $write = "=\r\n" . $write;
+            $lineLength = $writeLength;
+            $lineCount++;
+          }
+          else
+          {
+            $lineLength += $writeLength;
+          }
+          call_user_func($callback, $write);
           $deferredLwspChar = null;
         }
+        
+        if ($maxLineLength < $lineLength + 1)
+        {
+          $thisChar = "=\r\n" . $thisChar;
+          $lineLength = 1;
+          $lineCount++;
+        }
+        else
+        {
+          $lineLength += 1;
+        }
+        
         //Write CR unencoded and inform loop the next LF is ok
         call_user_func($callback, $thisChar);
         $expectedLfChar = true;
@@ -298,6 +336,17 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       //Currently looking at an expected LF (following a CR)
       elseif ($this->_crlfChars['LF'] == $thisChar && $expectedLfChar)
       {
+        if ($maxLineLength < $lineLength + 1)
+        {
+          $thisChar = "=\r\n" . $thisChar;
+          $lineLength = 1;
+          $lineCount++;
+        }
+        else
+        {
+          $lineLength += 1;
+        }
+        
         //Write unencoded
         call_user_func($callback, $thisChar);
         $expectedLfChar = false;
@@ -307,11 +356,34 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         //If a LWSP was deferred but not used, write it as normal
         if (!is_null($deferredLwspChar))
         {
+          if ($maxLineLength < $lineLength + 1)
+          {
+            $deferredLwspChar = "=\r\n" . $deferredLwspChar;
+            $lineLength = 1;
+            $lineCount++;
+          }
+          else
+          {
+            $lineLength += 1;
+          }
+        
           call_user_func($callback, $deferredLwspChar);
           $deferredLwspChar = null;
         }
         
         //Write encoded character as usual
+        $encodedLength = strlen($thisCharEncoded);
+        if ($maxLineLength < $lineLength + $encodedLength)
+        {
+          $thisCharEncoded = "=\r\n" . $thisCharEncoded;
+          $lineLength = $encodedLength;
+          $lineCount++;
+        }
+        else
+        {
+          $lineLength += $encodedLength;
+        }
+        
         call_user_func($callback, $thisCharEncoded);
       }
     }
