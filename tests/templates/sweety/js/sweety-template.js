@@ -549,7 +549,7 @@ function SweetyFilter() {
     sweetyUI.paintSearching();
     
     var query = _getFilterInput().value.toLowerCase();
-    var queryBits = query.split(/[^a-zA-Z0-9_]+/g);
+    var queryBits = query.split(/[^\!a-zA-Z0-9_]+/g);
     
     //Cancel searching if still typing
     try {
@@ -558,7 +558,16 @@ function SweetyFilter() {
     
     for (var testCase in sweetyTestCases) {
       for (var i in queryBits) {
-        if (0 > testCase.toLowerCase().indexOf(queryBits[i])) {
+        var testFor = queryBits[i];
+        var isNegated = ("!" == testFor.charAt(0));
+        if (isNegated) {
+          testFor = testFor.substring(1);
+        }
+        
+        if (!isNegated && 0 > testCase.toLowerCase().indexOf(testFor)) {
+          sweetyTestCases[testCase] = false;
+          break;
+        } else if (isNegated && 0 < testCase.toLowerCase().indexOf(testFor)) {
           sweetyTestCases[testCase] = false;
           break;
         } else {

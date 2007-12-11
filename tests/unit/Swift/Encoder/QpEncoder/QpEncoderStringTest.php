@@ -8,17 +8,6 @@ Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
 {
   
-  private $_encoder;
-  private $_charset = 'utf-8';
-  private $_charStream;
-  
-  public function setUp()
-  {
-    $this->_charStream = new Swift_MockCharacterStream();
-    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charset,
-      $this->_charStream);
-  }
-  
   /* -- RFC 2045, 6.7 --
   (1)   (General 8bit representation) Any octet, except a CR or
           LF that is part of a CRLF line break of the canonical
@@ -49,7 +38,17 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
     foreach (array_merge(range(33, 60), range(62, 126)) as $ordinal)
     {
       $char = chr($ordinal);
-      $this->assertIdentical($char, $this->_encoder->encodeString($char));
+      
+      $charStream = new Swift_MockCharacterStream();
+      $charStream->expectOnce('flushContents');
+      $charStream->expectOnce('importString', array($char));
+      
+      $charStream->setReturnValueAt(0, 'read', $char);
+      $charStream->setReturnValueAt(1, 'read', false);
+      
+      $encoder = new Swift_Encoder_QpEncoder($charStream);
+      
+      $this->assertIdentical($char, $encoder->encodeString($char));
     }
   }
   
@@ -81,18 +80,44 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
     $HT = chr(0x09); //9
     $SPACE = chr(0x20); //32
     
-    $string = 'foo' . $HT . $HT . $HT . "\r\n" . 'bar';
+    //HT
+    $string = 'a' . $HT . $HT . "\r\n" . 'b';
     
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importString', array($string));
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', $HT);
+    $charStream->setReturnValueAt(2, 'read', $HT);
+    $charStream->setReturnValueAt(3, 'read', "\r");
+    $charStream->setReturnValueAt(4, 'read', "\n");
+    $charStream->setReturnValueAt(5, 'read', 'b');
+    $charStream->setReturnValueAt(6, 'read', false);
+    
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
-      'foo' . $HT . $HT . '=09' . "\r\n" . 'bar',
-      $this->_encoder->encodeString($string)
+      'a' . $HT . '=09' . "\r\n" . 'b',
+      $encoder->encodeString($string)
       );
     
-    $string = 'foo' . $SPACE . $SPACE . $SPACE . "\r\n" . 'bar';
+    //SPACE
+    $string = 'a' . $SPACE . $SPACE . "\r\n" . 'b';
     
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importString', array($string));
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', $SPACE);
+    $charStream->setReturnValueAt(2, 'read', $SPACE);
+    $charStream->setReturnValueAt(3, 'read', "\r");
+    $charStream->setReturnValueAt(4, 'read', "\n");
+    $charStream->setReturnValueAt(5, 'read', 'b');
+    $charStream->setReturnValueAt(6, 'read', false);
+    
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
-      'foo' . $SPACE . $SPACE . '=20' . "\r\n" . 'bar',
-      $this->_encoder->encodeString($string)
+      'a' . $SPACE . '=20' . "\r\n" . 'b',
+      $encoder->encodeString($string)
       );
   }
   
@@ -125,13 +150,24 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
           equivalent to performing the three steps separately.
           */
     
+    $string = 'a' . "\r\n" . 'b' . "\r\n" . 'c' . "\r\n";
     
-    $string =
-    'foo' . "\r\n" .
-    'bar' . "\r\n" .
-    'test' . "\r\n";
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importString', array($string));
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', "\r");
+    $charStream->setReturnValueAt(2, 'read', "\n");
+    $charStream->setReturnValueAt(3, 'read', 'b');
+    $charStream->setReturnValueAt(4, 'read', "\r");
+    $charStream->setReturnValueAt(5, 'read', "\n");
+    $charStream->setReturnValueAt(6, 'read', 'c');
+    $charStream->setReturnValueAt(7, 'read', "\r");
+    $charStream->setReturnValueAt(8, 'read', "\n");
+    $charStream->setReturnValueAt(9, 'read', false);
     
-    $this->assertEqual($string, $this->_encoder->encodeString($string));
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
+    $this->assertEqual($string, $encoder->encodeString($string));
   }
   
   public function testLinesLongerThan76CharactersAreSoftBroken()
@@ -146,31 +182,29 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
           line break in the encoded text.
           */
     
-    $input =
-    'abcdefghijklmnopqrstuvwxyz' .           //26
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //52
-    '1234567890' .                           //62
-    'abcdefghijklmn' .                       //76 *
-    'opqrstuvwxyz' .                         //12
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //38
-    '1234567890' .                           //48
-    'abcdefghijklmnopqrstuvwxyz' .           //74
-    'AB' .                                   //76 *
-    'CDEFGHIJKLMNOPQRSTUVWXYZ';              //24
+    $input = str_repeat('a', 140);
     
-    $output =
-    'abcdefghijklmnopqrstuvwxyz' .           //26
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //52
-    '1234567890' .                           //62
-    'abcdefghijklm' . "=\r\n" .              //76 *
-    'nopqrstuvwxyz' .                        //13
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //39
-    '1234567890' .                           //49
-    'abcdefghijklmnopqrstuvwxyz' . "=\r\n" . //76 *
-    'A' .                                    //1
-    'BCDEFGHIJKLMNOPQRSTUVWXYZ';             //26
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importString', array($input));
     
-    $this->assertEqual($output, $this->_encoder->encodeString($input));
+    $output = '';
+    $seq = 0;
+    for (; $seq < 140; ++$seq)
+    {
+      $charStream->setReturnValueAt($seq, 'read', 'a');
+      
+      if (75 == $seq)
+      {
+        $output .= "=\r\n";
+      }
+      $output .= 'a';
+    }
+    
+    $charStream->setReturnValueAt($seq, 'read', false);
+    
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
+    $this->assertEqual($output, $encoder->encodeString($input));
   }
   
   public function testBytesBelowPermittedRangeAreEncoded()
@@ -180,10 +214,21 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
     */
     
     foreach (range(0, 32) as $ordinal)
-    {
+    { 
       $char = chr($ordinal);
+      
+      $charStream = new Swift_MockCharacterStream();
+      $charStream->expectOnce('flushContents');
+      //Simpletest bug with XML parser not creating entities (-:
+      $charStream->expectOnce('importString'/*, array($char)*/);
+      
+      $charStream->setReturnValueAt(0, 'read', $char);
+      $charStream->setReturnValueAt(1, 'read', false);
+      
+      $encoder = new Swift_Encoder_QpEncoder($charStream);
+      
       $this->assertEqual(
-        sprintf('=%02X', $ordinal), $this->_encoder->encodeString($char)
+        sprintf('=%02X', $ordinal), $encoder->encodeString($char)
         );
     }
   }
@@ -194,7 +239,18 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
     According to Rule (1 & 2)
     */
     
-    $this->assertEqual('=3D', $this->_encoder->encodeString('='));
+    $char = '=';
+      
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importString', array($char));
+      
+    $charStream->setReturnValueAt(0, 'read', $char);
+    $charStream->setReturnValueAt(1, 'read', false);
+      
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
+    
+    $this->assertEqual('=3D', $encoder->encodeString('='));
   }
   
   public function testBytesAbovePermittedRangeAreEncoded()
@@ -206,40 +262,49 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
     foreach (range(127, 255) as $ordinal)
     {
       $char = chr($ordinal);
+      
+      $charStream = new Swift_MockCharacterStream();
+      $charStream->expectOnce('flushContents');
+      //Simpletest bug with XML parser not creating entities (-:
+      $charStream->expectOnce('importString'/*, array($char)*/);
+      
+      $charStream->setReturnValueAt(0, 'read', $char);
+      $charStream->setReturnValueAt(1, 'read', false);
+      
+      $encoder = new Swift_Encoder_QpEncoder($charStream);
+      
       $this->assertEqual(
-        sprintf('=%02X', $ordinal), $this->_encoder->encodeString($char)
+        sprintf('=%02X', $ordinal), $encoder->encodeString($char)
         );
     }
   }
   
   public function testFirstLineLengthCanBeDifferent()
   {
-    $input =
-    'abcdefghijklmnopqrstuvwxyz' .           //26
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //52
-    '1234567890' .                           //62
-    'abcdefghijklmn' .                       //76 *
-    'opqrstuvwxyz' .                         //12
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //38
-    '1234567890' .                           //48
-    'abcdefghijklmnopqrstuvwxyz' .           //74
-    'AB' .                                   //76 *
-    'CDEFGHIJKLMNOPQRSTUVWXYZ';              //24
+    $input = str_repeat('a', 140);
     
-    $output =
-    'abcdefghijklmnopqrstuvwxyz' .           //26
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //52
-    '1' . "=\r\n" .                          //54 *
-    '234567890' .                            //9
-    'abcdefghijklmnopqrstuvwxyz' .           //35
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .           //61
-    '1234567890' .                           //71
-    'abcd' . "=\r\n" .                       //76 *
-    'efghijklmnopqrstuvwxyz' .               //22
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ';            //48
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importString', array($input));
     
+    $output = '';
+    $seq = 0;
+    for (; $seq < 140; ++$seq)
+    {
+      $charStream->setReturnValueAt($seq, 'read', 'a');
+      
+      if (53 == $seq || 53 + 75 == $seq)
+      {
+        $output .= "=\r\n";
+      }
+      $output .= 'a';
+    }
+    
+    $charStream->setReturnValueAt($seq, 'read', false);
+    
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
-      $output, $this->_encoder->encodeString($input, 22),
+      $output, $encoder->encodeString($input, 22),
       '%s: First line should start at offset 22 so can only have max length 54'
       );
   }

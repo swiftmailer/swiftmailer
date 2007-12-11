@@ -15,8 +15,8 @@ class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
   public function setUp()
   {
     $this->_charStream = new Swift_MockCharacterStream();
-    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charset,
-      $this->_charStream);
+    $this->_charStream->setReturnValue('read', false);
+    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charStream);
   }
   
   public function testEncodingAndDecodingLongUtf8String()

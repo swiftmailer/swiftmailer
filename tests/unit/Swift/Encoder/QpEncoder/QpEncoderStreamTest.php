@@ -10,8 +10,6 @@ Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
 {
   
-  private $_charset = 'utf-8';
-  
   /* -- RFC 2045, 6.7 --
   (1)   (General 8bit representation) Any octet, except a CR or
           LF that is part of a CRLF line break of the canonical
@@ -56,8 +54,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array($char));
       
-      $encoder = new Swift_Encoder_QpEncoder($this->_charset,
-        $charStream);
+      $encoder = new Swift_Encoder_QpEncoder($charStream);
       
       $encoder->encodeByteStream($os, $is);
     }
@@ -114,7 +111,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     $is->expectAt(4, 'write', array("\n"));
     $is->expectAt(5, 'write', array('b'));
     
-    $encoder = new Swift_Encoder_QpEncoder($this->_charset, $charStream);
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
     $encoder->encodeByteStream($os, $is);
     
     //SPACE
@@ -140,7 +137,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     $is->expectAt(4, 'write', array("\n"));
     $is->expectAt(5, 'write', array('b'));
     
-    $encoder = new Swift_Encoder_QpEncoder($this->_charset, $charStream);
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
     $encoder->encodeByteStream($os, $is);
   }
   
@@ -201,7 +198,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     $is->expectAt(7, 'write', array("\r"));
     $is->expectAt(8, 'write', array("\n"));
     
-    $encoder = new Swift_Encoder_QpEncoder($this->_charset, $charStream);
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
     $encoder->encodeByteStream($os, $is);
   }
   
@@ -242,7 +239,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     $charStream->setReturnValueAt($seq, 'read', false);
     $is->expectCallCount('write', $seq);
     
-    $encoder = new Swift_Encoder_QpEncoder($this->_charset, $charStream);
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
     $encoder->encodeByteStream($os, $is);
   }
   
@@ -269,8 +266,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array(sprintf('=%02X', $ordinal)));
       
-      $encoder = new Swift_Encoder_QpEncoder($this->_charset,
-        $charStream);
+      $encoder = new Swift_Encoder_QpEncoder($charStream);
       
       $encoder->encodeByteStream($os, $is);
     }
@@ -297,8 +293,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     $is->expectCallCount('write', 1);
     $is->expectAt(0, 'write', array(sprintf('=%02X', 61)));
       
-    $encoder = new Swift_Encoder_QpEncoder($this->_charset,
-      $charStream);
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
       
     $encoder->encodeByteStream($os, $is);
   }
@@ -326,8 +321,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array(sprintf('=%02X', $ordinal)));
       
-      $encoder = new Swift_Encoder_QpEncoder($this->_charset,
-        $charStream);
+      $encoder = new Swift_Encoder_QpEncoder($charStream);
       
       $encoder->encodeByteStream($os, $is);
     }
@@ -360,7 +354,7 @@ class Swift_Encoder_QpEncoder_QpEncoderStreamTest extends UnitTestCase
     $charStream->setReturnValueAt($seq, 'read', false);
     $is->expectCallCount('write', $seq);
     
-    $encoder = new Swift_Encoder_QpEncoder($this->_charset, $charStream);
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
     $encoder->encodeByteStream($os, $is, 22);
   }
   
