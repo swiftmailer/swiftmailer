@@ -36,7 +36,16 @@ class Swift_CharacterStream_ArrayCharacterStream
    * Set the character set used in this CharacterStream.
    * @param string $charset
    */
-  public function setCharset($charset)
+  public function setCharacterSet($charset)
+  {
+  }
+  
+  /**
+   * Set the CharacterSetValidatorFactory for multi charset support.
+   * @param Swift_CharacterSetValidatorFactory $factory
+   */
+  public function setCharacterSetValidatorFactory(
+    Swift_CharacterSetValidatorFactory $factory)
   {
   }
   

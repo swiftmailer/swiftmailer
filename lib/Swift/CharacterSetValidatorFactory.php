@@ -1,7 +1,7 @@
 <?php
 
 /*
- Encoder API for Swift Mailer.
+ A factory for creating CharacterSetValidators.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,33 +18,23 @@
  
  */
 
-require_once dirname(__FILE__) . '/ByteStream.php';
+require_once dirname(__FILE__) . '/CharacterSetValidator.php';
 
 
 /**
- * Interface for all Encoder schemes.
+ * A factory for creating CharacterSetValidators.
  * @package Swift
  * @subpackage Encoder
  * @author Chris Corbyn
  */
-interface Swift_Encoder
+interface Swift_CharacterSetValidatorFactory
 {
-  
+
   /**
-   * Encode a given string to produce an encoded string.
-   * @param string $string
-   * @param int $firstLineOffset if first line needs to be shorter
-   * @return string
+   * Returns a CharacterSetValidator suitable for the charset applied.
+   * @param string $charset
+   * @return Swift_CharacterSetValidator
    */
-  public function encodeString($string, $firstLineOffset = 0);
-  
-  /**
-   * Encode $in to $out.
-   * @param Swift_ByteStream $os to read from
-   * @param Swift_ByteStream $is to write to
-   * @param int $firstLineOffset
-   */
-  public function encodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0);
+  public function getValidatorFor($charset);
   
 }

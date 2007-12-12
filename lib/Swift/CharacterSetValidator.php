@@ -1,7 +1,7 @@
 <?php
 
 /*
- Encoder API for Swift Mailer.
+ Analyzes characters for a specific character set.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,33 +18,25 @@
  
  */
 
-require_once dirname(__FILE__) . '/ByteStream.php';
-
 
 /**
- * Interface for all Encoder schemes.
+ * Analyzes characters for a specific character set.
  * @package Swift
  * @subpackage Encoder
  * @author Chris Corbyn
  */
-interface Swift_Encoder
+interface Swift_CharacterSetValidator
 {
-  
+
   /**
-   * Encode a given string to produce an encoded string.
-   * @param string $string
-   * @param int $firstLineOffset if first line needs to be shorter
-   * @return string
+   * Returns an integer which specifies how many more bytes to read.
+   * A positive integer indicates the number of more bytes to fetch before invoking
+   * this method again.
+   * A value of zero means this is already a valid character.
+   * A value of -1 means this cannot possibly be a valid character.
+   * @param string $partialCharacter
+   * @return int
    */
-  public function encodeString($string, $firstLineOffset = 0);
-  
-  /**
-   * Encode $in to $out.
-   * @param Swift_ByteStream $os to read from
-   * @param Swift_ByteStream $is to write to
-   * @param int $firstLineOffset
-   */
-  public function encodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0);
+  public function validateCharacter($partialCharacter);
   
 }
