@@ -43,7 +43,7 @@ class Swift_CharacterSetValidator_UsAsciiValidator
   public function validateCharacter($partialCharacter)
   {
     $bytes = unpack('C*', $partialCharacter);
-    if (1 == count($bytes) && $bytes[1] > 0 && $bytes[1] < 128)
+    if (1 == count($bytes) && $bytes[1] >= 0 && $bytes[1] < 128)
     {
       return 0;
     }
