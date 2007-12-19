@@ -1,7 +1,7 @@
 <?php
 
 /*
- Analyzes US-ASCII characters.
+ Analyzes UTF-8 characters.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@ require_once dirname(__FILE__) . '/../CharacterSetValidator.php';
 
 
 /**
- * Analyzes US-ASCII characters.
+ * Analyzes UTF-8 characters.
  * @package Swift
  * @subpackage Encoder
  * @author Chris Corbyn
  */
-class Swift_CharacterSetValidator_UsAsciiValidator
+class Swift_CharacterSetValidator_Utf8Validator
   implements Swift_CharacterSetValidator
 {
-
+  
   /**
    * Returns an integer which specifies how many more bytes to read.
    * A positive integer indicates the number of more bytes to fetch before invoking
@@ -43,14 +43,45 @@ class Swift_CharacterSetValidator_UsAsciiValidator
   public function validateCharacter($partialCharacter)
   {
     $bytes = array_values(unpack('C*', $partialCharacter));
-    if (1 == count($bytes) && $bytes[0] >= 0x00 && $bytes[0] <= 0x7F)
+    
+    $b = $bytes[0];
+    
+    if ($b >= 0x00 && $b <= 0x7F)
     {
-      return 0;
+      $expected = 1;
+    }
+    elseif ($b >= 0xC0 && $b <= 0xDF)
+    {
+      $expected = 2;
+    }
+    elseif ($b >= 0xE0 && $b <= 0xEF)
+    {
+      $expected = 3;
+    }
+    elseif ($b >= 0xF0 && $b <= 0xF7)
+    {
+      $expected = 4;
+    }
+    elseif ($b >= 0xF8 && $b <= 0xFB)
+    {
+      $expected = 5;
+    }
+    elseif ($b >= 0xFC && $b <= 0xFD)
+    {
+      $expected = 6;
     }
     else
     {
-      return -1;
+      $expected = 0;
     }
+    
+    $needed = $expected - count($bytes);
+    if ($needed < 0)
+    {
+      $needed = -1;
+    }
+    
+    return $needed;
   }
   
 }

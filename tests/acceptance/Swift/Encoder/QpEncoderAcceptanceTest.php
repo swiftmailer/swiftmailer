@@ -1,53 +1,64 @@
 <?php
 
 require_once 'Swift/Encoder/QpEncoder.php';
-require_once 'Swift/CharacterStream.php';
+require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
+require_once 'Swift/CharacterSetValidatorFactory.php';
+require_once 'Swift/CharacterSetValidator/Utf8Validator.php';
 
-Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
+Mock::generate(
+  'Swift_CharacterSetValidatorFactory', 'Swift_MockCharacterSetValidatorFactory'
+  );
 
 class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
 {
   
+  private $_samplesDir;
   private $_encoder;
   private $_charset = 'utf-8';
   private $_charStream;
   
   public function setUp()
   {
-    $this->_charStream = new Swift_MockCharacterStream();
-    $this->_charStream->setReturnValue('read', false);
+    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/utf8');
+    
+    $validator = new Swift_CharacterSetValidator_Utf8Validator();
+    
+    $factory = new Swift_MockCharacterSetValidatorFactory();
+    $factory->setReturnValue('getValidatorFor', $validator);
+    
+    $this->_charStream = new Swift_CharacterStream_ArrayCharacterStream(
+      null, $this->_charset, $factory);
     $this->_encoder = new Swift_Encoder_QpEncoder($this->_charStream);
   }
   
-  public function testEncodingAndDecodingLongUtf8String()
+  public function testEncodingAndDecodingSamples()
   {
-    $lipsum =
-    'Код одно гринспана руководишь на. Его вы знания движение. Ты две начать ' .
-    'одиночку, сказать основатель удовольствием но миф. Бы какие система тем. ' .
-    'Полностью использует три мы, человек клоунов те нас, бы давать творческую' .
-    ' эзотерическая шеф.' .
-    'Мог не помнить никакого сэкономленного, две либо какие пишите бы. Должен ' .
-    'компанию кто те, этот заключалась проектировщик не ты. Глупые периоды ты' .
-    ' для. Вам который хороший он. Те любых кремния концентрируются мог, ' .
-    'собирать принадлежите без вы.' .
-
-    'Джоэла меньше хорошего вы миф, за тем году разработки. Даже управляющим ' .
-    'руководители был не. Три коде выпускать заботиться ну. То его система ' .
-    'удовольствием безостановочно, или ты главной процессорах. Мы без джоэл ' .
-    'знания получат, статьи остальные мы ещё.' .
-    'Них русском касается поскольку по, образование должником ' .
-    'систематизированный ну мои. Прийти кандидата университет но нас, для бы ' .
-    'должны никакого, биг многие причин интервьюирования за. ' .
-    'Тем до плиту почему. Вот учёт такие одного бы, об биг разным внешних ' .
-    'промежуток. Вас до какому возможностей безответственный, были погодите бы' .
-    ' его, по них глупые долгий количества.';
+    $fp = opendir($this->_samplesDir);
     
-    $encodedLipsum = $this->_encoder->encodeString($lipsum);
+    while (false !== $f = readdir($fp))
+    {
+      if (substr($f, 0, 1) == '.')
+      {
+        continue;
+      }
+      
+      $sampleFile = $this->_samplesDir . '/' . $f;
+      
+      if (is_file($sampleFile))
+      {
+        $text = file_get_contents($sampleFile);
+        $encodedText = $this->_encoder->encodeString($text);
+        
+        $this->assertEqual(
+          quoted_printable_decode($encodedText), $text,
+          '%s: Encoded string should decode back to original string for sample ' .
+          $sampleFile
+          );
+      }
+      
+    }
     
-    $this->assertEqual(
-      quoted_printable_decode($encodedLipsum), $lipsum,
-      '%s: Encoded string should decode back to original string'
-      );
+    closedir($fp);
   }
   
 }

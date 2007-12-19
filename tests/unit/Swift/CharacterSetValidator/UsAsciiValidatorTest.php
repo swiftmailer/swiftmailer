@@ -33,7 +33,7 @@ class Swift_CharacterSetValidator_UsAsciiValidatorTest
   
   public function testAllValidAsciiCharactersReturnZero()
   {
-    for ($ordinal = 0; $ordinal < 128; ++$ordinal)
+    for ($ordinal = 0x00; $ordinal <= 0x7F; ++$ordinal)
     {
       $char = pack('C', $ordinal);
       $this->assertIdentical(0, $this->_validator->validateCharacter($char));
@@ -42,7 +42,7 @@ class Swift_CharacterSetValidator_UsAsciiValidatorTest
   
   public function testMultipleBytesAreInvalid()
   {
-    for ($ordinal = 0; $ordinal < 128; $ordinal += 2)
+    for ($ordinal = 0x00; $ordinal <= 0x7F; $ordinal += 2)
     {
       $char = pack('C', $ordinal) . pack('C', $ordinal + 1);
       $this->assertIdentical(-1, $this->_validator->validateCharacter($char));
@@ -51,7 +51,7 @@ class Swift_CharacterSetValidator_UsAsciiValidatorTest
   
   public function testBytesAboveAsciiRangeAreInvalid()
   {
-    for ($ordinal = 128; $ordinal < 255; ++$ordinal)
+    for ($ordinal = 0x80; $ordinal <= 0xFF; ++$ordinal)
     {
       $char = pack('C', $ordinal);
       $this->assertIdentical(-1, $this->_validator->validateCharacter($char));

@@ -33,11 +33,76 @@ class Swift_CharacterStream_ArrayCharacterStream
 {
 
   /**
+   * The validator (lazy-loaded) for the current charset.
+   * @var Swift_CharacterSetValidator
+   * @access private
+   */
+  private $_charsetValidator;
+  
+  /**
+   * A factory for creatiing CharacterSetValidator instances.
+   * @var Swift_CharacterSetValidatorFactory
+   * @access private
+   */
+  private $_charsetValidatorFactory;
+  
+  /**
+   * The character set this stream is using.
+   * @var string
+   * @access private
+   */
+  private $_charset;
+  
+  /**
+   * Array of characters.
+   * @var string[]
+   * @access private
+   */
+  private $_array = array();
+  
+  /**
+   * The current character offset in the stream.
+   * @var int
+   * @access private
+   */
+  private $_offset = 0;
+  
+  /**
+   * Create a new CharacterStream with the given $chars, if set.
+   * @param mixed $chars as string or array
+   * @param string $charset used in the stream
+   * @param Swift_CharacterSetValidatorFactory $factory for loading validators
+   */
+  public function __construct($chars = null, $charset = null,
+    Swift_CharacterSetValidatorFactory $factory = null)
+  {
+    if (!is_null($charset))
+    {
+      $this->setCharacterSet($charset);
+    }
+    
+    if (!is_null($factory))
+    {
+      $this->setCharacterSetValidatorFactory($factory);
+    }
+    
+    if (is_array($chars))
+    {
+      $this->_array = $chars;
+    }
+    elseif (is_string($chars))
+    {
+      $this->importString($chars);
+    }
+  }
+  
+  /**
    * Set the character set used in this CharacterStream.
    * @param string $charset
    */
   public function setCharacterSet($charset)
   {
+    $this->_charset = $charset;
   }
   
   /**
@@ -47,6 +112,7 @@ class Swift_CharacterStream_ArrayCharacterStream
   public function setCharacterSetValidatorFactory(
     Swift_CharacterSetValidatorFactory $factory)
   {
+    $this->_charsetValidatorFactory = $factory;
   }
   
   /**
@@ -55,6 +121,33 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function importByteStream(Swift_ByteStream $os)
   {
+    if (!isset($this->_charsetValidator))
+    {
+      $this->_charsetValidator = $this->_charsetValidatorFactory
+        ->getValidatorFor($this->_charset);
+    }
+    
+    $c = ''; $offset = 0; $need = 1;
+    
+    while (false !== $bytes = $os->read($need))
+    {
+      $offset += $need;
+      $c .= $bytes;
+      $need = $this->_charsetValidator->validateCharacter($c);
+      if (0 == $need)
+      {
+        $need = 1;
+        $this->_array[] = $c;
+        $c = '';
+      }
+      elseif (-1 == $need)
+      {
+        throw new Exception(
+          'Invalid ' . $this->_charset . ' data at byte offset ' . $offset .
+          ' (after ' . count($this->_array) . ' chars).'
+          );
+      }
+    }
   }
   
   /**
@@ -64,6 +157,8 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function importString($string)
   {
+    $this->flushContents();
+    $this->write($string);
   }
   
   /**
@@ -74,6 +169,14 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function read($length)
   {
+    if ($this->_offset == count($this->_array))
+    {
+      return false;
+    }
+    
+    $ret = array_slice($this->_array, $this->_offset, $length);
+    $this->_offset += count($ret);
+    return implode('', $ret);
   }
   
   /**
@@ -82,6 +185,34 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function write($chars)
   {
+    if (!isset($this->_charsetValidator))
+    {
+      $this->_charsetValidator = $this->_charsetValidatorFactory
+        ->getValidatorFor($this->_charset);
+    }
+    
+    $c = ''; $offset = 0; $need = 1;
+    
+    while (strlen($chars) > 0)
+    {
+      $offset += $need;
+      $c .= substr($chars, 0, $need);
+      $chars = substr($chars, $need);
+      $need = $this->_charsetValidator->validateCharacter($c);
+      if (0 == $need)
+      {
+        $need = 1;
+        $this->_array[] = $c;
+        $c = '';
+      }
+      elseif (-1 == $need)
+      {
+        throw new Exception(
+          'Invalid ' . $this->_charset . ' data at byte offset ' . $offset .
+          ' (after ' . count($this->_array) . ' chars).'
+          );
+      }
+    }
   }
   
   /**
@@ -90,6 +221,15 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function setPointer($charOffset)
   {
+    if ($charOffset > count($this->_array))
+    {
+      $charOffset = count($this->_array);
+    }
+    elseif ($charOffset < 0)
+    {
+      $charOffset = 0;
+    }
+    $this->_offset = $charOffset;
   }
   
   /**
@@ -97,6 +237,8 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function flushContents()
   {
+    $this->_offset = 0;
+    $this->_array = array();
   }
   
 }
