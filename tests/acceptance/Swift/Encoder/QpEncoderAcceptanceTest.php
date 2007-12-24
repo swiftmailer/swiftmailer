@@ -2,11 +2,11 @@
 
 require_once 'Swift/Encoder/QpEncoder.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
-require_once 'Swift/CharacterSetValidatorFactory.php';
-require_once 'Swift/CharacterSetValidator/Utf8Validator.php';
+require_once 'Swift/CharacterReaderFactory.php';
+require_once 'Swift/CharacterReader/Utf8Reader.php';
 
 Mock::generate(
-  'Swift_CharacterSetValidatorFactory', 'Swift_MockCharacterSetValidatorFactory'
+  'Swift_CharacterReaderFactory', 'Swift_MockCharacterReaderFactory'
   );
 
 class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
@@ -21,10 +21,10 @@ class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
   {
     $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/utf8');
     
-    $validator = new Swift_CharacterSetValidator_Utf8Validator();
+    $charReader = new Swift_CharacterReader_Utf8Reader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $charReader);
     
     $this->_charStream = new Swift_CharacterStream_ArrayCharacterStream(
       null, $this->_charset, $factory);

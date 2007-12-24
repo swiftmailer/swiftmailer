@@ -1,7 +1,7 @@
 <?php
 
 /*
- Analyzes characters for a specific character set.
+ Analyzes US-ASCII characters.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,14 +18,17 @@
  
  */
 
+require_once dirname(__FILE__) . '/../CharacterReader.php';
+
 
 /**
- * Analyzes characters for a specific character set.
+ * Analyzes US-ASCII characters.
  * @package Swift
  * @subpackage Encoder
  * @author Chris Corbyn
  */
-interface Swift_CharacterSetValidator
+class Swift_CharacterReader_UsAsciiReader
+  implements Swift_CharacterReader
 {
 
   /**
@@ -37,6 +40,26 @@ interface Swift_CharacterSetValidator
    * @param string $partialCharacter
    * @return int
    */
-  public function validateCharacter($partialCharacter);
+  public function validateCharacter($partialCharacter)
+  {
+    $bytes = array_values(unpack('C*', $partialCharacter));
+    if (1 == count($bytes) && $bytes[0] >= 0x00 && $bytes[0] <= 0x7F)
+    {
+      return 0;
+    }
+    else
+    {
+      return -1;
+    }
+  }
+  
+  /**
+   * Returns the number of bytes which should be read to start each character.
+   * @return int
+   */
+  public function getInitialByteSize()
+  {
+    return 1;
+  }
   
 }

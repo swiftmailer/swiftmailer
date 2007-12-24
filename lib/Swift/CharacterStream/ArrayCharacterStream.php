@@ -33,18 +33,18 @@ class Swift_CharacterStream_ArrayCharacterStream
 {
 
   /**
-   * The validator (lazy-loaded) for the current charset.
-   * @var Swift_CharacterSetValidator
+   * The char reader (lazy-loaded) for the current charset.
+   * @var Swift_CharacterReader
    * @access private
    */
-  private $_charsetValidator;
+  private $_charReader;
   
   /**
-   * A factory for creatiing CharacterSetValidator instances.
-   * @var Swift_CharacterSetValidatorFactory
+   * A factory for creatiing CharacterReader instances.
+   * @var Swift_CharacterReaderFactory
    * @access private
    */
-  private $_charsetValidatorFactory;
+  private $_charReaderFactory;
   
   /**
    * The character set this stream is using.
@@ -71,10 +71,10 @@ class Swift_CharacterStream_ArrayCharacterStream
    * Create a new CharacterStream with the given $chars, if set.
    * @param mixed $chars as string or array
    * @param string $charset used in the stream
-   * @param Swift_CharacterSetValidatorFactory $factory for loading validators
+   * @param Swift_CharacterReaderFactory $factory for loading validators
    */
   public function __construct($chars = null, $charset = null,
-    Swift_CharacterSetValidatorFactory $factory = null)
+    Swift_CharacterReaderFactory $factory = null)
   {
     if (!is_null($charset))
     {
@@ -83,7 +83,7 @@ class Swift_CharacterStream_ArrayCharacterStream
     
     if (!is_null($factory))
     {
-      $this->setCharacterSetValidatorFactory($factory);
+      $this->setCharacterReaderFactory($factory);
     }
     
     if (is_array($chars))
@@ -106,13 +106,13 @@ class Swift_CharacterStream_ArrayCharacterStream
   }
   
   /**
-   * Set the CharacterSetValidatorFactory for multi charset support.
-   * @param Swift_CharacterSetValidatorFactory $factory
+   * Set the CharacterReaderFactory for multi charset support.
+   * @param Swift_CharacterReaderFactory $factory
    */
-  public function setCharacterSetValidatorFactory(
-    Swift_CharacterSetValidatorFactory $factory)
+  public function setCharacterReaderFactory(
+    Swift_CharacterReaderFactory $factory)
   {
-    $this->_charsetValidatorFactory = $factory;
+    $this->_charReaderFactory = $factory;
   }
   
   /**
@@ -121,22 +121,23 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function importByteStream(Swift_ByteStream $os)
   {
-    if (!isset($this->_charsetValidator))
+    if (!isset($this->_charReader))
     {
-      $this->_charsetValidator = $this->_charsetValidatorFactory
-        ->getValidatorFor($this->_charset);
+      $this->_charReader = $this->_charReaderFactory
+        ->getReaderFor($this->_charset);
     }
     
-    $c = ''; $offset = 0; $need = 1;
+    $startLength = $this->_charReader->getInitialByteSize();
+    $c = ''; $offset = 0; $need = $startLength;
     
     while (false !== $bytes = $os->read($need))
     {
       $offset += $need;
       $c .= $bytes;
-      $need = $this->_charsetValidator->validateCharacter($c);
+      $need = $this->_charReader->validateCharacter($c);
       if (0 == $need)
       {
-        $need = 1;
+        $need = $startLength;
         $this->_array[] = $c;
         $c = '';
       }
@@ -185,23 +186,24 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function write($chars)
   {
-    if (!isset($this->_charsetValidator))
+    if (!isset($this->_charReader))
     {
-      $this->_charsetValidator = $this->_charsetValidatorFactory
-        ->getValidatorFor($this->_charset);
+      $this->_charReader = $this->_charReaderFactory
+        ->getReaderFor($this->_charset);
     }
     
-    $c = ''; $offset = 0; $need = 1;
+    $startLength = $this->_charReader->getInitialByteSize();
+    $c = ''; $offset = 0; $need = $startLength;
     
     while (strlen($chars) > 0)
     {
       $offset += $need;
       $c .= substr($chars, 0, $need);
       $chars = substr($chars, $need);
-      $need = $this->_charsetValidator->validateCharacter($c);
+      $need = $this->_charReader->validateCharacter($c);
       if (0 == $need)
       {
-        $need = 1;
+        $need = $startLength;
         $this->_array[] = $c;
         $c = '';
       }

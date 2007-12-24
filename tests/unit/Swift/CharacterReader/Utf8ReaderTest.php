@@ -1,16 +1,16 @@
 <?php
 
-require_once 'Swift/CharacterSetValidator/Utf8Validator.php';
+require_once 'Swift/CharacterReader/Utf8Reader.php';
 
-class Swift_CharacterSetValidator_Utf8ValidatorTest
+class Swift_CharacterReader_Utf8ReaderTest
   extends UnitTestCase
 {
   
-  private $_validator;
+  private $_reader;
   
   public function setUp()
   {
-    $this->_validator = new Swift_CharacterSetValidator_Utf8Validator();
+    $this->_reader = new Swift_CharacterReader_Utf8Reader();
   }
   
   public function testLeading7BitOctetCausesReturnZero()
@@ -18,7 +18,7 @@ class Swift_CharacterSetValidator_Utf8ValidatorTest
     for ($ordinal = 0x00; $ordinal <= 0x7F; ++$ordinal)
     {
       $char = pack('C', $ordinal);
-      $this->assertIdentical(0, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(0, $this->_reader->validateCharacter($char));
     }
   }
   
@@ -27,7 +27,7 @@ class Swift_CharacterSetValidator_Utf8ValidatorTest
     for ($octet = 0xC0; $octet <= 0xDF; ++$octet)
     {
       $char = pack('C', $octet);
-      $this->assertIdentical(1, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(1, $this->_reader->validateCharacter($char));
     }
   }
   
@@ -36,7 +36,7 @@ class Swift_CharacterSetValidator_Utf8ValidatorTest
     for ($octet = 0xE0; $octet <= 0xEF; ++$octet)
     {
       $char = pack('C', $octet);
-      $this->assertIdentical(2, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(2, $this->_reader->validateCharacter($char));
     }
   }
   
@@ -45,7 +45,7 @@ class Swift_CharacterSetValidator_Utf8ValidatorTest
     for ($octet = 0xF0; $octet <= 0xF7; ++$octet)
     {
       $char = pack('C', $octet);
-      $this->assertIdentical(3, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(3, $this->_reader->validateCharacter($char));
     }
   }
   
@@ -54,7 +54,7 @@ class Swift_CharacterSetValidator_Utf8ValidatorTest
     for ($octet = 0xF8; $octet <= 0xFB; ++$octet)
     {
       $char = pack('C', $octet);
-      $this->assertIdentical(4, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(4, $this->_reader->validateCharacter($char));
     }
   }
   
@@ -63,17 +63,8 @@ class Swift_CharacterSetValidator_Utf8ValidatorTest
     for ($octet = 0xFC; $octet <= 0xFD; ++$octet)
     {
       $char = pack('C', $octet);
-      $this->assertIdentical(5, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(5, $this->_reader->validateCharacter($char));
     }
-  }
-  
-  public function testOctetsFEandFFAreInvalid()
-  {
-    $char = pack('C', 0xFE);
-    $this->assertIdentical(-1, $this->_validator->validateCharacter($char));
-    
-    $char = pack('C', 0xFF);
-    $this->assertIdentical(-1, $this->_validator->validateCharacter($char));
   }
   
 }

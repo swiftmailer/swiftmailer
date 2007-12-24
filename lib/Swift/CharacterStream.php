@@ -19,7 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/ByteStream.php';
-require_once dirname(__FILE__) . '/CharacterSetValidatorFactory.php';
+require_once dirname(__FILE__) . '/CharacterReaderFactory.php';
 
 
 /**
@@ -41,11 +41,11 @@ interface Swift_CharacterStream
   public function setCharacterSet($charset);
   
   /**
-   * Set the CharacterSetValidatorFactory for multi charset support.
-   * @param Swift_CharacterSetValidatorFactory $factory
+   * Set the CharacterReaderFactory for multi charset support.
+   * @param Swift_CharacterReaderFactory $factory
    */
-  public function setCharacterSetValidatorFactory(
-    Swift_CharacterSetValidatorFactory $factory);
+  public function setCharacterReaderFactory(
+    Swift_CharacterReaderFactory $factory);
   
   /**
    * Overwrite this character stream using the byte sequence in the byte stream.

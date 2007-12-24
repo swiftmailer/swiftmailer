@@ -29,7 +29,7 @@ define('SWEETY_TEST_LOCATOR', 'Sweety_TestLocator_PearStyleLocator');
 //A pattern used for filtering out certain class names expected to be tests
 define('SWEETY_IGNORED_CLASSES', '/(^|_)Abstract/');
 //The name which appears at the top of the test suite
-define('SWEETY_SUITE_NAME', 'Swift Mailer 4 Unit Tests');
+define('SWEETY_SUITE_NAME', 'Swift Mailer 4 Unit &amp; Acceptance Tests');
 //The path to the template which renders the view
 define('SWEETY_UI_TEMPLATE', SWEETY_HOME . '/templates/sweety/suite-ui.tpl.php');
 

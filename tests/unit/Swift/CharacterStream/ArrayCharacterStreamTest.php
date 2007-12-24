@@ -1,15 +1,15 @@
 <?php
 
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
-require_once 'Swift/CharacterSetValidatorFactory.php';
-require_once 'Swift/CharacterSetValidator.php';
+require_once 'Swift/CharacterReaderFactory.php';
+require_once 'Swift/CharacterReader.php';
 require_once 'Swift/ByteStream.php';
 
 Mock::generate(
-  'Swift_CharacterSetValidator', 'Swift_MockCharacterSetValidator'
+  'Swift_CharacterReader', 'Swift_MockCharacterReader'
   );
 Mock::generate(
-  'Swift_CharacterSetValidatorFactory', 'Swift_MockCharacterSetValidatorFactory'
+  'Swift_CharacterReaderFactory', 'Swift_MockCharacterReaderFactory'
   );
 Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
 
@@ -19,42 +19,43 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testValidatorAlgorithmOnImportString()
   {
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
-    $factory->expectOnce('getValidatorFor', array('utf-8'));
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
+    $factory->expectOnce('getReaderFor', array('utf-8'));
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream();
     $stream->setCharacterSet('utf-8');
-    $stream->setCharacterSetValidatorFactory($factory);
+    $stream->setCharacterReaderFactory($factory);
     
-    $validator->expectAt(0, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->expectAt(1, 'validateCharacter', array(pack('C*', 0xD0, 0x94)));
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->expectAt(2, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->expectAt(3, 'validateCharacter', array(pack('C*', 0xD0, 0xB6)));
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->expectAt(4, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->expectAt(5, 'validateCharacter', array(pack('C*', 0xD0, 0xBE)));
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
-    $validator->expectAt(6, 'validateCharacter', array(pack('C*', 0xD1)));
-    $validator->setReturnValueAt(6, 'validateCharacter', 1);
-    $validator->expectAt(7, 'validateCharacter', array(pack('C*', 0xD1, 0x8D)));
-    $validator->setReturnValueAt(7, 'validateCharacter', 0);
-    $validator->expectAt(8, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(8, 'validateCharacter', 1);
-    $validator->expectAt(9, 'validateCharacter', array(pack('C*', 0xD0, 0xBB)));
-    $validator->setReturnValueAt(9, 'validateCharacter', 0);
-    $validator->expectAt(10, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(10, 'validateCharacter', 1);
-    $validator->expectAt(11, 'validateCharacter', array(pack('C*', 0xD0, 0xB0)));
-    $validator->setReturnValueAt(11, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->expectAt(0, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->expectAt(1, 'validateCharacter', array(pack('C*', 0xD0, 0x94)));
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->expectAt(2, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->expectAt(3, 'validateCharacter', array(pack('C*', 0xD0, 0xB6)));
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->expectAt(4, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->expectAt(5, 'validateCharacter', array(pack('C*', 0xD0, 0xBE)));
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->expectAt(6, 'validateCharacter', array(pack('C*', 0xD1)));
+    $reader->setReturnValueAt(6, 'validateCharacter', 1);
+    $reader->expectAt(7, 'validateCharacter', array(pack('C*', 0xD1, 0x8D)));
+    $reader->setReturnValueAt(7, 'validateCharacter', 0);
+    $reader->expectAt(8, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(8, 'validateCharacter', 1);
+    $reader->expectAt(9, 'validateCharacter', array(pack('C*', 0xD0, 0xBB)));
+    $reader->setReturnValueAt(9, 'validateCharacter', 0);
+    $reader->expectAt(10, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(10, 'validateCharacter', 1);
+    $reader->expectAt(11, 'validateCharacter', array(pack('C*', 0xD0, 0xB0)));
+    $reader->setReturnValueAt(11, 'validateCharacter', 0);
     
-    $validator->expectCallCount('validateCharacter', 12);
+    $reader->expectCallCount('validateCharacter', 12);
     
     $stream->importString(pack('C*',
       0xD0, 0x94,
@@ -69,51 +70,52 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testCharactersWrittenUseValidator()
   {
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
-    $factory->expectOnce('getValidatorFor', array('utf-8'));
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
+    $factory->expectOnce('getReaderFor', array('utf-8'));
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream();
     $stream->setCharacterSet('utf-8');
-    $stream->setCharacterSetValidatorFactory($factory);
+    $stream->setCharacterReaderFactory($factory);
     
-    $validator->expectAt(0, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->expectAt(1, 'validateCharacter', array(pack('C*', 0xD0, 0x94)));
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->expectAt(2, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->expectAt(3, 'validateCharacter', array(pack('C*', 0xD0, 0xB6)));
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->expectAt(4, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->expectAt(5, 'validateCharacter', array(pack('C*', 0xD0, 0xBE)));
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->expectAt(0, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->expectAt(1, 'validateCharacter', array(pack('C*', 0xD0, 0x94)));
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->expectAt(2, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->expectAt(3, 'validateCharacter', array(pack('C*', 0xD0, 0xB6)));
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->expectAt(4, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->expectAt(5, 'validateCharacter', array(pack('C*', 0xD0, 0xBE)));
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
-    $validator->expectAt(6, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(6, 'validateCharacter', 1);
-    $validator->expectAt(7, 'validateCharacter', array(pack('C*', 0xD0, 0xBB)));
-    $validator->setReturnValueAt(7, 'validateCharacter', 0);
-    $validator->expectAt(8, 'validateCharacter', array(pack('C*', 0xD1)));
-    $validator->setReturnValueAt(8, 'validateCharacter', 1);
-    $validator->expectAt(9, 'validateCharacter', array(pack('C*', 0xD1, 0x8E)));
-    $validator->setReturnValueAt(9, 'validateCharacter', 0);
-    $validator->expectAt(10, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(10, 'validateCharacter', 1);
-    $validator->expectAt(11, 'validateCharacter', array(pack('C*', 0xD0, 0xB1)));
-    $validator->setReturnValueAt(11, 'validateCharacter', 0);
-    $validator->expectAt(12, 'validateCharacter', array(pack('C*', 0xD1)));
-    $validator->setReturnValueAt(12, 'validateCharacter', 1);
-    $validator->expectAt(13, 'validateCharacter', array(pack('C*', 0xD1, 0x8B)));
-    $validator->setReturnValueAt(13, 'validateCharacter', 0);
-    $validator->expectAt(14, 'validateCharacter', array(pack('C*', 0xD1)));
-    $validator->setReturnValueAt(14, 'validateCharacter', 1);
-    $validator->expectAt(15, 'validateCharacter', array(pack('C*', 0xD1, 0x85)));
-    $validator->setReturnValueAt(15, 'validateCharacter', 0);
+    $reader->expectAt(6, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(6, 'validateCharacter', 1);
+    $reader->expectAt(7, 'validateCharacter', array(pack('C*', 0xD0, 0xBB)));
+    $reader->setReturnValueAt(7, 'validateCharacter', 0);
+    $reader->expectAt(8, 'validateCharacter', array(pack('C*', 0xD1)));
+    $reader->setReturnValueAt(8, 'validateCharacter', 1);
+    $reader->expectAt(9, 'validateCharacter', array(pack('C*', 0xD1, 0x8E)));
+    $reader->setReturnValueAt(9, 'validateCharacter', 0);
+    $reader->expectAt(10, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(10, 'validateCharacter', 1);
+    $reader->expectAt(11, 'validateCharacter', array(pack('C*', 0xD0, 0xB1)));
+    $reader->setReturnValueAt(11, 'validateCharacter', 0);
+    $reader->expectAt(12, 'validateCharacter', array(pack('C*', 0xD1)));
+    $reader->setReturnValueAt(12, 'validateCharacter', 1);
+    $reader->expectAt(13, 'validateCharacter', array(pack('C*', 0xD1, 0x8B)));
+    $reader->setReturnValueAt(13, 'validateCharacter', 0);
+    $reader->expectAt(14, 'validateCharacter', array(pack('C*', 0xD1)));
+    $reader->setReturnValueAt(14, 'validateCharacter', 1);
+    $reader->expectAt(15, 'validateCharacter', array(pack('C*', 0xD1, 0x85)));
+    $reader->setReturnValueAt(15, 'validateCharacter', 0);
     
-    $validator->expectCallCount('validateCharacter', 16);
+    $reader->expectCallCount('validateCharacter', 16);
     
     $stream->importString(pack('C*', 0xD0, 0x94, 0xD0, 0xB6, 0xD0, 0xBE));
     
@@ -129,31 +131,32 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testReadCharacterAreInTact()
   {
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream();
     $stream->setCharacterSet('utf-8');
-    $stream->setCharacterSetValidatorFactory($factory);
+    $stream->setCharacterReaderFactory($factory);
     
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
-    $validator->setReturnValueAt(6, 'validateCharacter', 1);
-    $validator->setReturnValueAt(7, 'validateCharacter', 0);
-    $validator->setReturnValueAt(8, 'validateCharacter', 1);
-    $validator->setReturnValueAt(9, 'validateCharacter', 0);
-    $validator->setReturnValueAt(10, 'validateCharacter', 1);
-    $validator->setReturnValueAt(11, 'validateCharacter', 0);
-    $validator->setReturnValueAt(12, 'validateCharacter', 1);
-    $validator->setReturnValueAt(13, 'validateCharacter', 0);
-    $validator->setReturnValueAt(14, 'validateCharacter', 1);
-    $validator->setReturnValueAt(15, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->setReturnValueAt(6, 'validateCharacter', 1);
+    $reader->setReturnValueAt(7, 'validateCharacter', 0);
+    $reader->setReturnValueAt(8, 'validateCharacter', 1);
+    $reader->setReturnValueAt(9, 'validateCharacter', 0);
+    $reader->setReturnValueAt(10, 'validateCharacter', 1);
+    $reader->setReturnValueAt(11, 'validateCharacter', 0);
+    $reader->setReturnValueAt(12, 'validateCharacter', 1);
+    $reader->setReturnValueAt(13, 'validateCharacter', 0);
+    $reader->setReturnValueAt(14, 'validateCharacter', 1);
+    $reader->setReturnValueAt(15, 'validateCharacter', 0);
     
     $stream->importString(pack('C*', 0xD0, 0x94, 0xD0, 0xB6, 0xD0, 0xBE));
     
@@ -177,21 +180,22 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testRequestingLargeCharCountPastEndOfStream()
   {
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream();
     $stream->setCharacterSet('utf-8');
-    $stream->setCharacterSetValidatorFactory($factory);
+    $stream->setCharacterReaderFactory($factory);
     
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
     $stream->importString(pack('C*', 0xD0, 0x94, 0xD0, 0xB6, 0xD0, 0xBE));
     
@@ -204,21 +208,22 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testPointerOffsetCanBeSet()
   {
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream();
     $stream->setCharacterSet('utf-8');
-    $stream->setCharacterSetValidatorFactory($factory);
+    $stream->setCharacterReaderFactory($factory);
     
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
     $stream->importString(pack('C*', 0xD0, 0x94, 0xD0, 0xB6, 0xD0, 0xBE));
     
@@ -235,21 +240,22 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testContentsCanBeFlushed()
   {
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream();
     $stream->setCharacterSet('utf-8');
-    $stream->setCharacterSetValidatorFactory($factory);
+    $stream->setCharacterReaderFactory($factory);
     
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
     $stream->importString(pack('C*', 0xD0, 0x94, 0xD0, 0xB6, 0xD0, 0xBE));
     
@@ -260,15 +266,15 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testByteStreamCanBeImportingUsesValidator()
   { 
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
-    $factory->expectOnce('getValidatorFor', array('utf-8'));
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
+    $factory->expectOnce('getReaderFor', array('utf-8'));
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream();
     $stream->setCharacterSet('utf-8');
-    $stream->setCharacterSetValidatorFactory($factory);
+    $stream->setCharacterReaderFactory($factory);
     
     $os = new Swift_MockByteStream();
     $os->expectAt(0, 'read', array(1));
@@ -288,32 +294,33 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     
     $os->expectCallCount('read', 7);
     
-    $validator->expectAt(0, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->expectAt(1, 'validateCharacter', array(pack('C*', 0xD0, 0x94)));
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->expectAt(2, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->expectAt(3, 'validateCharacter', array(pack('C*', 0xD0, 0xB6)));
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->expectAt(4, 'validateCharacter', array(pack('C*', 0xD0)));
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->expectAt(5, 'validateCharacter', array(pack('C*', 0xD0, 0xBE)));
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->expectAt(0, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->expectAt(1, 'validateCharacter', array(pack('C*', 0xD0, 0x94)));
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->expectAt(2, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->expectAt(3, 'validateCharacter', array(pack('C*', 0xD0, 0xB6)));
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->expectAt(4, 'validateCharacter', array(pack('C*', 0xD0)));
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->expectAt(5, 'validateCharacter', array(pack('C*', 0xD0, 0xBE)));
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
     $stream->importByteStream($os);
   }
   
   public function testImportingStreamProducesCorrectCharArray()
   {
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream();
     $stream->setCharacterSet('utf-8');
-    $stream->setCharacterSetValidatorFactory($factory);
+    $stream->setCharacterReaderFactory($factory);
     
     $os = new Swift_MockByteStream();
     $os->setReturnValueAt(0, 'read', pack('C*', 0xD0));
@@ -324,12 +331,13 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $os->setReturnValueAt(5, 'read', pack('C*', 0xBE));
     $os->setReturnValueAt(6, 'read', false);
     
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
     $stream->importByteStream($os);
     
@@ -354,17 +362,44 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testStringCanBePassedToConstructor()
   {
-    $validator = new Swift_MockCharacterSetValidator();
+    $reader = new Swift_MockCharacterReader();
     
-    $factory = new Swift_MockCharacterSetValidatorFactory();
-    $factory->setReturnValue('getValidatorFor', $validator);
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
     
-    $validator->setReturnValueAt(0, 'validateCharacter', 1);
-    $validator->setReturnValueAt(1, 'validateCharacter', 0);
-    $validator->setReturnValueAt(2, 'validateCharacter', 1);
-    $validator->setReturnValueAt(3, 'validateCharacter', 0);
-    $validator->setReturnValueAt(4, 'validateCharacter', 1);
-    $validator->setReturnValueAt(5, 'validateCharacter', 0);
+    $reader->setReturnValue('getInitialByteSize', 1);
+    $reader->setReturnValueAt(0, 'validateCharacter', 1);
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->setReturnValueAt(2, 'validateCharacter', 1);
+    $reader->setReturnValueAt(3, 'validateCharacter', 0);
+    $reader->setReturnValueAt(4, 'validateCharacter', 1);
+    $reader->setReturnValueAt(5, 'validateCharacter', 0);
+    
+    $stream = new Swift_CharacterStream_ArrayCharacterStream(
+      pack('C*', 0xD1, 0x8D, 0xD0, 0xBB, 0xD0, 0xB0), 'utf-8', $factory
+    );
+      
+    $this->assertEqual(pack('C*', 0xD1, 0x8D), $stream->read(1));
+    $this->assertEqual(pack('C*', 0xD0, 0xBB), $stream->read(1));
+    $this->assertEqual(pack('C*', 0xD0, 0xB0), $stream->read(1));
+    
+    $this->assertIdentical(false, $stream->read(1));
+  }
+  
+  public function testAlgorithmWithFixedWidthCharsets()
+  {
+    $reader = new Swift_MockCharacterReader();
+    
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
+    
+    $reader->setReturnValue('getInitialByteSize', 2);
+    $reader->expectAt(0, 'validateCharacter', array(pack('C*', 0xD1, 0x8D)));
+    $reader->setReturnValueAt(0, 'validateCharacter', 0);
+    $reader->expectAt(1, 'validateCharacter', array(pack('C*', 0xD0, 0xBB)));
+    $reader->setReturnValueAt(1, 'validateCharacter', 0);
+    $reader->expectAt(2, 'validateCharacter', array(pack('C*', 0xD0, 0xB0)));
+    $reader->setReturnValueAt(2, 'validateCharacter', 0);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream(
       pack('C*', 0xD1, 0x8D, 0xD0, 0xBB, 0xD0, 0xB0), 'utf-8', $factory

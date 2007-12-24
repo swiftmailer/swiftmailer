@@ -1,8 +1,8 @@
 <?php
 
-require_once 'Swift/CharacterSetValidator/UsAsciiValidator.php';
+require_once 'Swift/CharacterReader/UsAsciiReader.php';
 
-class Swift_CharacterSetValidator_UsAsciiValidatorTest
+class Swift_CharacterReader_UsAsciiReaderTest
   extends UnitTestCase
 {
   
@@ -24,11 +24,11 @@ class Swift_CharacterSetValidator_UsAsciiValidatorTest
   
   */
   
-  private $_validator;
+  private $_reader;
   
   public function setUp()
   {
-    $this->_validator = new Swift_CharacterSetValidator_UsAsciiValidator();
+    $this->_reader = new Swift_CharacterReader_UsAsciiReader();
   }
   
   public function testAllValidAsciiCharactersReturnZero()
@@ -36,7 +36,7 @@ class Swift_CharacterSetValidator_UsAsciiValidatorTest
     for ($ordinal = 0x00; $ordinal <= 0x7F; ++$ordinal)
     {
       $char = pack('C', $ordinal);
-      $this->assertIdentical(0, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(0, $this->_reader->validateCharacter($char));
     }
   }
   
@@ -45,7 +45,7 @@ class Swift_CharacterSetValidator_UsAsciiValidatorTest
     for ($ordinal = 0x00; $ordinal <= 0x7F; $ordinal += 2)
     {
       $char = pack('C', $ordinal) . pack('C', $ordinal + 1);
-      $this->assertIdentical(-1, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(-1, $this->_reader->validateCharacter($char));
     }
   }
   
@@ -54,7 +54,7 @@ class Swift_CharacterSetValidator_UsAsciiValidatorTest
     for ($ordinal = 0x80; $ordinal <= 0xFF; ++$ordinal)
     {
       $char = pack('C', $ordinal);
-      $this->assertIdentical(-1, $this->_validator->validateCharacter($char));
+      $this->assertIdentical(-1, $this->_reader->validateCharacter($char));
     }
   }
   

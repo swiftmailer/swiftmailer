@@ -1,7 +1,7 @@
 <?php
 
 /*
- A factory for creating CharacterSetValidators.
+ A factory for creating CharacterReaders.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,23 +18,23 @@
  
  */
 
-require_once dirname(__FILE__) . '/CharacterSetValidator.php';
+require_once dirname(__FILE__) . '/CharacterReader.php';
 
 
 /**
- * A factory for creating CharacterSetValidators.
+ * A factory for creating CharacterReaders.
  * @package Swift
  * @subpackage Encoder
  * @author Chris Corbyn
  */
-interface Swift_CharacterSetValidatorFactory
+interface Swift_CharacterReaderFactory
 {
 
   /**
-   * Returns a CharacterSetValidator suitable for the charset applied.
+   * Returns a CharacterReader suitable for the charset applied.
    * @param string $charset
-   * @return Swift_CharacterSetValidator
+   * @return Swift_CharacterReader
    */
-  public function getValidatorFor($charset);
+  public function getReaderFor($charset);
   
 }
