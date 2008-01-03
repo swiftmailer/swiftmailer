@@ -1,18 +1,23 @@
 <?php
 
-require_once 'Swift/Encoder/Base64Encoder.php';
+require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
 require_once 'Swift/ByteStream.php';
 
 Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
 
-class Swift_Encoder_Base64Encoder_Base64EncoderStreamTest extends UnitTestCase
+class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
 {
   
   private $_encoder;
   
   public function setUp()
   {
-    $this->_encoder = new Swift_Encoder_Base64Encoder();
+    $this->_encoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
+  }
+  
+  public function testNameIsBase64()
+  {
+    $this->assertEqual('base64', $this->_encoder->getName());
   }
   
   /*
@@ -147,6 +152,32 @@ class Swift_Encoder_Base64Encoder_Base64EncoderStreamTest extends UnitTestCase
     $is->expectAt(6, 'write', array('YWJjZGVmZ2hpamts'));               //36
     
     $this->_encoder->encodeByteStream($os, $is);
+  }
+  
+  public function testMaximumLineLengthCanBeDifferent()
+  {      
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
+    $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
+    $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
+    $os->setReturnValueAt(3, 'read', '890ABCDEFGHI'); //48
+    $os->setReturnValueAt(4, 'read', 'JKLMNOPQRSTU'); //60
+    $os->setReturnValueAt(5, 'read', 'VWXYZ1234567'); //72
+    $os->setReturnValueAt(6, 'read', 'abcdefghijkl'); //84
+    
+    $os->setReturnValueAt(7, 'read', false);
+    
+    $is = new Swift_MockByteStream();
+    $is->expectCallCount('write', 7);
+    $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
+    $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32
+    $is->expectAt(2, 'write', array('eXphYmMxMjM0NTY3'));               //48
+    $is->expectAt(3, 'write', array('ODkwQUJDREVGR0hJ'));               //64
+    $is->expectAt(4, 'write', array('SktMTU5PUFFSU1RV'));               //76
+    $is->expectAt(5, 'write', array("\r\n" . 'VldYWVoxMjM0NTY3'));      //80*, 16
+    $is->expectAt(6, 'write', array('YWJjZGVmZ2hpamts'));               //32
+    
+    $this->_encoder->encodeByteStream($os, $is, 0, 80);
   }
   
   public function testFirstLineLengthCanBeDifferent()

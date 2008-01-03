@@ -18,7 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/../Encoder.php';
+require_once dirname(__FILE__) . '/HeaderEncoder.php';
 require_once dirname(__FILE__) . '/HeaderAttributeSet.php';
 
 
@@ -33,9 +33,15 @@ interface Swift_Mime_Header
   
   /**
    * Set the encoder used for encoding the header.
-   * @param Swift_Encoder $encoder
+   * @param Swift_Mime_HeaderEncoder $encoder
    */
-  public function setEncoder(Swift_Encoder $encoder);
+  public function setEncoder(Swift_Mime_HeaderEncoder $encoder);
+  
+  /**
+   * Set the character set used in this Header.
+   * @param string $charset
+   */
+  public function setCharacterSet($charset);
   
   /**
    * Get the name of this header (e.g. charset).

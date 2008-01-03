@@ -1,7 +1,7 @@
 <?php
 
 /*
- Encoder API for Swift Mailer.
+ The Base64 header encoder in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,24 +18,29 @@
  
  */
 
+require_once dirname(__FILE__) . '/../HeaderEncoder.php';
+require_once dirname(__FILE__) . '/../../Encoder/Base64Encoder.php';
+
 
 /**
- * Interface for all Encoder schemes.
+ * Handles Base64 (B) Header Encoding in Swift Mailer.
  * @package Swift
- * @subpackage Encoder
+ * @subpackage Mime
  * @author Chris Corbyn
  */
-interface Swift_Encoder
+class Swift_Mime_HeaderEncoder_Base64HeaderEncoder
+  extends Swift_Encoder_Base64Encoder
+  implements Swift_Mime_HeaderEncoder
 {
   
   /**
-   * Encode a given string to produce an encoded string.
-   * @param string $string
-   * @param int $firstLineOffset if first line needs to be shorter
-   * @param int $maxLineLength - 0 indicates the default length for this encoding
+   * Get the name of this encoding scheme.
+   * Returns the string 'B'.
    * @return string
    */
-  public function encodeString($string, $firstLineOffset = 0,
-    $maxLineLength = 0);
+  public function getName()
+  {
+    return 'B';
+  }
   
 }

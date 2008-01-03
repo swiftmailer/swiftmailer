@@ -5,7 +5,7 @@ require_once 'Swift/CharacterStream.php';
 
 Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 
-class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
+class Swift_Encoder_QpEncoderTest extends UnitTestCase
 {
   
   /* -- RFC 2045, 6.7 --
@@ -205,6 +205,33 @@ class Swift_Encoder_QpEncoder_QpEncoderStringTest extends UnitTestCase
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input));
+  }
+  
+  public function testMaxLineLengthCanBeSpecified()
+  {
+    $input = str_repeat('a', 100);
+    
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->expectOnce('flushContents');
+    $charStream->expectOnce('importString', array($input));
+    
+    $output = '';
+    $seq = 0;
+    for (; $seq < 100; ++$seq)
+    {
+      $charStream->setReturnValueAt($seq, 'read', 'a');
+      
+      if (53 == $seq)
+      {
+        $output .= "=\r\n";
+      }
+      $output .= 'a';
+    }
+    
+    $charStream->setReturnValueAt($seq, 'read', false);
+    
+    $encoder = new Swift_Encoder_QpEncoder($charStream);
+    $this->assertEqual($output, $encoder->encodeString($input, 0, 54));
   }
   
   public function testBytesBelowPermittedRangeAreEncoded()

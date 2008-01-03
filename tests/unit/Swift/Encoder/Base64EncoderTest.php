@@ -2,7 +2,7 @@
 
 require_once 'Swift/Encoder/Base64Encoder.php';
 
-class Swift_Encoder_Base64Encoder_Base64EncoderStringTest extends UnitTestCase
+class Swift_Encoder_Base64EncoderTest extends UnitTestCase
 {
   
   private $_encoder;
@@ -122,6 +122,31 @@ class Swift_Encoder_Base64Encoder_Base64EncoderStringTest extends UnitTestCase
     $this->assertEqual(
       $output, $this->_encoder->encodeString($input),
       '%s: Lines should be no more than 76 characters'
+      );
+  }
+  
+  public function testMaximumLineLengthCanBeSpecified()
+  {
+    $input =
+    'abcdefghijklmnopqrstuvwxyz' .
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .
+    '1234567890' .
+    'abcdefghijklmnopqrstuvwxyz' .
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .
+    '1234567890' .
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    $output =
+    'YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQk' .          //38
+    'NERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1' .          //76
+    'Njc4OTBhYmNkZWZnaGlqa2xt' . "\r\n" .               //100 *
+    'bm9wcXJzdHV2d3h5ekFCQ0RFRkdISUpLTE1OT1' .          //38
+    'BRUlNUVVZXWFlaMTIzNDU2Nzg5MEFCQ0RFRkdI' .          //76
+    'SUpLTE1OT1BRUlNUVVZXWFla';                         //100 *
+    
+    $this->assertEqual(
+      $output, $this->_encoder->encodeString($input, 0, 100),
+      '%s: Lines should be no more than 100 characters'
       );
   }
   

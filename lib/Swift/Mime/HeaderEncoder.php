@@ -1,7 +1,7 @@
 <?php
 
 /*
- Encoder API for Swift Mailer.
+ Header Encoder API for Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,24 +18,22 @@
  
  */
 
+require_once dirname(__FILE__) . '/../Encoder.php';
+
 
 /**
- * Interface for all Encoder schemes.
+ * Interface for all Header Encoding schemes.
  * @package Swift
- * @subpackage Encoder
+ * @subpackage Mime
  * @author Chris Corbyn
  */
-interface Swift_Encoder
+interface Swift_Mime_HeaderEncoder extends Swift_Encoder
 {
   
   /**
-   * Encode a given string to produce an encoded string.
-   * @param string $string
-   * @param int $firstLineOffset if first line needs to be shorter
-   * @param int $maxLineLength - 0 indicates the default length for this encoding
+   * Get the MIME name of this content encoding scheme.
    * @return string
    */
-  public function encodeString($string, $firstLineOffset = 0,
-    $maxLineLength = 0);
+  public function getName();
   
 }

@@ -3,3 +3,10 @@ RFC 2045:
 Quoted Printable Encoding
 Base 64 Encoding
 
+RFC 2047:
+---------
+Header Encoding
+
+RFC 2231:
+---------
+Encoded Text header/attribute extensions

@@ -19,7 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/Header.php';
-require_once dirname(__FILE__) . '/../Encoder.php';
+require_once dirname(__FILE__) . '/HeaderEncoder.php';
 require_once dirname(__FILE__) . '/HeaderAttributeSet.php';
 
 
@@ -68,21 +68,48 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
   private $_lineLength = 78;
   
   /**
+   * The character set of the text in this Header.
+   * @var string
+   * @access private
+   */
+  private $_charset;
+  
+  /**
    * Creates a new SimpleHeader with $name and $value.
    * @param string $name
    * @param string $value
+   * @param string $charset, optional
+   * @param Swift_Mime_HeaderEncoder $encoder, optional
    */
-  public function __construct($name, $value)
+  public function __construct($name, $value, $charset = null,
+    Swift_Mime_HeaderEncoder $encoder = null)
   {
     $this->_name = $name;
     $this->_value = $value;
+    if (!is_null($charset))
+    {
+      $this->_charset = $charset;
+    }
+    if (!is_null($encoder))
+    {
+      $this->_encoder = $encoder;
+    }
+  }
+  
+  /**
+   * Set the character set used in this Header.
+   * @param string $charset
+   */
+  public function setCharacterSet($charset)
+  {
+    $this->_charset = $charset;
   }
   
   /**
    * Set the encoder used for encoding the header.
-   * @param Swift_Encoder $encoder
+   * @param Swift_Mime_HeaderEncoder $encoder
    */
-  public function setEncoder(Swift_Encoder $encoder)
+  public function setEncoder(Swift_Mime_HeaderEncoder $encoder)
   {
     $this->_encoder = $encoder;
   }
@@ -180,6 +207,7 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
     foreach ($tokens as $token)
     {
       $token = rtrim($token, "\r\n");
+      
       //Line longer than specified maximum or token was just a new line
       if ('' == $token || strlen($currentLine . $token) > $this->_lineLength)
       {
@@ -204,7 +232,27 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
    */
   protected function getPreparedValue()
   {
-    return str_replace('\\', '\\\\', $this->_value);
+    $value = '';
+    
+    //Split at all whitespace boundaries
+    $tokens = preg_split('~(?=\s+)|\b~', $this->_value);
+    foreach ($tokens as $token)
+    {
+      //See RFC 2822, Sect 2.2
+      if (!preg_match('~^[^\x80-\xFF\r\n]*$~D', $token))
+      {
+        $encodedText = $this->_encoder->encodeString($token);
+        $value .= '=?' . $this->_charset;
+        $value .= '?' . $this->_encoder->getName();
+        $value .= '?' . $encodedText . '?=';
+      }
+      else
+      {
+        $value .= $token;
+      }
+    }
+    
+    return str_replace('\\', '\\\\', $value);
   }
   
 }

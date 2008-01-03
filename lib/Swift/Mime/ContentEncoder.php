@@ -1,7 +1,7 @@
 <?php
 
 /*
- Encoder API for Swift Mailer.
+ Content Transfer Encoder API for Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,24 +18,34 @@
  
  */
 
+require_once dirname(__FILE__) . '/../Encoder.php';
+require_once dirname(__FILE__) . '/../ByteStream.php';
+
 
 /**
- * Interface for all Encoder schemes.
+ * Interface for all Transfer Encoding schemes.
  * @package Swift
- * @subpackage Encoder
+ * @subpackage Mime
  * @author Chris Corbyn
  */
-interface Swift_Encoder
+interface Swift_Mime_ContentEncoder extends Swift_Encoder
 {
   
   /**
-   * Encode a given string to produce an encoded string.
-   * @param string $string
-   * @param int $firstLineOffset if first line needs to be shorter
+   * Encode $in to $out.
+   * @param Swift_ByteStream $os to read from
+   * @param Swift_ByteStream $is to write to
+   * @param int $firstLineOffset
    * @param int $maxLineLength - 0 indicates the default length for this encoding
+   */
+  public function encodeByteStream(
+    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    $maxLineLength = 0);
+  
+  /**
+   * Get the MIME name of this content encoding scheme.
    * @return string
    */
-  public function encodeString($string, $firstLineOffset = 0,
-    $maxLineLength = 0);
+  public function getName();
   
 }

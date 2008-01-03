@@ -20,7 +20,6 @@
 
 
 require_once dirname(__FILE__) . '/../Encoder.php';
-require_once dirname(__FILE__) . '/../ByteStream.php';
 require_once dirname(__FILE__) . '/../CharacterStream.php';
 
 /**
@@ -76,13 +75,6 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   private $_permittedBytes = array();
   
   /**
-   * Temporarily gets populated with a ByteStream during some internal writes.
-   * @var Swift_ByteStream
-   * @access private
-   */
-  private $_temporaryInputByteStream;
-  
-  /**
    * Temporarily grows as a string to be returned during some internal writes.
    * @var string
    * @access private
@@ -119,11 +111,19 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    * If the first line needs to be shorter, indicate the difference with
    * $firstLineOffset.
    * @param string $string to encode
-   * @param int $firstLineOffset
+   * @param int $firstLineOffset, optional
+   * @param int $maxLineLength, optional, 0 indicates the default of 76 chars
    * @return string
    */
-  public function encodeString($string, $firstLineOffset = 0)
+  public function encodeString($string, $firstLineOffset = 0,
+    $maxLineLength = 0)
   {
+    //Set default length of 76 if no other value set
+    if (0 == $maxLineLength)
+    {
+      $maxLineLength = 76;
+    }
+    
     //Empty the CharacterStream and import the string to it
     $this->_charStream->flushContents();
     $this->_charStream->importString($string);
@@ -132,8 +132,9 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     $this->_temporaryReturnString = '';
     
     //Encode the CharacterStream using an append method as a callback
-    $this->_encodeCharacterStreamCallback($this->_charStream,
-      array($this, '_appendToTemporaryReturnString'), $firstLineOffset
+    $this->encodeCharacterStreamCallback(
+      $this->_charStream, array($this, '_appendToTemporaryReturnString'),
+      $firstLineOffset, $maxLineLength
       );
     
     //Copy the temporary return value
@@ -147,34 +148,13 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   }
   
   /**
-   * Encode stream $in to stream $out.
-   * QP encoded strings have a maximum line length of 76 characters.
-   * If the first line needs to be shorter, indicate the difference with
-   * $firstLineOffset.
-   * @param Swift_ByteStream $os output stream
-   * @param Swift_ByteStream $is input stream
-   * @param int $firstLineOffset
+   * Get the CharacterStream used in encoding.
+   * @return Swift_CharacterStream
+   * @access protected
    */
-  public function encodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0)
+  protected function getCharacterStream()
   {
-    //Empty the CharacterStream and import the ByteStream to it
-    $this->_charStream->flushContents();
-    $this->_charStream->importByteStream($os);
-    
-    //Set the temporary byte stream to write into
-    $this->_temporaryInputByteStream = $is;
-    
-    //Encode the CharacterStream using an append method as a callback
-    $this->_encodeCharacterStreamCallback($this->_charStream,
-      array($this, '_appendToTemporaryInputByteStream'), $firstLineOffset
-      );
-    
-    //Unset the temporary ByteStream
-    $this->_temporaryInputByteStream = null;
-    
-    //Return ByteStream with data appended via callback
-    return $is;
+    return $this->_charStream;
   }
   
   /**
@@ -183,10 +163,11 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    * @param Swift_CharacterStream $charStream to read from
    * @param callback $callback for appending
    * @param int $firstlineOffset
-   * @access private
+   * @access protected
    */
-  private function _encodeCharacterStreamCallback(
-    Swift_CharacterStream $charStream, $callback, $firstLineOffset = 0)
+  protected function encodeCharacterStreamCallback(
+    Swift_CharacterStream $charStream, $callback, $firstLineOffset,
+    $maxLineLength)
   {
     //Variables used for tracking
     $nextChar = null; $deferredLwspChar = null;
@@ -209,20 +190,31 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       $nextChar = $charStream->read(1);
       $thisCharEncoded = $this->_encodeCharacter($thisChar);
       
-      $maxLineLength = (false !== $nextChar ? 75 : 76) - $firstLineOffset;
+      //Adjust max line length if needed
+      if (false !== $nextChar)
+      {
+        $thisMaxLineLength = $maxLineLength - $firstLineOffset - 1;
+      }
+      else
+      {
+        $thisMaxLineLength = $maxLineLength - $firstLineOffset;
+      }
+      
+      //$maxLineLength = (false !== $nextChar ? 75 : 76) - $firstLineOffset;
       
       //Currently looking at LWSP followed by CR
-      if (in_array(ord($thisChar), $this->_lwspBytes)
+      if (in_array(ord($thisCharEncoded), $this->_lwspBytes)
         && $this->_crlfChars['CR'] == $nextChar)
       {
-        $deferredLwspChar = $thisChar;
+        $deferredLwspChar = $thisCharEncoded;
       }
       //Looking at LWSP at end of string
-      elseif (in_array(ord($thisChar), $this->_lwspBytes)
+      elseif (in_array(ord($thisCharEncoded), $this->_lwspBytes)
         && false === $nextChar)
       {
-        $this->_writeSequenceToCallback(sprintf('=%02X', ord($thisChar)),
-            $callback, $maxLineLength, $lineLength, $lineCount);
+        $this->_writeSequenceToCallback(sprintf('=%02X', ord($thisCharEncoded)),
+            $callback, $thisMaxLineLength, $lineLength, $lineCount
+            );
       }
       //Currently looking at CRLF
       elseif ($this->_crlfChars['CR'] == $thisChar
@@ -232,19 +224,22 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         if (!is_null($deferredLwspChar))
         {
           $this->_writeSequenceToCallback(sprintf('=%02X', ord($deferredLwspChar)),
-            $callback, $maxLineLength, $lineLength, $lineCount);
+            $callback, $thisMaxLineLength, $lineLength, $lineCount
+            );
           $deferredLwspChar = null;
         }
         
-        $this->_writeSequenceToCallback($thisChar, $callback, $maxLineLength,
-          $lineLength, $lineCount);
+        $this->_writeSequenceToCallback($thisChar, $callback, $thisMaxLineLength,
+          $lineLength, $lineCount
+          );
         $expectedLfChar = true;
       }
       //Currently looking at an expected LF (following a CR)
       elseif ($this->_crlfChars['LF'] == $thisChar && $expectedLfChar)
       {
-        $this->_writeSequenceToCallback($thisChar, $callback, $maxLineLength,
-          $lineLength, $lineCount);
+        $this->_writeSequenceToCallback($thisChar, $callback, $thisMaxLineLength,
+          $lineLength, $lineCount
+          );
         $expectedLfChar = false;
       }
       //Nothing special about this character, just write it
@@ -254,13 +249,15 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         if (!is_null($deferredLwspChar))
         {
           $this->_writeSequenceToCallback($deferredLwspChar, $callback,
-            $maxLineLength, $lineLength, $lineCount);
+            $thisMaxLineLength, $lineLength, $lineCount
+            );
           $deferredLwspChar = null;
         }
         
         //Write the endoded character as normal
         $this->_writeSequenceToCallback($thisCharEncoded, $callback,
-            $maxLineLength, $lineLength, $lineCount);
+            $thisMaxLineLength, $lineLength, $lineCount
+            );
       }
     }
     while(false !== $nextChar);
@@ -270,6 +267,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    * Encode a single character (maybe multi-byte).
    * @param string $char
    * @return string
+   * @access private
    */
   private function _encodeCharacter($char)
   {
@@ -282,7 +280,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     
     foreach (unpack('C*', $char) as $octet)
     {
-      if (!in_array($octet, $this->_permittedBytes))
+      if (!in_array($octet, $this->getPermittedBytes()))
       {
         $charEncoded .= sprintf('=%02X', $octet);
       }
@@ -320,17 +318,6 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   }
   
   /**
-   * Internal callback method which appends bytes to the end of a ByteStream
-   * held internally temporarily.
-   * @param string $bytes
-   * @access private
-   */
-  private function _appendToTemporaryInputByteStream($bytes)
-  {
-    $this->_temporaryInputByteStream->write($bytes);
-  }
-  
-  /**
    * Internal callback method which appends bytes to the end of a string
    * held internally temporarily.
    * @param string $bytes
@@ -339,6 +326,18 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   private function _appendToTemporaryReturnString($bytes)
   {
     $this->_temporaryReturnString .= $bytes;
+  }
+  
+  // -- Points of extension
+  
+  /**
+   * Get the byte values which are permitted in their unencoded form.
+   * @return int[]
+   * @access protected
+   */
+  protected function getPermittedBytes()
+  {
+    return $this->_permittedBytes;
   }
   
 }

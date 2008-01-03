@@ -20,7 +20,6 @@
 
 
 require_once dirname(__FILE__) . '/../Encoder.php';
-require_once dirname(__FILE__) . '/../ByteStream.php';
 
 /**
  * Handles Base 64 Encoding in Swift Mailer.
@@ -32,64 +31,37 @@ class Swift_Encoder_Base64Encoder implements Swift_Encoder
 {
   
   /**
-   * Takes an unencoded string and produces a Base 64 encoded string from it.
+   * Takes an unencoded string and produces a Base64 encoded string from it.
    * Base64 encoded strings have a maximum line length of 76 characters.
    * If the first line needs to be shorter, indicate the difference with
    * $firstLineOffset.
-   *
    * @param string $string to encode
    * @param int $firstLineOffset
+   * @param int $maxLineLength, optional, 0 indicates the default of 76 bytes
    * @return string
    */
-  public function encodeString($string, $firstLineOffset = 0)
+  public function encodeString($string, $firstLineOffset = 0,
+    $maxLineLength = 0)
   {
+    if (0 == $maxLineLength)
+    {
+      $maxLineLength = 76;
+    }
+    
     $encodedString = base64_encode($string);
     $firstLine = '';
     
     if (0 != $firstLineOffset)
     {
-      $firstLine = substr($encodedString, 0, 76 - $firstLineOffset) . "\r\n";
-      $encodedString = substr($encodedString, 76 - $firstLineOffset);
+      $firstLine = substr(
+        $encodedString, 0, $maxLineLength - $firstLineOffset
+        ) . "\r\n";
+      $encodedString = substr(
+        $encodedString, $maxLineLength - $firstLineOffset
+        );
     }
     
-    return $firstLine . trim(chunk_split($encodedString, 76, "\r\n"));
-  }
-  
-  /**
-   * Encode stream $in to stream $out.
-   * @param Swift_ByteStream $in
-   * @param Swift_ByteStream $out
-   * @param int $firstLineOffset
-   */
-  public function encodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0)
-  {
-    $remainder = 0;
-    
-    while (false !== $bytes = $os->read(8190))
-    {
-      $encoded = base64_encode($bytes);
-      $encodedTransformed = '';
-      $maxLineLength = 76 - $remainder - $firstLineOffset;
-      
-      while ($maxLineLength < strlen($encoded))
-      {
-        $encodedTransformed .= substr($encoded, 0, $maxLineLength) . "\r\n";
-        $firstLineOffset = 0;
-        $encoded = substr($encoded, $maxLineLength);
-        $maxLineLength = 76;
-        $remainder = 0;
-      }
-      
-      if (0 < $remainingLength = strlen($encoded))
-      {
-        $remainder += $remainingLength;
-        $encodedTransformed .= $encoded;
-        $encoded = null;
-      }
-      
-      $is->write($encodedTransformed);
-    }
+    return $firstLine . trim(chunk_split($encodedString, $maxLineLength, "\r\n"));
   }
   
 }
