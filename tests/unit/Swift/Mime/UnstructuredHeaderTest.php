@@ -295,7 +295,8 @@ class Swift_Mime_UnstructuredHeaderTest extends UnitTestCase
     be used.
     */
     
-    //Note the Mock does NOT return 8F encoded, the 8F merely triggers encoding
+    //Note the Mock does NOT return 8F encoded, the 8F merely triggers
+    // encoding for the sake of testing
     $nonAsciiChar = pack('C', 0x8F);
     
     $encoder = new Swift_Mime_MockHeaderEncoder();
@@ -314,6 +315,52 @@ class Swift_Mime_UnstructuredHeaderTest extends UnitTestCase
       'X-Test: =?' . $this->_charset . '?Q?line_one_here?=' . "\r\n" .
       ' =?' . $this->_charset . '?Q?line_two_here?=' . "\r\n",
       $header->toString()
+      );
+  }
+  
+  public function testAdjacentWordsAreEncodedTogether()
+  {
+    /* -- RFC 2047, 5 (1)
+     Ordinary ASCII text and 'encoded-word's may appear together in the
+     same header field.  However, an 'encoded-word' that appears in a
+     header field defined as '*text' MUST be separated from any adjacent
+     'encoded-word' or 'text' by 'linear-white-space'.
+    
+     -- RFC 2047, 2.
+     IMPORTANT: 'encoded-word's are designed to be recognized as 'atom's
+     by an RFC 822 parser.  As a consequence, unencoded white space
+     characters (such as SPACE and HTAB) are FORBIDDEN within an
+     'encoded-word'.
+     */
+    
+    //It would be valid to encode all words needed, however it's probably
+    // easiest to encode the longest amount required at a time
+    
+    $word = 'w' . pack('C', 0x8F) . 'rd';
+    $text = 'start ' . $word . ' ' . $word . ' then end ' . $word;
+    // 'start', ' word word', ' and end', ' word'
+    
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $encoder->setReturnValue('getName', 'Q');
+    $encoder->expectCallCount('encodeString', 2);
+    $encoder->expectAt(0, 'encodeString', array($word . ' ' . $word, '*', '*'),
+      '%s: Adjacent words to be encoded should be encoded together with any WSP'
+      );
+    $encoder->setReturnValueAt(0, 'encodeString', 'w=8Frd_w=8Frd');
+    $encoder->expectAt(1, 'encodeString', array($word, '*', '*'),
+      '%s: Full words should be encoded'
+      );
+    $encoder->setReturnValueAt(1, 'encodeString', 'w=8Frd');
+    
+    $header = $this->_getHeader('X-Test', $text, $encoder);
+    
+    $headerString = $header->toString();
+    $this->dump($headerString);
+    
+    $this->assertEqual('X-Test: start =?' . $this->_charset . '?Q?' .
+      'w=8Frd_w=8Frd?= then end =?' . $this->_charset . '?Q?'.
+      'w=8Frd?=' . "\r\n", $headerString,
+      '%s: Adjacent encoded words should appear grouped with WSP encoded'
       );
   }
   

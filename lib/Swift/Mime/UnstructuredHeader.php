@@ -178,16 +178,13 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
     $headerLines = array();
     $headerLines[] = $this->_name . ': ';
     $currentLine =& $headerLines[$lineCount++];
-    
-    //Split at all invisible boundaries followed by WSP
     $tokens = array();
     
-    //Generate atoms
+    //Generate atoms; split at all invisible boundaries followed by WSP
     foreach (preg_split('~(?=[ \t])~', $this->getPreparedValue()) as $token)
     {
       //Send direct line breaks
       $tokenLines = explode("\r\n", $token);
-      
       foreach ($tokenLines as $lineNumber => $tokenLine)
       {
         $tokens[] = $tokenLine;
@@ -203,22 +200,7 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
     //Try creating any attributes
     if (!is_null($this->_attributes))
     {
-      foreach ($this->_attributes->toArray() as $attribute)
-      {
-        //Add the semi-colon separator
-        $tokens[count($tokens)-1] .= ';';
-        $attributeLines = explode("\r\n", $attribute->toString());
-        //Prepend each line with WSP
-        foreach ($attributeLines as $lineNumber => $attributeLine)
-        {
-          $tokens[] = ' ' . $attributeLine;
-          //Send line break if more lines follow
-          if ($lineNumber + 1 < count($attributeLines))
-          {
-            $tokens[] = "\r\n";
-          }
-        }
-      }
+      $this->_tokenizeAttributes($tokens);
     }
     
     //Build all tokens back into compliant header
@@ -253,18 +235,51 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
   {
     $value = '';
     
+    $encodePattern = '~[\x00-\x08\x10-\x19\x7F-\xFF\r\n]~D';
+    
     //Split at all whitespace boundaries
     //TODO: NO! Be smarter and split entire dodgy words themselves
-    $tokens = preg_split('~(?=\s+)|\b~', $this->_value);
+    $basicTokens = preg_split('~(?=[\t ])~', $this->_value);
+    
+    $tokens = array();
+    $encodedToken = '';
+    foreach ($basicTokens as $token)
+    {
+      if (preg_match($encodePattern, $token))
+      {
+        $encodedToken .= $token;
+      }
+      else
+      {
+        if (strlen($encodedToken) > 0)
+        {
+          $tokens[] = $encodedToken;
+          $encodedToken = '';
+        }
+        $tokens[] = $token;
+      }
+    }
+    if (strlen($encodedToken))
+    {
+      $tokens[] = $encodedToken;
+    }
     
     foreach ($tokens as $token)
     {
       //See RFC 2822, Sect 2.2
-      if (preg_match('~[\x00-\x08\x10-\x19\x7F-\xFF\r\n]~D', $token))
+      if (preg_match($encodePattern, $token))
       {
         $usedLength = strlen($this->getName() . ': ' .
           '=?' . $this->_charset . '?' . $this->_encoder->getName() . '??='
           ) + strlen($value);
+        
+        //Don't encode starting WSP
+        $firstChar = substr($token, 0, 1);
+        if (in_array($firstChar, array(' ', "\t")))
+        {
+          $value .= $firstChar;
+          $token = substr($token, 1);
+        }
         
         $encodedTextLines = explode("\r\n",
           $this->_encoder->encodeString($token, $usedLength, 75)
@@ -290,6 +305,33 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
     }
     
     return $value;
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Write tokens for any attributes to $tokens.
+   * @param string[] &$tokens
+   * @access private
+   */
+  private function _tokenizeAttributes(array &$tokens)
+  {
+    foreach ($this->_attributes->toArray() as $attribute)
+    {
+      //Add the semi-colon separator
+      $tokens[count($tokens)-1] .= ';';
+      $attributeLines = explode("\r\n", $attribute->toString());
+      //Prepend each line with WSP
+      foreach ($attributeLines as $lineNumber => $attributeLine)
+      {
+        $tokens[] = ' ' . $attributeLine;
+        //Send line break if more lines follow
+        if ($lineNumber + 1 < count($attributeLines))
+        {
+          $tokens[] = "\r\n";
+        }
+      }
+    }
   }
   
 }
