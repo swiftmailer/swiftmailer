@@ -191,7 +191,8 @@ class Swift_Mime_UnstructuredHeaderTest extends UnitTestCase
     $nonAsciiChar = pack('C', 0x8F);
     
     $encoder = new Swift_Mime_MockHeaderEncoder();
-    $encoder->expectOnce('encodeString', array($nonAsciiChar));
+    $encoder->expectOnce('encodeString', array($nonAsciiChar, '*', '*'),
+      'Encoding should be invoked');
     $encoder->setReturnValue('encodeString', '=8F');
     $encoder->setReturnValue('getName', 'Q');
     $header = $this->_getHeader('X-Test', $nonAsciiChar, $encoder);
@@ -202,15 +203,118 @@ class Swift_Mime_UnstructuredHeaderTest extends UnitTestCase
   }
   
   public function testEncodedWordsAreUsedToEncodedNonPrintableAscii()
-  {  
+  {
+    //SPACE and TAB permitted
+    $nonPrintableBytes = array_merge(
+      range(0x00, 0x08), range(0x10, 0x19), array(0x7F)
+      );
+    
+    foreach ($nonPrintableBytes as $byte)
+    {
+      $char = pack('C', $byte);
+      $encodedChar = sprintf('=%02X', $byte);
+      
+      $encoder = new Swift_Mime_MockHeaderEncoder();
+      $encoder->expectOnce('encodeString', array($char, '*', '*'),
+        'Encoding should be invoked.'
+        );
+      $encoder->setReturnValue('encodeString', $encodedChar);
+      $encoder->setReturnValue('getName', 'Q');
+      
+      $header = $this->_getHeader('X-A', $char, $encoder);
+      
+      $this->assertEqual(
+        'X-A: =?' . $this->_charset . '?Q?' . $encodedChar . '?=' . "\r\n",
+        $header->toString(), '%s: Non-printable ascii should be encoded'
+        );
+    }
   }
   
   public function testEncodedWordsAreUsedToEncode8BitOctets()
   {
+    $_8BitBytes = range(0x80, 0xFF);
+    
+    foreach ($_8BitBytes as $byte)
+    {
+      $char = pack('C', $byte);
+      $encodedChar = sprintf('=%02X', $byte);
+      
+      $encoder = new Swift_Mime_MockHeaderEncoder();
+      $encoder->expectOnce('encodeString', array($char, '*', '*'),
+        'Encoding should be invoked.'
+        );
+      $encoder->setReturnValue('encodeString', $encodedChar);
+      $encoder->setReturnValue('getName', 'Q');
+      
+      $header = $this->_getHeader('X-A', $char, $encoder);
+      
+      $this->assertEqual(
+        'X-A: =?' . $this->_charset . '?Q?' . $encodedChar . '?=' . "\r\n",
+        $header->toString(), '%s: 8-bit octets should be encoded'
+        );
+    }
   }
   
-  public function testEncodedWordsAreNoMoreThan75CharsPerLine() //Mock as a critic?
+  public function testEncodedWordsAreNoMoreThan75CharsPerLine()
   {
+    /* -- RFC 2047, 2.
+    An 'encoded-word' may not be more than 75 characters long, including
+    'charset', 'encoding', 'encoded-text', and delimiters.
+    
+    ... SNIP ...
+    
+    While there is no limit to the length of a multiple-line header
+    field, each line of a header field that contains one or more
+    'encoded-word's is limited to 76 characters.
+    */
+    
+    $nonAsciiChar = pack('C', 0x8F);
+    
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $encoder->expectOnce('encodeString', array($nonAsciiChar, 20, 75),
+      '%s: Parameters for $firstLineOffset and $maxLineLength should be 20 ' .
+      'and 75 respectively');
+    //Note that multi-line headers begin with LWSP which makes 75 + 1 = 76
+    $encoder->setReturnValue('encodeString', '=8F');
+    $encoder->setReturnValue('getName', 'Q');
+    
+    //* X-Test: =?utf-8?Q??= is 20 chars
+    $header = $this->_getHeader('X-Test', $nonAsciiChar, $encoder);
+    
+    $this->assertEqual(
+      'X-Test: =?' . $this->_charset . '?Q?=8F?=' . "\r\n",
+      $header->toString()
+      );
+  }
+  
+  public function testFWSPIsUsedWhenEncoderReturnsMultipleLines()
+  {
+    /* --RFC 2047, 2.
+    If it is desirable to encode more text than will fit in an 'encoded-word' of
+    75 characters, multiple 'encoded-word's (separated by CRLF SPACE) may
+    be used.
+    */
+    
+    //Note the Mock does NOT return 8F encoded, the 8F merely triggers encoding
+    $nonAsciiChar = pack('C', 0x8F);
+    
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $encoder->expectOnce('encodeString', array($nonAsciiChar, 20, 75),
+      'Encoding should be invoked');
+    //Note that multi-line headers begin with LWSP which makes 75 + 1 = 76
+    $encoder->setReturnValue('encodeString',
+      'line_one_here' . "\r\n" . 'line_two_here'
+      );
+    $encoder->setReturnValue('getName', 'Q');
+    
+    //* X-Test: =?utf-8?Q??= is 20 chars
+    $header = $this->_getHeader('X-Test', $nonAsciiChar, $encoder);
+    
+    $this->assertEqual(
+      'X-Test: =?' . $this->_charset . '?Q?line_one_here?=' . "\r\n" .
+      ' =?' . $this->_charset . '?Q?line_two_here?=' . "\r\n",
+      $header->toString()
+      );
   }
   
   // -- Private methods

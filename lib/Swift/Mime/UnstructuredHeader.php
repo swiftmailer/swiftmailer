@@ -180,7 +180,25 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
     $currentLine =& $headerLines[$lineCount++];
     
     //Split at all invisible boundaries followed by WSP
-    $tokens = preg_split('~(?=[ \t])~', $this->getPreparedValue());
+    $tokens = array();
+    
+    //Generate atoms
+    foreach (preg_split('~(?=[ \t])~', $this->getPreparedValue()) as $token)
+    {
+      //Send direct line breaks
+      $tokenLines = explode("\r\n", $token);
+      
+      foreach ($tokenLines as $lineNumber => $tokenLine)
+      {
+        $tokens[] = $tokenLine;
+        
+        //Send line break if more lines follow
+        if ($lineNumber + 1 < count($tokenLines))
+        {
+          $tokens[] = "\r\n";
+        }
+      }
+    }
     
     //Try creating any attributes
     if (!is_null($this->_attributes))
@@ -206,17 +224,18 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
     //Build all tokens back into compliant header
     foreach ($tokens as $token)
     {
-      $token = rtrim($token, "\r\n");
-      
       //Line longer than specified maximum or token was just a new line
-      if ('' == $token || strlen($currentLine . $token) > $this->_lineLength)
+      if ("\r\n" == $token || strlen($currentLine . $token) > $this->_lineLength)
       {
         $headerLines[] = '';
         $currentLine =& $headerLines[$lineCount++];
       }
       
       //Append token to the line
-      $currentLine .= $token;
+      if ("\r\n" != $token)
+      {
+        $currentLine .= $token;
+      }
     }
     
     //Implode with FWSP (RFC 2822, 2.2.3)
@@ -235,24 +254,42 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
     $value = '';
     
     //Split at all whitespace boundaries
+    //TODO: NO! Be smarter and split entire dodgy words themselves
     $tokens = preg_split('~(?=\s+)|\b~', $this->_value);
+    
     foreach ($tokens as $token)
     {
       //See RFC 2822, Sect 2.2
-      if (!preg_match('~^[^\x80-\xFF\r\n]*$~D', $token))
+      if (preg_match('~[\x00-\x08\x10-\x19\x7F-\xFF\r\n]~D', $token))
       {
-        $encodedText = $this->_encoder->encodeString($token);
-        $value .= '=?' . $this->_charset;
-        $value .= '?' . $this->_encoder->getName();
-        $value .= '?' . $encodedText . '?=';
+        $usedLength = strlen($this->getName() . ': ' .
+          '=?' . $this->_charset . '?' . $this->_encoder->getName() . '??='
+          ) + strlen($value);
+        
+        $encodedTextLines = explode("\r\n",
+          $this->_encoder->encodeString($token, $usedLength, 75)
+          );
+        
+        foreach ($encodedTextLines as $lineNum => $line)
+        {
+          $encodedTextLines[$lineNum] = '=?' . $this->_charset .
+            '?' . $this->_encoder->getName() .
+            '?' . $line . '?=';
+        }
+        
+        $encodedText = implode("\r\n ", $encodedTextLines);
+        
+        $value .= $encodedText;
+        
+        $this->setMaxLineLength(76); //Forefully override
       }
       else
       {
-        $value .= $token;
+        $value .= str_replace('\\', '\\\\', $token);
       }
     }
     
-    return str_replace('\\', '\\\\', $value);
+    return $value;
   }
   
 }
