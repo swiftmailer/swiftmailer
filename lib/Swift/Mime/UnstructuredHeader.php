@@ -174,54 +174,7 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
    */
   public function toString()
   {
-    $lineCount = 0;
-    $headerLines = array();
-    $headerLines[] = $this->_name . ': ';
-    $currentLine =& $headerLines[$lineCount++];
-    $tokens = array();
-    
-    //Generate atoms; split at all invisible boundaries followed by WSP
-    foreach (preg_split('~(?=[ \t])~', $this->getPreparedValue()) as $token)
-    {
-      //Send direct line breaks
-      $tokenLines = explode("\r\n", $token);
-      foreach ($tokenLines as $lineNumber => $tokenLine)
-      {
-        $tokens[] = $tokenLine;
-        
-        //Send line break if more lines follow
-        if ($lineNumber + 1 < count($tokenLines))
-        {
-          $tokens[] = "\r\n";
-        }
-      }
-    }
-    
-    //Try creating any attributes
-    if (!is_null($this->_attributes))
-    {
-      $this->_tokenizeAttributes($tokens);
-    }
-    
-    //Build all tokens back into compliant header
-    foreach ($tokens as $token)
-    {
-      //Line longer than specified maximum or token was just a new line
-      if ("\r\n" == $token || strlen($currentLine . $token) > $this->_lineLength)
-      {
-        $headerLines[] = '';
-        $currentLine =& $headerLines[$lineCount++];
-      }
-      
-      //Append token to the line
-      if ("\r\n" != $token)
-      {
-        $currentLine .= $token;
-      }
-    }
-    
-    //Implode with FWSP (RFC 2822, 2.2.3)
-    return implode("\r\n", $headerLines) . "\r\n";
+    return $this->_tokensToString($this->_toTokens());
   }
   
   // -- Points of extension
@@ -235,43 +188,20 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
   {
     $value = '';
     
-    $encodePattern = '~[\x00-\x08\x10-\x19\x7F-\xFF\r\n]~D';
-    
-    //Split at all whitespace boundaries
-    //TODO: NO! Be smarter and split entire dodgy words themselves
-    $basicTokens = preg_split('~(?=[\t ])~', $this->_value);
-    
-    $tokens = array();
-    $encodedToken = '';
-    foreach ($basicTokens as $token)
-    {
-      if (preg_match($encodePattern, $token))
-      {
-        $encodedToken .= $token;
-      }
-      else
-      {
-        if (strlen($encodedToken) > 0)
-        {
-          $tokens[] = $encodedToken;
-          $encodedToken = '';
-        }
-        $tokens[] = $token;
-      }
-    }
-    if (strlen($encodedToken))
-    {
-      $tokens[] = $encodedToken;
-    }
+    $tokens = $this->getEncodableWordTokens($this->_value);
     
     foreach ($tokens as $token)
     {
-      //See RFC 2822, Sect 2.2
-      if (preg_match($encodePattern, $token))
+      //See RFC 2822, Sect 2.2 (??)
+      if ($this->tokenNeedsEncoding($token))
       {
         $usedLength = strlen($this->getName() . ': ' .
           '=?' . $this->_charset . '?' . $this->_encoder->getName() . '??='
           ) + strlen($value);
+        if ($usedLength >= 75)
+        {
+          $usedLength = 0; //Already inside header field so let FWSP handle it
+        }
         
         //Don't encode starting WSP
         $firstChar = substr($token, 0, 1);
@@ -307,31 +237,131 @@ class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
     return $value;
   }
   
+  /**
+   * Test if a token needs to be encoded or not.
+   * @param string $token
+   * @return boolean
+   * @access protected
+   */
+  protected function tokenNeedsEncoding($token)
+  {
+    return preg_match('~[\x00-\x08\x10-\x19\x7F-\xFF\r\n]~', $token);
+  }
+  
+  /**
+   * Splits a string into tokens in blocks of words which can be encoded quickly.
+   * @param string $string
+   * @return string[]
+   * @access protected
+   */
+  protected function getEncodableWordTokens($string)
+  {
+    $tokens = array();
+    
+    $encodedToken = '';
+    //Split at all whitespace boundaries
+    foreach (preg_split('~(?=[\t ])~', $string) as $token)
+    {
+      if ($this->tokenNeedsEncoding($token))
+      {
+        $encodedToken .= $token;
+      }
+      else
+      {
+        if (strlen($encodedToken) > 0)
+        {
+          $tokens[] = $encodedToken;
+          $encodedToken = '';
+        }
+        $tokens[] = $token;
+      }
+    }
+    if (strlen($encodedToken))
+    {
+      $tokens[] = $encodedToken;
+    }
+    
+    return $tokens;
+  }
+  
+  /**
+   * Generates tokens from the given string which include CRLF as individual tokens.
+   * @param string $token
+   * @return string[]
+   * @access protected
+   */
+  protected function generateTokenLines($token)
+  {
+    return preg_split('~(\r\n)~', $token, -1, PREG_SPLIT_DELIM_CAPTURE);
+  }
+  
   // -- Private methods
   
   /**
-   * Write tokens for any attributes to $tokens.
-   * @param string[] &$tokens
+   * Generate a list of all tokens in the final header.
+   * @return string[]
    * @access private
    */
-  private function _tokenizeAttributes(array &$tokens)
+  private function _toTokens()
   {
-    foreach ($this->_attributes->toArray() as $attribute)
+    $tokens = array();
+    
+    //Generate atoms; split at all invisible boundaries followed by WSP
+    foreach (preg_split('~(?=[ \t])~', $this->getPreparedValue()) as $token)
     {
-      //Add the semi-colon separator
-      $tokens[count($tokens)-1] .= ';';
-      $attributeLines = explode("\r\n", $attribute->toString());
-      //Prepend each line with WSP
-      foreach ($attributeLines as $lineNumber => $attributeLine)
+      $tokens = array_merge($tokens, $this->generateTokenLines($token));
+    }
+    
+    //Try creating any attributes
+    if (!is_null($this->_attributes))
+    {
+      foreach ($this->_attributes->toArray() as $attribute)
       {
-        $tokens[] = ' ' . $attributeLine;
-        //Send line break if more lines follow
-        if ($lineNumber + 1 < count($attributeLines))
-        {
-          $tokens[] = "\r\n";
-        }
+        //Add the semi-colon separator
+        $tokens[count($tokens)-1] .= ';';
+        $tokens = array_merge($tokens, $this->generateTokenLines(
+          ' ' . str_replace("\r\n", "\r\n ", $attribute->toString())
+          ));
       }
     }
+    
+    return $tokens;
+  }
+  
+  /**
+   * Takes an array of tokens which appear in the header and turns them into
+   * an RFC 2822 compliant string, adding FWSP where needed.
+   * @param string[] $tokens
+   * @return string
+   * @access private
+   */
+  private function _tokensToString(array $tokens)
+  {
+    $lineCount = 0;
+    $headerLines = array();
+    $headerLines[] = $this->_name . ': ';
+    $currentLine =& $headerLines[$lineCount++];
+    
+    
+    //Build all tokens back into compliant header
+    foreach ($tokens as $token)
+    {
+      //Line longer than specified maximum or token was just a new line
+      if ("\r\n" == $token || strlen($currentLine . $token) > $this->_lineLength)
+      {
+        $headerLines[] = '';
+        $currentLine =& $headerLines[$lineCount++];
+      }
+      
+      //Append token to the line
+      if ("\r\n" != $token)
+      {
+        $currentLine .= $token;
+      }
+    }
+    
+    //Implode with FWSP (RFC 2822, 2.2.3)
+    return implode("\r\n", $headerLines) . "\r\n";
   }
   
 }

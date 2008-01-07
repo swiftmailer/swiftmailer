@@ -160,4 +160,38 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
     }
   }
   
+  public function testEqualsNeverAppearsAtEndOfLine()
+  {
+    /* -- RFC 2047, 5 (3).
+    The 'encoded-text' in an 'encoded-word' must be self-contained;
+    'encoded-text' MUST NOT be continued from one 'encoded-word' to
+    another.  This implies that the 'encoded-text' portion of a "B"
+    'encoded-word' will be a multiple of 4 characters long; for a "Q"
+    'encoded-word', any "=" character that appears in the 'encoded-text'
+    portion will be followed by two hexadecimal characters.
+    */
+    
+    $input = str_repeat('a', 140);
+    
+    $charStream = new Swift_MockCharacterStream();
+    
+    $output = '';
+    $seq = 0;
+    for (; $seq < 140; ++$seq)
+    {
+      $charStream->setReturnValueAt($seq, 'read', 'a');
+      
+      if (75 == $seq)
+      {
+        $output .= "\r\n"; // =\r\n
+      }
+      $output .= 'a';
+    }
+    
+    $charStream->setReturnValueAt($seq, 'read', false);
+    
+    $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+    $this->assertEqual($output, $encoder->encodeString($input));
+  }
+  
 }
