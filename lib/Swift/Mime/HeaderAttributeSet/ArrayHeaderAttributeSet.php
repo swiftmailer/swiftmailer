@@ -18,8 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/HeaderAttributeSet.php';
-require_once dirname(__FILE__) . '/HeaderAttribute.php';
+require_once dirname(__FILE__) . '/../HeaderAttributeSet.php';
+require_once dirname(__FILE__) . '/../HeaderAttribute.php';
 
 
 /**
@@ -28,7 +28,7 @@ require_once dirname(__FILE__) . '/HeaderAttribute.php';
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_ArrayHeaderAttributeSet
+class Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSet
   implements Swift_Mime_HeaderAttributeSet
 {
   

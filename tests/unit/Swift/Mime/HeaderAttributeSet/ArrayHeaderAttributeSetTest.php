@@ -1,11 +1,12 @@
 <?php
 
-require_once 'Swift/Mime/ArrayHeaderAttributeSet.php';
+require_once 'Swift/Mime/HeaderAttributeSet/ArrayHeaderAttributeSet.php';
 require_once 'Swift/Mime/HeaderAttribute.php';
 
 Mock::generate('Swift_Mime_HeaderAttribute', 'Swift_Mime_MockHeaderAttribute');
 
-class Swift_Mime_ArrayHeaderAttributeSetTest extends UnitTestCase
+class Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSetTest
+  extends UnitTestCase
 {
   
   public function testAddAndGetHeaderByName()
@@ -14,7 +15,7 @@ class Swift_Mime_ArrayHeaderAttributeSetTest extends UnitTestCase
     $attribute->setReturnValue('getName', 'charset');
     $attribute->setReturnValue('getValue', 'utf-8');
     
-    $set = new Swift_Mime_ArrayHeaderAttributeSet();
+    $set = new Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSet();
     $set->addAttribute($attribute);
     
     $testAttribute = $set->getAttributeByName('charset');
@@ -27,7 +28,7 @@ class Swift_Mime_ArrayHeaderAttributeSetTest extends UnitTestCase
     $attribute = new Swift_Mime_MockHeaderAttribute();
     $attribute->setReturnValue('getName', 'CHARSET');
     
-    $set = new Swift_Mime_ArrayHeaderAttributeSet();
+    $set = new Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSet();
     $set->addAttribute($attribute);
     
     $testAttribute = $set->getAttributeByName('charset');
@@ -36,7 +37,7 @@ class Swift_Mime_ArrayHeaderAttributeSetTest extends UnitTestCase
   
   public function testNullIsReturnedIfNoAttributeExists()
   {
-    $set = new Swift_Mime_ArrayHeaderAttributeSet();
+    $set = new Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSet();
     $this->assertNull($set->getAttributeByName('foo'));
   }
   
@@ -45,7 +46,7 @@ class Swift_Mime_ArrayHeaderAttributeSetTest extends UnitTestCase
     $attribute = new Swift_Mime_MockHeaderAttribute();
     $attribute->setReturnValue('getName', 'charset');
     
-    $set = new Swift_Mime_ArrayHeaderAttributeSet();
+    $set = new Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSet();
     $set->addAttribute($attribute);
     
     $testAttribute = $set->getAttributeByName('charset');
@@ -61,7 +62,7 @@ class Swift_Mime_ArrayHeaderAttributeSetTest extends UnitTestCase
     $attribute = new Swift_Mime_MockHeaderAttribute();
     $attribute->setReturnValue('getName', 'charset');
     
-    $set = new Swift_Mime_ArrayHeaderAttributeSet();
+    $set = new Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSet();
     $set->addAttribute($attribute);
     
     $testAttribute = $set->getAttributeByName('charset');
@@ -77,7 +78,7 @@ class Swift_Mime_ArrayHeaderAttributeSetTest extends UnitTestCase
     $attribute = new Swift_Mime_MockHeaderAttribute();
     $attribute->setReturnValue('getName', 'charset');
     
-    $set = new Swift_Mime_ArrayHeaderAttributeSet();
+    $set = new Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSet();
     $set->addAttribute($attribute);
     
     $testAttribute = $set->getAttributeByName('charset');
@@ -96,7 +97,7 @@ class Swift_Mime_ArrayHeaderAttributeSetTest extends UnitTestCase
     $att2 = new Swift_Mime_MockHeaderAttribute();
     $att2->setReturnValue('getName', 'lang');
     
-    $set = new Swift_Mime_ArrayHeaderAttributeSet();
+    $set = new Swift_Mime_HeaderAttributeSet_ArrayHeaderAttributeSet();
     $set->addAttribute($att1);
     $set->addAttribute($att2);
     
