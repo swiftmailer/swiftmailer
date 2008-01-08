@@ -355,7 +355,6 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends UnitTestCase
     $header = $this->_getHeader('X-Test', $text, $encoder);
     
     $headerString = $header->toString();
-    $this->dump($headerString);
     
     $this->assertEqual('X-Test: start =?' . $this->_charset . '?Q?' .
       'w=8Frd_w=8Frd?= then end =?' . $this->_charset . '?Q?'.

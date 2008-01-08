@@ -1,7 +1,7 @@
 <?php
 
 /*
- A Structured Mime Header in Swift Mailer.
+ An Address Mime Header in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,17 +18,17 @@
  
  */
 
-require_once dirname(__FILE__) . '/UnstructuredHeader.php';
+require_once dirname(__FILE__) . '/StructuredHeader.php';
 
 
 /**
- * A Structured MIME Header.
+ * An Address MIME Header for something like To or Cc.
  * @package Swift
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_Header_StructuredHeader
-  extends Swift_Mime_Header_UnstructuredHeader
+class Swift_Mime_Header_AddressHeader
+  extends Swift_Mime_Header_StructuredHeader
 {
   
   //
