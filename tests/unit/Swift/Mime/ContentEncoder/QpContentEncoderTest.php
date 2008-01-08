@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
 require_once 'Swift/ByteStream.php';
 require_once 'Swift/CharacterStream.php';
@@ -7,7 +8,8 @@ require_once 'Swift/CharacterStream.php';
 Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
 Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 
-class Swift_Mime_ContentEncoder_QpContentEncoderTest extends UnitTestCase
+class Swift_Mime_ContentEncoder_QpContentEncoderTest
+  extends Swift_AbstractSwiftUnitTestCase
 {
   
   public function testNameIsQuotedPrintable()
@@ -60,7 +62,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends UnitTestCase
       
       $is = new Swift_MockByteStream();
       $is->expectCallCount('write', 1);
-      $is->expectAt(0, 'write', array($char));
+      $is->expectAt(0, 'write', array(
+        new Swift_IdenticalBinaryExpectation($char)
+        ));
       
       $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
       

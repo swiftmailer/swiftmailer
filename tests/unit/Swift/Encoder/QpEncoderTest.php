@@ -1,11 +1,12 @@
 <?php
 
+require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Encoder/QpEncoder.php';
 require_once 'Swift/CharacterStream.php';
 
 Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 
-class Swift_Encoder_QpEncoderTest extends UnitTestCase
+class Swift_Encoder_QpEncoderTest extends Swift_AbstractSwiftUnitTestCase
 {
   
   /* -- RFC 2045, 6.7 --
@@ -41,14 +42,16 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
       
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
-      $charStream->expectOnce('importString', array($char));
+      $charStream->expectOnce('importString', array(
+        new Swift_IdenticalBinaryExpectation($char)
+        ));
       
       $charStream->setReturnValueAt(0, 'read', $char);
       $charStream->setReturnValueAt(1, 'read', false);
       
       $encoder = new Swift_Encoder_QpEncoder($charStream);
       
-      $this->assertIdentical($char, $encoder->encodeString($char));
+      $this->assertIdenticalBinary($char, $encoder->encodeString($char));
     }
   }
   
@@ -246,8 +249,9 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
       
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
-      //Simpletest bug with XML parser not creating entities (-:
-      $charStream->expectOnce('importString'/*, array($char)*/);
+      $charStream->expectOnce('importString', array(
+        new Swift_IdenticalBinaryExpectation($char)
+        ));
       
       $charStream->setReturnValueAt(0, 'read', $char);
       $charStream->setReturnValueAt(1, 'read', false);
@@ -270,7 +274,9 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
       
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
-    $charStream->expectOnce('importString', array($char));
+    $charStream->expectOnce('importString', array(
+      new Swift_IdenticalBinaryExpectation($char)
+      ));
       
     $charStream->setReturnValueAt(0, 'read', $char);
     $charStream->setReturnValueAt(1, 'read', false);
@@ -292,8 +298,9 @@ class Swift_Encoder_QpEncoderTest extends UnitTestCase
       
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
-      //Simpletest bug with XML parser not creating entities (-:
-      $charStream->expectOnce('importString'/*, array($char)*/);
+      $charStream->expectOnce('importString', array(
+        new Swift_IdenticalBinaryExpectation($char)
+        ));
       
       $charStream->setReturnValueAt(0, 'read', $char);
       $charStream->setReturnValueAt(1, 'read', false);
