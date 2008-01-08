@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/Mime/StructuredHeader.php';
+require_once 'Swift/Mime/Header/StructuredHeader.php';
 require_once 'Swift/Mime/HeaderAttribute.php';
 require_once 'Swift/Mime/HeaderAttributeSet.php';
 
@@ -9,31 +9,31 @@ Mock::generate('Swift_Mime_HeaderAttributeSet',
   'Swift_Mime_MockHeaderAttributeSet'
   );
 
-class Swift_Mime_StructuredHeaderTest extends UnitTestCase
+class Swift_Mime_Header_StructuredHeaderTest extends UnitTestCase
 {
 
   public function testGetNameReturnsNameVerbatim()
   {
-    $header = new Swift_Mime_StructuredHeader('Subject', 'Test');
+    $header = new Swift_Mime_Header_StructuredHeader('Subject', 'Test');
     $this->assertEqual('Subject', $header->getName());
   }
   
   public function testGetValueReturnsValueVerbatim()
   {
-    $header = new Swift_Mime_StructuredHeader('Subject', 'Test');
+    $header = new Swift_Mime_Header_StructuredHeader('Subject', 'Test');
     $this->assertEqual('Test', $header->getValue());
   }
   
   public function testValueCanBeSet()
   {
-    $header = new Swift_Mime_StructuredHeader('Subject', '');
+    $header = new Swift_Mime_Header_StructuredHeader('Subject', '');
     $header->setValue('Something');
     $this->assertEqual('Something', $header->getValue());
   }
   
   public function testAttributesCanBeSet()
   {
-    $header = new Swift_Mime_StructuredHeader('Content-Type', 'text/html');
+    $header = new Swift_Mime_Header_StructuredHeader('Content-Type', 'text/html');
     
     $attributes = array();
     $charsetAttribute = new Swift_Mime_MockHeaderAttribute();
@@ -57,7 +57,7 @@ class Swift_Mime_StructuredHeaderTest extends UnitTestCase
     Header fields are lines composed of a field name, followed by a colon
     (":"), followed by a field body, and terminated by CRLF.
     */
-    $header = new Swift_Mime_StructuredHeader('Subject', 'Test');
+    $header = new Swift_Mime_Header_StructuredHeader('Subject', 'Test');
     $this->assertEqual('Subject: Test' . "\r\n", $header->toString());
   }
   
@@ -75,7 +75,7 @@ class Swift_Mime_StructuredHeaderTest extends UnitTestCase
     
     $value = 'The quick brown fox jumped over the fence he was a very very ' .
       'scary brown fox with a bushy tail';
-    $header = new Swift_Mime_StructuredHeader('X-Custom-Header', $value);
+    $header = new Swift_Mime_Header_StructuredHeader('X-Custom-Header', $value);
     $header->setMaxLineLength(78); //A safe [RFC 2822, 2.2.3] default
     /*
     X-Custom-Header: The quick brown fox jumped over the fence he was a very very
@@ -96,7 +96,7 @@ class Swift_Mime_StructuredHeaderTest extends UnitTestCase
       );
     foreach ($specials as $char)
     {
-      $header = new Swift_Mime_StructuredHeader('Test', 'a' . $char . 'b');
+      $header = new Swift_Mime_Header_StructuredHeader('Test', 'a' . $char . 'b');
       $rendered = $header->toString();
       $this->assertEqual('Test: a\\' . $char . 'b' . "\r\n", $rendered);
     }

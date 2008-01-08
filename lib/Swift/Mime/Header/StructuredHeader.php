@@ -27,7 +27,8 @@ require_once dirname(__FILE__) . '/UnstructuredHeader.php';
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_StructuredHeader extends Swift_Mime_UnstructuredHeader
+class Swift_Mime_Header_StructuredHeader
+  extends Swift_Mime_Header_UnstructuredHeader
 {
   
   /**

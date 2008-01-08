@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/Mime/UnstructuredHeader.php';
+require_once 'Swift/Mime/Header/UnstructuredHeader.php';
 require_once 'Swift/Mime/HeaderAttribute.php';
 require_once 'Swift/Mime/HeaderAttributeSet.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
@@ -11,7 +11,7 @@ Mock::generate('Swift_Mime_HeaderAttributeSet',
   );
 Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 
-class Swift_Mime_UnstructuredHeaderTest extends UnitTestCase
+class Swift_Mime_Header_UnstructuredHeaderTest extends UnitTestCase
 {
   
   private $_charset = 'utf-8';
@@ -372,7 +372,7 @@ class Swift_Mime_UnstructuredHeaderTest extends UnitTestCase
     {
       $encoder = new Swift_Mime_MockHeaderEncoder();
     }
-    return new Swift_Mime_UnstructuredHeader(
+    return new Swift_Mime_Header_UnstructuredHeader(
       $name, $value, $this->_charset, $encoder
       );
   }

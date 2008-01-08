@@ -18,9 +18,9 @@
  
  */
 
-require_once dirname(__FILE__) . '/Header.php';
-require_once dirname(__FILE__) . '/HeaderEncoder.php';
-require_once dirname(__FILE__) . '/HeaderAttributeSet.php';
+require_once dirname(__FILE__) . '/../Header.php';
+require_once dirname(__FILE__) . '/../HeaderEncoder.php';
+require_once dirname(__FILE__) . '/../HeaderAttributeSet.php';
 
 
 /**
@@ -29,7 +29,7 @@ require_once dirname(__FILE__) . '/HeaderAttributeSet.php';
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_UnstructuredHeader implements Swift_Mime_Header
+class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
 {
   
   /**
