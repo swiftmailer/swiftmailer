@@ -1,11 +1,11 @@
 <?php
 
-require_once 'Swift/Mime/ArrayHeaderSet.php';
+require_once 'Swift/Mime/HeaderSet/ArrayHeaderSet.php';
 require_once 'Swift/Mime/Header.php';
 
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
 
-class Swift_Mime_ArrayHeaderSetTest extends UnitTestCase
+class Swift_Mime_HeaderSet_ArrayHeaderSetTest extends UnitTestCase
 {
   
   public function testAddAndGetHeaderByName()
@@ -14,7 +14,7 @@ class Swift_Mime_ArrayHeaderSetTest extends UnitTestCase
     $header->setReturnValue('getName', 'Subject');
     $header->setReturnValue('getValue', 'Test');
     
-    $set = new Swift_Mime_ArrayHeaderSet();
+    $set = new Swift_Mime_HeaderSet_ArrayHeaderSet();
     $set->addHeader($header);
     
     $testHeader = $set->getHeaderByName('Subject');
@@ -27,7 +27,7 @@ class Swift_Mime_ArrayHeaderSetTest extends UnitTestCase
     $header = new Swift_Mime_MockHeader();
     $header->setReturnValue('getName', 'SUBJECT');
     
-    $set = new Swift_Mime_ArrayHeaderSet();
+    $set = new Swift_Mime_HeaderSet_ArrayHeaderSet();
     $set->addHeader($header);
     
     $testHeader = $set->getHeaderByName('Subject');
@@ -36,7 +36,7 @@ class Swift_Mime_ArrayHeaderSetTest extends UnitTestCase
   
   public function testNullIsReturnedIfNoHeaderExists()
   {
-    $set = new Swift_Mime_ArrayHeaderSet();
+    $set = new Swift_Mime_HeaderSet_ArrayHeaderSet();
     $this->assertNull($set->getHeaderByName('foo'));
   }
   
@@ -45,7 +45,7 @@ class Swift_Mime_ArrayHeaderSetTest extends UnitTestCase
     $header = new Swift_Mime_MockHeader();
     $header->setReturnValue('getName', 'Subject');
     
-    $set = new Swift_Mime_ArrayHeaderSet();
+    $set = new Swift_Mime_HeaderSet_ArrayHeaderSet();
     $set->addHeader($header);
     
     $testHeader = $set->getHeaderByName('Subject');
@@ -61,7 +61,7 @@ class Swift_Mime_ArrayHeaderSetTest extends UnitTestCase
     $header = new Swift_Mime_MockHeader();
     $header->setReturnValue('getName', 'Subject');
     
-    $set = new Swift_Mime_ArrayHeaderSet();
+    $set = new Swift_Mime_HeaderSet_ArrayHeaderSet();
     $set->addHeader($header);
     
     $testHeader = $set->getHeaderByName('Subject');
@@ -77,7 +77,7 @@ class Swift_Mime_ArrayHeaderSetTest extends UnitTestCase
     $header = new Swift_Mime_MockHeader();
     $header->setReturnValue('getName', 'Subject');
     
-    $set = new Swift_Mime_ArrayHeaderSet();
+    $set = new Swift_Mime_HeaderSet_ArrayHeaderSet();
     $set->addHeader($header);
     
     $testHeader = $set->getHeaderByName('Subject');
@@ -96,7 +96,7 @@ class Swift_Mime_ArrayHeaderSetTest extends UnitTestCase
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getName', 'From');
     
-    $set = new Swift_Mime_ArrayHeaderSet();
+    $set = new Swift_Mime_HeaderSet_ArrayHeaderSet();
     $set->addHeader($h1);
     $set->addHeader($h2);
     
