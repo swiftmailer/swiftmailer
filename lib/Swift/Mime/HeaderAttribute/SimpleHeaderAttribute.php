@@ -18,8 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/HeaderAttribute.php';
-require_once dirname(__FILE__) . '/../Encoder.php';
+require_once dirname(__FILE__) . '/../HeaderAttribute.php';
+require_once dirname(__FILE__) . '/../../Encoder.php';
 
 
 /**
@@ -28,7 +28,8 @@ require_once dirname(__FILE__) . '/../Encoder.php';
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_SimpleHeaderAttribute implements Swift_Mime_HeaderAttribute
+class Swift_Mime_HeaderAttribute_SimpleHeaderAttribute
+  implements Swift_Mime_HeaderAttribute
 {
   
   /**
