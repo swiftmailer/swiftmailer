@@ -14,14 +14,48 @@ Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 class Swift_Mime_Header_AddressHeaderTest extends UnitTestCase
 {
   
-  public function testNothing()
+  private $_charset = 'utf-8';
+  
+  /*private $_regex;
+  
+  public function setUp()
   {
-    $this->assertTrue(false, 'Nothing tested');
+    $parenStr = '(\((?:\w|(?1))+?\))';
+    $this->_regex = '/^' . $parenStr . '$/';
+  }
+  
+  public function testMatching()
+  {
+    $this->assertPattern($this->_regex, '(abc_123)');
+    $this->assertPattern($this->_regex, '(abc_123(cde_456)789)');
+    $this->assertPattern($this->_regex, '(abc(xyz(123)89)(foo(bar(zip(button))))test)');
+  }*/
+  
+  /*
+  $this->_getHeader('From', array('chris@swiftmailer.org'=>'Chris Corbyn'));
+  $this->_getHeader('To', array(
+    'chris@swiftmailer.org'=>'Chris Corbyn',
+    'mark.corbyn@swiftmailer.org'=>'Mark Corbyn'
+    ));
+    
+  //setAddresses(), getAddresses(), setName()
+  */
+  
+  public function testEmailAddressIsReturned()
+  {
+    $header = $this->_getHeader('From', 'chris@swiftmailer.org');
+    $this->assertEqual('chris@swiftmailer.org', $header->getAddress());
+  }
+  
+  public function testEmailAddressIsReturnedInValue()
+  {
+    $header = $this->_getHeader('From', 'chris@swiftmailer.org');
+    $this->assertEqual('chris@swiftmailer.org', $header->getValue());
   }
   
   // -- Private methods
   
-  private function _getHeader($name, $value, $encoder = null)
+  private function _getHeader($name, $value = null, $encoder = null)
   {
     if (!$encoder)
     {

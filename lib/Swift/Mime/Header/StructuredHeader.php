@@ -53,6 +53,11 @@ class Swift_Mime_Header_StructuredHeader
     //Refer to RFC 2822 for ABNF
     $noWsCtl = '[\x01-\x08\x0B\x0C\x0E-\x19\x7F]';
     
+    $WSP = '[ \t]';
+    $CRLF = '(?:\r\n)';
+    
+    $FWS = '(?:' . $WSP . '*' . $CRLF . ')?' . $WSP;
+    
     $text = '[\x00-\x08\x0B\x0C\x0E-\x7F]';
     
     $quotedPair = '(?:\\\\' . $text . ')';
@@ -69,15 +74,11 @@ class Swift_Mime_Header_StructuredHeader
     $idLeft = '(?:' . $dotAtomText . '|' . $noFoldQuote . ')';
     $idRight = '(?:' . $dotAtomText . '|' . $noFoldLiteral . ')';
     
-    $WSP = '[ \t]';
-    $CRLF = '(?:\r\n)';
-    
-    $FWS = '(?:' . $WSP . '*' . $CRLF . ')?' . $WSP;
-    
     $ctext = '(?:' . $noWsCtl . '|[\x21-\x27\x2A-\x5B\x5D-\x7E])';
-    //TODO: Make this RFC2822 compliant (support comment nesting -- e.g. add |comment)
-    $ccontent = '(?:' . $ctext . '|' . $quotedPair . ')';
-    $comment = '(?:\((?:' . $FWS . '|' . $ccontent. ')*?' . $FWS . '?\))';
+    
+    //Uses recursive PCRE (?1) -- could be a weak point??
+    $ccontent = '(?:' . $ctext . '|' . $quotedPair . '|(?1))';
+    $comment = '(\((?:' . $FWS . '|' . $ccontent. ')*?' . $FWS . '?\))';
     
     $CFWS = '(?:(?:' . $FWS . '?' . $comment . ')*?(?:(?:' . $FWS . '?' . $comment . ')|' . $FWS . '))';
     
@@ -85,6 +86,9 @@ class Swift_Mime_Header_StructuredHeader
     
     //Save ABNF converted to PCRE as property for shared reference
     $this->rfc2822Tokens['NO-WS-CTL'] = $noWsCtl;
+    $this->rfc2822Tokens['WSP'] = $WSP;
+    $this->rfc2822Tokens['CRLF'] = $CRLF;
+    $this->rfc2822Tokens['FWS'] = $FWS;
     $this->rfc2822Tokens['text'] = $text;
     $this->rfc2822Tokens['quoted-pair'] = $quotedPair;
     $this->rfc2822Tokens['atext'] = $atext;
@@ -93,14 +97,11 @@ class Swift_Mime_Header_StructuredHeader
     $this->rfc2822Tokens['qtext'] = $qtext;
     $this->rfc2822Tokens['no-fold-quote'] = $noFoldQuote;
     $this->rfc2822Tokens['no-fold-literal'] = $noFoldLiteral;
-    $this->rfc2822Tokens['id-left'] = $idLeft;
-    $this->rfc2822Tokens['id-right'] = $idRight;
-    $this->rfc2822Tokens['WSP'] = $WSP;
-    $this->rfc2822Tokens['CRLF'] = $CRLF;
-    $this->rfc2822Tokens['FWS'] = $FWS;
     $this->rfc2822Tokens['comment'] = $comment;
     $this->rfc2822Tokens['ccontent'] = $ccontent;
     $this->rfc2822Tokens['CFWS'] = $CFWS;
+    $this->rfc2822Tokens['id-left'] = $idLeft;
+    $this->rfc2822Tokens['id-right'] = $idRight;
     $this->rfc2822Tokens['msg-id'] = $msgId;
   }
   

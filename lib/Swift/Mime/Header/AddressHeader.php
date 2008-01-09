@@ -19,6 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/StructuredHeader.php';
+require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 
 
 /**
@@ -31,6 +32,48 @@ class Swift_Mime_Header_AddressHeader
   extends Swift_Mime_Header_StructuredHeader
 {
   
-  //
+  /**
+   * The address used in this Header.
+   * @var string
+   * @access private
+   */
+  private $_address;
+  
+  /**
+   * Creates a new AddressHeader with $name and $address.
+   * @param string $name of Header
+   * @param string $address, optional
+   * @param string $charset, optional
+   * @param Swift_Mime_HeaderEncoder $encoder, optional
+   */
+  public function __construct($name, $address = null, $charset = null,
+    Swift_Mime_HeaderEncoder $encoder = null)
+  {
+    parent::__construct($name, null, $charset, $encoder);
+    
+    if (!is_null($address))
+    {
+      $this->setAddress($address);
+    }
+  }
+  
+  /**
+   * Set the address of this Header.
+   * @param string $address
+   */
+  public function setAddress($address)
+  {
+    $this->_address = $address;
+    $this->setValue($address);
+  }
+  
+  /**
+   * Get the address of this Header.
+   * @return string
+   */
+  public function getAddress()
+  {
+    return $this->_address;
+  }
   
 }
