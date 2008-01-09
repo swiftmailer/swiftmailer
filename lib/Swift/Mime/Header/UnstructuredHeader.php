@@ -186,9 +186,20 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
    */
   protected function getPreparedValue()
   {
+    return str_replace('\\', '\\\\', $this->encodeWords($this->_value));
+  }
+  
+  /**
+   * Encode needed word tokens within a string of input.
+   * @param string $input
+   * @return string
+   * @access protected
+   */
+  protected function encodeWords($input)
+  {
     $value = '';
     
-    $tokens = $this->getEncodableWordTokens($this->_value);
+    $tokens = $this->getEncodableWordTokens($input);
     
     foreach ($tokens as $token)
     {
@@ -200,7 +211,7 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
           ) + strlen($value);
         if ($usedLength >= 75)
         {
-          $usedLength = 0; //Already inside header field so let FWSP handle it
+          $usedLength = 0; //Already inside header field so let FWS handle it
         }
         
         //Don't encode starting WSP
@@ -230,7 +241,7 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
       }
       else
       {
-        $value .= str_replace('\\', '\\\\', $token);
+        $value .= $token;
       }
     }
     
@@ -342,7 +353,6 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
     $headerLines[] = $this->_name . ': ';
     $currentLine =& $headerLines[$lineCount++];
     
-    
     //Build all tokens back into compliant header
     foreach ($tokens as $token)
     {
@@ -360,7 +370,7 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
       }
     }
     
-    //Implode with FWSP (RFC 2822, 2.2.3)
+    //Implode with FWS (RFC 2822, 2.2.3)
     return implode("\r\n", $headerLines) . "\r\n";
   }
   
