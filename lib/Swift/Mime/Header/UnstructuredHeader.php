@@ -203,17 +203,9 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
     
     foreach ($tokens as $token)
     {
-      //See RFC 2822, Sect 2.2 (??)
+      //See RFC 2822, Sect 2.2 (really 2.2 ??)
       if ($this->tokenNeedsEncoding($token))
       {
-        $usedLength = strlen($this->getName() . ': ' .
-          '=?' . $this->_charset . '?' . $this->_encoder->getName() . '??='
-          ) + strlen($value);
-        if ($usedLength >= 75)
-        {
-          $usedLength = 0; //Already inside header field so let FWS handle it
-        }
-        
         //Don't encode starting WSP
         $firstChar = substr($token, 0, 1);
         if (in_array($firstChar, array(' ', "\t")))
@@ -222,20 +214,8 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
           $token = substr($token, 1);
         }
         
-        $encodedTextLines = explode("\r\n",
-          $this->_encoder->encodeString($token, $usedLength, 75)
-          );
-        
-        foreach ($encodedTextLines as $lineNum => $line)
-        {
-          $encodedTextLines[$lineNum] = '=?' . $this->_charset .
-            '?' . $this->_encoder->getName() .
-            '?' . $line . '?=';
-        }
-        
-        $encodedText = implode("\r\n ", $encodedTextLines);
-        
-        $value .= $encodedText;
+        $usedLength = strlen($this->getName() . ': ') + strlen($value);
+        $value .= $this->getTokenAsEncodedWord($token, $usedLength);
         
         $this->setMaxLineLength(76); //Forefully override
       }
@@ -246,6 +226,39 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
     }
     
     return $value;
+  }
+  
+  /**
+   * Get a token as an encoded word for safe insertion into headers.
+   * @param string $token to encode
+   * @param int $firstLineOffset, optional
+   * @return string
+   * @access protected
+   */
+  protected function getTokenAsEncodedWord($token, $firstLineOffset = 0)
+  {
+    //Adjust $firstLineOffset to account for space needed for syntax
+    $firstLineOffset += strlen(
+      '=?' . $this->_charset . '?' . $this->_encoder->getName() . '??='
+      );
+    
+    if ($firstLineOffset >= 75) //Does this logic need to be here?
+    {
+      $firstLineOffset = 0;
+    }
+    
+    $encodedTextLines = explode("\r\n",
+      $this->_encoder->encodeString($token, $firstLineOffset, 75)
+      );
+    
+    foreach ($encodedTextLines as $lineNum => $line)
+    {
+      $encodedTextLines[$lineNum] = '=?' . $this->_charset .
+        '?' . $this->_encoder->getName() .
+        '?' . $line . '?=';
+    }
+    
+    return implode("\r\n ", $encodedTextLines);
   }
   
   /**

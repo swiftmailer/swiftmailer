@@ -161,6 +161,7 @@ class Swift_Mime_Header_IdentificationHeader
   {
     $ids = array();
     
+    //Shouldn't really need this first CFWS!!! :-\
     $angleAddrs = preg_split(
       '/' . $this->rfc2822Tokens['CFWS'] . '+(?=' .
         $this->rfc2822Tokens['msg-id'] . ')/',
