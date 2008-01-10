@@ -143,6 +143,8 @@
         
       </div>
       
+      <div class="sweety-clear"></div>
+      
     </div>
   </body>
 </html>

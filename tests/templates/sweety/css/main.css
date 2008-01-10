@@ -76,6 +76,11 @@ div#sweety-messages {
   border-top: 1px solid #777;
 }
 
+div.sweety-clear {
+  width: 100%;
+  clear: both;
+}
+
 /** Look and feel **/
 /*-----------------*/
 
