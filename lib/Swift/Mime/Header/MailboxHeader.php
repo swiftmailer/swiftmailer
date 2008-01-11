@@ -152,7 +152,16 @@ class Swift_Mime_Header_MailboxHeader
           }
           else // ... otherwise it needs encoding
           {
-            $nameStr = $this->getTokenAsEncodedWord($name);
+            //Determine space remaining on line if first line
+            if (empty($strings))
+            {
+              $usedLength = strlen($this->getName() . ': ');
+            }
+            else
+            {
+              $usedLength = 0;
+            }
+            $nameStr = $this->getTokenAsEncodedWord($name, $usedLength);
           }
         }
         
@@ -188,6 +197,24 @@ class Swift_Mime_Header_MailboxHeader
   }
   
   /**
+   * Simply makes this header represent a single address with no associated name.
+   * @param string $address
+   */
+  public function setAddress($address)
+  {
+    return $this->setMailbox($address);
+  }
+  
+  /**
+   * Makes this Header represent a list of plain email addresses with no names.
+   * @param string[] $addresses
+   */
+  public function setAddresses(array $addresses)
+  {
+    return $this->setMailboxes(array_values($addresses));
+  }
+  
+  /**
    * Get all addresses in this Header.
    * @return string[]
    */
@@ -207,6 +234,27 @@ class Swift_Mime_Header_MailboxHeader
     {
       return $address;
     }
+  }
+  
+  /**
+   * Set the value as a string.
+   * The tokens in the string MUST comply with RFC 2822, 3.6.2 otherwise an
+   * Exception will be thrown.
+   * @param string $value
+   */
+  public function setValue($value)
+  {
+    return $this->setMailbox($value);
+  }
+  
+  /**
+   * Get the string value of the body in this Header.
+   * This is not necessarily RFC 2822 compliant (see toString() for that).
+   * @return string
+   */
+  public function getValue()
+  {
+    return implode(', ', $this->getMailboxStrings());
   }
   
 }

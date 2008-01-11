@@ -247,8 +247,7 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
       );
   }
   
-  //TODO: Fix ccontent regexp -- minor issue.
-  // Decide whether the unquote quoted-strings and quoted-pairs?
+  //TODO: Decide whether to unquote quoted-strings and quoted-pairs? in getValue()
   // Encoded words inside comments?
   
   // -- Private methods

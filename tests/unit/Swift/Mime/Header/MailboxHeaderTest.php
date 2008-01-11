@@ -188,9 +188,151 @@ class Swift_Mime_Header_MailboxHeaderTest extends UnitTestCase
       );
   }
   
-  //TODO: test encoding
-  // test toString()
-  // test getValue()
+  public function testSetAddressOverwritesAnyMailboxes()
+  {
+    $header = $this->_getHeader('From');
+    $header->setMailboxes(array(
+      'chris@swiftmailer.org' => 'Chris Corbyn',
+      'mark@swiftmailer.org' => 'Mark Corbyn'
+      ));
+    $this->assertEqual(
+      array('chris@swiftmailer.org' => 'Chris Corbyn',
+      'mark@swiftmailer.org' => 'Mark Corbyn'),
+      $header->getMailboxes()
+      );
+    $this->assertEqual(
+      array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
+      $header->getAddresses()
+      );
+    
+    $header->setAddress('mark@swiftmailer.org');
+    
+    $this->assertEqual(array('mark@swiftmailer.org' => null),
+      $header->getMailboxes()
+      );
+    $this->assertEqual('mark@swiftmailer.org', $header->getAddress());
+    $this->assertEqual(array('mark@swiftmailer.org'), $header->getAddresses());
+  }
+  
+  public function testSetAddressesOverwritesAnyMailboxes()
+  {
+    $header = $this->_getHeader('From');
+    $header->setMailboxes(array(
+      'chris@swiftmailer.org' => 'Chris Corbyn',
+      'mark@swiftmailer.org' => 'Mark Corbyn'
+      ));
+    $this->assertEqual(
+      array('chris@swiftmailer.org' => 'Chris Corbyn',
+      'mark@swiftmailer.org' => 'Mark Corbyn'),
+      $header->getMailboxes()
+      );
+    $this->assertEqual(
+      array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
+      $header->getAddresses()
+      );
+    
+    $header->setAddresses(array('chris@swiftmailer.org', 'mark@swiftmailer.org'));
+    
+    $this->assertEqual(
+      array('chris@swiftmailer.org' => null, 'mark@swiftmailer.org' => null),
+      $header->getMailboxes()
+      );
+    $this->assertEqual(
+      array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
+      $header->getAddresses()
+      );
+  }
+  
+  public function testNameIsEncodedIfNonAscii()
+  {
+    $name = 'Chris C' . pack('C', 0x8F) . 'rbyn';
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $encoder->setReturnValue('getName', 'Q');
+    $encoder->expectOnce('encodeString', array($name, '*', '*'));
+    $encoder->setReturnValue('encodeString', 'Chris_C=8Frbyn');
+    
+    $header = $this->_getHeader('From', array('chris@swiftmailer.org'=>$name),
+      $encoder
+      );
+    
+    $this->assertEqual(
+      '=?' . $this->_charset . '?Q?Chris_C=8Frbyn?= <chris@swiftmailer.org>',
+      $header->getMailboxString()
+      );
+  }
+  
+  public function testEncodingLineLengthCalculations()
+  {
+    /* -- RFC 2047, 2.
+    An 'encoded-word' may not be more than 75 characters long, including
+    'charset', 'encoding', 'encoded-text', and delimiters.
+    */
+    
+    $name = 'Chris C' . pack('C', 0x8F) . 'rbyn';
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $encoder->setReturnValue('getName', 'Q');
+    //'From: ' = 6, '=?utf-8?Q??=' = 12
+    $encoder->expectOnce('encodeString', array($name, 18, 75));
+    $encoder->setReturnValue('encodeString', 'Chris_C=8Frbyn');
+    
+    $header = $this->_getHeader('From', array('chris@swiftmailer.org'=>$name),
+      $encoder
+      );
+    
+    $header->getMailboxString();
+  }
+  
+  public function testGetValueReturnsMailboxStringValue()
+  {
+    $header = $this->_getHeader('From', array(
+      'chris@swiftmailer.org' => 'Chris Corbyn'
+      ));
+    $this->assertEqual(
+      'Chris Corbyn <chris@swiftmailer.org>', $header->getValue()
+      );
+  }
+  
+  public function testGetValueReturnsMailboxStringValueForMultipleMailboxes()
+  {
+    $header = $this->_getHeader('From', array(
+      'chris@swiftmailer.org' => 'Chris Corbyn',
+      'mark@swiftmailer.org' => 'Mark Corbyn'
+      ));
+    $this->assertEqual(
+      'Chris Corbyn <chris@swiftmailer.org>, Mark Corbyn <mark@swiftmailer.org>',
+      $header->getValue()
+      );
+  }
+  
+  public function testSetValueAcceptsAddrSpec()
+  {
+    $header = $this->_getHeader('Sender');
+    $header->setValue('chris@swiftmailer.org');
+    $this->assertEqual('chris@swiftmailer.org', $header->getValue());
+    $this->assertEqual('chris@swiftmailer.org', $header->getAddress());
+    $this->assertEqual(
+      array('chris@swiftmailer.org' => null),
+      $header->getMailboxes()
+      );
+    $this->assertEqual('chris@swiftmailer.org', $header->getMailboxString());
+  }
+  
+  public function testSetValueAcceptsNameAddr()
+  {
+    $header = $this->_getHeader('Sender');
+    $header->setValue('Chris Corbyn <chris@swiftmailer.org>');
+    $this->assertEqual('Chris Corbyn <chris@swiftmailer.org>', $header->getValue());
+    $this->assertEqual('chris@swiftmailer.org', $header->getAddress());
+    $this->assertEqual(
+      array('chris@swiftmailer.org' => 'Chris Corbyn'),
+      $header->getMailboxes()
+      );
+    $this->assertEqual('Chris Corbyn <chris@swiftmailer.org>',
+      $header->getMailboxString()
+      );
+  }
+  
+  //TODO: test toString()
   // test setValue()
   
   // -- Private methods
