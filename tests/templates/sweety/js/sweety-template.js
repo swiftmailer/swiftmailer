@@ -175,7 +175,7 @@ function SweetyUIManager() {
     var exceptionLabel = _createFailLabel("Exception");
     exceptionDiv.appendChild(exceptionLabel);
     
-    var messageSpan = document.createElement("span");
+    var messageSpan = document.createElement("strong");
     _setContent(messageSpan, ": " + message);
     exceptionDiv.appendChild(messageSpan);
     

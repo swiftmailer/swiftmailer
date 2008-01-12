@@ -163,8 +163,7 @@ class Swift_Mime_Header_IdentificationHeader
     
     //Shouldn't really need this first CFWS!!! :-\
     $angleAddrs = preg_split(
-      '/' . $this->rfc2822Tokens['CFWS'] . '+(?=' .
-        $this->rfc2822Tokens['msg-id'] . ')/',
+      '/(?<=>)' . $this->rfc2822Tokens['CFWS'] . '?(?=<)/',
       $value
       );
     
@@ -173,12 +172,7 @@ class Swift_Mime_Header_IdentificationHeader
       if (preg_match('/^' . $this->rfc2822Tokens['msg-id'] . '$/D', $idToken))
       {
         //Remove CFWS from start and end, then remove the < and >
-        $ids[] = substr(preg_replace(
-          '/(^' . $this->rfc2822Tokens['CFWS'] . ')|(' .
-            $this->rfc2822Tokens['CFWS']. '$)/',
-          '',
-          $idToken
-          ), 1, -1);
+        $ids[] = substr($this->trimCFWS($idToken), 1, -1);
       }
       else
       {

@@ -32,6 +32,13 @@ class Swift_Mime_Header_StructuredHeader
 {
   
   /**
+   * Special characters used in the syntax which need to be escaped.
+   * @var string[]
+   * @access private
+   */
+  private $_specials = array();
+  
+  /**
    * Tokens defined in RFC 2822 (and some related RFCs).
    * @var string[]
    * @access protected
@@ -49,6 +56,11 @@ class Swift_Mime_Header_StructuredHeader
     Swift_Mime_HeaderEncoder $encoder = null)
   {
     parent::__construct($name, $value, $charset, $encoder);
+    
+    $this->_specials = array(
+      '\\', '(', ')', '<', '>', '[', ']',
+      ':', ';', '@', ',', '.', '"'
+      );
     
     //Refer to RFC 2822 for ABNF
     $noWsCtl = '[\x01-\x08\x0B\x0C\x0E-\x19\x7F]';
@@ -112,6 +124,16 @@ class Swift_Mime_Header_StructuredHeader
     
     $mailboxList = '(?:' . $mailbox . '(?:,' . $mailbox . ')*?)';
     
+    $token = '(?:[^\(\)<>@,;:"\/\[\]\?\.=]+?)';
+    
+    $charset = $token;
+    
+    $encoding = $token;
+    
+    $encodedText = '(?:[\x21-\x3E\x40-\x7E]+?)';
+    
+    $encodedWord = '(?:=\?' . $charset . '\?' . $encoding . '\?' . $encodedText . '\?=)';
+    
     //Save ABNF converted to PCRE as property for shared reference
     $this->rfc2822Tokens['NO-WS-CTL'] = $noWsCtl;
     $this->rfc2822Tokens['WSP'] = $WSP;
@@ -149,6 +171,99 @@ class Swift_Mime_Header_StructuredHeader
     $this->rfc2822Tokens['name-addr'] = $nameAddr;
     $this->rfc2822Tokens['mailbox'] = $mailbox;
     $this->rfc2822Tokens['mailbox-list'] = $mailboxList;
+    
+    //Defined in RFC 2047
+    $this->rfc2822Tokens['token'] = $token;
+    $this->rfc2822Tokens['charset'] = $charset;
+    $this->rfc2822Tokens['encoding'] = $encoding;
+    $this->rfc2822Tokens['encoded-text'] = $encodedText;
+    $this->rfc2822Tokens['encoded-word'] = $encodedWord;
+  }
+  
+  // -- Protected methods
+  
+  /**
+   * Escape special characters in a string (convert to quoted-pairs).
+   * @param string $token
+   * @return string
+   * @access protected
+   */
+  protected function escapeSpecials($token)
+  {
+    foreach ($this->_specials as $char)
+    {
+      $token = str_replace($char, '\\' . $char, $token);
+    }
+    return $token;
+  }
+  
+  /**
+   * Remove CFWS from the left and right of the given token.
+   * @param string $token
+   * @return string
+   * @access protected
+   */
+  protected function trimCFWS($token)
+  {
+    return preg_replace(
+      '/^' . $this->rfc2822Tokens['CFWS'] . '|' .
+      $this->rfc2822Tokens['CFWS'] . '$/',
+      '',
+      $token
+      );
+  }
+  
+  /**
+   * Decodes encoded-word tokens as defined by RFC 2047.
+   * @param string $token
+   * @return string
+   * @access protected
+   */
+  protected function decodeEncodedWords($token)
+  {
+    return preg_replace_callback(
+      '/(?:' . $this->rfc2822Tokens['encoded-word'] .
+      $this->rfc2822Tokens['FWS'] . '+)*' .
+      $this->rfc2822Tokens['encoded-word'] . '/',
+      array($this, '_decodeEncodedWordList'),
+      $token
+      );
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Callback which decodes adjacent groups of encoded-word tokens.
+   * @param string[] $matches from PCRE backreferences.
+   * @return string
+   * @access private
+   */
+  private function _decodeEncodedWordList($matches)
+  {
+    $decodedWords = array();
+    $encodedWords = preg_split('/' . $this->rfc2822Tokens['FWS'] . '+/',
+      $matches[0]
+      );
+    foreach ($encodedWords as $word)
+    {
+      $word = substr($word, 2, -2); //Remove the =? and ?=
+      $tokens = explode('?', $word);
+      $encoding = strtoupper($tokens[1]);
+      switch ($encoding)
+      {
+        case 'Q':
+          $decodedWords[] = quoted_printable_decode(
+            str_replace('_', ' ', $tokens[2])
+            );
+          break;
+        case 'B':
+          $decodedWords[] = base64_decode($tokens[2]);
+          break;
+        default: //Not a known encoding scheme
+          $decodedWords[] = $word;
+      }
+    }
+    return implode('', $decodedWords);
   }
   
 }
