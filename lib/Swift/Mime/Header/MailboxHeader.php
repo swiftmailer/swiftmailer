@@ -40,13 +40,6 @@ class Swift_Mime_Header_MailboxHeader
   private $_mailboxes = array();
   
   /**
-   * The value of this Header, cached.
-   * @var string
-   * @access private
-   */
-  private $_cachedValue = null;
-  
-  /**
    * Creates a new MailboxHeader with $name and $mailbox.
    * Example:
    * <code>
@@ -83,13 +76,9 @@ class Swift_Mime_Header_MailboxHeader
   {
     parent::__construct($name, null, $charset, $encoder);
     
-    if (is_array($mailbox))
+    if (!is_null($mailbox))
     {
-      $this->setMailboxes($mailbox);
-    }
-    elseif (!is_null($mailbox))
-    {
-      $this->setMailbox($mailbox);
+      $this->setNameAddresses($mailbox);
     }
   }
   
@@ -101,71 +90,22 @@ class Swift_Mime_Header_MailboxHeader
    * <code>
    * <?php
    * //Sets two mailboxes in the Header, one with a personal name
-   * $header->setMailboxes(array(
+   * $header->setNameAddresses(array(
    *  'chris@swiftmailer.org' => 'Chris Corbyn',
    *  'mark@swiftmailer.org' //No associated personal name
    *  ));
    * ?>
    * </code>
-   * @param string[] $mailboxes
+   * @param string|string[] $mailboxes
    * @see __construct()
-   * @see setMailbox()
-   * @see setAddress(), setAddresses()
+   * @see setAddresses()
    * @see setValue()
    */
-  public function setMailboxes(array $mailboxes)
+  public function setNameAddresses($mailboxes)
   {
-    $this->_cachedValue = null; //Clear any cached value
+    $this->setCachedValue(null); //Clear any cached value
     
-    $actualMailboxes = array();
-    
-    foreach ($mailboxes as $key => $value)
-    {
-      if (is_string($key)) //key is email addr
-      {
-        $address = $key;
-        $name = $value;
-      }
-      else
-      {
-        $address = $value;
-        $name = null;
-      }
-      
-      if (!preg_match('/^' . $this->rfc2822Tokens['addr-spec'] . '$/D',
-        $address))
-      {
-        throw new Exception(
-          'Address in mailbox given does not comply with RFC 2822, 3.6.2.'
-          );
-      }
-      
-      $actualMailboxes[$address] = $name;
-    }
-    
-    $this->_mailboxes = $actualMailboxes;
-  }
-  
-  /**
-   * Set the mailbox address of this Header.
-   * Example:
-   * <code>
-   * <?php
-   * //Set a plain address
-   * $header->setMailbox('chris@swiftmailer.org');
-   * //Set an address with a personal name
-   * $header->setMailbox(array('chris@swiftmailer.org' => 'Chris Corbyn'));
-   * ?>
-   * </code>
-   * @param string|string[] $mailbox as string $address or string[] mailbox with email=>name
-   * @see __construct()
-   * @see setMailboxes()
-   * @see setAddress(), setAddresses()
-   * @see setValue()
-   */
-  public function setMailbox($mailbox)
-  {
-    return $this->setMailboxes((array)$mailbox);
+    $this->_mailboxes = $this->normalizeMailboxes((array) $mailboxes);
   }
   
   /**
@@ -177,7 +117,7 @@ class Swift_Mime_Header_MailboxHeader
    *  array('chris@swiftmailer.org' => 'Chris Corbyn',
    *  'mark@swiftmailer.org' => 'Mark Corbyn')
    *  );
-   * print_r($header->getMailboxStrings());
+   * print_r($header->getNameAddressStrings());
    * // array (
    * // 0 => Chris Corbyn <chris@swiftmailer.org>,
    * // 1 => Mark Corbyn <mark@swiftmailer.org>
@@ -185,71 +125,12 @@ class Swift_Mime_Header_MailboxHeader
    * ?>
    * </code>
    * @return string[]
-   * @see getMailboxString()
-   * @see getMailboxes()
+   * @see getNameAddresses()
    * @see toString()
    */
-  public function getMailboxStrings()
+  public function getNameAddressStrings()
   {
-    $strings = array();
-    
-    foreach ($this->_mailboxes as $email => $name)
-    {
-      $mailboxStr = $email;
-      if (!is_null($name))
-      {
-        //Treat name as exactly what was given
-        $nameStr = $name;
-        
-        //If it's not valid
-        if (!preg_match(
-          '/^' . $this->rfc2822Tokens['display-name'] . '$/D',
-          $nameStr))
-        {
-          // .. but it is just ascii text, try escaping some characters
-          // and make it a quoted-string
-          if (preg_match('/^' . $this->rfc2822Tokens['text'] . '*$/D', $nameStr))
-          {
-            $nameStr = $this->escapeSpecials($nameStr);
-            $nameStr = '"' . $nameStr . '"';
-          }
-          else // ... otherwise it needs encoding
-          {
-            //Determine space remaining on line if first line
-            if (empty($strings))
-            {
-              $usedLength = strlen($this->getName() . ': ');
-            }
-            else
-            {
-              $usedLength = 0;
-            }
-            $nameStr = $this->getTokenAsEncodedWord($name, $usedLength);
-          }
-        }
-        
-        $mailboxStr = $nameStr . ' <' . $mailboxStr . '>';
-      }
-      $strings[] = $mailboxStr;
-    }
-    
-    return $strings;
-  }
-  
-  /**
-   * Get the full mailbox of this Header in its valid RFC 2822 string form.
-   * If multiple mailboxes are set in this Header, only the first is returned.
-   * @return string
-   * @see getMailboxStrings()
-   * @see getMailboxes()
-   * @see toString()
-   */
-  public function getMailboxString()
-  {
-    foreach ($this->getMailboxStrings() as $mailbox)
-    {
-      return $mailbox;
-    }
+    return $this->_createNameAddressStrings($this->getNameAddresses());
   }
   
   /**
@@ -262,7 +143,7 @@ class Swift_Mime_Header_MailboxHeader
    *  array('chris@swiftmailer.org' => 'Chris Corbyn',
    *  'mark@swiftmailer.org' => 'Mark Corbyn')
    *  );
-   * print_r($header->getMailboxes());
+   * print_r($header->getNameAddresses());
    * // array (
    * // chris@swiftmailer.org => Chris Corbyn,
    * // mark@swiftmailer.org => Mark Corbyn
@@ -270,31 +151,12 @@ class Swift_Mime_Header_MailboxHeader
    * ?>
    * </code>
    * @return string[]
-   * @see getAddress(), getAddresses()
-   * @see getMailboxStrings()
+   * @see getAddresses()
+   * @see getNameAddressStrings()
    */
-  public function getMailboxes()
+  public function getNameAddresses()
   {
     return $this->_mailboxes;
-  }
-  
-  /**
-   * Simply makes this header represent a single address with no associated name.
-   * Example:
-   * <code>
-   * <?php
-   * $header->setAddress('chris@swiftmailer.org');
-   * ?>
-   * </code>
-   * @param string $address
-   * @see __construct()
-   * @see setAddresses()
-   * @see setMailbox(), setMailboxes()
-   * @see setValue()
-   */
-  public function setAddress($address)
-  {
-    return $this->setMailbox($address);
   }
   
   /**
@@ -309,20 +171,18 @@ class Swift_Mime_Header_MailboxHeader
    * ?>
    * </code>
    * @param string[] $addresses
-   * @see setAddress()
-   * @see setMailbox(), setMailboxes()
+   * @see setNameAddresses()
    * @see setValue()
    */
-  public function setAddresses(array $addresses)
+  public function setAddresses($addresses)
   {
-    return $this->setMailboxes(array_values($addresses));
+    return $this->setNameAddresses(array_values((array) $addresses));
   }
   
   /**
    * Get all email addresses in this Header.
    * @return string[]
-   * @see getAddress()
-   * @see getMailboxes()
+   * @see getNameAddresses()
    */
   public function getAddresses()
   {
@@ -330,24 +190,22 @@ class Swift_Mime_Header_MailboxHeader
   }
   
   /**
-   * Get the just the email address of the mailbox.
-   * If multiple mailboxes are set in this header, only the first address is returned.
-   * @return string
-   * @see getAddresses()
-   * @see getMailboxes()
+   * Remove one or more addresses from this Header.
+   * @param string|string[] $addresses
    */
-  public function getAddress()
+  public function removeAddresses($addresses)
   {
-    foreach ($this->getAddresses() as $address)
+    $this->setCachedValue(null);
+    foreach ((array) $addresses as $address)
     {
-      return $address;
+      unset($this->_mailboxes[$address]);
     }
   }
   
   /**
    * Set the value of this Header as a string.
-   * The tokens in the string MUST comply with RFC 2822, 3.6.2.
-   * The value will be parsed so {@link getMailboxes()} and other related methods
+   * The tokens in the string MUST comply with RFC 2822, 3.6.
+   * The value will be parsed so {@link getNameAddresses()} and other related methods
    * return appropriate values. This can be useful if working with raw data
    * from an email not generated by Swift.
    * Example:
@@ -361,53 +219,16 @@ class Swift_Mime_Header_MailboxHeader
    * </code>
    * @param string $value
    * @see __construct()
-   * @see setMailbox(), setMailboxes()
-   * @see setAddress(), setAddresses()
+   * @see setNameAddresses()
+   * @see setAddresses()
    * @see getValue()
    */
   public function setValue($value)
   {
-    $mailboxes = array();
-    
-    $mailboxList = preg_split('/(?<!\\\\),/', $value);
-    
-    foreach ($mailboxList as $mailbox)
-    {
-      $mailboxParts = preg_split(
-        '/(?=<' . $this->rfc2822Tokens['addr-spec'] . '>)/',
-        $mailbox
-        );
-      if (count($mailboxParts) == 2)
-      {
-         //Remove the < and >
-        $address = substr($this->trimCFWS($mailboxParts[1]), 1, -1);
-        //Get rid of any CFWS
-        $name = $this->trimCFWS($mailboxParts[0]);
-        if ('' == $name)
-        {
-          $name = null;
-        }
-        elseif (substr($name, 0, 1) == '"') //Name is a quoted-string
-        {
-          $name = preg_replace('/\\\\(.)/', '$1', substr($name, 1, -1));
-        }
-        else //Name is a simple list of words
-        {
-          $name = $this->decodeEncodedWords($name);
-        }
-      }
-      else
-      {
-        $address = $mailboxParts[0];
-        $name = null;
-      }
-      $mailboxes[$address] = $name;
-    }
-    
-    $this->setMailboxes($mailboxes);
+    $this->setNameAddresses($this->resolveNameAddresses($value));
     
     //We already know it's valid, no need to re-render
-    $this->_cachedValue = $value;
+    $this->setCachedValue($value);
   }
   
   /**
@@ -420,14 +241,14 @@ class Swift_Mime_Header_MailboxHeader
   public function getValue()
   {
     //Compute the string value of the header only if needed
-    if (is_null($this->_cachedValue))
+    if (is_null($this->getCachedValue()))
     {
-      $this->_cachedValue = implode(', ', $this->getMailboxStrings());
+      $this->setCachedValue($this->createMailboxListString($this->_mailboxes));
     }
-    return $this->_cachedValue;
+    return $this->getCachedValue();
   }
   
-  // -- Overridden points of extension
+  // -- Points of extension
   
   /**
    * Gets the value with all needed tokens prepared for insertion into the Header.
@@ -437,6 +258,202 @@ class Swift_Mime_Header_MailboxHeader
   protected function getPreparedValue()
   {
     return $this->getValue();
+  }
+  
+  /**
+   * Normalizes a user-input list of mailboxes into consistent key=>value pairs.
+   * @param string[] $mailboxes
+   * @return string[]
+   * @access protected
+   */
+  protected function normalizeMailboxes(array $mailboxes)
+  {
+    $actualMailboxes = array();
+    
+    foreach ($mailboxes as $key => $value)
+    {
+      if (is_string($key)) //key is email addr
+      {
+        $address = $key;
+        $name = $value;
+      }
+      else
+      {
+        $address = $value;
+        $name = null;
+      }
+      $this->_assertValidAddress($address);
+      $actualMailboxes[$address] = $name;
+    }
+    
+    return $actualMailboxes;
+  }
+  
+  /**
+   * Parses a RFC 2822 compliant mailbox-list and returns a list of key=>value
+   * pairs where (email => name).
+   * @param string $stringList
+   * @return string[]
+   * @access protected
+   */
+  protected function resolveNameAddresses($stringList)
+  {
+    $trimmedList = $this->trimCFWS($stringList);
+    if ('' == $trimmedList)
+    {
+      return array();
+    }
+    
+    $mailboxes = array();
+    
+    $mailboxList = preg_split('/(?<!\\\\),/', $stringList);
+    
+    foreach ($mailboxList as $mailbox)
+    {
+      $mailboxParts = preg_split(
+        '/(?=<' . $this->rfc2822Tokens['addr-spec'] . '>)/',
+        $mailbox
+        );
+      if (count($mailboxParts) == 2)
+      {
+         //Remove the < and >
+        $address = substr($this->trimCFWS($mailboxParts[1]), 1, -1);
+        $name = $this->decodeDisplayNameString($mailboxParts[0]);
+      }
+      else
+      {
+        $address = $this->trimCFWS($mailboxParts[0]);
+        $name = null;
+      }
+      
+      $this->_assertValidAddress($address);
+      
+      $mailboxes[$address] = $name;
+    }
+    
+    return $mailboxes;
+  }
+  
+  /**
+   * Produces a compliant, formatted display-name based on the string given.
+   * @param string $displayName as displayed
+   * @param boolean $shorten the first line to make remove for header name
+   * @return string
+   * @access protected
+   */
+  protected function createDisplayNameString($displayName, $shorten = false)
+  {
+    //Treat name as exactly what was given
+    $nameStr = $displayName;
+    
+    //If it's not valid
+    if (!preg_match(
+      '/^' . $this->rfc2822Tokens['display-name'] . '$/D',
+      $nameStr))
+    {
+      // .. but it is just ascii text, try escaping some characters
+      // and make it a quoted-string
+      if (preg_match('/^' . $this->rfc2822Tokens['text'] . '*$/D', $nameStr))
+      {
+        $nameStr = $this->escapeSpecials($nameStr);
+        $nameStr = '"' . $nameStr . '"';
+      }
+      else // ... otherwise it needs encoding
+      {
+        //Determine space remaining on line if first line
+        if ($shorten)
+        {
+          $usedLength = strlen($this->getName() . ': ');
+        }
+        else
+        {
+          $usedLength = 0;
+        }
+        $nameStr = $this->getTokenAsEncodedWord($displayName, $usedLength);
+      }
+    }
+    
+    return $nameStr;
+  }
+  
+  /**
+   * Decode/parse out a RFC 2822 compliant display-name to get the actual
+   * text value.
+   * @param string $displayName
+   * @return string
+   * @access protected
+   */
+  protected function decodeDisplayNameString($displayName)
+  {
+    //Get rid of any CFWS
+    $name = $this->trimCFWS($displayName);
+    if ('' == $name)
+    {
+      $name = null;
+    }
+    elseif (substr($name, 0, 1) == '"') //Name is a quoted-string
+    {
+      $name = preg_replace('/\\\\(.)/', '$1', substr($name, 1, -1));
+    }
+    else //Name is a simple list of words
+    {
+      $name = $this->decodeEncodedWords($name);
+    }
+    return $name;
+  }
+  
+  /**
+   * Creates a string form of all the mailboxes in the passed array.
+   * @param string[] $mailboxes
+   * @return string
+   * @access protected
+   */
+  protected function createMailboxListString(array $mailboxes)
+  {
+    return implode(', ', $this->_createNameAddressStrings($mailboxes));
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Return an array of strings conforming the the name-addr spec of RFC 2822.
+   * @param string[] $mailboxes
+   * @return string[]
+   * @access private
+   */
+  private function _createNameAddressStrings(array $mailboxes)
+  {
+    $strings = array();
+    
+    foreach ($mailboxes as $email => $name)
+    {
+      $mailboxStr = $email;
+      if (!is_null($name))
+      {
+        $nameStr = $this->createDisplayNameString($name, empty($strings));
+        $mailboxStr = $nameStr . ' <' . $mailboxStr . '>';
+      }
+      $strings[] = $mailboxStr;
+    }
+    
+    return $strings;
+  }
+  
+  /**
+   * Throws an Exception if the address passed does not comply with RFC 2822.
+   * @param string $address
+   * @throws Exception If invalid.
+   * @access protected
+   */
+  private function _assertValidAddress($address)
+  {
+    if (!preg_match('/^' . $this->rfc2822Tokens['addr-spec'] . '$/D',
+      $address))
+    {
+      throw new Exception(
+        'Address in mailbox given does not comply with RFC 2822, 3.6.2.'
+        );
+    }
   }
   
 }

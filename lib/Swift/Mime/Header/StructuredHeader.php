@@ -32,6 +32,13 @@ class Swift_Mime_Header_StructuredHeader
 {
   
   /**
+   * The value of this Header, cached.
+   * @var string
+   * @access private
+   */
+  private $_cachedValue = null;
+  
+  /**
    * Special characters used in the syntax which need to be escaped.
    * @var string[]
    * @access private
@@ -200,17 +207,26 @@ class Swift_Mime_Header_StructuredHeader
   /**
    * Remove CFWS from the left and right of the given token.
    * @param string $token
+   * @param string $sides to trim from
    * @return string
    * @access protected
    */
-  protected function trimCFWS($token)
+  protected function trimCFWS($token, $sides = 'both')
   {
-    return preg_replace(
-      '/^' . $this->rfc2822Tokens['CFWS'] . '|' .
-      $this->rfc2822Tokens['CFWS'] . '$/',
-      '',
-      $token
-      );
+    switch ($sides)
+    {
+      case 'right':
+        $pattern = '/' . $this->rfc2822Tokens['CFWS'] . '$/';
+        break;
+      case 'left':
+        $pattern = '/^' . $this->rfc2822Tokens['CFWS'] . '/';
+        break;
+      case 'both':
+      default:
+        $pattern = '/^' . $this->rfc2822Tokens['CFWS'] . '|' .
+      $this->rfc2822Tokens['CFWS'] . '$/';
+    }
+    return preg_replace($pattern, '', $token);
   }
   
   /**
@@ -228,6 +244,26 @@ class Swift_Mime_Header_StructuredHeader
       array($this, '_decodeEncodedWordList'),
       $token
       );
+  }
+  
+  /**
+   * Set a value into the cache.
+   * @param string $value
+   * @access protected
+   */
+  protected function setCachedValue($value)
+  {
+    $this->_cachedValue = $value;
+  }
+  
+  /**
+   * Get the value in the cache.
+   * @return string
+   * @access protected
+   */
+  protected function getCachedValue()
+  {
+    return $this->_cachedValue;
   }
   
   // -- Private methods

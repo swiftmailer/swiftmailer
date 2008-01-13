@@ -18,7 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/StructuredHeader.php';
+require_once dirname(__FILE__) . '/MailboxHeader.php';
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 
 
@@ -29,15 +29,22 @@ require_once dirname(__FILE__) . '/../HeaderEncoder.php';
  * @author Chris Corbyn
  */
 class Swift_Mime_Header_AddressHeader
-  extends Swift_Mime_Header_StructuredHeader
+  extends Swift_Mime_Header_MailboxHeader
 {
   
   /**
-   * The address used in this Header.
-   * @var string
+   * Groups of addresses with display names.
+   * @var string[]
    * @access private
    */
-  private $_address;
+  private $_groups = array();
+  
+  /**
+   * Addresses which will be sent to, but which will not be displayed.
+   * @var string[]
+   * @access private
+   */
+  private $_hiddenAddresses = array();
   
   /**
    * Creates a new AddressHeader with $name and $address.
@@ -49,31 +56,242 @@ class Swift_Mime_Header_AddressHeader
   public function __construct($name, $address = null, $charset = null,
     Swift_Mime_HeaderEncoder $encoder = null)
   {
-    parent::__construct($name, null, $charset, $encoder);
-    
-    if (!is_null($address))
+    parent::__construct($name, $address, $charset, $encoder);
+  }
+  
+  /**
+   * Get all plain email addresses in this Header.
+   * The returned array includes all addresses, including those grouped/hidden.
+   * @return string[]
+   * @see getNameAddresses()
+   */
+  public function getAddresses()
+  {
+    return array_keys($this->getNameAddresses());
+  }
+  
+  /**
+   * Get all mailboxes in this Header as key=>value pairs.
+   * The key is the address and the value is the name (or null if none set).
+   * This method returns addresses included in groups and hidden addresses too.
+   * See {@link Swift_Mime_Header_MailboxHeader::getNameAddresses()} for an example.
+   * @return string[]
+   * @see getAddresses()
+   * @see getNameAddressStrings()
+   */
+  public function getNameAddresses()
+  {
+    $addresses = parent::getNameAddresses();
+    foreach ($this->_groups as $group)
     {
-      $this->setAddress($address);
+      $addresses = array_merge($addresses, $group);
+    }
+    $addresses = array_merge($addresses, $this->_hiddenAddresses);
+    return $addresses;
+  }
+  
+  /**
+   * Remove one or more addresses from this Header.
+   * This method scans groups and hidden addresses and removes those too.
+   * @param string|string[] $addresses
+   */
+  public function removeAddresses($addresses)
+  {
+    parent::removeAddresses($addresses);
+    foreach ($addresses as $address)
+    {
+      foreach ($this->_groups as $name => $group)
+      {
+        unset($this->_groups[$name][$address]);
+      }
+      unset($this->_hiddenAddresses[$address]);
+    }
+    $this->setCachedValue(null);
+  }
+  
+  /**
+   * Defines a group of addresses which appear as a single unit in the Header.
+   * This is a little-known RFC 2822 feature, apart from it's use in specifying
+   * undisclosed-recipients.
+   * The address list in the group can be empty if needs be.
+   * Any email addresses appearing in this group which are already set in
+   * the header by setAddresses(), setNameAddresses() or related methods will be
+   * displayed in this group only.
+   * @param string $groupName, e.g. undisclosed-recipients
+   * @param string[] $mailboxes to add to the group
+   * @param boolean $hidden, true if all addresses in group should not be displayed
+   */
+  public function defineGroup($groupName, $mailboxes = array(), $hidden = false)
+  {
+    $mailboxes = $this->normalizeMailboxes($mailboxes);
+    $this->removeAddresses(array_keys($mailboxes));
+    $this->_groups[$groupName] = $mailboxes;
+    if ($hidden)
+    {
+      $this->setHiddenAddresses(array_keys($mailboxes));
+    }
+    $this->setCachedValue(null);
+  }
+  
+  /**
+   * Get all mailboxes defined for a given group.
+   * @param string $groupName
+   * @return string[]
+   */
+  public function getGroup($groupName)
+  {
+    if (array_key_exists($groupName, $this->_groups))
+    {
+      return $this->_groups[$groupName];
+    }
+    else
+    {
+      throw new Exception('No such group defined [' . $groupName . ']');
     }
   }
   
   /**
-   * Set the address of this Header.
-   * @param string $address
+   * Remove a defined group (and all it's addresses) from this Header.
+   * @param string $groupName
    */
-  public function setAddress($address)
+  public function removeGroup($groupName)
   {
-    $this->_address = $address;
-    $this->setValue($address);
+    unset($this->_groups[$groupName]);
+    $this->setCachedValue(null);
   }
   
   /**
-   * Get the address of this Header.
-   * @return string
+   * Set addresses which should not be displayed in the Header, but which
+   * will be sent to.
+   * If any of these addresses exist in the header already, or in groups they will
+   * be moved into the hidden address list.
+   * @param string|string[] $addresses
    */
-  public function getAddress()
+  public function setHiddenAddresses($addresses)
   {
-    return $this->_address;
+    $existingHidden = $this->_hiddenAddresses;
+    $this->removeAddresses((array) $addresses);
+    $this->_hiddenAddresses = $existingHidden;
+    foreach ((array) $addresses as $address)
+    {
+      $this->_hiddenAddresses[$address] = null;
+    }
+    $this->setCachedValue(null);
+  }
+  
+  /**
+   * Set the value of this Header as a string.
+   * The tokens in the string MUST comply with RFC 2822, 3.6.
+   * The value will be parsed so {@link getNameAddresses()} and other related methods
+   * return appropriate values. This can be useful if working with raw data
+   * from an email not generated by Swift.
+   * @param string $value
+   * @see __construct()
+   * @see setNameAddresses()
+   * @see setAddresses()
+   * @see defineGroup()
+   * @see getValue()
+   */
+  public function setValue($value)
+  {
+    $mailboxes = array();
+    $group = array();
+    $inGroup = false;
+    $tokens = preg_split('/(?<!\\\\),/', $value);
+    //Optimize this!
+    foreach ($tokens as $token)
+    {
+      $grouped = false;
+      if (!$inGroup)
+      {
+        //Start of a group
+        if (preg_match('/^' . $this->rfc2822Tokens['display-name'] . ':/', $token))
+        {
+          $inGroup = true;
+          $group[] = $token;
+          $grouped = true;
+        }
+        else
+        {
+          $mailboxes[] = $token;
+        }
+      }
+      
+      if ($inGroup)
+      {
+        if (!$grouped)
+        {
+          $group[] = $token;
+        }
+        
+        //End of a group
+        if (preg_match('/;' . $this->rfc2822Tokens['CFWS'] . '?$/', $token))
+        {
+          $inGroup = false;
+          $this->_parseGroup(implode(',', $group));
+          $group = array();
+        }
+      }
+    }
+    
+    parent::setValue(implode(',', $mailboxes));
+    $this->setCachedValue($value);
+  }
+  
+  /**
+   * Get the string value of the body in this Header.
+   * This is not necessarily RFC 2822 compliant since folding white space will
+   * not be added at this stage (see {@link toString()} for that).
+   * @return string
+   * @see toString()
+   */
+  public function getValue()
+  {
+    if (is_null($this->getCachedValue()))
+    {
+      $mailboxListString = parent::getValue();
+      $groupLists = array();
+      foreach ($this->_groups as $groupName => $mailboxes)
+      {
+        $groupLists[] = $this->createDisplayNameString($groupName) . ':' .
+          $this->createMailboxListString($mailboxes) . ';';
+      }
+      $groupListString = implode(', ', $groupLists);
+    
+      if (!empty($mailboxListString) && !empty($groupListString))
+      {
+        $ret = $groupListString . ', ' . $mailboxListString;
+      }
+      else
+      {
+        $ret = $groupListString . $mailboxListString; //Will just be either one
+      }
+    
+      $this->setCachedValue($ret);
+    }
+    
+    return $this->getCachedValue();
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Callback method for PCRE matching of groups.
+   * @param string[] $matches
+   * @return string
+   * @access private
+   */
+  private function _parseGroup($groupStr)
+  {
+    $colonPos = strpos($groupStr, ':');
+    $groupName = $this->decodeDisplayNameString(
+      substr($groupStr, 0, $colonPos)
+      ); //Leave the "," off
+    $mailboxList = substr($this->trimCFWS($groupStr, 'right'),
+      $colonPos + 1, -1
+      ); //Leave the ";" off
+    $nameAddresses = $this->resolveNameAddresses($mailboxList);
+    $this->defineGroup($groupName, $nameAddresses);
   }
   
 }
