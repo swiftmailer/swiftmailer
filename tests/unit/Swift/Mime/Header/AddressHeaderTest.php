@@ -436,15 +436,47 @@ class Swift_Mime_Header_AddressHeaderTest
   }
   
   public function testSetValueAcceptsGroupWithCommentBody()
-  {//valid
+  {
+    $header = $this->_getHeader('To');
+    $header->setValue(
+      'foo@bar.com, Tim Fletcher <tim@swiftmailer.org>,' . "\r\n " .
+      'Corbyn Brothers:(addresses undisclosed);, Andrew Rose <andrew@swiftmailer.org>'
+      );
+    $this->assertEqual(
+      'foo@bar.com, Tim Fletcher <tim@swiftmailer.org>,' . "\r\n " .
+      'Corbyn Brothers:(addresses undisclosed);, Andrew Rose <andrew@swiftmailer.org>',
+      $header->getValue()
+      );
+    $this->assertEqual(
+      array('foo@bar.com', 'tim@swiftmailer.org', 'andrew@swiftmailer.org'),
+      $header->getAddresses()
+      );
+    $this->assertEqual(
+      array(
+        'foo@bar.com' => null, 'tim@swiftmailer.org' => 'Tim Fletcher',
+        'andrew@swiftmailer.org' => 'Andrew Rose'
+        ),
+      $header->getNameAddresses()
+      );
+    $this->assertEqual(array(), $header->getGroup('Corbyn Brothers'));
   }
   
   public function testSetValueAcceptsEmptyFieldBody()
-  {//valid
+  {
+    $header = $this->_getHeader('To');
+    $header->setValue('');
+    $this->assertEqual('', $header->getValue());
+    $this->assertEqual(array(), $header->getAddresses());
+    $this->assertEqual(array(), $header->getNameAddresses());
   }
   
   public function testSetValueAcceptsCommentFieldBody()
-  {//see bcc
+  {
+    $header = $this->_getHeader('Bcc');
+    $header->setValue('(hidden from display)');
+    $this->assertEqual('(hidden from display)', $header->getValue());
+    $this->assertEqual(array(), $header->getAddresses());
+    $this->assertEqual(array(), $header->getNameAddresses());
   }
   
   // -- Private methods
