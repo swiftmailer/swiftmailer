@@ -68,6 +68,8 @@ class Swift_Mime_Header_StructuredHeader
       '\\', '(', ')', '<', '>', '[', ']',
       ':', ';', '@', ',', '.', '"'
       );
+      
+    //TODO: unstructured, address-list
     
     //Refer to RFC 2822 for ABNF
     $noWsCtl = '[\x01-\x08\x0B\x0C\x0E-\x19\x7F]';

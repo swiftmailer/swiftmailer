@@ -247,9 +247,6 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
       );
   }
   
-  //TODO: Decide whether to unquote quoted-strings and quoted-pairs? in getValue()
-  // Encoded words inside comments?
-  
   // -- Private methods
   
   private function _getHeader($name, $value = null, $encoder = null)
