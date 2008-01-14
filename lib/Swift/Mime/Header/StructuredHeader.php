@@ -141,6 +141,21 @@ class Swift_Mime_Header_StructuredHeader
     
     $encodedWord = '(?:=\?' . $charset . '\?' . $encoding . '\?' . $encodedText . '\?=)';
     
+    $dayName = '(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)';
+    $dayOfWeek = '(?:' . $FWS . '?' . $dayName . ')';
+    $day = '(?:' . $FWS . '?[0-9]{1,2})';
+    $monthName = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
+    $month = '(?:' . $FWS . $monthName . $FWS . ')';
+    $year = '(?:[0-9]{4,})';
+    $date = '(?:' . $day . $month . $year . ')';
+    $hour = '(?:[0-9]{2})';
+    $minute = '(?:[0-9]{2})';
+    $second = '(?:[0-9]{2})';
+    $timeOfDay = '(?:' . $hour . ':' . $minute . '(?::' . $second . ')?)';
+    $zone = '(?:[\+\-][0-9]{4})';
+    $time = '(?:' . $timeOfDay . $FWS . $zone . ')';
+    $dateTime = '(?:(?:' . $dayOfWeek . ',)?' . $date . $FWS . $time . $CFWS . '?)';
+    
     //Save ABNF converted to PCRE as property for shared reference
     $this->rfc2822Tokens['NO-WS-CTL'] = $noWsCtl;
     $this->rfc2822Tokens['WSP'] = $WSP;
@@ -168,6 +183,7 @@ class Swift_Mime_Header_StructuredHeader
     $this->rfc2822Tokens['id-right'] = $idRight;
     $this->rfc2822Tokens['msg-id'] = $msgId;
     
+    //Mailbox lists
     $this->rfc2822Tokens['display-name'] = $displayName;
     $this->rfc2822Tokens['angle-addr'] = $angleAddr;
     $this->rfc2822Tokens['local-part'] = $localPart;
@@ -185,6 +201,22 @@ class Swift_Mime_Header_StructuredHeader
     $this->rfc2822Tokens['encoding'] = $encoding;
     $this->rfc2822Tokens['encoded-text'] = $encodedText;
     $this->rfc2822Tokens['encoded-word'] = $encodedWord;
+    
+    //Date & time stuff
+    $this->rfc2822Tokens['day-name'] = $dayName;
+    $this->rfc2822Tokens['day-of-week'] = $dayOfWeek;
+    $this->rfc2822Tokens['day'] = $day;
+    $this->rfc2822Tokens['month-name'] = $monthName;
+    $this->rfc2822Tokens['month'] = $month;
+    $this->rfc2822Tokens['year'] = $year;
+    $this->rfc2822Tokens['date'] = $date;
+    $this->rfc2822Tokens['hour'] = $hour;
+    $this->rfc2822Tokens['minute'] = $minute;
+    $this->rfc2822Tokens['second'] = $second;
+    $this->rfc2822Tokens['time-of-day'] = $timeOfDay;
+    $this->rfc2822Tokens['zone'] = $zone;
+    $this->rfc2822Tokens['time'] = $time;
+    $this->rfc2822Tokens['date-time'] = $dateTime;
   }
   
   // -- Protected methods
@@ -244,6 +276,11 @@ class Swift_Mime_Header_StructuredHeader
       array($this, '_decodeEncodedWordList'),
       $token
       );
+  }
+  
+  protected function unfoldWhiteSpace($token)
+  {
+    return preg_replace('/\r\n([ \t])/', '$1', $token);
   }
   
   /**
