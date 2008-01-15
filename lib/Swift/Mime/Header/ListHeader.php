@@ -34,9 +34,8 @@ class Swift_Mime_Header_ListHeader
 {
   
   /**
-   * The IDs used in the value of this Header.
-   * This may hold multiple IDs or just a single ID.
-   * @var string
+   * The list of values displayed in this Header.
+   * @var string[]
    * @access private
    */
   private $_values = array();
@@ -52,6 +51,85 @@ class Swift_Mime_Header_ListHeader
     Swift_Mime_HeaderEncoder $encoder = null)
   {
     parent::__construct($name, null, $charset, $encoder);
+    
+    $this->setValueList($values);
+  }
+  
+  /**
+   * Set the list of values to display in this Header.
+   * @param string[] $values
+   */
+  public function setValueList(array $values)
+  {
+    $this->_values = $values;
+    $this->setCachedValue(null);
+  }
+  
+  /**
+   * Get the list of values displayed in this Header.
+   * @return string[]
+   */
+  public function getValueList()
+  {
+    return $this->_values;
+  }
+  
+  /**
+   * Get the string value of the body in this Header.
+   * This is not necessarily RFC 2822 compliant since folding white space will
+   * not be added at this stage (see {@link toString()} for that).
+   * @return string
+   * @see toString()
+   */
+  public function getValue()
+  {
+    if (!$this->getCachedValue())
+    {
+      $values = array();
+      foreach ($this->_values as $value)
+      {
+        $values[] = $this->createPhrase($value, !empty($values));
+      }
+      $this->setCachedValue(implode(', ', $values));
+    }
+    return $this->getCachedValue();
+  }
+  
+  
+  /**
+   * Set the value of this Header as a string.
+   * The tokens in the string MUST comply with RFC 2822, 3.6.
+   * The value will be parsed so {@link getValueList()} returns a valid list.
+   * @param string $value
+   * @see __construct()
+   * @see setValueList()
+   * @see getValue()
+   */
+  public function setValue($value)
+  {
+    $actualValues = array();
+    $values = preg_split('/(?<!\\\\),/', $value);
+    foreach ($values as $phrase)
+    {
+      if (preg_match('/^' . $this->rfc2822Tokens['phrase'] . '$/D', $phrase))
+      {
+        $actualValues[] = $this->decodePhrase($phrase);
+      }
+    }
+    $this->setValueList($actualValues);
+    $this->setCachedValue($value);
+  }
+  
+  // -- Overridden points of extension
+  
+  /**
+   * Gets the value with all needed tokens prepared for insertion into the Header.
+   * @return string
+   * @access protected
+   */
+  protected function getPreparedValue()
+  {
+    return $this->getValue();
   }
   
 }

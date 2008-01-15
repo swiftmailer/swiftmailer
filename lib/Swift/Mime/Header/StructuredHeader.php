@@ -243,6 +243,80 @@ class Swift_Mime_Header_StructuredHeader
   }
   
   /**
+   * Produces a compliant, formatted RFC 2822 'phrase' based on the string given.
+   * @param string $string as displayed
+   * @param boolean $shorten the first line to make remove for header name
+   * @return string
+   * @access protected
+   */
+  protected function createPhrase($string, $shorten = false)
+  {
+    //Treat token as exactly what was given
+    $phraseStr = $string;
+    
+    //If it's not valid
+    if (!preg_match('/^' . $this->rfc2822Tokens['phrase'] . '$/D', $phraseStr))
+    {
+      // .. but it is just ascii text, try escaping some characters
+      // and make it a quoted-string
+      if (preg_match('/^' . $this->rfc2822Tokens['text'] . '*$/D', $phraseStr))
+      {
+        $phraseStr = $this->escapeSpecials($phraseStr);
+        $phraseStr = '"' . $phraseStr . '"';
+      }
+      else // ... otherwise it needs encoding
+      {
+        //Determine space remaining on line if first line
+        if ($shorten)
+        {
+          $usedLength = strlen($this->getName() . ': ');
+        }
+        else
+        {
+          $usedLength = 0;
+        }
+        $phraseStr = $this->encodeWords($string, $usedLength);
+      }
+    }
+    
+    return $phraseStr;
+  }
+  
+  /**
+   * Decode/parse out a RFC 2822 compliant display-name to get the actual
+   * text value.
+   * @param string $displayName
+   * @return string
+   * @access protected
+   */
+  protected function decodePhrase($phrase)
+  {
+    //Get rid of any CFWS
+    $string = $this->trimCFWS($phrase);
+    if ('' == $string)
+    {
+      return null;
+    }
+    
+    if (!preg_match('/^' . $this->rfc2822Tokens['phrase'] . '$/D', $string))
+    {
+      throw new Exception('Invalid RFC 2822 phrase token.');
+    }
+    
+    $string = $this->unfoldWhitespace($string);
+    
+    if (substr($string, 0, 1) == '"') //Name is a quoted-string
+    {
+      $string = preg_replace('/\\\\(.)/', '$1', substr($string, 1, -1));
+    }
+    else //Name is a simple list of words
+    {
+      $string = $this->decodeEncodedWords($string);
+    }
+    return $string;
+  }
+  
+  /**
    * Remove CFWS from the left and right of the given token.
    * @param string $token
    * @param string $sides to trim from

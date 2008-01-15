@@ -2,15 +2,6 @@
 
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/DateHeader.php';
-require_once 'Swift/Mime/HeaderAttribute.php';
-require_once 'Swift/Mime/HeaderAttributeSet.php';
-require_once 'Swift/Mime/HeaderEncoder.php';
-
-Mock::generate('Swift_Mime_HeaderAttribute', 'Swift_Mime_MockHeaderAttribute');
-Mock::generate('Swift_Mime_HeaderAttributeSet',
-  'Swift_Mime_MockHeaderAttributeSet'
-  );
-Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 
 class Swift_Mime_Header_DateHeaderTest
   extends Swift_AbstractSwiftUnitTestCase

@@ -34,7 +34,7 @@ class Swift_Mime_Header_IdentificationHeader
   /**
    * The IDs used in the value of this Header.
    * This may hold multiple IDs or just a single ID.
-   * @var string
+   * @var string[]
    * @access private
    */
   private $_ids = array();

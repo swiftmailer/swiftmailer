@@ -2,14 +2,8 @@
 
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/MailboxHeader.php';
-require_once 'Swift/Mime/HeaderAttribute.php';
-require_once 'Swift/Mime/HeaderAttributeSet.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 
-Mock::generate('Swift_Mime_HeaderAttribute', 'Swift_Mime_MockHeaderAttribute');
-Mock::generate('Swift_Mime_HeaderAttributeSet',
-  'Swift_Mime_MockHeaderAttributeSet'
-  );
 Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 
 class Swift_Mime_Header_MailboxHeaderTest
@@ -190,18 +184,19 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testNameIsEncodedIfNonAscii()
   {
-    $name = 'Chris C' . pack('C', 0x8F) . 'rbyn';
+    $name = 'C' . pack('C', 0x8F) . 'rbyn';
     $encoder = new Swift_Mime_MockHeaderEncoder();
     $encoder->setReturnValue('getName', 'Q');
     $encoder->expectOnce('encodeString', array($name, '*', '*'));
-    $encoder->setReturnValue('encodeString', 'Chris_C=8Frbyn');
+    $encoder->setReturnValue('encodeString', 'C=8Frbyn');
     
-    $header = $this->_getHeader('From', array('chris@swiftmailer.org'=>$name),
+    $header = $this->_getHeader('From',
+      array('chris@swiftmailer.org'=>'Chris ' . $name),
       $encoder
       );
     
     $this->assertEqual(
-      '=?' . $this->_charset . '?Q?Chris_C=8Frbyn?= <chris@swiftmailer.org>',
+      'Chris =?' . $this->_charset . '?Q?C=8Frbyn?= <chris@swiftmailer.org>',
       array_shift($header->getNameAddressStrings())
       );
   }
@@ -213,14 +208,14 @@ class Swift_Mime_Header_MailboxHeaderTest
     'charset', 'encoding', 'encoded-text', and delimiters.
     */
     
-    $name = 'Chris C' . pack('C', 0x8F) . 'rbyn';
+    $name = 'C' . pack('C', 0x8F) . 'rbyn';
     $encoder = new Swift_Mime_MockHeaderEncoder();
     $encoder->setReturnValue('getName', 'Q');
-    //'From: ' = 6, '=?utf-8?Q??=' = 12
     $encoder->expectOnce('encodeString', array($name, 18, 75));
-    $encoder->setReturnValue('encodeString', 'Chris_C=8Frbyn');
+    $encoder->setReturnValue('encodeString', 'C=8Frbyn');
     
-    $header = $this->_getHeader('From', array('chris@swiftmailer.org'=>$name),
+    $header = $this->_getHeader('From',
+      array('chris@swiftmailer.org'=>'Chris ' . $name),
       $encoder
       );
     
@@ -453,12 +448,12 @@ class Swift_Mime_Header_MailboxHeaderTest
     $encoder->setReturnValue('getName', 'Q');
     $encoder->expectOnce('encodeString', array(
       new Swift_IdenticalBinaryExpectation(
-        'Chris C' . pack('C', 0x8F) . 'rbyn Mail Guru'
+        'C' . pack('C', 0x8F) . 'rbyn'
         ),
       '*',
       '*'
       ));
-    $encoder->setReturnValue('encodeString', 'Chris_C=8Frbyn_Mail_Guru');
+    $encoder->setReturnValue('encodeString', 'C=8Frbyn');
     
     $header = $this->_getHeader('From', null, $encoder);
     $header->setValue(
@@ -484,7 +479,7 @@ class Swift_Mime_Header_MailboxHeaderTest
       '%s: Encoded words should be decoded'
       );
     $this->assertEqual(
-      array('=?utf-8?Q?Chris_C=8Frbyn_Mail_Guru?= <chris@swiftmailer.org>',
+      array('Chris =?utf-8?Q?C=8Frbyn?= Mail Guru <chris@swiftmailer.org>',
       'Mark Corbyn <mark@swiftmailer.org>'),
       $header->getNameAddressStrings()
       );
@@ -496,12 +491,12 @@ class Swift_Mime_Header_MailboxHeaderTest
     $encoder->setReturnValue('getName', 'B');
     $encoder->expectOnce('encodeString', array(
       new Swift_IdenticalBinaryExpectation(
-        'Chris C' . pack('C', 0x8F) . 'rbyn Mail Guru'
+        'C' . pack('C', 0x8F) . 'rbyn'
         ),
       '*',
       '*'
       ));
-    $encoder->setReturnValue('encodeString', 'Q2hyaXMgQ49yYnluIE1haWwgR3VydQ==');
+    $encoder->setReturnValue('encodeString', 'Q49yYnlu');
     
     $header = $this->_getHeader('From', null, $encoder);
     $header->setValue(
@@ -527,7 +522,7 @@ class Swift_Mime_Header_MailboxHeaderTest
       '%s: Encoded words should be decoded'
       );
     $this->assertEqual(
-      array('=?utf-8?B?Q2hyaXMgQ49yYnluIE1haWwgR3VydQ==?= <chris@swiftmailer.org>',
+      array('Chris =?utf-8?B?Q49yYnlu?= Mail Guru <chris@swiftmailer.org>',
       'Mark Corbyn <mark@swiftmailer.org>'),
       $header->getNameAddressStrings()
       );

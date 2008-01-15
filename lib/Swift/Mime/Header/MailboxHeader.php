@@ -343,37 +343,7 @@ class Swift_Mime_Header_MailboxHeader
    */
   protected function createDisplayNameString($displayName, $shorten = false)
   {
-    //Treat name as exactly what was given
-    $nameStr = $displayName;
-    
-    //If it's not valid
-    if (!preg_match(
-      '/^' . $this->rfc2822Tokens['display-name'] . '$/D',
-      $nameStr))
-    {
-      // .. but it is just ascii text, try escaping some characters
-      // and make it a quoted-string
-      if (preg_match('/^' . $this->rfc2822Tokens['text'] . '*$/D', $nameStr))
-      {
-        $nameStr = $this->escapeSpecials($nameStr);
-        $nameStr = '"' . $nameStr . '"';
-      }
-      else // ... otherwise it needs encoding
-      {
-        //Determine space remaining on line if first line
-        if ($shorten)
-        {
-          $usedLength = strlen($this->getName() . ': ');
-        }
-        else
-        {
-          $usedLength = 0;
-        }
-        $nameStr = $this->getTokenAsEncodedWord($displayName, $usedLength);
-      }
-    }
-    
-    return $nameStr;
+    return $this->createPhrase($displayName, $shorten);
   }
   
   /**
@@ -385,21 +355,7 @@ class Swift_Mime_Header_MailboxHeader
    */
   protected function decodeDisplayNameString($displayName)
   {
-    //Get rid of any CFWS
-    $name = $this->trimCFWS($displayName);
-    if ('' == $name)
-    {
-      $name = null;
-    }
-    elseif (substr($name, 0, 1) == '"') //Name is a quoted-string
-    {
-      $name = preg_replace('/\\\\(.)/', '$1', substr($name, 1, -1));
-    }
-    else //Name is a simple list of words
-    {
-      $name = $this->decodeEncodedWords($name);
-    }
-    return $name;
+    return $this->decodePhrase($displayName);
   }
   
   /**

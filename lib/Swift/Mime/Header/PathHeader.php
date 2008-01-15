@@ -147,4 +147,16 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
     return $this->getCachedValue();
   }
   
+  // -- Overridden points of extension
+  
+  /**
+   * Gets the value with all needed tokens prepared for insertion into the Header.
+   * @return string
+   * @access protected
+   */
+  protected function getPreparedValue()
+  {
+    return $this->getValue();
+  }
+  
 }

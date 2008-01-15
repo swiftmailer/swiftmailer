@@ -192,10 +192,11 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   /**
    * Encode needed word tokens within a string of input.
    * @param string $input
+   * @param string $usedLength, optional
    * @return string
    * @access protected
    */
-  protected function encodeWords($input)
+  protected function encodeWords($input, $usedLength = -1)
   {
     $value = '';
     
@@ -214,7 +215,10 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
           $token = substr($token, 1);
         }
         
-        $usedLength = strlen($this->getName() . ': ') + strlen($value);
+        if (-1 == $usedLength)
+        {
+          $usedLength = strlen($this->getName() . ': ') + strlen($value);
+        }
         $value .= $this->getTokenAsEncodedWord($token, $usedLength);
         
         $this->setMaxLineLength(76); //Forefully override
