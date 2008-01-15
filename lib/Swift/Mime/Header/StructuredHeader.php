@@ -125,6 +125,9 @@ class Swift_Mime_Header_StructuredHeader
     $domain = '(?:' . $dotAtom . '|' . $domainLiteral . ')';
     
     $addrSpec = '(?:' . $localPart . '@' . $domain . ')';
+    
+    $path = '(?:' . $CFWS . '?<(?:' . $CFWS . '|' . $addrSpec . ')?>' . $CFWS . '?)';
+    
     $angleAddr = '(?:' . $CFWS . '?<' . $addrSpec . '>' . $CFWS . '?)';
     
     $nameAddr = '(?:'. $displayName . '?' . $angleAddr . ')';
@@ -185,7 +188,7 @@ class Swift_Mime_Header_StructuredHeader
     $this->rfc2822Tokens['id-right'] = $idRight;
     $this->rfc2822Tokens['msg-id'] = $msgId;
     
-    //Mailbox lists
+    //Mailbox/address stuff
     $this->rfc2822Tokens['display-name'] = $displayName;
     $this->rfc2822Tokens['angle-addr'] = $angleAddr;
     $this->rfc2822Tokens['local-part'] = $localPart;
@@ -193,6 +196,7 @@ class Swift_Mime_Header_StructuredHeader
     $this->rfc2822Tokens['domain-literal'] = $domainLiteral;
     $this->rfc2822Tokens['domain'] = $domain;
     $this->rfc2822Tokens['addr-spec'] = $addrSpec;
+    $this->rfc2822Tokens['path'] = $path;
     $this->rfc2822Tokens['name-addr'] = $nameAddr;
     $this->rfc2822Tokens['mailbox'] = $mailbox;
     $this->rfc2822Tokens['mailbox-list'] = $mailboxList;
