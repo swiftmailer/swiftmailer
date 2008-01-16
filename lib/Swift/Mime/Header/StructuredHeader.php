@@ -87,27 +87,27 @@ class Swift_Mime_Header_StructuredHeader
     
     //Uses recursive PCRE (?1) -- could be a weak point??
     $ccontent = '(?:' . $ctext . '|' . $quotedPair . '|(?1))';
-    $comment = '(\((?:' . $FWS . '|' . $ccontent. ')*?' . $FWS . '?\))';
+    $comment = '(\((?:' . $FWS . '|' . $ccontent. ')*' . $FWS . '?\))';
     
-    $CFWS = '(?:(?:' . $FWS . '?' . $comment . ')*?(?:(?:' . $FWS . '?' . $comment . ')|' . $FWS . '))';
+    $CFWS = '(?:(?:' . $FWS . '?' . $comment . ')*(?:(?:' . $FWS . '?' . $comment . ')|' . $FWS . '))';
     
     $qtext = '(?:' . $noWsCtl . '|[\x21\x23-\x5B\x5D-\x7E])';
     $qcontent = '(?:' . $qtext . '|' . $quotedPair . ')';
     
-    $quotedString = '(?:' . $CFWS . '?"' . '(' . $FWS . '?' . $qcontent . ')*?' . $FWS . '?"' . $CFWS . '?)';
+    $quotedString = '(?:' . $CFWS . '?"' . '(' . $FWS . '?' . $qcontent . ')*' . $FWS . '?"' . $CFWS . '?)';
     
     $atext = '[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_`\{\}\|~]';
-    $atom = '(?:' . $CFWS . '?' . $atext . '+?' . $CFWS . '?)';
-    $dotAtomText = '(?:' . $atext . '+' . '(\.' . $atext . '+)*?)';
-    $dotAtom = '(?:' . $CFWS . '?' . $dotAtomText . '+?' . $CFWS . '?)';
+    $atom = '(?:' . $CFWS . '?' . $atext . '+' . $CFWS . '?)';
+    $dotAtomText = '(?:' . $atext . '+' . '(\.' . $atext . '+)*)';
+    $dotAtom = '(?:' . $CFWS . '?' . $dotAtomText . '+' . $CFWS . '?)';
     
     $word = '(?:' . $atom . '|' . $quotedString . ')';
     $phrase = '(?:' . $word . '+?)';
     
-    $noFoldQuote = '(?:"(?:' . $qtext . '|' . $quotedPair . ')*?")';
+    $noFoldQuote = '(?:"(?:' . $qtext . '|' . $quotedPair . ')*")';
     
     $dtext = '(?:' . $noWsCtl . '|[\x21-\x5A\x5E-\x7E])';
-    $noFoldLiteral = '(?:\[(?:' . $dtext . '|' . $quotedPair . ')*?\])';
+    $noFoldLiteral = '(?:\[(?:' . $dtext . '|' . $quotedPair . ')*\])';
     
     $idLeft = '(?:' . $dotAtomText . '|' . $noFoldQuote . ')';
     $idRight = '(?:' . $dotAtomText . '|' . $noFoldLiteral . ')';
@@ -134,15 +134,15 @@ class Swift_Mime_Header_StructuredHeader
     
     $mailbox = '(?:' . $nameAddr . '|' . $addrSpec . ')';
     
-    $mailboxList = '(?:' . $mailbox . '(?:,' . $mailbox . ')*?)';
+    $mailboxList = '(?:' . $mailbox . '(?:,' . $mailbox . ')*)';
     
-    $token = '(?:[^\(\)<>@,;:"\/\[\]\?\.=]+?)';
+    $token = '(?:[^\(\)<>@,;:"\/\[\]\?\.=]+)';
     
     $charset = $token;
     
     $encoding = $token;
     
-    $encodedText = '(?:[\x21-\x3E\x40-\x7E]+?)';
+    $encodedText = '(?:[\x21-\x3E\x40-\x7E]+)';
     
     $encodedWord = '(?:=\?' . $charset . '\?' . $encoding . '\?' . $encodedText . '\?=)';
     
@@ -160,6 +160,11 @@ class Swift_Mime_Header_StructuredHeader
     $zone = '(?:[\+\-][0-9]{4})';
     $time = '(?:' . $timeOfDay . $FWS . $zone . ')';
     $dateTime = '(?:(?:' . $dayOfWeek . ',)?' . $date . $FWS . $time . $CFWS . '?)';
+    
+    $itemName = '(?:[a-zA-Z](?:-?[a-zA-Z0-9])*)';
+    $itemValue = '(?:' . $angleAddr . '+|' . $addrSpec . '|' . $atom . '|' . $domain . '|' . $msgId . ')';
+    $nameValPair = '(?:' . $itemName . $CFWS . $itemValue . ')';
+    $nameValList = '(?:' . $CFWS . '?(?:' . $nameValPair . '(?:' . $CFWS . $nameValPair . ')*)?)';
     
     //Save ABNF converted to PCRE as property for shared reference
     $this->rfc2822Tokens['NO-WS-CTL'] = $noWsCtl;
@@ -223,6 +228,12 @@ class Swift_Mime_Header_StructuredHeader
     $this->rfc2822Tokens['zone'] = $zone;
     $this->rfc2822Tokens['time'] = $time;
     $this->rfc2822Tokens['date-time'] = $dateTime;
+    
+    //Received header
+    $this->rfc2822Tokens['item-name'] = $itemName;
+    $this->rfc2822Tokens['item-value'] = $itemValue;
+    $this->rfc2822Tokens['name-val-pair'] = $nameValPair;
+    $this->rfc2822Tokens['name-val-list'] = $nameValList;
   }
   
   // -- Protected methods
