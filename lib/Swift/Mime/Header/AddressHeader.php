@@ -205,7 +205,7 @@ class Swift_Mime_Header_AddressHeader
       if (!$inGroup)
       {
         //Start of a group
-        if (preg_match('/^' . $this->rfc2822Tokens['display-name'] . ':/', $token))
+        if (preg_match('/^' . $this->grammar['display-name'] . ':/', $token))
         {
           $inGroup = true;
           $group[] = $token;
@@ -225,7 +225,7 @@ class Swift_Mime_Header_AddressHeader
         }
         
         //End of a group
-        if (preg_match('/;' . $this->rfc2822Tokens['CFWS'] . '?$/', $token))
+        if (preg_match('/;' . $this->grammar['CFWS'] . '?$/', $token))
         {
           $inGroup = false;
           $this->_parseGroup(implode(',', $group));

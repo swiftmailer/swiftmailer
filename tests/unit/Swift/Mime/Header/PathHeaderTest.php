@@ -5,8 +5,6 @@ require_once 'Swift/Mime/Header/PathHeader.php';
 class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
 {
   
-  private $_charset = 'utf-8';
-  
   public function testSingleAddressCanBeSetAndFetched()
   {
     $header = $this->_getHeader('Return-Path', 'chris@swiftmailer.org');
@@ -102,11 +100,9 @@ class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
   
   // -- Private methods
   
-  private function _getHeader($name, $path = null, $encoder = null)
+  private function _getHeader($name, $path = null)
   {
-    return new Swift_Mime_Header_PathHeader(
-      $name, $path, $this->_charset, $encoder
-      );
+    return new Swift_Mime_Header_PathHeader($name, $path);
   }
   
 }

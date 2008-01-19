@@ -311,7 +311,7 @@ class Swift_Mime_Header_MailboxHeader
     foreach ($mailboxList as $mailbox)
     {
       $mailboxParts = preg_split(
-        '/(?=<' . $this->rfc2822Tokens['addr-spec'] . '>)/',
+        '/(?=<' . $this->grammar['addr-spec'] . '>)/',
         $mailbox
         );
       if (count($mailboxParts) == 2)
@@ -403,7 +403,7 @@ class Swift_Mime_Header_MailboxHeader
    */
   private function _assertValidAddress($address)
   {
-    if (!preg_match('/^' . $this->rfc2822Tokens['addr-spec'] . '$/D',
+    if (!preg_match('/^' . $this->grammar['addr-spec'] . '$/D',
       $address))
     {
       throw new Exception(

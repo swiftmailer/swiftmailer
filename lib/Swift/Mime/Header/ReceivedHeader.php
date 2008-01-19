@@ -19,7 +19,6 @@
  */
 
 require_once dirname(__FILE__) . '/DateHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 
 /**
  * A Received (trace) Mime Header in Swift Mailer.
@@ -49,13 +48,10 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
    * @param string $name
    * @param int $timestamp, optional
    * @param string[] $data, optional
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
    */
-  public function __construct($name, $timestamp = null, $data = array(),
-    $charset = null, Swift_Mime_HeaderEncoder $encoder = null)
+  public function __construct($name, $timestamp = null, $data = array())
   {
-    parent::__construct($name, $timestamp, $charset, $encoder);
+    parent::__construct($name, $timestamp);
     
     $this->setData($data);
   }
@@ -187,7 +183,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
       {
         //Looks for a name
         case 'name':
-          if (preg_match('/^' . $this->rfc2822Tokens['item-name'] . '/D',
+          if (preg_match('/^' . $this->grammar['item-name'] . '/D',
             $nameValueList, $matches))
           {
             $currentNvp['name'] = $matches[0];
@@ -201,27 +197,27 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
           }
         //Look for a value
         case 'value':
-          if (preg_match('/^' . $this->rfc2822Tokens['angle-addr'] . '/D',
+          if (preg_match('/^' . $this->grammar['angle-addr'] . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
           }
-          elseif (preg_match('/^' . $this->rfc2822Tokens['addr-spec'] . '/D',
+          elseif (preg_match('/^' . $this->grammar['addr-spec'] . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
           }
-          elseif (preg_match('/^' . $this->rfc2822Tokens['domain'] . '/D',
+          elseif (preg_match('/^' . $this->grammar['domain'] . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
           }
-          elseif (preg_match('/^' . $this->rfc2822Tokens['msg-id'] . '/D',
+          elseif (preg_match('/^' . $this->grammar['msg-id'] . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
           }
-          elseif (preg_match('/^' . $this->rfc2822Tokens['atom'] . '/D',
+          elseif (preg_match('/^' . $this->grammar['atom'] . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
@@ -237,7 +233,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
           $itemValue = trim($itemValue);
           
           //Try to parse a comment if found
-          if (preg_match('/' . $this->rfc2822Tokens['comment'] . '$/D',
+          if (preg_match('/' . $this->grammar['comment'] . '$/D',
             $itemValue, $matches))
           {
             $comment = $matches[0];

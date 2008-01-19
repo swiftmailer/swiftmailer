@@ -19,7 +19,6 @@
  */
 
 require_once dirname(__FILE__) . '/StructuredHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.
@@ -43,13 +42,10 @@ class Swift_Mime_Header_IdentificationHeader
    * Creates a new IdentificationHeader with the given $name and $id.
    * @param string $name
    * @param mixed $id, optional as string or string[]
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
    */
-  public function __construct($name, $id = null, $charset = null,
-    Swift_Mime_HeaderEncoder $encoder = null)
+  public function __construct($name, $id = null)
   {
-    parent::__construct($name, null, $charset, $encoder);
+    parent::__construct($name);
     
     if (is_array($id))
     {
@@ -107,8 +103,8 @@ class Swift_Mime_Header_IdentificationHeader
     foreach ($ids as $k => $id)
     {
       if (preg_match(
-        '/^' . $this->rfc2822Tokens['id-left'] . '@' .
-        $this->rfc2822Tokens['id-right'] . '$/D',
+        '/^' . $this->grammar['id-left'] . '@' .
+        $this->grammar['id-right'] . '$/D',
         $id
         ))
       {
@@ -163,13 +159,13 @@ class Swift_Mime_Header_IdentificationHeader
     
     //Shouldn't really need this first CFWS!!! :-\
     $angleAddrs = preg_split(
-      '/(?<=>)' . $this->rfc2822Tokens['CFWS'] . '?(?=<)/',
+      '/(?<=>)' . $this->grammar['CFWS'] . '?(?=<)/',
       $value
       );
     
     foreach ($angleAddrs as $idToken)
     {
-      if (preg_match('/^' . $this->rfc2822Tokens['msg-id'] . '$/D', $idToken))
+      if (preg_match('/^' . $this->grammar['msg-id'] . '$/D', $idToken))
       {
         //Remove CFWS from start and end, then remove the < and >
         $ids[] = substr($this->trimCFWS($idToken), 1, -1);

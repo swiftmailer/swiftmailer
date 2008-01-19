@@ -111,7 +111,7 @@ class Swift_Mime_Header_ListHeader
     $values = preg_split('/(?<!\\\\),/', $value);
     foreach ($values as $phrase)
     {
-      if (preg_match('/^' . $this->rfc2822Tokens['phrase'] . '$/D', $phrase))
+      if (preg_match('/^' . $this->grammar['phrase'] . '$/D', $phrase))
       {
         $actualValues[] = $this->decodePhrase($phrase);
       }

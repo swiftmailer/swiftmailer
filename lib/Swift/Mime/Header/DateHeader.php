@@ -19,7 +19,6 @@
  */
 
 require_once dirname(__FILE__) . '/StructuredHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 
 
 /**
@@ -48,13 +47,10 @@ class Swift_Mime_Header_DateHeader extends Swift_Mime_Header_StructuredHeader
    * </code>
    * @param string $name of Header
    * @param int $timestamp, optional
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
    */
-  public function __construct($name, $timestamp = null, $charset = null,
-    Swift_Mime_HeaderEncoder $encoder = null)
+  public function __construct($name, $timestamp = null)
   {
-    parent::__construct($name, null, $charset, $encoder);
+    parent::__construct($name);
     
     if (!is_null($timestamp))
     {
@@ -102,7 +98,7 @@ class Swift_Mime_Header_DateHeader extends Swift_Mime_Header_StructuredHeader
    */
   public function setValue($value)
   {
-    if (preg_match('/^' . $this->rfc2822Tokens['date-time'] . '$/D', $value))
+    if (preg_match('/^' . $this->grammar['date-time'] . '$/D', $value))
     {
       $this->setTimestamp(
         strtotime($this->unfoldWhiteSpace($this->trimCFWS($value)))

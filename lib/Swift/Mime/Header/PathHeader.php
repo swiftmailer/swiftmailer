@@ -19,7 +19,6 @@
  */
 
 require_once dirname(__FILE__) . '/StructuredHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 
 /**
  * A Path Header in Swift Mailer, such a Return-Path.
@@ -41,13 +40,10 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
    * Creates a new PathHeader with the given $name and $address.
    * @param string $name
    * @param string $address, optional
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
    */
-  public function __construct($name, $address = null, $charset = null,
-    Swift_Mime_HeaderEncoder $encoder = null)
+  public function __construct($name, $address = null)
   {
-    parent::__construct($name, null, $charset, $encoder);
+    parent::__construct($name);
     
     if (!is_null($address))
     {
@@ -65,7 +61,7 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
     {
       $this->_address = null;
     }
-    elseif (preg_match('/^' . $this->rfc2822Tokens['addr-spec'] . '$/D',
+    elseif (preg_match('/^' . $this->grammar['addr-spec'] . '$/D',
       $address))
     {
       $this->_address = $address;
@@ -109,10 +105,10 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
    */
   public function setValue($value)
   {
-    if (preg_match('/^' . $this->rfc2822Tokens['path'] . '$/D', $value))
+    if (preg_match('/^' . $this->grammar['path'] . '$/D', $value))
     {
       $path = substr($this->trimCFWS($value), 1, -1); //Remove < and >
-      if (preg_match('/^' . $this->rfc2822Tokens['addr-spec'] . '$/D', $path))
+      if (preg_match('/^' . $this->grammar['addr-spec'] . '$/D', $path))
       {
         $address = $path;
       }

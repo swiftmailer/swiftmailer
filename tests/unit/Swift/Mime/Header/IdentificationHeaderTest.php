@@ -5,8 +5,6 @@ require_once 'Swift/Mime/Header/IdentificationHeader.php';
 class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
 {
   
-  private $_charset = 'utf-8';
-  
   public function testValueMatchesMsgIdSpec()
   {
     /* -- RFC 2822, 3.6.4.
@@ -240,11 +238,9 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
   
   // -- Private methods
   
-  private function _getHeader($name, $value = null, $encoder = null)
+  private function _getHeader($name, $value = null)
   {
-    return new Swift_Mime_Header_IdentificationHeader(
-      $name, $value, $this->_charset, $encoder
-      );
+    return new Swift_Mime_Header_IdentificationHeader($name, $value);
   }
   
 }

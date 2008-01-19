@@ -7,8 +7,6 @@ Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
 {
   
-  private $_charset = 'utf-8';
-  
   public function testTimestampCanBeSetAndFetched()
   {
     $timestamp = time();
@@ -261,11 +259,9 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
   
   // -- Private methods
   
-  private function _getHeader($name, $timestamp = null, $info = array(), $encoder = null)
+  private function _getHeader($name, $timestamp = null, $info = array())
   {
-    return new Swift_Mime_Header_ReceivedHeader(
-      $name, $timestamp, $info, $this->_charset, $encoder
-      );
+    return new Swift_Mime_Header_ReceivedHeader($name, $timestamp, $info);
   }
   
 }

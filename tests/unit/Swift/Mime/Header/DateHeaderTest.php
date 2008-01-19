@@ -7,8 +7,6 @@ class Swift_Mime_Header_DateHeaderTest
   extends Swift_AbstractSwiftUnitTestCase
 {
   
-  private $_charset = 'utf-8';
-  
   /* --
   The following tests refer to RFC 2822, section 3.6.1 and 3.3.
   */
@@ -209,11 +207,9 @@ class Swift_Mime_Header_DateHeaderTest
   
   // -- Private methods
   
-  private function _getHeader($name, $value = null, $encoder = null)
+  private function _getHeader($name, $value = null)
   {
-    return new Swift_Mime_Header_DateHeader(
-      $name, $value, $this->_charset, $encoder
-      );
+    return new Swift_Mime_Header_DateHeader($name, $value);
   }
   
 }
