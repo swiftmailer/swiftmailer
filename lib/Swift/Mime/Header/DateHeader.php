@@ -98,10 +98,12 @@ class Swift_Mime_Header_DateHeader extends Swift_Mime_Header_StructuredHeader
    */
   public function setValue($value)
   {
-    if (preg_match('/^' . $this->grammar['date-time'] . '$/D', $value))
+    if (preg_match('/^' . $this->getHelper()->getGrammar('date-time') . '$/D', $value))
     {
       $this->setTimestamp(
-        strtotime($this->unfoldWhiteSpace($this->trimCFWS($value)))
+        strtotime($this->getHelper()->unfoldWhiteSpace(
+          $this->getHelper()->trimCFWS($value)
+          ))
         );
       $this->setCachedValue($value);
     }

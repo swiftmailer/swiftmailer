@@ -21,6 +21,7 @@
 require_once dirname(__FILE__) . '/../Header.php';
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 require_once dirname(__FILE__) . '/../HeaderAttributeSet.php';
+require_once dirname(__FILE__) . '/../HeaderComponentHelper.php';
 
 
 /**
@@ -75,6 +76,13 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   private $_charset;
   
   /**
+   * A helper wtih building MIME headers.
+   * @var Swift_Mime_HeaderComponentHelper
+   * @access private
+   */
+  private $_helper;
+  
+  /**
    * Creates a new SimpleHeader with $name and $value.
    * @param string $name
    * @param string $value
@@ -94,6 +102,8 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
     {
       $this->_encoder = $encoder;
     }
+    
+    $this->_helper = new Swift_Mime_HeaderComponentHelper();
   }
   
   /**
@@ -106,12 +116,30 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   }
   
   /**
+   * Get the character set used in this Header.
+   * @return string
+   */
+  public function getCharacterSet()
+  {
+    return $this->_charset;
+  }
+  
+  /**
    * Set the encoder used for encoding the header.
    * @param Swift_Mime_HeaderEncoder $encoder
    */
   public function setEncoder(Swift_Mime_HeaderEncoder $encoder)
   {
     $this->_encoder = $encoder;
+  }
+  
+  /**
+   * Get the encoder used for encoding this Header.
+   * @return Swift_Mime_HeaderEncoder
+   */
+  public function getEncoder()
+  {
+    return $this->_encoder;
   }
   
   /**
@@ -186,130 +214,9 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
    */
   protected function getPreparedValue()
   {
-    return str_replace('\\', '\\\\', $this->encodeWords($this->_value));
-  }
-  
-  /**
-   * Encode needed word tokens within a string of input.
-   * @param string $input
-   * @param string $usedLength, optional
-   * @return string
-   * @access protected
-   */
-  protected function encodeWords($input, $usedLength = -1)
-  {
-    $value = '';
-    
-    $tokens = $this->getEncodableWordTokens($input);
-    
-    foreach ($tokens as $token)
-    {
-      //See RFC 2822, Sect 2.2 (really 2.2 ??)
-      if ($this->tokenNeedsEncoding($token))
-      {
-        //Don't encode starting WSP
-        $firstChar = substr($token, 0, 1);
-        if (in_array($firstChar, array(' ', "\t")))
-        {
-          $value .= $firstChar;
-          $token = substr($token, 1);
-        }
-        
-        if (-1 == $usedLength)
-        {
-          $usedLength = strlen($this->getName() . ': ') + strlen($value);
-        }
-        $value .= $this->getTokenAsEncodedWord($token, $usedLength);
-        
-        $this->setMaxLineLength(76); //Forefully override
-      }
-      else
-      {
-        $value .= $token;
-      }
-    }
-    
-    return $value;
-  }
-  
-  /**
-   * Get a token as an encoded word for safe insertion into headers.
-   * @param string $token to encode
-   * @param int $firstLineOffset, optional
-   * @return string
-   * @access protected
-   */
-  protected function getTokenAsEncodedWord($token, $firstLineOffset = 0)
-  {
-    //Adjust $firstLineOffset to account for space needed for syntax
-    $firstLineOffset += strlen(
-      '=?' . $this->_charset . '?' . $this->_encoder->getName() . '??='
-      );
-    
-    if ($firstLineOffset >= 75) //Does this logic need to be here?
-    {
-      $firstLineOffset = 0;
-    }
-    
-    $encodedTextLines = explode("\r\n",
-      $this->_encoder->encodeString($token, $firstLineOffset, 75)
-      );
-    
-    foreach ($encodedTextLines as $lineNum => $line)
-    {
-      $encodedTextLines[$lineNum] = '=?' . $this->_charset .
-        '?' . $this->_encoder->getName() .
-        '?' . $line . '?=';
-    }
-    
-    return implode("\r\n ", $encodedTextLines);
-  }
-  
-  /**
-   * Test if a token needs to be encoded or not.
-   * @param string $token
-   * @return boolean
-   * @access protected
-   */
-  protected function tokenNeedsEncoding($token)
-  {
-    return preg_match('~[\x00-\x08\x10-\x19\x7F-\xFF\r\n]~', $token);
-  }
-  
-  /**
-   * Splits a string into tokens in blocks of words which can be encoded quickly.
-   * @param string $string
-   * @return string[]
-   * @access protected
-   */
-  protected function getEncodableWordTokens($string)
-  {
-    $tokens = array();
-    
-    $encodedToken = '';
-    //Split at all whitespace boundaries
-    foreach (preg_split('~(?=[\t ])~', $string) as $token)
-    {
-      if ($this->tokenNeedsEncoding($token))
-      {
-        $encodedToken .= $token;
-      }
-      else
-      {
-        if (strlen($encodedToken) > 0)
-        {
-          $tokens[] = $encodedToken;
-          $encodedToken = '';
-        }
-        $tokens[] = $token;
-      }
-    }
-    if (strlen($encodedToken))
-    {
-      $tokens[] = $encodedToken;
-    }
-    
-    return $tokens;
+    return str_replace('\\', '\\\\', $this->_helper->encodeWords(
+      $this, $this->_value, -1, $this->_charset, $this->_encoder
+      ));
   }
   
   /**
@@ -321,6 +228,16 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   protected function generateTokenLines($token)
   {
     return preg_split('~(\r\n)~', $token, -1, PREG_SPLIT_DELIM_CAPTURE);
+  }
+  
+  /**
+   * Get the HeaderComponentHelper used by this Header.
+   * @return Swift_Mime_HeaderComponentHelper
+   * @access protected
+   */
+  protected function getHelper()
+  {
+    return $this->_helper;
   }
   
   // -- Private methods

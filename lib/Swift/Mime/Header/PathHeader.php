@@ -61,7 +61,7 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
     {
       $this->_address = null;
     }
-    elseif (preg_match('/^' . $this->grammar['addr-spec'] . '$/D',
+    elseif (preg_match('/^' . $this->getHelper()->getGrammar('addr-spec') . '$/D',
       $address))
     {
       $this->_address = $address;
@@ -105,10 +105,10 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
    */
   public function setValue($value)
   {
-    if (preg_match('/^' . $this->grammar['path'] . '$/D', $value))
+    if (preg_match('/^' . $this->getHelper()->getGrammar('path') . '$/D', $value))
     {
-      $path = substr($this->trimCFWS($value), 1, -1); //Remove < and >
-      if (preg_match('/^' . $this->grammar['addr-spec'] . '$/D', $path))
+      $path = substr($this->getHelper()->trimCFWS($value), 1, -1); //Remove < and >
+      if (preg_match('/^' . $this->getHelper()->getGrammar('addr-spec') . '$/D', $path))
       {
         $address = $path;
       }

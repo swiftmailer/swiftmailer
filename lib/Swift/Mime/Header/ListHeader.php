@@ -88,7 +88,9 @@ class Swift_Mime_Header_ListHeader
       $values = array();
       foreach ($this->_values as $value)
       {
-        $values[] = $this->createPhrase($value, !empty($values));
+        $values[] = $this->getHelper()->createPhrase($this, $value,
+          $this->getCharacterSet(), $this->getEncoder(), !empty($values)
+          );
       }
       $this->setCachedValue(implode(', ', $values));
     }
@@ -111,9 +113,9 @@ class Swift_Mime_Header_ListHeader
     $values = preg_split('/(?<!\\\\),/', $value);
     foreach ($values as $phrase)
     {
-      if (preg_match('/^' . $this->grammar['phrase'] . '$/D', $phrase))
+      if (preg_match('/^' . $this->getHelper()->getGrammar('phrase') . '$/D', $phrase))
       {
-        $actualValues[] = $this->decodePhrase($phrase);
+        $actualValues[] = $this->getHelper()->decodePhrase($phrase);
       }
     }
     $this->setValueList($actualValues);

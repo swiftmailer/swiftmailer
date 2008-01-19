@@ -103,9 +103,8 @@ class Swift_Mime_Header_MailboxHeader
    */
   public function setNameAddresses($mailboxes)
   {
-    $this->setCachedValue(null); //Clear any cached value
-    
     $this->_mailboxes = $this->normalizeMailboxes((array) $mailboxes);
+    $this->setCachedValue(null); //Clear any cached value
   }
   
   /**
@@ -298,7 +297,7 @@ class Swift_Mime_Header_MailboxHeader
    */
   protected function resolveNameAddresses($stringList)
   {
-    $trimmedList = $this->trimCFWS($stringList);
+    $trimmedList = $this->getHelper()->trimCFWS($stringList);
     if ('' == $trimmedList)
     {
       return array();
@@ -311,18 +310,18 @@ class Swift_Mime_Header_MailboxHeader
     foreach ($mailboxList as $mailbox)
     {
       $mailboxParts = preg_split(
-        '/(?=<' . $this->grammar['addr-spec'] . '>)/',
+        '/(?=<' . $this->getHelper()->getGrammar('addr-spec') . '>)/',
         $mailbox
         );
       if (count($mailboxParts) == 2)
       {
          //Remove the < and >
-        $address = substr($this->trimCFWS($mailboxParts[1]), 1, -1);
+        $address = substr($this->getHelper()->trimCFWS($mailboxParts[1]), 1, -1);
         $name = $this->decodeDisplayNameString($mailboxParts[0]);
       }
       else
       {
-        $address = $this->trimCFWS($mailboxParts[0]);
+        $address = $this->getHelper()->trimCFWS($mailboxParts[0]);
         $name = null;
       }
       
@@ -343,7 +342,9 @@ class Swift_Mime_Header_MailboxHeader
    */
   protected function createDisplayNameString($displayName, $shorten = false)
   {
-    return $this->createPhrase($displayName, $shorten);
+    return $this->getHelper()->createPhrase($this, $displayName,
+      $this->getCharacterSet(), $this->getEncoder(), $shorten
+      );
   }
   
   /**
@@ -355,7 +356,7 @@ class Swift_Mime_Header_MailboxHeader
    */
   protected function decodeDisplayNameString($displayName)
   {
-    return $this->decodePhrase($displayName);
+    return $this->getHelper()->decodePhrase($displayName);
   }
   
   /**
@@ -403,7 +404,7 @@ class Swift_Mime_Header_MailboxHeader
    */
   private function _assertValidAddress($address)
   {
-    if (!preg_match('/^' . $this->grammar['addr-spec'] . '$/D',
+    if (!preg_match('/^' . $this->getHelper()->getGrammar('addr-spec') . '$/D',
       $address))
     {
       throw new Exception(

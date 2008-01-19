@@ -38,10 +38,22 @@ interface Swift_Mime_Header
   public function setEncoder(Swift_Mime_HeaderEncoder $encoder);
   
   /**
+   * Get the HeaderEncoder used in this Header, or NULL if none used.
+   * @return Swift_Mime_HeaderEncoder
+   */
+  public function getEncoder();
+  
+  /**
    * Set the character set used in this Header.
    * @param string $charset
    */
   public function setCharacterSet($charset);
+  
+  /**
+   * Get the character set of the content in this Header.
+   * @return string
+   */
+  public function getCharacterSet();
   
   /**
    * Get the name of this header (e.g. charset).

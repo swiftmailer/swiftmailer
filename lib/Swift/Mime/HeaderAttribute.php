@@ -37,6 +37,38 @@ interface Swift_Mime_HeaderAttribute
   public function setEncoder(Swift_Encoder $encoder);
   
   /**
+   * Set the maximum length of lines in the attribute.
+   * @param int $length
+   */
+  public function setMaxLineLength($length);
+  
+  /**
+   * Set the language used in this HeaderAttribute.
+   * For example, for US English, 'en-us'.
+   * This can be unspecified.
+   * @param string $lang
+   */
+  public function setLanguage($lang);
+  
+  /**
+   * Get the language used in this HeaderAttribute.
+   * @return string
+   */
+  public function getLanguage();
+  
+  /**
+   * Set the charset used in this HeaderAttribute.
+   * @param string $charset
+   */
+  public function setCharacterSet($charset);
+  
+  /**
+   * Get the charset used in this HeaderAttribute.
+   * @return string
+   */
+  public function getCharacterSet();
+  
+  /**
    * Get the name of this attribute (e.g. charset).
    * @return string
    */

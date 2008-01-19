@@ -103,8 +103,8 @@ class Swift_Mime_Header_IdentificationHeader
     foreach ($ids as $k => $id)
     {
       if (preg_match(
-        '/^' . $this->grammar['id-left'] . '@' .
-        $this->grammar['id-right'] . '$/D',
+        '/^' . $this->getHelper()->getGrammar('id-left') . '@' .
+        $this->getHelper()->getGrammar('id-right') . '$/D',
         $id
         ))
       {
@@ -159,16 +159,16 @@ class Swift_Mime_Header_IdentificationHeader
     
     //Shouldn't really need this first CFWS!!! :-\
     $angleAddrs = preg_split(
-      '/(?<=>)' . $this->grammar['CFWS'] . '?(?=<)/',
+      '/(?<=>)' . $this->getHelper()->getGrammar('CFWS') . '?(?=<)/',
       $value
       );
     
     foreach ($angleAddrs as $idToken)
     {
-      if (preg_match('/^' . $this->grammar['msg-id'] . '$/D', $idToken))
+      if (preg_match('/^' . $this->getHelper()->getGrammar('msg-id') . '$/D', $idToken))
       {
         //Remove CFWS from start and end, then remove the < and >
-        $ids[] = substr($this->trimCFWS($idToken), 1, -1);
+        $ids[] = substr($this->getHelper()->trimCFWS($idToken), 1, -1);
       }
       else
       {

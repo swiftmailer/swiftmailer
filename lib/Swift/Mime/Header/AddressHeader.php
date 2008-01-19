@@ -205,7 +205,7 @@ class Swift_Mime_Header_AddressHeader
       if (!$inGroup)
       {
         //Start of a group
-        if (preg_match('/^' . $this->grammar['display-name'] . ':/', $token))
+        if (preg_match('/^' . $this->getHelper()->getGrammar('display-name') . ':/', $token))
         {
           $inGroup = true;
           $group[] = $token;
@@ -225,7 +225,7 @@ class Swift_Mime_Header_AddressHeader
         }
         
         //End of a group
-        if (preg_match('/;' . $this->grammar['CFWS'] . '?$/', $token))
+        if (preg_match('/;' . $this->getHelper()->getGrammar('CFWS') . '?$/', $token))
         {
           $inGroup = false;
           $this->_parseGroup(implode(',', $group));
@@ -287,7 +287,7 @@ class Swift_Mime_Header_AddressHeader
     $groupName = $this->decodeDisplayNameString(
       substr($groupStr, 0, $colonPos)
       ); //Leave the "," off
-    $mailboxList = substr($this->trimCFWS($groupStr, 'right'),
+    $mailboxList = substr($this->getHelper()->trimCFWS($groupStr, 'right'),
       $colonPos + 1, -1
       ); //Leave the ";" off
     $nameAddresses = $this->resolveNameAddresses($mailboxList);

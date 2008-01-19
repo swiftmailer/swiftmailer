@@ -95,7 +95,7 @@ class Swift_Mime_Header_VersionHeader
    */
   public function setValue($value)
   {
-    $version = $this->stripCFWS($value);
+    $version = $this->getHelper()->stripCFWS($value);
     $this->setVersion($version);
     $this->setCachedValue($value);
   }

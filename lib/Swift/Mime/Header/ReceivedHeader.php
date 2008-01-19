@@ -178,12 +178,12 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
     while (strlen($nameValueList) > 0)
     {
       //Get rid of any preceding comments
-      $nameValueList = $this->trimCFWS($nameValueList, 'left');
+      $nameValueList = $this->getHelper()->trimCFWS($nameValueList, 'left');
       switch ($expecting)
       {
         //Looks for a name
         case 'name':
-          if (preg_match('/^' . $this->grammar['item-name'] . '/D',
+          if (preg_match('/^' . $this->getHelper()->getGrammar('item-name') . '/D',
             $nameValueList, $matches))
           {
             $currentNvp['name'] = $matches[0];
@@ -197,27 +197,27 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
           }
         //Look for a value
         case 'value':
-          if (preg_match('/^' . $this->grammar['angle-addr'] . '/D',
+          if (preg_match('/^' . $this->getHelper()->getGrammar('angle-addr') . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
           }
-          elseif (preg_match('/^' . $this->grammar['addr-spec'] . '/D',
+          elseif (preg_match('/^' . $this->getHelper()->getGrammar('addr-spec') . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
           }
-          elseif (preg_match('/^' . $this->grammar['domain'] . '/D',
+          elseif (preg_match('/^' . $this->getHelper()->getGrammar('domain') . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
           }
-          elseif (preg_match('/^' . $this->grammar['msg-id'] . '/D',
+          elseif (preg_match('/^' . $this->getHelper()->getGrammar('msg-id') . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
           }
-          elseif (preg_match('/^' . $this->grammar['atom'] . '/D',
+          elseif (preg_match('/^' . $this->getHelper()->getGrammar('atom') . '/D',
             $nameValueList, $matches))
           {
             $itemValue = $matches[0];
@@ -233,7 +233,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
           $itemValue = trim($itemValue);
           
           //Try to parse a comment if found
-          if (preg_match('/' . $this->grammar['comment'] . '$/D',
+          if (preg_match('/' . $this->getHelper()->getGrammar('comment') . '$/D',
             $itemValue, $matches))
           {
             $comment = $matches[0];
@@ -244,7 +244,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
           }
           
           //Strip comments from the value
-          $currentNvp['value'] = $this->trimCFWS($itemValue);
+          $currentNvp['value'] = $this->getHelper()->trimCFWS($itemValue);
           
           //Set up for the next name-val-pair
           $nvps[] = $currentNvp;
