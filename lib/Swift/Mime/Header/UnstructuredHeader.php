@@ -85,11 +85,11 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   /**
    * Creates a new SimpleHeader with $name and $value.
    * @param string $name
-   * @param string $value
+   * @param string $value, optional
    * @param string $charset, optional
    * @param Swift_Mime_HeaderEncoder $encoder, optional
    */
-  public function __construct($name, $value, $charset = null,
+  public function __construct($name, $value = null, $charset = null,
     Swift_Mime_HeaderEncoder $encoder = null)
   {
     $this->_name = $name;
