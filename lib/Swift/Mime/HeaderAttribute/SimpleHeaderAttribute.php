@@ -242,7 +242,7 @@ class Swift_Mime_HeaderAttribute_SimpleHeaderAttribute
     if ($needsEncoding || strlen($value) > $maxValueLength)
     {
       $value = $this->_encoder->encodeString(
-        $this->_value, $maxValueLength, $firstLineOffset
+        $this->_value, $firstLineOffset, $maxValueLength
       );
     }
     

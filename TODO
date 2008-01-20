@@ -2,11 +2,16 @@ Swift Mailer:
 -------------
 
  * Think about the interface for a HeaderFactory
+   - Needs to have a createHeaderFromString() method
+   - Needs to have a createAttributeFromString() method
  * See if some of the Headers can be refactored/removed
- * HeaderAttributes
- * Maybe use ArrayAccess on the HeaderSet and HeaderAttributeSet?
  * Content-type header, Content-disposition etc... what type?
  * MimeDocument class
+ * Rfc2231Encoder
+ * Acceptance tests for:
+   - Some Headers (which use Encoders)
+   - Attributes
+ * CharacterReaderFactory (map charsets to CharacterReaders).
 
 Test Suite:
 -----------
@@ -14,5 +19,6 @@ Test Suite:
  * Change test results bar to show actual number of tests running
  * Add a thin bar showing the percentage progress below the results bar
  * Handle fatal errors? Maybe handle at the backend?
-
+ * Collapse/expand subpackages as groups and run groups at a time
+ 
 EoM

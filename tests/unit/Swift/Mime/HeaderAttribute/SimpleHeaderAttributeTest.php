@@ -89,7 +89,7 @@ class Swift_Mime_HeaderAttribute_SimpleHeaderAttributeTest
     $value = str_repeat('a', 180);
     
     $encoder = new Swift_MockEncoder();
-    $encoder->expectOnce('encodeString', array($value, 64, '*'));
+    $encoder->expectOnce('encodeString', array($value, '*', 64));
     $encoder->setReturnValue('encodeString', str_repeat('a', 64) . "\r\n" .
       str_repeat('a', 64) . "\r\n" . str_repeat('a', 52)
       );
@@ -134,7 +134,7 @@ class Swift_Mime_HeaderAttribute_SimpleHeaderAttributeTest
     
     $encoder = new Swift_MockEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($value), 63, 12
+      new Swift_IdenticalBinaryExpectation($value), 12, 63
       ));
     $encoder->setReturnValue('encodeString', str_repeat('a', 20) . '%8F' .
       str_repeat('a', 10)
@@ -185,7 +185,7 @@ class Swift_Mime_HeaderAttribute_SimpleHeaderAttributeTest
     
     $encoder = new Swift_MockEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($value), 63, 12
+      new Swift_IdenticalBinaryExpectation($value), 12, 63
       ));
     $encoder->setReturnValue('encodeString', str_repeat('a', 20) . '%8F' .
       str_repeat('a', 28) . "\r\n" . str_repeat('a', 32)
