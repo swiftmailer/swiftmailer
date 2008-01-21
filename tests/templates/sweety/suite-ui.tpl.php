@@ -38,7 +38,10 @@
             
             <?php if ($currentPackage != $package = preg_replace('/_?[^_]+$/', '', $testCase)): ?>
               <?php $currentPackage = $package; ?>
-              <div id="sweety-package-<?php echo $package; ?>" class="sweety-package-header sweety-pkg-idle">
+              <div id="sweety-package-<?php echo $package; ?>"
+                onmouseover="this.style.cursor='pointer';"
+                onclick="sweetyUI.initialize(); sweetyRunner.runAll('<?php echo $package; ?>');"
+                class="sweety-package-header sweety-pkg-idle">
                 <img id="sweety-pkg-img-<?php echo $package; ?>" src="templates/sweety/images/darr.gif"
                   alt="Toggle Display" title="Toggle Display"
                   onclick="sweetyUI.togglePackage('<?php echo $package; ?>'); event.cancelBubble=true;" />

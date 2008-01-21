@@ -288,10 +288,11 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
     $currentLine =& $headerLines[$lineCount++];
     
     //Build all tokens back into compliant header
-    foreach ($tokens as $token)
+    foreach ($tokens as $i => $token)
     {
       //Line longer than specified maximum or token was just a new line
-      if ("\r\n" == $token || strlen($currentLine . $token) > $this->_lineLength)
+      if ("\r\n" == $token ||
+        ($i > 0 && strlen($currentLine . $token) > $this->_lineLength))
       {
         $headerLines[] = '';
         $currentLine =& $headerLines[$lineCount++];

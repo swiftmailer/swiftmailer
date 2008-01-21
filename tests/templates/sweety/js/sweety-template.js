@@ -33,12 +33,15 @@ function SweetyUIManager() {
    * @param {String} pkg
    */
   this.togglePackage = function togglePackage(pkg) {
-    var pkgLen = pkg.length;
     if (typeof _pkgs[pkg] == "undefined") {
-      _pkgs[pkg] = false;
+      _pkgs[pkg] = true;
     }
+    //Toggle
+    _pkgs[pkg] = !_pkgs[pkg];
+    
+    var pkgRegex = new RegExp("^" + pkg + "_[^_]+$");
     for (var testCase in sweetyTestCases) {
-      if (testCase.substring(0, pkgLen) == pkg) {
+      if (testCase.match(pkgRegex)) {
         var testDiv = _getElementById(testCase);
         if (_pkgs[pkg]) {
           if (sweetyTestCases[testCase]) {
@@ -56,8 +59,6 @@ function SweetyUIManager() {
     } else {
       headerImg.src = "templates/sweety/images/rarr.gif";
     }
-    //Toggle
-    _pkgs[pkg] = !_pkgs[pkg];
   }
   
   /**
@@ -122,22 +123,20 @@ function SweetyUIManager() {
     var caseBox = _getListContainer();
 
     for (var testCase in sweetyTestCases) {
+      var pkg = testCase.replace(/_?[^_]+$/, "");
       var testDiv = _getElementById(testCase);
-      
-      //If a Div is already present, add it
-      if (!testDiv) {
-        testDiv = _createTestDiv(testCase);
-        caseBox.appendChild(testDiv);
-      }
       
       //Make it look idle
       testDiv.className = "sweety-test sweety-idle";
       
-      //Determine if it should be visible
-      if (!sweetyTestCases[testCase]) {
-        testDiv.style.display = "none";
+      if (sweetyTestCases[testCase]) {
+        if (typeof _pkgs[pkg] == "undefined") {
+          testDiv.style.display = "block";
+        } else if (_pkgs[pkg]) {
+          testDiv.style.display = "block";
+        }
       } else {
-        testDiv.style.display = "block";
+        testDiv.style.display = "none";
       }
     }
   }
@@ -361,55 +360,6 @@ function SweetyUIManager() {
     } else {
       el.innerHTML = content;
     }
-  }
-  
-  /**
-   * Create the DIV which lists a test case available to run.
-   * @param {String} testCase
-   * @return HTMLDivElement
-   */
-  var _createTestDiv = function _createTestDiv(testCase) {
-    var testDiv = document.createElement("div");
-    testDiv.id = testCase;
-    testDiv.style.display = "block";
-    testDiv.onmouseover = function() { this.style.cursor = "pointer"; };
-    testDiv.onclick = function() { _this.initialize(); sweetyRunner.runTestCase(this.id); };
-    
-    var testCaseDiv = document.createElement("div");
-    testCaseDiv.className = "sweety-testcase";
-    
-    var xmlIcon = document.createElement("img");
-    xmlIcon.alt = "As XML";
-    xmlIcon.src = "templates/sweety/images/xmlicon.gif";
-    
-    var htmlIcon = document.createElement("img");
-    htmlIcon.alt = "As HTML";
-    htmlIcon.src = "templates/sweety/images/htmlicon.gif";
-    
-    var xmlLink = document.createElement("a");
-    xmlLink.href = "?test=" + testCase + "&format=xml";
-    xmlLink.appendChild(xmlIcon);
-    
-    var htmlLink = document.createElement("a");
-    htmlLink.href = "?test=" + testCase + "&format=html";
-    htmlLink.appendChild(htmlIcon);
-    
-    testCaseDiv.appendChild(xmlLink);
-    testCaseDiv.appendChild(htmlLink);
-    
-    var testClassName = document.createTextNode(testCase.replace(/^.*_/g, ''));
-    
-    testCaseDiv.appendChild(testClassName);
-    
-    var testPackageName = document.createElement("span");
-    testPackageName.className = "sweety-test-package";
-    _setContent(testPackageName, testCase.replace(/_?[^_]+$/, ''));
-    
-    testCaseDiv.appendChild(testPackageName);
-    
-    testDiv.appendChild(testCaseDiv);
-    
-    return testDiv;
   }
   
   /**
@@ -887,12 +837,16 @@ function SweetyTestWrapper() {
   /**
    * Run all selected test cases.
    */
-  this.runAll = function runAll() {
+  this.runAll = function runAll(pkg) {
+    var pkgRegex;
+    if (pkg) {
+      pkgRegex = new RegExp("^" + pkg + "_[^_]+$");
+    }
     var reporter = new SweetyTemplateAggregateReporter();
     var testCaseList = new Array();
     
     for (var testCase in sweetyTestCases) {
-      if (!sweetyTestCases[testCase]) {
+      if (!sweetyTestCases[testCase] || (pkg && !testCase.match(pkgRegex))) {
         continue;
       }
       testCaseList.push(testCase);

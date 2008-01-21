@@ -20,5 +20,6 @@ Test Suite:
  * Add a thin bar showing the percentage progress below the results bar
  * Handle fatal errors? Maybe handle at the backend?
  * Collapse/expand subpackages as groups and run groups at a time
+ * Create SweetyTemplatePackageReporter
  
 EoM

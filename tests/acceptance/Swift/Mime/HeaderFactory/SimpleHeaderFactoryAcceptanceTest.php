@@ -303,10 +303,287 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactoryAcceptanceTest
       );
   }
   
-  //resent-message-id
-  //date, from, sender, reply-to, to, cc, bcc
-  //message-id, in-reply-to, references
-  //subject, comments, keywords
+  public function testCreatingResentMessageIdHeader()
+  {
+    $resentMsgId = $this->_factory->createHeader('Resent-Message-ID', 'foo@bar');
+    $this->assertEqual('Resent-Message-ID: <foo@bar>' . "\r\n",
+      $resentMsgId->toString()
+      );
+  }
+  
+  public function testCreatingDateHeader()
+  {
+    $date = $this->_factory->createHeader('Date', $this->_timestamp);
+    $this->assertEqual('Date: ' . $this->_rfc2822Date . "\r\n",
+      $date->toString()
+      );
+  }
+  
+  public function testCreatingFromHeader()
+  {
+    $from = $this->_factory->createHeader('From', 'chris@swiftmailer.org');
+    $this->assertEqual('From: chris@swiftmailer.org' . "\r\n",
+      $from->toString()
+      );
+  }
+  
+  public function testCreatingFromWithName()
+  {
+    $from = $this->_factory->createHeader(
+      'From', array('chris@swiftmailer.org' => 'Chris Corbyn')
+      );
+    $this->assertEqual('From: Chris Corbyn <chris@swiftmailer.org>' . "\r\n",
+      $from->toString()
+      );
+  }
+  
+  public function testCreatingFromWithUtf8Name()
+  {
+    $from = $this->_factory->createHeader(
+      'From', array('chris@swiftmailer.org' => 'Код')
+      );
+    $this->assertEqual('From: =?utf-8?Q?=D0=9A=D0=BE=D0=B4?= <chris@swiftmailer.org>' . "\r\n",
+      $from->toString()
+      );
+  }
+  
+  public function testCreatingSenderHeader()
+  {
+    $sender = $this->_factory->createHeader('Sender', 'chris@swiftmailer.org');
+    $this->assertEqual('Sender: chris@swiftmailer.org' . "\r\n",
+      $sender->toString()
+      );
+  }
+  
+  public function testCreatingSenderWithName()
+  {
+    $sender = $this->_factory->createHeader(
+      'Sender', array('chris@swiftmailer.org' => 'Chris Corbyn')
+      );
+    $this->assertEqual('Sender: Chris Corbyn <chris@swiftmailer.org>' . "\r\n",
+      $sender->toString()
+      );
+  }
+  
+  public function testCreatingSenderWithUtf8Name()
+  {
+    $sender = $this->_factory->createHeader(
+      'Sender', array('chris@swiftmailer.org' => 'Код')
+      );
+    $this->assertEqual('Sender: =?utf-8?Q?=D0=9A=D0=BE=D0=B4?= <chris@swiftmailer.org>' . "\r\n",
+      $sender->toString()
+      );
+  }
+  
+  public function testCreatingReplyToHeader()
+  {
+    $replyTo = $this->_factory->createHeader('Reply-To', 'mark@swiftmailer.org');
+    $this->assertEqual('Reply-To: mark@swiftmailer.org' . "\r\n",
+      $replyTo->toString()
+      );
+  }
+  
+  public function testCreatingReplyToWithName()
+  {
+    $replyTo = $this->_factory->createHeader(
+      'Reply-To', array('mark@swiftmailer.org' => 'Mark')
+      );
+    $this->assertEqual('Reply-To: Mark <mark@swiftmailer.org>' . "\r\n",
+      $replyTo->toString()
+      );
+  }
+  
+  public function testCreatingReplyToWithUtf8Name()
+  {
+    $replyTo = $this->_factory->createHeader(
+      'Reply-To', array('mark@swiftmailer.org' => 'Код')
+      );
+    $this->assertEqual(
+      'Reply-To: =?utf-8?Q?=D0=9A=D0=BE=D0=B4?= <mark@swiftmailer.org>' . "\r\n",
+      $replyTo->toString()
+      );
+  }
+  
+  public function testCreatingReplyToList()
+  {
+    $replyTo = $this->_factory->createHeader(
+      'Reply-To', array('mark@swiftmailer.org' => 'Mark',
+        'chris@swiftmailer.org' => 'Chris Corbyn',
+        'someone@anotherdomain.com')
+      );
+    $this->assertEqual(
+      'Reply-To: Mark <mark@swiftmailer.org>, Chris Corbyn <chris@swiftmailer.org>,' . "\r\n" .
+      ' someone@anotherdomain.com' . "\r\n",
+      $replyTo->toString()
+      );
+  }
+  
+  public function testCreatingToHeader()
+  {
+    $to = $this->_factory->createHeader('To', 'mark@swiftmailer.org');
+    $this->assertEqual('To: mark@swiftmailer.org' . "\r\n",
+      $to->toString()
+      );
+  }
+  
+  public function testCreatingToWithName()
+  {
+    $to = $this->_factory->createHeader(
+      'To', array('mark@swiftmailer.org' => 'Mark')
+      );
+    $this->assertEqual('To: Mark <mark@swiftmailer.org>' . "\r\n",
+      $to->toString()
+      );
+  }
+  
+  public function testCreatingToWithUtf8Name()
+  {
+    $to = $this->_factory->createHeader(
+      'To', array('mark@swiftmailer.org' => 'Код')
+      );
+    $this->assertEqual(
+      'To: =?utf-8?Q?=D0=9A=D0=BE=D0=B4?= <mark@swiftmailer.org>' . "\r\n",
+      $to->toString()
+      );
+  }
+  
+  public function testCreatingToList()
+  {
+    $to = $this->_factory->createHeader(
+      'To', array('mark@swiftmailer.org' => 'Mark',
+        'chris@swiftmailer.org' => 'Chris Corbyn',
+        'someone@anotherdomain.com')
+      );
+    $this->assertEqual(
+      'To: Mark <mark@swiftmailer.org>, Chris Corbyn <chris@swiftmailer.org>,' . "\r\n" .
+      ' someone@anotherdomain.com' . "\r\n",
+      $to->toString()
+      );
+  }
+  
+  public function testCreatingCcHeader()
+  {
+    $cc = $this->_factory->createHeader('Cc', 'mark@swiftmailer.org');
+    $this->assertEqual('Cc: mark@swiftmailer.org' . "\r\n",
+      $cc->toString()
+      );
+  }
+  
+  public function testCreatingCcWithName()
+  {
+    $cc = $this->_factory->createHeader(
+      'Cc', array('mark@swiftmailer.org' => 'Mark')
+      );
+    $this->assertEqual('Cc: Mark <mark@swiftmailer.org>' . "\r\n",
+      $cc->toString()
+      );
+  }
+  
+  public function testCreatingCcWithUtf8Name()
+  {
+    $cc = $this->_factory->createHeader(
+      'Cc', array('mark@swiftmailer.org' => 'Код')
+      );
+    $this->assertEqual(
+      'Cc: =?utf-8?Q?=D0=9A=D0=BE=D0=B4?= <mark@swiftmailer.org>' . "\r\n",
+      $cc->toString()
+      );
+  }
+  
+  public function testCreatingCcList()
+  {
+    $cc = $this->_factory->createHeader(
+      'Cc', array('mark@swiftmailer.org' => 'Mark',
+        'chris@swiftmailer.org' => 'Chris Corbyn',
+        'someone@anotherdomain.com')
+      );
+    $this->assertEqual(
+      'Cc: Mark <mark@swiftmailer.org>, Chris Corbyn <chris@swiftmailer.org>,' . "\r\n" .
+      ' someone@anotherdomain.com' . "\r\n",
+      $cc->toString()
+      );
+  }
+  
+  public function testCreatingBccHeader()
+  {
+    $bcc = $this->_factory->createHeader('Bcc', 'mark@swiftmailer.org');
+    $this->assertEqual('Bcc: mark@swiftmailer.org' . "\r\n",
+      $bcc->toString()
+      );
+  }
+  
+  public function testCreatingBccWithName()
+  {
+    $bcc = $this->_factory->createHeader(
+      'Bcc', array('mark@swiftmailer.org' => 'Mark')
+      );
+    $this->assertEqual('Bcc: Mark <mark@swiftmailer.org>' . "\r\n",
+      $bcc->toString()
+      );
+  }
+  
+  public function testCreatingBccWithUtf8Name()
+  {
+    $bcc = $this->_factory->createHeader(
+      'Bcc', array('mark@swiftmailer.org' => 'Код')
+      );
+    $this->assertEqual(
+      'Bcc: =?utf-8?Q?=D0=9A=D0=BE=D0=B4?= <mark@swiftmailer.org>' . "\r\n",
+      $bcc->toString()
+      );
+  }
+  
+  public function testCreatingBccList()
+  {
+    $bcc = $this->_factory->createHeader(
+      'Bcc', array('mark@swiftmailer.org' => 'Mark',
+        'chris@swiftmailer.org' => 'Chris Corbyn',
+        'someone@anotherdomain.com')
+      );
+    $this->assertEqual(
+      'Bcc: Mark <mark@swiftmailer.org>, Chris Corbyn <chris@swiftmailer.org>,' . "\r\n" .
+      ' someone@anotherdomain.com' . "\r\n",
+      $bcc->toString()
+      );
+  }
+  
+  public function testCreatingMessageIdHeader()
+  {
+    $msgId = $this->_factory->createHeader('Message-ID', 'foo@bar');
+    $this->assertEqual('Message-ID: <foo@bar>' . "\r\n", $msgId->toString());
+  }
+  
+  public function testCreatingInReplyToHeader()
+  {
+    $irp = $this->_factory->createHeader('In-Reply-To', 'foo@bar');
+    $this->assertEqual('In-Reply-To: <foo@bar>' . "\r\n", $irp->toString());
+  }
+  
+  public function testCreatingInReplyToHeaderWithList()
+  {
+    $irp = $this->_factory->createHeader('In-Reply-To',
+      array('foo@bar', 'zip@button')
+      );
+    $this->assertEqual('In-Reply-To: <foo@bar> <zip@button>' . "\r\n",
+      $irp->toString()
+      );
+  }
+  
+  public function testCreatingReferencesHeader()
+  {
+    $references = $this->_factory->createHeader('References', 'foo@bar');
+    $this->assertEqual('References: <foo@bar>' . "\r\n", $references->toString());
+  }
+  
+  public function testCreatingReferenceseaderWithList()
+  {
+    $references = $this->_factory->createHeader('References',
+      array('foo@bar', 'zip@button')
+      );
+    $this->assertEqual('References: <foo@bar> <zip@button>' . "\r\n",
+      $references->toString()
+      );
+  }
   
   public function testCreatingSubjectHeader()
   {
@@ -321,6 +598,44 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactoryAcceptanceTest
       'Subject: =?utf-8?Q?=D1=80=D1=83=D0=BA=D0=BE=D0=B2=D0=BE=D0=B4=D0=B8?=' . "\r\n" .
       ' =?utf-8?Q?=D1=88=D1=8C?=' . "\r\n",
       $subject->toString()
+      );
+  }
+  
+  public function testCreatingCommentsHeader()
+  {
+    $comments = $this->_factory->createHeader('Comments', 'Testing');
+    $this->assertEqual('Comments: Testing' . "\r\n", $comments->toString());
+  }
+  
+  public function testCreatingUtf8Comments()
+  {
+    $comments = $this->_factory->createHeader('Comments', 'руководишь');
+    $this->assertEqual(
+      'Comments: =?utf-8?Q?=D1=80=D1=83=D0=BA=D0=BE=D0=B2=D0=BE=D0=B4=D0=B8?=' . "\r\n" .
+      ' =?utf-8?Q?=D1=88=D1=8C?=' . "\r\n",
+      $comments->toString()
+      );
+  }
+  
+  public function testCreatingKeywordsHeader()
+  {
+    $keywords = $this->_factory->createHeader('Keywords',
+      array('foo bar', 'zip button')
+      );
+    $this->assertEqual('Keywords: foo bar, zip button' . "\r\n",
+      $keywords->toString()
+      );
+  }
+  
+  public function testCreatingKeywordsHeaderWithUtf8()
+  {
+    $keywords = $this->_factory->createHeader('Keywords',
+      array('руководишь', 'zip button')
+      );
+    $this->assertEqual(
+      'Keywords: =?utf-8?Q?=D1=80=D1=83=D0=BA=D0=BE=D0=B2=D0=BE=D0=B4=D0=B8?=' . "\r\n" .
+      ' =?utf-8?Q?=D1=88=D1=8C?=, zip button' . "\r\n",
+      $keywords->toString()
       );
   }
   
