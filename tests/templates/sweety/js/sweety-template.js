@@ -12,6 +12,9 @@ function SweetyUIManager() {
   
   var _this = this;
   
+  /** Packages toggled on or off */
+  var _pkgs = { };
+  
   /** An element cache */
   var _cached = { };
   
@@ -23,6 +26,38 @@ function SweetyUIManager() {
     _this.loadTestList();
     _this.resetMessageDiv();
     _this.resetTotals();
+  }
+  
+  /**
+   * Show or hide an entire package.
+   * @param {String} pkg
+   */
+  this.togglePackage = function togglePackage(pkg) {
+    var pkgLen = pkg.length;
+    if (typeof _pkgs[pkg] == "undefined") {
+      _pkgs[pkg] = false;
+    }
+    for (var testCase in sweetyTestCases) {
+      if (testCase.substring(0, pkgLen) == pkg) {
+        var testDiv = _getElementById(testCase);
+        if (_pkgs[pkg]) {
+          if (sweetyTestCases[testCase]) {
+            testDiv.style.display = "block";
+          }
+        } else {
+          testDiv.style.display = "none";
+        }
+      }
+    }
+    
+    var headerImg = _getElementById("sweety-pkg-img-" + pkg);
+    if (_pkgs[pkg]) {
+      headerImg.src = "templates/sweety/images/darr.gif";
+    } else {
+      headerImg.src = "templates/sweety/images/rarr.gif";
+    }
+    //Toggle
+    _pkgs[pkg] = !_pkgs[pkg];
   }
   
   /**

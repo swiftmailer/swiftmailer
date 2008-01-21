@@ -34,7 +34,20 @@
           <!-- Dynamically generated list of tests goes here -->
           <div id="sweety-testlist-container">
             
-            <?php foreach ($testCases as $testCase): ?>
+            <?php $currentPackage = null; foreach ($testCases as $testCase): ?>
+            
+            <?php if ($currentPackage != $package = preg_replace('/_?[^_]+$/', '', $testCase)): ?>
+              <?php $currentPackage = $package; ?>
+              <div id="sweety-package-<?php echo $package; ?>" class="sweety-package-header sweety-pkg-idle">
+                <img id="sweety-pkg-img-<?php echo $package; ?>" src="templates/sweety/images/darr.gif"
+                  alt="Toggle Display" title="Toggle Display"
+                  onclick="sweetyUI.togglePackage('<?php echo $package; ?>'); event.cancelBubble=true;" />
+                <?php echo preg_replace('/^.*_/', '', $package); ?> Tests
+                <span class="sweety-test-package">
+                  <?php echo preg_replace('/_?[^_]+$/', '', $package); ?>
+                </span>
+              </div>
+            <?php endif; ?>
             
             <div id="<?php echo $testCase; ?>" class="sweety-test sweety-<?php
             
@@ -65,7 +78,7 @@
                 </label>
                 
                 <span class="sweety-test-package">
-                  <?php echo preg_replace('/_?[^_]+$/', '', $testCase); ?>
+                  <?php echo $package; ?>
                 </span>
               
               </div>

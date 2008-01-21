@@ -63,6 +63,8 @@ class Sweety_TestLocator_PearStyleLocator implements Sweety_TestLocator
       closedir($handle);
     }
     
+    sort($ret);
+    
     return $ret;
   }
   

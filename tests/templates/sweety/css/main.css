@@ -118,12 +118,32 @@ div.sweety-test-path {
 div.sweety-test {
   font-size: 12px;
   margin-bottom: 2px;
+  margin-left: 1em;
   padding: 2px;
 }
 
 div.sweety-test img {
   float: right;
   margin-right: 4px;
+}
+
+div.sweety-package-header {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  padding: 2px;
+}
+
+div.sweety-package-header span.sweety-test-package {
+  font-weight: normal;
+}
+
+div.sweety-package-header img {
+  margin: 0 2px;
+}
+
+.sweety-pkg-idle {
+  background: #cacaca;
 }
 
 span.sweety-test-package {
