@@ -118,7 +118,7 @@ div.sweety-test-path {
 div.sweety-test {
   font-size: 12px;
   margin-bottom: 2px;
-  margin-left: 8px;
+  margin-left: 12px;
   padding: 2px;
 }
 
@@ -129,8 +129,9 @@ div.sweety-test img {
 
 div.sweety-package-header {
   font-size: 12px;
-  font-weight: bold;
+  /*font-weight: bold;*/
   margin-bottom: 2px;
+  border-bottom: 2px solid #444;
   padding: 2px;
 }
 

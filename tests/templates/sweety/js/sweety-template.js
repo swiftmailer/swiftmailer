@@ -123,7 +123,11 @@ function SweetyUIManager() {
     var caseBox = _getListContainer();
 
     for (var testCase in sweetyTestCases) {
+      this.paintTestCaseIdle(testCase);
+      
       var pkg = testCase.replace(/_?[^_]+$/, "");
+      this.paintPkgIdle(pkg);
+      
       var testDiv = _getElementById(testCase);
       
       //Make it look idle
@@ -174,11 +178,51 @@ function SweetyUIManager() {
   }
   
   /**
+   * Marks a given package as running (yellow) in the UI.
+   * @param {String} pkg
+   */
+  this.paintPkgRunning = function paintPkgRunning(pkg) {
+    _getElementById("sweety-package-" + pkg).className = "sweety-package-header sweety-running";
+  }
+  
+  /**
+   * Marks a given package as idle (grey) in the UI.
+   * @param {String} pkg
+   */
+  this.paintPkgIdle = function paintPkgIdle(pkg) {
+    _getElementById("sweety-package-" + pkg).className = "sweety-package-header sweety-pkg-idle";
+  }
+  
+  /**
+   * Marks a given package as passed (green) in the UI.
+   * @param {String} pkg
+   */
+  this.paintPkgPassed = function paintPkgPassed(pkg) {
+    _getElementById("sweety-package-" + pkg).className = "sweety-package-header sweety-pass";
+  }
+  
+  /**
+   * Marks a given package as failed (red) in the UI.
+   * @param {String} pkg
+   */
+  this.paintPkgFailed = function paintPkgFailed(pkg) {
+    _getElementById("sweety-package-" + pkg).className = "sweety-package-header sweety-fail";
+  }
+  
+  /**
    * Marks a given test case as running (yellow) in the UI.
    * @param {String} testCase
    */
   this.paintTestCaseRunning = function paintTestCaseRunning(testCase) {
     _getElementById(testCase).className = "sweety-test sweety-running";
+  }
+  
+  /**
+   * Marks a given test case as idle (grey) in the UI.
+   * @param {String} testCase
+   */
+  this.paintTestCaseIdle = function paintTestCaseIdle(testCase) {
+    _getElementById(testCase).className = "sweety-test sweety-idle";
   }
   
   /**
@@ -585,8 +629,9 @@ var sweetyFilter = new SweetyFilter();
  * The reporter which gathers aggregate results and displays a summary.
  * @author Chris Corbyn
  * @constructor
+ * @param {Boolean} reportPkgs if package status should be reported
  */
-function SweetyTemplateAggregateReporter() {
+function SweetyTemplateAggregateReporter(testCaseList, reportPkgs) {
   
   var _this = this;
   
@@ -596,6 +641,12 @@ function SweetyTemplateAggregateReporter() {
   /** Aggregate totals */
   var _aggregates = { cases : 0, run: 0, passes : 0, fails : 0, exceptions : 0 };
   
+  /** Aggregates per-package */
+  var _pkgs = { };
+  
+  /** Currently running package */
+  var _currentPkg;
+  
   /**
    * Creates a reporter for the given testCase.
    * @param {String} testCase
@@ -603,6 +654,19 @@ function SweetyTemplateAggregateReporter() {
    */
   this.getReporterFor = function getReporterFor(testCase) {
     _aggregates.cases++;
+    
+    if (reportPkgs) {
+      var pkg = _getPkgName(testCase);
+      sweetyUI.paintPkgRunning(pkg);
+      
+      _pkgs[pkg].cases++;
+      
+      if (_currentPkg && _currentPkg != pkg) {
+        _updatePkgStatus(_currentPkg);
+      }
+      
+      _currentPkg = pkg;
+    }
     
     sweetyUI.paintNumCases(_aggregates.cases);
     
@@ -615,6 +679,11 @@ function SweetyTemplateAggregateReporter() {
    */
   this.notifyEnded = function notifyEnded(testCase) {
     _aggregates.run++;
+    
+    if (reportPkgs) {
+      var pkg = _getPkgName(testCase);
+      _pkgs[pkg].run++;
+    }
     
     //Update the UI with new totals
     sweetyUI.paintNumRun(_aggregates.run);
@@ -636,6 +705,18 @@ function SweetyTemplateAggregateReporter() {
    */
   this.start = function start() {
     _started = true;
+    
+    if (reportPkgs)
+    {
+      for (var i = 0, len = testCaseList.length; i < len; i++) {
+        var testCase = testCaseList[i];
+        var pkg = _getPkgName(testCase);
+        if (typeof _pkgs[pkg] == "undefined") {
+          _pkgs[pkg] = { cases : 0, run : 0, passes : 0, fails : 0, exceptions : 0 };
+        }
+      }
+    }
+    
     sweetyUI.allowInteractivity(false);
     sweetyUI.paintNetworking(true);
     sweetyUI.paintAllRunning();
@@ -648,6 +729,10 @@ function SweetyTemplateAggregateReporter() {
    */
   this.reportPass = function reportPass(message, path) {
     _aggregates.passes++;
+    
+    if (reportPkgs) {
+      _pkgs[_currentPkg].passes++;
+    }
   }
   
   /**
@@ -657,6 +742,11 @@ function SweetyTemplateAggregateReporter() {
    */
   this.reportFail = function reportFail(message, path) {
     _aggregates.fails++;
+    
+    if (reportPkgs) {
+      _pkgs[_currentPkg].fails++;
+    }
+    
     sweetyUI.paintFail(message, path);
   }
   
@@ -667,6 +757,11 @@ function SweetyTemplateAggregateReporter() {
    */
   this.reportException = function reportException(message, path) {
     _aggregates.exceptions++;
+    
+    if (reportPkgs) {
+      _pkgs[_currentPkg].exceptions++;
+    }
+    
     sweetyUI.paintException(message, path);
   }
   
@@ -685,6 +780,10 @@ function SweetyTemplateAggregateReporter() {
    */
   this.finish = function finish() {
     _started = false;
+    
+    if (reportPkgs) {
+      _updatePkgStatus(_currentPkg);
+    }
     
     sweetyUI.allowInteractivity(true);
     
@@ -707,6 +806,19 @@ function SweetyTemplateAggregateReporter() {
         " and/or because an error occured." +
         " Incomplete test cases are shown in yellow.  Click the HTML link " +
         "next to the test for more detail.");
+    }
+  }
+  
+  var _getPkgName = function _getPkgName(testCase) {
+    return testCase.replace(/_?[^_]+$/, "");
+  }
+  
+  var _updatePkgStatus = function _updatePkgStatus(pkg) {
+    if ((!_pkgs[pkg].fails && !_pkgs[pkg].exceptions)
+        && (_pkgs[pkg].cases == _pkgs[pkg].run)) {
+      sweetyUI.paintPkgPassed(pkg);
+    } else if (_pkgs[pkg].cases == _pkgs[pkg].run) {
+      sweetyUI.paintPkgFailed(pkg);
     }
   }
   
@@ -826,9 +938,10 @@ function SweetyTestWrapper() {
    * @param {String} testClass
    */
   this.runTestCase = function runTestCase(testClass) {
-    var reporter = new SweetyTemplateAggregateReporter();
     var testCaseList = new Array();
     testCaseList.push(testClass);
+    
+    var reporter = new SweetyTemplateAggregateReporter(testCaseList);
     
     var runner = new SweetyTestRunner();
     runner.runTests(testCaseList, reporter);
@@ -842,7 +955,7 @@ function SweetyTestWrapper() {
     if (pkg) {
       pkgRegex = new RegExp("^" + pkg + "_[^_]+$");
     }
-    var reporter = new SweetyTemplateAggregateReporter();
+    
     var testCaseList = new Array();
     
     for (var testCase in sweetyTestCases) {
@@ -851,6 +964,8 @@ function SweetyTestWrapper() {
       }
       testCaseList.push(testCase);
     }
+    
+    var reporter = new SweetyTemplateAggregateReporter(testCaseList, true);
     
     var runner = new SweetyTestRunner();
     runner.runTests(testCaseList, reporter);
