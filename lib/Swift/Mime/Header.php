@@ -63,13 +63,13 @@ interface Swift_Mime_Header
   public function getName();
   
   /**
-   * Get the (unencoded) value of this header.
+   * Get the (unprepared) value of this header.
    * @return string
    */
   public function getValue();
   
   /**
-   * Set the (unencoded) value of this header.
+   * Set the (unprepared) value of this header.
    * @param string $value
    */
   public function setValue($value);
@@ -91,6 +91,19 @@ interface Swift_Mime_Header
    * @param int $length
    */
   public function setMaxLineLength($length);
+  
+  /**
+   * Sets the value of this Header as if it's already been prepared for use.
+   * Lines needn't be folded since {@link toString()} will fold long lines.
+   * @param string $value
+   */
+  public function setPreparedValue($value);
+  
+  /**
+   * Get the value, prepared for folding into a final header value.
+   * @return string
+   */
+  public function getPreparedValue();
   
   /**
    * Get this Header rendered as a compliant string.

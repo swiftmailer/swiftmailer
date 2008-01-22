@@ -33,13 +33,6 @@ class Swift_Mime_Header_StructuredHeader
 {
   
   /**
-   * The value of this Header, cached.
-   * @var string
-   * @access private
-   */
-  private $_cachedValue = null;
-  
-  /**
    * Creates a new StructuredHeader with the given $name and $id.
    * @param string $name
    * @param mixed $id, optional as string or string[]
@@ -50,28 +43,6 @@ class Swift_Mime_Header_StructuredHeader
     Swift_Mime_HeaderEncoder $encoder = null)
   {
     parent::__construct($name, $value, $charset, $encoder);
-  }
-  
-  // -- Protected methods
-  
-  /**
-   * Set a value into the cache.
-   * @param string $value
-   * @access protected
-   */
-  protected function setCachedValue($value)
-  {
-    $this->_cachedValue = $value;
-  }
-  
-  /**
-   * Get the value in the cache.
-   * @return string
-   * @access protected
-   */
-  protected function getCachedValue()
-  {
-    return $this->_cachedValue;
   }
   
 }

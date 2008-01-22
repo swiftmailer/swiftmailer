@@ -34,12 +34,53 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactory
   implements Swift_Mime_HeaderFactory
 {
   
+  /**
+   * The default character set of Headers.
+   * @var string
+   * @access private
+   */
   private $_charset = 'utf-8';
+  
+  /**
+   * The default language in Headers.
+   * @var string
+   * @access private
+   */
   private $_lang = 'en';
+  
+  /**
+   * The default line length of Headers.
+   * @var int
+   * @access private
+   */
   private $_lineLength = 78;
+  
+  /**
+   * The default encoding method in Headers.
+   * @var string
+   * @access private
+   */
   private $_encodingMethod = 'Q';
+  
+  /**
+   * Q and B encoders for Headers.
+   * @var Swift_Mime_HeaderEncoder[]
+   * @access private
+   */
   private $_encoders = array('Q' => null, 'B' => null);
+  
+  /**
+   * Attribute value encoder.
+   * @var Swift_Encoder
+   * @access private
+   */
   private $_attrEncoder;
+  
+  /**
+   * A map of header names to class names.
+   * @var string[]
+   * @access private
+   */
   private $_classMap = array(
     'Return-Path' => 'Swift_Mime_Header_PathHeader',
     'Received' => 'Swift_Mime_Header_ReceivedHeader',
@@ -64,8 +105,17 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactory
     'Comments' => 'Swift_Mime_Header_UnstructuredHeader',
     'Keywords' => 'Swift_Mime_Header_ListHeader'
     );
+  
+  /**
+   * A map of lowercased header names to their normalized RFC 2822 form.
+   * @var string[]
+   * @access private
+   */
   private $_keyMap = array();
   
+  /**
+   * Creates a new SimpleHeaderFactory.
+   */
   public function __construct()
   {
     $this->_keyMap = array_change_key_case(
@@ -150,6 +200,8 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactory
    */
   public function createHeaderFromString($string)
   {
+    $string = rtrim($string, "\r\n");
+    //
   }
   
   /**

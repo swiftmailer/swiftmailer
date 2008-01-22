@@ -6,8 +6,7 @@ Swift Mailer:
    - Needs to have a createAttributeFromString() method
  * See if some of the Headers can be refactored/removed
  * Content-type header, Content-disposition etc... what type?
- * MimeDocument class
- * Rfc2231Encoder
+ * MimeEntity class
  * Acceptance tests for:
    - Some Headers (which use Encoders)
    - Attributes
@@ -19,7 +18,7 @@ Test Suite:
  * Change test results bar to show actual number of tests running
  * Add a thin bar showing the percentage progress below the results bar
  * Handle fatal errors? Maybe handle at the backend?
- * Collapse/expand subpackages as groups and run groups at a time
- * Create SweetyTemplatePackageReporter
+ * Set cookies to remember what was collapsed/expanded
+ * Hide package if search term removes all its test cases
  
 EoM

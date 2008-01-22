@@ -132,14 +132,21 @@ class Swift_Mime_Header_IdentificationHeader
     return $this->_ids;
   }
   
-  // -- Overridden points of extension
+  /**
+   * Sets the value of this Header as if it's already been prepared for use.
+   * Lines needn't be folded since {@link toString()} will fold long lines.
+   * @param string $value
+   */
+  public function setPreparedValue($value)
+  {
+    return $this->setValue($value);
+  }
   
   /**
    * Get the value prepared and ready for folding into to Header.
    * @return string
-   * @access protected
    */
-  protected function getPreparedValue()
+  public function getPreparedValue()
   {
     return $this->getValue();
   }

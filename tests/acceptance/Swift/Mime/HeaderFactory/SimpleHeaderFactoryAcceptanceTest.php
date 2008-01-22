@@ -639,4 +639,16 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactoryAcceptanceTest
       );
   }
   
+  public function testCreatingReturnPathHeaderFromString()
+  {
+    $return = $this->_factory->createHeaderFromString(
+      'Return-Path: <noreply@devnetwork.net>'
+      );
+    $this->assertEqual('Return-Path', $return->getName());
+    $this->assertEqual('noreply@devnetwork.net', $return->getAddress());
+  }
+  
+  //TODO: Setting values with encoded-words in Unstructured fields should
+  // be parsed out.  New methods?  setPreparedValue() getPreparedValue()
+  
 }

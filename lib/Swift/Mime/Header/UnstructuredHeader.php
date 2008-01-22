@@ -83,6 +83,13 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   private $_helper;
   
   /**
+   * The value of this Header, cached.
+   * @var string
+   * @access private
+   */
+  private $_cachedValue = null;
+  
+  /**
    * Creates a new SimpleHeader with $name and $value.
    * @param string $name
    * @param string $value, optional
@@ -197,6 +204,32 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   }
   
   /**
+   * Sets the value of this Header as if it's already been prepared for use.
+   * Lines needn't be folded since {@link toString()} will fold long lines.
+   * @param string $value
+   */
+  public function setPreparedValue($value)
+  {
+  }
+  
+  /**
+   * Get the value of this header prepared for rendering.
+   * @return string
+   */
+  public function getPreparedValue()
+  {
+    if (!$this->getCachedValue())
+    {
+      $this->setCachedValue(
+        str_replace('\\', '\\\\', $this->_helper->encodeWords(
+          $this, $this->_value, -1, $this->_charset, $this->_encoder
+          ))
+        );
+    }
+    return $this->getCachedValue();
+  }
+  
+  /**
    * Get this Header rendered as a RFC 2822 compliant string.
    * @return string
    */
@@ -206,18 +239,6 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   }
   
   // -- Points of extension
-  
-  /**
-   * Get the value of this header prepared for rendering.
-   * @return string
-   * @access protected
-   */
-  protected function getPreparedValue()
-  {
-    return str_replace('\\', '\\\\', $this->_helper->encodeWords(
-      $this, $this->_value, -1, $this->_charset, $this->_encoder
-      ));
-  }
   
   /**
    * Generates tokens from the given string which include CRLF as individual tokens.
@@ -238,6 +259,26 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   protected function getHelper()
   {
     return $this->_helper;
+  }
+  
+  /**
+   * Set a value into the cache.
+   * @param string $value
+   * @access protected
+   */
+  protected function setCachedValue($value)
+  {
+    $this->_cachedValue = $value;
+  }
+  
+  /**
+   * Get the value in the cache.
+   * @return string
+   * @access protected
+   */
+  protected function getCachedValue()
+  {
+    return $this->_cachedValue;
   }
   
   // -- Private methods
