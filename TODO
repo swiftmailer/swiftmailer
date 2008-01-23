@@ -11,6 +11,8 @@ Swift Mailer:
    - Some Headers (which use Encoders)
    - Attributes
  * CharacterReaderFactory (map charsets to CharacterReaders).
+ * Splitting logic in MailboxHeader (?<!\\\\), is wrong!!!
+   - Comma can be in quoted-string.
 
 Test Suite:
 -----------

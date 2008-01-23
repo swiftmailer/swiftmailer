@@ -648,7 +648,4 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactoryAcceptanceTest
     $this->assertEqual('noreply@devnetwork.net', $return->getAddress());
   }
   
-  //TODO: Setting values with encoded-words in Unstructured fields should
-  // be parsed out.  New methods?  setPreparedValue() getPreparedValue()
-  
 }

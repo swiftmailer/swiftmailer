@@ -201,7 +201,25 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactory
   public function createHeaderFromString($string)
   {
     $string = rtrim($string, "\r\n");
-    //
+    if (false !== $colonPos = strpos($string, ':'))
+    {
+      $name = substr($string, 0, $colonPos);
+      $value = substr($string, $colonPos + 1);
+      if (preg_match('/^[\x21-\x39\x3B-\x7E]+$/D', $name))
+      {
+        $header = $this->createHeader($name);
+        $header->setPreparedValue($value);
+        return $header;
+      }
+      else
+      {
+        throw new Exception('Invalid characters in header name.');
+      }
+    }
+    else
+    {
+      throw new Exception('Invalid header (missing colon).');
+    }
   }
   
   /**
