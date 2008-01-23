@@ -93,7 +93,7 @@ class Swift_Mime_Header_VersionHeader
    * @see setVersion()
    * @see getValue()
    */
-  public function setValue($value)
+  public function setPreparedValue($value)
   {
     $version = $this->getHelper()->stripCFWS($value);
     $this->setVersion($version);
@@ -107,28 +107,9 @@ class Swift_Mime_Header_VersionHeader
    * @return string
    * @see toString()
    */
-  public function getValue()
-  {
-    return $this->getCachedValue();
-  }
-  
-  /**
-   * Sets the value of this Header as if it's already been prepared for use.
-   * Lines needn't be folded since {@link toString()} will fold long lines.
-   * @param string $value
-   */
-  public function setPreparedValue($value)
-  {
-    return $this->setValue($value);
-  }
-  
-  /**
-   * Gets the value with all needed tokens prepared for insertion into the Header.
-   * @return string
-   */
   public function getPreparedValue()
   {
-    return $this->getValue();
+    return $this->getCachedValue();
   }
   
 }

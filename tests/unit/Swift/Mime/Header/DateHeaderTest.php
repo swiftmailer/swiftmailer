@@ -30,31 +30,31 @@ class Swift_Mime_Header_DateHeaderTest
   {
     $timestamp = time();
     $header = $this->_getHeader('Date', $timestamp);
-    $this->assertEqual(date('r', $timestamp), $header->getValue());
+    $this->assertEqual(date('r', $timestamp), $header->getPreparedValue());
   }
   
   public function testSettingValidRfc2822DateValue()
   {
     $header = $this->_getHeader('Date');
-    $header->setValue('Mon, 14 Jan 2008 22:30:08 +1100');
-    $this->assertEqual('Mon, 14 Jan 2008 22:30:08 +1100', $header->getValue());
+    $header->setPreparedValue('Mon, 14 Jan 2008 22:30:08 +1100');
+    $this->assertEqual('Mon, 14 Jan 2008 22:30:08 +1100', $header->getPreparedValue());
     $this->assertEqual(1200310208, $header->getTimestamp());
   }
   
   public function testSettingValidShortFormRfc2822DateValue()
   {
     $header = $this->_getHeader('Date');
-    $header->setValue('14 Jan 2008 22:30:08 +1100');
-    $this->assertEqual('14 Jan 2008 22:30:08 +1100', $header->getValue());
+    $header->setPreparedValue('14 Jan 2008 22:30:08 +1100');
+    $this->assertEqual('14 Jan 2008 22:30:08 +1100', $header->getPreparedValue());
     $this->assertEqual(1200310208, $header->getTimestamp());
   }
   
   public function testCommentCanAppearAtEndOfValue()
   {
     $header = $this->_getHeader('Date');
-    $header->setValue('Mon, 14 Jan 2008 22:30:08 +1100 (some comment)');
+    $header->setPreparedValue('Mon, 14 Jan 2008 22:30:08 +1100 (some comment)');
     $this->assertEqual('Mon, 14 Jan 2008 22:30:08 +1100 (some comment)',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(1200310208, $header->getTimestamp());
   }
@@ -62,9 +62,9 @@ class Swift_Mime_Header_DateHeaderTest
   public function testFWSCanAppearBetweenDateAndTime()
   {
     $header = $this->_getHeader('Date');
-    $header->setValue('Mon, 14 Jan 2008' . "\r\n " . '22:30:08 +1100');
+    $header->setPreparedValue('Mon, 14 Jan 2008' . "\r\n " . '22:30:08 +1100');
     $this->assertEqual('Mon, 14 Jan 2008' . "\r\n " . '22:30:08 +1100',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(1200310208, $header->getTimestamp());
   }
@@ -72,9 +72,9 @@ class Swift_Mime_Header_DateHeaderTest
   public function testFWSCanAppearBetweenTimeAndZone()
   {
     $header = $this->_getHeader('Date');
-    $header->setValue('Mon, 14 Jan 2008 22:30:08' . "\r\n " . '+1100');
+    $header->setPreparedValue('Mon, 14 Jan 2008 22:30:08' . "\r\n " . '+1100');
     $this->assertEqual('Mon, 14 Jan 2008 22:30:08' . "\r\n " . '+1100',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(1200310208, $header->getTimestamp());
   }
@@ -82,9 +82,9 @@ class Swift_Mime_Header_DateHeaderTest
   public function testFWSCanAppearBetweenMonthAndYear()
   {
     $header = $this->_getHeader('Date');
-    $header->setValue('Mon, 14 Jan' . "\r\n " . '2008 22:30:08 +1100');
+    $header->setPreparedValue('Mon, 14 Jan' . "\r\n " . '2008 22:30:08 +1100');
     $this->assertEqual('Mon, 14 Jan' . "\r\n " . '2008 22:30:08 +1100',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(1200310208, $header->getTimestamp());
   }
@@ -92,9 +92,9 @@ class Swift_Mime_Header_DateHeaderTest
   public function testFWSCanBeHTAB()
   {
     $header = $this->_getHeader('Date');
-    $header->setValue('Mon, 14 Jan' . "\t" . '2008 22:30:08 +1100');
+    $header->setPreparedValue('Mon, 14 Jan' . "\t" . '2008 22:30:08 +1100');
     $this->assertEqual('Mon, 14 Jan' . "\t" . '2008 22:30:08 +1100',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(1200310208, $header->getTimestamp());
   }
@@ -137,7 +137,7 @@ class Swift_Mime_Header_DateHeaderTest
     $header = $this->_getHeader('Date');
     try
     {
-      $header->setValue('Monday, 14 Jan 2008 22:30:08 +1100');
+      $header->setPreparedValue('Monday, 14 Jan 2008 22:30:08 +1100');
       $this->fail('day-of-week can only be Mon/Tue/Wed/Thu/Fri/Sat/Sun.');
     }
     catch (Exception $e)
@@ -147,7 +147,7 @@ class Swift_Mime_Header_DateHeaderTest
     
     try
     {
-      $header->setValue('Mon, 14 January 2008 22:30:08 +1100');
+      $header->setPreparedValue('Mon, 14 January 2008 22:30:08 +1100');
       $this->fail('month-name can only be Jan/Feb/Mar/Apr/May/Jun/Jul/Aug/Sep/Oct/Nov/Dec.');
     }
     catch (Exception $e)
@@ -157,7 +157,7 @@ class Swift_Mime_Header_DateHeaderTest
     
     try
     {
-      $header->setValue('Mon, 14 Jan 08 22:30:08 +1100');
+      $header->setPreparedValue('Mon, 14 Jan 08 22:30:08 +1100');
       $this->fail('Year must be 4 digits');
     }
     catch (Exception $e)
@@ -167,7 +167,7 @@ class Swift_Mime_Header_DateHeaderTest
     
     try
     {
-      $header->setValue('Mon, 14 Jan 2008 2:30:08 +1100');
+      $header->setPreparedValue('Mon, 14 Jan 2008 2:30:08 +1100');
       $this->fail('hour must be 2 digits.');
     }
     catch (Exception $e)
@@ -177,7 +177,7 @@ class Swift_Mime_Header_DateHeaderTest
     
     try
     {
-      $header->setValue('Mon, 14 Jan 2008 22:30:08');
+      $header->setPreparedValue('Mon, 14 Jan 2008 22:30:08');
       $this->fail('time zone must be present.');
     }
     catch (Exception $e)
@@ -187,7 +187,7 @@ class Swift_Mime_Header_DateHeaderTest
     
     try
     {
-      $header->setValue('(Opening comment) Mon, 14 Jan 2008 22:30:08 +1100');
+      $header->setPreparedValue('(Opening comment) Mon, 14 Jan 2008 22:30:08 +1100');
       $this->fail('CFWS can only appear at end of date.');
     }
     catch (Exception $e)

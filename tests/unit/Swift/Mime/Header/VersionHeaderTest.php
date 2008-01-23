@@ -42,7 +42,7 @@ class Swift_Mime_Header_VersionHeaderTest
   public function testGetValueReturnsVersion()
   {
     $header = $this->_getHeader('MIME-Version', '1.0');
-    $this->assertEqual('1.0', $header->getValue());
+    $this->assertEqual('1.0', $header->getPreparedValue());
   }
   
   public function testToString()
@@ -54,9 +54,9 @@ class Swift_Mime_Header_VersionHeaderTest
   public function testSetValueResolvesVersion()
   {
     $header = $this->_getHeader('MIME-Version');
-    $header->setValue('1.0');
+    $header->setPreparedValue('1.0');
     $this->assertEqual('1.0', $header->getVersion());
-    $this->assertEqual('1.0', $header->getValue());
+    $this->assertEqual('1.0', $header->getPreparedValue());
   }
   
   public function testSetValueIgnoresComments()
@@ -77,17 +77,17 @@ class Swift_Mime_Header_VersionHeaderTest
     
     $header = $this->_getHeader('MIME-Version');
     
-    $header->setValue('1.0 (produced by MetaSend Vx.x)');
+    $header->setPreparedValue('1.0 (produced by MetaSend Vx.x)');
     $this->assertEqual('1.0', $header->getVersion());
-    $this->assertEqual('1.0 (produced by MetaSend Vx.x)', $header->getValue());
+    $this->assertEqual('1.0 (produced by MetaSend Vx.x)', $header->getPreparedValue());
     
-    $header->setValue('(produced by MetaSend Vx.x) 1.0');
+    $header->setPreparedValue('(produced by MetaSend Vx.x) 1.0');
     $this->assertEqual('1.0', $header->getVersion());
-    $this->assertEqual('(produced by MetaSend Vx.x) 1.0', $header->getValue());
+    $this->assertEqual('(produced by MetaSend Vx.x) 1.0', $header->getPreparedValue());
     
-    $header->setValue('1.(produced by MetaSend Vx.x)0');
+    $header->setPreparedValue('1.(produced by MetaSend Vx.x)0');
     $this->assertEqual('1.0', $header->getVersion());
-    $this->assertEqual('1.(produced by MetaSend Vx.x)0', $header->getValue());
+    $this->assertEqual('1.(produced by MetaSend Vx.x)0', $header->getPreparedValue());
   }
   
   // -- Private methods

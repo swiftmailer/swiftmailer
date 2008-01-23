@@ -192,7 +192,7 @@ class Swift_Mime_Header_AddressHeader
    * @see defineGroup()
    * @see getValue()
    */
-  public function setValue($value)
+  public function setPreparedValue($value)
   {
     $mailboxes = array();
     $group = array();
@@ -234,7 +234,7 @@ class Swift_Mime_Header_AddressHeader
       }
     }
     
-    parent::setValue(implode(',', $mailboxes));
+    parent::setPreparedValue(implode(',', $mailboxes));
     $this->setCachedValue($value);
   }
   
@@ -245,11 +245,11 @@ class Swift_Mime_Header_AddressHeader
    * @return string
    * @see toString()
    */
-  public function getValue()
+  public function getPreparedValue()
   {
     if (is_null($this->getCachedValue()))
     {
-      $mailboxListString = parent::getValue();
+      $mailboxListString = parent::getPreparedValue();
       $groupLists = array();
       foreach ($this->_groups as $groupName => $mailboxes)
       {

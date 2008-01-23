@@ -81,7 +81,7 @@ class Swift_Mime_Header_ListHeader
    * @return string
    * @see toString()
    */
-  public function getValue()
+  public function getPreparedValue()
   {
     if (!$this->getCachedValue())
     {
@@ -107,7 +107,7 @@ class Swift_Mime_Header_ListHeader
    * @see setValueList()
    * @see getValue()
    */
-  public function setValue($value)
+  public function setPreparedValue($value)
   {
     $actualValues = array();
     $values = preg_split('/(?<!\\\\),/', $value);
@@ -120,25 +120,6 @@ class Swift_Mime_Header_ListHeader
     }
     $this->setValueList($actualValues);
     $this->setCachedValue($value);
-  }
-  
-  /**
-   * Sets the value of this Header as if it's already been prepared for use.
-   * Lines needn't be folded since {@link toString()} will fold long lines.
-   * @param string $value
-   */
-  public function setPreparedValue($value)
-  {
-    return $this->setValue($value);
-  }
-  
-  /**
-   * Gets the value with all needed tokens prepared for insertion into the Header.
-   * @return string
-   */
-  public function getPreparedValue()
-  {
-    return $this->getValue();
   }
   
 }

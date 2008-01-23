@@ -58,18 +58,6 @@ class Swift_Mime_Header_IdentificationHeader
   }
   
   /**
-   * Sets the Value of the Header explicitly.
-   * It's not recommended to use this method, though input will be validated.
-   * @param string $value, complying to RFC 2822, 3.6.
-   */
-  public function setValue($value)
-  {
-    $ids = $this->_getIdsFromValue($value);
-    $this->_ids = $ids;
-    parent::setValue($value);
-  }
-  
-  /**
    * Set the ID used in the value of this header.
    * @param string $id
    */
@@ -98,7 +86,6 @@ class Swift_Mime_Header_IdentificationHeader
   public function setIds(array $ids)
   {
     $actualIds = array();
-    $angleAddrs = array();
     
     foreach ($ids as $k => $id)
     {
@@ -108,19 +95,17 @@ class Swift_Mime_Header_IdentificationHeader
         $id
         ))
       {
-        $angleAddrs[] = '<' . $id . '>';
         $actualIds[] = $id;
       }
       else //Try assumng full ID spec incl any CFWS according to RFC 2822
       {
         $idList = $this->_getIdsFromValue($id);
         $actualIds = array_merge($actualIds, $idList);
-        $angleAddrs[] = $id;
       }
     }
     
     $this->_ids = $actualIds;
-    return parent::setValue(implode(' ', $angleAddrs));
+    $this->setCachedValue(null);
   }
   
   /**
@@ -133,22 +118,38 @@ class Swift_Mime_Header_IdentificationHeader
   }
   
   /**
-   * Sets the value of this Header as if it's already been prepared for use.
-   * Lines needn't be folded since {@link toString()} will fold long lines.
-   * @param string $value
+   * Sets the Value of the Header explicitly.
+   * It's not recommended to use this method, though input will be validated.
+   * @param string $value, complying to RFC 2822, 3.6.
    */
   public function setPreparedValue($value)
   {
-    return $this->setValue($value);
+    $ids = $this->_getIdsFromValue($value);
+    $this->_ids = $ids;
+    $this->setCachedValue($value);
   }
   
   /**
-   * Get the value prepared and ready for folding into to Header.
+   * Get the string value of the body in this Header.
+   * This is not necessarily RFC 2822 compliant since folding white space will
+   * not be added at this stage (see {@link toString()} for that).
    * @return string
+   * @see toString()
    */
   public function getPreparedValue()
   {
-    return $this->getValue();
+    if (!$this->getCachedValue())
+    {
+      $angleAddrs = array();
+    
+      foreach ($this->_ids as $id)
+      {
+        $angleAddrs[] = '<' . $id . '>';
+      }
+    
+      $this->setCachedValue(implode(' ', $angleAddrs));
+    }
+    return $this->getCachedValue();
   }
   
   // -- Private methods

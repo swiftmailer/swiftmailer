@@ -424,6 +424,31 @@ class Swift_Mime_HeaderComponentHelper
   }
   
   /**
+   * Remove FWS from the left and right of the given token.
+   * @param string $token
+   * @param string $sides to trim from
+   * @return string
+   * @access protected
+   */
+  public function trimFWS($token, $sides = 'both')
+  {
+    switch ($sides)
+    {
+      case 'right':
+        $pattern = '/' . $this->_grammar['FWS'] . '$/';
+        break;
+      case 'left':
+        $pattern = '/^' . $this->_grammar['FWS'] . '/';
+        break;
+      case 'both':
+      default:
+        $pattern = '/^' . $this->_grammar['FWS'] . '|' .
+      $this->_grammar['FWS'] . '$/';
+    }
+    return preg_replace($pattern, '', $token);
+  }
+  
+  /**
    * Remove CFWS from the left and right of the given token.
    * @param string $token
    * @param string $sides to trim from

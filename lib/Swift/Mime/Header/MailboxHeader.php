@@ -222,7 +222,7 @@ class Swift_Mime_Header_MailboxHeader
    * @see setAddresses()
    * @see getValue()
    */
-  public function setValue($value)
+  public function setPreparedValue($value)
   {
     $this->setNameAddresses($this->resolveNameAddresses($value));
     
@@ -237,7 +237,7 @@ class Swift_Mime_Header_MailboxHeader
    * @return string
    * @see toString()
    */
-  public function getValue()
+  public function getPreparedValue()
   {
     //Compute the string value of the header only if needed
     if (is_null($this->getCachedValue()))
@@ -245,25 +245,6 @@ class Swift_Mime_Header_MailboxHeader
       $this->setCachedValue($this->createMailboxListString($this->_mailboxes));
     }
     return $this->getCachedValue();
-  }
-  
-  /**
-   * Sets the value of this Header as if it's already been prepared for use.
-   * Lines needn't be folded since {@link toString()} will fold long lines.
-   * @param string $value
-   */
-  public function setPreparedValue($value)
-  {
-    return $this->setValue($value);
-  }
-  
-  /**
-   * Gets the value with all needed tokens prepared for insertion into the Header.
-   * @return string
-   */
-  public function getPreparedValue()
-  {
-    return $this->getValue();
   }
   
   // -- Points of extension

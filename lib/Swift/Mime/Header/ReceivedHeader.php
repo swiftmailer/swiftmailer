@@ -149,7 +149,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
    * @see setData()
    * @see getValue()
    */
-  public function setValue($value)
+  public function setPreparedValue($value)
   {
     //Parse out the date first
     if (false !== $semiColonPos = strrpos($value, ';'))
@@ -159,7 +159,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
       $nameValueList = substr($value, 0, $semiColonPos);
       try
       {
-        parent::setValue($date);
+        parent::setPreparedValue($date);
       }
       catch (Exception $e) //Invalid date-time format
       {
@@ -272,7 +272,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
    * @return string
    * @see toString()
    */
-  public function getValue()
+  public function getPreparedValue()
   {
     if (!$this->getCachedValue())
     {
@@ -300,7 +300,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
       }
       
       $this->setCachedValue(implode("\r\n ", $nvpStrings) . '; ' .
-        parent::getValue()
+        parent::getPreparedValue()
         );
     }
     
@@ -313,7 +313,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
    */
   public function toString()
   {
-    return $this->getName() . ': ' . $this->getValue() . "\r\n";
+    return $this->getName() . ': ' . $this->getPreparedValue() . "\r\n";
   }
   
 }

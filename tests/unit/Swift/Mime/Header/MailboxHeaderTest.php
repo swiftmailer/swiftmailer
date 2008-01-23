@@ -228,7 +228,7 @@ class Swift_Mime_Header_MailboxHeaderTest
       'chris@swiftmailer.org' => 'Chris Corbyn'
       ));
     $this->assertEqual(
-      'Chris Corbyn <chris@swiftmailer.org>', $header->getValue()
+      'Chris Corbyn <chris@swiftmailer.org>', $header->getPreparedValue()
       );
   }
   
@@ -240,15 +240,15 @@ class Swift_Mime_Header_MailboxHeaderTest
       ));
     $this->assertEqual(
       'Chris Corbyn <chris@swiftmailer.org>, Mark Corbyn <mark@swiftmailer.org>',
-      $header->getValue()
+      $header->getPreparedValue()
       );
   }
   
   public function testSetValueAcceptsAddrSpec()
   {
     $header = $this->_getHeader('Sender');
-    $header->setValue('chris@swiftmailer.org');
-    $this->assertEqual('chris@swiftmailer.org', $header->getValue());
+    $header->setPreparedValue('chris@swiftmailer.org');
+    $this->assertEqual('chris@swiftmailer.org', $header->getPreparedValue());
     $this->assertEqual('chris@swiftmailer.org',
       array_shift($header->getAddresses())
       );
@@ -264,8 +264,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   public function testSetValueAcceptsNameAddr()
   {
     $header = $this->_getHeader('Sender');
-    $header->setValue('Chris Corbyn <chris@swiftmailer.org>');
-    $this->assertEqual('Chris Corbyn <chris@swiftmailer.org>', $header->getValue());
+    $header->setPreparedValue('Chris Corbyn <chris@swiftmailer.org>');
+    $this->assertEqual('Chris Corbyn <chris@swiftmailer.org>', $header->getPreparedValue());
     $this->assertEqual('chris@swiftmailer.org',
       array_shift($header->getAddresses())
       );
@@ -281,12 +281,12 @@ class Swift_Mime_Header_MailboxHeaderTest
   public function testSetValueAcceptsAddressList()
   {
     $header = $this->_getHeader('From');
-    $header->setValue(
+    $header->setPreparedValue(
       'chris@swiftmailer.org,mark@swiftmailer.org'
       );
     $this->assertEqual(
       'chris@swiftmailer.org,mark@swiftmailer.org',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(
       array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
@@ -306,14 +306,14 @@ class Swift_Mime_Header_MailboxHeaderTest
   public function testSetValueAcceptsNameAddressList()
   {
     $header = $this->_getHeader('From');
-    $header->setValue(
+    $header->setPreparedValue(
       'Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org>'
       );
     $this->assertEqual(
       'Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org>',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(
       array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
@@ -334,12 +334,12 @@ class Swift_Mime_Header_MailboxHeaderTest
   public function testSetValueWithAngleBrackets()
   {
     $header = $this->_getHeader('From');
-    $header->setValue(
+    $header->setPreparedValue(
       '<chris@swiftmailer.org>, <mark@swiftmailer.org>'
       );
     $this->assertEqual(
       '<chris@swiftmailer.org>, <mark@swiftmailer.org>',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(
       array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
@@ -360,14 +360,14 @@ class Swift_Mime_Header_MailboxHeaderTest
   public function testSetValueWithComments()
   {
     $header = $this->_getHeader('From');
-    $header->setValue(
+    $header->setPreparedValue(
       'Chris Corbyn (Mail Guru) <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org> (Brother)'
       );
     $this->assertEqual(
       'Chris Corbyn (Mail Guru) <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org> (Brother)',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(
       array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
@@ -388,14 +388,14 @@ class Swift_Mime_Header_MailboxHeaderTest
   public function testSetValueWithEncodedComments()
   {
     $header = $this->_getHeader('From');
-    $header->setValue(
+    $header->setPreparedValue(
       'Chris Corbyn (=?utf-8?Q?Mail_Guru?=) <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org> (=?utf-8?Q?Lil_Brother?=)'
       );
     $this->assertEqual(
       'Chris Corbyn (=?utf-8?Q?Mail_Guru?=) <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org> (=?utf-8?Q?Lil_Brother?=)',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(
       array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
@@ -416,7 +416,7 @@ class Swift_Mime_Header_MailboxHeaderTest
   public function testSetValueWithQuotedPairs()
   {
     $header = $this->_getHeader('From');
-    $header->setValue(
+    $header->setPreparedValue(
       '"Chris Corbyn\\, DHE" <chris@swiftmailer.org>,' . "\r\n " .
       '"Mark Corbyn\\, BSc Comp\\. Sci\\." <mark@swiftmailer.org>'
       );
@@ -424,7 +424,7 @@ class Swift_Mime_Header_MailboxHeaderTest
     $this->assertEqual(
       '"Chris Corbyn\\, DHE" <chris@swiftmailer.org>,' . "\r\n " .
       '"Mark Corbyn\\, BSc Comp\\. Sci\\." <mark@swiftmailer.org>',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(
       array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
@@ -456,7 +456,7 @@ class Swift_Mime_Header_MailboxHeaderTest
     $encoder->setReturnValue('encodeString', 'C=8Frbyn');
     
     $header = $this->_getHeader('From', null, $encoder);
-    $header->setValue(
+    $header->setPreparedValue(
       '=?utf-8?Q?Chris_C=8Frbyn?=' . "\r\n " . 
       ' =?utf-8?Q?_Mail_Guru?= <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org>'
@@ -466,7 +466,7 @@ class Swift_Mime_Header_MailboxHeaderTest
       '=?utf-8?Q?Chris_C=8Frbyn?=' . "\r\n " . 
       ' =?utf-8?Q?_Mail_Guru?= <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org>',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(
       array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
@@ -499,7 +499,7 @@ class Swift_Mime_Header_MailboxHeaderTest
     $encoder->setReturnValue('encodeString', 'Q49yYnlu');
     
     $header = $this->_getHeader('From', null, $encoder);
-    $header->setValue(
+    $header->setPreparedValue(
       '=?utf-8?B?Q2hyaXMgQ49y?=' . "\r\n " . 
       ' =?utf-8?B?YnluIE1haWwgR3VydQ==?= <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org>'
@@ -509,7 +509,7 @@ class Swift_Mime_Header_MailboxHeaderTest
       '=?utf-8?B?Q2hyaXMgQ49y?=' . "\r\n " . 
       ' =?utf-8?B?YnluIE1haWwgR3VydQ==?= <chris@swiftmailer.org>,' . "\r\n " .
       'Mark Corbyn <mark@swiftmailer.org>',
-      $header->getValue()
+      $header->getPreparedValue()
       );
     $this->assertEqual(
       array('chris@swiftmailer.org', 'mark@swiftmailer.org'),

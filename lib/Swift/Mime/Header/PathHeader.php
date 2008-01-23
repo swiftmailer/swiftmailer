@@ -103,7 +103,7 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
    * @see setAddress()
    * @see getValue()
    */
-  public function setValue($value)
+  public function setPreparedValue($value)
   {
     if (preg_match('/^' . $this->getHelper()->getGrammar('path') . '$/D', $value))
     {
@@ -134,32 +134,13 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
    * @return string
    * @see toString()
    */
-  public function getValue()
+  public function getPreparedValue()
   {
     if (!$this->getCachedValue())
     {
       $this->setCachedValue('<' . $this->getAddress() . '>');
     }
     return $this->getCachedValue();
-  }
-  
-  /**
-   * Sets the value of this Header as if it's already been prepared for use.
-   * Lines needn't be folded since {@link toString()} will fold long lines.
-   * @param string $value
-   */
-  public function setPreparedValue($value)
-  {
-    return $this->setValue($value);
-  }
-  
-  /**
-   * Gets the value with all needed tokens prepared for insertion into the Header.
-   * @return string
-   */
-  public function getPreparedValue()
-  {
-    return $this->getValue();
   }
   
 }
