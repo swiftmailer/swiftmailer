@@ -174,6 +174,7 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
   public function setValue($value)
   {
     $this->_value = $value;
+    $this->setCachedValue(null);
   }
   
   /**
@@ -210,6 +211,9 @@ class Swift_Mime_Header_UnstructuredHeader implements Swift_Mime_Header
    */
   public function setPreparedValue($value)
   {
+    $unpreparedValue = $this->_helper->decodeText($value);
+    $this->setValue($unpreparedValue);
+    $this->setCachedValue($value);
   }
   
   /**

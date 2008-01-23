@@ -369,9 +369,37 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       );
   }
   
+  public function testSettingPreparedValue()
+  {
+    $header = $this->_getHeader('Subject');
+    $header->setPreparedValue('Testing subject out');
+    $this->assertEqual('Testing subject out', $header->getPreparedValue());
+    $this->assertEqual('Testing subject out', $header->getValue());
+  }
+  
+  public function testSettingPreparedValueWithFWS()
+  {
+    $header = $this->_getHeader('Subject');
+    $header->setPreparedValue('Testing' . "\r\n " . 'subject out');
+    $this->assertEqual('Testing' . "\r\n " . 'subject out',
+      $header->getPreparedValue()
+      );
+    $this->assertEqual('Testing subject out', $header->getValue());
+  }
+  
+  public function testSettingPreparedValueWithEncodedWords()
+  {
+    $header = $this->_getHeader('Subject');
+    $header->setPreparedValue('Testing =?utf-8?Q?subject_out?=');
+    $this->assertEqual('Testing =?utf-8?Q?subject_out?=',
+      $header->getPreparedValue()
+      );
+    $this->assertEqual('Testing subject out', $header->getValue());
+  }
+  
   // -- Private methods
   
-  private function _getHeader($name, $value, $encoder = null)
+  private function _getHeader($name, $value = null, $encoder = null)
   {
     if (!$encoder)
     {

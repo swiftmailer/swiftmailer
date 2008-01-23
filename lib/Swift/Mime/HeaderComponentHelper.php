@@ -56,7 +56,7 @@ class Swift_Mime_HeaderComponentHelper
       ':', ';', '@', ',', '.', '"'
       );
       
-    //TODO: unstructured, address-list
+    //TODO: address-list
     
     /*** Refer to RFC 2822 for ABNF grammar ***/
     
@@ -96,6 +96,9 @@ class Swift_Mime_HeaderComponentHelper
     $this->_grammar['word'] = '(?:' . $this->_grammar['atom'] . '|' .
         $this->_grammar['quoted-string'] . ')';
     $this->_grammar['phrase'] = '(?:' . $this->_grammar['word'] . '+?)';
+    $this->_grammar['utext'] = '(?:' . $this->_grammar['NO-WS-CTL'] . '|[\x21-\x7E])';
+    $this->_grammar['unstructured'] = '(?:(?:' . $this->_grammar['FWS'] . '?' .
+        $this->_grammar['utext'] . ')*' . $this->_grammar['FWS'] . '?)';
     $this->_grammar['no-fold-quote'] = '(?:"(?:' . $this->_grammar['qtext'] .
         '|' . $this->_grammar['quoted-pair'] . ')*")';
     $this->_grammar['dtext'] = '(?:' . $this->_grammar['NO-WS-CTL'] .
@@ -392,7 +395,7 @@ class Swift_Mime_HeaderComponentHelper
   /**
    * Decode/parse out a RFC 2822 compliant display-name to get the actual
    * text value.
-   * @param string $displayName
+   * @param string $phrase
    * @return string
    * @access protected
    */
@@ -420,6 +423,33 @@ class Swift_Mime_HeaderComponentHelper
     {
       $string = $this->decodeEncodedWords($string);
     }
+    return $string;
+  }
+  
+  /**
+   * Decode/parse out a RFC 2822 compliant unstructured string to get the actual
+   * text value.
+   * @param string $text
+   * @return string
+   * @access protected
+   */
+  public function decodeText($text)
+  {
+    //Get rid of any CFWS
+    $string = $this->trimFWS($text);
+    if ('' == $string)
+    {
+      return null;
+    }
+    
+    if (!preg_match('/^' . $this->_grammar['unstructured'] . '$/D', $string))
+    {
+      throw new Exception('Invalid RFC 2822 unstructured token.');
+    }
+    
+    $string = $this->unfoldWhitespace($string);
+    $string = $this->decodeEncodedWords($string);
+    
     return $string;
   }
   
