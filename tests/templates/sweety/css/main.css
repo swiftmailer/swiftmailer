@@ -143,6 +143,11 @@ div.sweety-package-header img {
   margin: 0 2px;
 }
 
+img.sweety-group-icon {
+  float: right;
+  margin: 4px !important;
+}
+
 .sweety-pkg-idle {
   background: #cacaca;
 }

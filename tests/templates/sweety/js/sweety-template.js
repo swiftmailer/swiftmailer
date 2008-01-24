@@ -1017,18 +1017,19 @@ function SweetyTestWrapper() {
 //Create an instance of the test runner for usage
 var sweetyRunner = new SweetyTestWrapper();
 
-//For IE
-if (typeof document.onreadystatechange != "undefined") {
+if (typeof document.onreadystatechange != "undefined") { //IE 6/7
   document.onreadystatechange = function() {
     if (document.readyState == "complete") {
       sweetyUI.restore(); sweetyUI.initialize();
     }
   };
-}
-
-//For FF (and maybe others?)
-if (document.addEventListener) {
-  document.addEventListener("DOMContentLoaded", function() {
+} else { //Fallback
+  window.onload = function() {
     sweetyUI.restore(); sweetyUI.initialize();
-  }, false);
+  };
+  
+  try { //FF
+    document.addEventListener("DOMContentLoaded", window.onload, false);
+  } catch (e) {
+  }
 }
