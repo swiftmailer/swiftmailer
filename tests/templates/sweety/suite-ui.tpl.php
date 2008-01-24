@@ -15,7 +15,7 @@
     <script type="text/javascript" src="sweety.js"></script>
     <script type="text/javascript" src="templates/sweety/js/sweety-template.js"></script>
   </head>
-  <body onload="sweetyUI.hideCheckboxes(); sweetyUI.initialize()">
+  <body>
     <div id="sweety-page">
       
       <div id="sweety-testlist">

@@ -31,13 +31,24 @@ function SweetyUIManager() {
   /**
    * Show or hide an entire package.
    * @param {String} pkg
+   * @param {Boolean} onoff
    */
-  this.togglePackage = function togglePackage(pkg) {
+  this.togglePackage = function togglePackage(pkg, onOff) {
     if (typeof _pkgs[pkg] == "undefined") {
       _pkgs[pkg] = true;
     }
-    //Toggle
-    _pkgs[pkg] = !_pkgs[pkg];
+    
+    //Toggle if not overridden
+    _pkgs[pkg] = (typeof onOff == "undefined") ? !_pkgs[pkg] : onOff;
+    
+    var pkgState = _pkgs[pkg] ? "1" : "0";
+    
+    var date = new Date();
+    date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
+    		
+    document.cookie = escape("sweetyPkg" + pkg) + "=" + pkgState +
+      "; expires=" + date.toGMTString() +
+      "; path=/";
     
     var pkgRegex = new RegExp("^" + pkg + "_[^_]+$");
     for (var testCase in sweetyTestCases) {
@@ -52,12 +63,14 @@ function SweetyUIManager() {
         }
       }
     }
-    
-    var headerImg = _getElementById("sweety-pkg-img-" + pkg);
-    if (_pkgs[pkg]) {
-      headerImg.src = "templates/sweety/images/darr.gif";
-    } else {
-      headerImg.src = "templates/sweety/images/rarr.gif";
+    var headerImg;
+    if (headerImg = _getElementById("sweety-pkg-img-" + pkg))
+    {
+      if (_pkgs[pkg]) {
+        headerImg.src = "templates/sweety/images/darr.gif";
+      } else {
+        headerImg.src = "templates/sweety/images/rarr.gif";
+      }
     }
   }
   
@@ -101,6 +114,17 @@ function SweetyUIManager() {
    */
   this.showFilterBox = function showFilterBox() {
     _getFilter().style.visibility = 'visible';
+  }
+  
+  /**
+   * Restore the UI on a new page load or reload.
+   */
+  this.restore = function restore() {
+    this.hideCheckboxes();
+    _loadPkgsFromCookie();
+    for (var pkg in _pkgs) {
+      this.togglePackage(pkg, _pkgs[pkg]);
+    }
   }
   
   /**
@@ -542,6 +566,23 @@ function SweetyUIManager() {
     return _getElementById("sweety-run-button");
   }
   
+  var _loadPkgsFromCookie = function _loadPkgsFromCookie() {
+    for (var testCase in sweetyTestCases) {
+      var pkg = testCase.replace(/_?[^_]+$/, "");
+      _pkgs[pkg] = false;
+    }
+    var cookieBits = document.cookie.split(/\s*;\s*/g);
+    for (var i in cookieBits) {
+      if (cookieBits[i].substring(0, 9) != "sweetyPkg")
+      {
+        continue;
+      }
+      var nvp = cookieBits[i].substring(9).split('=');
+      _pkgs[unescape(nvp[0])] = (nvp[1] == "0") ? false : true;
+      //alert(unescape(nvp[0]) +  " => " + _pkgs[unescape(nvp[0])]);
+    }
+  }
+  
 }
 
 //Create an instance of the UI Manager for usage
@@ -975,3 +1016,19 @@ function SweetyTestWrapper() {
 
 //Create an instance of the test runner for usage
 var sweetyRunner = new SweetyTestWrapper();
+
+//For IE
+if (typeof document.onreadystatechange != "undefined") {
+  document.onreadystatechange = function() {
+    if (document.readyState == "complete") {
+      sweetyUI.restore(); sweetyUI.initialize();
+    }
+  };
+}
+
+//For FF (and maybe others?)
+if (document.addEventListener) {
+  document.addEventListener("DOMContentLoaded", function() {
+    sweetyUI.restore(); sweetyUI.initialize();
+  }, false);
+}
