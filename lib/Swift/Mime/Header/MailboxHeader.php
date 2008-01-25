@@ -293,26 +293,37 @@ class Swift_Mime_Header_MailboxHeader
       return array();
     }
     
-    $mailboxes = array();
+    $helper = $this->getHelper();
     
-    $mailboxList = preg_split('/(?<!\\\\),/', $stringList);
+    $mailboxes = array();
+    $mailboxList = array();
+    
+    //Lexically work along the string grabbing mailboxes
+    while (preg_match('/^' . $helper->getGrammar('mailbox') . ',/D',
+      $trimmedList, $matches))
+    {
+      $mailboxList[] = substr($matches[0], 0, -1); //Ignoring comma
+      $trimmedList = substr($trimmedList, strlen($matches[0]));
+    }
+    //Last mailbox
+    $mailboxList[] = $trimmedList;
     
     foreach ($mailboxList as $mailbox)
     {
-      $mailboxParts = preg_split(
-        '/(?=<' . $this->getHelper()->getGrammar('addr-spec') . '>)/',
-        $mailbox
-        );
-      if (count($mailboxParts) == 2)
+      $mailbox = $helper->trimCFWS($mailbox);
+      $name = null;
+      //Try to get the display name
+      if (preg_match('/^'.$helper->getGrammar('display-name').'(?=<)/D',
+        $mailbox, $matches))
       {
-         //Remove the < and >
-        $address = substr($this->getHelper()->trimCFWS($mailboxParts[1]), 1, -1);
-        $name = $this->decodeDisplayNameString($mailboxParts[0]);
+        $name = $this->decodeDisplayNameString($matches[0]);
+        $mailbox = substr($mailbox, strlen($matches[0]));
       }
-      else
+      //Then resolve the address portion
+      $address = $helper->trimCFWS($mailbox);
+      if (substr($address, 0, 1) == '<' && substr($address, -1) == '>')
       {
-        $address = $this->getHelper()->trimCFWS($mailboxParts[0]);
-        $name = null;
+        $address = substr($address, 1, -1);
       }
       
       $this->_assertValidAddress($address);
@@ -398,7 +409,8 @@ class Swift_Mime_Header_MailboxHeader
       $address))
     {
       throw new Exception(
-        'Address in mailbox given does not comply with RFC 2822, 3.6.2.'
+        'Address in mailbox given [' . $address .
+        '] does not comply with RFC 2822, 3.6.2.'
         );
     }
   }

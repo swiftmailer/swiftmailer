@@ -442,6 +442,57 @@ class Swift_Mime_Header_MailboxHeaderTest
       );
   }
   
+  public function testSetValueWithCommasInQuotedString()
+  {
+    $header = $this->_getHeader('From');
+    $header->setPreparedValue(
+      '"Chris Corbyn, DHE" <chris@swiftmailer.org>,' . "\r\n " .
+      '"Mark Corbyn, BSc Comp. Sci." <mark@swiftmailer.org>'
+      );
+    
+    $this->assertEqual(
+      '"Chris Corbyn, DHE" <chris@swiftmailer.org>,' . "\r\n " .
+      '"Mark Corbyn, BSc Comp. Sci." <mark@swiftmailer.org>',
+      $header->getPreparedValue()
+      );
+    $this->assertEqual(
+      array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
+      $header->getAddresses()
+      );
+    $this->assertEqual(
+      array('chris@swiftmailer.org' => 'Chris Corbyn, DHE',
+      'mark@swiftmailer.org' => 'Mark Corbyn, BSc Comp. Sci.'),
+      $header->getNameAddresses()
+      );
+    $this->assertEqual(
+      array('"Chris Corbyn\\, DHE" <chris@swiftmailer.org>',
+      '"Mark Corbyn\\, BSc Comp\\. Sci\\." <mark@swiftmailer.org>'),
+      $header->getNameAddressStrings()
+      );
+  }
+  
+  public function testSetValueWithAddrSpecInQuotedString()
+  {
+    $header = $this->_getHeader('From');
+    $header->setPreparedValue(
+      '"Chris <c@a.b> Corbyn" <chris@swiftmailer.org>'
+      );
+    
+    $this->assertEqual(
+      '"Chris <c@a.b> Corbyn" <chris@swiftmailer.org>',
+      $header->getPreparedValue()
+      );
+    $this->assertEqual(array('chris@swiftmailer.org'), $header->getAddresses());
+    $this->assertEqual(
+      array('chris@swiftmailer.org' => 'Chris <c@a.b> Corbyn'),
+      $header->getNameAddresses()
+      );
+    $this->assertEqual(
+      array('"Chris \\<c\\@a\\.b\\> Corbyn" <chris@swiftmailer.org>'),
+      $header->getNameAddressStrings()
+      );
+  }
+  
   public function testSetValueWithQEncodedWords()
   {
     $encoder = new Swift_Mime_MockHeaderEncoder();
