@@ -139,6 +139,14 @@ class Swift_Mime_HeaderComponentHelper
         $this->_grammar['addr-spec'] . ')';
     $this->_grammar['mailbox-list'] = '(?:' . $this->_grammar['mailbox'] . '(?:,' .
         $this->_grammar['mailbox'] . ')*)';
+    $this->_grammar['group'] = '(?:' . $this->_grammar['display-name'] . ':(?:' .
+        $this->_grammar['mailbox-list'] . '|' . $this->_grammar['CFWS'] . ')?;' .
+        $this->_grammar['CFWS'] . '?)';
+    $this->_grammar['address'] = '(?:' . $this->_grammar['mailbox'] . '|' .
+        $this->_grammar['group'] . ')';
+    $this->_grammar['address-list'] = '(?:' . $this->_grammar['address'] . '(?:,' .
+        $this->_grammar['address'] . ')*)';
+    
     
     //Encoded words (RFC 2047)
     $this->_grammar['token'] = '(?:[\x21\x23-\x27\x2A\x2B\x2D\x30-\x39\x41-\x5A\x5C\x5E-\x7E]+)';

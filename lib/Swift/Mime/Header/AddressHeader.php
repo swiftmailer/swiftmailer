@@ -194,43 +194,30 @@ class Swift_Mime_Header_AddressHeader
    */
   public function setPreparedValue($value)
   {
+    $helper = $this->getHelper();
     $mailboxes = array();
-    $group = array();
-    $inGroup = false;
-    $tokens = preg_split('/(?<!\\\\),/', $value);
-    //Optimize this!
-    foreach ($tokens as $token)
+    $stringList = $helper->trimCFWS($value);
+    
+    while (strlen($stringList) > 0)
     {
-      $grouped = false;
-      if (!$inGroup)
+      if (preg_match('/^' . $helper->getGrammar('mailbox') . '(?:,|$)/D',
+        $stringList, $matches))
       {
-        //Start of a group
-        if (preg_match('/^' . $this->getHelper()->getGrammar('display-name') . ':/', $token))
-        {
-          $inGroup = true;
-          $group[] = $token;
-          $grouped = true;
-        }
-        else
-        {
-          $mailboxes[] = $token;
-        }
+        $mailboxes[] = rtrim($matches[0], ',');
+        $stringList = substr($stringList, strlen($matches[0]));
       }
-      
-      if ($inGroup)
+      elseif (preg_match('/^' . $helper->getGrammar('group') . '(?:,|$)/D',
+        $stringList, $matches))
       {
-        if (!$grouped)
-        {
-          $group[] = $token;
-        }
-        
-        //End of a group
-        if (preg_match('/;' . $this->getHelper()->getGrammar('CFWS') . '?$/', $token))
-        {
-          $inGroup = false;
-          $this->_parseGroup(implode(',', $group));
-          $group = array();
-        }
+        $this->_parseGroup(rtrim($matches[0], ','));
+        $stringList = substr($stringList, strlen($matches[0]));
+      }
+      else
+      {
+        throw new Exception(
+          'Address-list [' . $value . '] parsing failed at offset ' .
+          (strlen($value) - strlen($stringList))
+        );
       }
     }
     
