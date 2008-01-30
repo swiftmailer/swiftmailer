@@ -23,7 +23,6 @@ require_once dirname(__FILE__) . '/HeaderSet.php';
 require_once dirname(__FILE__) . '/ContentEncoder.php';
 require_once dirname(__FILE__) . '/../ByteStream.php';
 
-
 /**
  * A MIME part, in a multipart message.
  * @package Swift

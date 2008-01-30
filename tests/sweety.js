@@ -224,13 +224,16 @@ function SweetyTestCaseRun(testClass, reporter) {
       try {
         
         var xml = _req.responseXML;
+        var txt = _req.responseText.replace(/[\r\n]+/g, "").
+          replace(/^(.+)<\?xml.*$/, "$1");
         
         var runElements = xml.getElementsByTagName('run');
         
         //Invalid document, an error probably occured
         if (!runElements || 1 != runElements.length) {
           reporter.reportException(
-            "Invalid XML response from test case!", testClass);
+            "Invalid XML response: " +
+            txt.replace(/^\s*<\?xml.+<\/name>/g, ""), testClass);
         } else {
           var everything = runElements.item(0);
           _parseResults(everything, testClass);
@@ -239,7 +242,8 @@ function SweetyTestCaseRun(testClass, reporter) {
       } catch (ex) {
         //Invalid document or an error occurred.
         reporter.reportException(
-          "Invalid XML response from test case!", testClass);
+          "Invalid XML response: " +
+          txt.replace(/^\s*<\?xml.+<\/name>/g, ""), testClass);
       }
       
       //Invoke the callback
