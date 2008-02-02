@@ -344,7 +344,7 @@ class Swift_Mime_Header_MailboxHeader
   protected function createDisplayNameString($displayName, $shorten = false)
   {
     return $this->getHelper()->createPhrase($this, $displayName,
-      $this->getCharacterSet(), $this->getEncoder(), $shorten
+      $this->getCharset(), $this->getEncoder(), $shorten
       );
   }
   

@@ -166,7 +166,7 @@ class Swift_Mime_HeaderAttribute_SimpleHeaderAttribute
    * Set the charset used in this HeaderAttribute.
    * @param string $charset
    */
-  public function setCharacterSet($charset)
+  public function setCharset($charset)
   {
     $this->_charset = $charset;
   }
@@ -175,7 +175,7 @@ class Swift_Mime_HeaderAttribute_SimpleHeaderAttribute
    * Get the charset used in this HeaderAttribute.
    * @return string
    */
-  public function getCharacterSet()
+  public function getCharset()
   {
     return $this->_charset;
   }
@@ -233,7 +233,7 @@ class Swift_Mime_HeaderAttribute_SimpleHeaderAttribute
         $maxValueLength = $this->_maxLineLength -
           strlen($this->getName() . '*N*=""');
         $firstLineOffset = strlen(
-          $this->getCharacterSet() . "'" . $this->getLanguage() . "'"
+          $this->getCharset() . "'" . $this->getLanguage() . "'"
           );
       }
     }
@@ -284,7 +284,7 @@ class Swift_Mime_HeaderAttribute_SimpleHeaderAttribute
     }
     if ($addEncodingInfo)
     {
-      return '*=' . $this->getCharacterSet() . "'" . $this->getLanguage() .
+      return '*=' . $this->getCharset() . "'" . $this->getLanguage() .
         "'" . $value;
     }
     else

@@ -46,6 +46,7 @@
                   class="sweety-group-icon" />
                 <img id="sweety-pkg-img-<?php echo $package; ?>" src="templates/sweety/images/darr.gif"
                   alt="Toggle Display" title="Toggle Display"
+                  onmouseover="this.style.cursor='default';"
                   onclick="sweetyUI.togglePackage('<?php echo $package; ?>'); event.cancelBubble=true;" />
                 <?php echo preg_replace('/^.*_/', '', $package); ?> Tests
                 <span class="sweety-test-package">

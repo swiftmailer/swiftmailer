@@ -648,4 +648,35 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactoryAcceptanceTest
     $this->assertEqual('noreply@devnetwork.net', $return->getAddress());
   }
   
+  public function testCreatingEmptyReturnPathFromString()
+  {
+    $return = $this->_factory->createHeaderFromString(
+      'Return-Path: <>'
+      );
+    $this->assertEqual('Return-Path', $return->getName());
+    $this->assertEqual(null, $return->getAddress());
+  }
+  
+  public function testCreatingReceivedHeaderFromString()
+  {
+    $recvd = $this->_factory->createHeaderFromString(
+      'Received: from badger01707.apple.com (badger01707.apple.com [17.254.6.108])' . "\r\n\t" .
+      'by mx.google.com with ESMTP id l21si5165117rvb.26.2008.01.25.02.59.48;' . "\r\n\t" .
+      'Fri, 25 Jan 2008 02:59:48 -0800 (PST)'
+      );
+    $this->assertEqual(strtotime('Fri, 25 Jan 2008 02:59:48 -0800'),
+      $recvd->getTimestamp()
+      );
+    $this->assertEqual(array(
+      array('name'=>'from', 'value'=>'badger01707.apple.com', 'comment'=>'badger01707.apple.com [17.254.6.108]'),
+      array('name'=>'by', 'value'=>'mx.google.com', 'comment'=>null),
+      array('name'=>'with', 'value'=>'ESMTP', 'comment'=>null),
+      array('name'=>'id', 'value'=>'l21si5165117rvb.26.2008.01.25.02.59.48', 'comment'=>null)
+      ),
+      $recvd->getData()
+      );
+  }
+  
+  //I think it's safe to assume the others just work fine....
+  
 }

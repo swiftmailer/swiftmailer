@@ -18,8 +18,6 @@
  
  */
 
-require_once dirname(__FILE__) . '/HeaderAttribute.php';
-
 
 /**
  * A collection of MIME HeaderAttributes.
@@ -32,28 +30,23 @@ interface Swift_Mime_HeaderAttributeSet
   
   /**
    * Add a HeaderAttribute to this HeaderAttributeSet.
-   * @param Swift_Mime_HeaderAttribute $attribute
+   * @param string $name
+   * @param mixed $value
    */
-  public function addAttribute(Swift_Mime_HeaderAttribute $attribute);
+  public function set($name, $value);
   
   /**
    * Get a HeaderAttribute back out of the Set based on its name.
    * @param string $name
    * @return Swift_Mime_HeaderAttribute
    */
-  public function getAttributeByName($name);
+  public function get($name);
   
   /**
    * Remove a HeaderAttribute from this HeaderAttributeSet.
-   * @param Swift_Mime_HeaderAttribute $attribute
-   */
-  public function removeAttribute(Swift_Mime_HeaderAttribute $attribute);
-  
-  /**
-   * Remove a HeaderAttribute from this HeaderAttributeSet based on it's name.
    * @param string $name
    */
-  public function removeAttributeByName($name);
+  public function remove($name);
   
   /**
    * Return a standard PHP array of all HeaderAttributes in this HeaderAttributeSet.

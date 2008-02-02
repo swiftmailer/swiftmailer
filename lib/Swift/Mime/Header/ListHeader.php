@@ -89,7 +89,7 @@ class Swift_Mime_Header_ListHeader
       foreach ($this->_values as $value)
       {
         $values[] = $this->getHelper()->createPhrase($this, $value,
-          $this->getCharacterSet(), $this->getEncoder(), empty($values)
+          $this->getCharset(), $this->getEncoder(), empty($values)
           );
       }
       $this->setCachedValue(implode(', ', $values));

@@ -47,13 +47,13 @@ interface Swift_Mime_Header
    * Set the character set used in this Header.
    * @param string $charset
    */
-  public function setCharacterSet($charset);
+  public function setCharset($charset);
   
   /**
    * Get the character set of the content in this Header.
    * @return string
    */
-  public function getCharacterSet();
+  public function getCharset();
   
   /**
    * Get the name of this header (e.g. charset).

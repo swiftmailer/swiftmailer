@@ -55,8 +55,6 @@ class Swift_Mime_HeaderComponentHelper
       '\\', '(', ')', '<', '>', '[', ']',
       ':', ';', '@', ',', '.', '"'
       );
-      
-    //TODO: address-list
     
     /*** Refer to RFC 2822 for ABNF grammar ***/
     

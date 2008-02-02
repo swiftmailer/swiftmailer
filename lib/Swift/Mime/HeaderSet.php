@@ -18,8 +18,6 @@
  
  */
 
-require_once dirname(__FILE__) . '/Header.php';
-
 
 /**
  * A collection of MIME Headers.
@@ -32,28 +30,23 @@ interface Swift_Mime_HeaderSet
   
   /**
    * Add a Header to this HeaderSet.
-   * @param Swift_Mime_Header $header
+   * @param string $name
+   * @param mixed $value
    */
-  public function addHeader(Swift_Mime_Header $header);
+  public function set($name, $value);
   
   /**
    * Get a Header back out of the Set based on its name.
    * @param string $name
    * @return Swift_Mime_Header
    */
-  public function getHeaderByName($name);
+  public function get($name);
   
   /**
    * Remove a Header from this HeaderSet.
-   * @param Swift_Mime_Header $header
-   */
-  public function removeHeader(Swift_Mime_Header $header);
-  
-  /**
-   * Remove a Header from this HeaderSet based on it's name.
    * @param string $name
    */
-  public function removeHeaderByName($name);
+  public function remove($name);
   
   /**
    * Return a standard PHP array of all Headers in this HeaderSet.

@@ -82,6 +82,30 @@ interface Swift_Mime_MimeEntity
   public function getContentType();
   
   /**
+   * Set the Content-ID header of this entity.
+   * @param string $id
+   */
+  public function setId($id);
+  
+  /**
+   * Get the Content-ID header of this entity.
+   * @return string
+   */
+  public function getId();
+  
+  /**
+   * Set the Description header of this entity.
+   * @param string $description
+   */
+  public function setDescription($description);
+  
+  /**
+   * Get the Description header of this entity.
+   * @return string
+   */
+  public function getDescription();
+  
+  /**
    * Set an entities which are direct children of this entity.
    * @param Swift_Mime_MimeEntity[] $children
    */
@@ -135,5 +159,12 @@ interface Swift_Mime_MimeEntity
    * @param Swift_ByteStream $is to write to
    */
   public function toByteStream(Swift_ByteStream $is);
+  
+  /**
+   * Allow this message to contain 8bit characters without the need for any
+   * encoding.
+   * @param boolean $permit, optional
+   */
+  public function permit8BitMime($permit = true);
   
 }

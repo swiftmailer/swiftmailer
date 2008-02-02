@@ -103,7 +103,8 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactory
     'References' => 'Swift_Mime_Header_IdentificationHeader',
     'Subject' => 'Swift_Mime_Header_UnstructuredHeader',
     'Comments' => 'Swift_Mime_Header_UnstructuredHeader',
-    'Keywords' => 'Swift_Mime_Header_ListHeader'
+    'Keywords' => 'Swift_Mime_Header_ListHeader',
+    'Content-ID' => 'Swift_Mime_Header_IdentificationHeader'
     );
   
   /**
@@ -123,7 +124,7 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactory
         array_keys($this->_classMap),
         array_keys($this->_classMap)
         ),
-        CASE_LOWER
+      CASE_LOWER
       );
   }
   
@@ -241,7 +242,7 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactory
    * @param mixed $v2...
    * @return Swift_Mime_Header
    */
-  public function createHeader(/*$name, $v1, $v2,...*/)
+  public function createHeader(/*$name, $val1, $val2,...*/)
   {
     $args = func_get_args();
     $name = $args[0];
@@ -268,7 +269,7 @@ class Swift_Mime_HeaderFactory_SimpleHeaderFactory
     $reflector = new ReflectionClass($headerClass);
     $header = $reflector->newInstanceArgs($args);
     $header->setEncoder($this->_encoders[$this->_encodingMethod]);
-    $header->setCharacterSet($this->_charset);
+    $header->setCharset($this->_charset);
     $header->setMaxLineLength($this->_lineLength);
     
     return $header;
