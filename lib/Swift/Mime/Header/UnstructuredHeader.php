@@ -19,7 +19,6 @@
  */
 
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-require_once dirname(__FILE__) . '/../HeaderAttributeSet.php';
 require_once dirname(__FILE__) . '/AbstractHeader.php';
 
 

@@ -20,7 +20,6 @@
 
 require_once dirname(__FILE__) . '/../Header.php';
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-require_once dirname(__FILE__) . '/../HeaderAttributeSet.php';
 
 
 /**
@@ -500,15 +499,21 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
   
   /**
    * Generate a list of all tokens in the final header.
+   * @param string $string input, optional
    * @return string[]
    * @access private
    */
-  protected function toTokens()
+  protected function toTokens($string = null)
   {
+    if (is_null($string))
+    {
+      $string = $this->getFieldBody();
+    }
+    
     $tokens = array();
     
     //Generate atoms; split at all invisible boundaries followed by WSP
-    foreach (preg_split('~(?=[ \t])~', $this->getFieldBody()) as $token)
+    foreach (preg_split('~(?=[ \t])~', $string) as $token)
     {
       $tokens = array_merge($tokens, $this->generateTokenLines($token));
     }

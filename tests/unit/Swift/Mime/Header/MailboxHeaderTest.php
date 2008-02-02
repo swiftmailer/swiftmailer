@@ -272,8 +272,8 @@ class Swift_Mime_Header_MailboxHeaderTest
       'mark@swiftmailer.org' => 'Mark Corbyn'
       ));
     $this->assertEqual(
-        'From: Chris Corbyn <chris@swiftmailer.org>, ' .
-        'Mark Corbyn <mark@swiftmailer.org>' . "\r\n",
+      'From: Chris Corbyn <chris@swiftmailer.org>, ' .
+      'Mark Corbyn <mark@swiftmailer.org>' . "\r\n",
       $header->toString()
       );
   }
