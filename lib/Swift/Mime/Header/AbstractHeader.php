@@ -68,6 +68,12 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
   private $_lineLength = 78;
   
   /**
+   * The language used in this Header.
+   * @var string
+   */
+  private $_lang;
+  
+  /**
    * The character set of the text in this Header.
    * @var string
    * @access private
@@ -97,6 +103,26 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
   public function getCharset()
   {
     return $this->_charset;
+  }
+  
+  /**
+   * Set the language used in this Header.
+   * For example, for US English, 'en-us'.
+   * This can be unspecified.
+   * @param string $lang
+   */
+  public function setLanguage($lang)
+  {
+    $this->_lang = $lang;
+  }
+  
+  /**
+   * Get the language used in this Header.
+   * @return string
+   */
+  public function getLanguage()
+  {
+    return $this->_lang;
   }
   
   /**
