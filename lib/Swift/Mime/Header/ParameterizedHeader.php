@@ -108,10 +108,12 @@ class Swift_Mime_Header_ParameterizedHeader
   
   /**
    * Generate a list of all tokens in the final header.
+   * This doesn't need to be overridden in theory, but it is for implementation
+   * reasons to prevent potential breakage of attributes.
    * @return string[]
-   * @access private
+   * @access protected
    */
-  protected function toTokens()
+  protected function toTokens($string = null)
   {
     $tokens = parent::toTokens(parent::getFieldBody());
     

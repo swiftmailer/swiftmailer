@@ -297,6 +297,40 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       );
   }
   
+  public function testLanguageInformationAppearsInEncodedWords()
+  {
+    /* -- RFC 2231, 5.
+    5.  Language specification in Encoded Words
+
+    RFC 2047 provides support for non-US-ASCII character sets in RFC 822
+    message header comments, phrases, and any unstructured text field.
+    This is done by defining an encoded word construct which can appear
+    in any of these places.  Given that these are fields intended for
+    display, it is sometimes necessary to associate language information
+    with encoded words as well as just the character set.  This
+    specification extends the definition of an encoded word to allow the
+    inclusion of such information.  This is simply done by suffixing the
+    character set specification with an asterisk followed by the language
+    tag.  For example:
+
+          From: =?US-ASCII*EN?Q?Keith_Moore?= <moore@cs.utk.edu>
+    */
+    
+    $value = 'fo' . pack('C', 0x8F) .'bar';
+    
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $encoder->setReturnValue('getName', 'Q');
+    $encoder->expectOnce('encodeString', array($value, '*', '*'));
+    $encoder->setReturnValue('encodeString', 'fo=8Fbar');
+    
+    $header = $this->_getHeader('Subject', $encoder);
+    $header->setLanguage('en');
+    $header->setValue($value);
+    $this->assertEqual("Subject: =?utf-8*en?Q?fo=8Fbar?=\r\n",
+      $header->toString()
+      );
+  }
+  
   // -- Private methods
   
   private function _getHeader($name, $encoder)

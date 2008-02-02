@@ -142,11 +142,6 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
     return $this->_encoder;
   }
   
-  public function setFieldName($name)
-  {
-    $this->_name = $name;
-  }
-  
   /**
    * Get the name of this header (e.g. charset).
    * @return string
@@ -165,6 +160,10 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
     $this->_lineLength = $lineLength;
   }
   
+  /**
+   * Get the maximum permitted length of lines in this Header.
+   * @return int
+   */
   public function getMaxLineLength()
   {
     return $this->_lineLength;
@@ -180,6 +179,16 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
   }
   
   // -- Points of extension
+  
+  /**
+   * Set the name of this Header field.
+   * @param string $name
+   * @access protected
+   */
+  protected function setFieldName($name)
+  {
+    $this->_name = $name;
+  }
   
   /**
    * Initialize some RFC 2822 (and friends) ABNF grammar definitions.
@@ -328,9 +337,7 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
         {
           $usedLength = 0;
         }
-        $phraseStr = $this->encodeWords(
-          $header, $string, $usedLength, $charset, $encoder
-          );
+        $phraseStr = $this->encodeWords($header, $string, $usedLength);
       }
     }
     
@@ -341,12 +348,10 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
    * Encode needed word tokens within a string of input.
    * @param string $input
    * @param string $usedLength, optional
-   * @param string $charset
-   * @param Swift_Mime_HeaderEncoder $encoder
    * @return string
    */
   protected function encodeWords(Swift_Mime_Header $header, $input,
-    $usedLength = -1, $charset, Swift_Mime_HeaderEncoder $encoder = null)
+    $usedLength = -1)
   {
     $value = '';
     
@@ -369,9 +374,7 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
         {
           $usedLength = strlen($header->getFieldName() . ': ') + strlen($value);
         }
-        $value .= $this->getTokenAsEncodedWord(
-          $token, $usedLength, $charset, $encoder
-          );
+        $value .= $this->getTokenAsEncodedWord($token, $usedLength);
         
         $header->setMaxLineLength(76); //Forefully override
       }
@@ -433,16 +436,18 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
    * Get a token as an encoded word for safe insertion into headers.
    * @param string $token to encode
    * @param int $firstLineOffset, optional
-   * @param string $charset
-   * @param Swift_Mime_HeaderEncoder $encoder
    * @return string
    */
-  protected function getTokenAsEncodedWord($token, $firstLineOffset = 0, $charset,
-    Swift_Mime_HeaderEncoder $encoder)
+  protected function getTokenAsEncodedWord($token, $firstLineOffset = 0)
   {
     //Adjust $firstLineOffset to account for space needed for syntax
+    $charsetDecl = $this->_charset;
+    if (isset($this->_lang))
+    {
+      $charsetDecl .= '*' . $this->_lang;
+    }
     $firstLineOffset += strlen(
-      '=?' . $charset . '?' . $encoder->getName() . '??='
+      '=?' . $charsetDecl . '?' . $this->_encoder->getName() . '??='
       );
     
     if ($firstLineOffset >= 75) //Does this logic need to be here?
@@ -451,13 +456,13 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
     }
     
     $encodedTextLines = explode("\r\n",
-      $encoder->encodeString($token, $firstLineOffset, 75)
+      $this->_encoder->encodeString($token, $firstLineOffset, 75)
       );
     
     foreach ($encodedTextLines as $lineNum => $line)
     {
-      $encodedTextLines[$lineNum] = '=?' . $charset .
-        '?' . $encoder->getName() .
+      $encodedTextLines[$lineNum] = '=?' . $charsetDecl .
+        '?' . $this->_encoder->getName() .
         '?' . $line . '?=';
     }
     
