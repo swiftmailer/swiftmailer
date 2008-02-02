@@ -33,10 +33,33 @@ class Swift_Mime_Header_ParameterizedHeader
   extends Swift_Mime_Header_UnstructuredHeader
 {
   
+  /**
+   * The Encoder used to encode the parameters.
+   * @var Swift_Encoder
+   * @access private
+   */
   private $_paramEncoder;
+  
+  /**
+   * The parameters as an associative array.
+   * @var string[]
+   * @access private
+   */
   private $_params = array();
+  
+  /**
+   * RFC 2231's definition of a token.
+   * @var string
+   * @access private
+   */
   private $_tokenRe;
   
+  /**
+   * Creates a new ParameterizedHeader with $name.
+   * @param string $name
+   * @param Swift_Mime_HeaderEncoder $encoder
+   * @param Swift_Encoder $paramEncoder
+   */ 
   public function __construct($name, Swift_Mime_HeaderEncoder $encoder,
     Swift_Encoder $paramEncoder)
   {
@@ -47,16 +70,28 @@ class Swift_Mime_Header_ParameterizedHeader
     $this->_tokenRe = '(?:[\x21\x23-\x27\x2A\x2B\x2D\x2E\x30-\x39\x41-\x5A\x5E-\x7E]+)';
   }
   
+  /**
+   * Set an associative array of parameter names mapped to values.
+   * @param string[]
+   */
   public function setParameters(array $parameters)
   {
     $this->_params = $parameters;
   }
   
+  /**
+   * Returns an associative array of parameter names mapped to values.
+   * @return string[]
+   */
   public function getParameters()
   {
     return $this->_params;
   }
   
+  /**
+   * Get the value of this header prepared for rendering.
+   * @return string
+   */
   public function getFieldBody()
   {
     $body = parent::getFieldBody();
@@ -81,26 +116,31 @@ class Swift_Mime_Header_ParameterizedHeader
     $tokens = parent::toTokens(parent::getFieldBody());
     
     //Try creating any parameters
-    if (!is_null($this->_params))
+    foreach ($this->_params as $name => $value)
     {
-      foreach ($this->_params as $name => $value)
-      {
-        //Add the semi-colon separator
-        $tokens[count($tokens)-1] .= ';';
-        $tokens = array_merge($tokens, $this->generateTokenLines(
-          ' ' . $this->_createParameter($name, $value)
-          ));
-      }
+      //Add the semi-colon separator
+      $tokens[count($tokens)-1] .= ';';
+      $tokens = array_merge($tokens, $this->generateTokenLines(
+        ' ' . $this->_createParameter($name, $value)
+        ));
     }
     
     return $tokens;
   }
   
+  // -- Private methods
+  
+  /**
+   * Render a RFC 2047 compliant header parameter from the $name and $value.
+   * @param string $name
+   * @param string $value
+   * @return string
+   * @access private
+   */
   private function _createParameter($name, $value)
   {
     $origValue = $value;
     
-    //str_replace("\r\n", "\r\n ", $param->toString())
     $needsEncoding = false;
     //Allow room for parameter name, indices, "=" and DQUOTEs
     $maxValueLength = $this->getMaxLineLength() - strlen($name . '=*N"";') - 1;
