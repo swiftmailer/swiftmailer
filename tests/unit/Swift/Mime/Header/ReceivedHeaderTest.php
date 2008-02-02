@@ -36,7 +36,7 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
     
     $timestamp = time();
     $header = $this->_getHeader('Received', $timestamp);
-    $this->assertEqual('; ' . date('r', $timestamp), $header->getPreparedValue());
+    $this->assertEqual('; ' . date('r', $timestamp), $header->getFieldBody());
   }
   
   public function testNameValuePairsCanBeSet()
@@ -59,7 +59,7 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
         )
       );
     $this->assertEqual('from mx1.googlemail.com; ' . date('r', $timestamp),
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -74,7 +74,7 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
       );
     $this->assertEqual(
       'from mx1.googlemail.com by mail.swiftmailer.org; ' . date('r', $timestamp),
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -95,7 +95,7 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
     $this->assertEqual(
       'from mx1.googlemail.com by mail.swiftmailer.org' . "\r\n " .
       'with ESMTP for <chris@swiftmailer.org>; ' . date('r', $timestamp),
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -118,7 +118,7 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
     $this->assertEqual(
       'from mx1.googlemail.com (A Gmail server) by mail.swiftmailer.org; ' .
       date('r', $timestamp),
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -163,74 +163,7 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
     $this->assertEqual(
       'from mx1.googlemail.com (A Gmail )server) by mail.swiftm\\ailer.org; ' .
       date('r', $timestamp),
-      $header->getPreparedValue()
-      );
-  }
-  
-  public function testSetValueParsesTimestamp()
-  {
-    $header = $this->_getHeader('Received');
-    $header->setPreparedValue('; Mon, 14 Jan 2008 22:30:08 +1100');
-    $this->assertEqual('; Mon, 14 Jan 2008 22:30:08 +1100', $header->getPreparedValue());
-    $this->assertEqual(1200310208, $header->getTimestamp());
-  }
-  
-  public function testSetValueReturnsNullTimestampIfInvalid()
-  {
-    $header = $this->_getHeader('Received');
-    //Missing comma
-    $header->setPreparedValue('; Mon 14 Jan 2008 22:30:08 +1100');
-    $this->assertEqual('; Mon 14 Jan 2008 22:30:08 +1100', $header->getPreparedValue());
-    $this->assertNull($header->getTimestamp());
-  }
-  
-  public function testSetValueParsesOutNameValuePairs()
-  {
-    $header = $this->_getHeader('Received');
-    $header->setPreparedValue('from mx1.googlemail.com by mail.swiftmailer.org' . "\r\n " .
-      'with ESMTP for chris@swiftmailer.org; Mon, 14 Jan 2008 22:30:08 +1100'
-      );
-    $this->assertEqual('from mx1.googlemail.com by mail.swiftmailer.org' . "\r\n " .
-      'with ESMTP for chris@swiftmailer.org; Mon, 14 Jan 2008 22:30:08 +1100',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(1200310208, $header->getTimestamp());
-    $this->assertEqual(
-      array(
-        array('name' => 'from', 'value' => 'mx1.googlemail.com', 'comment' => null),
-        array('name' => 'by', 'value' => 'mail.swiftmailer.org', 'comment' => null),
-        array('name' => 'with', 'value' => 'ESMTP', 'comment' => null),
-        array('name' => 'for', 'value' => 'chris@swiftmailer.org', 'comment' => null)
-        ),
-      $header->getData()
-      );
-  }
-  
-  public function testCommentsCanBeParsedOut()
-  {
-    $header = $this->_getHeader('Received');
-    $header->setPreparedValue(
-      'from mx1.googlemail.com (google server) by mail.swiftmailer.org' . "\r\n " .
-      'with ESMTP (Using Exim 4.17) for (Chris) chris@swiftmailer.org;' . "\r\n " .
-      'Mon, 14 Jan 2008 22:30:08 +1100'
-      );
-    $this->assertEqual(
-      'from mx1.googlemail.com (google server) by mail.swiftmailer.org' . "\r\n " .
-      'with ESMTP (Using Exim 4.17) for (Chris) chris@swiftmailer.org;' . "\r\n " .
-      'Mon, 14 Jan 2008 22:30:08 +1100',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(1200310208, $header->getTimestamp());
-    
-    //We're only bothering about the comments following a full name-val-pair
-    $this->assertEqual(
-      array(
-        array('name' => 'from', 'value' => 'mx1.googlemail.com', 'comment' => 'google server'),
-        array('name' => 'by', 'value' => 'mail.swiftmailer.org', 'comment' => null),
-        array('name' => 'with', 'value' => 'ESMTP', 'comment' => 'Using Exim 4.17'),
-        array('name' => 'for', 'value' => 'chris@swiftmailer.org', 'comment' => null)
-        ),
-      $header->getData()
+      $header->getFieldBody()
       );
   }
   

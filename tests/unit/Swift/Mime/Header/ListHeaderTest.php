@@ -31,13 +31,13 @@ class Swift_Mime_Header_ListHeaderTest extends UnitTestCase
   public function testValuesAppearCommaSeparated()
   {
     $header = $this->_getHeader('Keywords', array('foo', 'bar'));
-    $this->assertEqual('foo, bar', $header->getPreparedValue());
+    $this->assertEqual('foo, bar', $header->getFieldBody());
   }
   
   public function testSpecialCharsInValuesAreQuoted()
   {
     $header = $this->_getHeader('Keywords', array('foo, bar', 'zip, button'));
-    $this->assertEqual('"foo\\, bar", "zip\\, button"', $header->getPreparedValue());
+    $this->assertEqual('"foo\\, bar", "zip\\, button"', $header->getFieldBody());
   }
   
   public function testNonAsciiCharsAreEncoded()
@@ -56,7 +56,7 @@ class Swift_Mime_Header_ListHeaderTest extends UnitTestCase
       $header->getValueList()
       );
     $this->assertEqual('=?' . $this->_charset . '?Q?f=8Fo?=, bar',
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -64,68 +64,6 @@ class Swift_Mime_Header_ListHeaderTest extends UnitTestCase
   {
     $header = $this->_getHeader('Keywords', array('foo', 'bar'));
     $this->assertEqual('Keywords: foo, bar' . "\r\n", $header->toString());
-  }
-  
-  public function testSetValueAcceptsSinglePhrase()
-  {
-    $header = $this->_getHeader('Keywords');
-    $header->setPreparedValue('my word');
-    $this->assertEqual('my word', $header->getPreparedValue());
-    $this->assertEqual(array('my word'), $header->getValueList());
-  }
-  
-  public function testSetValueAcceptsList()
-  {
-    $header = $this->_getHeader('Keywords');
-    $header->setPreparedValue('my first word, my second word');
-    $this->assertEqual('my first word, my second word', $header->getPreparedValue());
-    $this->assertEqual(array('my first word', 'my second word'),
-      $header->getValueList()
-      );
-  }
-  
-  public function testSetValueUnquotesQuotedPairs()
-  {
-    $header = $this->_getHeader('Keywords');
-    $header->setPreparedValue('"foo\\, bar", "zip\\, button"');
-    $this->assertEqual('"foo\\, bar", "zip\\, button"', $header->getPreparedValue());
-    $this->assertEqual(array('foo, bar', 'zip, button'),
-      $header->getValueList()
-      );
-  }
-  
-  public function testSetValueDecodesEncodedWords()
-  {
-    $header = $this->_getHeader('Keywords');
-    $header->setPreparedValue('=?utf-8?Q?f=8Fo?=, bar');
-    $this->assertEqual('=?utf-8?Q?f=8Fo?=, bar', $header->getPreparedValue());
-    $this->assertEqual(array('f' . pack('C', 0x8F) . 'o', 'bar'),
-      $header->getValueList()
-      );
-  }
-  
-  public function testSetValueIgnoresComments()
-  {
-    $header = $this->_getHeader('Keywords');
-    $header->setPreparedValue('foo bar (as in fubar), (dip)zip button');
-    $this->assertEqual('foo bar (as in fubar), (dip)zip button',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('foo bar', 'zip button'),
-      $header->getValueList()
-      );
-  }
-  
-  public function testSetValueUnfoldsFWS()
-  {
-    $header = $this->_getHeader('Keywords');
-    $header->setPreparedValue('foo' . "\r\n " . 'bar, zip' . "\r\n " . 'button');
-    $this->assertEqual('foo' . "\r\n " . 'bar, zip' . "\r\n " . 'button',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('foo bar', 'zip button'),
-      $header->getValueList()
-      );
   }
   
   // -- Private methods

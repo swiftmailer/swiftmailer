@@ -42,52 +42,13 @@ class Swift_Mime_Header_VersionHeaderTest
   public function testGetValueReturnsVersion()
   {
     $header = $this->_getHeader('MIME-Version', '1.0');
-    $this->assertEqual('1.0', $header->getPreparedValue());
+    $this->assertEqual('1.0', $header->getFieldBody());
   }
   
   public function testToString()
   {
     $header = $this->_getHeader('MIME-Version', '1.0');
     $this->assertEqual('MIME-Version: 1.0' . "\r\n", $header->toString());
-  }
-  
-  public function testSetValueResolvesVersion()
-  {
-    $header = $this->_getHeader('MIME-Version');
-    $header->setPreparedValue('1.0');
-    $this->assertEqual('1.0', $header->getVersion());
-    $this->assertEqual('1.0', $header->getPreparedValue());
-  }
-  
-  public function testSetValueIgnoresComments()
-  {
-    /* -- RFC 2045, 4.
-    NOTE TO IMPLEMENTORS:  When checking MIME-Version values any RFC 822
-    comment strings that are present must be ignored.  In particular, the
-    following four MIME-Version fields are equivalent:
-
-     MIME-Version: 1.0
-
-     MIME-Version: 1.0 (produced by MetaSend Vx.x)
-
-     MIME-Version: (produced by MetaSend Vx.x) 1.0
-
-     MIME-Version: 1.(produced by MetaSend Vx.x)0
-     */
-    
-    $header = $this->_getHeader('MIME-Version');
-    
-    $header->setPreparedValue('1.0 (produced by MetaSend Vx.x)');
-    $this->assertEqual('1.0', $header->getVersion());
-    $this->assertEqual('1.0 (produced by MetaSend Vx.x)', $header->getPreparedValue());
-    
-    $header->setPreparedValue('(produced by MetaSend Vx.x) 1.0');
-    $this->assertEqual('1.0', $header->getVersion());
-    $this->assertEqual('(produced by MetaSend Vx.x) 1.0', $header->getPreparedValue());
-    
-    $header->setPreparedValue('1.(produced by MetaSend Vx.x)0');
-    $this->assertEqual('1.0', $header->getVersion());
-    $this->assertEqual('1.(produced by MetaSend Vx.x)0', $header->getPreparedValue());
   }
   
   // -- Private methods

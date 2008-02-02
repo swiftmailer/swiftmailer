@@ -26,7 +26,7 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
      */
     
     $header = $this->_getHeader('Message-ID', 'id-left@id-right');
-    $this->assertEqual('<id-left@id-right>', $header->getPreparedValue());
+    $this->assertEqual('<id-left@id-right>', $header->getFieldBody());
   }
   
   public function testIdCanBeRetreivedVerbatim()
@@ -40,7 +40,7 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
     $header = $this->_getHeader('Message-ID');
     $header->setId('xyz@abc');
     $this->assertEqual('xyz@abc', $header->getId());
-    $this->assertEqual('<xyz@abc>', $header->getPreparedValue());
+    $this->assertEqual('<xyz@abc>', $header->getFieldBody());
   }
   
   public function testMultipleIdsCanBeSet()
@@ -70,54 +70,7 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
      */
     
     $header = $this->_getHeader('References', array('a@b', 'x@y'));
-    $this->assertEqual('<a@b> <x@y>', $header->getPreparedValue());
-  }
-  
-  public function testValueSetterCanBeUsedDirectly()
-  {
-    $header = $this->_getHeader('References');
-    $header->setPreparedValue('<a@b>');
-    $this->assertEqual('<a@b>', $header->getPreparedValue());
-  }
-  
-  public function testIdIsResolvedFromSettingValue()
-  {
-    $header = $this->_getHeader('References');
-    $header->setPreparedValue('<a@b>');
-    $this->assertEqual('a@b', $header->getId());
-  }
-  
-  public function testSettingMultipleIdsByDirectValue()
-  {
-    $header = $this->_getHeader('In-Reply-To');
-    $header->setPreparedValue('<a@b> <c@d> <x@y>');
-    $this->assertEqual('<a@b> <c@d> <x@y>', $header->getPreparedValue());
-    $this->assertEqual(array('a@b', 'c@d', 'x@y'), $header->getIds());
-  }
-  
-  public function testGetIdReturnsFirstAvailableId()
-  {
-    $header = $this->_getHeader('References', array('a@b', 'x@y'));
-    $this->assertEqual('a@b', $header->getId());
-  }
-  
-  public function testFwsIsIgnoredInValueParsing()
-  {
-    $header = $this->_getHeader('References');
-    $header->setPreparedValue('<a@b> <c@d>' . "\r\n " . '<x@y>');
-    $this->assertEqual('<a@b> <c@d>' . "\r\n " . '<x@y>', $header->getPreparedValue());
-    $this->assertEqual(array('a@b', 'c@d', 'x@y'), $header->getIds());
-  }
-  
-  public function testCommentsAreIngoredInValueParsing()
-  {
-    $header = $this->_getHeader('References');
-    $header->setPreparedValue('<a@b> (comment \\) here % stuff) <c@d>(test)<x@y> (comment)');
-    $this->assertEqual(
-      '<a@b> (comment \\) here % stuff) <c@d>(test)<x@y> (comment)',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('a@b', 'c@d', 'x@y'), $header->getIds());
+    $this->assertEqual('<a@b> <x@y>', $header->getFieldBody());
   }
   
   public function testIdLeftCanBeQuoted()
@@ -128,7 +81,7 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
     
     $header = $this->_getHeader('References', '"ab"@c');
     $this->assertEqual('"ab"@c', $header->getId());
-    $this->assertEqual('<"ab"@c>', $header->getPreparedValue());
+    $this->assertEqual('<"ab"@c>', $header->getFieldBody());
   }
   
   public function testIdLeftCanContainAnglesAsQuotedPairs()
@@ -139,14 +92,14 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
     
     $header = $this->_getHeader('References', '"a\\<\\>b"@c');
     $this->assertEqual('"a\\<\\>b"@c', $header->getId());
-    $this->assertEqual('<"a\\<\\>b"@c>', $header->getPreparedValue());
+    $this->assertEqual('<"a\\<\\>b"@c>', $header->getFieldBody());
   }
   
   public function testIdLeftCanBeDotAtom()
   {
     $header = $this->_getHeader('References', 'a.b+&%$.c@d');
     $this->assertEqual('a.b+&%$.c@d', $header->getId());
-    $this->assertEqual('<a.b+&%$.c@d>', $header->getPreparedValue());
+    $this->assertEqual('<a.b+&%$.c@d>', $header->getFieldBody());
   }
   
   public function testInvalidIdLeftThrowsException()
@@ -172,7 +125,7 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
     
     $header = $this->_getHeader('References', 'a@b.c+&%$.d');
     $this->assertEqual('a@b.c+&%$.d', $header->getId());
-    $this->assertEqual('<a@b.c+&%$.d>', $header->getPreparedValue());
+    $this->assertEqual('<a@b.c+&%$.d>', $header->getFieldBody());
   }
   
   public function testIdRightCanBeLiteral()
@@ -183,7 +136,7 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
     
     $header = $this->_getHeader('References', 'a@[1.2.3.4]');
     $this->assertEqual('a@[1.2.3.4]', $header->getId());
-    $this->assertEqual('<a@[1.2.3.4]>', $header->getPreparedValue());
+    $this->assertEqual('<a@[1.2.3.4]>', $header->getFieldBody());
   }
   
   public function testInvalidIdRightThrowsException()
@@ -224,16 +177,6 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
   {
     $header = $this->_getHeader('References', array('a@b', 'x@y'));
     $this->assertEqual('References: <a@b> <x@y>' . "\r\n", $header->toString());
-  }
-  
-  public function testStringValueWithCfws()
-  {
-    $header = $this->_getHeader('References');
-    $header->setPreparedValue('<a@b>' . "\r\n " . '(comment here) <x@y>');
-    $this->assertEqual(
-      'References: <a@b>' . "\r\n " . '(comment here) <x@y>' . "\r\n",
-      $header->toString()
-      );
   }
   
   // -- Private methods

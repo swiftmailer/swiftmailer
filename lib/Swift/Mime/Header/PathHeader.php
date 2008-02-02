@@ -86,55 +86,13 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
   }
   
   /**
-   * Set the value of this Header as a string.
-   * The tokens in the string MUST comply with RFC 2822, 3.6.7.
-   * The value will be parsed so {@link getAddress()} returns the correct address.
-   * Example:
-   * <code>
-   * <?php
-   * //Sets an address in the Header. 
-   * $header->setValue('<person@address.com>');
-   * //or
-   * $header->setValue('<(some comment)>');
-   * ?>
-   * </code>
-   * @param string $value
-   * @see __construct()
-   * @see setAddress()
-   * @see getValue()
-   */
-  public function setPreparedValue($value)
-  {
-    if (preg_match('/^' . $this->getHelper()->getGrammar('path') . '$/D', $value))
-    {
-      $path = substr($this->getHelper()->trimCFWS($value), 1, -1); //Remove < and >
-      if (preg_match('/^' . $this->getHelper()->getGrammar('addr-spec') . '$/D', $path))
-      {
-        $address = $path;
-      }
-      else //Must just be CFWS
-      {
-        $address = null;
-      }
-      $this->setAddress($address);
-      $this->setCachedValue($value);
-    }
-    else
-    {
-      throw new Exception(
-        'Value does not comply with the RFC 2822 definition of path.'
-        );
-    }
-  }
-  
-  /**
    * Get the string value of the body in this Header.
    * This is not necessarily RFC 2822 compliant since folding white space will
    * not be added at this stage (see {@link toString()} for that).
    * @return string
    * @see toString()
    */
-  public function getPreparedValue()
+  public function getFieldBody()
   {
     if (!$this->getCachedValue())
     {

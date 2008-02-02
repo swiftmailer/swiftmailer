@@ -41,53 +41,13 @@ class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
      */
     
     $header = $this->_getHeader('Return-Path', 'chris@swiftmailer.org');
-    $this->assertEqual('<chris@swiftmailer.org>', $header->getPreparedValue());
+    $this->assertEqual('<chris@swiftmailer.org>', $header->getFieldBody());
   }
   
   public function testValueIsEmptyAngleBracketsIfNoAddressSet()
   {
     $header = $this->_getHeader('Return-Path');
-    $this->assertEqual('<>', $header->getPreparedValue());
-  }
-  
-  public function testSetValueAcceptsAngleAddr()
-  {
-    $header = $this->_getHeader('Return-Path');
-    $header->setPreparedValue('<chris@swiftmailer.org>');
-    $this->assertEqual('<chris@swiftmailer.org>', $header->getPreparedValue());
-    $this->assertEqual('chris@swiftmailer.org', $header->getAddress());
-  }
-  
-  public function testSetValueAcceptsEmptyAngles()
-  {
-    $header = $this->_getHeader('Return-Path');
-    $header->setPreparedValue('<>');
-    $this->assertEqual('<>', $header->getPreparedValue());
-    $this->assertEqual(null, $header->getAddress());
-  }
-  
-  public function testSetValueAcceptsAnglesWithCFWS()
-  {
-    $header = $this->_getHeader('Return-Path');
-    $header->setPreparedValue('< (not disclosed) >');
-    $this->assertEqual('< (not disclosed) >', $header->getPreparedValue());
-    $this->assertEqual(null, $header->getAddress());
-  }
-  
-  public function testSetValueThrowsExceptionOnInvalidPath()
-  {
-    try
-    {
-      $header = $this->_getHeader('Return-Path');
-      $header->setPreparedValue('<chris@swift@mailer.org>');
-      $this->fail(
-        'Exception should be thrown since address is not valid'
-        );
-    }
-    catch (Exception $e)
-    {
-      $this->pass();
-    }
+    $this->assertEqual('<>', $header->getFieldBody());
   }
   
   public function testToString()

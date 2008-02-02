@@ -65,7 +65,6 @@ class Swift_Mime_HeaderComponentHelper
     $this->_grammar['FWS'] = '(?:(?:' . $this->_grammar['WSP'] . '*' .
         $this->_grammar['CRLF'] . ')?' . $this->_grammar['WSP'] . ')';
     $this->_grammar['text'] = '[\x00-\x08\x0B\x0C\x0E-\x7F]';
-    $this->_grammar['specials'] = '[\\\\\(\)<>\[\]:;@,\."]';
     $this->_grammar['quoted-pair'] = '(?:\\\\' . $this->_grammar['text'] . ')';
     $this->_grammar['ctext'] = '(?:' . $this->_grammar['NO-WS-CTL'] .
         '|[\x21-\x27\x2A-\x5B\x5D-\x7E])';
@@ -94,9 +93,6 @@ class Swift_Mime_HeaderComponentHelper
     $this->_grammar['word'] = '(?:' . $this->_grammar['atom'] . '|' .
         $this->_grammar['quoted-string'] . ')';
     $this->_grammar['phrase'] = '(?:' . $this->_grammar['word'] . '+?)';
-    $this->_grammar['utext'] = '(?:' . $this->_grammar['NO-WS-CTL'] . '|[\x21-\x7E])';
-    $this->_grammar['unstructured'] = '(?:(?:' . $this->_grammar['FWS'] . '?' .
-        $this->_grammar['utext'] . ')*' . $this->_grammar['FWS'] . '?)';
     $this->_grammar['no-fold-quote'] = '(?:"(?:' . $this->_grammar['qtext'] .
         '|' . $this->_grammar['quoted-pair'] . ')*")';
     $this->_grammar['dtext'] = '(?:' . $this->_grammar['NO-WS-CTL'] .
@@ -109,12 +105,8 @@ class Swift_Mime_HeaderComponentHelper
         $this->_grammar['no-fold-quote'] . ')';
     $this->_grammar['id-right'] = '(?:' . $this->_grammar['dot-atom-text'] . '|' .
         $this->_grammar['no-fold-literal'] . ')';
-    $this->_grammar['msg-id'] = '(?:' . $this->_grammar['CFWS'] . '?<' .
-        $this->_grammar['id-left'] . '@' . $this->_grammar['id-right'] . '>' .
-        $this->_grammar['CFWS'] . '?)';
     
     //Addresses, mailboxes and paths
-    $this->_grammar['display-name'] = $this->_grammar['phrase'];
     $this->_grammar['local-part'] = '(?:' . $this->_grammar['dot-atom'] . '|' .
         $this->_grammar['quoted-string'] . ')';
     $this->_grammar['dcontent'] = '(?:' . $this->_grammar['dtext'] . '|' .
@@ -126,68 +118,6 @@ class Swift_Mime_HeaderComponentHelper
         $this->_grammar['domain-literal'] . ')';
     $this->_grammar['addr-spec'] = '(?:' . $this->_grammar['local-part'] . '@' .
         $this->_grammar['domain'] . ')';
-    $this->_grammar['path'] = '(?:' . $this->_grammar['CFWS'] . '?<(?:' .
-        $this->_grammar['CFWS'] . '|' . $this->_grammar['addr-spec'] . ')?>' .
-        $this->_grammar['CFWS'] . '?)';
-    $this->_grammar['angle-addr'] = '(?:' . $this->_grammar['CFWS'] . '?<' .
-        $this->_grammar['addr-spec'] . '>' . $this->_grammar['CFWS'] . '?)';
-    $this->_grammar['name-addr'] = '(?:'. $this->_grammar['display-name'] . '?' .
-        $this->_grammar['angle-addr'] . ')';
-    $this->_grammar['mailbox'] = '(?:' . $this->_grammar['name-addr'] . '|' .
-        $this->_grammar['addr-spec'] . ')';
-    $this->_grammar['mailbox-list'] = '(?:' . $this->_grammar['mailbox'] . '(?:,' .
-        $this->_grammar['mailbox'] . ')*)';
-    $this->_grammar['group'] = '(?:' . $this->_grammar['display-name'] . ':(?:' .
-        $this->_grammar['mailbox-list'] . '|' . $this->_grammar['CFWS'] . ')?;' .
-        $this->_grammar['CFWS'] . '?)';
-    $this->_grammar['address'] = '(?:' . $this->_grammar['mailbox'] . '|' .
-        $this->_grammar['group'] . ')';
-    $this->_grammar['address-list'] = '(?:' . $this->_grammar['address'] . '(?:,' .
-        $this->_grammar['address'] . ')*)';
-    
-    
-    //Encoded words (RFC 2047)
-    $this->_grammar['token'] = '(?:[\x21\x23-\x27\x2A\x2B\x2D\x30-\x39\x41-\x5A\x5C\x5E-\x7E]+)';
-    $this->_grammar['charset'] = $this->_grammar['token'];
-    $this->_grammar['encoding'] = $this->_grammar['token'];
-    $this->_grammar['encoded-text'] = '(?:[\x21-\x3E\x40-\x7E]+)';
-    $this->_grammar['encoded-word'] = '(?:=\?' . $this->_grammar['charset'] .
-        '\?' . $this->_grammar['encoding'] . '\?' .
-        $this->_grammar['encoded-text'] . '\?=)';
-    
-    //Date and time
-    $this->_grammar['day-name'] = '(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)';
-    $this->_grammar['day-of-week'] = '(?:' . $this->_grammar['FWS'] . '?' .
-        $this->_grammar['day-name'] . ')';
-    $this->_grammar['day'] = '(?:' . $this->_grammar['FWS'] . '?[0-9]{1,2})';
-    $this->_grammar['month-name'] = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
-    $this->_grammar['month'] = '(?:' . $this->_grammar['FWS'] .
-        $this->_grammar['month-name'] . $this->_grammar['FWS'] . ')';
-    $this->_grammar['year'] = '(?:[0-9]{4,})';
-    $this->_grammar['date'] = '(?:' . $this->_grammar['day'] .
-        $this->_grammar['month'] . $this->_grammar['year'] . ')';
-    $this->_grammar['hour'] = '(?:[0-9]{2})';
-    $this->_grammar['minute'] = '(?:[0-9]{2})';
-    $this->_grammar['second'] = '(?:[0-9]{2})';
-    $this->_grammar['time-of-day'] = '(?:' . $this->_grammar['hour'] . ':' .
-        $this->_grammar['minute'] . '(?::' . $this->_grammar['second'] . ')?)';
-    $this->_grammar['zone'] = '(?:[\+\-][0-9]{4})';
-    $this->_grammar['time'] = '(?:' . $this->_grammar['time-of-day'] .
-        $this->_grammar['FWS'] . $this->_grammar['zone'] . ')';
-    $this->_grammar['date-time'] = '(?:(?:' . $this->_grammar['day-of-week'] .
-        ',)?' . $this->_grammar['date'] . $this->_grammar['FWS'] .
-        $this->_grammar['time'] . $this->_grammar['CFWS'] . '?)';
-    
-    //Received headers
-    $this->_grammar['item-name'] = '(?:[a-zA-Z](?:-?[a-zA-Z0-9])*)';
-    $this->_grammar['item-value'] = '(?:' . $this->_grammar['angle-addr'] . '+|' .
-        $this->_grammar['addr-spec'] . '|' . $this->_grammar['atom'] . '|' .
-        $this->_grammar['domain'] . '|' . $this->_grammar['msg-id'] . ')';
-    $this->_grammar['name-val-pair'] = '(?:' . $this->_grammar['item-name'] .
-        $this->_grammar['CFWS'] . $this->_grammar['item-value'] . ')';
-    $this->_grammar['name-val-list'] = '(?:' . $this->_grammar['CFWS'] . '?(?:' .
-        $this->_grammar['name-val-pair'] . '(?:' . $this->_grammar['CFWS'] .
-        $this->_grammar['name-val-pair'] . ')*)?)';
   }
   
   /**
@@ -256,7 +186,7 @@ class Swift_Mime_HeaderComponentHelper
         //Determine space remaining on line if first line
         if ($shorten)
         {
-          $usedLength = strlen($header->getName() . ': ');
+          $usedLength = strlen($header->getFieldName() . ': ');
         }
         else
         {
@@ -301,7 +231,7 @@ class Swift_Mime_HeaderComponentHelper
         
         if (-1 == $usedLength)
         {
-          $usedLength = strlen($header->getName() . ': ') + strlen($value);
+          $usedLength = strlen($header->getFieldName() . ': ') + strlen($value);
         }
         $value .= $this->getTokenAsEncodedWord(
           $token, $usedLength, $charset, $encoder
@@ -396,186 +326,6 @@ class Swift_Mime_HeaderComponentHelper
     }
     
     return implode("\r\n ", $encodedTextLines);
-  }
-  
-  /**
-   * Decode/parse out a RFC 2822 compliant display-name to get the actual
-   * text value.
-   * @param string $phrase
-   * @return string
-   * @access protected
-   */
-  public function decodePhrase($phrase)
-  {
-    //Get rid of any CFWS
-    $string = $this->trimCFWS($phrase);
-    if ('' == $string)
-    {
-      return null;
-    }
-    
-    if (!preg_match('/^' . $this->_grammar['phrase'] . '$/D', $string))
-    {
-      throw new Exception('Invalid RFC 2822 phrase token.');
-    }
-    
-    $string = $this->unfoldWhitespace($string);
-    
-    if (substr($string, 0, 1) == '"') //Name is a quoted-string
-    {
-      $string = preg_replace('/\\\\(.)/', '$1', substr($string, 1, -1));
-    }
-    else //Name is a simple list of words
-    {
-      $string = $this->decodeEncodedWords($string);
-    }
-    return $string;
-  }
-  
-  /**
-   * Decode/parse out a RFC 2822 compliant unstructured string to get the actual
-   * text value.
-   * @param string $text
-   * @return string
-   * @access protected
-   */
-  public function decodeText($text)
-  {
-    //Get rid of any CFWS
-    $string = $this->trimFWS($text);
-    if ('' == $string)
-    {
-      return null;
-    }
-    
-    if (!preg_match('/^' . $this->_grammar['unstructured'] . '$/D', $string))
-    {
-      throw new Exception('Invalid RFC 2822 unstructured token.');
-    }
-    
-    $string = $this->unfoldWhitespace($string);
-    $string = $this->decodeEncodedWords($string);
-    
-    return $string;
-  }
-  
-  /**
-   * Remove FWS from the left and right of the given token.
-   * @param string $token
-   * @param string $sides to trim from
-   * @return string
-   * @access protected
-   */
-  public function trimFWS($token, $sides = 'both')
-  {
-    switch ($sides)
-    {
-      case 'right':
-        $pattern = '/' . $this->_grammar['FWS'] . '$/';
-        break;
-      case 'left':
-        $pattern = '/^' . $this->_grammar['FWS'] . '/';
-        break;
-      case 'both':
-      default:
-        $pattern = '/^' . $this->_grammar['FWS'] . '|' .
-      $this->_grammar['FWS'] . '$/';
-    }
-    return preg_replace($pattern, '', $token);
-  }
-  
-  /**
-   * Remove CFWS from the left and right of the given token.
-   * @param string $token
-   * @param string $sides to trim from
-   * @return string
-   * @access protected
-   */
-  public function trimCFWS($token, $sides = 'both')
-  {
-    switch ($sides)
-    {
-      case 'right':
-        $pattern = '/' . $this->_grammar['CFWS'] . '$/';
-        break;
-      case 'left':
-        $pattern = '/^' . $this->_grammar['CFWS'] . '/';
-        break;
-      case 'both':
-      default:
-        $pattern = '/^' . $this->_grammar['CFWS'] . '|' .
-      $this->_grammar['CFWS'] . '$/';
-    }
-    return preg_replace($pattern, '', $token);
-  }
-  
-  /**
-   * Removes all CFWS from the given token.
-   * @param string $token
-   * @return string
-   * @access protected
-   */
-  public function stripCFWS($token)
-  {
-    return preg_replace('/' . $this->_grammar['CFWS'] . '/', '', $token);
-  }
-  
-  /**
-   * Decodes encoded-word tokens as defined by RFC 2047.
-   * @param string $token
-   * @return string
-   * @access protected
-   */
-  public function decodeEncodedWords($token)
-  {
-    return preg_replace_callback(
-      '/(?:' . $this->_grammar['encoded-word'] .
-      $this->_grammar['FWS'] . '+)*' .
-      $this->_grammar['encoded-word'] . '/',
-      array($this, '_decodeEncodedWordList'),
-      $token
-      );
-  }
-  
-  public function unfoldWhiteSpace($token)
-  {
-    return preg_replace('/\r\n([ \t])/', '$1', $token);
-  }
-  
-  // -- Private methods
-  
-  /**
-   * Callback which decodes adjacent groups of encoded-word tokens.
-   * @param string[] $matches from PCRE backreferences.
-   * @return string
-   * @access private
-   */
-  private function _decodeEncodedWordList($matches)
-  {
-    $decodedWords = array();
-    $encodedWords = preg_split('/' . $this->_grammar['FWS'] . '+/',
-      $matches[0]
-      );
-    foreach ($encodedWords as $word)
-    {
-      $word = substr($word, 2, -2); //Remove the =? and ?=
-      $tokens = explode('?', $word);
-      $encoding = strtoupper($tokens[1]);
-      switch ($encoding)
-      {
-        case 'Q':
-          $decodedWords[] = quoted_printable_decode(
-            str_replace('_', ' ', $tokens[2])
-            );
-          break;
-        case 'B':
-          $decodedWords[] = base64_decode($tokens[2]);
-          break;
-        default: //Not a known encoding scheme
-          $decodedWords[] = $word;
-      }
-    }
-    return implode('', $decodedWords);
   }
   
 }

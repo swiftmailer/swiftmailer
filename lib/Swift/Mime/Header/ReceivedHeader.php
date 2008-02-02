@@ -139,140 +139,13 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
   }
   
   /**
-   * Set the value of this Header as a string.
-   * The tokens in the string SHOULD comply with RFC 2822, 3.3.
-   * The value will be parsed so {@link getTimestamp()} and {@link getData()}
-   * return valid values.
-   * @param string $value
-   * @see __construct()
-   * @see setTimestamp()
-   * @see setData()
-   * @see getValue()
-   */
-  public function setPreparedValue($value)
-  {
-    //Parse out the date first
-    if (false !== $semiColonPos = strrpos($value, ';'))
-    {
-      $semiColonPos = strrpos($value, ';');
-      $date = substr($value, $semiColonPos + 1);
-      $nameValueList = substr($value, 0, $semiColonPos);
-      try
-      {
-        parent::setPreparedValue($date);
-      }
-      catch (Exception $e) //Invalid date-time format
-      {
-        $this->setTimestamp(null);
-      }
-    }
-    else
-    {
-      $nameValueList = $value;
-    }
-    
-    //Then try and get name-val-pairs
-    $nvps = array();
-    $currentNvp = array();
-    $expecting = 'name'; //or value
-    while (strlen($nameValueList) > 0)
-    {
-      //Get rid of any preceding comments
-      $nameValueList = $this->getHelper()->trimCFWS($nameValueList, 'left');
-      switch ($expecting)
-      {
-        //Looks for a name
-        case 'name':
-          if (preg_match('/^' . $this->getHelper()->getGrammar('item-name') . '/D',
-            $nameValueList, $matches))
-          {
-            $currentNvp['name'] = $matches[0];
-            $nameValueList = substr($nameValueList, strlen($matches[0]));
-            $expecting = 'value';
-            break;
-          }
-          else
-          {
-            break 2; //Parse error, stop trying to interpret
-          }
-        //Look for a value
-        case 'value':
-          if (preg_match('/^' . $this->getHelper()->getGrammar('angle-addr') . '/D',
-            $nameValueList, $matches))
-          {
-            $itemValue = $matches[0];
-          }
-          elseif (preg_match('/^' . $this->getHelper()->getGrammar('addr-spec') . '/D',
-            $nameValueList, $matches))
-          {
-            $itemValue = $matches[0];
-          }
-          elseif (preg_match('/^' . $this->getHelper()->getGrammar('domain') . '/D',
-            $nameValueList, $matches))
-          {
-            $itemValue = $matches[0];
-          }
-          elseif (preg_match('/^' . $this->getHelper()->getGrammar('msg-id') . '/D',
-            $nameValueList, $matches))
-          {
-            $itemValue = $matches[0];
-          }
-          elseif (preg_match('/^' . $this->getHelper()->getGrammar('atom') . '/D',
-            $nameValueList, $matches))
-          {
-            $itemValue = $matches[0];
-          }
-          else
-          {
-            break 2;
-          }
-          
-          $nameValueList = substr($nameValueList, strlen($itemValue));
-          
-          //Get rid of whitespace
-          $itemValue = trim($itemValue);
-          
-          //Try to parse a comment if found
-          if (preg_match('/' . $this->getHelper()->getGrammar('comment') . '$/D',
-            $itemValue, $matches))
-          {
-            $comment = $matches[0];
-            $currentNvp['comment'] = substr($comment, 1, -1);
-            $itemValue = substr(
-              $itemValue, 0, strlen($itemValue) - strlen($matches[0])
-              );
-          }
-          
-          //Strip comments from the value
-          $currentNvp['value'] = $this->getHelper()->trimCFWS($itemValue);
-          
-          //Set up for the next name-val-pair
-          $nvps[] = $currentNvp;
-          $currentNvp = array();
-          $expecting = 'name';
-          
-          break;
-      }
-    }
-    
-    if (!empty($currentNvp))
-    {
-      $nvps[] = $currentNvp;
-    }
-    
-    $this->setData($nvps);
-    
-    $this->setCachedValue($value);
-  }
-  
-  /**
    * Get the string value of the body in this Header.
    * This is not necessarily RFC 2822 compliant since RFC 2821 specifically
    * prevents the "fixing" of invalid Received headers.
    * @return string
    * @see toString()
    */
-  public function getPreparedValue()
+  public function getFieldBody()
   {
     if (!$this->getCachedValue())
     {
@@ -300,7 +173,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
       }
       
       $this->setCachedValue(implode("\r\n ", $nvpStrings) . '; ' .
-        parent::getPreparedValue()
+        parent::getFieldBody()
         );
     }
     
@@ -313,7 +186,7 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
    */
   public function toString()
   {
-    return $this->getName() . ': ' . $this->getPreparedValue() . "\r\n";
+    return $this->getFieldName() . ': ' . $this->getFieldBody() . "\r\n";
   }
   
 }

@@ -81,7 +81,7 @@ class Swift_Mime_Header_ListHeader
    * @return string
    * @see toString()
    */
-  public function getPreparedValue()
+  public function getFieldBody()
   {
     if (!$this->getCachedValue())
     {
@@ -95,31 +95,6 @@ class Swift_Mime_Header_ListHeader
       $this->setCachedValue(implode(', ', $values));
     }
     return $this->getCachedValue();
-  }
-  
-  
-  /**
-   * Set the value of this Header as a string.
-   * The tokens in the string MUST comply with RFC 2822, 3.6.
-   * The value will be parsed so {@link getValueList()} returns a valid list.
-   * @param string $value
-   * @see __construct()
-   * @see setValueList()
-   * @see getValue()
-   */
-  public function setPreparedValue($value)
-  {
-    $actualValues = array();
-    $values = preg_split('/(?<!\\\\),/', $value);
-    foreach ($values as $phrase)
-    {
-      if (preg_match('/^' . $this->getHelper()->getGrammar('phrase') . '$/D', $phrase))
-      {
-        $actualValues[] = $this->getHelper()->decodePhrase($phrase);
-      }
-    }
-    $this->setValueList($actualValues);
-    $this->setCachedValue($value);
   }
   
 }

@@ -97,10 +97,9 @@ class Swift_Mime_Header_IdentificationHeader
       {
         $actualIds[] = $id;
       }
-      else //Try assumng full ID spec incl any CFWS according to RFC 2822
+      else
       {
-        $idList = $this->_getIdsFromValue($id);
-        $actualIds = array_merge($actualIds, $idList);
+        throw new Exception('Invalid ID given <' . $id . '>');
       }
     }
     
@@ -118,25 +117,13 @@ class Swift_Mime_Header_IdentificationHeader
   }
   
   /**
-   * Sets the Value of the Header explicitly.
-   * It's not recommended to use this method, though input will be validated.
-   * @param string $value, complying to RFC 2822, 3.6.
-   */
-  public function setPreparedValue($value)
-  {
-    $ids = $this->_getIdsFromValue($value);
-    $this->_ids = $ids;
-    $this->setCachedValue($value);
-  }
-  
-  /**
    * Get the string value of the body in this Header.
    * This is not necessarily RFC 2822 compliant since folding white space will
    * not be added at this stage (see {@link toString()} for that).
    * @return string
    * @see toString()
    */
-  public function getPreparedValue()
+  public function getFieldBody()
   {
     if (!$this->getCachedValue())
     {
@@ -150,43 +137,6 @@ class Swift_Mime_Header_IdentificationHeader
       $this->setCachedValue(implode(' ', $angleAddrs));
     }
     return $this->getCachedValue();
-  }
-  
-  // -- Private methods
-  
-  /**
-   * Parses an identification field value and returns the IDs from it.
-   * The < and > angle brackets are not included in the returned array.
-   * @param string $value
-   * @return string[]
-   * @throws Exception If the value does not comply with RFC 2822
-   */
-  private function _getIdsFromValue($value)
-  {
-    $ids = array();
-    
-    //Shouldn't really need this first CFWS!!! :-\
-    $angleAddrs = preg_split(
-      '/(?<=>)' . $this->getHelper()->getGrammar('CFWS') . '?(?=<)/',
-      $value
-      );
-    
-    foreach ($angleAddrs as $idToken)
-    {
-      if (preg_match('/^' . $this->getHelper()->getGrammar('msg-id') . '$/D', $idToken))
-      {
-        //Remove CFWS from start and end, then remove the < and >
-        $ids[] = substr($this->getHelper()->trimCFWS($idToken), 1, -1);
-      }
-      else
-      {
-        throw new Exception(
-          'Value of ID does not comply with RFC 2822, Section 3.6.4.'
-          );
-      }
-    }
-    
-    return $ids;
   }
   
 }

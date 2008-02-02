@@ -85,29 +85,13 @@ class Swift_Mime_Header_VersionHeader
   }
   
   /**
-   * Set the value of this Header as a string.
-   * The tokens in the string MUST comply with RFC 2045, 4.
-   * The value will be parsed so {@link getVersion()} returns a valid value.
-   * @param string $value
-   * @see __construct()
-   * @see setVersion()
-   * @see getValue()
-   */
-  public function setPreparedValue($value)
-  {
-    $version = $this->getHelper()->stripCFWS($value);
-    $this->setVersion($version);
-    $this->setCachedValue($value);
-  }
-  
-  /**
    * Get the string value of the body in this Header.
    * This is not necessarily RFC 2822 compliant since folding whitespace may not
    * have been added. See {@link toString()} for that.
    * @return string
    * @see toString()
    */
-  public function getPreparedValue()
+  public function getFieldBody()
   {
     return $this->getCachedValue();
   }

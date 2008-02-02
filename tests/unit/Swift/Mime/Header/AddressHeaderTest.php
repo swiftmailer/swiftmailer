@@ -26,7 +26,7 @@ class Swift_Mime_Header_AddressHeaderTest
     $header = $this->_getHeader('To');
     $header->defineGroup('undisclosed-recipients');
     $this->assertEqual(array(), $header->getGroup('undisclosed-recipients'));
-    $this->assertEqual('undisclosed-recipients:;', $header->getPreparedValue());
+    $this->assertEqual('undisclosed-recipients:;', $header->getFieldBody());
   }
   
   public function testAddressGroupCanBeDefined()
@@ -43,7 +43,7 @@ class Swift_Mime_Header_AddressHeaderTest
     $this->assertEqual(
       'Admin Dept:Tim Fletcher <tim@swiftmailer.org>, ' .
       'Andrew Rose <andrew@swiftmailer.org>;',
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -57,7 +57,7 @@ class Swift_Mime_Header_AddressHeaderTest
     $this->assertEqual(
       'Admin Dept:Tim Fletcher <tim@swiftmailer.org>, ' .
       'Andrew Rose <andrew@swiftmailer.org>;, chris@swiftmailer.org',
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -124,7 +124,7 @@ class Swift_Mime_Header_AddressHeaderTest
       'Andrew Rose <andrew@swiftmailer.org>, ' .
       'chris@swiftmailer.org;, ' .
       'Fred <fred@swiftmailer.org>',
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -156,7 +156,7 @@ class Swift_Mime_Header_AddressHeaderTest
       );
     $header->setHiddenAddresses('fred@swiftmailer.org');
     $this->assertEqual('Chris Corbyn <chris@swiftmailer.org>',
-      $header->getPreparedValue()
+      $header->getFieldBody()
       );
   }
   
@@ -190,7 +190,7 @@ class Swift_Mime_Header_AddressHeaderTest
       array('tim@swiftmailer.org', 'andrew@swiftmailer.org', 'chris@swiftmailer.org'),
       $header->getAddresses()
       );
-    $this->assertEqual('undisclosed-recipients:;', $header->getPreparedValue());
+    $this->assertEqual('undisclosed-recipients:;', $header->getFieldBody());
   }
   
   public function testDefininingEntireGroupAsHidden()
@@ -214,7 +214,7 @@ class Swift_Mime_Header_AddressHeaderTest
       array('tim@swiftmailer.org', 'andrew@swiftmailer.org', 'chris@swiftmailer.org'),
       $header->getAddresses()
       );
-    $this->assertEqual('undisclosed-recipients:;', $header->getPreparedValue());
+    $this->assertEqual('undisclosed-recipients:;', $header->getFieldBody());
   }
   
   public function testRemoveGroup()
@@ -230,14 +230,14 @@ class Swift_Mime_Header_AddressHeaderTest
       array('fred@swiftmailer.org'),
       $header->getAddresses()
       );
-    $this->assertEqual('fred@swiftmailer.org', $header->getPreparedValue());
+    $this->assertEqual('fred@swiftmailer.org', $header->getFieldBody());
   }
   
   public function testGroupNamedIsFormattedIfNeeded()
   {
     $header = $this->_getHeader('To');
     $header->defineGroup('Users, Admins', array('xyz@abc.com'));
-    $this->assertEqual('"Users\\, Admins":xyz@abc.com;', $header->getPreparedValue());
+    $this->assertEqual('"Users\\, Admins":xyz@abc.com;', $header->getFieldBody());
   }
   
   public function testGroupNameIsEncodedIfNeeded()
@@ -251,300 +251,10 @@ class Swift_Mime_Header_AddressHeaderTest
     
     $header = $this->_getHeader('To', null, $encoder);
     $header->defineGroup('R' . pack('C', 0x8F) . 'bots', array('xyz@abc.com'));
-    $this->assertEqual('=?utf-8?Q?R=8Fbots?=:xyz@abc.com;', $header->getPreparedValue());
+    $this->assertEqual('=?utf-8?Q?R=8Fbots?=:xyz@abc.com;', $header->getFieldBody());
   }
   
-  public function testSetValueWithSimpleAddressList()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue('chris@swiftmailer.org, mark@swiftmailer.org');
-    $this->assertEqual('chris@swiftmailer.org, mark@swiftmailer.org',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
-      $header->getAddresses()
-      );
-  }
-  
-  public function testSetValueWithNameAddressList()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue('Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>'
-      );
-    $this->assertEqual('Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
-      $header->getAddresses()
-      );
-    $this->assertEqual(array(
-      'chris@swiftmailer.org' => 'Chris Corbyn',
-      'mark@swiftmailer.org' => 'Mark Corbyn'),
-      $header->getNameAddresses()
-      );
-  }
-  
-  public function testSetValueWithEmptyGroup()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue('undisclosed-recipients:;');
-    $this->assertEqual('undisclosed-recipients:;', $header->getPreparedValue());
-    $this->assertEqual(array(), $header->getAddresses());
-    $this->assertEqual(array(), $header->getGroup('undisclosed-recipients'));
-  }
-  
-  public function testSetValueWithAddressesInGroup()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue('Brothers:chris@swiftmailer.org, mark@swiftmailer.org;');
-    $this->assertEqual('Brothers:chris@swiftmailer.org, mark@swiftmailer.org;',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
-      $header->getAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => null, 'mark@swiftmailer.org' => null),
-      $header->getGroup('Brothers')
-      );
-  }
-  
-  public function testSetValueWithNameAddressesInGroup()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue(
-      'Brothers:Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>;'
-      );
-    $this->assertEqual(
-      'Brothers:Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>;',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
-      $header->getAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris Corbyn',
-      'mark@swiftmailer.org' => 'Mark Corbyn'),
-      $header->getNameAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris Corbyn',
-      'mark@swiftmailer.org' => 'Mark Corbyn'),
-      $header->getGroup('Brothers')
-      );
-  }
-  
-  public function testSetValueWithQuotedNameInGroup()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue(
-      '"Corbyn\\, Brothers":Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>;'
-      );
-    $this->assertEqual(
-      '"Corbyn\\, Brothers":Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>;',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
-      $header->getAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris Corbyn',
-      'mark@swiftmailer.org' => 'Mark Corbyn'),
-      $header->getNameAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris Corbyn',
-      'mark@swiftmailer.org' => 'Mark Corbyn'),
-      $header->getGroup('Corbyn, Brothers')
-      );
-  }
-  
-  public function testSetValueWithEncodedNameInGroup()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue(
-      '=?utf-8?Q?Corbyn_Brothers?=:Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>;'
-      );
-    $this->assertEqual(
-      '=?utf-8?Q?Corbyn_Brothers?=:Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>;',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
-      $header->getAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris Corbyn',
-      'mark@swiftmailer.org' => 'Mark Corbyn'),
-      $header->getNameAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris Corbyn',
-      'mark@swiftmailer.org' => 'Mark Corbyn'),
-      $header->getGroup('Corbyn Brothers')
-      );
-  }
-  
-  public function testSetValueWithCombinedMailboxListsAndGroups()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue(
-      'foo@bar.com, Tim Fletcher <tim@swiftmailer.org>,' . "\r\n " .
-      'Corbyn Brothers:Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>;, Andrew Rose <andrew@swiftmailer.org>'
-      );
-    $this->assertEqual(
-      'foo@bar.com, Tim Fletcher <tim@swiftmailer.org>,' . "\r\n " .
-      'Corbyn Brothers:Chris Corbyn <chris@swiftmailer.org>,' . "\r\n " .
-      'Mark Corbyn <mark@swiftmailer.org>;, Andrew Rose <andrew@swiftmailer.org>',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(
-      array(
-        'foo@bar.com', 'tim@swiftmailer.org', 'andrew@swiftmailer.org',
-        'chris@swiftmailer.org', 'mark@swiftmailer.org'
-        ),
-      $header->getAddresses()
-      );
-    $this->assertEqual(
-      array(
-        'foo@bar.com' => null, 'tim@swiftmailer.org' => 'Tim Fletcher',
-        'andrew@swiftmailer.org' => 'Andrew Rose',
-        'chris@swiftmailer.org' => 'Chris Corbyn',
-        'mark@swiftmailer.org' => 'Mark Corbyn'
-        ),
-      $header->getNameAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris Corbyn',
-      'mark@swiftmailer.org' => 'Mark Corbyn'),
-      $header->getGroup('Corbyn Brothers')
-      );
-  }
-  
-  public function testSetValueAcceptsGroupWithCommentBody()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue(
-      'foo@bar.com, Tim Fletcher <tim@swiftmailer.org>,' . "\r\n " .
-      'Corbyn Brothers:(addresses undisclosed);, Andrew Rose <andrew@swiftmailer.org>'
-      );
-    $this->assertEqual(
-      'foo@bar.com, Tim Fletcher <tim@swiftmailer.org>,' . "\r\n " .
-      'Corbyn Brothers:(addresses undisclosed);, Andrew Rose <andrew@swiftmailer.org>',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(
-      array('foo@bar.com', 'tim@swiftmailer.org', 'andrew@swiftmailer.org'),
-      $header->getAddresses()
-      );
-    $this->assertEqual(
-      array(
-        'foo@bar.com' => null, 'tim@swiftmailer.org' => 'Tim Fletcher',
-        'andrew@swiftmailer.org' => 'Andrew Rose'
-        ),
-      $header->getNameAddresses()
-      );
-    $this->assertEqual(array(), $header->getGroup('Corbyn Brothers'));
-  }
-  
-  public function testSetValueAcceptsEmptyFieldBody()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue('');
-    $this->assertEqual('', $header->getPreparedValue());
-    $this->assertEqual(array(), $header->getAddresses());
-    $this->assertEqual(array(), $header->getNameAddresses());
-  }
-  
-  public function testSetValueAcceptsCommentFieldBody()
-  {
-    $header = $this->_getHeader('Bcc');
-    $header->setPreparedValue('(hidden from display)');
-    $this->assertEqual('(hidden from display)', $header->getPreparedValue());
-    $this->assertEqual(array(), $header->getAddresses());
-    $this->assertEqual(array(), $header->getNameAddresses());
-  }
-  
-  public function testSetValueWithCommasInQuotedString()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue(
-      '"Chris Corbyn, DHE" <chris@swiftmailer.org>,' . "\r\n " .
-      '"Mark Corbyn, BSc Comp. Sci." <mark@swiftmailer.org>'
-      );
-    
-    $this->assertEqual(
-      '"Chris Corbyn, DHE" <chris@swiftmailer.org>,' . "\r\n " .
-      '"Mark Corbyn, BSc Comp. Sci." <mark@swiftmailer.org>',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org', 'mark@swiftmailer.org'),
-      $header->getAddresses()
-      );
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris Corbyn, DHE',
-      'mark@swiftmailer.org' => 'Mark Corbyn, BSc Comp. Sci.'),
-      $header->getNameAddresses()
-      );
-    $this->assertEqual(
-      array('"Chris Corbyn\\, DHE" <chris@swiftmailer.org>',
-      '"Mark Corbyn\\, BSc Comp\\. Sci\\." <mark@swiftmailer.org>'),
-      $header->getNameAddressStrings()
-      );
-  }
-  
-  public function testSetValueWithAddrSpecInQuotedString()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue(
-      '"Chris <c@a.b> Corbyn" <chris@swiftmailer.org>'
-      );
-    
-    $this->assertEqual(
-      '"Chris <c@a.b> Corbyn" <chris@swiftmailer.org>',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('chris@swiftmailer.org'), $header->getAddresses());
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris <c@a.b> Corbyn'),
-      $header->getNameAddresses()
-      );
-    $this->assertEqual(
-      array('"Chris \\<c\\@a\\.b\\> Corbyn" <chris@swiftmailer.org>'),
-      $header->getNameAddressStrings()
-      );
-  }
-  
-  public function testSetValueWithGroupInQuotedString()
-  {
-    $header = $this->_getHeader('To');
-    $header->setPreparedValue(
-      '"Chris <c@a.b>, Foo:<x@y.z>;, <c@d.e> Corbyn" <chris@swiftmailer.org>'
-      );
-    
-    $this->assertEqual(
-      '"Chris <c@a.b>, Foo:<x@y.z>;, <c@d.e> Corbyn" <chris@swiftmailer.org>',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual(array('chris@swiftmailer.org'), $header->getAddresses());
-    $this->assertEqual(
-      array('chris@swiftmailer.org' => 'Chris <c@a.b>, Foo:<x@y.z>;, <c@d.e> Corbyn'),
-      $header->getNameAddresses()
-      );
-    $this->assertEqual(
-      array('"Chris \\<c\\@a\\.b\\>\\, Foo\\:\\<x\\@y\\.z\\>\\;\\, \\<c\\@d\\.e\\> Corbyn" <chris@swiftmailer.org>'),
-      $header->getNameAddressStrings()
-      );
-  }
+  //TODO: toString() isn't tested!
   
   // -- Private methods
   

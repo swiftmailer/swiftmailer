@@ -20,7 +20,7 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
   public function testGetNameReturnsNameVerbatim()
   {
     $header = $this->_getHeader('Subject', 'Test');
-    $this->assertEqual('Subject', $header->getName());
+    $this->assertEqual('Subject', $header->getFieldName());
   }
   
   public function testGetValueReturnsValueVerbatim()
@@ -367,34 +367,6 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       'w=8Frd?=' . "\r\n", $headerString,
       '%s: Adjacent encoded words should appear grouped with WSP encoded'
       );
-  }
-  
-  public function testSettingPreparedValue()
-  {
-    $header = $this->_getHeader('Subject');
-    $header->setPreparedValue('Testing subject out');
-    $this->assertEqual('Testing subject out', $header->getPreparedValue());
-    $this->assertEqual('Testing subject out', $header->getValue());
-  }
-  
-  public function testSettingPreparedValueWithFWS()
-  {
-    $header = $this->_getHeader('Subject');
-    $header->setPreparedValue('Testing' . "\r\n " . 'subject out');
-    $this->assertEqual('Testing' . "\r\n " . 'subject out',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual('Testing subject out', $header->getValue());
-  }
-  
-  public function testSettingPreparedValueWithEncodedWords()
-  {
-    $header = $this->_getHeader('Subject');
-    $header->setPreparedValue('Testing =?utf-8?Q?subject_out?=');
-    $this->assertEqual('Testing =?utf-8?Q?subject_out?=',
-      $header->getPreparedValue()
-      );
-    $this->assertEqual('Testing subject out', $header->getValue());
   }
   
   // -- Private methods

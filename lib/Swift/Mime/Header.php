@@ -32,78 +32,17 @@ interface Swift_Mime_Header
 {
   
   /**
-   * Set the encoder used for encoding the header.
-   * @param Swift_Mime_HeaderEncoder $encoder
-   */
-  public function setEncoder(Swift_Mime_HeaderEncoder $encoder);
-  
-  /**
-   * Get the HeaderEncoder used in this Header, or NULL if none used.
-   * @return Swift_Mime_HeaderEncoder
-   */
-  public function getEncoder();
-  
-  /**
-   * Set the character set used in this Header.
-   * @param string $charset
-   */
-  public function setCharset($charset);
-  
-  /**
-   * Get the character set of the content in this Header.
-   * @return string
-   */
-  public function getCharset();
-  
-  /**
    * Get the name of this header (e.g. charset).
    * The name is an identifier and as such will be immutable.
    * @return string
    */
-  public function getName();
+  public function getFieldName();
   
   /**
-   * Get the (unprepared) value of this header.
+   * Get the field body, prepared for folding into a final header value.
    * @return string
    */
-  public function getValue();
-  
-  /**
-   * Set the (unprepared) value of this header.
-   * @param string $value
-   */
-  public function setValue($value);
-  
-  /**
-   * Set a collection of HeaderAttributes to be applied to this Header.
-   * @param Swift_Mime_HeaderAttributeSet $attributes
-   */
-  public function setAttributes(Swift_Mime_HeaderAttributeSet $attributes);
-  
-  /**
-   * Get the collection of HeaderAttributes applied to this Header.
-   * @return Swift_Mime_HeaderAttributeSet
-   */
-  public function getAttributes();
-  
-  /**
-   * Set the maximum length of lines in the header.
-   * @param int $length
-   */
-  public function setMaxLineLength($length);
-  
-  /**
-   * Sets the value of this Header as if it's already been prepared for use.
-   * Lines needn't be folded since {@link toString()} will fold long lines.
-   * @param string $value
-   */
-  public function setPreparedValue($value);
-  
-  /**
-   * Get the value, prepared for folding into a final header value.
-   * @return string
-   */
-  public function getPreparedValue();
+  public function getFieldBody();
   
   /**
    * Get this Header rendered as a compliant string.

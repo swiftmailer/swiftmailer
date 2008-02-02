@@ -82,45 +82,13 @@ class Swift_Mime_Header_DateHeader extends Swift_Mime_Header_StructuredHeader
   }
   
   /**
-   * Set the value of this Header as a string.
-   * The tokens in the string MUST comply with RFC 2822, 3.3.
-   * The value will be parsed so {@link getTimestamp()} returns a valid value.
-   * Example:
-   * <code>
-   * <?php
-   * $header->setValue('Mon, 14 Jan 2008 22:59:31 +1100');
-   * ?>
-   * </code>
-   * @param string $value
-   * @see __construct()
-   * @see setTimestamp()
-   * @see getValue()
-   */
-  public function setPreparedValue($value)
-  {
-    if (preg_match('/^' . $this->getHelper()->getGrammar('date-time') . '$/D', $value))
-    {
-      $this->setTimestamp(
-        strtotime($this->getHelper()->unfoldWhiteSpace(
-          $this->getHelper()->trimCFWS($value)
-          ))
-        );
-      $this->setCachedValue($value);
-    }
-    else
-    {
-      throw new Exception('Date value does not comply with RFC 2822, 3.4.');
-    }
-  }
-  
-  /**
    * Get the string value of the body in this Header.
    * This is not necessarily RFC 2822 compliant since folding white space will
    * not be added at this stage (see {@link toString()} for that).
    * @return string
    * @see toString()
    */
-  public function getPreparedValue()
+  public function getFieldBody()
   {
     if (!$this->getCachedValue())
     {

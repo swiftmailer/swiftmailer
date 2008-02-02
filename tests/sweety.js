@@ -233,7 +233,7 @@ function SweetyTestCaseRun(testClass, reporter) {
         if (!runElements || 1 != runElements.length) {
           reporter.reportException(
             "Invalid XML response: " +
-            txt.replace(/^\s*<\?xml.+<\/name>/g, ""), testClass);
+            _stripTags(txt.replace(/^\s*<\?xml.+<\/name>/g, "")), testClass);
         } else {
           var everything = runElements.item(0);
           _parseResults(everything, testClass);
@@ -243,7 +243,7 @@ function SweetyTestCaseRun(testClass, reporter) {
         //Invalid document or an error occurred.
         reporter.reportException(
           "Invalid XML response: " +
-          txt.replace(/^\s*<\?xml.+<\/name>/g, ""), testClass);
+          _stripTags(txt.replace(/^\s*<\?xml.+<\/name>/g, "")), testClass);
       }
       
       //Invoke the callback
@@ -262,6 +262,13 @@ function SweetyTestCaseRun(testClass, reporter) {
     } else {
       return node.textContent;
     }
+  }
+  
+  var _stripTags = function _stripTags(txt) {
+    txt = txt.replace(/[\r\n]+/g, "");
+    return txt.replace(
+      /<\/?(?:a|b|br|p|strong|u|i|em|span|div|ul|ol|li|table|thead|tbody|th|td|tr)\b.*?\/?>/g,
+      "");
   }
   
   /**
