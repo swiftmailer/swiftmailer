@@ -74,7 +74,16 @@ class Swift_Mime_Header_MailboxHeader
   public function __construct($name, $mailbox = null, $charset = null,
     Swift_Mime_HeaderEncoder $encoder = null)
   {
-    parent::__construct($name, null, $charset, $encoder);
+    $this->setFieldName($name);
+    if (!is_null($charset))
+    {
+      $this->setCharset($charset);
+    }
+    if (!is_null($encoder))
+    {
+      $this->setEncoder($encoder);
+    }
+    $this->initializeGrammar();
     
     if (!is_null($mailbox))
     {
@@ -258,7 +267,7 @@ class Swift_Mime_Header_MailboxHeader
    */
   protected function createDisplayNameString($displayName, $shorten = false)
   {
-    return $this->getHelper()->createPhrase($this, $displayName,
+    return $this->createPhrase($this, $displayName,
       $this->getCharset(), $this->getEncoder(), $shorten
       );
   }
@@ -308,7 +317,7 @@ class Swift_Mime_Header_MailboxHeader
    */
   private function _assertValidAddress($address)
   {
-    if (!preg_match('/^' . $this->getHelper()->getGrammar('addr-spec') . '$/D',
+    if (!preg_match('/^' . $this->getGrammar('addr-spec') . '$/D',
       $address))
     {
       throw new Exception(

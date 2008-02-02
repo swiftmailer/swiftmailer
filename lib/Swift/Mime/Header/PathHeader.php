@@ -43,8 +43,8 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
    */
   public function __construct($name, $address = null)
   {
-    parent::__construct($name);
-    
+    $this->setFieldName($name);
+    $this->initializeGrammar();
     if (!is_null($address))
     {
       $this->setAddress($address);
@@ -61,7 +61,7 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
     {
       $this->_address = null;
     }
-    elseif (preg_match('/^' . $this->getHelper()->getGrammar('addr-spec') . '$/D',
+    elseif (preg_match('/^' . $this->getGrammar('addr-spec') . '$/D',
       $address))
     {
       $this->_address = $address;

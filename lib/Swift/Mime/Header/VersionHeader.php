@@ -51,7 +51,7 @@ class Swift_Mime_Header_VersionHeader
    */
   public function __construct($name, $version = null)
   {
-    parent::__construct($name);
+    $this->setFieldName($name);
     
     if (!is_null($version))
     {

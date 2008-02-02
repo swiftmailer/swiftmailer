@@ -18,9 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/UnstructuredHeader.php';
+require_once dirname(__FILE__) . '/AbstractHeader.php';
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-require_once dirname(__FILE__) . '/../HeaderComponentHelper.php';
 
 /**
  * A Structured MIME Header.
@@ -28,21 +27,7 @@ require_once dirname(__FILE__) . '/../HeaderComponentHelper.php';
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_Header_StructuredHeader
-  extends Swift_Mime_Header_UnstructuredHeader
-{
-  
-  /**
-   * Creates a new StructuredHeader with the given $name and $id.
-   * @param string $name
-   * @param mixed $id, optional as string or string[]
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
-   */
-  public function __construct($name, $value = null, $charset = null,
-    Swift_Mime_HeaderEncoder $encoder = null)
-  {
-    parent::__construct($name, $value, $charset, $encoder);
-  }
-  
+abstract class Swift_Mime_Header_StructuredHeader
+  extends Swift_Mime_Header_AbstractHeader
+{ 
 }

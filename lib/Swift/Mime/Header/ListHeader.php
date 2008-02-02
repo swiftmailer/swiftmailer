@@ -50,7 +50,16 @@ class Swift_Mime_Header_ListHeader
   public function __construct($name, $values = array(), $charset = null,
     Swift_Mime_HeaderEncoder $encoder = null)
   {
-    parent::__construct($name, null, $charset, $encoder);
+    $this->setFieldName($name);
+    if (!is_null($charset))
+    {
+      $this->setCharset($charset);
+    }
+    if (!is_null($encoder))
+    {
+      $this->setEncoder($encoder);
+    }
+    $this->initializeGrammar();
     
     $this->setValueList($values);
   }
@@ -88,7 +97,7 @@ class Swift_Mime_Header_ListHeader
       $values = array();
       foreach ($this->_values as $value)
       {
-        $values[] = $this->getHelper()->createPhrase($this, $value,
+        $values[] = $this->createPhrase($this, $value,
           $this->getCharset(), $this->getEncoder(), empty($values)
           );
       }

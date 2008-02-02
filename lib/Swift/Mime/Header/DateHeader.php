@@ -50,8 +50,7 @@ class Swift_Mime_Header_DateHeader extends Swift_Mime_Header_StructuredHeader
    */
   public function __construct($name, $timestamp = null)
   {
-    parent::__construct($name);
-    
+    $this->setFieldName($name);
     if (!is_null($timestamp))
     {
       $this->setTimestamp($timestamp);

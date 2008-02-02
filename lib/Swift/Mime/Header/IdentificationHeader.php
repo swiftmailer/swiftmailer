@@ -45,7 +45,8 @@ class Swift_Mime_Header_IdentificationHeader
    */
   public function __construct($name, $id = null)
   {
-    parent::__construct($name);
+    $this->setFieldName($name);
+    $this->initializeGrammar();
     
     if (is_array($id))
     {
@@ -90,8 +91,8 @@ class Swift_Mime_Header_IdentificationHeader
     foreach ($ids as $k => $id)
     {
       if (preg_match(
-        '/^' . $this->getHelper()->getGrammar('id-left') . '@' .
-        $this->getHelper()->getGrammar('id-right') . '$/D',
+        '/^' . $this->getGrammar('id-left') . '@' .
+        $this->getGrammar('id-right') . '$/D',
         $id
         ))
       {

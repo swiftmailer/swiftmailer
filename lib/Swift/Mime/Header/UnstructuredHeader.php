@@ -20,7 +20,6 @@
 
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 require_once dirname(__FILE__) . '/../HeaderAttributeSet.php';
-require_once dirname(__FILE__) . '/../HeaderComponentHelper.php';
 require_once dirname(__FILE__) . '/AbstractHeader.php';
 
 
@@ -61,8 +60,6 @@ class Swift_Mime_Header_UnstructuredHeader
     {
       $this->setEncoder($encoder);
     }
-    
-    $this->setHelper(new Swift_Mime_HeaderComponentHelper());
   }
   
   /**
@@ -93,7 +90,7 @@ class Swift_Mime_Header_UnstructuredHeader
     if (!$this->getCachedValue())
     {
       $this->setCachedValue(
-        str_replace('\\', '\\\\', $this->getHelper()->encodeWords(
+        str_replace('\\', '\\\\', $this->encodeWords(
           $this, $this->_value, -1, $this->getCharset(), $this->getEncoder()
           ))
         );
