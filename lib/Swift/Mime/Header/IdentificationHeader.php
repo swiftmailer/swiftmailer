@@ -41,21 +41,11 @@ class Swift_Mime_Header_IdentificationHeader
   /**
    * Creates a new IdentificationHeader with the given $name and $id.
    * @param string $name
-   * @param mixed $id, optional as string or string[]
    */
-  public function __construct($name, $id = null)
+  public function __construct($name)
   {
     $this->setFieldName($name);
     $this->initializeGrammar();
-    
-    if (is_array($id))
-    {
-      $this->setIds($id);
-    }
-    elseif (!is_null($id))
-    {
-      $this->setId($id);
-    }
   }
   
   /**

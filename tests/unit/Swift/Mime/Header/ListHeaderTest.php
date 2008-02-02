@@ -17,26 +17,22 @@ class Swift_Mime_Header_ListHeaderTest extends UnitTestCase
   
   public function testValuesCanBeSetAndFetched()
   {
-    $header = $this->_getHeader('Keywords', array('foo', 'bar'));
-    $this->assertEqual(array('foo', 'bar'), $header->getValueList());
-  }
-  
-  public function testSetterCanBeUsedToSetValues()
-  {
-    $header = $this->_getHeader('Keywords');
+    $header = $this->_getHeader('Keywords', new Swift_Mime_MockHeaderEncoder());
     $header->setValueList(array('foo', 'bar'));
     $this->assertEqual(array('foo', 'bar'), $header->getValueList());
   }
   
   public function testValuesAppearCommaSeparated()
   {
-    $header = $this->_getHeader('Keywords', array('foo', 'bar'));
+    $header = $this->_getHeader('Keywords', new Swift_Mime_MockHeaderEncoder());
+    $header->setValueList(array('foo', 'bar'));
     $this->assertEqual('foo, bar', $header->getFieldBody());
   }
   
   public function testSpecialCharsInValuesAreQuoted()
   {
-    $header = $this->_getHeader('Keywords', array('foo, bar', 'zip, button'));
+    $header = $this->_getHeader('Keywords', new Swift_Mime_MockHeaderEncoder());
+    $header->setValueList(array('foo, bar', 'zip, button'));
     $this->assertEqual('"foo\\, bar", "zip\\, button"', $header->getFieldBody());
   }
   
@@ -49,9 +45,8 @@ class Swift_Mime_Header_ListHeaderTest extends UnitTestCase
       );
     $encoder->setReturnValue('encodeString', 'f=8Fo');
     
-    $header = $this->_getHeader('Keywords',
-      array('f' . pack('C', 0x8F) . 'o', 'bar'), $encoder
-      );
+    $header = $this->_getHeader('Keywords', $encoder);
+    $header->setValueList(array('f' . pack('C', 0x8F) . 'o', 'bar'));
     $this->assertEqual(array('f' . pack('C', 0x8F) . 'o', 'bar'),
       $header->getValueList()
       );
@@ -62,21 +57,18 @@ class Swift_Mime_Header_ListHeaderTest extends UnitTestCase
   
   public function testToString()
   {
-    $header = $this->_getHeader('Keywords', array('foo', 'bar'));
+    $header = $this->_getHeader('Keywords', new Swift_Mime_MockHeaderEncoder());
+    $header->setValueList(array('foo', 'bar'));
     $this->assertEqual('Keywords: foo, bar' . "\r\n", $header->toString());
   }
   
   // -- Private methods
   
-  private function _getHeader($name, $values = array(), $encoder = null)
+  private function _getHeader($name, $encoder)
   {
-    if (!$encoder)
-    {
-      $encoder = new Swift_Mime_MockHeaderEncoder();
-    }
-    return new Swift_Mime_Header_ListHeader(
-      $name, $values, $this->_charset, $encoder
-      );
+    $header = new Swift_Mime_Header_ListHeader($name, $encoder);
+    $header->setCharset($this->_charset);
+    return $header;
   }
   
 }

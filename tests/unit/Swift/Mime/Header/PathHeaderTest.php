@@ -7,12 +7,6 @@ class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
   
   public function testSingleAddressCanBeSetAndFetched()
   {
-    $header = $this->_getHeader('Return-Path', 'chris@swiftmailer.org');
-    $this->assertEqual('chris@swiftmailer.org', $header->getAddress());
-  }
-  
-  public function testAddressCanBeSetViaSetter()
-  {
     $header = $this->_getHeader('Return-Path');
     $header->setAddress('chris@swiftmailer.org');
     $this->assertEqual('chris@swiftmailer.org', $header->getAddress());
@@ -22,7 +16,8 @@ class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
   {
     try
     {
-      $header = $this->_getHeader('Return-Path', 'chr is@swiftmailer.org');
+      $header = $this->_getHeader('Return-Path');
+      $header->setAddress('chr is@swiftmailer.org');
       $this->fail('Address must be valid according to RFC 2822 addr-spec grammar.');
     }
     catch (Exception $e)
@@ -40,7 +35,8 @@ class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
                               obs-path
      */
     
-    $header = $this->_getHeader('Return-Path', 'chris@swiftmailer.org');
+    $header = $this->_getHeader('Return-Path');
+    $header->setAddress('chris@swiftmailer.org');
     $this->assertEqual('<chris@swiftmailer.org>', $header->getFieldBody());
   }
   
@@ -52,7 +48,8 @@ class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
   
   public function testToString()
   {
-    $header = $this->_getHeader('Return-Path', 'chris@swiftmailer.org');
+    $header = $this->_getHeader('Return-Path');
+    $header->setAddress('chris@swiftmailer.org');
     $this->assertEqual('Return-Path: <chris@swiftmailer.org>' . "\r\n",
       $header->toString()
       );
@@ -60,9 +57,9 @@ class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
   
   // -- Private methods
   
-  private function _getHeader($name, $path = null)
+  private function _getHeader($name)
   {
-    return new Swift_Mime_Header_PathHeader($name, $path);
+    return new Swift_Mime_Header_PathHeader($name);
   }
   
 }

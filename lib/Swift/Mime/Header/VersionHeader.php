@@ -40,23 +40,11 @@ class Swift_Mime_Header_VersionHeader
   
   /**
    * Creates a new VersionHeader with $name and $version.
-   * Example:
-   * <code>
-   * <?php
-   * $header = new Swift_Mime_Header_VersioinHeader('MIME-Version', '1.0');
-   * ?>
-   * </code>
    * @param string $name of Header
-   * @param int $version, optional
    */
-  public function __construct($name, $version = null)
+  public function __construct($name)
   {
     $this->setFieldName($name);
-    
-    if (!is_null($version))
-    {
-      $this->setVersion($version);
-    }
   }
   
   /**

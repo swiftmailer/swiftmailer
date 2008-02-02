@@ -17,7 +17,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testMailboxIsSetForAddress()
   {
-    $header = $this->_getHeader('From', 'chris@swiftmailer.org');
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses('chris@swiftmailer.org');
     $this->assertEqual(array('chris@swiftmailer.org'),
       $header->getNameAddressStrings()
       );
@@ -25,9 +26,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testMailboxIsRenderedForNameAddress()
   {
-    $header = $this->_getHeader('From', array(
-      'chris@swiftmailer.org' => 'Chris Corbyn'
-      ));
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array('chris@swiftmailer.org' => 'Chris Corbyn'));
     $this->assertEqual(
       array('Chris Corbyn <chris@swiftmailer.org>'), $header->getNameAddressStrings()
       );
@@ -35,21 +35,22 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testAddressCanBeReturnedForAddress()
   {
-    $header = $this->_getHeader('From', 'chris@swiftmailer.org');
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses('chris@swiftmailer.org');
     $this->assertEqual(array('chris@swiftmailer.org'), $header->getAddresses());
   }
   
   public function testAddressCanBeReturnedForNameAddress()
   {
-    $header = $this->_getHeader('From', array(
-      'chris@swiftmailer.org' => 'Chris Corbyn'
-      ));
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array('chris@swiftmailer.org' => 'Chris Corbyn'));
     $this->assertEqual(array('chris@swiftmailer.org'), $header->getAddresses());
   }
   
   public function testSpecialCharsInNameAreQuoted()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn, DHE'
       ));
     $this->assertEqual(
@@ -58,21 +59,10 @@ class Swift_Mime_Header_MailboxHeaderTest
       );
   }
   
-  public function testSettingMailboxViaSetter()
-  {
-    $header = $this->_getHeader('From');
-    $header->setNameAddresses(array(
-      'chris@swiftmailer.org' => 'Chris Corbyn'
-      ));
-    $this->assertEqual(
-      array('Chris Corbyn <chris@swiftmailer.org>'),
-      $header->getNameAddressStrings()
-      );
-  }
-  
   public function testGetMailboxesReturnsNameValuePairs()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn, DHE'
       ));
     $this->assertEqual(
@@ -82,7 +72,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testMultipleAddressesCanBeSetAndFetched()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses(array(
       'chris@swiftmailer.org', 'mark@swiftmailer.org'
       ));
     $this->assertEqual(
@@ -93,7 +84,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testMultipleAddressesAsMailboxes()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses(array(
       'chris@swiftmailer.org', 'mark@swiftmailer.org'
       ));
     $this->assertEqual(
@@ -104,7 +96,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testMultipleAddressesAsMailboxStrings()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses(array(
       'chris@swiftmailer.org', 'mark@swiftmailer.org'
       ));
     $this->assertEqual(
@@ -115,7 +108,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testMultipleNamedMailboxesReturnsMultipleAddresses()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn',
       'mark@swiftmailer.org' => 'Mark Corbyn'
       ));
@@ -127,7 +121,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testMultipleNamedMailboxesReturnsMultipleMailboxes()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn',
       'mark@swiftmailer.org' => 'Mark Corbyn'
       ));
@@ -141,7 +136,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testMultipleMailboxesProducesMultipleMailboxStrings()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn',
       'mark@swiftmailer.org' => 'Mark Corbyn'
       ));
@@ -155,7 +151,7 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testSetAddressesOverwritesAnyMailboxes()
   {
-    $header = $this->_getHeader('From');
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
     $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn',
       'mark@swiftmailer.org' => 'Mark Corbyn'
@@ -190,10 +186,8 @@ class Swift_Mime_Header_MailboxHeaderTest
     $encoder->expectOnce('encodeString', array($name, '*', '*'));
     $encoder->setReturnValue('encodeString', 'C=8Frbyn');
     
-    $header = $this->_getHeader('From',
-      array('chris@swiftmailer.org'=>'Chris ' . $name),
-      $encoder
-      );
+    $header = $this->_getHeader('From', $encoder);
+    $header->setNameAddresses(array('chris@swiftmailer.org'=>'Chris ' . $name));
     
     $this->assertEqual(
       'Chris =?' . $this->_charset . '?Q?C=8Frbyn?= <chris@swiftmailer.org>',
@@ -214,17 +208,16 @@ class Swift_Mime_Header_MailboxHeaderTest
     $encoder->expectOnce('encodeString', array($name, 18, 75));
     $encoder->setReturnValue('encodeString', 'C=8Frbyn');
     
-    $header = $this->_getHeader('From',
-      array('chris@swiftmailer.org'=>'Chris ' . $name),
-      $encoder
-      );
+    $header = $this->_getHeader('From', $encoder);
+    $header->setNameAddresses(array('chris@swiftmailer.org'=>'Chris ' . $name));
     
     $header->getNameAddressStrings();
   }
   
   public function testGetValueReturnsMailboxStringValue()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn'
       ));
     $this->assertEqual(
@@ -234,7 +227,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testGetValueReturnsMailboxStringValueForMultipleMailboxes()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn',
       'mark@swiftmailer.org' => 'Mark Corbyn'
       ));
@@ -246,7 +240,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testRemoveAddressesWithSingleValue()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn',
       'mark@swiftmailer.org' => 'Mark Corbyn'
       ));
@@ -258,7 +253,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testRemoveAddressesWithList()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn',
       'mark@swiftmailer.org' => 'Mark Corbyn'
       ));
@@ -270,7 +266,8 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   public function testToString()
   {
-    $header = $this->_getHeader('From', array(
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
       'chris@swiftmailer.org' => 'Chris Corbyn',
       'mark@swiftmailer.org' => 'Mark Corbyn'
       ));
@@ -285,15 +282,11 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   // -- Private methods
   
-  private function _getHeader($name, $value = null, $encoder = null)
+  private function _getHeader($name, $encoder)
   {
-    if (!$encoder)
-    {
-      $encoder = new Swift_Mime_MockHeaderEncoder();
-    }
-    return new Swift_Mime_Header_MailboxHeader(
-      $name, $value, $this->_charset, $encoder
-      );
+    $header = new Swift_Mime_Header_MailboxHeader($name, $encoder);
+    $header->setCharset($this->_charset);
+    return $header;
   }
   
 }

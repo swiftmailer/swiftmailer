@@ -10,13 +10,6 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
   public function testTimestampCanBeSetAndFetched()
   {
     $timestamp = time();
-    $header = $this->_getHeader('Received', $timestamp);
-    $this->assertEqual($timestamp, $header->getTimestamp());
-  }
-  
-  public function testTimestampCanBeSetBySetter()
-  {
-    $timestamp = time();
     $header = $this->_getHeader('Received');
     $header->setTimestamp($timestamp);
     $this->assertEqual($timestamp, $header->getTimestamp());
@@ -35,7 +28,8 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
        */
     
     $timestamp = time();
-    $header = $this->_getHeader('Received', $timestamp);
+    $header = $this->_getHeader('Received');
+    $header->setTimestamp($timestamp);
     $this->assertEqual('; ' . date('r', $timestamp), $header->getFieldBody());
   }
   
@@ -53,11 +47,11 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
     */
     
     $timestamp = time();
-    $header = $this->_getHeader('Received', $timestamp,
-      array(
-        array('name' => 'from', 'value' => 'mx1.googlemail.com')
-        )
-      );
+    $header = $this->_getHeader('Received');
+    $header->setTimestamp($timestamp);
+    $header->setData(array(
+      array('name' => 'from', 'value' => 'mx1.googlemail.com')
+      ));
     $this->assertEqual('from mx1.googlemail.com; ' . date('r', $timestamp),
       $header->getFieldBody()
       );
@@ -66,12 +60,12 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
   public function testUsingMultipleNameValuePairs()
   {
     $timestamp = time();
-    $header = $this->_getHeader('Received', $timestamp,
-      array(
-        array('name' => 'from', 'value' => 'mx1.googlemail.com'),
-        array('name' => 'by', 'value' => 'mail.swiftmailer.org')
-        )
-      );
+    $header = $this->_getHeader('Received');
+    $header->setTimestamp($timestamp);
+    $header->setData(array(
+      array('name' => 'from', 'value' => 'mx1.googlemail.com'),
+      array('name' => 'by', 'value' => 'mail.swiftmailer.org')
+      ));
     $this->assertEqual(
       'from mx1.googlemail.com by mail.swiftmailer.org; ' . date('r', $timestamp),
       $header->getFieldBody()
@@ -81,14 +75,14 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
   public function testLongSetsOfNameValuePairsCanBeSplitIntoLines()
   {
     $timestamp = time();
-    $header = $this->_getHeader('Received', $timestamp,
-      array(
-        array('name' => 'from', 'value' => 'mx1.googlemail.com'),
-        array('name' => 'by', 'value' => 'mail.swiftmailer.org'),
-        array('name' => 'with', 'value' => 'ESMTP'),
-        array('name' => 'for', 'value' => '<chris@swiftmailer.org>')
-        )
-      );
+    $header = $this->_getHeader('Received');
+    $header->setTimestamp($timestamp);
+    $header->setData(array(
+      array('name' => 'from', 'value' => 'mx1.googlemail.com'),
+      array('name' => 'by', 'value' => 'mail.swiftmailer.org'),
+      array('name' => 'with', 'value' => 'ESMTP'),
+      array('name' => 'for', 'value' => '<chris@swiftmailer.org>')
+      ));
     
     $header->setPairsPerLine(2);
     
@@ -102,19 +96,19 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
   public function testCommentsCanBeGivenAfterNameValuePairs()
   {
     $timestamp = time();
-    $header = $this->_getHeader('Received', $timestamp,
+    $header = $this->_getHeader('Received');
+    $header->setTimestamp($timestamp);
+    $header->setData(array(
       array(
-        array(
-          'name' => 'from',
-          'value' => 'mx1.googlemail.com',
-          'comment' => 'A Gmail server'
-          ),
-        array(
-          'name' => 'by',
-          'value' => 'mail.swiftmailer.org'
-          )
+        'name' => 'from',
+        'value' => 'mx1.googlemail.com',
+        'comment' => 'A Gmail server'
+        ),
+      array(
+        'name' => 'by',
+        'value' => 'mail.swiftmailer.org'
         )
-      );
+      ));
     $this->assertEqual(
       'from mx1.googlemail.com (A Gmail server) by mail.swiftmailer.org; ' .
       date('r', $timestamp),
@@ -147,19 +141,19 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
     // validation/alteration should occur
     
     $timestamp = time();
-    $header = $this->_getHeader('Received', $timestamp,
+    $header = $this->_getHeader('Received');
+    $header->setTimestamp($timestamp);
+    $header->setData(array(
       array(
-        array(
-          'name' => 'from',
-          'value' => 'mx1.googlemail.com',
-          'comment' => 'A Gmail )server'
-          ),
-        array(
-          'name' => 'by',
-          'value' => 'mail.swiftm\\ailer.org'
-          )
+        'name' => 'from',
+        'value' => 'mx1.googlemail.com',
+        'comment' => 'A Gmail )server'
+        ),
+      array(
+        'name' => 'by',
+        'value' => 'mail.swiftm\\ailer.org'
         )
-      );
+      ));
     $this->assertEqual(
       'from mx1.googlemail.com (A Gmail )server) by mail.swiftm\\ailer.org; ' .
       date('r', $timestamp),
@@ -170,19 +164,19 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
   public function testToString()
   {
     $timestamp = time();
-    $header = $this->_getHeader('Received', $timestamp,
+    $header = $this->_getHeader('Received');
+    $header->setTimestamp($timestamp);
+    $header->setData(array(
       array(
-        array(
-          'name' => 'from',
-          'value' => 'mx1.googlemail.com',
-          'comment' => 'A Gmail server'
-          ),
-        array(
-          'name' => 'by',
-          'value' => 'mail.swiftmailer.org'
-          )
+        'name' => 'from',
+        'value' => 'mx1.googlemail.com',
+        'comment' => 'A Gmail server'
+        ),
+      array(
+        'name' => 'by',
+        'value' => 'mail.swiftmailer.org'
         )
-      );
+      ));
     $this->assertEqual(
       'Received: from mx1.googlemail.com (A Gmail server) by mail.swiftmailer.org; ' .
       date('r', $timestamp) . "\r\n",
@@ -192,9 +186,9 @@ class Swift_Mime_Header_ReceivedHeaderTest extends UnitTestCase
   
   // -- Private methods
   
-  private function _getHeader($name, $timestamp = null, $info = array())
+  private function _getHeader($name)
   {
-    return new Swift_Mime_Header_ReceivedHeader($name, $timestamp, $info);
+    return new Swift_Mime_Header_ReceivedHeader($name);
   }
   
 }

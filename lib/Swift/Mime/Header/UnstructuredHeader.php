@@ -41,25 +41,14 @@ class Swift_Mime_Header_UnstructuredHeader
   private $_value;
   
   /**
-   * Creates a new SimpleHeader with $name and $value.
+   * Creates a new SimpleHeader with $name.
    * @param string $name
-   * @param string $value, optional
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
+   * @param Swift_Mime_HeaderEncoder $encoder
    */
-  public function __construct($name, $value = null, $charset = null,
-    Swift_Mime_HeaderEncoder $encoder = null)
+  public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
   {
     $this->setFieldName($name);
-    $this->_value = $value;
-    if (!is_null($charset))
-    {
-      $this->setCharset($charset);
-    }
-    if (!is_null($encoder))
-    {
-      $this->setEncoder($encoder);
-    }
+    $this->setEncoder($encoder);
   }
   
   /**

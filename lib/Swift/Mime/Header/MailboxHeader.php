@@ -40,55 +40,15 @@ class Swift_Mime_Header_MailboxHeader
   private $_mailboxes = array();
   
   /**
-   * Creates a new MailboxHeader with $name and $mailbox.
-   * Example:
-   * <code>
-   * <?php
-   * //Create a header with a single email
-   * $header = new Swift_Mime_Header_MailboxHeader('Sender', 'chris@swiftmailer.org');
-   * //Create a header with multiple emails
-   * $header = new Swift_Mime_Header_MailboxHeader('From',
-   *  array('chris@swiftmailer.org', 'mark@swiftmailer.org')
-   *  );
-   * //Create a header with a name included
-   * $header = new Swift_Mime_Header_MailboxHeader('Sender',
-   *  array('chris@swiftmailer.org' => 'Chris Corbyn')
-   *  );
-   * //Create a Header with multiple names and emails
-   * $header = new Swift_Mime_Header_MailboxHeader('From',
-   *  array('chris@swiftmailer.org' => 'Chris Corbyn',
-   *  'mark@swiftmailer.org' => 'Mark Corbyn')
-   *  );
-   * //Create a Header with a mixture of emails and name-emails
-   * $header = new Swift_Mime_Header_MailboxHeader('From',
-   *  array('chris@swiftmailer.org', //No associated name
-   *  'mark@swiftmailer.org' => 'Mark Corbyn')
-   *  );
-   * ?>
-   * </code>
+   * Creates a new MailboxHeader with $name.
    * @param string $name of Header
-   * @param string|string[] $mailbox, optional
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
+   * @param Swift_Mime_HeaderEncoder $encoder
    */
-  public function __construct($name, $mailbox = null, $charset = null,
-    Swift_Mime_HeaderEncoder $encoder = null)
+  public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
   {
     $this->setFieldName($name);
-    if (!is_null($charset))
-    {
-      $this->setCharset($charset);
-    }
-    if (!is_null($encoder))
-    {
-      $this->setEncoder($encoder);
-    }
+    $this->setEncoder($encoder);
     $this->initializeGrammar();
-    
-    if (!is_null($mailbox))
-    {
-      $this->setNameAddresses($mailbox);
-    }
   }
   
   /**

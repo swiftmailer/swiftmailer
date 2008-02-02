@@ -41,27 +41,15 @@ class Swift_Mime_Header_ListHeader
   private $_values = array();
   
   /**
-   * Creates a new ListHeader with the given $name and $values.
+   * Creates a new ListHeader with the given $name.
    * @param string $name
-   * @param string[] $values, optional
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
+   * @param Swift_Mime_HeaderEncoder $encoder
    */
-  public function __construct($name, $values = array(), $charset = null,
-    Swift_Mime_HeaderEncoder $encoder = null)
+  public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
   {
     $this->setFieldName($name);
-    if (!is_null($charset))
-    {
-      $this->setCharset($charset);
-    }
-    if (!is_null($encoder))
-    {
-      $this->setEncoder($encoder);
-    }
+    $this->setEncoder($encoder);
     $this->initializeGrammar();
-    
-    $this->setValueList($values);
   }
   
   /**

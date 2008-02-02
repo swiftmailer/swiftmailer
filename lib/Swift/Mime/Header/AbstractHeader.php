@@ -54,13 +54,6 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
   private $_name;
   
   /**
-   * HeaderAttributes belonging to this Header.
-   * @var Swift_Mime_HeaderAttributeSet
-   * @access private
-   */
-  private $_attributes;
-  
-  /**
    * The Encoder used to encode this Header.
    * @var Swift_Encoder
    * @access private
@@ -79,14 +72,7 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
    * @var string
    * @access private
    */
-  private $_charset;
-  
-  /**
-   * A helper wtih building MIME headers.
-   * @var Swift_Mime_HeaderComponentHelper
-   * @access private
-   */
-  private $_helper;
+  private $_charset = 'utf-8';
   
   /**
    * The value of this Header, cached.
@@ -146,24 +132,6 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
   }
   
   /**
-   * Set a collection of HeaderAttributes to be applied to this Header.
-   * @param Swift_Mime_HeaderAttributeSet $attributes
-   */
-  public function setAttributes(Swift_Mime_HeaderAttributeSet $attributes)
-  {
-    $this->_attributes = $attributes;
-  }
-  
-  /**
-   * Get the collection of HeaderAttributes applied to this Header.
-   * @return Swift_Mime_HeaderAttributeSet
-   */
-  public function getAttributes()
-  {
-    return $this->_attributes;
-  }
-  
-  /**
    * Set the maximum length of lines in the header (excluding EOL).
    * @param int $lineLength
    */
@@ -183,7 +151,7 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
    */
   public function toString()
   {
-    return $this->_tokensToString($this->_toTokens());
+    return $this->_tokensToString($this->toTokens());
   }
   
   // -- Points of extension
@@ -509,7 +477,7 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
    * @return string[]
    * @access private
    */
-  private function _toTokens()
+  protected function toTokens()
   {
     $tokens = array();
     
@@ -517,19 +485,6 @@ abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
     foreach (preg_split('~(?=[ \t])~', $this->getFieldBody()) as $token)
     {
       $tokens = array_merge($tokens, $this->generateTokenLines($token));
-    }
-    
-    //Try creating any attributes
-    if (!is_null($this->_attributes))
-    {
-      foreach ($this->_attributes->toArray() as $attribute)
-      {
-        //Add the semi-colon separator
-        $tokens[count($tokens)-1] .= ';';
-        $tokens = array_merge($tokens, $this->generateTokenLines(
-          ' ' . str_replace("\r\n", "\r\n ", $attribute->toString())
-          ));
-      }
     }
     
     return $tokens;

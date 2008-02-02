@@ -14,7 +14,8 @@ class Swift_Mime_Header_DateHeaderTest
   public function testGetTimestamp()
   {
     $timestamp = time();
-    $header = $this->_getHeader('Date', $timestamp);
+    $header = $this->_getHeader('Date');
+    $header->setTimestamp($timestamp);
     $this->assertIdentical($timestamp, $header->getTimestamp());
   }
   
@@ -29,14 +30,16 @@ class Swift_Mime_Header_DateHeaderTest
   public function testIntegerTimestampIsConvertedToRfc2822Date()
   {
     $timestamp = time();
-    $header = $this->_getHeader('Date', $timestamp);
+    $header = $this->_getHeader('Date');
+    $header->setTimestamp($timestamp);
     $this->assertEqual(date('r', $timestamp), $header->getFieldBody());
   }
   
   public function testToString()
   {
     $timestamp = time();
-    $header = $this->_getHeader('Date', $timestamp);
+    $header = $this->_getHeader('Date');
+    $header->setTimestamp($timestamp);
     $this->assertEqual('Date: ' . date('r', $timestamp) . "\r\n",
       $header->toString()
       );
@@ -44,9 +47,9 @@ class Swift_Mime_Header_DateHeaderTest
   
   // -- Private methods
   
-  private function _getHeader($name, $value = null)
+  private function _getHeader($name)
   {
-    return new Swift_Mime_Header_DateHeader($name, $value);
+    return new Swift_Mime_Header_DateHeader($name);
   }
   
 }

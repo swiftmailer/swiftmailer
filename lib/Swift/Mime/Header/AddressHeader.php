@@ -49,14 +49,11 @@ class Swift_Mime_Header_AddressHeader
   /**
    * Creates a new AddressHeader with $name and $address.
    * @param string $name of Header
-   * @param string $address, optional
-   * @param string $charset, optional
-   * @param Swift_Mime_HeaderEncoder $encoder, optional
+   * @param Swift_Mime_HeaderEncoder $encoder
    */
-  public function __construct($name, $addresses = null, $charset = null,
-    Swift_Mime_HeaderEncoder $encoder = null)
+  public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
   {
-    parent::__construct($name, $addresses, $charset, $encoder);
+    parent::__construct($name, $encoder);
   }
   
   /**

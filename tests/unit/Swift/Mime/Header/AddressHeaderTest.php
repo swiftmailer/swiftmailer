@@ -23,7 +23,7 @@ class Swift_Mime_Header_AddressHeaderTest
                         [CFWS]
      */
     
-    $header = $this->_getHeader('To');
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
     $header->defineGroup('undisclosed-recipients');
     $this->assertEqual(array(), $header->getGroup('undisclosed-recipients'));
     $this->assertEqual('undisclosed-recipients:;', $header->getFieldBody());
@@ -31,7 +31,7 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testAddressGroupCanBeDefined()
   {
-    $header = $this->_getHeader('Cc');
+    $header = $this->_getHeader('Cc', new Swift_Mime_MockHeaderEncoder());
     $header->defineGroup('Admin Dept',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose')
@@ -49,7 +49,8 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testValueIncludesGroupAsItemInAddressList()
   {
-    $header = $this->_getHeader('Cc', array('chris@swiftmailer.org'));
+    $header = $this->_getHeader('Cc', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses(array('chris@swiftmailer.org'));
     $header->defineGroup('Admin Dept',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose')
@@ -63,7 +64,8 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testAddressesFromGroupAreMerged()
   {
-    $header = $this->_getHeader('Cc', array('chris@swiftmailer.org'));
+    $header = $this->_getHeader('Cc', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses(array('chris@swiftmailer.org'));
     $header->defineGroup('Admin Dept',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose')
@@ -76,7 +78,8 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testNameAddressesFromGroupAreMerged()
   {
-    $header = $this->_getHeader('Cc', array('chris@swiftmailer.org'));
+    $header = $this->_getHeader('Cc', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses(array('chris@swiftmailer.org'));
     $header->defineGroup('Admin Dept',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose')
@@ -93,7 +96,8 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testNameAddressStringsFromGroupAreMerged()
   {
-    $header = $this->_getHeader('Cc', array('chris@swiftmailer.org'));
+    $header = $this->_getHeader('Cc', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses(array('chris@swiftmailer.org'));
     $header->defineGroup('Admin Dept',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose')
@@ -110,10 +114,9 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testAddressesInGroupsDoNotAppearElsewhere()
   {
-    $header = $this->_getHeader('To',
-      array('chris@swiftmailer.org' => 'Chris Corbyn',
-        'fred@swiftmailer.org' => 'Fred')
-      );
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array('chris@swiftmailer.org' => 'Chris Corbyn',
+        'fred@swiftmailer.org' => 'Fred'));
     $header->defineGroup('Admin Dept',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose',
@@ -130,9 +133,8 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testRemoveAddressesRemovesFromGroups()
   {
-    $header = $this->_getHeader('To',
-      array('fred@swiftmailer.org' => 'Fred')
-      );
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array('fred@swiftmailer.org' => 'Fred'));
     $header->defineGroup('Admin Dept',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose',
@@ -148,12 +150,11 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testAddressesCanBeHiddenFromDisplay()
   {
-    $header = $this->_getHeader('To',
-      array(
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
         'chris@swiftmailer.org' => 'Chris Corbyn',
         'fred@swiftmailer.org' => 'Fred'
-        )
-      );
+        ));
     $header->setHiddenAddresses('fred@swiftmailer.org');
     $this->assertEqual('Chris Corbyn <chris@swiftmailer.org>',
       $header->getFieldBody()
@@ -162,12 +163,11 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testHiddenAddressesAreStillReturnedByGetAddresses()
   {
-    $header = $this->_getHeader('To',
-      array(
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
+    $header->setNameAddresses(array(
         'chris@swiftmailer.org' => 'Chris Corbyn',
         'fred@swiftmailer.org' => 'Fred'
-        )
-      );
+        ));
     $header->setHiddenAddresses('fred@swiftmailer.org');
     $this->assertEqual(
       array('chris@swiftmailer.org', 'fred@swiftmailer.org'),
@@ -177,7 +177,7 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testHiddenAddressesInGroups()
   {
-    $header = $this->_getHeader('To');
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
     $header->defineGroup('undisclosed-recipients',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose',
@@ -203,7 +203,7 @@ class Swift_Mime_Header_AddressHeaderTest
      recipients.
      */
     
-    $header = $this->_getHeader('To');
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
     $header->defineGroup('undisclosed-recipients',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose',
@@ -219,7 +219,8 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testRemoveGroup()
   {
-    $header = $this->_getHeader('To', 'fred@swiftmailer.org');
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses('fred@swiftmailer.org');
     $header->defineGroup('undisclosed-recipients',
       array('tim@swiftmailer.org' => 'Tim Fletcher',
       'andrew@swiftmailer.org' => 'Andrew Rose',
@@ -235,7 +236,7 @@ class Swift_Mime_Header_AddressHeaderTest
   
   public function testGroupNamedIsFormattedIfNeeded()
   {
-    $header = $this->_getHeader('To');
+    $header = $this->_getHeader('To', new Swift_Mime_MockHeaderEncoder());
     $header->defineGroup('Users, Admins', array('xyz@abc.com'));
     $this->assertEqual('"Users\\, Admins":xyz@abc.com;', $header->getFieldBody());
   }
@@ -249,7 +250,7 @@ class Swift_Mime_Header_AddressHeaderTest
       );
     $encoder->setReturnValue('encodeString', 'R=8Fbots');
     
-    $header = $this->_getHeader('To', null, $encoder);
+    $header = $this->_getHeader('To', $encoder);
     $header->defineGroup('R' . pack('C', 0x8F) . 'bots', array('xyz@abc.com'));
     $this->assertEqual('=?utf-8?Q?R=8Fbots?=:xyz@abc.com;', $header->getFieldBody());
   }
@@ -258,11 +259,11 @@ class Swift_Mime_Header_AddressHeaderTest
   
   // -- Private methods
   
-  private function _getHeader($name, $value = null, $encoder = null)
+  private function _getHeader($name, $encoder)
   {
-    return new Swift_Mime_Header_AddressHeader(
-      $name, $value, $this->_charset, $encoder
-      );
+    $header = new Swift_Mime_Header_AddressHeader($name, $encoder);
+    $header->setCharset($this->_charset);
+    return $header;
   }
   
 }

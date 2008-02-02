@@ -44,16 +44,12 @@ class Swift_Mime_Header_ReceivedHeader extends Swift_Mime_Header_DateHeader
   private $_pairsPerLine = 2;
   
   /**
-   * Creates a new ReceivedHeader with the given $name and $info.
+   * Creates a new ReceivedHeader with the given $name.
    * @param string $name
-   * @param int $timestamp, optional
-   * @param string[] $data, optional
    */
-  public function __construct($name, $timestamp = null, $data = array())
+  public function __construct($name)
   {
-    parent::__construct($name, $timestamp);
-    
-    $this->setData($data);
+    parent::__construct($name);
   }
   
   /**

@@ -9,7 +9,8 @@ class Swift_Mime_Header_VersionHeaderTest
   
   public function testVersionCanBeSetAndFetched()
   {
-    $header = $this->_getHeader('MIME-Version', '1.0');
+    $header = $this->_getHeader('MIME-Version');
+    $header->setVersion('1.0');
     $this->assertEqual('1.0', $header->getVersion());
   }
   
@@ -28,7 +29,8 @@ class Swift_Mime_Header_VersionHeaderTest
     
     try
     {
-      $header = $this->_getHeader('MIME-Version', '1');
+      $header = $this->_getHeader('MIME-Version');
+      $header->setVersion('1');
       $this->fail(
         'version must be dot-separated digits according to RFC 2045, 4.'
         );
@@ -41,21 +43,23 @@ class Swift_Mime_Header_VersionHeaderTest
   
   public function testGetValueReturnsVersion()
   {
-    $header = $this->_getHeader('MIME-Version', '1.0');
+    $header = $this->_getHeader('MIME-Version');
+    $header->setVersion('1.0');
     $this->assertEqual('1.0', $header->getFieldBody());
   }
   
   public function testToString()
   {
-    $header = $this->_getHeader('MIME-Version', '1.0');
+    $header = $this->_getHeader('MIME-Version');
+    $header->setVersion('1.0');
     $this->assertEqual('MIME-Version: 1.0' . "\r\n", $header->toString());
   }
   
   // -- Private methods
   
-  private function _getHeader($name, $ver = null)
+  private function _getHeader($name)
   {
-    return new Swift_Mime_Header_VersionHeader($name, $ver);
+    return new Swift_Mime_Header_VersionHeader($name);
   }
   
 }

@@ -37,18 +37,13 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
   private $_address;
   
   /**
-   * Creates a new PathHeader with the given $name and $address.
+   * Creates a new PathHeader with the given $name.
    * @param string $name
-   * @param string $address, optional
    */
-  public function __construct($name, $address = null)
+  public function __construct($name)
   {
     $this->setFieldName($name);
     $this->initializeGrammar();
-    if (!is_null($address))
-    {
-      $this->setAddress($address);
-    }
   }
   
   /**

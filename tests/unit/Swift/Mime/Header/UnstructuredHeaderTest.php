@@ -2,14 +2,8 @@
 
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/UnstructuredHeader.php';
-require_once 'Swift/Mime/HeaderAttribute.php';
-require_once 'Swift/Mime/HeaderAttributeSet.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 
-Mock::generate('Swift_Mime_HeaderAttribute', 'Swift_Mime_MockHeaderAttribute');
-Mock::generate('Swift_Mime_HeaderAttributeSet',
-  'Swift_Mime_MockHeaderAttributeSet'
-  );
 Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 
 class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTestCase
@@ -19,41 +13,15 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
   
   public function testGetNameReturnsNameVerbatim()
   {
-    $header = $this->_getHeader('Subject', 'Test');
+    $header = $this->_getHeader('Subject', new Swift_Mime_MockHeaderEncoder());
     $this->assertEqual('Subject', $header->getFieldName());
   }
   
   public function testGetValueReturnsValueVerbatim()
   {
-    $header = $this->_getHeader('Subject', 'Test');
+    $header = $this->_getHeader('Subject', new Swift_Mime_MockHeaderEncoder());
+    $header->setValue('Test');
     $this->assertEqual('Test', $header->getValue());
-  }
-  
-  public function testValueCanBeSet()
-  {
-    $header = $this->_getHeader('Subject', '');
-    $header->setValue('Something');
-    $this->assertEqual('Something', $header->getValue());
-  }
-  
-  public function testAttributesCanBeSet()
-  {
-    $header = $this->_getHeader('Content-Type', 'text/html');
-    
-    $attributes = array();
-    $charsetAttribute = new Swift_Mime_MockHeaderAttribute();
-    $charsetAttribute->setReturnValue('getName', 'charset');
-    $charsetAttribute->setReturnValue('getValue', 'utf-8');
-    $attributes[] = $charsetAttribute;
-    
-    $attributeSet = new Swift_Mime_MockHeaderAttributeSet();
-    $attributeSet->setReturnValue('toArray', $attributes);
-    
-    $header->setAttributes($attributeSet);
-    
-    $testAttributes = $header->getAttributes()->toArray();
-    
-    $this->assertEqual($attributes, $testAttributes);
   }
   
   public function testBasicStructureIsKeyValuePair()
@@ -62,7 +30,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     Header fields are lines composed of a field name, followed by a colon
     (":"), followed by a field body, and terminated by CRLF.
     */
-    $header = $this->_getHeader('Subject', 'Test');
+    $header = $this->_getHeader('Subject', new Swift_Mime_MockHeaderEncoder());
+    $header->setValue('Test');
     $this->assertEqual('Subject: Test' . "\r\n", $header->toString());
   }
   
@@ -80,7 +49,10 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     
     $value = 'The quick brown fox jumped over the fence, he was a very very ' .
       'scary brown fox with a bushy tail';
-    $header = $this->_getHeader('X-Custom-Header', $value);
+    $header = $this->_getHeader('X-Custom-Header',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->setValue($value);
     $header->setMaxLineLength(78); //A safe [RFC 2822, 2.2.3] default
     /*
     X-Custom-Header: The quick brown fox jumped over the fence, he was a very very
@@ -94,58 +66,6 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       );
   }
   
-  public function testAttributesAreAppended()
-  {
-    $attributes = array();
-    $att1 = new Swift_Mime_MockHeaderAttribute();
-    $att1->setReturnValue('toString', 'charset=utf-8');
-    $attributes[] = $att1;
-    $att2 = new Swift_Mime_MockHeaderAttribute();
-    $att2->setReturnValue('toString', 'lang=en');
-    $attributes[] = $att2;
-    
-    $attSet = new Swift_Mime_MockHeaderAttributeSet();
-    $attSet->setReturnValue('toArray', $attributes);
-    
-    $header = $this->_getHeader('Content-Type', 'text/plain');
-    $header->setAttributes($attSet);
-    
-    $this->assertEqual(
-      'Content-Type: text/plain; charset=utf-8; lang=en' . "\r\n",
-      $header->toString()
-      );
-  }
-  
-  public function testAttributesAreFoldedInLongHeaders()
-  {
-    $attributes = array();
-    $att1 = new Swift_Mime_MockHeaderAttribute();
-    $att1->setReturnValue('toString',
-      'attrib*0="first line of attrib";' . "\r\n" .
-      'attrib*1="second line of attrib"'
-      );
-    $attributes[] = $att1;
-    $att2 = new Swift_Mime_MockHeaderAttribute();
-    $att2->setReturnValue('toString', 'test=nothing');
-    $attributes[] = $att2;
-    
-    $attSet = new Swift_Mime_MockHeaderAttributeSet();
-    $attSet->setReturnValue('toArray', $attributes);
-    
-    $header = $this->_getHeader('X-Anything-Header',
-      'something with a fairly long value'
-      );
-    $header->setAttributes($attSet);
-    $header->setMaxLineLength(78);
-    
-    $this->assertEqual(
-      'X-Anything-Header: something with a fairly long value;' . "\r\n" .
-      ' attrib*0="first line of attrib";' . "\r\n" .
-      ' attrib*1="second line of attrib"; test=nothing' . "\r\n",
-      $header->toString()
-      );
-  }
-  
   public function testPrintableAsciiOnlyAppearsInHeaders()
   {
     /* -- RFC 2822, 2.2.
@@ -156,7 +76,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     */
     
     $nonAsciiChar = pack('C', 0x8F);
-    $header = $this->_getHeader('X-Test', $nonAsciiChar);
+    $header = $this->_getHeader('X-Test', new Swift_Mime_MockHeaderEncoder());
+    $header->setValue($nonAsciiChar);
     $this->assertPattern(
       '~^[^:\x00-\x20\x80-\xFF]+: [^\x80-\xFF\r\n]+\r\n$~s',
       $header->toString()
@@ -172,7 +93,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     */
     
     $nonAsciiChar = pack('C', 0x8F);
-    $header = $this->_getHeader('X-Test', $nonAsciiChar);
+    $header = $this->_getHeader('X-Test', new Swift_Mime_MockHeaderEncoder());
+    $header->setValue($nonAsciiChar);
     $this->assertPattern(
       '~^X-Test: \=?.*?\?.*?\?.*?\?=\r\n$~s',
       $header->toString()
@@ -197,7 +119,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       ));
     $encoder->setReturnValue('encodeString', '=8F');
     $encoder->setReturnValue('getName', 'Q');
-    $header = $this->_getHeader('X-Test', $nonAsciiChar, $encoder);
+    $header = $this->_getHeader('X-Test', $encoder);
+    $header->setValue($nonAsciiChar);
     $this->assertEqual(
       'X-Test: =?' . $this->_charset . '?Q?=8F?=' . "\r\n",
       $header->toString()
@@ -223,7 +146,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       $encoder->setReturnValue('encodeString', $encodedChar);
       $encoder->setReturnValue('getName', 'Q');
       
-      $header = $this->_getHeader('X-A', $char, $encoder);
+      $header = $this->_getHeader('X-A', $encoder);
+      $header->setValue($char);
       
       $this->assertEqual(
         'X-A: =?' . $this->_charset . '?Q?' . $encodedChar . '?=' . "\r\n",
@@ -248,7 +172,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       $encoder->setReturnValue('encodeString', $encodedChar);
       $encoder->setReturnValue('getName', 'Q');
       
-      $header = $this->_getHeader('X-A', $char, $encoder);
+      $header = $this->_getHeader('X-A', $encoder);
+      $header->setValue($char);
       
       $this->assertEqual(
         'X-A: =?' . $this->_charset . '?Q?' . $encodedChar . '?=' . "\r\n",
@@ -282,7 +207,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     $encoder->setReturnValue('getName', 'Q');
     
     //* X-Test: =?utf-8?Q??= is 20 chars
-    $header = $this->_getHeader('X-Test', $nonAsciiChar, $encoder);
+    $header = $this->_getHeader('X-Test', $encoder);
+    $header->setValue($nonAsciiChar);
     
     $this->assertEqual(
       'X-Test: =?' . $this->_charset . '?Q?=8F?=' . "\r\n",
@@ -313,7 +239,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     $encoder->setReturnValue('getName', 'Q');
     
     //* X-Test: =?utf-8?Q??= is 20 chars
-    $header = $this->_getHeader('X-Test', $nonAsciiChar, $encoder);
+    $header = $this->_getHeader('X-Test', $encoder);
+    $header->setValue($nonAsciiChar);
     
     $this->assertEqual(
       'X-Test: =?' . $this->_charset . '?Q?line_one_here?=' . "\r\n" .
@@ -358,7 +285,8 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       );
     $encoder->setReturnValueAt(1, 'encodeString', 'w=8Frd');
     
-    $header = $this->_getHeader('X-Test', $text, $encoder);
+    $header = $this->_getHeader('X-Test', $encoder);
+    $header->setValue($text);
     
     $headerString = $header->toString();
     
@@ -371,15 +299,11 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
   
   // -- Private methods
   
-  private function _getHeader($name, $value = null, $encoder = null)
+  private function _getHeader($name, $encoder)
   {
-    if (!$encoder)
-    {
-      $encoder = new Swift_Mime_MockHeaderEncoder();
-    }
-    return new Swift_Mime_Header_UnstructuredHeader(
-      $name, $value, $this->_charset, $encoder
-      );
+    $header = new Swift_Mime_Header_UnstructuredHeader($name, $encoder);
+    $header->setCharset($this->_charset);
+    return $header;
   }
   
 }
