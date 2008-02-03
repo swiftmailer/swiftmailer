@@ -19,5 +19,6 @@ Test Suite:
  * Change test results bar to show actual number of tests running
  * Add a thin bar showing the percentage progress below the results bar
  * Hide package if search term removes all its test cases
+ * Some easy way to disable the JS
  
 EoM

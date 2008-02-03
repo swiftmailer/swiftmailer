@@ -4,6 +4,7 @@
   <head>
     <title><?php echo $suiteName; ?></title>
     <link rel="stylesheet" type="text/css" href="templates/sweety/css/main.css" />
+    <?php if (!array_key_exists('noajax', $_GET)): ?>
     <script type="text/javascript">
     var sweetyTestCases = {};
     <?php foreach ($testCases as $name): ?>
@@ -14,6 +15,7 @@
     <script type="text/javascript" src="xpath-legacy.js"></script>
     <script type="text/javascript" src="sweety.js"></script>
     <script type="text/javascript" src="templates/sweety/js/sweety-template.js"></script>
+    <?php endif; ?>
   </head>
   <body>
     <div id="sweety-page">
@@ -22,7 +24,7 @@
         
         <div class="sweety-pad">
           
-          <form action="?" method="post" onsubmit="return false;">
+          <form action="?noajax=1" method="post" onsubmit="return false;">
           
           <div>
             <input type="text" class="sweety-text" id="sweety-filter"
@@ -137,7 +139,8 @@
                   break;
                 case 'exception': ?>
                 <div class="sweety-message">
-                  <span class="sweety-fail-text">Exception</span>: <?php echo $message['text']; ?>
+                  <span class="sweety-fail-text">Exception</span>:
+                  <strong><?php echo $message['text']; ?></strong>
                   <div class="sweety-test-path">
                     in <?php echo $message['path']; ?>
                   </div>

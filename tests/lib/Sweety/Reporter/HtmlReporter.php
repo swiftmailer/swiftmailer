@@ -149,7 +149,7 @@ class Sweety_Reporter_HtmlReporter implements Sweety_Reporter
       $this->_tplVars['messages'][] = array(
         'type' => 'internal',
         'path' => '',
-        'text' => $incomplete . 'test case(s) did not complete.' .
+        'text' => $incomplete . ' test case(s) did not complete.' .
         ' This may be because invalid XML was output during the test run' .
         ' and/or because an error occured.' .
         ' Incomplete test cases are shown in yellow.  Click the HTML link ' .

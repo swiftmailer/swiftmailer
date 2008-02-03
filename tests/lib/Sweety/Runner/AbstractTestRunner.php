@@ -168,7 +168,9 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
     
     $reporter->reportException(
       'Invalid XML response: ' .
-      preg_replace('/^\s*<\?xml.+<\/(?:name|pass|fail|exception)>/', '', $xml),
+      strip_tags(
+        preg_replace('/^\s*<\?xml.+<\/(?:name|pass|fail|exception)>/', '', $xml)
+        ),
       $testCase
       );
   }
