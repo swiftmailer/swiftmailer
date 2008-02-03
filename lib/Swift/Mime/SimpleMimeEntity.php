@@ -22,6 +22,7 @@ require_once dirname(__FILE__) . '/MimeEntity.php';
 require_once dirname(__FILE__) . '/ContentEncoder.php';
 require_once dirname(__FILE__) . '/../ByteStream.php';
 require_once dirname(__FILE__) . '/FieldChangeObserver.php';
+require_once dirname(__FILE__) . '/EntityFactory.php';
 
 
 /**
@@ -30,7 +31,8 @@ require_once dirname(__FILE__) . '/FieldChangeObserver.php';
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
+class Swift_Mime_SimpleMimeEntity
+  implements Swift_Mime_MimeEntity, Swift_Mime_EntityFactory
 {
   
   /**
@@ -55,11 +57,32 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   private $_contentType = 'text/plain';
   
   /**
+   * The maximum length of all lines in this entity (excluding the CRLF).
+   * @var int
+   * @access private
+   */
+  private $_maxLineLength = 78;
+  
+  /**
    * The body of this entity, as a string.
    * @var string
    * @access private
    */
   private $_stringBody;
+  
+  /**
+   * Children which are nested anywhere inside this mime entity or it's children.
+   * @var Swift_Mime_MimeEntity[]
+   * @access private
+   */
+  private $_children = array();
+  
+  /**
+   * Children which are directly nested inside this entity.
+   * @var Swift_Mime_MimeEntity[]
+   * @access private
+   */
+  private $_immediateChildren = array();
   
   /**
    * Observers which watch for fields being changed in the entity.
@@ -69,14 +92,43 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   private $_fieldChangeObservers = array();
   
   /**
+   * The level at which this entity nests.
+   * @var int
+   * @access private
+   */
+  private $_nestingLevel = self::LEVEL_SUBPART;
+  
+  /**
+   * A factory which creates new skeleton mime entities.
+   * @var Swift_Mime_EntityFactory
+   * @access private
+   */
+  private $_entityFactory;
+  
+  /**
    * Creates a new SimpleMimeEntity with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
    */
-  public function __construct(array $headers, Swift_Mime_ContentEncoder $encoder)
+  public function __construct(array $headers,
+    Swift_Mime_ContentEncoder $encoder)
   {
     $this->setHeaders($headers);
     $this->setEncoder($encoder);
+  }
+  
+  /**
+   * Set the level at which this entity nests.
+   * A lower value is closer to the top (i.e. the message itself is zero (0)),
+   * and a higher value is nested deeper in.
+   * @param int $level
+   * @see Swift_Mime_MimeEntity::LEVEL_SUBPART
+   * @see Swift_Mime_MimeEntity::LEVEL_ATTACHMENT
+   * @see Swift_Mime_MimeEntity::LEVEL_EMBEDDED
+   */
+  public function setNestingLevel($level)
+  {
+    $this->_nestingLevel = $level;
   }
   
   /**
@@ -86,6 +138,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function getNestingLevel()
   {
+    return $this->_nestingLevel;
   }
   
   /**
@@ -113,6 +166,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_encoder = $encoder;
+    $this->_notifyFieldChanged('contenttransferencoding', $encoder->getName());
   }
   
   /**
@@ -141,6 +195,24 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   public function getContentType()
   {
     return $this->_contentType;
+  }
+  
+  /**
+   * Set the maximum length before lines are wrapped in this entity.
+   * @param int $length
+   */
+  public function setMaxLineLength($length)
+  {
+    $this->_maxLineLength = (int) $length;
+  }
+  
+  /**
+   * Get the maximum length before lines are wrapped in this entity.
+   * @return int
+   */
+  public function getMaxLineLength()
+  {
+    return $this->_maxLineLength;
   }
   
   /**
@@ -178,24 +250,37 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function setChildren(array $children)
   {
-    $lowestChild = null;
+    $immediateChildren = array();
+    $grandchildren = array();
+    
     foreach ($children as $child)
     {
       $level = $child->getNestingLevel();
-      if (is_null($lowestChild))
+      if (empty($immediateChildren)) //first iteration
       {
-        $lowestChild = $child;
+        $immediateChildren = array($child);
       }
       else
       {
-        if ($child->getNestingLevel() < $lowestChild->getNestingLevel())
+        if ($child->getNestingLevel() == $immediateChildren[0]->getNestingLevel())
         {
-          $lowestChild = $child;
+          $immediateChildren[] = $child;
+        }
+        elseif ($child->getNestingLevel() < $immediateChildren[0]->getNestingLevel())
+        {
+          //Re-assign immediateChildren to grandchilden
+          $grandchildren = array_merge($grandchildren, $immediateChildren);
+          //Set new children
+          $immediateChildren = array($child);
+        }
+        else
+        {
+          $grandchildren[] = $child;
         }
       }
     }
     
-    $lowestLevel = $lowestChild->getNestingLevel();
+    $lowestLevel = $immediateChildren[0]->getNestingLevel();
     
     if ($lowestLevel > self::LEVEL_TOP
       && $lowestLevel <= self::LEVEL_ATTACHMENT)
@@ -213,7 +298,51 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
       $this->setContentType('multipart/alternative');
     }
     
+    //Put any grandchildren in a subpart
+    if (!empty($grandchildren))
+    {
+      $subentity = $this->getEntityFactory()->createBaseEntity();
+      $subentity->setNestingLevel($lowestLevel);
+      $subentity->setChildren($grandchildren);
+      array_unshift($immediateChildren, $subentity);
+    }
+    
+    //Store the direct descendants
+    $this->_immediateChildren = $immediateChildren;
+    
+    //Store all descendants
+    $this->_children = $children;
+    
     $this->_notifyFieldChanged('boundary', $this->getBoundary());
+  }
+  
+  /**
+   * Get all children nested inside this entity.
+   * These are not just the immediate children, but all children.
+   * @return Swift_Mime_MimeEntity[]
+   */
+  public function getChildren()
+  {
+    return $this->_children;
+  }
+  
+  /**
+   * Set a mime boundary for this mime part if other parts are to be added to it.
+   * @param string $boundary
+   */
+  public function setBoundary($boundary)
+  {
+    if (preg_match(
+      '/^[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?]$/D',
+      $boundary
+      ))
+    {
+      $this->_boundary = $boundary;
+    }
+    else
+    {
+      throw new Exception('Mime boundary set is not RFC 2046 compliant.');
+    }
   }
   
   /**
@@ -236,14 +365,32 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   public function toString()
   {
     $string = '';
+    
+    //Append headers
     foreach ($this->_headers as $header)
     {
       $string .= $header->toString();
     }
+    
+    //Append body
     if (is_string($this->_stringBody))
     {
-      $string .= "\r\n" . $this->_stringBody;
+      $string .= "\r\n" . $this->_encoder->encodeString(
+        $this->_stringBody, 0, $this->_maxLineLength
+        );
     }
+    
+    //Nest children
+    if (!empty($this->_immediateChildren))
+    {
+      foreach ($this->_immediateChildren as $child)
+      {
+        $string .= "\r\n--" . $this->getBoundary() . "\r\n";
+        $string .= $child->toString();
+      }
+      $string .= "\r\n--" . $this->getBoundary() . "--\r\n";
+    }
+    
     return $string;
   }
   
@@ -253,6 +400,53 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function toByteStream(Swift_ByteStream $is)
   {
+  }
+  
+  /**
+   * Create a base entity which contains at most, the headers
+   * Content-Type, Content-Transfer-Encoding, Content-ID and Description.
+   * @return Swift_Mime_MimeEntity
+   */
+  public function createBaseEntity()
+  {
+    $headers = array();
+    foreach ($this->_headers as $header)
+    {
+      if (in_array(
+        strtolower($header->getFieldName()),
+        array('content-type', 'content-transfer-encoding')))
+      {
+        $headers[] = clone $header;
+      }
+    }
+    $entity = new self($headers, $this->_encoder);
+    $entity->setContentType('text/plain');
+    return $entity;
+  }
+  
+  /**
+   * Set a factory object which creates new mime entities (for nesting).
+   * @param Swift_Mime_EntityFactory $entityFactory
+   */
+  public function setEntityFactory(Swift_Mime_EntityFactory $entityFactory)
+  {
+    $this->_entityFactory = $entityFactory;
+  }
+  
+  /**
+   * Get a factory object which creates new mime entities (for nesting).
+   * @return Swift_Mime_EntityFactory
+   */
+  public function getEntityFactory()
+  {
+    if (!isset($this->_entityFactory))
+    {
+      return $this;
+    }
+    else
+    {
+      return $this->_entityFactory;
+    }
   }
   
   // -- Private methods

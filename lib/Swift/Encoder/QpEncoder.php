@@ -119,7 +119,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     $maxLineLength = 0)
   {
     //Set default length of 76 if no other value set
-    if (0 == $maxLineLength)
+    if (0 == $maxLineLength || 76 < $maxLineLength)
     {
       $maxLineLength = 76;
     }

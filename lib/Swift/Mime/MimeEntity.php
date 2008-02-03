@@ -18,7 +18,6 @@
  
  */
 
-require_once dirname(__FILE__) . '/ContentEncoder.php';
 require_once dirname(__FILE__) . '/../ByteStream.php';
 
 
@@ -44,6 +43,15 @@ interface Swift_Mime_MimeEntity
   const LEVEL_SUBPART = 30;
   
   /**
+   * Set the level at which this entity nests.
+   * A lower value is closer to the top (i.e. the message itself is zero (0)),
+   * and a higher value is nested deeper in.
+   * @param int $level
+   * @see LEVEL_TOP, LEVEL_ATTACHMENT, LEVEL_EMBEDDED, LEVEL_SUBPART
+   */
+  public function setNestingLevel($level);
+  
+  /**
    * Get the level at which this entity shall be nested in final document.
    * @return int
    * @see LEVEL_TOP, LEVEL_ATTACHMENT, LEVEL_EMBEDDED, LEVEL_SUBPART
@@ -51,16 +59,24 @@ interface Swift_Mime_MimeEntity
   public function getNestingLevel();
   
   /**
+   * Get all children nested inside this entity.
+   * These are not just the immediate children, but all children.
+   * @return Swift_Mime_MimeEntity[]
+   */
+  public function getChildren();
+  
+  /**
+   * Set all children nested inside this entity.
+   * This includes grandchildren.
+   * @param Swift_Mime_MimeEntity[] $children
+   */
+  public function setChildren(array $children);
+  
+  /**
    * Get the collection of Headers in this Mime entity.
    * @return Swift_Mime_Header[]
    */
   public function getHeaders();
-  
-  /**
-   * Get the content-type of this entity.
-   * @return string
-   */
-  public function getContentType();
   
   /**
    * Get the body content of this entity as a string.

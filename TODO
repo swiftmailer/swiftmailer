@@ -2,15 +2,13 @@ Swift Mailer:
 -------------
 
  * See if some of the Headers can be refactored/removed
- * Content-type header, Content-disposition etc... what type?
- * MimeEntity class
-   - SimpleMimeEntity (base)
+ * MimeEntity classes
    - MimePart
    - Attachment
    - EmbeddedFile
    - Image
- * Rename 'characterSet' to 'charset' throughout?
  * Acceptance tests for:
+   - SimpleMimeEntity
    - Some Headers (which use Encoders)
    - Attributes
  * CharacterReaderFactory (map charsets to CharacterReaders).
@@ -20,7 +18,6 @@ Test Suite:
 
  * Change test results bar to show actual number of tests running
  * Add a thin bar showing the percentage progress below the results bar
- * Handle fatal errors? Maybe handle at the backend?
  * Hide package if search term removes all its test cases
  
 EoM
