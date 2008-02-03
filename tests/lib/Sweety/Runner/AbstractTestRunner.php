@@ -153,6 +153,8 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
       $reporter->start();
     }
     
+    $xml = preg_replace('/[^\x01-\x7F]/', '?', $xml); //Do something better!!
+    
     if (!empty($xml))
     {
       $document = @simplexml_load_string($xml);
@@ -165,7 +167,10 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
     }
     
     $reporter->reportException(
-      'Invalid XML response from test case', $testCase);
+      'Invalid XML response: ' .
+      preg_replace('/^\s*<\?xml.+<\/(?:name|pass|fail|exception)>/', '', $xml),
+      $testCase
+      );
   }
   
   /**

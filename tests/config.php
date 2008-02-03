@@ -7,7 +7,7 @@ error_reporting(E_ALL); ini_set('display_errors', true);
 set_time_limit(30);
 
 //The path to the PHP command line executable
-define('SWEETY_PHP_EXE', '/usr/bin/php-cli');
+define('SWEETY_PHP_EXE', '/usr/bin/php');
 //The path to this file
 define('SWEETY_HOME', dirname(__FILE__));
 //The path to the libs being tested

@@ -427,6 +427,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       ,
       $entity1->toString()
       );
+      /
   }
   
   public function testMixingLevelsIsHierarchical()
