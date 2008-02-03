@@ -18,7 +18,6 @@
  
  */
 
-require_once dirname(__FILE__) . '/HeaderSet.php';
 require_once dirname(__FILE__) . '/ContentEncoder.php';
 require_once dirname(__FILE__) . '/../ByteStream.php';
 
@@ -45,35 +44,17 @@ interface Swift_Mime_MimeEntity
   const LEVEL_SUBPART = 30;
   
   /**
-   * Set the collection of Headers in this Mime entity.
-   * @param Swift_Mime_HeaderSet $headers
+   * Get the level at which this entity shall be nested in final document.
+   * @return int
+   * @see LEVEL_TOP, LEVEL_ATTACHMENT, LEVEL_EMBEDDED, LEVEL_SUBPART
    */
-  public function setHeaders(Swift_Mime_HeaderSet $headers);
+  public function getNestingLevel();
   
   /**
    * Get the collection of Headers in this Mime entity.
-   * @return Swift_Mime_HeaderSet
+   * @return Swift_Mime_Header[]
    */
   public function getHeaders();
-  
-  /**
-   * Set the ContentEncoder which encodes this entity prior to rendering.
-   * @param Swift_Mime_ContentEncoder $encoder
-   */
-  public function setEncoder(Swift_Mime_ContentEncoder $encoder);
-  
-  /**
-   * Get the ContentEncoder which encodes this entity prior to rendering.
-   * @return Swift_Mime_ContentEncoder
-   */
-  public function getEncoder();
-  
-  /**
-   * Set the content-type of this entity.
-   * e.g. text/html or image/jpeg
-   * @param string $type
-   */
-  public function setContentType($type);
   
   /**
    * Get the content-type of this entity.
@@ -82,71 +63,10 @@ interface Swift_Mime_MimeEntity
   public function getContentType();
   
   /**
-   * Set the Content-ID header of this entity.
-   * @param string $id
-   */
-  public function setId($id);
-  
-  /**
-   * Get the Content-ID header of this entity.
-   * @return string
-   */
-  public function getId();
-  
-  /**
-   * Set the Description header of this entity.
-   * @param string $description
-   */
-  public function setDescription($description);
-  
-  /**
-   * Get the Description header of this entity.
-   * @return string
-   */
-  public function getDescription();
-  
-  /**
-   * Set an entities which are direct children of this entity.
-   * @param Swift_Mime_MimeEntity[] $children
-   */
-  public function setChildren($children);
-  
-  /**
-   * Get direct child entities of the entity.
-   * @return Swift_Mime_MimeEntity[]
-   */
-  public function getChildren();
-  
-  /**
-   * Get the level at which this entity shall be nested in final document.
-   * @return int
-   * @see LEVEL_TOP, LEVEL_ATTACHMENT, LEVEL_EMBEDDED, LEVEL_SUBPART
-   */
-  public function getNestingLevel();
-  
-  /**
-   * Set the body content of this entity as a string.
-   * @param string $string
-   */
-  public function setBodyAsString($string);
-  
-  /**
    * Get the body content of this entity as a string.
    * @return string
    */
   public function getBodyAsString();
-  
-  /**
-   * Set the body content of this entity as a ByteStream.
-   * @param Swift_ByteStream $os
-   */
-  public function setBodyAsByteStream(Swift_ByteStream $os);
-  
-  /**
-   * Get the body content of this entity as a ByteStream.
-   * @return Swift_ByteStream
-   */
-  public function getBodyAsByteStream();
   
   /**
    * Get this entire entity in its string form.
@@ -159,12 +79,5 @@ interface Swift_Mime_MimeEntity
    * @param Swift_ByteStream $is to write to
    */
   public function toByteStream(Swift_ByteStream $is);
-  
-  /**
-   * Allow this message to contain 8bit characters without the need for any
-   * encoding.
-   * @param boolean $permit, optional
-   */
-  public function permit8BitMime($permit = true);
   
 }

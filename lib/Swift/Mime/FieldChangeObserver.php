@@ -1,7 +1,7 @@
 <?php
 
 /*
- HeaderSet Interface in Swift Mailer.
+ Mime field change API for Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,38 +20,26 @@
 
 
 /**
- * A collection of MIME Headers.
+ * Interface for all observers of a Mime entity waiting for field changes.
  * @package Swift
  * @subpackage Mime
  * @author Chris Corbyn
  */
-interface Swift_Mime_HeaderSet
+interface Swift_Mime_FieldChangeObserver
 {
   
   /**
-   * Add a Header to this HeaderSet.
-   * @param string $name
+   * Notify this observer that a field has changed to $value.
+   * "Field" is a loose term and refers to class fields rather than
+   * header fields.  $field will always be in lowercase and will be alpha.
+   * only.
+   * An example could be fieldChanged('contenttype', 'text/plain');
+   * This of course reflects a change in the body of the Content-Type header.
+   * Another example could be fieldChanged('charset', 'us-ascii');
+   * This reflects a change in the charset parameter of the Content-Type header.
+   * @param string $field in lowercase ALPHA
    * @param mixed $value
    */
-  public function set($name, $value);
-  
-  /**
-   * Get a Header back out of the Set based on its name.
-   * @param string $name
-   * @return Swift_Mime_Header
-   */
-  public function get($name);
-  
-  /**
-   * Remove a Header from this HeaderSet.
-   * @param string $name
-   */
-  public function remove($name);
-  
-  /**
-   * Return a standard PHP array of all Headers in this HeaderSet.
-   * @return Swift_Mime_Header[]
-   */
-  public function toArray();
+  public function fieldChanged($field, $value);
   
 }
