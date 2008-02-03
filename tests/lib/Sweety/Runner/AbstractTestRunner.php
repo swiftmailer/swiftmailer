@@ -153,8 +153,8 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
       $reporter->start();
     }
     
-    $xml = preg_replace('/[^\x01-\x7F]/', '?', $xml); //Do something better!!
-    
+    $xml = str_replace("\0", '?', $xml);
+    $xml = preg_replace('/[^\x01-\x7F]/e', 'sprintf("&#%d;", ord("$0"));', $xml); //Do something better!!
     if (!empty($xml))
     {
       $document = @simplexml_load_string($xml);

@@ -138,15 +138,16 @@ class Swift_Encoder_Base64EncoderTest extends UnitTestCase
     
     $output =
     'YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQk' .          //38
-    'NERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1' .          //76
-    'Njc4OTBhYmNkZWZnaGlqa2xt' . "\r\n" .               //100 *
+    'NERUZHSElKS0' . "\r\n" .                           //50 *
+    'xNTk9QUVJTVFVWV1hZWjEyMzQ1Njc4OTBhYmNk' .          //38
+    'ZWZnaGlqa2xt' . "\r\n" .                           //50 *
     'bm9wcXJzdHV2d3h5ekFCQ0RFRkdISUpLTE1OT1' .          //38
-    'BRUlNUVVZXWFlaMTIzNDU2Nzg5MEFCQ0RFRkdI' .          //76
-    'SUpLTE1OT1BRUlNUVVZXWFla';                         //100 *
+    'BRUlNUVVZXWF' . "\r\n" .                           //50 *
+    'laMTIzNDU2Nzg5MEFCQ0RFRkdISUpLTE1OT1BR' .          //38
+    'UlNUVVZXWFla';                                     //50 *
     
-    //TODO: fix this up so max length is less than 76 (say, 50)
     $this->assertEqual(
-      $output, $this->_encoder->encodeString($input, 0, 100),
+      $output, $this->_encoder->encodeString($input, 0, 50),
       '%s: Lines should be no more than 100 characters'
       );
   }
