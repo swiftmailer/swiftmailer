@@ -29,7 +29,7 @@ interface Swift_Mime_Header
 {
   
   /**
-   * Get the name of this header (e.g. charset).
+   * Get the name of this header (e.g. Subject).
    * The name is an identifier and as such will be immutable.
    * @return string
    */

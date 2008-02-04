@@ -20,5 +20,6 @@ Test Suite:
  * Add a thin bar showing the percentage progress below the results bar
  * Hide package if search term removes all its test cases
  * Some easy way to disable the JS
+ * Smoke Test abilities.  Pretty much just needs to be able to display images.
  
 EoM
