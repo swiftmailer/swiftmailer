@@ -65,6 +65,34 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
       );
   }
   
+  public function testLineLengthCanBeSpecifiedInByteStream()
+  {
+    $encoder = $this->_getEncoder('7bit');
+    
+    $os = new Swift_MockByteStream();
+    $is = new Swift_MockByteStream();
+    
+    $callCount = 0;
+    for ($i = 0; $i < 50; $i++)
+    {
+      $os->setReturnValueAt($i, 'read', 'a ');
+      if ($i > 0 && 0 == ($i % 25))
+      {
+        $is->expectAt($i, 'write', array("\r\n" . 'a '));
+      }
+      else
+      {
+        $is->expectAt($i, 'write', array('a '));
+      }
+      $callCount++;
+    }
+    $os->setReturnValueAt($callCount, 'read', false);
+    $os->expectCallCount('read', $callCount + 1);
+    $is->expectCallCount('write', $callCount);
+    
+    $encoder->encodeByteStream($os, $is, 0, 50);
+  }
+  
   // -- Private helpers
   
   private function _getEncoder($name)

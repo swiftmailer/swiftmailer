@@ -81,7 +81,7 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory
     $this->_map['ansi'] = $singleByte;
     $this->_map['macintosh'] = $singleByte;
     $this->_map['koi-?7'] = $singleByte;
-    $this->_map['koi-?8-?[ur]'] = $singleByte;
+    $this->_map['koi-?8-?.+'] = $singleByte;
     $this->_map['mik'] = $singleByte;
     $this->_map['(cork|t1)'] = $singleByte;
     $this->_map['v?iscii'] = $singleByte;

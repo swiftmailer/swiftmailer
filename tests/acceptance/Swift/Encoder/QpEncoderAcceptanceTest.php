@@ -2,63 +2,62 @@
 
 require_once 'Swift/Encoder/QpEncoder.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
-require_once 'Swift/CharacterReaderFactory.php';
-require_once 'Swift/CharacterReader/Utf8Reader.php';
-
-Mock::generate(
-  'Swift_CharacterReaderFactory', 'Swift_MockCharacterReaderFactory'
-  );
+require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
 
 class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
 {
   
   private $_samplesDir;
-  private $_encoder;
-  private $_charset = 'utf-8';
-  private $_charStream;
+  private $_factory;
   
   public function setUp()
   {
-    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/utf8');
-    
-    $charReader = new Swift_CharacterReader_Utf8Reader();
-    
-    $factory = new Swift_MockCharacterReaderFactory();
-    $factory->setReturnValue('getReaderFor', $charReader);
-    
-    $this->_charStream = new Swift_CharacterStream_ArrayCharacterStream(
-      null, $this->_charset, $factory);
-    $this->_encoder = new Swift_Encoder_QpEncoder($this->_charStream);
+    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/');
+    $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
   }
   
   public function testEncodingAndDecodingSamples()
   {
-    $fp = opendir($this->_samplesDir);
-    
-    while (false !== $f = readdir($fp))
+    $sampleFp = opendir($this->_samplesDir);
+    while (false !== $encodingDir = readdir($sampleFp))
     {
-      if (substr($f, 0, 1) == '.')
+      if (substr($encodingDir, 0, 1) == '.')
       {
         continue;
       }
       
-      $sampleFile = $this->_samplesDir . '/' . $f;
+      $encoding = $encodingDir;
+      $charStream = new Swift_CharacterStream_ArrayCharacterStream(
+        null, $encoding, $this->_factory);
+      $encoder = new Swift_Encoder_QpEncoder($charStream);
       
-      if (is_file($sampleFile))
+      $sampleDir = $this->_samplesDir . '/' . $encodingDir;
+      
+      if (is_dir($sampleDir))
       {
-        $text = file_get_contents($sampleFile);
-        $encodedText = $this->_encoder->encodeString($text);
         
-        $this->assertEqual(
-          quoted_printable_decode($encodedText), $text,
-          '%s: Encoded string should decode back to original string for sample ' .
-          $sampleFile
-          );
+        $fileFp = opendir($sampleDir);
+        while (false !== $sampleFile = readdir($fileFp))
+        {
+          if (substr($sampleFile, 0, 1) == '.')
+          {
+            continue;
+          }
+        
+          $text = file_get_contents($sampleDir . '/' . $sampleFile);
+          $encodedText = $encoder->encodeString($text);
+        
+          $this->assertEqual(
+            quoted_printable_decode($encodedText), $text,
+            '%s: Encoded string should decode back to original string for sample ' .
+            $sampleDir . '/' . $sampleFile
+            );
+        }
+        closedir($fileFp); 
       }
       
     }
-    
-    closedir($fp);
+    closedir($sampleFp);
   }
   
 }

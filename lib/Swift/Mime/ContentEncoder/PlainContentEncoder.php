@@ -72,9 +72,27 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
     Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
+    $leftOver = '';
     while (false !== $bytes = $os->read(8192))
     {
-      $is->write($bytes);
+      $wrapped = $this->_safeWordWrap($leftOver . $bytes, $maxLineLength, "\r\n");
+      $wrapped = substr($wrapped, strlen($leftOver)); //remove the stuff left over
+      $lines = explode("\r\n", $wrapped);
+      $lastLine = array_pop($lines);
+      if (count($lines) == 0) //after pop
+      {
+        $leftOver .= $lastLine;
+      }
+      elseif (strlen($lastLine) < $maxLineLength)
+      {
+        $leftOver = $lastLine;
+      }
+      else
+      {
+        $leftOver = '';
+      }
+      $lines[] = $lastLine;
+      $is->write(implode("\r\n", $lines));
     }
   }
   
