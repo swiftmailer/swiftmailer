@@ -2,6 +2,9 @@ Swift Mailer:
 -------------
 
  * See if some of the Headers can be refactored/removed
+ * Dependency-injection order in:
+   - ArrayByteStream
+   - ArrayCharacterStream
  * MimeEntity classes
    - MimePart
    - Attachment
