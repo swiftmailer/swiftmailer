@@ -10,10 +10,18 @@ Swift Mailer:
    - Attachment
    - EmbeddedFile
    - Image
+ * Headers/observer interface
+   - Date (Date)
+   - Unstructrured (Subject, Comment)
+   - Parameterized (Content-Type, Content-Disposition, charset, filename, boundary)
+   - Identification (Content-ID, Message-ID)
+   - Mailbox (From etc...)
+   - Path (Return-Path)
+   - Address (Reply-To)
+   - List (Keywords)
  * Acceptance tests for:
    - SimpleMimeEntity
    - Some Headers (which use Encoders)
-   - Attributes
  * CharacterReaderFactory (map charsets to CharacterReaders).
 
 Test Suite:
