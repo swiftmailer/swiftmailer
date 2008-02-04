@@ -63,7 +63,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
     $maxLineLength = 0)
   {
     //Set default length of 76 if no other value set
-    if (0 == $maxLineLength)
+    if (0 >= $maxLineLength)
     {
       $maxLineLength = 76;
     }

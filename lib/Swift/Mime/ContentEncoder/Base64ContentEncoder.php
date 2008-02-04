@@ -45,7 +45,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoder
     Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    if (0 == $maxLineLength)
+    if (0 >= $maxLineLength)
     {
       $maxLineLength = 76;
     }

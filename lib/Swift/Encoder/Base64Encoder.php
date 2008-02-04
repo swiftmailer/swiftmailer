@@ -43,7 +43,7 @@ class Swift_Encoder_Base64Encoder implements Swift_Encoder
   public function encodeString($string, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    if (0 == $maxLineLength || 76 < $maxLineLength)
+    if (0 >= $maxLineLength || 76 < $maxLineLength)
     {
       $maxLineLength = 76;
     }
