@@ -10,38 +10,47 @@ class Swift_Encoder_Base64EncoderAcceptanceTest extends UnitTestCase
   
   public function setUp()
   {
-    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/utf8');
+    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/');
     $this->_encoder = new Swift_Encoder_Base64Encoder();
   }
   
   public function testEncodingAndDecodingSamples()
   {
-    $fp = opendir($this->_samplesDir);
-    
-    while (false !== $f = readdir($fp))
+    $sampleFp = opendir($this->_samplesDir);
+    while (false !== $encodingDir = readdir($sampleFp))
     {
-      if (substr($f, 0, 1) == '.')
+      if (substr($encodingDir, 0, 1) == '.')
       {
         continue;
       }
       
-      $sampleFile = $this->_samplesDir . '/' . $f;
+      $sampleDir = $this->_samplesDir . '/' . $encodingDir;
       
-      if (is_file($sampleFile))
+      if (is_dir($sampleDir))
       {
-        $text = file_get_contents($sampleFile);
-        $encodedText = $this->_encoder->encodeString($text);
         
-        $this->assertEqual(
-          base64_decode($encodedText), $text,
-          '%s: Encoded string should decode back to original string for sample ' .
-          $sampleFile
-          );
+        $fileFp = opendir($sampleDir);
+        while (false !== $sampleFile = readdir($fileFp))
+        {
+          if (substr($sampleFile, 0, 1) == '.')
+          {
+            continue;
+          }
+        
+          $text = file_get_contents($sampleDir . '/' . $sampleFile);
+          $encodedText = $this->_encoder->encodeString($text);
+        
+          $this->assertEqual(
+            base64_decode($encodedText), $text,
+            '%s: Encoded string should decode back to original string for sample ' .
+            $sampleDir . '/' . $sampleFile
+            );
+        }
+        closedir($fileFp); 
       }
       
     }
-    
-    closedir($fp);
+    closedir($sampleFp);
   }
   
 }
