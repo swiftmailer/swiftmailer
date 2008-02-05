@@ -33,10 +33,10 @@ UTF-32
 
 Variable-width:
 ----------------------------
-Big5 - http://en.wikipedia.org/wiki/Big5
-HKSCS - http://en.wikipedia.org/wiki/HKSCS
-ISO-10646 (IEC-10646) - http://en.wikipedia.org/wiki/ISO_10646
-UTF-8
+Big5 - http://en.wikipedia.org/wiki/Big5 (1-2 bytes: 00-7f=1, 81-fe=2)
+HKSCS - http://en.wikipedia.org/wiki/HKSCS (a big5 variant, but some variants use 10646)
+ISO-10646 (IEC-10646) - http://en.wikipedia.org/wiki/ISO_10646 (unicode)
+UTF-8 (1-5 bytes)
 ISO-2022 (IEC-2022) - http://en.wikipedia.org/wiki/ISO_2022
 Shift-JIS - http://en.wikipedia.org/wiki/Shift-JIS
 
