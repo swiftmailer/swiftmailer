@@ -69,22 +69,15 @@ class Swift_CharacterStream_ArrayCharacterStream
   
   /**
    * Create a new CharacterStream with the given $chars, if set.
-   * @param mixed $chars as string or array
-   * @param string $charset used in the stream
    * @param Swift_CharacterReaderFactory $factory for loading validators
+   * @param string $charset used in the stream
+   * @param mixed $chars as string or array, optional
    */
-  public function __construct($chars = null, $charset = null,
-    Swift_CharacterReaderFactory $factory = null)
+  public function __construct(Swift_CharacterReaderFactory $factory,
+    $charset, $chars = null)
   {
-    if (!is_null($charset))
-    {
-      $this->setCharacterSet($charset);
-    }
-    
-    if (!is_null($factory))
-    {
-      $this->setCharacterReaderFactory($factory);
-    }
+    $this->setCharacterReaderFactory($factory);
+    $this->setCharacterSet($charset);
     
     if (is_array($chars))
     {

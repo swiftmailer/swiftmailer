@@ -28,7 +28,7 @@ class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
       
       $encoding = $encodingDir;
       $charStream = new Swift_CharacterStream_ArrayCharacterStream(
-        null, $encoding, $this->_factory);
+        $this->_factory, $encoding);
       $encoder = new Swift_Encoder_QpEncoder($charStream);
       
       $sampleDir = $this->_samplesDir . '/' . $encodingDir;

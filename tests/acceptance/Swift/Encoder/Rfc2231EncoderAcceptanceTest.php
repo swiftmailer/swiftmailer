@@ -28,7 +28,7 @@ class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends UnitTestCase
       
       $encoding = $encodingDir;
       $charStream = new Swift_CharacterStream_ArrayCharacterStream(
-        null, $encoding, $this->_factory);
+        $this->_factory, $encoding);
       $encoder = new Swift_Encoder_Rfc2231Encoder($charStream);
       
       $sampleDir = $this->_samplesDir . '/' . $encodingDir;

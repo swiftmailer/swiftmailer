@@ -26,9 +26,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $factory->setReturnValue('getReaderFor', $reader);
     $factory->expectOnce('getReaderFor', array('utf-8'));
     
-    $stream = new Swift_CharacterStream_ArrayCharacterStream();
-    $stream->setCharacterSet('utf-8');
-    $stream->setCharacterReaderFactory($factory);
+    $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->expectAt(0, 'validateCharacter', array(
@@ -101,9 +99,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $factory->setReturnValue('getReaderFor', $reader);
     $factory->expectOnce('getReaderFor', array('utf-8'));
     
-    $stream = new Swift_CharacterStream_ArrayCharacterStream();
-    $stream->setCharacterSet('utf-8');
-    $stream->setCharacterReaderFactory($factory);
+    $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->expectAt(0, 'validateCharacter', array(
@@ -193,9 +189,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $factory = new Swift_MockCharacterReaderFactory();
     $factory->setReturnValue('getReaderFor', $reader);
     
-    $stream = new Swift_CharacterStream_ArrayCharacterStream();
-    $stream->setCharacterSet('utf-8');
-    $stream->setCharacterReaderFactory($factory);
+    $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->setReturnValueAt(0, 'validateCharacter', 1);
@@ -246,9 +240,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $factory = new Swift_MockCharacterReaderFactory();
     $factory->setReturnValue('getReaderFor', $reader);
     
-    $stream = new Swift_CharacterStream_ArrayCharacterStream();
-    $stream->setCharacterSet('utf-8');
-    $stream->setCharacterReaderFactory($factory);
+    $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->setReturnValueAt(0, 'validateCharacter', 1);
@@ -274,9 +266,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $factory = new Swift_MockCharacterReaderFactory();
     $factory->setReturnValue('getReaderFor', $reader);
     
-    $stream = new Swift_CharacterStream_ArrayCharacterStream();
-    $stream->setCharacterSet('utf-8');
-    $stream->setCharacterReaderFactory($factory);
+    $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->setReturnValueAt(0, 'validateCharacter', 1);
@@ -306,9 +296,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $factory = new Swift_MockCharacterReaderFactory();
     $factory->setReturnValue('getReaderFor', $reader);
     
-    $stream = new Swift_CharacterStream_ArrayCharacterStream();
-    $stream->setCharacterSet('utf-8');
-    $stream->setCharacterReaderFactory($factory);
+    $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->setReturnValueAt(0, 'validateCharacter', 1);
@@ -333,9 +321,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $factory->setReturnValue('getReaderFor', $reader);
     $factory->expectOnce('getReaderFor', array('utf-8'));
     
-    $stream = new Swift_CharacterStream_ArrayCharacterStream();
-    $stream->setCharacterSet('utf-8');
-    $stream->setCharacterReaderFactory($factory);
+    $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
     $os = new Swift_MockByteStream();
     $os->expectAt(0, 'read', array(1));
@@ -391,9 +377,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $factory = new Swift_MockCharacterReaderFactory();
     $factory->setReturnValue('getReaderFor', $reader);
     
-    $stream = new Swift_CharacterStream_ArrayCharacterStream();
-    $stream->setCharacterSet('utf-8');
-    $stream->setCharacterReaderFactory($factory);
+    $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
     $os = new Swift_MockByteStream();
     $os->setReturnValueAt(0, 'read', pack('C*', 0xD0));
@@ -423,7 +407,13 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testInitialArrayCanBePassedToConstructor()
   {
+    $reader = new Swift_MockCharacterReader();
+    
+    $factory = new Swift_MockCharacterReaderFactory();
+    $factory->setReturnValue('getReaderFor', $reader);
+    
     $stream = new Swift_CharacterStream_ArrayCharacterStream(
+      $factory, 'utf-8',
       array(pack('C*', 0xD1, 0x8D), pack('C*', 0xD0, 0xBB), pack('C*', 0xD0, 0xB0))
       );
     $this->assertIdenticalBinary(pack('C*', 0xD1, 0x8D), $stream->read(1));
@@ -449,7 +439,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream(
-      pack('C*', 0xD1, 0x8D, 0xD0, 0xBB, 0xD0, 0xB0), 'utf-8', $factory
+      $factory, 'utf-8', pack('C*', 0xD1, 0x8D, 0xD0, 0xBB, 0xD0, 0xB0)
     );
       
     $this->assertIdenticalBinary(pack('C*', 0xD1, 0x8D), $stream->read(1));
@@ -481,7 +471,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $reader->setReturnValueAt(2, 'validateCharacter', 0);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream(
-      pack('C*', 0xD1, 0x8D, 0xD0, 0xBB, 0xD0, 0xB0), 'utf-8', $factory
+      $factory, 'utf-8', pack('C*', 0xD1, 0x8D, 0xD0, 0xBB, 0xD0, 0xB0)
     );
       
     $this->assertIdenticalBinary(pack('C*', 0xD1, 0x8D), $stream->read(1));

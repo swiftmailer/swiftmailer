@@ -19,6 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
+require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
 require_once dirname(__FILE__) . '/AbstractHeader.php';
 
 
@@ -30,6 +31,7 @@ require_once dirname(__FILE__) . '/AbstractHeader.php';
  */
 class Swift_Mime_Header_UnstructuredHeader
   extends Swift_Mime_Header_AbstractHeader
+  implements Swift_Mime_FieldChangeObserver
 {
   
   /**
@@ -84,6 +86,31 @@ class Swift_Mime_Header_UnstructuredHeader
         );
     }
     return $this->getCachedValue();
+  }
+  
+  /**
+   * Notify this observer that a field has changed to $value.
+   * "Field" is a loose term and refers to class fields rather than
+   * header fields.  $field will always be in lowercase and will be alpha.
+   * only.
+   * An example could be fieldChanged('contenttype', 'text/plain');
+   * This of course reflects a change in the body of the Content-Type header.
+   * Another example could be fieldChanged('charset', 'us-ascii');
+   * This reflects a change in the charset parameter of the Content-Type header.
+   * @param string $field in lowercase ALPHA
+   * @param mixed $value
+   */
+  public function fieldChanged($field, $value)
+  {
+    $fieldName = strtolower($this->getFieldName());
+    
+    if ('content-transfer-encoding' == $fieldName)
+    {
+      if ('contenttransferencoding' == $field)
+      {
+        $this->setValue($value);
+      }
+    }
   }
   
 }

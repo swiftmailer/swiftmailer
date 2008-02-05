@@ -331,6 +331,39 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       );
   }
   
+  public function testFieldChangeObserverCanSetContentTransferEncoding()
+  {
+    $header = $this->_getHeader('Content-Transfer-Encoding',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->setValue('7bit');
+    $header->fieldChanged('contenttransferencoding', 'quoted-printable');
+    $this->assertEqual('quoted-printable', $header->getValue());
+  }
+  
+  public function testTransferEncodingFieldChangeIsIgnoredByOtherHeaders()
+  {
+    $header = $this->_getHeader('Subject',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->setValue('My subject');
+    $header->fieldChanged('contenttransferencoding', 'quoted-printable');
+    $this->assertEqual('My subject', $header->getValue());
+  }
+  
+  public function testOtherFieldChangesAreIgnoredForTransferEncoding()
+  {
+    $header = $this->_getHeader('Content-Transfer-Encoding',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->setValue('7bit');
+    foreach (array('subject', 'comments', 'x-foo') as $field)
+    {
+      $header->fieldChanged($field, 'xxxxx');
+      $this->assertEqual('7bit', $header->getValue());
+    }
+  }
+  
   // -- Private methods
   
   private function _getHeader($name, $encoder)

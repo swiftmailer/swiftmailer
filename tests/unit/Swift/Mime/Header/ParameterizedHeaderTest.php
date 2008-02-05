@@ -311,7 +311,86 @@ class Swift_Mime_Header_ParameterizedHeaderTest
       );
   }
   
-  //TODO: test toString(), test encoded words, test lang in encoded words
+  public function testFieldChangeNotificationCanSetContentType()
+  {
+    $header = $this->_getHeader('Content-Type',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('text/plain');
+    $header->setParameters(array('charset' => 'iso-8859-1'));
+    $header->fieldChanged('contenttype', 'text/html');
+    $this->assertEqual('text/html', $header->getValue());
+  }
+  
+  public function testContentTypeFieldChangeIsIgnoredForOtherHeaders()
+  {
+    $header = $this->_getHeader('Content-Disposition',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('inline');
+    $header->setParameters(array('charset' => 'iso-8859-1'));
+    $header->fieldChanged('contenttype', 'text/html');
+    $this->assertEqual('inline', $header->getValue());
+  }
+  
+  public function testFieldChangeNotificationCanSetCharset()
+  {
+    $header = $this->_getHeader('Content-Type',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('text/plain');
+    $header->setParameters(array('charset' => 'iso-8859-1'));
+    $header->fieldChanged('charset', 'utf-8');
+    $this->assertEqual(array('charset' => 'utf-8'), $header->getParameters());
+  }
+  
+  public function testCharsetFieldChangeIsIgnoredForOtherHeaders()
+  {
+    $header = $this->_getHeader('Content-Disposition',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('text/plain');
+    $header->setParameters(array('charset' => 'iso-8859-1'));
+    $header->fieldChanged('charset', 'utf-8');
+    $this->assertEqual(array('charset' => 'iso-8859-1'), $header->getParameters());
+  }
+  
+  public function testFieldChangeNotificationCanSetBoundary()
+  {
+    $header = $this->_getHeader('Content-Type',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('multipart/mixed');
+    $header->setParameters(array('charset' => '7bit'));
+    $header->fieldChanged('boundary', 'foobar_-_123');
+    $this->assertEqual(
+      array('charset' => '7bit', 'boundary' => 'foobar_-_123'),
+      $header->getParameters()
+      );
+  }
+  
+  public function testBoundaryFieldChangeDoesNotAffectOtherHeaders()
+  {
+    $header = $this->_getHeader('Content-Disposition',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('attachment');
+    $header->setParameters(array('filename' => 'foo.txt'));
+    $header->fieldChanged('boundary', 'foobar_-_123');
+    $this->assertEqual(
+      array('filename' => 'foo.txt'),
+      $header->getParameters()
+      );
+  }
+  
+  public function testIrrelevantFieldsAreIgnoredForContentTypeHeaders()
+  {
+    $header = $this->_getHeader('Content-Disposition',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('text/plain');
+    $header->setParameters(array('charset' => 'iso-8859-1'));
+    
+    foreach (array('filename', 'name', 'xyz') as $field)
+    {
+      $header->fieldChanged($field, 'xxxx');
+      $this->assertEqual(array('charset' => 'iso-8859-1'), $header->getParameters());
+      $this->assertEqual('text/plain', $header->getValue());
+    }
+  }
   
   // -- Private helper
   

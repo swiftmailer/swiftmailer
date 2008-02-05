@@ -147,6 +147,13 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function setHeaders(array $headers)
   {
+    foreach ($headers as $header)
+    {
+      if ($header instanceof Swift_Mime_FieldChangeObserver)
+      {
+        $this->registerFieldChangeObserver($header);
+      }
+    }
     $this->_headers = $headers;
   }
   

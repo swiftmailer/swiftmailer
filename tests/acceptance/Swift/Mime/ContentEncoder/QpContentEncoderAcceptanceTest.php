@@ -30,7 +30,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest
       
       $encoding = $encodingDir;
       $charStream = new Swift_CharacterStream_ArrayCharacterStream(
-        null, $encoding, $this->_factory);
+        $this->_factory, $encoding);
       $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
       
       $sampleDir = $this->_samplesDir . '/' . $encodingDir;

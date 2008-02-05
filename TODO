@@ -10,17 +10,20 @@ Swift Mailer:
    - Attachment
    - EmbeddedFile
    - Image
+ * Add getId() to SimpleMimeEntity
+ * Add setDescription()/getDescription() to SimpleMimeEntity
+ * Address the fact a base mime entity should have a 7-bit encoder
+   not a quoted-printable encoder!
  * Headers/observer interface
    - Date (Date)
    - Unstructrured (Subject, Comment)
-   - Parameterized (Content-Type, Content-Disposition, charset, filename, boundary)
+   - Parameterized (Content-Disposition, filename)
    - Identification (Content-ID, Message-ID)
    - Mailbox (From etc...)
    - Path (Return-Path)
    - Address (Reply-To)
    - List (Keywords)
  * Acceptance tests for:
-   - SimpleMimeEntity
    - Some Headers (which use Encoders)
  * CharacterReaderFactory (map charsets to CharacterReaders).
 
