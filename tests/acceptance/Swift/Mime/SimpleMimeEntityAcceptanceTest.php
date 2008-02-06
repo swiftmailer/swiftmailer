@@ -3,6 +3,7 @@
 require_once 'Swift/Mime/SimpleMimeEntity.php';
 require_once 'Swift/Mime/Header/UnstructuredHeader.php';
 require_once 'Swift/Mime/Header/ParameterizedHeader.php';
+require_once 'Swift/Mime/Header/IdentificationHeader.php';
 require_once 'Swift/Encoder/Rfc2231Encoder.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
 require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
@@ -269,6 +270,44 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
       '--' . $boundary . '--' . "\r\n" .
       '$~D',
       $entity1->toString()
+      );
+  }
+  
+  public function testIdAppearsIfContentIdHeaderPresent()
+  {
+    $entity = $this->_createEntity();
+    $headers = $entity->getHeaders();
+    $headers[] = new Swift_Mime_Header_IdentificationHeader('Content-ID');
+    $entity->setHeaders($headers);
+    
+    $entity->setContentType('text/plain');
+    $entity->setId('foo@bar');
+    
+    $this->assertEqual(
+      'Content-Type: text/plain' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      'Content-ID: <foo@bar>' . "\r\n",
+      $entity->toString()
+      );
+  }
+  
+  public function testDescriptionAppearsIfContentDescriptionHeaderIsPresent()
+  {
+    $entity = $this->_createEntity();
+    $headers = $entity->getHeaders();
+    $headers[] = new Swift_Mime_Header_UnstructuredHeader(
+      'Content-Description', $this->_headerEncoder
+      );
+    $entity->setHeaders($headers);
+    
+    $entity->setContentType('text/plain');
+    $entity->setDescription('some description');
+    
+    $this->assertEqual(
+      'Content-Type: text/plain' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      'Content-Description: some description' . "\r\n",
+      $entity->toString()
       );
   }
   

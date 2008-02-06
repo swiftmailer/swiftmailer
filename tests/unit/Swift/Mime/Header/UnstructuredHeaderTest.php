@@ -337,7 +337,7 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       new Swift_Mime_MockHeaderEncoder()
       );
     $header->setValue('7bit');
-    $header->fieldChanged('contenttransferencoding', 'quoted-printable');
+    $header->fieldChanged('encoding', 'quoted-printable');
     $this->assertEqual('quoted-printable', $header->getValue());
   }
   
@@ -347,7 +347,7 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       new Swift_Mime_MockHeaderEncoder()
       );
     $header->setValue('My subject');
-    $header->fieldChanged('contenttransferencoding', 'quoted-printable');
+    $header->fieldChanged('encoding', 'quoted-printable');
     $this->assertEqual('My subject', $header->getValue());
   }
   
@@ -361,6 +361,38 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     {
       $header->fieldChanged($field, 'xxxxx');
       $this->assertEqual('7bit', $header->getValue());
+    }
+  }
+  
+  public function testObserverInterfaceChangesContentDescription()
+  {
+    $header = $this->_getHeader('Content-Description',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->fieldChanged('description', 'testing');
+    $this->assertEqual('testing', $header->getValue());
+  }
+  
+  public function testDescriptionFieldChangeIsIgnoredByOtherHeaders()
+  {
+    $header = $this->_getHeader('Subject',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->setValue('subj');
+    $header->fieldChanged('description', 'testing');
+    $this->assertEqual('subj', $header->getValue());
+  }
+  
+  public function testOtherFieldChangesAreIgnoredForContentDescription()
+  {
+    $header = $this->_getHeader('Content-Description',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->setValue('testing');
+    foreach (array('subject', 'comments', 'x-foo') as $field)
+    {
+      $header->fieldChanged($field, 'xxxxx');
+      $this->assertEqual('testing', $header->getValue());
     }
   }
   

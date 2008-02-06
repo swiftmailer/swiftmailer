@@ -177,6 +177,30 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
     $this->assertEqual('References: <a@b> <x@y>' . "\r\n", $header->toString());
   }
   
+  public function testObserverInterfaceUpdatesContentId()
+  {
+    $header = $this->_getHeader('Content-ID');
+    $header->fieldChanged('id', 'fooxyz@bar.abc');
+    $this->assertEqual('fooxyz@bar.abc', $header->getId());
+  }
+  
+  public function testContentIdIsNotChangedForOtherFields()
+  {
+    $header = $this->_getHeader('Content-ID');
+    $header->fieldChanged('to', 'fooxyz@bar.abc');
+    $this->assertNotEqual('fooxyz@bar.abc', $header->getId());
+  }
+  
+  public function testIdIsIgnoredForOtherHeaders()
+  {
+    foreach (array('References', 'In-Reply-To') as $name)
+    {
+      $header = $this->_getHeader($name);
+      $header->fieldChanged('id', 'foo@bar');
+      $this->assertNotEqual('foo@bar', $header->getId());
+    }
+  }
+  
   // -- Private methods
   
   private function _getHeader($name)

@@ -57,6 +57,20 @@ class Swift_Mime_SimpleMimeEntity
   private $_contentType = 'text/plain';
   
   /**
+   * The unique ID of this entity.
+   * @var string
+   * @access private
+   */
+  private $_id;
+  
+  /**
+   * The optional description of this entity.
+   * @var string
+   * @access private
+   */
+  private $_description;
+  
+  /**
    * The maximum length of all lines in this entity (excluding the CRLF).
    * @var int
    * @access private
@@ -115,6 +129,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->setHeaders($headers);
     $this->setEncoder($encoder);
+    $this->setId($this->_generateId());
   }
   
   /**
@@ -173,7 +188,7 @@ class Swift_Mime_SimpleMimeEntity
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_encoder = $encoder;
-    $this->_notifyFieldChanged('contenttransferencoding', $encoder->getName());
+    $this->_notifyFieldChanged('encoding', $encoder->getName());
   }
   
   /**
@@ -202,6 +217,45 @@ class Swift_Mime_SimpleMimeEntity
   public function getContentType()
   {
     return $this->_contentType;
+  }
+  
+  /**
+   * Set the unique ID of this mime entity.
+   * This should be valid syntax for a Content-ID header (i.e. xxx@yyy).
+   * @param string $id
+   */
+  public function setId($id)
+  {
+    $this->_id = $id;
+    $this->_notifyFieldChanged('id', $id);
+  }
+  
+  /**
+   * Get the unique identifier for this mime entity.
+   * @return string
+   */
+  public function getId()
+  {
+    return $this->_id;
+  }
+  
+  /**
+   * Set an optional description for this mime entity.
+   * @param string $description
+   */
+  public function setDescription($description)
+  {
+    $this->_description = $description;
+    $this->_notifyFieldChanged('description', $description);
+  }
+  
+  /**
+   * Get the optional description this mime entity, or null of not set.
+   * @return string
+   */
+  public function getDescription()
+  {
+    return $this->_description;
   }
   
   /**
@@ -470,6 +524,25 @@ class Swift_Mime_SimpleMimeEntity
     {
       $observer->fieldChanged($field, $value);
     }
+  }
+  
+  /**
+   * Generates a new unique ID for this entity.
+   * @return string
+   * @access private
+   */
+  private function _generateId()
+  {
+    $idLeft = time() . '.' . uniqid();
+    if (!empty($_SERVER['SERVER_NAME']))
+    {
+      $idRight = $_SERVER['SERVER_NAME'];
+    }
+    else
+    {
+      $idRight = 'swift.generated';
+    }
+    return $idLeft . '@' . $idRight;
   }
   
 }
