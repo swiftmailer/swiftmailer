@@ -7,6 +7,7 @@ require_once 'Swift/Mime/Header/IdentificationHeader.php';
 require_once 'Swift/Encoder/Rfc2231Encoder.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
 require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
+require_once 'Swift/Mime/ContentEncoder/PlainContentEncoder.php';
 require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
@@ -82,6 +83,15 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
   
   public function testNestingEntityCreatesNestedContent()
   {
+    /* -- RFC 2045, 6.4.
+    Certain Content-Transfer-Encoding values may only be used on certain
+    media types.  In particular, it is EXPRESSLY FORBIDDEN to use any
+    encodings other than "7bit", "8bit", or "binary" with any composite
+    media type, i.e. one that recursively includes other Content-Type
+    fields.  Currently the only composite media types are "multipart" and
+    "message".
+    */
+    
     $entity1 = $this->_createEntity();
     
     $entity2 = $this->_createEntity();
@@ -98,7 +108,6 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
     $this->assertEqual(
       'Content-Type: multipart/alternative;' . "\r\n" .
       ' boundary="' . $boundary . '"' . "\r\n" .
-      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
       'Content-Type: text/html' . "\r\n" .
@@ -134,7 +143,6 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
     $this->assertEqual(
       'Content-Type: multipart/alternative;' . "\r\n" .
       ' boundary="' . $boundary . '"' . "\r\n" .
-      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
       'Content-Type: text/html' . "\r\n" .
@@ -177,12 +185,10 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
     $this->assertPattern(
       '~^Content-Type: multipart/mixed;' . "\r\n" .
       ' boundary="' . $boundary . '"' . "\r\n" .
-      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
       'Content-Type: multipart/alternative;' . "\r\n" .
       ' boundary="(.*?)"' . "\r\n" .
-      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       '--\\1' . "\r\n" .
       'Content-Type: text/html' . "\r\n" .
@@ -233,17 +239,14 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
     $this->assertPattern(
       '~^Content-Type: multipart/mixed;' . "\r\n" .
       ' boundary="' . $boundary . '"' . "\r\n" .
-      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
       'Content-Type: multipart/related;' . "\r\n" .
       ' boundary="(.*?)"' . "\r\n" .
-      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       '--\\1' . "\r\n" .
       'Content-Type: multipart/alternative;' . "\r\n" .
       ' boundary="(.*?)"' . "\r\n" .
-      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       '--\\2' . "\r\n" .
       'Content-Type: text/html' . "\r\n" .
@@ -269,6 +272,111 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
       "\r\n" .
       '--' . $boundary . '--' . "\r\n" .
       '$~D',
+      $entity1->toString()
+      );
+  }
+  
+  public function test7bitEncodingIsDisplayedForNestedContent()
+  {
+    /* -- RFC 2045, 6.4.
+     */
+    
+    $entity1 = $this->_createEntity();
+    $entity1->setEncoder(
+      new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit')
+      );
+    
+    $entity2 = $this->_createEntity();
+    $entity2->setContentType('text/html');
+    $entity2->setBodyAsString('just testing');
+    $entity2->setNestingLevel(Swift_Mime_MimeEntity::LEVEL_SUBPART);
+    
+    $entity1->setChildren(array($entity2));
+    
+    $boundary = $entity1->getBoundary();
+    
+    $this->assertTrue($boundary);
+    
+    $this->assertEqual(
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="' . $boundary . '"' . "\r\n" .
+      'Content-Transfer-Encoding: 7bit' . "\r\n" .
+      "\r\n" .
+      '--' . $boundary . "\r\n" .
+      'Content-Type: text/html' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'just testing' .
+      "\r\n" .
+      '--' . $boundary . '--' . "\r\n",
+      $entity1->toString()
+      );
+  }
+  
+  public function test8bitEncodingIsDisplayedForNestedContent()
+  {
+    $entity1 = $this->_createEntity();
+    $entity1->setEncoder(
+      new Swift_Mime_ContentEncoder_PlainContentEncoder('8bit')
+      );
+    
+    $entity2 = $this->_createEntity();
+    $entity2->setContentType('text/html');
+    $entity2->setBodyAsString('just testing');
+    $entity2->setNestingLevel(Swift_Mime_MimeEntity::LEVEL_SUBPART);
+    
+    $entity1->setChildren(array($entity2));
+    
+    $boundary = $entity1->getBoundary();
+    
+    $this->assertTrue($boundary);
+    
+    $this->assertEqual(
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="' . $boundary . '"' . "\r\n" .
+      'Content-Transfer-Encoding: 8bit' . "\r\n" .
+      "\r\n" .
+      '--' . $boundary . "\r\n" .
+      'Content-Type: text/html' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'just testing' .
+      "\r\n" .
+      '--' . $boundary . '--' . "\r\n",
+      $entity1->toString()
+      );
+  }
+  
+  public function testBinaryEncodingIsDisplayedForNestedContent()
+  {
+    $entity1 = $this->_createEntity();
+    $entity1->setEncoder(
+      new Swift_Mime_ContentEncoder_PlainContentEncoder('binary')
+      );
+    
+    $entity2 = $this->_createEntity();
+    $entity2->setContentType('text/html');
+    $entity2->setBodyAsString('just testing');
+    $entity2->setNestingLevel(Swift_Mime_MimeEntity::LEVEL_SUBPART);
+    
+    $entity1->setChildren(array($entity2));
+    
+    $boundary = $entity1->getBoundary();
+    
+    $this->assertTrue($boundary);
+    
+    $this->assertEqual(
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="' . $boundary . '"' . "\r\n" .
+      'Content-Transfer-Encoding: binary' . "\r\n" .
+      "\r\n" .
+      '--' . $boundary . "\r\n" .
+      'Content-Type: text/html' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'just testing' .
+      "\r\n" .
+      '--' . $boundary . '--' . "\r\n",
       $entity1->toString()
       );
   }

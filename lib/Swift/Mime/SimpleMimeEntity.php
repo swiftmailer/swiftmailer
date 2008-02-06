@@ -120,6 +120,13 @@ class Swift_Mime_SimpleMimeEntity
   private $_entityFactory;
   
   /**
+   * Encodings which are safe to use on composite media types.
+   * @var string[]
+   * @access private
+   */
+  private $_compositeSafeEncodings = array('7bit', '8bit', 'binary');
+  
+  /**
    * Creates a new SimpleMimeEntity with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
@@ -427,14 +434,27 @@ class Swift_Mime_SimpleMimeEntity
   {
     $string = '';
     
+    $hasChildren = count($this->_children) > 0;
+    
     //Append headers
     foreach ($this->_headers as $header)
     {
+      if ($hasChildren
+        && strtolower($header->getFieldName()) == 'content-transfer-encoding'
+        && !in_array(
+          strtolower($header->getFieldBody()),
+          $this->_compositeSafeEncodings
+          )
+        )
+      { //RFC 2045 says Content-Transfer-Encoding can only be 7bit, 8bit or
+        // binary on composite media types
+        continue;
+      }
       $string .= $header->toString();
     }
     
     //Append body
-    if (is_string($this->_stringBody))
+    if (!$hasChildren && is_string($this->_stringBody))
     {
       $string .= "\r\n" . $this->_encoder->encodeString(
         $this->_stringBody, 0, $this->_maxLineLength
