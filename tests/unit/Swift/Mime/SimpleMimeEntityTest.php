@@ -677,6 +677,26 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $entity->toString();
   }
   
+  public function testFluidInterface()
+  {
+    $entity = $this->_getEntity(array(), $this->_encoder);
+    $ref = $entity
+      ->setContentType('text/plain')
+      ->setEncoder($this->_encoder)
+      ->setId('foo@bar')
+      ->setDescription('my description')
+      ->setMaxLineLength(998)
+      ->setBodyAsString('xx')
+      ->setNestingLevel(10)
+      ->setBoundary('xyz')
+      ->setChildren(array())
+      ->setHeaders(array())
+      ;
+    $this->assertReference($ref, $entity,
+      '%s: All setters should return $this for fluid interface allowance'
+      );
+  }
+  
   // -- Private helpers
   
   private function _getEntity($headers, $encoder)

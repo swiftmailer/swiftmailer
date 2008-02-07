@@ -156,7 +156,9 @@ class Swift_Mime_SimpleMimeEntity
    * Set the level at which this entity nests.
    * A lower value is closer to the top (i.e. the message itself is zero (0)),
    * and a higher value is nested deeper in.
+   * Returns a reference to itself for fluid interface.
    * @param int $level
+   * @return Swift_Mime_SimpleMimeEntity
    * @see Swift_Mime_MimeEntity::LEVEL_SUBPART
    * @see Swift_Mime_MimeEntity::LEVEL_ATTACHMENT
    * @see Swift_Mime_MimeEntity::LEVEL_EMBEDDED
@@ -164,6 +166,7 @@ class Swift_Mime_SimpleMimeEntity
   public function setNestingLevel($level)
   {
     $this->_nestingLevel = $level;
+    return $this;
   }
   
   /**
@@ -178,7 +181,9 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Set the Headers for this entity.
+   * Returns a reference to itself for fluid interface.
    * @param Swift_Mime_Header[] $headers
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setHeaders(array $headers)
   {
@@ -190,6 +195,7 @@ class Swift_Mime_SimpleMimeEntity
       }
     }
     $this->_headers = $headers;
+    return $this;
   }
   
   /**
@@ -203,12 +209,15 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Set the Encoder used for transportation of this entity.
+   * Returns a reference to itself for fluid interface.
    * @param Swift_Mime_ContentEncoder $encoder
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_encoder = $encoder;
     $this->_notifyFieldChanged('encoding', $encoder->getName());
+    return $this;
   }
   
   /**
@@ -222,12 +231,15 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Set the content type of this entity.
+   * Returns a reference to itself for fluid interface.
    * @param string $contentType
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setContentType($contentType)
   {
     $this->_contentType = $contentType;
     $this->_notifyFieldChanged('contenttype', $contentType);
+    return $this;
   }
   
   /**
@@ -242,12 +254,15 @@ class Swift_Mime_SimpleMimeEntity
   /**
    * Set the unique ID of this mime entity.
    * This should be valid syntax for a Content-ID header (i.e. xxx@yyy).
+   * Returns a reference to itself for fluid interface.
    * @param string $id
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setId($id)
   {
     $this->_id = $id;
     $this->_notifyFieldChanged('id', $id);
+    return $this;
   }
   
   /**
@@ -261,12 +276,15 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Set an optional description for this mime entity.
+   * Returns a reference to itself for fluid interface.
    * @param string $description
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setDescription($description)
   {
     $this->_description = $description;
     $this->_notifyFieldChanged('description', $description);
+    return $this;
   }
   
   /**
@@ -280,11 +298,14 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Set the maximum length before lines are wrapped in this entity.
+   * Returns a reference to itself for fluid interface.
    * @param int $length
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setMaxLineLength($length)
   {
     $this->_maxLineLength = (int) $length;
+    return $this;
   }
   
   /**
@@ -298,11 +319,14 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Set the body of this entity as a string.
+   * Returns a reference to itself for fluid interface.
    * @param string $string
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setBodyAsString($stringBody)
   {
     $this->_stringBody = $stringBody;
+    return $this;
   }
   
   /**
@@ -327,7 +351,9 @@ class Swift_Mime_SimpleMimeEntity
   /**
    * Attach an array of other entities to this entity.
    * These will be re-ordered according to their nesting levels.
+   * Returns a reference to itself for fluid interface.
    * @param Swift_Mime_MimeEntity[] $children
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setChildren(array $children)
   {
@@ -361,36 +387,39 @@ class Swift_Mime_SimpleMimeEntity
       }
     }
     
-    $lowestLevel = $immediateChildren[0]->getNestingLevel();
-    
-    //Determine which composite media type is needed to accomodate the
-    // immediate children
-    foreach ($this->_compositeRanges as $mediaType => $range)
+    if (!empty($immediateChildren))
     {
-      if ($lowestLevel > $range[0]
-        && $lowestLevel <= $range[1])
+      $lowestLevel = $immediateChildren[0]->getNestingLevel();
+      //Determine which composite media type is needed to accomodate the
+      // immediate children
+      foreach ($this->_compositeRanges as $mediaType => $range)
       {
-        $this->setContentType($mediaType);
-        break;
+        if ($lowestLevel > $range[0]
+          && $lowestLevel <= $range[1])
+        {
+          $this->setContentType($mediaType);
+          break;
+        }
       }
-    }
     
-    //Put any grandchildren in a subpart
-    if (!empty($grandchildren))
-    {
-      $subentity = $this->getEntityFactory()->createBaseEntity();
-      $subentity->setNestingLevel($lowestLevel);
-      $subentity->setChildren($grandchildren);
-      array_unshift($immediateChildren, $subentity);
+      //Put any grandchildren in a subpart
+      if (!empty($grandchildren))
+      {
+        $subentity = $this->getEntityFactory()->createBaseEntity();
+        $subentity->setNestingLevel($lowestLevel);
+        $subentity->setChildren($grandchildren);
+        array_unshift($immediateChildren, $subentity);
+      }
     }
     
     //Store the direct descendants
     $this->_immediateChildren = $immediateChildren;
-    
     //Store all descendants
     $this->_children = $children;
     
     $this->_notifyFieldChanged('boundary', $this->getBoundary());
+    
+    return $this;
   }
   
   /**
@@ -405,7 +434,9 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Set a mime boundary for this mime part if other parts are to be added to it.
+   * Returns a reference to itself for fluid interface.
    * @param string $boundary
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setBoundary($boundary)
   {
@@ -420,6 +451,7 @@ class Swift_Mime_SimpleMimeEntity
     {
       throw new Exception('Mime boundary set is not RFC 2046 compliant.');
     }
+    return $this;
   }
   
   /**

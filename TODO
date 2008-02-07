@@ -7,6 +7,8 @@ Swift Mailer:
    - Attachment
    - EmbeddedFile
    - Image
+ * Mime/observer interface
+   - Recursively update encoders?
  * Headers/observer interface
    - Date (Date)
    - Unstructrured (Subject, Comment)
@@ -16,9 +18,13 @@ Swift Mailer:
    - Path (Return-Path)
    - Address (Reply-To)
    - List (Keywords)
- * Acceptance tests for:
+ * Acceptance tests
    - Some Headers (which use Encoders)
  * CharacterReaderFactory (map charsets to CharacterReaders).
+   - Big5
+   - Shift-JIS
+   - ISO-10646
+   - CP950
 
 Test Suite:
 -----------
