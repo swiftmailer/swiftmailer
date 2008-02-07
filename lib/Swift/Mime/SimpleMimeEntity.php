@@ -32,7 +32,7 @@ require_once dirname(__FILE__) . '/EntityFactory.php';
  * @author Chris Corbyn
  */
 class Swift_Mime_SimpleMimeEntity
-  implements Swift_Mime_MimeEntity, Swift_Mime_EntityFactory
+  implements Swift_Mime_MimeEntity, Swift_Mime_EntityFactory, Swift_Mime_FieldChangeObserver
 {
   
   /**
@@ -85,6 +85,13 @@ class Swift_Mime_SimpleMimeEntity
   private $_stringBody;
   
   /**
+   * The body of this entity, as a ByteStream.
+   * @var Swift_ByteStream
+   * @access private
+   */
+  private $_streamBody;
+  
+  /**
    * Children which are nested anywhere inside this mime entity or it's children.
    * @var Swift_Mime_MimeEntity[]
    * @access private
@@ -104,6 +111,16 @@ class Swift_Mime_SimpleMimeEntity
    * @access private
    */
   private $_fieldChangeObservers = array();
+  
+  /**
+   * Internally set FieldChangeObservers.
+   * @var Swift_Mime_FieldChangeObserver[]
+   * @access private
+   */
+  private $_internalFieldChangeObservers = array(
+    'headers' => array(),
+    'children' => array()
+    );
   
   /**
    * The level at which this entity nests.
@@ -187,13 +204,15 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function setHeaders(array $headers)
   {
+    $observers = array();
     foreach ($headers as $header)
     {
       if ($header instanceof Swift_Mime_FieldChangeObserver)
       {
-        $this->registerFieldChangeObserver($header);
+        $observers[] = $header;
       }
     }
+    $this->_internalFieldChangeObservers['headers'] = $observers;
     $this->_headers = $headers;
     return $this;
   }
@@ -326,16 +345,45 @@ class Swift_Mime_SimpleMimeEntity
   public function setBodyAsString($stringBody)
   {
     $this->_stringBody = $stringBody;
+    $this->_streamBody = null;
     return $this;
   }
   
   /**
    * Get the body content of this entity as a string.
+   * Returns NULL if no body has been set.
    * @return string
    */
   public function getBodyAsString()
   {
-    return $this->_stringBody;
+    if (isset($this->_stringBody))
+    {
+      return $this->_stringBody;
+    }
+    elseif (isset($this->_streamBody))
+    {
+      $this->_streamBody->setPointer(0);
+      $string = '';
+      while (false !== $bytes = $this->_streamBody->read(8192))
+      {
+        $string .= $bytes;
+      }
+      $this->_streamBody->setPointer(0);
+      return $string;
+    }
+  }
+  
+  /**
+   * Set the body of this entity as a ByteStream.
+   * Returns a reference to itself for fluid interface.
+   * @param Swift_ByteStream $stream
+   * @return Swift_Mime_SimpleMimeEntity
+   */
+  public function setBodyAsByteStream(Swift_ByteStream $streamBody)
+  {
+    $this->_streamBody = $streamBody;
+    $this->_stringBody = null;
+    return $this;
   }
   
   /**
@@ -416,6 +464,17 @@ class Swift_Mime_SimpleMimeEntity
     $this->_immediateChildren = $immediateChildren;
     //Store all descendants
     $this->_children = $children;
+    
+    //Check if any of these entities are observers
+    $observers = array();
+    foreach ($this->_immediateChildren as $child)
+    {
+      if ($child instanceof Swift_Mime_FieldChangeObserver)
+      {
+        $observers[] = $child;
+      }
+    }
+    $this->_internalFieldChangeObservers['children'] = $observers;
     
     $this->_notifyFieldChanged('boundary', $this->getBoundary());
     
@@ -515,10 +574,11 @@ class Swift_Mime_SimpleMimeEntity
     }
     
     //Append body
-    if (!$hasChildren && is_string($this->_stringBody))
+    $body = $this->getBodyAsString();
+    if (!$hasChildren && !is_null($body))
     {
       $string .= "\r\n" . $this->_encoder->encodeString(
-        $this->_stringBody, 0, $this->_maxLineLength
+        $body, 0, $this->_maxLineLength
         );
     }
     
@@ -538,10 +598,57 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Get this entire entity as a ByteStream.
+   * The ByteStream will be appended to (it will not be flushed first).
    * @param Swift_ByteStream $is to write to
    */
   public function toByteStream(Swift_ByteStream $is)
   {
+    $hasChildren = count($this->_children) > 0;
+    
+    //Append headers
+    foreach ($this->_headers as $header)
+    {
+      if ($hasChildren
+        && strtolower($header->getFieldName()) == 'content-transfer-encoding'
+        && !in_array(
+          strtolower($header->getFieldBody()),
+          $this->_compositeSafeEncodings
+          )
+        )
+      { //RFC 2045 says Content-Transfer-Encoding can only be 7bit, 8bit or
+        // binary on composite media types
+        continue;
+      }
+      $is->write($header->toString());
+    }
+    
+    //Append body
+    if (!$hasChildren && is_string($this->_stringBody))
+    {
+      $is->write("\r\n" . $this->_encoder->encodeString(
+        $this->_stringBody, 0, $this->_maxLineLength
+        ));
+    }
+    elseif (!$hasChildren && isset($this->_streamBody))
+    {
+      $is->write("\r\n");
+      $this->_streamBody->setPointer(0);
+      $this->_encoder->encodeByteStream(
+        $this->_streamBody, $is, 0, $this->_maxLineLength
+        );
+      $this->_streamBody->setPointer(0);
+    }
+    
+    //Nest children
+    if (!empty($this->_immediateChildren))
+    {
+      foreach ($this->_immediateChildren as $child)
+      {
+        $is->write("\r\n--" . $this->getBoundary() . "\r\n");
+        $child->toByteStream($is); //Get the child to append it's own data
+      }
+      $is->write("\r\n--" . $this->getBoundary() . "--\r\n");
+    }
   }
   
   /**
@@ -591,6 +698,28 @@ class Swift_Mime_SimpleMimeEntity
     }
   }
   
+  /**
+   * Notify this entity that a field has changed to $value in its parent.
+   * "Field" is a loose term and refers to class fields rather than
+   * header fields.  $field will always be in lowercase and will be alpha.
+   * only.
+   * An example could be fieldChanged('contenttype', 'text/plain');
+   * This of course reflects a change in the body of the Content-Type header.
+   * Another example could be fieldChanged('charset', 'us-ascii');
+   * This reflects a change in the charset parameter of the Content-Type header.
+   * @param string $field in lowercase ALPHA
+   * @param mixed $value
+   */
+  public function fieldChanged($field, $value)
+  {
+    if ('encoder' == $field && preg_match('/^multipart\//D', $this->_contentType)
+      && ($value instanceof Swift_Mime_ContentEncoder)
+      && in_array(strtolower($value->getName()), $this->_compositeSafeEncodings))
+    {
+      $this->setEncoder($value);
+    }
+  }
+  
   // -- Private methods
   
   /**
@@ -601,7 +730,11 @@ class Swift_Mime_SimpleMimeEntity
    */
   private function _notifyFieldChanged($field, $value)
   {
-    foreach ($this->_fieldChangeObservers as $observer)
+    foreach (array_merge(
+      $this->_fieldChangeObservers,
+      $this->_internalFieldChangeObservers['headers'],
+      $this->_internalFieldChangeObservers['children']
+      ) as $observer)
     {
       $observer->fieldChanged($field, $value);
     }

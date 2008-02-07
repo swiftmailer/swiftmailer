@@ -81,6 +81,7 @@ interface Swift_Mime_MimeEntity
   
   /**
    * Get the body content of this entity as a string.
+   * Returns NULL if no body has been set.
    * @return string
    */
   public function getBodyAsString();
