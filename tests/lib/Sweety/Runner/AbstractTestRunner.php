@@ -327,4 +327,25 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
     }
   }
   
+  protected function _sort($a, $b)
+  {
+    $apkg = preg_replace('/_[^_]+$/D', '', $a);
+    $bpkg = preg_replace('/_[^_]+$/D', '', $b);
+    if ($apkg == $bpkg)
+    {
+      if ($a == $b)
+      {
+        return 0;
+      }
+      else
+      {
+        return ($a > $b) ? 1 : -1;
+      }
+    }
+    else
+    {
+      return ($apkg > $bpkg) ? 1 : -1;
+    }
+  }
+  
 }

@@ -44,7 +44,7 @@ class Sweety_Runner_CliRunner extends Sweety_Runner_AbstractTestRunner
    * @return int
    */
   public function runAllTests($dirs = array())
-  { 
+  {
     if (empty($dirs))
     {
       $dirs = $this->_dirs;
@@ -58,6 +58,34 @@ class Sweety_Runner_CliRunner extends Sweety_Runner_AbstractTestRunner
     }
     
     $tests = $this->findTests($dirs);
+    usort($tests, array($this, '_sort'));
+    
+    global $argv;
+    
+    if (isset($argv[1]))
+    {
+      if (substr($argv[1], 0, 1) == '!')
+      {
+        $argv[1] = substr($argv[1], 1);
+        foreach ($tests as $index => $name)
+        {
+          if (@preg_match($argv[1] . 'i', $name))
+          {
+            unset($tests[$index]);
+          }
+        }
+      }
+      else
+      {
+        foreach ($tests as $index => $name)
+        {
+          if (!@preg_match($argv[1] . 'i', $name))
+          {
+            unset($tests[$index]);
+          }
+        }
+      }
+    }
     
     $ret = $this->_runTestList($tests);
     

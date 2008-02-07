@@ -27,7 +27,7 @@ foreach ($locators as $locator)
   $runner->registerTestLocator(new $locator());
 }
 
-if (isset($argv[1]))
+if (isset($argv[1]) && !preg_match('~!?/.*?/~', $argv[1]))
 {
   $testName = $argv[1];
   $format = isset($argv[2]) ? $argv[2] : Sweety_Runner::REPORT_TEXT;
