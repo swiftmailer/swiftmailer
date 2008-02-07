@@ -7,8 +7,6 @@ Swift Mailer:
    - Attachment
    - EmbeddedFile
    - Image
- * Mime/observer interface
-   - Recursively update encoders?
  * Headers/observer interface
    - Date (Date)
    - Unstructrured (Subject, Comment)
@@ -18,6 +16,8 @@ Swift Mailer:
    - Path (Return-Path)
    - Address (Reply-To)
    - List (Keywords)
+ * Make QpContentEncoder implement FieldChangeObserver so it can take on
+   new charsets
  * Acceptance tests
    - Some Headers (which use Encoders)
  * CharacterReaderFactory (map charsets to CharacterReaders).

@@ -354,6 +354,45 @@ class Swift_Mime_Header_ParameterizedHeaderTest
     $this->assertEqual(array('charset' => 'iso-8859-1'), $header->getParameters());
   }
   
+  public function testFormatFieldChangeCanSetFormat()
+  {
+    $header = $this->_getHeader('Content-Type',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('text/plain');
+    $header->setParameters(array('charset' => 'iso-8859-1'));
+    $header->fieldChanged('format', 'flowed');
+    $this->assertEqual(
+      array('charset' => 'iso-8859-1', 'format' => 'flowed'),
+      $header->getParameters()
+      );
+  }
+  
+  public function testFormatFieldChangeDoesNotAffectOtherHeaders()
+  {
+    $header = $this->_getHeader('Content-Disposition',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('attachment');
+    $header->setParameters(array('filename' => 'foo.txt'));
+    $header->fieldChanged('format', 'flowed');
+    $this->assertEqual(
+      array('filename' => 'foo.txt'),
+      $header->getParameters()
+      );
+  }
+  
+  public function testDelSpFieldChangeCanSetFormat()
+  {
+    $header = $this->_getHeader('Content-Type',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('text/plain');
+    $header->setParameters(array('charset' => 'iso-8859-1'));
+    $header->fieldChanged('delsp', true);
+    $this->assertEqual(
+      array('charset' => 'iso-8859-1', 'delsp' => 'yes'),
+      $header->getParameters()
+      );
+  }
+  
   public function testFieldChangeNotificationCanSetBoundary()
   {
     $header = $this->_getHeader('Content-Type',

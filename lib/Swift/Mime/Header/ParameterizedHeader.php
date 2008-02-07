@@ -129,8 +129,11 @@ class Swift_Mime_Header_ParameterizedHeader
         case 'contenttype':
           $this->setValue($value);
           break;
+        case 'delsp':
+          $value = $value ? 'yes' : 'no';
         case 'charset':
         case 'boundary':
+        case 'format':
           $parameters = $this->getParameters();
           $parameters[$field] = $value;
           $this->setParameters($parameters);

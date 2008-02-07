@@ -26,7 +26,7 @@ require_once dirname(__FILE__) . '/EntityFactory.php';
 
 
 /**
- * A MIME part, in a multipart message.
+ * A MIME entity, in a multipart message.
  * @package Swift
  * @subpackage Mime
  * @author Chris Corbyn
@@ -713,14 +713,13 @@ class Swift_Mime_SimpleMimeEntity
   public function fieldChanged($field, $value)
   {
     if ('encoder' == $field && preg_match('/^multipart\//D', $this->_contentType)
-      && ($value instanceof Swift_Mime_ContentEncoder)
-      && in_array(strtolower($value->getName()), $this->_compositeSafeEncodings))
+      && ($value instanceof Swift_Mime_ContentEncoder))
     {
       $this->setEncoder($value);
     }
   }
   
-  // -- Private methods
+  // -- Protected methods
   
   /**
    * Notify all observers of a field being changed.
@@ -728,7 +727,7 @@ class Swift_Mime_SimpleMimeEntity
    * @param mixed $value
    * @access private
    */
-  private function _notifyFieldChanged($field, $value)
+  protected function _notifyFieldChanged($field, $value)
   {
     foreach (array_merge(
       $this->_fieldChangeObservers,
@@ -739,6 +738,8 @@ class Swift_Mime_SimpleMimeEntity
       $observer->fieldChanged($field, $value);
     }
   }
+  
+  // -- Private methods
   
   /**
    * Generates a new unique ID for this entity.
