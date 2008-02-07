@@ -124,6 +124,7 @@ class Swift_Mime_Header_ParameterizedHeader
     
     if ('content-type' == $fieldName)
     {
+      $parameters = $this->getParameters();
       switch ($field)
       {
         case 'contenttype':
@@ -134,7 +135,6 @@ class Swift_Mime_Header_ParameterizedHeader
         case 'charset':
         case 'boundary':
         case 'format':
-          $parameters = $this->getParameters();
           $parameters[$field] = $value;
           $this->setParameters($parameters);
           break;
