@@ -7,8 +7,6 @@ Swift Mailer:
    - Attachment
    - EmbeddedFile
    - Image
- * Mappings of numeric nesting levels to named composites (i.e. message/digest
-   or multipart/alternative)
  * Headers/observer interface
    - Date (Date)
    - Unstructrured (Subject, Comment)
