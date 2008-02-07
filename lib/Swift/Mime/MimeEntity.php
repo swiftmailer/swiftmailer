@@ -53,6 +53,7 @@ interface Swift_Mime_MimeEntity
   
   /**
    * Get the level at which this entity shall be nested in final document.
+   * The lower the value, the more outermost the entity will be nested.
    * @return int
    * @see LEVEL_TOP, LEVEL_ATTACHMENT, LEVEL_EMBEDDED, LEVEL_SUBPART
    */

@@ -127,6 +127,19 @@ class Swift_Mime_SimpleMimeEntity
   private $_compositeSafeEncodings = array('7bit', '8bit', 'binary');
   
   /**
+   * Maps nesting levels (integers) with the composite media types they
+   * nest inside.
+   * @var array
+   * @see LEVEL_TOP, LEVEL_ATTACHMENT, LEVEL_EMBEDDED, LEVEL_SUBPART
+   * @access private
+   */
+  private $_compositeRanges = array(
+    'multipart/mixed' => array(self::LEVEL_TOP, self::LEVEL_ATTACHMENT),
+    'multipart/related' => array(self::LEVEL_ATTACHMENT, self::LEVEL_EMBEDDED),
+    'multipart/alternative' => array(self::LEVEL_EMBEDDED, self::LEVEL_SUBPART)
+    );
+  
+  /**
    * Creates a new SimpleMimeEntity with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
@@ -350,20 +363,16 @@ class Swift_Mime_SimpleMimeEntity
     
     $lowestLevel = $immediateChildren[0]->getNestingLevel();
     
-    if ($lowestLevel > self::LEVEL_TOP
-      && $lowestLevel <= self::LEVEL_ATTACHMENT)
+    //Determine which composite media type is needed to accomodate the
+    // immediate children
+    foreach ($this->_compositeRanges as $mediaType => $range)
     {
-      $this->setContentType('multipart/mixed');
-    }
-    elseif ($lowestLevel > self::LEVEL_ATTACHMENT
-      && $lowestLevel <= self::LEVEL_EMBEDDED)
-    {
-      $this->setContentType('multipart/related');
-    }
-    elseif ($lowestLevel > self::LEVEL_EMBEDDED
-      && $lowestLevel <= self::LEVEL_SUBPART)
-    {
-      $this->setContentType('multipart/alternative');
+      if ($lowestLevel > $range[0]
+        && $lowestLevel <= $range[1])
+      {
+        $this->setContentType($mediaType);
+        break;
+      }
     }
     
     //Put any grandchildren in a subpart
@@ -424,6 +433,26 @@ class Swift_Mime_SimpleMimeEntity
       $this->_boundary = '_=_swift_v4_' . time() . uniqid() . '_=_';
     }
     return $this->_boundary;
+  }
+  
+  /**
+   * Get the integer ranges in which different composite media types are used.
+   * The return array uses the media type as the key, with min and max nesting
+   * levels in an array.
+   * @return array
+   */
+  public function getCompositeRanges()
+  {
+    return $this->_compositeRanges;
+  }
+  
+  /**
+   * Set the valid ranges for nested composite types.
+   * @param array $ranges
+   */
+  public function setCompositeRanges(array $ranges)
+  {
+    $this->_compositeRanges = $ranges;
   }
   
   /**
