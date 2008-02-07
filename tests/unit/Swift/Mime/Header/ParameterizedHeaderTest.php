@@ -311,6 +311,9 @@ class Swift_Mime_Header_ParameterizedHeaderTest
       );
   }
   
+  // --- THESE TESTS ARE IMPLEMENTATION SPECIFIC FOR COMPATIBILITY WITH --
+  // --- SimpleMimeEntity ---
+  
   public function testFieldChangeNotificationCanSetContentType()
   {
     $header = $this->_getHeader('Content-Type',

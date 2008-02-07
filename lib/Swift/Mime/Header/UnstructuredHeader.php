@@ -106,9 +106,10 @@ class Swift_Mime_Header_UnstructuredHeader
     
     if ('content-transfer-encoding' == $fieldName)
     {
-      if ('encoding' == $field)
+      if ('encoder' == $field && is_object($value)
+        && method_exists($value, 'getName'))
       {
-        $this->setValue($value);
+        $this->setValue($value->getName());
       }
     }
     elseif ('content-description' == $fieldName)

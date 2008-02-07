@@ -526,11 +526,11 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     
     $observer1 = new Swift_Mime_MockFieldChangeObserver();
     $observer1->expectOnce('fieldChanged',
-      array('encoding', 'base64')
+      array('encoder', $encoder)
       );
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged',
-      array('encoding', 'base64')
+      array('encoder', $encoder)
       );
     
     $entity = $this->_getEntity($headers, $this->_encoder);

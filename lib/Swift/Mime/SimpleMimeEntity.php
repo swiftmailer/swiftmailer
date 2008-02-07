@@ -216,7 +216,7 @@ class Swift_Mime_SimpleMimeEntity
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_encoder = $encoder;
-    $this->_notifyFieldChanged('encoding', $encoder->getName());
+    $this->_notifyFieldChanged('encoder', $encoder);
     return $this;
   }
   

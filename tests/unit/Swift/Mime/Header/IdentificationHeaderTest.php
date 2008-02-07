@@ -177,6 +177,9 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
     $this->assertEqual('References: <a@b> <x@y>' . "\r\n", $header->toString());
   }
   
+  // --- THESE TESTS ARE IMPLEMENTATION SPECIFIC FOR COMPATIBILITY WITH --
+  // --- SimpleMimeEntity ---
+  
   public function testObserverInterfaceUpdatesContentId()
   {
     $header = $this->_getHeader('Content-ID');

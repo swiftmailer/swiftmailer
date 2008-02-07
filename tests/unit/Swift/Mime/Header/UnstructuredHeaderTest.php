@@ -3,8 +3,10 @@
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/UnstructuredHeader.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
+require_once 'Swift/Mime/ContentEncoder.php';
 
 Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
+Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 
 class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTestCase
 {
@@ -331,13 +333,18 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       );
   }
   
+  // --- THESE TESTS ARE IMPLEMENTATION SPECIFIC FOR COMPATIBILITY WITH --
+  // --- SimpleMimeEntity ---
+  
   public function testFieldChangeObserverCanSetContentTransferEncoding()
   {
     $header = $this->_getHeader('Content-Transfer-Encoding',
       new Swift_Mime_MockHeaderEncoder()
       );
     $header->setValue('7bit');
-    $header->fieldChanged('encoding', 'quoted-printable');
+    $encoder = new Swift_Mime_MockContentEncoder();
+    $encoder->setReturnValue('getName', 'quoted-printable');
+    $header->fieldChanged('encoder', $encoder);
     $this->assertEqual('quoted-printable', $header->getValue());
   }
   
@@ -347,7 +354,9 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       new Swift_Mime_MockHeaderEncoder()
       );
     $header->setValue('My subject');
-    $header->fieldChanged('encoding', 'quoted-printable');
+    $encoder = new Swift_Mime_MockContentEncoder();
+    $encoder->setReturnValue('getName', 'quoted-printable');
+    $header->fieldChanged('encoding', $encoder);
     $this->assertEqual('My subject', $header->getValue());
   }
   
