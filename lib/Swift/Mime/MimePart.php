@@ -62,6 +62,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     Swift_Mime_ContentEncoder $encoder)
   {
     parent::__construct($headers, $encoder);
+    $this->setNestingLevel(self::LEVEL_SUBPART);
   }
   
   /**
@@ -143,8 +144,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function fieldChanged($field, $value)
   {
-    parent::fieldChanged($field, $value);
-    
     if ('encoder' == $field && ($value instanceof Swift_Mime_ContentEncoder))
     {
       $this->setEncoder($value);

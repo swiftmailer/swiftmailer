@@ -3,7 +3,6 @@ Swift Mailer:
 
  * See if some of the Headers can be refactored/removed
  * MimeEntity classes
-   - MimePart
    - Attachment
    - EmbeddedFile
    - Image

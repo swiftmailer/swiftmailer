@@ -62,6 +62,8 @@ class Sweety_Runner_HtmlRunner extends Sweety_Runner_AbstractTestRunner
       }
     }
     
+    usort($testCases, array($this, '_sort'));
+    
     $vars = array(
       //String
       'testCases' => $testCases,
@@ -106,8 +108,6 @@ class Sweety_Runner_HtmlRunner extends Sweety_Runner_AbstractTestRunner
         $vars['runTests'][$testCase] = 'idle'; //Show all checked by default
       }
     }
-    
-    sort($testCases);
     
     $this->_render($vars);
   }
@@ -155,6 +155,27 @@ class Sweety_Runner_HtmlRunner extends Sweety_Runner_AbstractTestRunner
     }
     
     require_once $this->_template;
+  }
+  
+  private function _sort($a, $b)
+  {
+    $apkg = preg_replace('/_[^_]+$/D', '', $a);
+    $bpkg = preg_replace('/_[^_]+$/D', '', $b);
+    if ($apkg == $bpkg)
+    {
+      if ($a == $b)
+      {
+        return 0;
+      }
+      else
+      {
+        return ($a > $b) ? 1 : -1;
+      }
+    }
+    else
+    {
+      return ($apkg > $bpkg) ? 1 : -1;
+    }
   }
   
 }

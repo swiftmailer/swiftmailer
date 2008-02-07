@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swift/Mime/MimeEntity.php';
 require_once 'Swift/Mime/MimePart.php';
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder.php';
@@ -20,6 +21,14 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
   {
     $this->_encoder = new Swift_Mime_MockContentEncoder();
     $this->_encoder->setReturnValue('getName', 'quoted-printable');
+  }
+  
+  public function testNestingLevelIsSubpart()
+  {
+    $part = $this->_createMimePart(array(), $this->_encoder);
+    $this->assertEqual(
+      Swift_Mime_MimeEntity::LEVEL_SUBPART, $part->getNestingLevel()
+      );
   }
   
   public function testCharsetCanBeSetAndFetched()
