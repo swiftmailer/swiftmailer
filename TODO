@@ -3,9 +3,12 @@ Swift Mailer:
 
  * See if some of the Headers can be refactored/removed
  * MimeEntity classes
-   - Image
+   - Image?
+   - Message/Digest type
  * Message class
    - SimpleMessage
+   - Message/Partial???
+   - Message/external???
  * Headers/observer interface
    - Date (Date)
    - Unstructrured (Subject, Comment)

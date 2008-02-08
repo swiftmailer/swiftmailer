@@ -63,6 +63,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   {
     parent::__construct($headers, $encoder);
     $this->setNestingLevel(self::LEVEL_SUBPART);
+    $this->setContentType('text/plain');
   }
   
   /**

@@ -60,6 +60,17 @@ interface Swift_Mime_MimeEntity
   public function getNestingLevel();
   
   /**
+   * Returns a unique ID for this entity.
+   * For most entities this will likely be the Content-ID, though it has
+   * no explicit semantic meaning and can be considered an identifier for
+   * programming logic purposes.
+   * If a Content-ID header is present, this value SHOULD match the value of
+   * the header.
+   * @return string
+   */
+  public function getId();
+  
+  /**
    * Get all children nested inside this entity.
    * These are not just the immediate children, but all children.
    * @return Swift_Mime_MimeEntity[]
