@@ -122,9 +122,9 @@ class Swift_Mime_Header_ParameterizedHeader
   {
     $fieldName = strtolower($this->getFieldName());
     
+    $parameters = $this->getParameters();
     if ('content-type' == $fieldName)
     {
-      $parameters = $this->getParameters();
       switch ($field)
       {
         case 'contenttype':
@@ -139,6 +139,29 @@ class Swift_Mime_Header_ParameterizedHeader
           $this->setParameters($parameters);
           break;
       }
+    }
+    elseif ('content-disposition' == $fieldName)
+    {
+      switch ($field)
+      {
+        case 'disposition':
+          $this->setValue($value);
+          break;
+        case 'creationdate':
+          $parameters['creation-date'] = date('r', $value);
+          break;
+        case 'modificationdate':
+          $parameters['modification-date'] = date('r', $value);
+          break;
+        case 'readdate':
+          $parameters['read-date'] = date('r', $value);
+          break;
+        case 'size':
+        case 'filename':
+          $parameters[$field] = $value;
+          break;
+      }
+      $this->setParameters($parameters);
     }
   }
   

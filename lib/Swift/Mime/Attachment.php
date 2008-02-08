@@ -22,7 +22,7 @@ require_once dirname(__FILE__) . '/SimpleMimeEntity.php';
 
 
 /**
- * A MIME part, in a multipart message.
+ * An attachment, in a multipart message.
  * @package Swift
  * @subpackage Mime
  * @author Chris Corbyn

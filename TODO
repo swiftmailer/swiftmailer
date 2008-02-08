@@ -3,13 +3,11 @@ Swift Mailer:
 
  * See if some of the Headers can be refactored/removed
  * MimeEntity classes
-   - Attachment
    - EmbeddedFile
    - Image
  * Headers/observer interface
    - Date (Date)
    - Unstructrured (Subject, Comment)
-   - Parameterized (Content-Disposition, filename)
    - Identification (Message-ID)
    - Mailbox (From etc...)
    - Path (Return-Path)
