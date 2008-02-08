@@ -1,12 +1,33 @@
+RFC 2822:
+---------
+General message structure (focusing on important headers)
+
 RFC 2045:
 ---------
 Quoted Printable Encoding
 Base 64 Encoding
+Detailed message structure
+
+RFC 2046:
+---------
+Media types (for subparts)
 
 RFC 2047:
 ---------
 Header Encoding
 
+RFC 2183:
+---------
+The Content-Disposition header
+
 RFC 2231:
 ---------
 Encoded Text header/attribute extensions
+
+RFC 2234:
+---------
+ABNF definitions
+
+RFC 3676:
+---------
+Flowed formatting/delsp parameters
