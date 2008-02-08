@@ -19,6 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/StructuredHeader.php';
+require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
 
 /**
  * A Path Header in Swift Mailer, such a Return-Path.
@@ -27,6 +28,7 @@ require_once dirname(__FILE__) . '/StructuredHeader.php';
  * @author Chris Corbyn
  */
 class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
+  implements Swift_Mime_FieldChangeObserver
 {
   
   /**
@@ -56,8 +58,8 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
     {
       $this->_address = null;
     }
-    elseif (preg_match('/^' . $this->getGrammar('addr-spec') . '$/D',
-      $address))
+    elseif ('' == $address
+      || preg_match('/^' . $this->getGrammar('addr-spec') . '$/D', $address))
     {
       $this->_address = $address;
     }
@@ -91,9 +93,34 @@ class Swift_Mime_Header_PathHeader extends Swift_Mime_Header_StructuredHeader
   {
     if (!$this->getCachedValue())
     {
-      $this->setCachedValue('<' . $this->getAddress() . '>');
+      if (isset($this->_address))
+      {
+        $this->setCachedValue('<' . $this->_address . '>');
+      }
     }
     return $this->getCachedValue();
+  }
+  
+  /**
+   * Notify this observer that a field has changed to $value.
+   * "Field" is a loose term and refers to class fields rather than
+   * header fields.  $field will always be in lowercase and will be alpha.
+   * only.
+   * An example could be fieldChanged('contenttype', 'text/plain');
+   * This of course reflects a change in the body of the Content-Type header.
+   * Another example could be fieldChanged('charset', 'us-ascii');
+   * This reflects a change in the charset parameter of the Content-Type header.
+   * @param string $field in lowercase ALPHA
+   * @param mixed $value
+   */
+  public function fieldChanged($field, $value)
+  {
+    $fieldName = strtolower($this->getFieldName());
+    
+    if ('return-path' == $fieldName && 'returnpath' == $field)
+    {
+      $this->setAddress($value);
+    }
   }
   
 }

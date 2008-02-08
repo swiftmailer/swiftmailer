@@ -405,6 +405,38 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     }
   }
   
+  public function testFieldChangeObserverCanSetSubject()
+  {
+    $header = $this->_getHeader('Subject',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->fieldChanged('subject', 'testing');
+    $this->assertEqual('testing', $header->getValue());
+  }
+  
+  public function testSubjectFieldChangeIsIgnoredByOtherHeaders()
+  {
+    $header = $this->_getHeader('Content-Type',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->setValue('text/plain');
+    $header->fieldChanged('subject', 'testing');
+    $this->assertEqual('text/plain', $header->getValue());
+  }
+  
+  public function testOtherFieldChangesAreIgnoredForSubject()
+  {
+    $header = $this->_getHeader('Subject',
+      new Swift_Mime_MockHeaderEncoder()
+      );
+    $header->setValue('testing');
+    foreach (array('charset', 'comments', 'x-foo') as $field)
+    {
+      $header->fieldChanged($field, 'xxxxx');
+      $this->assertEqual('testing', $header->getValue());
+    }
+  }
+  
   // -- Private methods
   
   private function _getHeader($name, $encoder)

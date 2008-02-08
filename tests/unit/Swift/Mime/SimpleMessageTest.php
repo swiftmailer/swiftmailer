@@ -39,9 +39,11 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   {
     $h1 = new Swift_Mime_MockHeader();
     $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'text/html');
     $h1->setReturnValue('toString', 'Content-Type: text/html' . "\r\n");
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'X-Header');
+    $h2->setReturnValue('getFieldBody', 'foo');
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
     $message = $this->_createMessage($headers, $this->_encoder);
@@ -56,9 +58,11 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   {
     $h1 = new Swift_Mime_MockHeader();
     $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'text/html');
     $h1->setReturnValue('toString', 'Content-Type: text/html' . "\r\n");
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'X-Header');
+    $h2->setReturnValue('getFieldBody', 'foo');
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
     $this->_encoder->setReturnValue('encodeString', 'my body');
@@ -379,6 +383,9 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     
     $h1 = new Swift_Mime_MockHeader();
     $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"'
+      );
     $h1->setReturnValue('toString',
       'Content-Type: multipart/alternative;' . "\r\n" .
       ' boundary="_=_foo_=_"' . "\r\n"
@@ -432,6 +439,9 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   {
     $h1 = new Swift_Mime_MockHeader();
     $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'multipart/mixed;' . "\r\n" .
+      ' boundary="_=_foo_=_"'
+      );
     $h1->setReturnValue('toString',
       'Content-Type: multipart/mixed;' . "\r\n" .
       ' boundary="_=_foo_=_"' . "\r\n"
@@ -638,9 +648,11 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   {
     $h1 = new Swift_Mime_MockHeader();
     $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'text/html');
     $h1->setReturnValue('toString', 'Content-Type: text/html' . "\r\n");
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'X-Header');
+    $h2->setReturnValue('getFieldBody', 'foo');
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
     $this->_encoder->expectOnce('encodeString', array('my body', '*', '*'));
@@ -850,15 +862,15 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     
     $message = $this->_createMessage(array(), $this->_encoder);
     $message->setSender('chris.corbyn@swiftmailer.org');
-    $this->assertEqual('chris.corbyn@swiftmailer.org', $message->getSender());
+    $this->assertEqual(array('chris.corbyn@swiftmailer.org'=>null), $message->getSender());
   }
   
   public function testSettingSenderNotifiesFieldChangeObservers()
   {
     $observer1 = new Swift_Mime_MockFieldChangeObserver();
-    $observer1->expectOnce('fieldChanged', array('sender', 'chris@site'));
+    $observer1->expectOnce('fieldChanged', array('sender', array('chris@site'=>null)));
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
-    $observer2->expectOnce('fieldChanged', array('sender', 'chris@site'));
+    $observer2->expectOnce('fieldChanged', array('sender', array('chris@site'=>null)));
     
     $message = $this->_createMessage(array(), $this->_encoder);
     

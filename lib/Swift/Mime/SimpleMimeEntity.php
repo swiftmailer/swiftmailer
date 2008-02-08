@@ -556,9 +556,17 @@ class Swift_Mime_SimpleMimeEntity
     
     $hasChildren = count($this->_children) > 0;
     
+    $requiredFields = $this->getRequiredFields();
+    
     //Append headers
     foreach ($this->_headers as $header)
     {
+      if ($header->getFieldBody() == ''
+        && !in_array(strtolower($header->getFieldName()), $requiredFields))
+      { //Empty fields need not be displayed
+        continue;
+      }
+      
       if ($hasChildren
         && strtolower($header->getFieldName()) == 'content-transfer-encoding'
         && !in_array(
@@ -605,9 +613,17 @@ class Swift_Mime_SimpleMimeEntity
   {
     $hasChildren = count($this->_children) > 0;
     
+    $requiredFields = $this->getRequiredFields();
+    
     //Append headers
     foreach ($this->_headers as $header)
     {
+      if ($header->getFieldBody() == ''
+        && !in_array(strtolower($header->getFieldName()), $requiredFields))
+      { //Empty fields need not be displayed
+        continue;
+      }
+      
       if ($hasChildren
         && strtolower($header->getFieldName()) == 'content-transfer-encoding'
         && !in_array(
@@ -719,9 +735,13 @@ class Swift_Mime_SimpleMimeEntity
     }
   }
   
-  public function __toString()
+  /**
+   * Get a list of (lowercased) header field names which will always be displayed.
+   * @return string[]
+   */
+  public function getRequiredFields()
   {
-    return $this->getId();
+    return array();
   }
   
   // -- Protected methods

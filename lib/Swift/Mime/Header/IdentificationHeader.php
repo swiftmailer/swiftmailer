@@ -148,17 +148,10 @@ class Swift_Mime_Header_IdentificationHeader
   {
     $fieldName = strtolower($this->getFieldName());
     
-    if ('content-id' == $fieldName)
+    if (('content-id' == $fieldName && 'id' == $field)
+      || ('message-id' == $fieldName && 'id' == $field))
     {
-      if ('id' == $field)
-      {
-        try
-        {
-          $this->setId($value);
-        }
-        catch (Exception $e)
-        {}
-      }
+      $this->setId($value);
     }
   }
   

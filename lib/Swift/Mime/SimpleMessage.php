@@ -57,10 +57,10 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
   
   /**
    * The sender address (more significant than the from address).
-   * @var string
+   * @var string[]
    * @access private
    */
-  private $_sender;
+  private $_sender = array();
   
   /**
    * Addresses of people this message is addressed from.
@@ -96,6 +96,13 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    * @access private
    */
   private $_bcc = array();
+  
+  /**
+   * Fields which must always be displayed.
+   * @var string[]
+   * @access private
+   */
+  private $_requiredFields = array('date', 'from', 'message-id');
   
   /**
    * Creates a new MimePart with $headers and $encoder.
@@ -185,10 +192,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    */
   public function setSender($address)
   {
-    if (!is_null($address))
-    {
-      $address = (string) $address;
-    }
+    $address = $this->_normalizeMailboxes((array) $address);
     $this->_sender = $address;
     $this->_notifyFieldChanged('sender', $address);
     return $this;
@@ -197,7 +201,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
   /**
    * Get the sender address for this message.
    * This has a higher significance than the From address.
-   * @return string
+   * This method always returns an associative array where the key provides the address.
+   * @return string[]
    */
   public function getSender()
   {
@@ -366,7 +371,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    * Detach an individual child entity from this message based on its ID.
    * @param string $id
    * @return Swift_Mime_Message
-   * @see attach(), detachId()
+   * @see attach(), embed(), detach()
    */
   public function detachId($id)
   {
@@ -395,6 +400,30 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
   {
     $this->attach($entity);
     return 'cid:' . $entity->getId();
+  }
+  
+  /**
+   * Add a list of header field names which should always be shown.
+   * The default behaviour is to hide non-required fields if their bodies are
+   * empty.
+   * @param string[] $required
+   */
+  public function addRequiredFields(array $required)
+  {
+    foreach ($required as $req)
+    {
+      $this->_requiredFields[] = strtolower($req);
+    }
+  }
+  
+  /**
+   * Get a list of (lowercased) header field names which will always be displayed.
+   * This is actually a point of extension.
+   * @return string[]
+   */
+  public function getRequiredFields()
+  {
+    return $this->_requiredFields;
   }
   
   /**

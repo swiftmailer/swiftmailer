@@ -45,6 +45,32 @@ class Swift_Mime_Header_DateHeaderTest
       );
   }
   
+  public function testFieldChangeObserverCanSetDate()
+  {
+    $header = $this->_getHeader('Date');
+    $header->fieldChanged('date', 12345);
+    $this->assertEqual(12345, $header->getTimestamp());
+  }
+  
+  public function testDateFieldChangeIsIgnoredByOtherHeaders()
+  {
+    $header = $this->_getHeader('Received');
+    $header->setTimestamp(123456);
+    $header->fieldChanged('date', 123);
+    $this->assertEqual(123456, $header->getTimestamp());
+  }
+  
+  public function testOtherFieldChangesAreIgnoredForDate()
+  {
+    $header = $this->_getHeader('Date');
+    $header->setTimestamp(123);
+    foreach (array('charset', 'comments', 'x-foo') as $field)
+    {
+      $header->fieldChanged($field, 'xxxxx');
+      $this->assertEqual(123, $header->getTimestamp());
+    }
+  }
+  
   // -- Private methods
   
   private function _getHeader($name)

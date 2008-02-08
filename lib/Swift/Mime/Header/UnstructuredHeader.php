@@ -119,6 +119,13 @@ class Swift_Mime_Header_UnstructuredHeader
         $this->setValue($value);
       }
     }
+    elseif ('subject' == $fieldName)
+    {
+      if ('subject' == $field)
+      {
+        $this->setValue($value);
+      }
+    }
   }
   
 }
