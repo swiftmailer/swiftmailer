@@ -4,13 +4,15 @@ Swift Mailer:
  * See if some of the Headers can be refactored/removed
  * MimeEntity classes
    - Image
+ * Message class
+   - SimpleMessage
  * Headers/observer interface
    - Date (Date)
    - Unstructrured (Subject, Comment)
    - Identification (Message-ID)
    - Mailbox (From etc...)
    - Path (Return-Path)
-   - Address (Reply-To)
+   - Address (To, Cc, Bcc, Reply-To)
    - List (Keywords)
  * Make QpContentEncoder implement FieldChangeObserver so it can take on
    new charsets
