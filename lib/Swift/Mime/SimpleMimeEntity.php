@@ -719,6 +719,11 @@ class Swift_Mime_SimpleMimeEntity
     }
   }
   
+  public function __toString()
+  {
+    return $this->getId();
+  }
+  
   // -- Protected methods
   
   /**

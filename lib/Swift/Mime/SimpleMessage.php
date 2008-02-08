@@ -21,6 +21,7 @@
 require_once dirname(__FILE__) . '/MimePart.php';
 require_once dirname(__FILE__) . '/Message.php';
 require_once dirname(__FILE__) . '/ContentEncoder.php';
+require_once dirname(__FILE__) . '/MimeEntity.php';
 
 
 /**
@@ -331,6 +332,69 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
   public function getBcc()
   {
     return $this->_bcc;
+  }
+  
+  /**
+   * Attach an individual child entity to this message.
+   * This may be an attachment, a mime part, an embedded file etc.
+   * Semantically this is the same as {@link setChildren()} except it only
+   * adds the child and doesn't overwrite existing children.
+   * This method returns the instance it belongs to so a fluid interface can
+   * be used.
+   * @param Swift_Mime_MimeEntity $entity
+   * @return Swift_Mime_Message
+   */
+  public function attach(Swift_Mime_MimeEntity $entity)
+  {
+    $this->setChildren(array_merge($this->getChildren(), array($entity)));
+    return $this;
+  }
+  
+  /**
+   * Detach an individual child entity from this message.
+   * @param Swift_Mime_MimeEntity $entity
+   * @return Swift_Mime_Message
+   * @see attach(), detachId()
+   */
+  public function detach(Swift_Mime_MimeEntity $entity)
+  {
+    $this->detachId($entity->getId());
+    return $this;
+  }
+  
+  /**
+   * Detach an individual child entity from this message based on its ID.
+   * @param string $id
+   * @return Swift_Mime_Message
+   * @see attach(), detachId()
+   */
+  public function detachId($id)
+  {
+    $children = $this->getChildren();
+    foreach ($children as $index => $child)
+    {
+      if ($child->getId() == $id)
+      {
+        unset($children[$index]);
+      }
+    }
+    $this->setChildren(array_values($children));
+    return $this;
+  }
+  
+  /**
+   * Attach an individual child entity to this message and return a cid
+   * string for use when embedding content.
+   * This method performs the same operation as attach, except it returns a
+   * string of the form "cid:< id of child >" which can be used as a src attribute
+   * in a HTML message.
+   * @param Swift_Mime_MimeEntity $entity
+   * @return string
+   */
+  public function embed(Swift_Mime_MimeEntity $entity)
+  {
+    $this->attach($entity);
+    return 'cid:' . $entity->getId();
   }
   
   /**

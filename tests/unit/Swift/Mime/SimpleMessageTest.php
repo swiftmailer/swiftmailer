@@ -1128,7 +1128,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       ));
   }
   
-  ////
   public function testBccCanBeSetAndFetched()
   {
     /* -- RFC 2822 3.6.3.
@@ -1194,8 +1193,124 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       ));
   }
   
+  public function testChildrenCanBeAttached()
+  {
+    $message = $this->_createMessage(array(), $this->_encoder);
+    
+    $entity1 = new Swift_Mime_MockMimeEntity();
+    $entity1->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_ATTACHMENT
+      );
+    
+    $message->attach($entity1);
+    
+    $this->assertEqual(array($entity1), $message->getChildren(),
+      '%s: Child should be appended'
+      );
+    
+    $entity2 = new Swift_Mime_MockMimeEntity();
+    $entity2->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
+    
+    $message->attach($entity2);
+    
+    $this->assertEqual(array($entity1, $entity2), $message->getChildren(),
+      '%s: Children should be incrementally appended'
+      );
+  }
+  
+  public function testChildrenCanBeDetached()
+  {
+    $message = $this->_createMessage(array(), $this->_encoder);
+    
+    $entity1 = new Swift_Mime_MockMimeEntity();
+    $entity1->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_ATTACHMENT
+      );
+    $entity1->setReturnValue('getId', 'foo@bar');
+    
+    $message->attach($entity1);
+    
+    $this->assertEqual(array($entity1), $message->getChildren(),
+      '%s: Child should be appended'
+      );
+    
+    $entity2 = new Swift_Mime_MockMimeEntity();
+    $entity2->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
+    $entity2->setReturnValue('getId', 'zip@button');
+    
+    $message->attach($entity2);
+    
+    $this->assertEqual(array($entity1, $entity2), $message->getChildren(),
+      '%s: Children should be incrementally appended'
+      );
+      
+    $message->detach($entity1);
+    
+    $this->assertEqual(array($entity2), $message->getChildren(),
+      '%s: Child should be detached'
+      );
+  }
+  
+  public function testEmbedAttachesChild()
+  {
+    $message = $this->_createMessage(array(), $this->_encoder);
+    
+    $entity1 = new Swift_Mime_MockMimeEntity();
+    $entity1->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_ATTACHMENT
+      );
+    $entity1->setReturnValue('getId', 'foo@bar');
+    
+    $message->embed($entity1);
+    
+    $this->assertEqual(array($entity1), $message->getChildren(),
+      '%s: embed() should attach child'
+      );
+    
+    $entity2 = new Swift_Mime_MockMimeEntity();
+    $entity2->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
+    $entity2->setReturnValue('getId', 'zip@button');
+    
+    $message->embed($entity2);
+    
+    $this->assertEqual(array($entity1, $entity2), $message->getChildren(),
+      '%s: Children should be incrementally appended'
+      );
+  }
+  
+  public function testEmbedReturnsValidCid()
+  {
+    $message = $this->_createMessage(array(), $this->_encoder);
+    
+    $entity1 = new Swift_Mime_MockMimeEntity();
+    $entity1->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_ATTACHMENT
+      );
+    $entity1->setReturnValue('getId', 'foo@bar');
+    
+    $this->assertEqual('cid:foo@bar', $message->embed($entity1));
+    
+    $entity2 = new Swift_Mime_MockMimeEntity();
+    $entity2->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
+    $entity2->setReturnValue('getId', 'zip@button');
+    
+    $this->assertEqual('cid:zip@button', $message->embed($entity2));
+  }
+  
   public function testFluidInterface()
   {
+    $child = new Swift_Mime_MockMimeEntity();
+    $child->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
     $message = $this->_createMessage(array(), $this->_encoder);
     $ref = $message
       ->setContentType('text/plain')
@@ -1220,6 +1335,8 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       ->setTo(array('chris@site.tld', 'mark@site.tld'))
       ->setCc('john@somewhere.tld')
       ->setBcc(array('one@site', 'two@site' => 'Two'))
+      ->attach($child)
+      ->detach($child)
       ;
     
     $this->assertReference($message, $ref);
