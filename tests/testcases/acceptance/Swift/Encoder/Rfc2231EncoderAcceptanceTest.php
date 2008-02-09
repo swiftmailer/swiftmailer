@@ -12,7 +12,7 @@ class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends UnitTestCase
   
   public function setUp()
   {
-    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/');
+    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../../samples/');
     $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
   }
   

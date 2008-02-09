@@ -1,17 +1,19 @@
 <?php
 
-require_once 'Swift/Encoder/Base64Encoder.php';
+require_once 'Swift/Encoder/QpEncoder.php';
+require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
+require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
 
-class Swift_Encoder_Base64EncoderAcceptanceTest extends UnitTestCase
+class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
 {
   
   private $_samplesDir;
-  private $_encoder;
+  private $_factory;
   
   public function setUp()
   {
-    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/');
-    $this->_encoder = new Swift_Encoder_Base64Encoder();
+    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../../samples/');
+    $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
   }
   
   public function testEncodingAndDecodingSamples()
@@ -23,6 +25,11 @@ class Swift_Encoder_Base64EncoderAcceptanceTest extends UnitTestCase
       {
         continue;
       }
+      
+      $encoding = $encodingDir;
+      $charStream = new Swift_CharacterStream_ArrayCharacterStream(
+        $this->_factory, $encoding);
+      $encoder = new Swift_Encoder_QpEncoder($charStream);
       
       $sampleDir = $this->_samplesDir . '/' . $encodingDir;
       
@@ -38,10 +45,10 @@ class Swift_Encoder_Base64EncoderAcceptanceTest extends UnitTestCase
           }
         
           $text = file_get_contents($sampleDir . '/' . $sampleFile);
-          $encodedText = $this->_encoder->encodeString($text);
+          $encodedText = $encoder->encodeString($text);
         
           $this->assertEqual(
-            base64_decode($encodedText), $text,
+            quoted_printable_decode($encodedText), $text,
             '%s: Encoded string should decode back to original string for sample ' .
             $sampleDir . '/' . $sampleFile
             );

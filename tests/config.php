@@ -21,8 +21,8 @@ define('SWEETY_LIB_PATH', SWEETY_HOME . '/lib');
 define('SWEETY_SIMPLETEST_PATH', SWEETY_LIB_PATH . '/simpletest');
 //The path to any testing directories
 define('SWEETY_TEST_PATH',
-  SWEETY_HOME . '/unit' .
-  PATH_SEPARATOR . SWEETY_HOME . '/acceptance'
+  SWEETY_HOME . '/testcases/unit' .
+  PATH_SEPARATOR . SWEETY_HOME . '/testcases/acceptance'
   );
 //Test locator strategies, separated by commas
 define('SWEETY_TEST_LOCATOR', 'Sweety_TestLocator_PearStyleLocator');
