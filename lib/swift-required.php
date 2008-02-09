@@ -18,6 +18,6 @@
  
  */
 
-define('SWIFT_INTERNAL_DIRECTORY', dirname(__FILE__));
+define('SWIFT_INTERNAL_DIRECTORY', dirname(__FILE__) . '/classes');
 require_once SWIFT_INTERNAL_DIRECTORY . '/Swift/Di.php';
 spl_autoload_register(array('Swift_Di', 'autoload'));
