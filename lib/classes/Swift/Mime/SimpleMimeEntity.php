@@ -57,6 +57,13 @@ class Swift_Mime_SimpleMimeEntity
   private $_contentType = 'text/plain';
   
   /**
+   * The preferred Content-type of this entity.
+   * @var string
+   * @access private
+   */
+  private $_preferredContentType = 'text/plain';
+  
+  /**
    * The unique ID of this entity.
    * @var string
    * @access private
@@ -257,6 +264,7 @@ class Swift_Mime_SimpleMimeEntity
   public function setContentType($contentType)
   {
     $this->_contentType = $contentType;
+    $this->_preferredContentType = $contentType;
     $this->_notifyFieldChanged('contenttype', $contentType);
     return $this;
   }
@@ -463,7 +471,9 @@ class Swift_Mime_SimpleMimeEntity
         if ($lowestLevel > $range[0]
           && $lowestLevel <= $range[1])
         {
+          $preferredType = $this->_preferredContentType;
           $this->setContentType($mediaType);
+          $this->_preferredContentType = $preferredType;
           break;
         }
       }
@@ -476,10 +486,29 @@ class Swift_Mime_SimpleMimeEntity
         $subentity->setChildren($grandchildren);
         array_unshift($immediateChildren, $subentity);
       }
+      
+      //If this entity has it's own body it needs to be displayed
+      // This is very experimental
+      if (isset($this->_stringBody))
+      {
+        $subentity = $this->getEntityFactory()->createBaseEntity();
+        $subentity->setNestingLevel($lowestLevel);
+        $subentity->setContentType($this->_preferredContentType);
+        $subentity->setBodyAsString($this->_stringBody);
+        array_unshift($immediateChildren, $subentity);
+      }
+      elseif (isset($this->_streamBody))
+      {
+        $subentity = $this->getEntityFactory()->createBaseEntity();
+        $subentity->setNestingLevel($lowestLevel);
+        $subentity->setContentType($this->_preferredContentType);
+        $subentity->setBodyAsByteStream($this->_streamBody);
+        array_unshift($immediateChildren, $subentity);
+      }
     }
     else
     {
-      $this->setContentType('text/plain'); //TODO: Restore original content-type
+      $this->setContentType($this->_preferredContentType);
     }
     
     //Store the direct descendants

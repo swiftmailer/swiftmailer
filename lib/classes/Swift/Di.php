@@ -24,7 +24,7 @@
  * @package Swift
  * @author Chris Corbyn
  */
-abstract class Swift_Di
+class Swift_Di
 {
   
   /**
@@ -47,7 +47,7 @@ abstract class Swift_Di
    * @return object
    * @throws ClassNotFoundException if no such component exists
    */
-  public function createInstance($name)
+  public function createDependency($name)
   {
     if (!array_key_exists($name, $this->_map))
     {
@@ -121,13 +121,11 @@ abstract class Swift_Di
       }
       else
       {
-        $colonPos = strpos($arg, ':');
-        $type = substr($arg, 0, $colonPos);
-        $value = substr($arg, $colonPos + 1);
+        list($type, $value) = sscanf($arg, '%[^:]:%s');
         switch ($type)
         {
           case 'di':
-            $instanceArgs[$i] = $this->createInstance($value);
+            $instanceArgs[$i] = $this->createDependency($value);
             break;
           case 'string':
             $instanceArgs[$i] = (string) $value;

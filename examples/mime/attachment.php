@@ -1,7 +1,7 @@
 <?php
 
 /*
- This example creates a message from a single sender to a single recipient.
+ This example creates an email with a PDF attachment.
  */
 
 //Enable full error reporting
@@ -13,12 +13,16 @@ date_default_timezone_set('Australia/Melbourne');
 require_once dirname(__FILE__) . '/../../lib/swift_required.php';
 
 $message = Swift_MimeFactory::create('message')
-  ->setSubject('A basic message')
-  ->setTo(array('chris.corbyn@swiftmailer.org' => 'Chris Corbyn'))
+  ->setSubject('A recipe to try')
+  ->setTo(array('rob@site.com' => 'Rob'))
   ->setFrom(array('chris@w3style.co.uk' => 'Myself'))
-  ->setContentType('text/plain')
-  ->setCharset('utf-8')
-  ->setBody('just testing')
+  ->setBody("Here's a recipe for beef stifado")
+  ->attach(
+    Swift_MimeFactory::create('attachment')
+      ->setContentType('application/pdf')
+      ->setFilename('stifado.pdf')
+      ->setBody(file_get_contents(dirname(__FILE__) . '/files/BeefStifado.pdf'))
+    )
   ;
   
 echo $message->toString();

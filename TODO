@@ -2,16 +2,18 @@ Swift Mailer:
 -------------
 
  * See if some of the Headers can be refactored/removed
+ * Allow setBody() to be used even when attachments are added
+   - Need to think about images (perhaps always make the body SUBPART?)
  * Add a fixLE() method to MimePart (for ByteStreams too)
    - Perhaps make QpContentEncoder extend PlainContentEncoder so line wraps
      are handled correctly, and also add such canonicalization logic there.
      <?php $string = parent::encodeString($string);
      return $this->encodeString($string); ?>
  * MimeEntity classes
-   - Image?
+   - Image
+   - ForwardedMessage
    - Message/Digest type
  * Message class
-   - SimpleMessage
    - Message/Partial???
    - Message/external???
  * Make QpContentEncoder implement FieldChangeObserver so it can take on

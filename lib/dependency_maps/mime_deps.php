@@ -1,6 +1,7 @@
 <?php
 
-return array(
+//Dependency map
+$_swiftMimeDeps = array(
     
   //Message
   'message' => array(
@@ -22,6 +23,48 @@ return array(
         'di:contenttransferencodingheader'
         ),
       'di:qpcontentencoder'
+      ),
+      'shared' => false
+    ),
+    
+  //Mime Part
+  'part' => array(
+    'class' => 'Swift_Mime_MimePart',
+    'args' => array(
+      array(
+        'di:contenttypeheader',
+        'di:contenttransferencodingheader'
+        ),
+      'di:qpcontentencoder'
+      ),
+      'shared' => false
+    ),
+    
+  //Attachment
+  'attachment' => array(
+    'class' => 'Swift_Mime_Attachment',
+    'args' => array(
+      array(
+        'di:contenttypeheader',
+        'di:contenttransferencodingheader',
+        'di:contentdispositionheader'
+        ),
+      'di:base64contentencoder'
+      ),
+      'shared' => false
+    ),
+    
+  //Image
+  'image' => array(
+    'class' => 'Swift_Mime_EmbeddedFile',
+    'args' => array(
+      array(
+        'di:contenttypeheader',
+        'di:contenttransferencodingheader',
+        'di:contentdispositionheader',
+        'di:contentidheader'
+        ),
+      'di:base64contentencoder'
       ),
       'shared' => false
     ),
@@ -47,6 +90,13 @@ return array(
   'messageidheader' => array(
     'class' => 'Swift_Mime_Header_IdentificationHeader',
     'args' => array('string:Message-ID'),
+    'shared' => false
+    ),
+    
+  //Content-ID
+  'contentidheader' => array(
+    'class' => 'Swift_Mime_Header_IdentificationHeader',
+    'args' => array('string:Content-ID'),
     'shared' => false
     ),
 
@@ -134,14 +184,24 @@ return array(
       ),
     'shared' => false
     ),
+    
+  //Content-Disposition
+  'contentdispositionheader' => array(
+    'class' => 'Swift_Mime_Header_ParameterizedHeader',
+    'args' => array(
+      'string:Content-Disposition',
+      'di:qpheaderencoder',
+      'di:rfc2231encoder'
+      ),
+    'shared' => false
+    ),
   
   //Content-Transfer-Encoding
   'contenttransferencodingheader' => array(
-    'class' => 'Swift_Mime_Header_ParameterizedHeader',
+    'class' => 'Swift_Mime_Header_UnstructuredHeader',
     'args' => array(
       'string:Content-Transfer-Encoding',
-      'di:qpheaderencoder',
-      'di:rfc2231encoder'
+      'di:qpheaderencoder'
       ),
     'shared' => false
     ),
@@ -176,6 +236,27 @@ return array(
     'args' => array('di:charstream'),
     'shared' => true
     ),
+    
+  //7bit content Encoder
+  '7bitcontentencoder' => array(
+    'class' => 'Swift_Mime_ContentEncoder_PlainContentEncoder',
+    'args' => array('string:7bit'),
+    'shared' => true
+    ),
+    
+  //8bit content Encoder
+  '8bitcontentencoder' => array(
+    'class' => 'Swift_Mime_ContentEncoder_PlainContentEncoder',
+    'args' => array('string:8bit'),
+    'shared' => true
+    ),
+  
+  //Base64 content Encoder
+  'base64contentencoder' => array(
+    'class' => 'Swift_Mime_ContentEncoder_Base64ContentEncoder',
+    'args' => array(),
+    'shared' => true
+    ),
   
   //Parameter (RFC 2231) Encoder
   'rfc2231encoder' => array(
@@ -186,3 +267,9 @@ return array(
   
   );
   
+//Aliases
+$_swiftMimeDeps['7bitencoder'] = $_swiftMimeDeps['7bitcontentencoder'];
+
+return $_swiftMimeDeps;
+
+//EOF

@@ -63,7 +63,7 @@ class Swift_MimeFactory extends Swift_Di
    */
   public static function create($name)
   {
-    return self::getInstance()->createInstance($name);
+    return self::getInstance()->createDependency($name);
   }
   
 }
