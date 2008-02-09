@@ -2,6 +2,11 @@ Swift Mailer:
 -------------
 
  * See if some of the Headers can be refactored/removed
+ * Add a fixLE() method to MimePart (for ByteStreams too)
+   - Perhaps make QpContentEncoder extend PlainContentEncoder so line wraps
+     are handled correctly, and also add such canonicalization logic there.
+     <?php $string = parent::encodeString($string);
+     return $this->encodeString($string); ?>
  * MimeEntity classes
    - Image?
    - Message/Digest type
@@ -9,14 +14,6 @@ Swift Mailer:
    - SimpleMessage
    - Message/Partial???
    - Message/external???
- * Headers/observer interface
-   - Date (Date)
-   - Unstructrured (Subject, Comment)
-   - Identification (Message-ID)
-   - Mailbox (From etc...)
-   - Path (Return-Path)
-   - Address (To, Cc, Bcc, Reply-To)
-   - List (Keywords)
  * Make QpContentEncoder implement FieldChangeObserver so it can take on
    new charsets
  * Acceptance tests

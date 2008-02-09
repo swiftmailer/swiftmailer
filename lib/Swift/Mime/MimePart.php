@@ -132,9 +132,33 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   }
   
   /**
+   * Overridden from SimpleMimeEntity to fix conflicts.
+   * @param Swift_Mime_MimeEntity[] $children
+   * @return Swift_Mime_SimpleMimeEntity
+   */
+  public function setChildren(array $children)
+  {
+    parent::setChildren($children);
+    $children = $this->getChildren();
+    if (!empty($children)) //boundary will be set
+    {
+      $this->_notifyFieldChanged('charset', null);
+      $this->_notifyFieldChanged('format', null);
+      $this->_notifyFieldChanged('delsp', null);
+    }
+    else
+    {
+      $this->_notifyFieldChanged('charset', $this->_charset);
+      $this->_notifyFieldChanged('format', $this->_format);
+      $this->_notifyFieldChanged('delsp', $this->_delSp ? true : null);
+    }
+    return $this;
+  }
+  
+  /**
    * Notify this entity that a field has changed to $value in its parent.
    * "Field" is a loose term and refers to class fields rather than
-   * header fields.  $field will always be in lowercase and will be alpha.
+   * header fields.  $field will always be in lowercase and will be alpha
    * only.
    * An example could be fieldChanged('contenttype', 'text/plain');
    * This of course reflects a change in the body of the Content-Type header.

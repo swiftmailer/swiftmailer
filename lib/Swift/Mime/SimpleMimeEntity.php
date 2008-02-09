@@ -337,6 +337,24 @@ class Swift_Mime_SimpleMimeEntity
   }
   
   /**
+   * A selective setBody() which accepts either a string or a ByteStream for
+   * convenience.
+   * @param mixed $body
+   */
+  public function setBody($body)
+  {
+    if ($body instanceof Swift_ByteStream)
+    {
+      $this->setBodyAsByteStream($body);
+    }
+    else
+    {
+      $this->setBodyAsString($body);
+    }
+    return $this;
+  }
+  
+  /**
    * Set the body of this entity as a string.
    * Returns a reference to itself for fluid interface.
    * @param string $string
@@ -459,6 +477,10 @@ class Swift_Mime_SimpleMimeEntity
         array_unshift($immediateChildren, $subentity);
       }
     }
+    else
+    {
+      $this->setContentType('text/plain'); //TODO: Restore original content-type
+    }
     
     //Store the direct descendants
     $this->_immediateChildren = $immediateChildren;
@@ -476,7 +498,15 @@ class Swift_Mime_SimpleMimeEntity
     }
     $this->_internalFieldChangeObservers['children'] = $observers;
     
-    $this->_notifyFieldChanged('boundary', $this->getBoundary());
+    //Apply a boundary if needed
+    if (empty($children))
+    {
+      $this->_notifyFieldChanged('boundary', null);
+    }
+    else
+    {
+      $this->_notifyFieldChanged('boundary', $this->getBoundary());
+    }
     
     return $this;
   }
@@ -728,7 +758,7 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function fieldChanged($field, $value)
   {
-    if ('encoder' == $field && preg_match('/^multipart\//D', $this->_contentType)
+    if ('encoder' == $field && substr($this->_contentType, 0, 10) == 'multipart/'
       && ($value instanceof Swift_Mime_ContentEncoder))
     {
       $this->setEncoder($value);

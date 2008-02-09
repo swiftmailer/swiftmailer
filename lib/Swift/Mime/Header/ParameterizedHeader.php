@@ -99,10 +99,12 @@ class Swift_Mime_Header_ParameterizedHeader
     $body = parent::getFieldBody();
     foreach ($this->_params as $name => $value)
     {
-      //Add the parameter
-      $body .= '; ' . $this->_createParameter($name, $value);
+      if (!is_null($value))
+      {
+        //Add the parameter
+        $body .= '; ' . $this->_createParameter($name, $value);
+      }
     }
-    
     return $body;
   }
   
@@ -131,7 +133,10 @@ class Swift_Mime_Header_ParameterizedHeader
           $this->setValue($value);
           break;
         case 'delsp':
-          $value = $value ? 'yes' : 'no';
+          if (!is_null($value))
+          {
+            $value = $value ? 'yes' : 'no';
+          }
         case 'charset':
         case 'boundary':
         case 'format':
@@ -148,13 +153,13 @@ class Swift_Mime_Header_ParameterizedHeader
           $this->setValue($value);
           break;
         case 'creationdate':
-          $parameters['creation-date'] = date('r', $value);
+          $parameters['creation-date'] = is_null($value) ? null : date('r', $value);
           break;
         case 'modificationdate':
-          $parameters['modification-date'] = date('r', $value);
+          $parameters['modification-date'] = is_null($value) ? null : date('r', $value);
           break;
         case 'readdate':
-          $parameters['read-date'] = date('r', $value);
+          $parameters['read-date'] = is_null($value) ? null : date('r', $value);
           break;
         case 'size':
         case 'filename':
@@ -181,11 +186,14 @@ class Swift_Mime_Header_ParameterizedHeader
     //Try creating any parameters
     foreach ($this->_params as $name => $value)
     {
-      //Add the semi-colon separator
-      $tokens[count($tokens)-1] .= ';';
-      $tokens = array_merge($tokens, $this->generateTokenLines(
-        ' ' . $this->_createParameter($name, $value)
-        ));
+      if (!is_null($value))
+      {
+        //Add the semi-colon separator
+        $tokens[count($tokens)-1] .= ';';
+        $tokens = array_merge($tokens, $this->generateTokenLines(
+          ' ' . $this->_createParameter($name, $value)
+          ));
+      }
     }
     
     return $tokens;
