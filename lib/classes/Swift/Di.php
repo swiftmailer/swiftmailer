@@ -24,14 +24,32 @@
  * @package Swift
  * @author Chris Corbyn
  */
-class Swift_Di
+abstract class Swift_Di
 {
   
-  public static $_shared = array();
+  /**
+   * Shared instance collection.
+   * @var object[]
+   * @access private
+   */
+  private $_shared = array();
   
-  public static function createFromMap(array $map, $name)
+  /**
+   * The dependency map.
+   * @var array
+   * @access private
+   */
+  private $_map = array();
+  
+  /**
+   * Create a new instance of the component named $name.
+   * @param string $name
+   * @return object
+   * @throws ClassNotFoundException if no such component exists
+   */
+  public function createInstance($name)
   {
-    if (!array_key_exists($name, $map))
+    if (!array_key_exists($name, $this->_map))
     {
       throw new ClassNotFoundException(
         'Cannot create ' . $name . ' since no implemenation is registered for it'
@@ -39,36 +57,67 @@ class Swift_Di
     }
     else
     {
-      $spec = $map[$name];
-      if ($spec['shared'] && array_key_exists($name, self::$_shared))
+      //Find the details of this dependency
+      $spec = $this->_map[$name];
+      if ($spec['shared'] && array_key_exists($name, $this->_shared))
       {
-        return self::$_shared[$name];
+        //Return a shared instance if one exists
+        return $this->_shared[$name];
       }
       else
       {
+        //Otherwise, create it through reflection
         $className = $spec['class'];
-        $instanceArgs = self::resolveArgs($spec['args'], $map);
+        
+        //Resolve dependencies within the constructor itself
+        $instanceArgs = $this->_resolveArgs($spec['args']);
+        
         $reflector = new ReflectionClass($className);
         if ($reflector->getConstructor())
         {
-          return $reflector->newInstanceArgs($instanceArgs);
+          $instance = $reflector->newInstanceArgs($instanceArgs);
         }
         else
         {
-          return $reflector->newInstance();
+          $instance = $reflector->newInstance();
         }
+        
+        //Register a shared instance where needed
+        if ($spec['shared'])
+        {
+          $this->_shared[$name] = $instance;
+        }
+        
+        return $instance;
       }
     }
   }
   
-  public static function resolveArgs(array $args, array $map)
+  /**
+   * Merge the provided dependency map onto the existing one.
+   * @param array $map
+   */
+  public function registerDependencyMap(array $map)
+  {
+    $this->_map = array_merge($this->_map, $map);
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Recrusively resolves dependencies in an array.
+   * @param array $args
+   * @return array
+   * @access private
+   */
+  private function _resolveArgs(array $args)
   {
     $instanceArgs = array();
     foreach ($args as $i => $arg)
     {
       if (is_array($arg))
       {
-        $instanceArgs[$i] = self::resolveArgs($arg, $map);
+        $instanceArgs[$i] = $this->_resolveArgs($arg);
       }
       else
       {
@@ -78,7 +127,7 @@ class Swift_Di
         switch ($type)
         {
           case 'di':
-            $instanceArgs[$i] = self::createFromMap($map, $value);
+            $instanceArgs[$i] = $this->createInstance($value);
             break;
           case 'string':
             $instanceArgs[$i] = (string) $value;
@@ -92,6 +141,8 @@ class Swift_Di
     return $instanceArgs;
   }
   
+  // -- Static functions
+  
   /**
    * Require classes which are not loaded.
    * This must be registered with spl_autoload_register().
@@ -104,7 +155,7 @@ class Swift_Di
       return;
     }
     
-    $path = SWIFT_INTERNAL_DIRECTORY . '/' . str_replace('_', '/', $class) . '.php';
+    $path = SWIFT_CLASS_DIRECTORY . '/' . str_replace('_', '/', $class) . '.php';
     
     if (file_exists($path))
     {

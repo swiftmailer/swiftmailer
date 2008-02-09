@@ -6,7 +6,7 @@ error_reporting(E_ALL | E_STRICT); ini_set('display_errors', true);
 date_default_timezone_set('Australia/Melbourne');
 
 //Require the injector
-require_once dirname(__FILE__) . '/../../lib/swift-required.php';
+require_once dirname(__FILE__) . '/../../lib/swift_required.php';
 
 //Create messages fluidly
 $message = Swift_MimeFactory::create('message')
