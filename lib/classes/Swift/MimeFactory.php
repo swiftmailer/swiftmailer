@@ -1,7 +1,7 @@
 <?php
 
 /*
- Dependency Injector in Swift Mailer.
+ Dependency Injection factory for MIME components in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -41,6 +41,16 @@ class Swift_MimeFactory extends Swift_Di
    */
   private function __construct()
   {
+    $this->setLookup('charset', 'string:utf-8');
+  }
+  
+  /**
+   * Set the default character set for mime entities.
+   * @param string $charset
+   */
+  public static function setCharset($charset)
+  {
+    self::getInstance()->setLookup('charset', 'string:' . $charset);
   }
   
   /**

@@ -96,6 +96,7 @@ class Swift_CharacterStream_ArrayCharacterStream
   public function setCharacterSet($charset)
   {
     $this->_charset = $charset;
+    $this->_charReader = null;
   }
   
   /**

@@ -19,6 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/../ContentEncoder.php';
+require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
 require_once dirname(__FILE__) . '/../../Encoder/QpEncoder.php';
 require_once dirname(__FILE__) . '/../../ByteStream.php';
 require_once dirname(__FILE__) . '/../../CharacterStream.php';
@@ -30,7 +31,7 @@ require_once dirname(__FILE__) . '/../../CharacterStream.php';
  * @author Chris Corbyn
  */
 class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
-  implements Swift_Mime_ContentEncoder
+  implements Swift_Mime_ContentEncoder, Swift_Mime_FieldChangeObserver
 {
   
   /**
@@ -97,6 +98,21 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   {
     return 'quoted-printable';
   }
+  
+  /**
+   * Changes the charset of the CharacterStream if changed.
+   * @param string $field in lowercase ALPHA
+   * @param mixed $value
+   */
+  public function fieldChanged($field, $value)
+  {
+    if ('charset' == $field)
+    {
+      $this->getCharacterStream()->setCharacterSet($value);
+    }
+  }
+  
+  // -- Protected methods
   
   /**
    * Internal callback method which appends bytes to the end of a ByteStream

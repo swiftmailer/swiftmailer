@@ -42,6 +42,13 @@ class Swift_Di
   private $_map = array();
   
   /**
+   * Lookups for getting values at runtime, rather than straight from the map.
+   * @var array
+   * @access private
+   */
+  private $_lookups = array();
+  
+  /**
    * Create a new instance of the component named $name.
    * @param string $name
    * @return object
@@ -102,6 +109,29 @@ class Swift_Di
     $this->_map = array_merge($this->_map, $map);
   }
   
+  /**
+   * Set a lookup reference.
+   * @param string $name
+   * @param mixed $value
+   */
+  public function setLookup($name, $value)
+  {
+    $this->_lookups[$name] = $value;
+  }
+  
+  /**
+   * Lookup a dependency at runtime.
+   * @param string $name
+   * @return mixed
+   */
+  public function lookup($name)
+  {
+    if (array_key_exists($name, $this->_lookups))
+    {
+      return $this->_lookups[$name];
+    }
+  }
+  
   // -- Private methods
   
   /**
@@ -119,21 +149,32 @@ class Swift_Di
       {
         $instanceArgs[$i] = $this->_resolveArgs($arg);
       }
+      elseif (is_object($arg))
+      {
+        $instanceArgs[$i] = $arg;
+      }
       else
       {
-        list($type, $value) = sscanf($arg, '%[^:]:%s');
-        switch ($type)
+        do
         {
-          case 'di':
-            $instanceArgs[$i] = $this->createDependency($value);
-            break;
-          case 'string':
-            $instanceArgs[$i] = (string) $value;
-            break;
-          case 'int':
-            $instanceArgs[$i] = (int) $value;
-            break;
+          list($type, $value) = sscanf($arg, '%[^:]:%s');
+          switch ($type)
+          {
+            case 'di':
+              $instanceArgs[$i] = $this->createDependency($value);
+              break;
+            case 'lookup': //Value is looked up at runtime
+              $arg = $this->lookup($value);
+              break;
+            case 'string':
+              $instanceArgs[$i] = (string) $value;
+              break;
+            case 'int':
+              $instanceArgs[$i] = (int) $value;
+              break;
+          }
         }
+        while ('lookup' == $type);
       }
     }
     return $instanceArgs;

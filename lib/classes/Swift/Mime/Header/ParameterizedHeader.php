@@ -250,14 +250,14 @@ class Swift_Mime_Header_ParameterizedHeader
       foreach ($valueLines as $i => $line)
       {
         $paramLines[] = $name . '*' . $i .
-          $this->_getEndOfParameterValue($line, ($needsEncoding && $i == 0));
+          $this->_getEndOfParameterValue($line, $needsEncoding, $i == 0);
       }
       return implode(";\r\n ", $paramLines);
     }
     else
     {
       return $name . $this->_getEndOfParameterValue(
-        $valueLines[0], $needsEncoding
+        $valueLines[0], $needsEncoding, true
         );
     }
   }
@@ -265,25 +265,28 @@ class Swift_Mime_Header_ParameterizedHeader
   /**
    * Returns the parameter value from the "=" and beyond.
    * @param string $value to append
-   * @param boolean $addEncodingInfo
+   * @param boolean $encoded
+   * @param boolean $firstLine
    * @return string
    * @access private
    */
-  private function _getEndOfParameterValue($value, $addEncodingInfo = false)
+  private function _getEndOfParameterValue($value, $encoded = false, $firstLine = false)
   {
     if (!preg_match('/^' . $this->_tokenRe . '$/D', $value))
     {
       $value = '"' . $value . '"';
     }
-    if ($addEncodingInfo)
+    $prepend = '=';
+    if ($encoded)
     {
-      return '*=' . $this->getCharset() . "'" . $this->getLanguage() .
-        "'" . $value;
+      $prepend = '*=';
+      if ($firstLine)
+      {
+        $prepend = '*=' . $this->getCharset() . "'" . $this->getLanguage() .
+          "'";
+      }
     }
-    else
-    {
-      return '=' . $value;
-    }
+    return $prepend . $value;
   }
   
 }

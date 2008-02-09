@@ -201,14 +201,15 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     
     $encoder = new Swift_Mime_MockHeaderEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($nonAsciiChar), 20, 75),
+      new Swift_IdenticalBinaryExpectation($nonAsciiChar), 8, 63),
       '%s: Parameters for $firstLineOffset and $maxLineLength should be 20 ' .
-      'and 75 respectively');
+      'and 63 respectively');
     //Note that multi-line headers begin with LWSP which makes 75 + 1 = 76
+    //Note also that =?utf-8?q??= is 12 chars which makes 75 - 12 = 63
     $encoder->setReturnValue('encodeString', '=8F');
     $encoder->setReturnValue('getName', 'Q');
     
-    //* X-Test: =?utf-8?Q??= is 20 chars
+    //* X-Test: is 8 chars
     $header = $this->_getHeader('X-Test', $encoder);
     $header->setValue($nonAsciiChar);
     
@@ -232,15 +233,16 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     
     $encoder = new Swift_Mime_MockHeaderEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($nonAsciiChar), 20, 75)
+      new Swift_IdenticalBinaryExpectation($nonAsciiChar), 8, 63)
       );
     //Note that multi-line headers begin with LWSP which makes 75 + 1 = 76
+    //Note also that =?utf-8?q??= is 12 chars which makes 75 - 12 = 63
     $encoder->setReturnValue('encodeString',
       'line_one_here' . "\r\n" . 'line_two_here'
       );
     $encoder->setReturnValue('getName', 'Q');
     
-    //* X-Test: =?utf-8?Q??= is 20 chars
+    //* X-Test: is 8 chars
     $header = $this->_getHeader('X-Test', $encoder);
     $header->setValue($nonAsciiChar);
     

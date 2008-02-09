@@ -197,7 +197,7 @@ class Swift_Mime_Header_ParameterizedHeaderTest
            MUST be present even when the fields are left blank.
     */
           
-     $value = str_repeat('a', 20) . pack('C', 0x8F) . str_repeat('a', 60);
+    $value = str_repeat('a', 20) . pack('C', 0x8F) . str_repeat('a', 60);
     
     $encoder = new Swift_MockEncoder();
     $encoder->expectOnce('encodeString', array(
@@ -217,7 +217,7 @@ class Swift_Mime_Header_ParameterizedHeaderTest
     $this->assertEqual(
       'attachment; filename*0*=' . $this->_charset . "'" . $this->_lang . "'" .
       str_repeat('a', 20) . '%8F' . str_repeat('a', 28) . ";\r\n " .
-      'filename*1=' . str_repeat('a', 32),
+      'filename*1*=' . str_repeat('a', 32),
       $header->getFieldBody()
       );     
   }

@@ -22,7 +22,8 @@ $_swiftMimeDeps = array(
         'di:contenttypeheader',
         'di:contenttransferencodingheader'
         ),
-      'di:qpcontentencoder'
+      'di:qpcontentencoder',
+      'lookup:charset'
       ),
       'shared' => false
     ),
@@ -35,7 +36,8 @@ $_swiftMimeDeps = array(
         'di:contenttypeheader',
         'di:contenttransferencodingheader'
         ),
-      'di:qpcontentencoder'
+      'di:qpcontentencoder',
+      'lookup:charset'
       ),
       'shared' => false
     ),
@@ -218,7 +220,7 @@ $_swiftMimeDeps = array(
     'class' => 'Swift_CharacterStream_ArrayCharacterStream',
     'args' => array(
       'di:characterreaderfactory',
-      'string:utf-8'
+      'lookup:charset'
       ),
     'shared' => false
     ),
@@ -234,7 +236,7 @@ $_swiftMimeDeps = array(
   'qpcontentencoder' => array(
     'class' => 'Swift_Mime_ContentEncoder_QpContentEncoder',
     'args' => array('di:charstream'),
-    'shared' => true
+    'shared' => false
     ),
     
   //7bit content Encoder
@@ -262,7 +264,7 @@ $_swiftMimeDeps = array(
   'rfc2231encoder' => array(
     'class' => 'Swift_Encoder_Rfc2231Encoder',
     'args' => array('di:charstream'),
-    'shared' => true
+    'shared' => false
     ),
   
   );

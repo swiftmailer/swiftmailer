@@ -17,7 +17,6 @@ $message = Swift_MimeFactory::create('message')
   ->setSubject('John???')
   ->setTo(array('rob@site.com' => 'Rob'))
   ->setFrom(array('chris@w3style.co.uk' => 'Myself'))
-  ->setCharset('utf-8')
   ->setBody('john gets on my nerves')
   ;
   
@@ -26,7 +25,6 @@ $forward = Swift_MimeFactory::create('message')
   ->setTo(array('john.smith@site.com' => 'John Smith'))
   ->setFrom($message->getTo())
   ->setContentType('text/html')
-  ->setCharset('utf-8')
   ->setBody('Guess what chris told me')
   ->attach(
     Swift_MimeFactory::create('attachment')

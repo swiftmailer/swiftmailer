@@ -57,13 +57,18 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * Creates a new MimePart with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
+   * @param string $charset, optional.
    */
   public function __construct(array $headers,
-    Swift_Mime_ContentEncoder $encoder)
+    Swift_Mime_ContentEncoder $encoder, $charset = null)
   {
     parent::__construct($headers, $encoder);
     $this->setNestingLevel(self::LEVEL_SUBPART);
     $this->setContentType('text/plain');
+    if (!is_null($charset))
+    {
+      $this->setCharset($charset);
+    }
   }
   
   /**

@@ -14,10 +14,8 @@ Swift Mailer:
    - ForwardedMessage
    - Message/Digest type
  * Message class
-   - Message/Partial???
-   - Message/external???
- * Make QpContentEncoder implement FieldChangeObserver so it can take on
-   new charsets
+   - Message/Partial
+   - Message/external
  * Acceptance tests
    - Some Headers (which use Encoders)
  * CharacterReaderFactory (map charsets to CharacterReaders).

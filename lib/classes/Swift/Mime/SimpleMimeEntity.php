@@ -126,7 +126,8 @@ class Swift_Mime_SimpleMimeEntity
    */
   private $_internalFieldChangeObservers = array(
     'headers' => array(),
-    'children' => array()
+    'children' => array(),
+    'encoders' => array()
     );
   
   /**
@@ -242,6 +243,12 @@ class Swift_Mime_SimpleMimeEntity
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_encoder = $encoder;
+    $observers = array();
+    if ($encoder instanceof Swift_Mime_FieldChangeObserver)
+    {
+      $observers[] = $encoder;
+    }
+    $this->_internalFieldChangeObservers['encoder'] = $observers;
     $this->_notifyFieldChanged('encoder', $encoder);
     return $this;
   }
@@ -816,7 +823,8 @@ class Swift_Mime_SimpleMimeEntity
     foreach (array_merge(
       $this->_fieldChangeObservers,
       $this->_internalFieldChangeObservers['headers'],
-      $this->_internalFieldChangeObservers['children']
+      $this->_internalFieldChangeObservers['children'],
+      $this->_internalFieldChangeObservers['encoders']
       ) as $observer)
     {
       $observer->fieldChanged($field, $value);

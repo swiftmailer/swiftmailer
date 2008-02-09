@@ -205,7 +205,7 @@ class Swift_Mime_Header_MailboxHeaderTest
     $name = 'C' . pack('C', 0x8F) . 'rbyn';
     $encoder = new Swift_Mime_MockHeaderEncoder();
     $encoder->setReturnValue('getName', 'Q');
-    $encoder->expectOnce('encodeString', array($name, 18, 75));
+    $encoder->expectOnce('encodeString', array($name, 6, 63));
     $encoder->setReturnValue('encodeString', 'C=8Frbyn');
     
     $header = $this->_getHeader('From', $encoder);

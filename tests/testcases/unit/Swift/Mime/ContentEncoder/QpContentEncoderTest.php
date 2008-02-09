@@ -401,4 +401,12 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $encoder->encodeByteStream($os, $is, 22);
   }
   
+  public function testObserverInterfaceCanChangeCharset()
+  {
+    $stream = new Swift_MockCharacterStream();
+    $stream->expectOnce('setCharacterSet', array('windows-1252'));
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($stream);
+    $encoder->fieldChanged('charset', 'windows-1252');
+  }
+  
 }

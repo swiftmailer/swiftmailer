@@ -108,11 +108,12 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    * Creates a new MimePart with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
+   * @param string $charset, optional
    */
   public function __construct(array $headers,
-    Swift_Mime_ContentEncoder $encoder)
+    Swift_Mime_ContentEncoder $encoder, $charset = null)
   {
-    parent::__construct($headers, $encoder);
+    parent::__construct($headers, $encoder, $charset);
     $this->setNestingLevel(self::LEVEL_TOP);
     $this->setDate(time());
   }
