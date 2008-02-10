@@ -1091,6 +1091,153 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       );
   }
   
+  public function testBodyCanBeSetWithAttachments()
+  {
+    $message = $this->_createMessage();
+    $message->setReturnPath('chris@w3style.co.uk');
+    $message->setSubject('just a test subject');
+    $message->setFrom(array(
+      'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
+    $message->setContentType('text/html');
+    $message->setCharset('iso-8859-1');
+    $message->setBodyAsString('foo');
+    
+    $id = $message->getId();
+    $date = date('r', $message->getDate());
+    $boundary = $message->getBoundary();
+    
+    $attachment = $this->_createAttachment();
+    $attachment->setContentType('application/pdf');
+    $attachment->setFilename('foo.pdf');
+    $attachment->setBodyAsString('<pdf data>');
+    
+    $message->attach($attachment);
+    
+    $this->assertEqual(
+      'Return-Path: <chris@w3style.co.uk>' . "\r\n" .
+      'Message-ID: <' . $id . '>' . "\r\n" .
+      'Date: ' . $date . "\r\n" .
+      'Subject: just a test subject' . "\r\n" .
+      'From: Chris Corbyn <chris.corbyn@swiftmailer.org>' . "\r\n" .
+      'MIME-Version: 1.0' . "\r\n" .
+      'Content-Type: multipart/mixed;' . "\r\n" .
+      ' boundary="' . $boundary . '"' . "\r\n" .
+      "\r\n" .
+      '--' . $boundary . "\r\n" .
+      'Content-Type: text/html; charset=iso-8859-1' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'foo' .
+      "\r\n" .
+      '--' . $boundary . "\r\n" .
+      'Content-Type: application/pdf' . "\r\n" .
+      'Content-Transfer-Encoding: base64' . "\r\n" .
+      'Content-Disposition: attachment; filename=foo.pdf' . "\r\n" .
+      "\r\n" .
+      base64_encode('<pdf data>') .
+      "\r\n" .
+      '--' . $boundary . '--' . "\r\n",
+      $message->toString()
+      );
+  }
+  
+  public function testHtmlPartAlwaysAppearsLast()
+  {
+    $message = $this->_createMessage();
+    $message->setReturnPath('chris@w3style.co.uk');
+    $message->setSubject('just a test subject');
+    $message->setFrom(array(
+      'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
+    
+    $id = $message->getId();
+    $date = date('r', $message->getDate());
+    $boundary = $message->getBoundary();
+    
+    $part1 = $this->_createMimePart();
+    $part1->setContentType('text/html');
+    $part1->setBodyAsString('foo');
+    
+    $part2 = $this->_createMimePart();
+    $part2->setContentType('text/plain');
+    $part2->setBodyAsString('bar');
+    
+    $message->attach($part1);
+    $message->attach($part2);
+    
+    $this->assertEqual(
+      'Return-Path: <chris@w3style.co.uk>' . "\r\n" .
+      'Message-ID: <' . $id . '>' . "\r\n" .
+      'Date: ' . $date . "\r\n" .
+      'Subject: just a test subject' . "\r\n" .
+      'From: Chris Corbyn <chris.corbyn@swiftmailer.org>' . "\r\n" .
+      'MIME-Version: 1.0' . "\r\n" .
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="' . $boundary . '"' . "\r\n" .
+      "\r\n" .
+      '--' . $boundary . "\r\n" .
+      'Content-Type: text/plain' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'bar' .
+      "\r\n" .
+     '--' . $boundary . "\r\n" .
+      'Content-Type: text/html' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'foo' .
+      "\r\n" .
+      '--' . $boundary . '--' . "\r\n",
+      $message->toString()
+      );
+  }
+  
+  public function testBodyBecomesPartIfOtherPartsAttached()
+  {
+    $message = $this->_createMessage();
+    $message->setReturnPath('chris@w3style.co.uk');
+    $message->setSubject('just a test subject');
+    $message->setFrom(array(
+      'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
+    $message->setContentType('text/html');
+    $message->setBodyAsString('foo');
+    
+    $id = $message->getId();
+    $date = date('r', $message->getDate());
+    $boundary = $message->getBoundary();
+    
+    $part2 = $this->_createMimePart();
+    $part2->setContentType('text/plain');
+    $part2->setBodyAsString('bar');
+    
+    $message->attach($part2);
+    
+    $this->assertEqual(
+      'Return-Path: <chris@w3style.co.uk>' . "\r\n" .
+      'Message-ID: <' . $id . '>' . "\r\n" .
+      'Date: ' . $date . "\r\n" .
+      'Subject: just a test subject' . "\r\n" .
+      'From: Chris Corbyn <chris.corbyn@swiftmailer.org>' . "\r\n" .
+      'MIME-Version: 1.0' . "\r\n" .
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="' . $boundary . '"' . "\r\n" .
+      "\r\n" .
+      '--' . $boundary . "\r\n" .
+      'Content-Type: text/plain' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'bar' .
+      "\r\n" .
+     '--' . $boundary . "\r\n" .
+      'Content-Type: text/html' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'foo' .
+      "\r\n" .
+      '--' . $boundary . '--' . "\r\n",
+      $message->toString()
+      );
+  }
+  
   // -- Private helpers
   
   private function _createMessage()

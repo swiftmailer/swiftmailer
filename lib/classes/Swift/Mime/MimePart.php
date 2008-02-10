@@ -367,7 +367,9 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
       {
         $subentity = $this->createBaseEntity();
         $subentity->setContentType($this->_getPreferredContentType());
-        $subentity->setCharset($this->getCharset());
+        $subentity->setCharset($this->_getPreferredCharset());
+        $subentity->setDelSp($this->_getPreferredDelSp());
+        $subentity->setFormat($this->_getPreferredFormat());
         $subentity->setNestingLevel($highestLevel);
         $subentity->setBodyAsString($body);
         array_unshift($newChildren, $subentity);
@@ -378,7 +380,9 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
       {
         $subentity = $this->createBaseEntity();
         $subentity->setContentType($this->_getPreferredContentType());
-        $subentity->setCharset($this->getCharset());
+        $subentity->setCharset($this->_getPreferredCharset());
+        $subentity->setDelSp($this->_getPreferredDelSp());
+        $subentity->setFormat($this->_getPreferredFormat());
         $subentity->setNestingLevel($highestLevel);
         $subentity->setBodyAsByteStream($body);
         array_unshift($newChildren, $subentity);
