@@ -1,9 +1,9 @@
 Swift Mailer:
 -------------
 
- * See if some of the Headers can be refactored/removed
- * Allow setBody() to be used even when attachments are added
-   - Need to think about images (perhaps always make the body SUBPART?)
+ * Add a getHeader() method.
+ * Run a usort() on setChildren() so: text/xxx content types appear earlier
+   and text/plain content types appear lowest
  * Add a fixLE() method to MimePart (for ByteStreams too)
    - Perhaps make QpContentEncoder extend PlainContentEncoder so line wraps
      are handled correctly, and also add such canonicalization logic there.
@@ -16,8 +16,6 @@ Swift Mailer:
  * Message class
    - Message/Partial
    - Message/external
- * Acceptance tests
-   - Some Headers (which use Encoders)
  * CharacterReaderFactory (map charsets to CharacterReaders).
    - Big5
    - Shift-JIS

@@ -60,6 +60,12 @@ interface Swift_Mime_MimeEntity
   public function getNestingLevel();
   
   /**
+   * Get the qualified content-type of this mime entity.
+   * @return string
+   */
+  public function getContentType();
+  
+  /**
    * Returns a unique ID for this entity.
    * For most entities this will likely be the Content-ID, though it has
    * no explicit semantic meaning and can be considered an identifier for

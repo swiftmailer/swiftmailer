@@ -218,14 +218,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   }
   
   /**
-   * Notify this entity that a field has changed to $value in its parent.
-   * "Field" is a loose term and refers to class fields rather than
-   * header fields.  $field will always be in lowercase and will be alpha.
-   * only.
-   * An example could be fieldChanged('contenttype', 'text/plain');
-   * This of course reflects a change in the body of the Content-Type header.
-   * Another example could be fieldChanged('charset', 'us-ascii');
-   * This reflects a change in the charset parameter of the Content-Type header.
+   * Overridden to prevent conflict.
    * @param string $field in lowercase ALPHA
    * @param mixed $value
    */

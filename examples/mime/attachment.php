@@ -26,3 +26,4 @@ $message = Swift_MimeFactory::create('message')
   ;
   
 echo $message->toString();
+file_put_contents('/Users/d11wtq/attachment.eml', $message->toString());

@@ -24,7 +24,7 @@ $forward = Swift_MimeFactory::create('message')
   ->setSubject('FW: ' . $message->getSubject())
   ->setTo(array('john.smith@site.com' => 'John Smith'))
   ->setFrom($message->getTo())
-  ->setContentType('text/html')
+  ->setContentType('text/plain')
   ->setBody('Guess what chris told me')
   ->attach(
     Swift_MimeFactory::create('attachment')
@@ -37,3 +37,4 @@ $forward = Swift_MimeFactory::create('message')
   ;
   
 echo $forward->toString();
+file_put_contents('/Users/d11wtq/forward.eml', $forward->toString());

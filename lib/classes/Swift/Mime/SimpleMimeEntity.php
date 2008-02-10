@@ -175,6 +175,7 @@ class Swift_Mime_SimpleMimeEntity
     $this->setHeaders($headers);
     $this->setEncoder($encoder);
     $this->setId($this->_generateId());
+    $this->setChildren(array());
   }
   
   /**
@@ -212,15 +213,7 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function setHeaders(array $headers)
   {
-    $observers = array();
-    foreach ($headers as $header)
-    {
-      if ($header instanceof Swift_Mime_FieldChangeObserver)
-      {
-        $observers[] = $header;
-      }
-    }
-    $this->_internalFieldChangeObservers['headers'] = $observers;
+    $this->_registerInternalFieldChangeObservers($headers, 'headers');
     $this->_headers = $headers;
     return $this;
   }
@@ -243,12 +236,7 @@ class Swift_Mime_SimpleMimeEntity
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_encoder = $encoder;
-    $observers = array();
-    if ($encoder instanceof Swift_Mime_FieldChangeObserver)
-    {
-      $observers[] = $encoder;
-    }
-    $this->_internalFieldChangeObservers['encoder'] = $observers;
+    $this->_registerInternalFieldChangeObservers(array($encoder), 'encoders');
     $this->_notifyFieldChanged('encoder', $encoder);
     return $this;
   }
@@ -270,9 +258,13 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function setContentType($contentType)
   {
-    $this->_contentType = $contentType;
+    $ltype = strtolower($contentType);
     $this->_preferredContentType = $contentType;
-    $this->_notifyFieldChanged('contenttype', $contentType);
+    if (substr($ltype, 0, 10) == 'multipart/' || empty($this->_children))
+    {
+      $this->_contentType = $contentType;
+      $this->_notifyFieldChanged('contenttype', $contentType);
+    }
     return $this;
   }
   
@@ -339,6 +331,7 @@ class Swift_Mime_SimpleMimeEntity
   public function setMaxLineLength($length)
   {
     $this->_maxLineLength = (int) $length;
+    $this->_notifyFieldChanged('maxlinelength', (int) $length);
     return $this;
   }
   
@@ -440,6 +433,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $immediateChildren = array();
     $grandchildren = array();
+    $newContentType = $this->_preferredContentType;
     
     foreach ($children as $child)
     {
@@ -478,9 +472,7 @@ class Swift_Mime_SimpleMimeEntity
         if ($lowestLevel > $range[0]
           && $lowestLevel <= $range[1])
         {
-          $preferredType = $this->_preferredContentType;
-          $this->setContentType($mediaType);
-          $this->_preferredContentType = $preferredType;
+          $newContentType = $mediaType;
           break;
         }
       }
@@ -493,56 +485,20 @@ class Swift_Mime_SimpleMimeEntity
         $subentity->setChildren($grandchildren);
         array_unshift($immediateChildren, $subentity);
       }
-      
-      //If this entity has it's own body it needs to be displayed
-      // This is very experimental
-      if (isset($this->_stringBody))
-      {
-        $subentity = $this->getEntityFactory()->createBaseEntity();
-        $subentity->setNestingLevel($lowestLevel);
-        $subentity->setContentType($this->_preferredContentType);
-        $subentity->setBodyAsString($this->_stringBody);
-        array_unshift($immediateChildren, $subentity);
-      }
-      elseif (isset($this->_streamBody))
-      {
-        $subentity = $this->getEntityFactory()->createBaseEntity();
-        $subentity->setNestingLevel($lowestLevel);
-        $subentity->setContentType($this->_preferredContentType);
-        $subentity->setBodyAsByteStream($this->_streamBody);
-        array_unshift($immediateChildren, $subentity);
-      }
-    }
-    else
-    {
-      $this->setContentType($this->_preferredContentType);
     }
     
     //Store the direct descendants
     $this->_immediateChildren = $immediateChildren;
     //Store all descendants
     $this->_children = $children;
-    
+    //Update the content-type
+    $this->_overrideContentType($newContentType);
     //Check if any of these entities are observers
-    $observers = array();
-    foreach ($this->_immediateChildren as $child)
-    {
-      if ($child instanceof Swift_Mime_FieldChangeObserver)
-      {
-        $observers[] = $child;
-      }
-    }
-    $this->_internalFieldChangeObservers['children'] = $observers;
+    $this->_registerInternalFieldChangeObservers($immediateChildren, 'children');
+    //Make sure the boundary is integral
+    $this->_refreshBoundary(!empty($children));
     
-    //Apply a boundary if needed
-    if (empty($children))
-    {
-      $this->_notifyFieldChanged('boundary', null);
-    }
-    else
-    {
-      $this->_notifyFieldChanged('boundary', $this->getBoundary());
-    }
+    usort($this->_immediateChildren, array($this, '_sortChildren'));
     
     return $this;
   }
@@ -567,10 +523,13 @@ class Swift_Mime_SimpleMimeEntity
   {
     if (preg_match(
       '/^[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?]$/D',
-      $boundary
-      ))
+      $boundary))
     {
       $this->_boundary = $boundary;
+      if (!empty($this->_children))
+      {
+        $this->_notifyFieldChanged('boundary', $boundary);
+      }
     }
     else
     {
@@ -751,7 +710,6 @@ class Swift_Mime_SimpleMimeEntity
       }
     }
     $entity = new self($headers, $this->_encoder);
-    $entity->setContentType('text/plain');
     return $entity;
   }
   
@@ -799,6 +757,10 @@ class Swift_Mime_SimpleMimeEntity
     {
       $this->setEncoder($value);
     }
+    elseif ('maxlinelength' == $field)
+    {
+      $this->setMaxLineLength($value);
+    }
   }
   
   /**
@@ -831,6 +793,80 @@ class Swift_Mime_SimpleMimeEntity
     }
   }
   
+  /**
+   * User defined callback for sorting children when they are nested.
+   * This helps to ensure that all children appear in a logical order.
+   * @param object $a
+   * @param object $b
+   * @return int
+   * @access protected
+   */
+  protected function _sortChildren($a, $b)
+  {
+    return 1;
+  }
+  
+  /**
+   * Get the content-type which was set by the user, not by the system.
+   * @return string
+   * @access protected
+   */
+  protected function _getPreferredContentType()
+  {
+    return $this->_preferredContentType;
+  }
+  
+  /**
+   * Get the body of this entity as the string it was set with.
+   * Returns null if not set.
+   * @return string
+   * @access protected
+   */
+  protected function _getStringBody()
+  {
+    return $this->_stringBody;
+  }
+  
+  /**
+   * Get the body of this entity as the ByteStream it was set with.
+   * Returns null if not set.
+   * @return Swift_ByteStream
+   * @access protected
+   */
+  protected function _getStreamBody()
+  {
+    return $this->_streamBody;
+  }
+  
+  /**
+   * Forecfully override the content type.
+   * @param string $contentType
+   * @access protected
+   */
+  protected function _overrideContentType($contentType)
+  {
+    $this->_contentType = $contentType;
+    $this->_notifyFieldChanged('contenttype', $contentType);
+  }
+  
+  /**
+   * Scan an array of objects and register any observers found using $key.
+   * @param array $objects
+   * @param string $key
+   * @access protected
+   */
+  protected function _registerInternalFieldChangeObservers(array $objects, $key)
+  {
+    $this->_internalFieldChangeObservers[$key] = array();
+    foreach ($objects as $o)
+    {
+      if ($o instanceof Swift_Mime_FieldChangeObserver)
+      {
+        $this->_internalFieldChangeObservers[$key][] = $o;
+      }
+    }
+  }
+  
   // -- Private methods
   
   /**
@@ -850,6 +886,23 @@ class Swift_Mime_SimpleMimeEntity
       $idRight = 'swift.generated';
     }
     return $idLeft . '@' . $idRight;
+  }
+  
+  /**
+   * Inform observers of the currently active boundary.
+   * @param boolean $apply if boundary is used
+   * @access private
+   */
+  private function _refreshBoundary($apply)
+  {
+    if (!$apply)
+    {
+      $this->_notifyFieldChanged('boundary', null);
+    }
+    else
+    {
+      $this->_notifyFieldChanged('boundary', $this->getBoundary());
+    }
   }
   
 }

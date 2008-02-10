@@ -39,6 +39,13 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   private $_charset;
   
   /**
+   * The charset which the user specified, even if it can't be used.
+   * @var string
+   * @access private
+   */
+  private $_preferredCharset;
+  
+  /**
    * The format of this mime part (i.e. flowed or fixed).
    * If unspecified, the default is fixed as per RFC 3676.
    * @var string
@@ -47,11 +54,25 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   private $_format;
   
   /**
+   * The format the user specified, even if it can't be used.
+   * @var string
+   * @access private
+   */
+  private $_preferredFormat;
+  
+  /**
    * Whether delsp is turned on or off according to RFC 3676.
    * @var boolean
    * @access private
    */
-  private $_delSp = false;
+  private $_delSp;
+  
+  /**
+   * DelSp as specified by the user, even if it not being used.
+   * @var boolean
+   * @access private
+   */
+  private $_preferredDelSp;
   
   /**
    * Creates a new MimePart with $headers and $encoder.
@@ -77,8 +98,12 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function setCharset($charset)
   {
-    $this->_charset = $charset;
-    $this->_notifyFieldChanged('charset', $charset);
+    $this->_preferredCharset = $charset;
+    if (count($this->getChildren()) == 0)
+    {
+      $this->_charset = $charset;
+      $this->_notifyFieldChanged('charset', $charset);
+    }
     return $this;
   }
   
@@ -99,8 +124,12 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function setFormat($format)
   {
-    $this->_format = $format;
-    $this->_notifyFieldChanged('format', $format);
+    $this->_preferredFormat = $format;
+    if (count($this->getChildren()) == 0)
+    {
+      $this->_format = $format;
+      $this->_notifyFieldChanged('format', $format);
+    }
     return $this;
   }
   
@@ -121,8 +150,12 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function setDelSp($delSp)
   {
-    $this->_delSp = $delSp;
-    $this->_notifyFieldChanged('delsp', $delSp);
+    $this->_preferredDelSp = $delSp;
+    if (count($this->getChildren()) == 0)
+    {
+      $this->_delSp = $delSp;
+      $this->_notifyFieldChanged('delsp', $delSp);
+    }
     return $this;
   }
   
@@ -133,7 +166,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function getDelSp()
   {
-    return $this->_delSp;
+    return !is_null($this->_delSp) && $this->_delSp;
   }
   
   /**
@@ -144,31 +177,55 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   public function setChildren(array $children)
   {
     parent::setChildren($children);
-    $children = $this->getChildren();
-    if (!empty($children)) //boundary will be set
+    if (!empty($children))
     {
-      $this->_notifyFieldChanged('charset', null);
-      $this->_notifyFieldChanged('format', null);
-      $this->_notifyFieldChanged('delsp', null);
+      $this->_overrideCharset(null);
+      $this->_overrideFormat(null);
+      $this->_overrideDelSp(null);
     }
     else
     {
-      $this->_notifyFieldChanged('charset', $this->_charset);
-      $this->_notifyFieldChanged('format', $this->_format);
-      $this->_notifyFieldChanged('delsp', $this->_delSp ? true : null);
+      $this->setCharset($this->_preferredCharset);
+      $this->setFormat($this->_preferredFormat);
+      $this->setDelSp($this->_preferredDelSp);
     }
     return $this;
   }
   
   /**
-   * Notify this entity that a field has changed to $value in its parent.
-   * "Field" is a loose term and refers to class fields rather than
-   * header fields.  $field will always be in lowercase and will be alpha
-   * only.
-   * An example could be fieldChanged('contenttype', 'text/plain');
-   * This of course reflects a change in the body of the Content-Type header.
-   * Another example could be fieldChanged('charset', 'us-ascii');
-   * This reflects a change in the charset parameter of the Content-Type header.
+   * Get this entire message in its string form.
+   * @return string
+   */
+  public function toString()
+  {
+    $children = $this->getChildren();
+    $modified = $this->_moveBody($children);
+    $string = parent::toString();
+    if ($modified)
+    {
+      $this->setChildren($children);
+    }
+    return $string;
+  }
+  
+  /**
+   * Get this entire message as a ByteStream.
+   * The ByteStream will be appended to (it will not be flushed first).
+   * @param Swift_ByteStream $is to write to
+   */
+  public function toByteStream(Swift_ByteStream $stream)
+  {
+    $children = $this->getChildren();
+    $modified = $this->_moveBody($children);
+    parent::toByteStream($stream);
+    if ($modified)
+    {
+      $this->setChildren($children);
+    }
+  }
+  
+  /**
+   * Used to update the line length and encoding requirements from the parent.
    * @param string $field in lowercase ALPHA
    * @param mixed $value
    */
@@ -178,6 +235,173 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     {
       $this->setEncoder($value);
     }
+    elseif ('maxlinelength' == $field)
+    {
+      $this->setMaxLineLength($value);
+    }
+  }
+  
+  /**
+   * Create a new base entity.
+   * This is overridden so it can be used internally, and due to intricices
+   * involved (i.e. typing) it is declared final.
+   * @return Swift_Mime_MimeEntity
+   */
+  final public function createBaseEntity()
+  {
+    $headers = array();
+    foreach ($this->getHeaders() as $header)
+    {
+      if (in_array(
+        strtolower($header->getFieldName()),
+        array('content-type', 'content-transfer-encoding')))
+      {
+        $headers[] = clone $header;
+      }
+    }
+    $part = new self($headers, $this->getEncoder());
+    return $part;
+  }
+  
+  // -- Protected methods
+  
+  /**
+   * Forcefully override the character set of this mime part.
+   * @param string $charset
+   * @access protected
+   */
+  protected function _overrideCharset($charset)
+  {
+    $this->_charset = $charset;
+    $this->_notifyFieldChanged('charset', $charset);
+  }
+  
+  /**
+   * Forcefully override the format of this mime part.
+   * @param string $format
+   * @access protected
+   */
+  protected function _overrideFormat($format)
+  {
+    $this->_format = $format;
+    $this->_notifyFieldChanged('format', $format);
+  }
+  
+  /**
+   * Forcefully override delsp in this mime part.
+   * @param string $delSp
+   * @access protected
+   */
+  protected function _overrideDelSp($delSp)
+  {
+    $this->_delSp = $delSp;
+    $this->_notifyFieldChanged('delsp', $delSp);
+  }
+  
+  /**
+   * Get the charset specified by the user, not by the system.
+   * @return string
+   * @access protected
+   */
+  protected function _getPreferredCharset()
+  {
+    return $this->_preferredCharset;
+  }
+  
+  /**
+   * Get the format specified by the user, not by the system.
+   * @return string
+   * @access protected
+   */
+  protected function _getPreferredFormat()
+  {
+    return $this->_preferredFormat;
+  }
+  
+  /**
+   * Get the delsp as specified by the user, not by the system.
+   * @return boolean
+   * @access protected
+   */
+  protected function _getPreferredDelSp()
+  {
+    return $this->_preferredDelSp;
+  }
+  
+  /**
+   * User defined callback for sorting children when they are nested.
+   * This helps to ensure that all children appear in a logical order.
+   * @param object $a
+   * @param object $b
+   * @return int
+   * @access protected
+   */
+  protected function _sortChildren($a, $b)
+  {
+    list($aType, $aSubtype) = sscanf(strtolower($a->getContentType()), '%[^/]/%s');
+    list($bType, $bSubtype) = sscanf(strtolower($b->getContentType()), '%[^/]/%s');
+    
+    if ('text' == $aType && $aType == $bType)
+    {
+      return ('plain' == $aSubtype) ? -1 : 1;
+    }
+    else
+    {
+      return ('text' == $aType) ? -1 : 1;
+    }
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Injects its own body as a subpart of the overal structure so it's still
+   * readable.
+   * Returns true only if the structure was modified.
+   * @param Swift_Mime_MimeEntity[] $children
+   * @return boolean
+   * @access private
+   */
+  private function _moveBody(array $children)
+  {
+    if (!empty($children))
+    {
+      $highestLevel = $this->getNestingLevel();
+      $newChildren = array();
+      foreach ($children as $child)
+      {
+        $newChildren[] = $child;
+        $childLevel = $child->getNestingLevel();
+        if ($highestLevel < $childLevel)
+        {
+          $highestLevel = $childLevel;
+        }
+      }
+      
+      //If this entity has it's own body it needs to be displayed
+      if (null !== $body = $this->_getStringBody())
+      {
+        $subentity = $this->createBaseEntity();
+        $subentity->setContentType($this->_getPreferredContentType());
+        $subentity->setCharset($this->getCharset());
+        $subentity->setNestingLevel($highestLevel);
+        $subentity->setBodyAsString($body);
+        array_unshift($newChildren, $subentity);
+        $this->setChildren($newChildren);
+        return true;
+      }
+      elseif (null !== $body = $this->_getStreamBody())
+      {
+        $subentity = $this->createBaseEntity();
+        $subentity->setContentType($this->_getPreferredContentType());
+        $subentity->setCharset($this->getCharset());
+        $subentity->setNestingLevel($highestLevel);
+        $subentity->setBodyAsByteStream($body);
+        array_unshift($newChildren, $subentity);
+        $this->setChildren($newChildren);
+        return true;
+      }
+    }
+    return false;
   }
   
 }
