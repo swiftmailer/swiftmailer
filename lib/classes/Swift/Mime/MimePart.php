@@ -336,29 +336,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     return $this->_preferredDelSp;
   }
   
-  /**
-   * User defined callback for sorting children when they are nested.
-   * This helps to ensure that all children appear in a logical order.
-   * @param object $a
-   * @param object $b
-   * @return int
-   * @access protected
-   */
-  /*protected function _sortChildren($a, $b)
-  {
-    list($aType, $aSubtype) = sscanf(strtolower($a->getContentType()), '%[^/]/%s');
-    list($bType, $bSubtype) = sscanf(strtolower($b->getContentType()), '%[^/]/%s');
-    
-    if ('text' == $aType && $aType == $bType)
-    {
-      return ('plain' == $aSubtype) ? -1 : 1;
-    }
-    else
-    {
-      return ('text' == $aType) ? -1 : 1;
-    }
-  }*/
-  
   // -- Private methods
   
   /**
