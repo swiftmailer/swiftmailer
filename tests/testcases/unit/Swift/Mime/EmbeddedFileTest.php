@@ -6,12 +6,14 @@ require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
+require_once 'Swift/FileStream.php';
 
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
 Mock::generate('Swift_Mime_FieldChangeObserver',
   'Swift_Mime_MockFieldChangeObserver'
   );
+Mock::generate('Swift_FileStream', 'Swift_MockFileStream');
 
 class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
 {
@@ -196,6 +198,19 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     $file->setSize(123456);
   }
   
+  public function testFilnameCanBeReadFromFileStream()
+  {
+    $file = new Swift_MockFileStream();
+    $file->setReturnValue('getPath', '/path/to/some-image.jpg');
+    $file->setReturnValueAt(0, 'read', '<image data>');
+    $file->setReturnValueAt(1, 'read', false);
+    
+    $entity = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $entity->setFile($file);
+    $this->assertEqual('some-image.jpg', $entity->getFilename());
+    $this->assertEqual('<image data>', $entity->getBodyAsString());
+  }
+  
   public function testFluidInterface()
   {
     $file = $this->_createEmbeddedFile(array(), $this->_encoder);
@@ -216,6 +231,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
       ->setModificationDate(time() + 10)
       ->setReadDate(time() + 20)
       ->setSize(123)
+      ->setFile(new Swift_MockFileStream())
       ;
     
     $this->assertReference($file, $ref);
