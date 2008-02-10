@@ -9,7 +9,6 @@ Swift Mailer:
      <?php $string = parent::encodeString($string);
      return $this->encodeString($string); ?>
  * MimeEntity classes
-   - Image
    - ForwardedMessage
    - Multipart/Digest type
  * Message class
@@ -20,6 +19,13 @@ Swift Mailer:
    - Shift-JIS
    - ISO-10646
    - CP950
+ * Streams
+   - FileByteStream
+   - FileCharacterStream
+ * Caches
+   - ArrayCache
+   - NullCache
+   - FileCache
 
 Test Suite:
 -----------

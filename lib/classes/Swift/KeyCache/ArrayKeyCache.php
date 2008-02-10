@@ -1,0 +1,178 @@
+<?php
+
+/*
+ A basic KeyCache backed by an array in Swift Mailer.
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ */
+
+require_once dirname(__FILE__) . '/../KeyCache.php';
+require_once dirname(__FILE__) . '/../ByteStream.php';
+
+/**
+ * A basic KeyCache backed by an array.
+ * @package Swift
+ * @subpackage KeyCache
+ * @author Chris Corbyn
+ */
+class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
+{
+  
+  /**
+   * Cache contents.
+   * @var array
+   * @access private
+   */
+  private $_contents = array();
+  
+  /**
+   * Set a string into the cache under $itemKey for the namespace $nsKey.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param string $string
+   * @param int $mode
+   * @see MODE_WRITE, MODE_APPEND
+   */
+  public function setString($nsKey, $itemKey, $string, $mode)
+  {
+    $this->_prepareCache($nsKey);
+    switch ($mode)
+    {
+      case self::MODE_WRITE:
+        $this->_contents[$nsKey][$itemKey] = $string;
+        break;
+      case self::MODE_APPEND:
+        if (!$this->hasKey($nsKey, $itemKey))
+        {
+          $this->_contents[$nsKey][$itemKey] = '';
+        }
+        $this->_contents[$nsKey][$itemKey] .= $string;
+        break;
+      default:
+        throw new Exception(
+          'Invalid mode [' . $mode . '] used to set nsKey='.
+          $nsKey . ', itemKey=' . $itemKey
+          );
+    }
+  }
+  
+  /**
+   * Set a ByteStream into the cache under $itemKey for the namespace $nsKey.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param Swift_ByteStream $os
+   * @param int $mode
+   * @see MODE_WRITE, MODE_APPEND
+   */
+  public function importFromByteStream($nsKey, $itemKey, Swift_ByteStream $os,
+    $mode)
+  {
+    $this->_prepareCache($nsKey);
+    switch ($mode)
+    {
+      case self::MODE_WRITE:
+        $this->clearKey($nsKey, $itemKey);
+      case self::MODE_APPEND:
+        if (!$this->hasKey($nsKey, $itemKey))
+        {
+          $this->_contents[$nsKey][$itemKey] = '';
+        }
+        while (false !== $bytes = $os->read(8192))
+        {
+          $this->_contents[$nsKey][$itemKey] .= $bytes;
+        }
+        break;
+      default:
+        throw new Exception(
+          'Invalid mode [' . $mode . '] used to set nsKey='.
+          $nsKey . ', itemKey=' . $itemKey
+          );
+    }
+  }
+  
+  /**
+   * Get data back out of the cache as a string.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @return string
+   */
+  public function getString($nsKey, $itemKey)
+  {
+    $this->_prepareCache($nsKey);
+    if ($this->hasKey($nsKey, $itemKey))
+    {
+      return $this->_contents[$nsKey][$itemKey];
+    }
+  }
+  
+  /**
+   * Get data back out of the cache as a ByteStream.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param Swift_ByteStream $is to write the data to
+   */
+  public function exportToByteStream($nsKey, $itemKey, Swift_ByteStream $is)
+  {
+    $this->_prepareCache($nsKey);
+    $is->write($this->getString($nsKey, $itemKey));
+  }
+  
+  /**
+   * Check if the given $itemKey exists in the namespace $nsKey.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @return boolean
+   */
+  public function hasKey($nsKey, $itemKey)
+  {
+    $this->_prepareCache($nsKey);
+    return array_key_exists($itemKey, $this->_contents[$nsKey]);
+  }
+  
+  /**
+   * Clear data for $itemKey in the namespace $nsKey if it exists.
+   * @param string $nsKey
+   * @param string $itemKey
+   */
+  public function clearKey($nsKey, $itemKey)
+  {
+    unset($this->_contents[$nsKey][$itemKey]);
+  }
+  
+  /**
+   * Clear all data in the namespace $nsKey if it exists.
+   * @param string $nsKey
+   */
+  public function clearAll($nsKey)
+  {
+    unset($this->_contents[$nsKey]);
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Initialize the namespace of $nsKey if needed.
+   * @param string $nsKey
+   * @access private
+   */
+  private function _prepareCache($nsKey)
+  {
+    if (!array_key_exists($nsKey, $this->_contents))
+    {
+      $this->_contents[$nsKey] = array();
+    }
+  }
+  
+}
