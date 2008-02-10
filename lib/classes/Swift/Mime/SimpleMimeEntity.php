@@ -165,6 +165,13 @@ class Swift_Mime_SimpleMimeEntity
     );
   
   /**
+   * The order of preference for any media types which appear in this entity.
+   * @var array
+   * @access private
+   */
+  private $_typeOrderPreference = array();
+  
+  /**
    * Creates a new SimpleMimeEntity with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
@@ -497,8 +504,8 @@ class Swift_Mime_SimpleMimeEntity
     $this->_registerInternalFieldChangeObservers($immediateChildren, 'children');
     //Make sure the boundary is integral
     $this->_refreshBoundary(!empty($children));
-    
-    usort($this->_immediateChildren, array($this, '_sortChildren'));
+    //Logically order the parts if conclusively possible
+    $this->_repairOrdering();
     
     return $this;
   }
@@ -569,6 +576,28 @@ class Swift_Mime_SimpleMimeEntity
   public function setCompositeRanges(array $ranges)
   {
     $this->_compositeRanges = $ranges;
+  }
+  
+  /**
+   * Get the ordering of types in this media.
+   * Types are mapped as MIME type/subtype, corresponding to a
+   * numeric value.  The lower the value, the less preferable it is.
+   * @return array
+   */
+  public function getTypeOrderPreference()
+  {
+    return $this->_typeOrderPreference;
+  }
+  
+  /**
+   * Set the order preference of any types in this media.
+   * @param array $order
+   */
+  public function setTypeOrderPreference(array $order)
+  {
+    $this->_typeOrderPreference = $order;
+    $this->setChildren($this->_children);
+    $this->_notifyFieldChanged('typeorderpreference', $order);
   }
   
   /**
@@ -761,6 +790,10 @@ class Swift_Mime_SimpleMimeEntity
     {
       $this->setMaxLineLength($value);
     }
+    elseif ('typeorderpreference' == $field)
+    {
+      $this->setTypeOrderPreference($value);
+    }
   }
   
   /**
@@ -791,19 +824,6 @@ class Swift_Mime_SimpleMimeEntity
     {
       $observer->fieldChanged($field, $value);
     }
-  }
-  
-  /**
-   * User defined callback for sorting children when they are nested.
-   * This helps to ensure that all children appear in a logical order.
-   * @param object $a
-   * @param object $b
-   * @return int
-   * @access protected
-   */
-  protected function _sortChildren($a, $b)
-  {
-    return 1;
   }
   
   /**
@@ -902,6 +922,68 @@ class Swift_Mime_SimpleMimeEntity
     else
     {
       $this->_notifyFieldChanged('boundary', $this->getBoundary());
+    }
+  }
+  
+  /**
+   * User defined callback for sorting children when they are nested.
+   * This helps to ensure that all children appear in a logical order.
+   * @param object $a
+   * @param object $b
+   * @return int
+   * @access protected
+   */
+  private function _sortChildren($a, $b)
+  {
+    $max = max($this->_typeOrderPreference);
+    $aType = strtolower($a->getContentType());
+    $bType = strtolower($b->getContentType());
+    
+    if (is_null($aType))
+    {
+      $aTypePref = $max + 1;
+    }
+    else
+    {
+      $aTypePref = array_key_exists($aType, $this->_typeOrderPreference) ?
+        $this->_typeOrderPreference[$aType] : ($max + 1);
+    }
+    
+    if (is_null($bType))
+    {
+      $bTypePref = $max + 1;
+    }
+    else
+    {
+      $bTypePref = array_key_exists($bType, $this->_typeOrderPreference) ?
+        $this->_typeOrderPreference[$bType] : ($max + 1);
+    }
+    
+    return ($aTypePref >= $bTypePref) ? 1 : -1;
+  }
+  
+  /**
+   * Logically order the children in this entity of getSortOrderPreference()
+   * returns a conclusive result.
+   * @access private
+   */
+  private function _repairOrdering()
+  {
+    $shouldSort = true;
+    foreach ($this->_immediateChildren as $child)
+    {
+      if (!array_key_exists(
+        strtolower($child->getContentType()),
+        $this->_typeOrderPreference))
+      {
+        $shouldSort = false;
+        break;
+      }
+    }
+    //Sort in order of preference, if there is one
+    if ($shouldSort)
+    {
+      usort($this->_immediateChildren, array($this, '_sortChildren'));
     }
   }
   

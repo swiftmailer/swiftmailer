@@ -2,8 +2,7 @@ Swift Mailer:
 -------------
 
  * Add a getHeader() method.
- * Run a usort() on setChildren() so: text/xxx content types appear earlier
-   and text/plain content types appear lowest
+ * Caching!
  * Add a fixLE() method to MimePart (for ByteStreams too)
    - Perhaps make QpContentEncoder extend PlainContentEncoder so line wraps
      are handled correctly, and also add such canonicalization logic there.
@@ -12,7 +11,7 @@ Swift Mailer:
  * MimeEntity classes
    - Image
    - ForwardedMessage
-   - Message/Digest type
+   - Multipart/Digest type
  * Message class
    - Message/Partial
    - Message/external

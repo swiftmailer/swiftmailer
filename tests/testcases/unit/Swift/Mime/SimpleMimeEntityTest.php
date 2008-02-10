@@ -690,6 +690,138 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $entity->toString();
   }
   
+  public function testOrderingOfAlternativePartsCanBeSpecified_1()
+  {
+    $h1 = new Swift_Mime_MockHeader();
+    $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"'
+      );
+    $h1->setReturnValue('toString',
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n"
+      );
+    $headers1 = array($h1);
+    
+    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $entity1->setBoundary('_=_foo_=_');
+    
+    $entity2 = new Swift_Mime_MockMimeEntity();
+    $entity2->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
+    $entity2->setReturnValue('getContentType', 'text/plain');
+    $entity2->setReturnValue('toString',
+      'Content-Type: text/plain' . "\r\n" .
+      "\r\n" .
+      'foobar test'
+      );
+    
+    $entity3 = new Swift_Mime_MockMimeEntity();
+    $entity3->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
+    $entity3->setReturnValue('toString',
+      'Content-Type: text/html' . "\r\n" .
+      "\r\n" .
+      'foobar <strong>test</strong>'
+      );
+    $entity3->setReturnValue('getContentType', 'text/html');
+    
+    $entity1->setChildren(array($entity2, $entity3));
+    
+    $entity1->setTypeOrderPreference(array(
+      'text/html' => 1,
+      'text/plain' => 2
+      ));
+      
+    $this->assertEqual(
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n" .
+      "\r\n" .
+      '--_=_foo_=_' . "\r\n" .
+      'Content-Type: text/html' . "\r\n" .
+      "\r\n" .
+      'foobar <strong>test</strong>' .
+      "\r\n" .
+      '--_=_foo_=_' . "\r\n" .
+      'Content-Type: text/plain' . "\r\n" .
+      "\r\n" .
+      'foobar test' .
+      "\r\n" .
+      '--_=_foo_=_--' . "\r\n",
+      $entity1->toString(),
+      '%s: The type order preference should cause the html version to appear '. 
+      'before the plain version'
+      );
+  }
+  
+  public function testOrderingOfAlternativePartsCanBeSpecified_2()
+  {
+    $h1 = new Swift_Mime_MockHeader();
+    $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"'
+      );
+    $h1->setReturnValue('toString',
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n"
+      );
+    $headers1 = array($h1);
+    
+    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $entity1->setBoundary('_=_foo_=_');
+    
+    $entity2 = new Swift_Mime_MockMimeEntity();
+    $entity2->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
+    $entity2->setReturnValue('getContentType', 'text/plain');
+    $entity2->setReturnValue('toString',
+      'Content-Type: text/plain' . "\r\n" .
+      "\r\n" .
+      'foobar test'
+      );
+    
+    $entity3 = new Swift_Mime_MockMimeEntity();
+    $entity3->setReturnValue('getNestingLevel',
+      Swift_Mime_MimeEntity::LEVEL_SUBPART
+      );
+    $entity3->setReturnValue('toString',
+      'Content-Type: text/html' . "\r\n" .
+      "\r\n" .
+      'foobar <strong>test</strong>'
+      );
+    $entity3->setReturnValue('getContentType', 'text/html');
+    
+    $entity1->setChildren(array($entity2, $entity3));
+    
+    $entity1->setTypeOrderPreference(array(
+      'text/html' => 2,
+      'text/plain' => 1
+      ));
+    
+    $this->assertEqual(
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n" .
+      "\r\n" .
+      '--_=_foo_=_' . "\r\n" .
+      'Content-Type: text/plain' . "\r\n" .
+      "\r\n" .
+      'foobar test' .
+      "\r\n" .
+      '--_=_foo_=_' . "\r\n" .
+      'Content-Type: text/html' . "\r\n" .
+      "\r\n" .
+      'foobar <strong>test</strong>' .
+      "\r\n" .
+      '--_=_foo_=_--' . "\r\n",
+      $entity1->toString(),
+      '%s: The type order preference should cause the plain version to appear '. 
+      'before the html version'
+      );
+  }
+  
   public function testFluidInterface()
   {
     $entity = $this->_getEntity(array(), $this->_encoder);

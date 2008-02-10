@@ -90,6 +90,10 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     {
       $this->setCharset($charset);
     }
+    $this->setTypeOrderPreference(array(
+      'text/plain' => 1,
+      'text/html' => 2
+      ));
   }
   
   /**
@@ -239,6 +243,10 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     {
       $this->setMaxLineLength($value);
     }
+    elseif ('typeorderpreference' == $field)
+    {
+      $this->setTypeOrderPreference($value);
+    }
   }
   
   /**
@@ -336,7 +344,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * @return int
    * @access protected
    */
-  protected function _sortChildren($a, $b)
+  /*protected function _sortChildren($a, $b)
   {
     list($aType, $aSubtype) = sscanf(strtolower($a->getContentType()), '%[^/]/%s');
     list($bType, $bSubtype) = sscanf(strtolower($b->getContentType()), '%[^/]/%s');
@@ -349,7 +357,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     {
       return ('text' == $aType) ? -1 : 1;
     }
-  }
+  }*/
   
   // -- Private methods
   
