@@ -110,6 +110,15 @@ class Swift_Di
   }
   
   /**
+   * Get the dependency map in its entirety.
+   * @return array
+   */
+  public function getDependencyMap()
+  {
+    return $this->_map;
+  }
+  
+  /**
    * Set a lookup reference.
    * @param string $name
    * @param mixed $value

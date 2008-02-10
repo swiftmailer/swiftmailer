@@ -7,6 +7,8 @@ require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
 require_once 'Swift/Mime/EntityFactory.php';
+require_once 'Swift/ByteStream.php';
+require_once 'Swift/KeyCache.php';
 
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
@@ -16,6 +18,7 @@ Mock::generate(
   );
 Mock::generate('Swift_Mime_MimeEntity', 'Swift_Mime_MockMimeEntity');
 Mock::generate('Swift_Mime_EntityFactory', 'Swift_Mime_MockEntityFactory');
+Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
 
 class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
 {
@@ -77,6 +80,47 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       'my body',
       $entity->toString()
       );
+  }
+  
+  public function testByteStreamBodyIsAppended()
+  {
+    $h1 = new Swift_Mime_MockHeader();
+    $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'text/html');
+    $h1->setReturnValue('toString', 'Content-Type: text/html' . "\r\n");
+    $h2 = new Swift_Mime_MockHeader();
+    $h2->setReturnValue('getFieldName', 'X-Header');
+    $h2->setReturnValue('getFieldBody', 'foo');
+    $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
+    $headers = array($h1, $h2);
+    $this->_encoder->setReturnValue('encodeString', 'my body');
+    $entity = $this->_getEntity($headers, $this->_encoder);
+    
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'my body');
+    $os->setReturnValueAt(1, 'read', false);
+    
+    $entity->setBodyAsByteStream($os);
+    
+    $this->assertEqual(
+      'Content-Type: text/html' . "\r\n" .
+      'X-Header: foo' . "\r\n" .
+      "\r\n" .
+      'my body',
+      $entity->toString()
+      );
+  }
+  
+  public function testEntityCanBeWrittenToByteStream()
+  {
+    //see acceptance test for more detail
+    $entity = $this->_getEntity(array(), $this->_encoder);
+    $entity->setBodyAsString('test');
+    
+    $is = new Swift_MockByteStream();
+    $is->expectAtLeastOnce('write', array('*'));
+    
+    $entity->toByteStream($is);
   }
   
   public function testContentTypeCanBeSetAndFetched()
@@ -832,6 +876,8 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       ->setDescription('my description')
       ->setMaxLineLength(998)
       ->setBodyAsString('xx')
+      ->setBodyAsByteStream(new Swift_MockByteStream())
+      ->setBody('')
       ->setNestingLevel(10)
       ->setBoundary('xyz')
       ->setChildren(array())

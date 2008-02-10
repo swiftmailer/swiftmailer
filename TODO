@@ -3,6 +3,7 @@ Swift Mailer:
 
  * Add a getHeader() method.
  * Caching!
+ * Write some sanity tests
  * Add a fixLE() method to MimePart (for ByteStreams too)
    - Perhaps make QpContentEncoder extend PlainContentEncoder so line wraps
      are handled correctly, and also add such canonicalization logic there.
@@ -20,10 +21,9 @@ Swift Mailer:
    - ISO-10646
    - CP950
  * Streams
-   - FileByteStream
+   - FileByteStream (implements FileStream)
    - FileCharacterStream
  * Caches
-   - ArrayCache
    - NullCache
    - FileCache
 

@@ -32,7 +32,8 @@ require_once dirname(__FILE__) . '/EntityFactory.php';
  * @author Chris Corbyn
  */
 class Swift_Mime_SimpleMimeEntity
-  implements Swift_Mime_MimeEntity, Swift_Mime_EntityFactory, Swift_Mime_FieldChangeObserver
+  implements Swift_Mime_MimeEntity, Swift_Mime_EntityFactory,
+  Swift_Mime_FieldChangeObserver
 {
   
   /**
@@ -620,7 +621,7 @@ class Swift_Mime_SimpleMimeEntity
       { //Empty fields need not be displayed
         continue;
       }
-      
+    
       if ($hasChildren
         && strtolower($header->getFieldName()) == 'content-transfer-encoding'
         && !in_array(
