@@ -9,6 +9,7 @@ Swift Mailer:
      are handled correctly, and also add such canonicalization logic there.
      <?php $string = parent::encodeString($string);
      return $this->encodeString($string); ?>
+ * ACTUALLY! Make CharStream canonicalize on importXX()
  * MimeEntity classes
    - ForwardedMessage
    - Multipart/Digest type

@@ -15,6 +15,9 @@ function SweetyUIManager() {
   /** Packages toggled on or off */
   var _pkgs = { };
   
+  /** Test cases within packages */
+  var _pkgTests = { };
+  
   /** An element cache */
   var _cached = { };
   
@@ -120,6 +123,13 @@ function SweetyUIManager() {
    * Restore the UI on a new page load or reload.
    */
   this.restore = function restore() {
+    for (var testName in sweetyTestCases) {
+      var pkgName = _pkgFor(testName);
+      if (typeof _pkgTests[pkgName] == "undefined") {
+        _pkgTests[pkgName] = { };
+      }
+      _pkgTests[pkgName][testName] = true;
+    }
     this.hideCheckboxes();
     _loadPkgsFromCookie();
     for (var pkg in _pkgs) {
@@ -146,10 +156,14 @@ function SweetyUIManager() {
   this.loadTestList = function loadTestList() {
     var caseBox = _getListContainer();
 
+    //Show or hide any tests
     for (var testCase in sweetyTestCases) {
+      var pkgName = _pkgFor(testCase);
+      _pkgTests[pkgName][testCase] = sweetyTestCases[testCase];
+      
       this.paintTestCaseIdle(testCase);
       
-      var pkg = testCase.replace(/_?[^_]+$/, "");
+      var pkg = _pkgFor(testCase);
       this.paintPkgIdle(pkg);
       
       var testDiv = _getElementById(testCase);
@@ -166,6 +180,32 @@ function SweetyUIManager() {
       } else {
         testDiv.style.display = "none";
       }
+    }
+    
+    //Show or hide any packages
+    for (var pkgName in _pkgTests) {
+      var display = false;
+      for (var testCase in _pkgTests[pkgName]) {
+        if (_pkgTests[pkgName][testCase]) {
+          display = true;
+          break;
+        }
+      }
+      this.showHidePkg(pkgName, display);
+    }
+  }
+  
+  /**
+   * Shows or hides the headers for the given package.
+   * @param {String} pkg
+   * @param {Boolean} show
+   */
+  this.showHidePkg = function showHidePkg(pkg, show) {
+    var _pkgDiv = _getElementById("sweety-package-" + pkg);
+    if (show) {
+      _pkgDiv.style.display = "block";
+    } else {
+      _pkgDiv.style.display = "none";
     }
   }
   
@@ -568,7 +608,7 @@ function SweetyUIManager() {
   
   var _loadPkgsFromCookie = function _loadPkgsFromCookie() {
     for (var testCase in sweetyTestCases) {
-      var pkg = testCase.replace(/_?[^_]+$/, "");
+      var pkg = _pkgFor(testCase);
       _pkgs[pkg] = false;
     }
     var cookieBits = document.cookie.split(/\s*;\s*/g);
@@ -581,6 +621,10 @@ function SweetyUIManager() {
       _pkgs[unescape(nvp[0])] = (nvp[1] == "0") ? false : true;
       //alert(unescape(nvp[0]) +  " => " + _pkgs[unescape(nvp[0])]);
     }
+  }
+  
+  var _pkgFor = function _pkgFor(testName) {
+    return testName.replace(/_?[^_]+$/, "");
   }
   
 }
