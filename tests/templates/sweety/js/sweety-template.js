@@ -185,12 +185,15 @@ function SweetyUIManager() {
     //Show or hide any packages
     for (var pkgName in _pkgTests) {
       var display = false;
+      var len = 0;
       for (var testCase in _pkgTests[pkgName]) {
         if (_pkgTests[pkgName][testCase]) {
           display = true;
-          break;
+          //break;
+          len++;
         }
       }
+      this.showPkgCount(pkgName, len);
       this.showHidePkg(pkgName, display);
     }
   }
@@ -201,12 +204,17 @@ function SweetyUIManager() {
    * @param {Boolean} show
    */
   this.showHidePkg = function showHidePkg(pkg, show) {
-    var _pkgDiv = _getElementById("sweety-package-" + pkg);
+    var pkgDiv = _getElementById("sweety-package-" + pkg);
     if (show) {
-      _pkgDiv.style.display = "block";
+      pkgDiv.style.display = "block";
     } else {
-      _pkgDiv.style.display = "none";
+      pkgDiv.style.display = "none";
     }
+  }
+  
+  this.showPkgCount = function showPkgCount(pkg, n) {
+    var countBox = _getElementById("sweety-pkg-count-" + pkg);
+    _setContent(countBox, "(" + n + ")");
   }
   
   /**

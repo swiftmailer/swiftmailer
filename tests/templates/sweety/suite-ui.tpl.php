@@ -44,8 +44,7 @@
                 onmouseover="this.style.cursor='pointer';"
                 onclick="sweetyUI.initialize(); sweetyRunner.runAll('<?php echo $package; ?>');"
                 class="sweety-package-header sweety-pkg-idle">
-                <img src="templates/sweety/images/group.gif" alt="Group" title="Group"
-                  class="sweety-group-icon" />
+                <span class="sweety-pkg-count" id="sweety-pkg-count-<?php echo $package; ?>"></span>
                 <img id="sweety-pkg-img-<?php echo $package; ?>" src="templates/sweety/images/darr.gif"
                   alt="Toggle Display" title="Toggle Display"
                   onmouseover="this.style.cursor='default';"

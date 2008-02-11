@@ -129,7 +129,6 @@ div.sweety-test img {
 
 div.sweety-package-header {
   font-size: 12px;
-  /*font-weight: bold;*/
   margin-bottom: 2px;
   border-bottom: 2px solid #444;
   padding: 2px;
@@ -141,6 +140,12 @@ div.sweety-package-header span.sweety-test-package {
 
 div.sweety-package-header img {
   margin: 0 2px;
+}
+
+span.sweety-pkg-count {
+  display: block;
+  float: right;
+  padding-right: 2px;
 }
 
 img.sweety-group-icon {
