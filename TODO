@@ -4,12 +4,7 @@ Swift Mailer:
  * Add a getHeader() method.
  * Caching!
  * Write some sanity tests
- * Add a fixLE() method to MimePart (for ByteStreams too)
-   - Perhaps make QpContentEncoder extend PlainContentEncoder so line wraps
-     are handled correctly, and also add such canonicalization logic there.
-     <?php $string = parent::encodeString($string);
-     return $this->encodeString($string); ?>
- * ACTUALLY! Make CharStream canonicalize on importXX()
+ * Add a canonicalizeEncodeString() and canonicalizeEncodeByteStream() to ContentEncoder.
  * MimeEntity classes
    - ForwardedMessage
    - Multipart/Digest type
@@ -33,8 +28,8 @@ Test Suite:
 
  * Change test results bar to show actual number of tests running
  * Add a thin bar showing the percentage progress below the results bar
- * Hide package if search term removes all its test cases
  * Some easy way to disable the JS
  * Smoke Test abilities.  Pretty much just needs to be able to display images.
+   - Define a markup? {image @ http://swiftmailer.org/testing/4.0.1/smokes/basic.png}
  
 EoM

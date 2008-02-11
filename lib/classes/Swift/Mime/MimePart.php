@@ -274,6 +274,30 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   // -- Protected methods
   
   /**
+   * Get the encoded body as a string.
+   * @return string
+   * @access protected
+   */
+  protected function _encodeStringBody()
+  {
+    return $this->getEncoder()->canonicEncodeString(
+      $this->getBodyAsString(), 0, $this->getMaxLineLength()
+      );
+  }
+  
+  /**
+   * Write the encoded body to $is.
+   * @param Swift_ByteStream $is
+   * @access protected
+   */
+  protected function _encodeByteStreamBody(Swift_ByteStream $is)
+  {
+    $this->getEncoder()->canonicEncodeByteStream(
+      $this->_getStreamBody(), $is, 0, $this->getMaxLineLength()
+      );
+  }
+  
+  /**
    * Forcefully override the character set of this mime part.
    * @param string $charset
    * @access protected
@@ -363,7 +387,10 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
       }
       
       //If this entity has it's own body it needs to be displayed
-      if (null !== $body = $this->_getStringBody())
+      $body = is_null($b = $this->_getStringBody())
+        ? $this->_getStreamBody() : $b;
+      
+      if (!is_null($body))
       {
         $subentity = $this->createBaseEntity();
         $subentity->setContentType($this->_getPreferredContentType());
@@ -371,25 +398,13 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
         $subentity->setDelSp($this->_getPreferredDelSp());
         $subentity->setFormat($this->_getPreferredFormat());
         $subentity->setNestingLevel($highestLevel);
-        $subentity->setBodyAsString($body);
-        array_unshift($newChildren, $subentity);
-        $this->setChildren($newChildren);
-        return true;
-      }
-      elseif (null !== $body = $this->_getStreamBody())
-      {
-        $subentity = $this->createBaseEntity();
-        $subentity->setContentType($this->_getPreferredContentType());
-        $subentity->setCharset($this->_getPreferredCharset());
-        $subentity->setDelSp($this->_getPreferredDelSp());
-        $subentity->setFormat($this->_getPreferredFormat());
-        $subentity->setNestingLevel($highestLevel);
-        $subentity->setBodyAsByteStream($body);
+        $subentity->setBody($body);
         array_unshift($newChildren, $subentity);
         $this->setChildren($newChildren);
         return true;
       }
     }
+    
     return false;
   }
   

@@ -6,12 +6,14 @@ require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
+require_once 'Swift/ByteStream.php';
 
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
 Mock::generate('Swift_Mime_FieldChangeObserver',
   'Swift_Mime_MockFieldChangeObserver'
   );
+Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
 
 class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
 {
@@ -115,6 +117,28 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     $part->setDelSp(true);
   }
   
+  public function testCanonicalEncodingIsUsedOnStrings()
+  {
+    //text parts should be presented in the canonical form, and any translation
+    // should be handled by the Transport
+    
+    $part = $this->_createMimePart(array(), $this->_encoder);
+    $this->_encoder->expectOnce('canonicEncodeString');
+    $part->setBodyAsString('foo');
+    $part->toString();
+  }
+  
+  public function testCanonicalEncodingIsUsedOnByteStreams()
+  {
+    //text parts should be presented in the canonical form, and any translation
+    // should be handled by the Transport
+    
+    $part = $this->_createMimePart(array(), $this->_encoder);
+    $this->_encoder->expectOnce('canonicEncodeByteStream');
+    $part->setBodyAsByteStream(new Swift_MockByteStream());
+    $part->toByteStream(new Swift_MockByteStream());
+  }
+  
   public function testFluidInterface()
   {
     $part = $this->_createMimePart(array(), $this->_encoder);
@@ -146,8 +170,6 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     $part->fieldChanged('encoder', $encoder);
     $this->assertReference($encoder, $part->getEncoder());
   }
-  
-  //TODO: Still undecided if cascading charset changes into mime parts is dangerous
   
   // -- Private helpers
   

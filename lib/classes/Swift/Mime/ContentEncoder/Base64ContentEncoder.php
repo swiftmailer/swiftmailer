@@ -35,6 +35,34 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoder
 {
   
   /**
+   * Used for encoding text input and ensuring the output is in the canonical
+   * form (i.e. all line endings are CRLF).
+   * @param string $string
+   * @param int $firstLineOffset if the first line needs shortening
+   * @param int $maxLineLength
+   * @return string
+   */
+  public function canonicEncodeString($string, $firstLineOffset = 0,
+    $maxLineLength = 0)
+  {
+    return parent::encodeString($string, $firstLineOffset, $maxLineLength);
+  }
+  
+  /**
+   * Encode $in to $out, converting all line endings to CRLF.
+   * @param Swift_ByteStream $os to read from
+   * @param Swift_ByteStream $is to write to
+   * @param int $firstLineOffset
+   * @param int $maxLineLength - 0 indicates the default length for this encoding
+   */
+  public function canonicEncodeByteStream(
+    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    $maxLineLength = 0)
+  {
+    $this->encodeByteStream($os, $is, $firstLineOffset, $maxLineLength);
+  }
+  
+  /**
    * Encode stream $in to stream $out.
    * @param Swift_ByteStream $in
    * @param Swift_ByteStream $out

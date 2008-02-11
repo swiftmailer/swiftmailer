@@ -268,7 +268,8 @@ class Swift_Mime_SimpleMimeEntity
   {
     $ltype = strtolower($contentType);
     $this->_preferredContentType = $contentType;
-    if (substr($ltype, 0, 10) == 'multipart/' || empty($this->_children))
+    if ('multipart' == array_shift(sscanf($ltype, '%[^/]'))
+      || empty($this->_children))
     {
       $this->_contentType = $contentType;
       $this->_notifyFieldChanged('contenttype', $contentType);
@@ -452,11 +453,12 @@ class Swift_Mime_SimpleMimeEntity
       }
       else
       {
-        if ($child->getNestingLevel() == $immediateChildren[0]->getNestingLevel())
+        $nextLevel = $immediateChildren[0]->getNestingLevel();
+        if ($nextLevel == $level)
         {
           $immediateChildren[] = $child;
         }
-        elseif ($child->getNestingLevel() < $immediateChildren[0]->getNestingLevel())
+        elseif ($level < $nextLevel)
         {
           //Re-assign immediateChildren to grandchilden
           $grandchildren = array_merge($grandchildren, $immediateChildren);
@@ -484,7 +486,6 @@ class Swift_Mime_SimpleMimeEntity
           break;
         }
       }
-    
       //Put any grandchildren in a subpart
       if (!empty($grandchildren))
       {
@@ -608,9 +609,7 @@ class Swift_Mime_SimpleMimeEntity
   public function toString()
   {
     $string = '';
-    
     $hasChildren = count($this->_children) > 0;
-    
     $requiredFields = $this->getRequiredFields();
     
     //Append headers
@@ -637,12 +636,9 @@ class Swift_Mime_SimpleMimeEntity
     }
     
     //Append body
-    $body = $this->getBodyAsString();
-    if (!$hasChildren && !is_null($body))
+    if (!$hasChildren && (isset($this->_stringBody) || isset($this->_streamBody)))
     {
-      $string .= "\r\n" . $this->_encoder->encodeString(
-        $body, 0, $this->_maxLineLength
-        );
+      $string .= "\r\n" . $this->_encodeStringBody();
     }
     
     //Nest children
@@ -667,7 +663,6 @@ class Swift_Mime_SimpleMimeEntity
   public function toByteStream(Swift_ByteStream $is)
   {
     $hasChildren = count($this->_children) > 0;
-    
     $requiredFields = $this->getRequiredFields();
     
     //Append headers
@@ -696,17 +691,13 @@ class Swift_Mime_SimpleMimeEntity
     //Append body
     if (!$hasChildren && is_string($this->_stringBody))
     {
-      $is->write("\r\n" . $this->_encoder->encodeString(
-        $this->_stringBody, 0, $this->_maxLineLength
-        ));
+      $is->write("\r\n" . $this->_encodeStringBody());
     }
     elseif (!$hasChildren && isset($this->_streamBody))
     {
       $is->write("\r\n");
       $this->_streamBody->setPointer(0);
-      $this->_encoder->encodeByteStream(
-        $this->_streamBody, $is, 0, $this->_maxLineLength
-        );
+      $this->_encodeByteStreamBody($is);
       $this->_streamBody->setPointer(0);
     }
     
@@ -758,14 +749,7 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function getEntityFactory()
   {
-    if (!isset($this->_entityFactory))
-    {
-      return $this;
-    }
-    else
-    {
-      return $this->_entityFactory;
-    }
+    return isset($this->_entityFactory) ? $this->_entityFactory : $this;
   }
   
   /**
@@ -812,7 +796,7 @@ class Swift_Mime_SimpleMimeEntity
    * Notify all observers of a field being changed.
    * @param string $field
    * @param mixed $value
-   * @access private
+   * @access protected
    */
   protected function _notifyFieldChanged($field, $value)
   {
@@ -835,6 +819,30 @@ class Swift_Mime_SimpleMimeEntity
   protected function _getPreferredContentType()
   {
     return $this->_preferredContentType;
+  }
+  
+  /**
+   * Get the encoded body as a string.
+   * @return string
+   * @access protected
+   */
+  protected function _encodeStringBody()
+  {
+    return $this->_encoder->encodeString(
+      $this->getBodyAsString(), 0, $this->_maxLineLength
+      );
+  }
+  
+  /**
+   * Write the encoded body to $is.
+   * @param Swift_ByteStream $is
+   * @access protected
+   */
+  protected function _encodeByteStreamBody(Swift_ByteStream $is)
+  {
+    $this->_encoder->encodeByteStream(
+      $this->_streamBody, $is, 0, $this->_maxLineLength
+      );
   }
   
   /**
@@ -898,14 +906,9 @@ class Swift_Mime_SimpleMimeEntity
   private function _generateId()
   {
     $idLeft = time() . '.' . uniqid();
-    if (!empty($_SERVER['SERVER_NAME']))
-    {
-      $idRight = $_SERVER['SERVER_NAME'];
-    }
-    else
-    {
-      $idRight = 'swift.generated';
-    }
+    $idRight = !empty($_SERVER['SERVER_NAME'])
+      ? $_SERVER['SERVER_NAME']
+      : 'swift.generated';
     return $idLeft . '@' . $idRight;
   }
   
@@ -916,14 +919,7 @@ class Swift_Mime_SimpleMimeEntity
    */
   private function _refreshBoundary($apply)
   {
-    if (!$apply)
-    {
-      $this->_notifyFieldChanged('boundary', null);
-    }
-    else
-    {
-      $this->_notifyFieldChanged('boundary', $this->getBoundary());
-    }
+    $this->_notifyFieldChanged('boundary', $apply ? $this->getBoundary() : null);
   }
   
   /**
@@ -936,31 +932,18 @@ class Swift_Mime_SimpleMimeEntity
    */
   private function _sortChildren($a, $b)
   {
-    $max = max($this->_typeOrderPreference);
-    $aType = strtolower($a->getContentType());
-    $bType = strtolower($b->getContentType());
-    
-    if (is_null($aType))
+    $typePrefs = array();
+    $types = array(
+      strtolower($a->getContentType()),
+      strtolower($b->getContentType())
+      );
+    foreach ($types as $type)
     {
-      $aTypePref = $max + 1;
+      $typePrefs[] = (array_key_exists($type, $this->_typeOrderPreference))
+        ? $this->_typeOrderPreference[$type]
+        : (max($this->_typeOrderPreference) + 1);
     }
-    else
-    {
-      $aTypePref = array_key_exists($aType, $this->_typeOrderPreference) ?
-        $this->_typeOrderPreference[$aType] : ($max + 1);
-    }
-    
-    if (is_null($bType))
-    {
-      $bTypePref = $max + 1;
-    }
-    else
-    {
-      $bTypePref = array_key_exists($bType, $this->_typeOrderPreference) ?
-        $this->_typeOrderPreference[$bType] : ($max + 1);
-    }
-    
-    return ($aTypePref >= $bTypePref) ? 1 : -1;
+    return ($typePrefs[0] >= $typePrefs[1]) ? 1 : -1;
   }
   
   /**
