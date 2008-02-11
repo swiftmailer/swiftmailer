@@ -401,6 +401,94 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $encoder->encodeByteStream($os, $is, 22);
   }
   
+  public function testCanonicEncodeStringGeneratesCorrectCrlf_1()
+  {
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', "\r");
+    $charStream->setReturnValueAt(2, 'read', 'b');
+    $charStream->setReturnValueAt(3, 'read', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    
+    $this->assertEqual("a\r\nb", $encoder->canonicEncodeString("a\rb"),
+      '%s: Input should be canonicalized to CRLF endings'
+      );
+  }
+  
+  public function testCanonicEncodeStringGeneratesCorrectCrlf_2()
+  {
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', "\n");
+    $charStream->setReturnValueAt(2, 'read', 'b');
+    $charStream->setReturnValueAt(3, 'read', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    
+    $this->assertEqual("a\r\nb", $encoder->canonicEncodeString("a\nb"),
+      '%s: Input should be canonicalized to CRLF endings'
+      );
+  }
+  
+  public function testCanonicEncodeStringGeneratesCorrectCrlf_3()
+  {
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', "\r");
+    $charStream->setReturnValueAt(2, 'read', "\n");
+    $charStream->setReturnValueAt(3, 'read', 'b');
+    $charStream->setReturnValueAt(4, 'read', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    
+    $this->assertEqual("a\r\nb", $encoder->canonicEncodeString("a\r\nb"),
+      '%s: Input should be canonicalized to CRLF endings'
+      );
+  }
+  
+  public function testCanonicEncodeStringGeneratesCorrectCrlf_4()
+  {
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', "\n");
+    $charStream->setReturnValueAt(2, 'read', "\r");
+    $charStream->setReturnValueAt(3, 'read', 'b');
+    $charStream->setReturnValueAt(4, 'read', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    
+    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\n\rb"),
+      '%s: Input should be canonicalized to CRLF endings'
+      );
+  }
+  
+  public function testCanonicEncodeStringGeneratesCorrectCrlf_5()
+  {
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', "\n");
+    $charStream->setReturnValueAt(2, 'read', "\n");
+    $charStream->setReturnValueAt(3, 'read', 'b');
+    $charStream->setReturnValueAt(4, 'read', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    
+    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\n\nb"),
+      '%s: Input should be canonicalized to CRLF endings'
+      );
+  }
+  
+  public function testCanonicEncodeStringGeneratesCorrectCrlf_6()
+  {
+    $charStream = new Swift_MockCharacterStream();
+    $charStream->setReturnValueAt(0, 'read', 'a');
+    $charStream->setReturnValueAt(1, 'read', "\r");
+    $charStream->setReturnValueAt(2, 'read', "\r");
+    $charStream->setReturnValueAt(3, 'read', 'b');
+    $charStream->setReturnValueAt(4, 'read', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    
+    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\r\rb"),
+      '%s: Input should be canonicalized to CRLF endings'
+      );
+  }
+  
   public function testObserverInterfaceCanChangeCharset()
   {
     $stream = new Swift_MockCharacterStream();

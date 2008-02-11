@@ -118,33 +118,8 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   public function encodeString($string, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    //Set default length of 76 if no other value set
-    if (0 >= $maxLineLength || 76 < $maxLineLength)
-    {
-      $maxLineLength = 76;
-    }
-    
-    //Empty the CharacterStream and import the string to it
-    $this->_charStream->flushContents();
-    $this->_charStream->importString($string);
-    
-    //Set the temporary string to write into
-    $this->_temporaryReturnString = '';
-    
-    //Encode the CharacterStream using an append method as a callback
-    $this->encodeCharacterStreamCallback(
-      $this->_charStream, array($this, '_appendToTemporaryReturnString'),
-      $firstLineOffset, $maxLineLength
-      );
-    
-    //Copy the temporary return value
-    $ret = $this->_temporaryReturnString;
-    
-    //Unset the temporary return value
-    $this->_temporaryReturnString = null;
-    
-    //Return string with data appended via callback
-    return $ret;
+    return $this->_doEncodeString($string, $firstLineOffset,
+      $maxLineLength, false);
   }
   
   /**
@@ -163,15 +138,17 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    * @param Swift_CharacterStream $charStream to read from
    * @param callback $callback for appending
    * @param int $firstlineOffset
+   * @param int $maxLineLength
+   * @param boolean $canon, if canonicalization is needed
    * @access protected
    */
   protected function encodeCharacterStreamCallback(
     Swift_CharacterStream $charStream, $callback, $firstLineOffset,
-    $maxLineLength)
+    $maxLineLength, $canon = false)
   {
     //Variables used for tracking
-    $nextChar = null; $deferredLwspChar = null;
-    $expectedLfChar = false;
+    $nextChar = null; $bufNext = null; $deferredLwspChar = null;
+    $expectedLfChar = false; $needLf = false;
     $lineLength = 0; $lineCount = 0;
     
     do
@@ -187,7 +164,37 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       }
       
       //Always have knowledge of at least two chars at a time
-      $nextChar = $charStream->read(1);
+      $nextChar = is_null($bufNext) ? $charStream->read(1) : $bufNext;
+      $bufNext = null;
+      
+      //Canonicalize
+      if ($canon)
+      {
+        if ($this->_crlfChars['CR'] == $thisChar)
+        {
+          $needLf = true;
+        }
+        elseif ($this->_crlfChars['LF'] == $thisChar && !$needLf)
+        {
+          $needLf = true;
+          $bufNext = $nextChar;
+          $thisChar = $this->_crlfChars['CR'];
+          $nextChar = $this->_crlfChars['LF'];
+        }
+        else
+        {
+          $needLf = false;
+        }
+        
+        if ($needLf)
+        {
+          if ($this->_crlfChars['LF'] != $nextChar)
+          {
+            $bufNext = $nextChar;
+            $nextChar = $this->_crlfChars['LF'];
+          }
+        }
+      }
       $thisCharEncoded = $this->_encodeCharacter($thisChar);
       
       //Adjust max line length if needed
@@ -199,8 +206,6 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       {
         $thisMaxLineLength = $maxLineLength - $firstLineOffset;
       }
-      
-      //$maxLineLength = (false !== $nextChar ? 75 : 76) - $firstLineOffset;
       
       //Currently looking at LWSP followed by CR
       if (in_array(ord($thisCharEncoded), $this->_lwspBytes)
@@ -338,6 +343,38 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   protected function getPermittedBytes()
   {
     return $this->_permittedBytes;
+  }
+  
+  protected function _doEncodeString($string, $firstLineOffset = 0,
+    $maxLineLength = 0, $canon = false)
+  {
+    //Set default length of 76 if no other value set
+    if (0 >= $maxLineLength || 76 < $maxLineLength)
+    {
+      $maxLineLength = 76;
+    }
+    
+    //Empty the CharacterStream and import the string to it
+    $this->_charStream->flushContents();
+    $this->_charStream->importString($string);
+    
+    //Set the temporary string to write into
+    $this->_temporaryReturnString = '';
+    
+    //Encode the CharacterStream using an append method as a callback
+    $this->encodeCharacterStreamCallback(
+      $this->_charStream, array($this, '_appendToTemporaryReturnString'),
+      $firstLineOffset, $maxLineLength, $canon
+      );
+    
+    //Copy the temporary return value
+    $ret = $this->_temporaryReturnString;
+    
+    //Unset the temporary return value
+    $this->_temporaryReturnString = null;
+    
+    //Return string with data appended via callback
+    return $ret;
   }
   
 }

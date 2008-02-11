@@ -164,6 +164,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
    * @param int $firstLineOffset
    * @param int $maxLineLength
    * @param boolean $canon, if canonicalization is needed
+   * @access private
    */
   private function _doEncodeByteStream(
     Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,

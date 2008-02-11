@@ -61,7 +61,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   public function canonicEncodeString($string, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    return parent::encodeString($string, $firstLineOffset, $maxLineLength);
+    return $this->_doEncodeString($string, $firstLineOffset, $maxLineLength, true);
   }
   
   /**
@@ -75,7 +75,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
     Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    $this->encodeByteStream($os, $is, $firstLineOffset, $maxLineLength);
+    $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, true);
   }
   
   /**
@@ -91,30 +91,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
     Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    //Set default length of 76 if no other value set
-    if (0 >= $maxLineLength)
-    {
-      $maxLineLength = 76;
-    }
-    
-    //Empty the CharacterStream and import the ByteStream to it
-    $this->getCharacterStream()->flushContents();
-    $this->getCharacterStream()->importByteStream($os);
-    
-    //Set the temporary byte stream to write into
-    $this->_temporaryInputByteStream = $is;
-    
-    //Encode the CharacterStream using an append method as a callback
-    $this->encodeCharacterStreamCallback($this->getCharacterStream(),
-      array($this, '_appendToTemporaryInputByteStream'),
-      $firstLineOffset, $maxLineLength
-      );
-    
-    //Unset the temporary ByteStream
-    $this->_temporaryInputByteStream = null;
-    
-    //Return ByteStream with data appended via callback
-    return $is;
+    $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, false);
   }
   
   /**
@@ -151,6 +128,43 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   protected function _appendToTemporaryInputByteStream($bytes)
   {
     $this->_temporaryInputByteStream->write($bytes);
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Encode a byte stream.
+   * @param Swift_ByteStream $os
+   * @param Swift_ByteStream $is
+   * @param int $firstLineOffset
+   * @param int $maxLineLength
+   * @param boolean $canon, if canonicalization is needed
+   * @access private
+   */
+  private function _doEncodeByteStream(Swift_ByteStream $os, Swift_ByteStream $is,
+    $firstLineOffset = 0, $maxLineLength = 0, $canon = false)
+  {
+    //Set default length of 76 if no other value set
+    if (0 >= $maxLineLength)
+    {
+      $maxLineLength = 76;
+    }
+    
+    //Empty the CharacterStream and import the ByteStream to it
+    $this->getCharacterStream()->flushContents();
+    $this->getCharacterStream()->importByteStream($os);
+    
+    //Set the temporary byte stream to write into
+    $this->_temporaryInputByteStream = $is;
+    
+    //Encode the CharacterStream using an append method as a callback
+    $this->encodeCharacterStreamCallback($this->getCharacterStream(),
+      array($this, '_appendToTemporaryInputByteStream'),
+      $firstLineOffset, $maxLineLength, $canon
+      );
+    
+    //Unset the temporary ByteStream
+    $this->_temporaryInputByteStream = null;
   }
   
 }
