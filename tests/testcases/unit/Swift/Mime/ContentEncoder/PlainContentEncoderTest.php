@@ -93,6 +93,111 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
     $encoder->encodeByteStream($os, $is, 0, 50);
   }
   
+  public function testCanonicEncodeStringGeneratesCorrectCrlf()
+  {
+    $encoder = $this->_getEncoder('7bit');
+    $this->assertEqual("a\r\nb", $encoder->canonicEncodeString("a\rb"),
+      '%s: Line endings should be standardized'
+      );
+    $this->assertEqual("a\r\nb", $encoder->canonicEncodeString("a\nb"),
+      '%s: Line endings should be standardized'
+      );
+    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\n\rb"),
+      '%s: Line endings should be standardized'
+      );
+    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\r\rb"),
+      '%s: Line endings should be standardized'
+      );
+    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\n\nb"),
+      '%s: Line endings should be standardized'
+      );
+  }
+  
+  public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_1()
+  {
+    $encoder = $this->_getEncoder('7bit');
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'a');
+    $os->setReturnValueAt(1, 'read', "\r");
+    $os->setReturnValueAt(2, 'read', 'b');
+    $os->setReturnValueAt(3, 'read', false);
+    
+    $is = new Swift_MockByteStream();
+    $is->expectAt(0, 'write', array('a'));
+    $is->expectAt(1, 'write', array("\r"));
+    $is->expectAt(2, 'write', array("\nb"));
+    
+    $encoder->canonicEncodeByteStream($os, $is);
+  }
+  
+  public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_2()
+  {
+    $encoder = $this->_getEncoder('7bit');
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'a');
+    $os->setReturnValueAt(1, 'read', "\n");
+    $os->setReturnValueAt(2, 'read', 'b');
+    $os->setReturnValueAt(3, 'read', false);
+    
+    $is = new Swift_MockByteStream();
+    $is->expectAt(0, 'write', array('a'));
+    $is->expectAt(1, 'write', array("\r\n"));
+    $is->expectAt(2, 'write', array("b"));
+    
+    $encoder->canonicEncodeByteStream($os, $is);
+  }
+  
+  public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_3()
+  {
+    $encoder = $this->_getEncoder('7bit');
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'a');
+    $os->setReturnValueAt(1, 'read', "\n\r");
+    $os->setReturnValueAt(2, 'read', 'b');
+    $os->setReturnValueAt(3, 'read', false);
+    
+    $is = new Swift_MockByteStream();
+    $is->expectAt(0, 'write', array('a'));
+    $is->expectAt(1, 'write', array("\r\n\r"));
+    $is->expectAt(2, 'write', array("\nb"));
+    
+    $encoder->canonicEncodeByteStream($os, $is);
+  }
+  
+  public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_4()
+  {
+    $encoder = $this->_getEncoder('7bit');
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'a');
+    $os->setReturnValueAt(1, 'read', "\n\n");
+    $os->setReturnValueAt(2, 'read', 'b');
+    $os->setReturnValueAt(3, 'read', false);
+    
+    $is = new Swift_MockByteStream();
+    $is->expectAt(0, 'write', array('a'));
+    $is->expectAt(1, 'write', array("\r\n\r\n"));
+    $is->expectAt(2, 'write', array("b"));
+    
+    $encoder->canonicEncodeByteStream($os, $is);
+  }
+  
+  public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_5()
+  {
+    $encoder = $this->_getEncoder('7bit');
+    $os = new Swift_MockByteStream();
+    $os->setReturnValueAt(0, 'read', 'a');
+    $os->setReturnValueAt(1, 'read', "\r\r");
+    $os->setReturnValueAt(2, 'read', 'b');
+    $os->setReturnValueAt(3, 'read', false);
+    
+    $is = new Swift_MockByteStream();
+    $is->expectAt(0, 'write', array('a'));
+    $is->expectAt(1, 'write', array("\r\n\r"));
+    $is->expectAt(2, 'write', array("\nb"));
+    
+    $encoder->canonicEncodeByteStream($os, $is);
+  }
+  
   // -- Private helpers
   
   private function _getEncoder($name)

@@ -59,6 +59,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
   public function canonicEncodeString($string, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
+    $string = $this->_canonicalize($string);
     return $this->encodeString($string, $firstLineOffset, $maxLineLength);
   }
   
@@ -73,7 +74,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
     Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    $this->encodeByteStream($os, $is, $firstLineOffset, $maxLineLength);
+    $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, true);
   }
   
   /**
@@ -100,28 +101,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
     Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    $leftOver = '';
-    while (false !== $bytes = $os->read(8192))
-    {
-      $wrapped = $this->_safeWordWrap($leftOver . $bytes, $maxLineLength, "\r\n");
-      $wrapped = substr($wrapped, strlen($leftOver)); //remove the stuff left over
-      $lines = explode("\r\n", $wrapped);
-      $lastLine = array_pop($lines);
-      if (count($lines) == 0) //after pop
-      {
-        $leftOver .= $lastLine;
-      }
-      elseif (strlen($lastLine) < $maxLineLength)
-      {
-        $leftOver = $lastLine;
-      }
-      else
-      {
-        $leftOver = '';
-      }
-      $lines[] = $lastLine;
-      $is->write(implode("\r\n", $lines));
-    }
+    $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, false);
   }
   
   /**
@@ -150,7 +130,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
       return $string;
     }
     
-    $originalLines = explode("\r\n", $string);
+    $originalLines = explode($le, $string);
     
     $lines = array();
     $lineCount = 0;
@@ -175,6 +155,74 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
     }
     
     return implode("\r\n", $lines);
+  }
+  
+  /**
+   * Encode a byte stream.
+   * @param Swift_ByteStream $os
+   * @param Swift_ByteStream $is
+   * @param int $firstLineOffset
+   * @param int $maxLineLength
+   * @param boolean $canon, if canonicalization is needed
+   */
+  private function _doEncodeByteStream(
+    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    $maxLineLength = 0, $canon = false)
+  {
+    $leftOver = '';
+    $needLfStart = false;
+    while (false !== $bytes = $os->read(8192))
+    {
+      if ($canon)
+      {
+        $prepend = null;
+        $append = null;
+        if ($needLfStart)
+        {
+          $prepend = "\n";
+          if ("\n" == substr($bytes, 0, 1))
+          {
+            $bytes = substr($bytes, 1);
+          }
+        }
+        if ("\r" == substr($bytes, -1))
+        {
+          $append = "\r";
+          $bytes = substr($bytes, 0, -1);
+          $needLfStart = true;
+        }
+        else
+        {
+          $needLfStart = false;
+        }
+        $bytes = $prepend . $this->_canonicalize($bytes) . $append;
+      }
+      
+      $wrapped = $this->_safeWordWrap($leftOver . $bytes, $maxLineLength, "\r\n");
+      $wrapped = substr($wrapped, strlen($leftOver)); //remove the stuff left over
+      $lines = explode("\r\n", $wrapped);
+      $lastLine = array_pop($lines);
+      if (count($lines) == 0) //after pop
+      {
+        $leftOver .= $lastLine;
+      }
+      elseif (strlen($lastLine) < $maxLineLength)
+      {
+        $leftOver = $lastLine;
+      }
+      else
+      {
+        $leftOver = '';
+      }
+      $lines[] = $lastLine;
+      $is->write(implode("\r\n", $lines));
+    }
+  }
+  
+  private function _canonicalize($string)
+  {
+    $string = str_replace(array("\r\n", "\r"), "\n", $string);
+    return str_replace("\n", "\r\n", $string);
   }
   
 }
