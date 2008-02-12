@@ -289,7 +289,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   
   /**
    * Write the encoded body to $is.
-   * @param Swift_ByteStream $is
+   * @param Swift_InputByteStream $is
    * @access protected
    */
   protected function _encodeByteStreamBody(Swift_InputByteStream $is)

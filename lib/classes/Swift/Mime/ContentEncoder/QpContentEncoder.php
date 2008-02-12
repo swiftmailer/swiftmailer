@@ -37,7 +37,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   
   /**
    * Temporarily gets populated with a ByteStream during some internal writes.
-   * @var Swift_ByteStream
+   * @var Swift_InputByteStream
    * @access private
    */
   private $_temporaryInputByteStream;
