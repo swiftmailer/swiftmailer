@@ -198,19 +198,6 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     $file->setSize(123456);
   }
   
-  public function testFilnameCanBeReadFromFileStream()
-  {
-    $file = new Swift_MockFileStream();
-    $file->setReturnValue('getPath', '/path/to/some-image.jpg');
-    $file->setReturnValueAt(0, 'read', '<image data>');
-    $file->setReturnValueAt(1, 'read', false);
-    
-    $entity = $this->_createEmbeddedFile(array(), $this->_encoder);
-    $entity->setFile($file);
-    $this->assertEqual('some-image.jpg', $entity->getFilename());
-    $this->assertEqual('<image data>', $entity->getBodyAsString());
-  }
-  
   public function testFluidInterface()
   {
     $file = $this->_createEmbeddedFile(array(), $this->_encoder);

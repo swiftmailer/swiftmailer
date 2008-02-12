@@ -19,7 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/SimpleMimeEntity.php';
-
+require_once dirname(__FILE__) . '/../FileStream.php';
 
 /**
  * An attachment, in a multipart message.
@@ -84,6 +84,21 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     $this->setNestingLevel(self::LEVEL_ATTACHMENT);
     $this->setDisposition('attachment');
     $this->setContentType('application/octet-stream');
+  }
+  
+  /**
+   * Set a file into this EmbeddedFile entity.
+   * The data from the file will be used as the body, and the filename will be
+   * used by default.  You can override this with {@link setFilename()}.
+   * This method returns an instance of $this so can be used in a fluid interface.
+   * @param Swift_FileStream $file
+   * @return Swift_Mime_MimeEntity
+   */
+  public function setFile(Swift_FileStream $file)
+  {
+    $this->setBodyAsByteStream($file);
+    $this->setFilename(basename($file->getPath()));
+    return $this;
   }
   
   /**
