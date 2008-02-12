@@ -24,7 +24,8 @@ class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends UnitTestCase
       );
     $cache->expectCallCount('setString', 3);
     
-    $stream = new Swift_KeyCache_SimpleKeyCacheInputStream($cache);
+    $stream = new Swift_KeyCache_SimpleKeyCacheInputStream();
+    $stream->setKeyCache($cache);
     $stream->setNsKey($this->_nsKey);
     $stream->setItemKey('foo');
     
@@ -38,7 +39,8 @@ class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends UnitTestCase
     $cache = new Swift_MockKeyCache();
     $cache->expectOnce('clearKey', array($this->_nsKey, 'foo'));
     
-    $stream = new Swift_KeyCache_SimpleKeyCacheInputStream($cache);
+    $stream = new Swift_KeyCache_SimpleKeyCacheInputStream();
+    $stream->setKeyCache($cache);
     $stream->setNsKey($this->_nsKey);
     $stream->setItemKey('foo');
     
@@ -59,7 +61,8 @@ class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends UnitTestCase
       );
     $cache->expectCallCount('setString', 3);
     
-    $stream = new Swift_KeyCache_SimpleKeyCacheInputStream($cache);
+    $stream = new Swift_KeyCache_SimpleKeyCacheInputStream();
+    $stream->setKeyCache($cache);
     $stream->setNsKey($this->_nsKey);
     $stream->setItemKey('foo');
     
@@ -67,6 +70,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends UnitTestCase
     $stream->write('b');
     
     $newStream = clone $stream;
+    $newStream->setKeyCache($cache);
     $newStream->setNsKey('test');
     $newStream->setItemKey('bar');
     

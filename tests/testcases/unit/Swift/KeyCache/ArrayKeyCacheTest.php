@@ -4,21 +4,27 @@ require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/InputByteStream.php';
 require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/KeyCache/ArrayKeyCache.php';
+require_once 'Swift/KeyCache/KeyCacheInputStream.php';
 require_once 'Swift/KeyCache.php';
 
 Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
 Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
+Mock::generate('Swift_KeyCache_KeyCacheInputStream',
+  'Swift_KeyCache_MockKeyCacheInputStream'
+  );
 
 class Swift_KeyCache_ArrayKeyCacheTest extends Swift_AbstractSwiftUnitTestCase
 {
   
   private $_cache;
+  private $_inputStream;
   private $_key1 = 'key1';
   private $_key2 = 'key2';
   
   public function setUp()
   {
-    $this->_cache = new Swift_KeyCache_ArrayKeyCache();
+    $this->_inputStream = new Swift_KeyCache_MockKeyCacheInputStream();
+    $this->_cache = new Swift_KeyCache_ArrayKeyCache($this->_inputStream);
   }
   
   public function testStringDataCanBeSetAndFetched()

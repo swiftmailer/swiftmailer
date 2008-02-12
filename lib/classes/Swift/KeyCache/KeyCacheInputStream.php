@@ -19,6 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/../InputByteStream.php';
+require_once dirname(__FILE__) . '/../KeyCache.php';
 
 /**
  * Writes data to a KeyCache using a stream.
@@ -28,6 +29,12 @@ require_once dirname(__FILE__) . '/../InputByteStream.php';
  */
 interface Swift_KeyCache_KeyCacheInputStream extends Swift_InputByteStream
 {
+  
+  /**
+   * Set the KeyCache to wrap.
+   * @param Swift_KeyCache $keyCache
+   */
+  public function setKeyCache(Swift_KeyCache $keyCache);
   
   /**
    * Set the nsKey which will be written to.

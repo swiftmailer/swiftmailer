@@ -53,10 +53,10 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
   private $_itemKey;
   
   /**
-   * Creates a new (cloneable) SimpleKeyCacheInputStream for $keyCache.
+   * Set the KeyCache to wrap.
    * @param Swift_KeyCache $keyCache
    */
-  public function __construct(Swift_KeyCache $keyCache)
+  public function setKeyCache(Swift_KeyCache $keyCache)
   {
     $this->_keyCache = $keyCache;
   }

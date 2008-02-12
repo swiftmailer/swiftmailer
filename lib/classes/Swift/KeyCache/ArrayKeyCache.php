@@ -19,6 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/../KeyCache.php';
+require_once dirname(__FILE__) . '/KeyCacheInputStream.php';
 require_once dirname(__FILE__) . '/../InputByteStream.php';
 require_once dirname(__FILE__) . '/../OutputByteStream.php';
 
@@ -37,6 +38,23 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
    * @access private
    */
   private $_contents = array();
+  
+  /**
+   * An InputStream for cloning.
+   * @var Swift_KeyCache_KeyCacheInputStream
+   * @access private
+   */
+  private $_stream;
+  
+  /**
+   * Create a new ArrayKeyCache with the given $stream for cloning to make
+   * InputByteStreams.
+   * @param Swift_KeyCache_KeyCacheInputStream $stream
+   */
+  public function __construct(Swift_KeyCache_KeyCacheInputStream $stream)
+  {
+    $this->_stream = $stream;
+  }
   
   /**
    * Set a string into the cache under $itemKey for the namespace $nsKey.
@@ -112,6 +130,11 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
    */
   public function getInputByteStream($nsKey, $itemKey)
   {
+    $is = clone $this->_stream;
+    $is->setKeyCache($this);
+    $is->setNsKey($nsKey);
+    $is->setItemKey($itemKey);
+    return $is;
   }
   
   /**

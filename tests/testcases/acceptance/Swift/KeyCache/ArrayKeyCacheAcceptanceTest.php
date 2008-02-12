@@ -3,6 +3,7 @@
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/ByteStream/ArrayByteStream.php';
 require_once 'Swift/KeyCache/ArrayKeyCache.php';
+require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
 require_once 'Swift/KeyCache.php';
 
 class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_AbstractSwiftUnitTestCase
@@ -14,7 +15,9 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_AbstractSwiftUnit
   
   public function setUp()
   {
-    $this->_cache = new Swift_KeyCache_ArrayKeyCache();
+    $this->_cache = new Swift_KeyCache_ArrayKeyCache(
+      new Swift_KeyCache_SimpleKeyCacheInputStream()
+      );
   }
   
   public function testStringDataCanBeSetAndFetched()
@@ -168,6 +171,14 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_AbstractSwiftUnit
     $this->_cache->clearAll($this->_key1);
     $this->assertFalse($this->_cache->hasKey($this->_key1, 'foo'));
     $this->assertFalse($this->_cache->hasKey($this->_key1, 'bar'));
+  }
+  
+  public function testKeyCacheInputStream()
+  {
+    $is = $this->_cache->getInputByteStream($this->_key1, 'foo');
+    $is->write('abc');
+    $is->write('xyz');
+    $this->assertEqual('abcxyz', $this->_cache->getString($this->_key1, 'foo'));
   }
   
 }
