@@ -3,6 +3,7 @@ Swift Mailer:
 
  * Add a getHeader() method.
  * Caching!
+ * Produce a HttpDocument class (sends header() for parent part rather than echo'ing them)
  * Write some sanity tests
  * Add a canonicalizeEncodeString() and canonicalizeEncodeByteStream() to ContentEncoder.
  * MimeEntity classes
