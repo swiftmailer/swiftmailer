@@ -105,12 +105,12 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
   
   /**
    * Provides a ByteStream which when written to, writes data to $itemKey.
+   * NOTE: The stream will always write in append mode.
    * @param string $nsKey
    * @param string $itemKey
-   * @param int $mode
    * @return Swift_InputByteStream
    */
-  public function getInputByteStream($nsKey, $itemKey, $mode)
+  public function getInputByteStream($nsKey, $itemKey)
   {
   }
   
