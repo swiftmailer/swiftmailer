@@ -20,7 +20,8 @@
 
 require_once dirname(__FILE__) . '/MimeEntity.php';
 require_once dirname(__FILE__) . '/ContentEncoder.php';
-require_once dirname(__FILE__) . '/../ByteStream.php';
+require_once dirname(__FILE__) . '/../InputByteStream.php';
+require_once dirname(__FILE__) . '/../OutputByteStream.php';
 require_once dirname(__FILE__) . '/FieldChangeObserver.php';
 
 
@@ -92,7 +93,7 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * The body of this entity, as a ByteStream.
-   * @var Swift_ByteStream
+   * @var Swift_OutputByteStream
    * @access private
    */
   private $_streamBody;
@@ -358,7 +359,7 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function setBody($body)
   {
-    if ($body instanceof Swift_ByteStream)
+    if ($body instanceof Swift_OutputByteStream)
     {
       $this->setBodyAsByteStream($body);
     }
@@ -395,13 +396,13 @@ class Swift_Mime_SimpleMimeEntity
     }
     elseif (isset($this->_streamBody))
     {
-      $this->_streamBody->setPointer(0);
+      $this->_streamBody->setReadPointer(0);
       $string = '';
       while (false !== $bytes = $this->_streamBody->read(8192))
       {
         $string .= $bytes;
       }
-      $this->_streamBody->setPointer(0);
+      $this->_streamBody->setReadPointer(0);
       return $string;
     }
   }
@@ -409,10 +410,10 @@ class Swift_Mime_SimpleMimeEntity
   /**
    * Set the body of this entity as a ByteStream.
    * Returns a reference to itself for fluid interface.
-   * @param Swift_ByteStream $stream
+   * @param Swift_OutputByteStream $stream
    * @return Swift_Mime_SimpleMimeEntity
    */
-  public function setBodyAsByteStream(Swift_ByteStream $streamBody)
+  public function setBodyAsByteStream(Swift_OutputByteStream $streamBody)
   {
     $this->_streamBody = $streamBody;
     $this->_stringBody = null;
@@ -529,7 +530,7 @@ class Swift_Mime_SimpleMimeEntity
   public function setBoundary($boundary)
   {
     if (preg_match(
-      '/^[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?]$/D',
+      '/^[a-z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-z0-9\'\(\)\+_\-,\.\/:=\?]$/Di',
       $boundary))
     {
       $this->_boundary = $boundary;
@@ -656,9 +657,9 @@ class Swift_Mime_SimpleMimeEntity
   /**
    * Get this entire entity as a ByteStream.
    * The ByteStream will be appended to (it will not be flushed first).
-   * @param Swift_ByteStream $is to write to
+   * @param Swift_InputByteStream $is to write to
    */
-  public function toByteStream(Swift_ByteStream $is)
+  public function toByteStream(Swift_InputByteStream $is)
   {
     $hasChildren = count($this->_children) > 0;
     $requiredFields = $this->getRequiredFields();
@@ -694,9 +695,9 @@ class Swift_Mime_SimpleMimeEntity
     elseif (!$hasChildren && isset($this->_streamBody))
     {
       $is->write("\r\n");
-      $this->_streamBody->setPointer(0);
+      $this->_streamBody->setReadPointer(0);
       $this->_encodeByteStreamBody($is);
-      $this->_streamBody->setPointer(0);
+      $this->_streamBody->setReadPointer(0);
     }
     
     //Nest children
@@ -815,10 +816,10 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Write the encoded body to $is.
-   * @param Swift_ByteStream $is
+   * @param Swift_InputByteStream $is
    * @access protected
    */
-  protected function _encodeByteStreamBody(Swift_ByteStream $is)
+  protected function _encodeByteStreamBody(Swift_InputByteStream $is)
   {
     $this->_encoder->encodeByteStream(
       $this->_streamBody, $is, 0, $this->_maxLineLength
@@ -839,7 +840,7 @@ class Swift_Mime_SimpleMimeEntity
   /**
    * Get the body of this entity as the ByteStream it was set with.
    * Returns null if not set.
-   * @return Swift_ByteStream
+   * @return Swift_OutputByteStream
    * @access protected
    */
   protected function _getStreamBody()

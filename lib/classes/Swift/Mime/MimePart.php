@@ -19,6 +19,8 @@
  */
 
 require_once dirname(__FILE__) . '/SimpleMimeEntity.php';
+require_once dirname(__FILE__) . '/../InputByteStream.php';
+require_once dirname(__FILE__) . '/../OutputByteStream.php';
 
 
 /**
@@ -215,9 +217,9 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   /**
    * Get this entire message as a ByteStream.
    * The ByteStream will be appended to (it will not be flushed first).
-   * @param Swift_ByteStream $is to write to
+   * @param Swift_InputByteStream $is to write to
    */
-  public function toByteStream(Swift_ByteStream $stream)
+  public function toByteStream(Swift_InputByteStream $stream)
   {
     $children = $this->getChildren();
     $modified = $this->_moveBody($children);
@@ -290,7 +292,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * @param Swift_ByteStream $is
    * @access protected
    */
-  protected function _encodeByteStreamBody(Swift_ByteStream $is)
+  protected function _encodeByteStreamBody(Swift_InputByteStream $is)
   {
     $this->getEncoder()->canonicEncodeByteStream(
       $this->_getStreamBody(), $is, 0, $this->getMaxLineLength()

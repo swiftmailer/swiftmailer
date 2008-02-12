@@ -83,6 +83,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     parent::__construct($headers, $encoder);
     $this->setNestingLevel(self::LEVEL_ATTACHMENT);
     $this->setDisposition('attachment');
+    $this->setContentType('application/octet-stream');
   }
   
   /**

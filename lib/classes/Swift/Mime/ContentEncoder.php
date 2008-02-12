@@ -19,7 +19,8 @@
  */
 
 require_once dirname(__FILE__) . '/../Encoder.php';
-require_once dirname(__FILE__) . '/../ByteStream.php';
+require_once dirname(__FILE__) . '/../InputByteStream.php';
+require_once dirname(__FILE__) . '/../OutputByteStream.php';
 
 
 /**
@@ -44,24 +45,24 @@ interface Swift_Mime_ContentEncoder extends Swift_Encoder
   
   /**
    * Encode $in to $out, converting all line endings to CRLF.
-   * @param Swift_ByteStream $os to read from
-   * @param Swift_ByteStream $is to write to
+   * @param Swift_OutputByteStream $os to read from
+   * @param Swift_InputByteStream $is to write to
    * @param int $firstLineOffset
    * @param int $maxLineLength - 0 indicates the default length for this encoding
    */
   public function canonicEncodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0);
     
   /**
    * Encode $in to $out.
-   * @param Swift_ByteStream $os to read from
-   * @param Swift_ByteStream $is to write to
+   * @param Swift_OutputByteStream $os to read from
+   * @param Swift_InputByteStream $is to write to
    * @param int $firstLineOffset
    * @param int $maxLineLength - 0 indicates the default length for this encoding
    */
   public function encodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0);
   
   /**

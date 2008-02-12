@@ -6,7 +6,8 @@ require_once 'Swift/Mime/SimpleMimeEntity.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
-require_once 'Swift/ByteStream.php';
+require_once 'Swift/InputByteStream.php';
+require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/KeyCache.php';
 
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
@@ -16,7 +17,8 @@ Mock::generate(
   'Swift_Mime_MockFieldChangeObserver'
   );
 Mock::generate('Swift_Mime_MimeEntity', 'Swift_Mime_MockMimeEntity');
-Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
+Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
+Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 
 class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
 {
@@ -94,7 +96,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $this->_encoder->setReturnValue('encodeString', 'my body');
     $entity = $this->_getEntity($headers, $this->_encoder);
     
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'my body');
     $os->setReturnValueAt(1, 'read', false);
     
@@ -115,7 +117,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $entity = $this->_getEntity(array(), $this->_encoder);
     $entity->setBodyAsString('test');
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectAtLeastOnce('write', array('*'));
     
     $entity->toByteStream($is);
@@ -853,7 +855,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       ->setDescription('my description')
       ->setMaxLineLength(998)
       ->setBodyAsString('xx')
-      ->setBodyAsByteStream(new Swift_MockByteStream())
+      ->setBodyAsByteStream(new Swift_MockOutputByteStream())
       ->setBody('')
       ->setNestingLevel(10)
       ->setBoundary('xyz')

@@ -1,7 +1,7 @@
 <?php
 
 /*
- FileStream interface in Swift Mailer.
+ Input ByteStream (for writing) in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,28 +18,28 @@
  
  */
 
-require_once dirname(__FILE__) . '/OutputByteStream.php';
 
 /**
- * An OutputByteStream which specifically reads from a file.
+ * An abstract means of writing data.
+ * Classes implementing this interface may use a subsystem which requires less
+ * memory than working with large strings of data.
  * @package Swift
  * @subpackage ByteStream
  * @author Chris Corbyn
  */
-interface Swift_FileStream extends Swift_OutputByteStream
+interface Swift_InputByteStream
 {
   
   /**
-   * Get the complete path to the file.
-   * @return string
+   * Writes $bytes to the end of the stream.
+   * @param string $bytes
    */
-  public function getPath();
+  public function write($bytes);
   
   /**
-   * Move the internal read pointer to $byteOffset in the stream.
-   * @param int $byteOffset
-   * @return boolean
+   * Flush the contents of the stream (empty it) and set the internal pointer
+   * to the beginning.
    */
-  public function setPointer($byteOffset);
+  public function flushContents();
   
 }

@@ -18,7 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/../ByteStream.php';
+require_once dirname(__FILE__) . '/../InputByteStream.php';
+require_once dirname(__FILE__) . '/../OutputByteStream.php';
 
 
 /**
@@ -27,7 +28,8 @@ require_once dirname(__FILE__) . '/../ByteStream.php';
  * @subpackage ByteStream
  * @author Chris Corbyn
  */
-class Swift_ByteStream_ArrayByteStream implements Swift_ByteStream
+class Swift_ByteStream_ArrayByteStream
+  implements Swift_InputByteStream, Swift_OutputByteStream
 {
   
   /**
@@ -102,7 +104,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_ByteStream
    * @param int $byteOffset
    * @return boolean
    */
-  public function setPointer($byteOffset)
+  public function setReadPointer($byteOffset)
   {
     if ($byteOffset > $size = count($this->_array))
     {

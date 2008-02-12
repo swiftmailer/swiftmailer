@@ -2,10 +2,12 @@
 
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
-require_once 'Swift/ByteStream.php';
+require_once 'Swift/InputByteStream.php';
+require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/CharacterStream.php';
 
-Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
+Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
+Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 
 class Swift_Mime_ContentEncoder_QpContentEncoderTest
@@ -51,7 +53,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     { 
       $char = chr($ordinal);
       
-      $os = new Swift_MockByteStream();
+      $os = new Swift_MockOutputByteStream();
       
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
@@ -60,7 +62,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
       $charStream->setReturnValueAt(0, 'read', $char);
       $charStream->setReturnValueAt(1, 'read', false);
       
-      $is = new Swift_MockByteStream();
+      $is = new Swift_MockInputByteStream();
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array(
         new Swift_IdenticalBinaryExpectation($char)
@@ -101,7 +103,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $SPACE = chr(0x20); //32
     
     //HT
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
@@ -114,7 +116,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $charStream->setReturnValueAt(5, 'read', 'b');
     $charStream->setReturnValueAt(6, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectCallCount('write', 6);
     $is->expectAt(0, 'write', array('a'));
     $is->expectAt(1, 'write', array($HT));
@@ -127,7 +129,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $encoder->encodeByteStream($os, $is);
     
     //SPACE
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
@@ -140,7 +142,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $charStream->setReturnValueAt(5, 'read', 'b');
     $charStream->setReturnValueAt(6, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectCallCount('write', 6);
     $is->expectAt(0, 'write', array('a'));
     $is->expectAt(1, 'write', array($SPACE));
@@ -182,7 +184,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
           equivalent to performing the three steps separately.
           */
     
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
@@ -198,7 +200,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $charStream->setReturnValueAt(8, 'read', "\n");
     $charStream->setReturnValueAt(9, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectCallCount('write', 9);
     $is->expectAt(0, 'write', array('a'));
     $is->expectAt(1, 'write', array("\r"));
@@ -226,13 +228,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
           line break in the encoded text.
           */
     
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importByteStream', array($os));
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     
     $seq = 0;
     for (; $seq <= 140; ++$seq)
@@ -257,13 +259,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
   
   public function testMaxLineLengthCanBeSpecified()
   {
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importByteStream', array($os));
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     
     $seq = 0;
     for (; $seq <= 100; ++$seq)
@@ -296,7 +298,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     { 
       $char = chr($ordinal);
       
-      $os = new Swift_MockByteStream();
+      $os = new Swift_MockOutputByteStream();
       
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
@@ -305,7 +307,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
       $charStream->setReturnValueAt(0, 'read', $char);
       $charStream->setReturnValueAt(1, 'read', false);
       
-      $is = new Swift_MockByteStream();
+      $is = new Swift_MockInputByteStream();
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array(sprintf('=%02X', $ordinal)));
       
@@ -323,7 +325,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     
     $char = chr(61);
     
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
       
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
@@ -332,7 +334,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $charStream->setReturnValueAt(0, 'read', $char);
     $charStream->setReturnValueAt(1, 'read', false);
       
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectCallCount('write', 1);
     $is->expectAt(0, 'write', array(sprintf('=%02X', 61)));
       
@@ -351,7 +353,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     { 
       $char = chr($ordinal);
       
-      $os = new Swift_MockByteStream();
+      $os = new Swift_MockOutputByteStream();
       
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
@@ -360,7 +362,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
       $charStream->setReturnValueAt(0, 'read', $char);
       $charStream->setReturnValueAt(1, 'read', false);
       
-      $is = new Swift_MockByteStream();
+      $is = new Swift_MockInputByteStream();
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array(sprintf('=%02X', $ordinal)));
       
@@ -372,13 +374,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
   
   public function testFirstLineLengthCanBeDifferent()
   {
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importByteStream', array($os));
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     
     $seq = 0;
     for (; $seq <= 140; ++$seq)

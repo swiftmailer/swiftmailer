@@ -19,7 +19,7 @@
  */
 
 require_once dirname(__FILE__) . '/../CharacterStream.php';
-require_once dirname(__FILE__) . '/../ByteStream.php';
+require_once dirname(__FILE__) . '/../OutputByteStream.php';
 
 
 /**
@@ -111,9 +111,9 @@ class Swift_CharacterStream_ArrayCharacterStream
   
   /**
    * Overwrite this character stream using the byte sequence in the byte stream.
-   * @param Swift_ByteStream $os output stream to read from
+   * @param Swift_OutputByteStream $os output stream to read from
    */
-  public function importByteStream(Swift_ByteStream $os)
+  public function importByteStream(Swift_OutputByteStream $os)
   {
     if (!isset($this->_charReader))
     {

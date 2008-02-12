@@ -18,7 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/../ByteStream.php';
+require_once dirname(__FILE__) . '/../InputByteStream.php';
 
 
 /**
@@ -111,8 +111,8 @@ interface Swift_Mime_MimeEntity
   
   /**
    * Get this entire entity as a ByteStream.
-   * @param Swift_ByteStream $is to write to
+   * @param Swift_InputByteStream $is to write to
    */
-  public function toByteStream(Swift_ByteStream $is);
+  public function toByteStream(Swift_InputByteStream $is);
   
 }

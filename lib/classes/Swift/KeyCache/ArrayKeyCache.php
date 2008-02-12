@@ -19,7 +19,8 @@
  */
 
 require_once dirname(__FILE__) . '/../KeyCache.php';
-require_once dirname(__FILE__) . '/../ByteStream.php';
+require_once dirname(__FILE__) . '/../InputByteStream.php';
+require_once dirname(__FILE__) . '/../OutputByteStream.php';
 
 /**
  * A basic KeyCache backed by an array.
@@ -72,11 +73,11 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
    * Set a ByteStream into the cache under $itemKey for the namespace $nsKey.
    * @param string $nsKey
    * @param string $itemKey
-   * @param Swift_ByteStream $os
+   * @param Swift_OutputByteStream $os
    * @param int $mode
    * @see MODE_WRITE, MODE_APPEND
    */
-  public function importFromByteStream($nsKey, $itemKey, Swift_ByteStream $os,
+  public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os,
     $mode)
   {
     $this->_prepareCache($nsKey);
@@ -103,6 +104,17 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
   }
   
   /**
+   * Provides a ByteStream which when written to, writes data to $itemKey.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param int $mode
+   * @return Swift_InputByteStream
+   */
+  public function getInputByteStream($nsKey, $itemKey, $mode)
+  {
+  }
+  
+  /**
    * Get data back out of the cache as a string.
    * @param string $nsKey
    * @param string $itemKey
@@ -121,9 +133,9 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
    * Get data back out of the cache as a ByteStream.
    * @param string $nsKey
    * @param string $itemKey
-   * @param Swift_ByteStream $is to write the data to
+   * @param Swift_InputByteStream $is to write the data to
    */
-  public function exportToByteStream($nsKey, $itemKey, Swift_ByteStream $is)
+  public function exportToByteStream($nsKey, $itemKey, Swift_InputByteStream $is)
   {
     $this->_prepareCache($nsKey);
     $is->write($this->getString($nsKey, $itemKey));

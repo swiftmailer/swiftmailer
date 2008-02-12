@@ -4,7 +4,7 @@ require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory.php';
 require_once 'Swift/CharacterReader.php';
-require_once 'Swift/ByteStream.php';
+require_once 'Swift/OutputByteStream.php';
 
 Mock::generate(
   'Swift_CharacterReader', 'Swift_MockCharacterReader'
@@ -12,7 +12,7 @@ Mock::generate(
 Mock::generate(
   'Swift_CharacterReaderFactory', 'Swift_MockCharacterReaderFactory'
   );
-Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
+Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 
 class Swift_CharacterStream_ArrayCharacterStreamTest
   extends Swift_AbstractSwiftUnitTestCase
@@ -323,7 +323,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->expectAt(0, 'read', array(1));
     $os->setReturnValueAt(0, 'read', pack('C*', 0xD0));
     $os->expectAt(1, 'read', array(1));
@@ -379,7 +379,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', pack('C*', 0xD0));
     $os->setReturnValueAt(1, 'read', pack('C*', 0x94));
     $os->setReturnValueAt(2, 'read', pack('C*', 0xD0));

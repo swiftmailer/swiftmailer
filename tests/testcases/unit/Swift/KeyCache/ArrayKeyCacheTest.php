@@ -1,11 +1,13 @@
 <?php
 
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
-require_once 'Swift/ByteStream.php';
+require_once 'Swift/InputByteStream.php';
+require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/KeyCache/ArrayKeyCache.php';
 require_once 'Swift/KeyCache.php';
 
-Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
+Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
+Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 
 class Swift_KeyCache_ArrayKeyCacheTest extends Swift_AbstractSwiftUnitTestCase
 {
@@ -84,7 +86,7 @@ class Swift_KeyCache_ArrayKeyCacheTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testByteStreamCanBeImported()
   {
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'abc');
     $os->setReturnValueAt(1, 'read', 'def');
     $os->setReturnValueAt(2, 'read', false);
@@ -97,12 +99,12 @@ class Swift_KeyCache_ArrayKeyCacheTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testByteStreamCanBeAppended()
   {
-    $os1 = new Swift_MockByteStream();
+    $os1 = new Swift_MockOutputByteStream();
     $os1->setReturnValueAt(0, 'read', 'abc');
     $os1->setReturnValueAt(1, 'read', 'def');
     $os1->setReturnValueAt(2, 'read', false);
     
-    $os2 = new Swift_MockByteStream();
+    $os2 = new Swift_MockOutputByteStream();
     $os2->setReturnValueAt(0, 'read', 'xyz');
     $os2->setReturnValueAt(1, 'read', 'uvw');
     $os2->setReturnValueAt(2, 'read', false);
@@ -123,7 +125,7 @@ class Swift_KeyCache_ArrayKeyCacheTest extends Swift_AbstractSwiftUnitTestCase
       $this->_key1, 'foo', 'test', Swift_KeyCache::MODE_APPEND
       );
     
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'abc');
     $os->setReturnValueAt(1, 'read', 'def');
     $os->setReturnValueAt(2, 'read', false);
@@ -142,7 +144,7 @@ class Swift_KeyCache_ArrayKeyCacheTest extends Swift_AbstractSwiftUnitTestCase
       $this->_key1, 'foo', 'test', Swift_KeyCache::MODE_WRITE
       );
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectAtLeastOnce('write', array('*'));
     
     $this->_cache->exportToByteStream($this->_key1, 'foo', $is);

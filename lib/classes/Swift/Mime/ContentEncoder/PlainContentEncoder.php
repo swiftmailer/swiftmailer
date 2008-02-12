@@ -20,7 +20,8 @@
 
 
 require_once dirname(__FILE__) . '/../ContentEncoder.php';
-require_once dirname(__FILE__) . '/../../ByteStream.php';
+require_once dirname(__FILE__) . '/../../InputByteStream.php';
+require_once dirname(__FILE__) . '/../../OutputByteStream.php';
 
 /**
  * Handles 7/8-bit Transfer Encoding in Swift Mailer.
@@ -65,13 +66,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
   
   /**
    * Encode $in to $out, converting all line endings to CRLF.
-   * @param Swift_ByteStream $os to read from
-   * @param Swift_ByteStream $is to write to
+   * @param Swift_OutputByteStream $os to read from
+   * @param Swift_InputByteStream $is to write to
    * @param int $firstLineOffset
    * @param int $maxLineLength - 0 indicates the default length for this encoding
    */
   public function canonicEncodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
     $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, true);
@@ -92,13 +93,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
   
   /**
    * Encode stream $in to stream $out.
-   * @param Swift_ByteStream $in
-   * @param Swift_ByteStream $out
+   * @param Swift_OutputByteStream $in
+   * @param Swift_InputByteStream $out
    * @param int $firstLineOffset
    * @param int $maxLineLength, optional, 0 indicates the default of 78 bytes
    */
   public function encodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
     $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, false);
@@ -159,15 +160,15 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
   
   /**
    * Encode a byte stream.
-   * @param Swift_ByteStream $os
-   * @param Swift_ByteStream $is
+   * @param Swift_OutputByteStream $os
+   * @param Swift_InputByteStream $is
    * @param int $firstLineOffset
    * @param int $maxLineLength
    * @param boolean $canon, if canonicalization is needed
    * @access private
    */
   private function _doEncodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0, $canon = false)
   {
     $leftOver = '';

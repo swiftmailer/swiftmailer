@@ -51,7 +51,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends UnitTestCase
   {
     $input = array('a', 'b', 'c');
     $bs = new Swift_ByteStream_ArrayByteStream($input);
-    $bs->setPointer(1);
+    $bs->setReadPointer(1);
     $this->assertEqual('b', $bs->read(1),
       '%s: Byte should be second byte since pointer as at offset 1'
       );
@@ -64,7 +64,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends UnitTestCase
     
     while (false !== $bs->read(1));
     
-    $bs->setPointer(0);
+    $bs->setReadPointer(0);
     $this->assertEqual('a', $bs->read(1),
       '%s: Byte should be first byte since pointer as at offset 0'
       );
@@ -75,7 +75,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends UnitTestCase
     $input = array('a', 'b', 'c');
     $bs = new Swift_ByteStream_ArrayByteStream($input);
     
-    $bs->setPointer(-1);
+    $bs->setReadPointer(-1);
     $this->assertEqual('a', $bs->read(1),
       '%s: Byte should be first byte since pointer should be at offset 0'
       );
@@ -86,7 +86,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends UnitTestCase
     $input = array('a', 'b', 'c');
     $bs = new Swift_ByteStream_ArrayByteStream($input);
     
-    $bs->setPointer(3);
+    $bs->setReadPointer(3);
     $this->assertIdentical(false, $bs->read(1),
       '%s: Stream should be at end and thus return false'
       );

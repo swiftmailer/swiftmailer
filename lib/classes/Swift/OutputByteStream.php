@@ -1,7 +1,7 @@
 <?php
 
 /*
- Bi-Directional ByteStream in Swift Mailer.
+ Output ByteStream (for reading) in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,14 +20,14 @@
 
 
 /**
- * An abstract means of reading and writing data.
+ * An abstract means of reading data.
  * Classes implementing this interface may use a subsystem which requires less
  * memory than working with large strings of data.
  * @package Swift
  * @subpackage ByteStream
  * @author Chris Corbyn
  */
-interface Swift_ByteStream
+interface Swift_OutputByteStream
 {
   
   /**
@@ -41,22 +41,10 @@ interface Swift_ByteStream
   public function read($length);
   
   /**
-   * Writes $bytes to the end of the stream.
-   * @param string $bytes
-   */
-  public function write($bytes);
-  
-  /**
    * Move the internal read pointer to $byteOffset in the stream.
    * @param int $byteOffset
    * @return boolean
    */
-  public function setPointer($byteOffset);
-  
-  /**
-   * Flush the contents of the stream (empty it) and set the internal pointer
-   * to the beginning.
-   */
-  public function flushContents();
+  public function setReadPointer($byteOffset);
   
 }

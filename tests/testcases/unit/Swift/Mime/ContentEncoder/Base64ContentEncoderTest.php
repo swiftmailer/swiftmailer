@@ -1,9 +1,11 @@
 <?php
 
 require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
-require_once 'Swift/ByteStream.php';
+require_once 'Swift/OutputByteStream.php';
+require_once 'Swift/InputByteStream.php';
 
-Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
+Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
+Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
 
 class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
 {
@@ -38,11 +40,11 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
          of which is translated into a single digit in the base64 alphabet.
          */
     
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', '123');
     $os->setReturnValueAt(1, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectCallCount('write', 1);
     $is->expectAt(0, 'write', array('MTIz'));
     
@@ -73,11 +75,11 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     
     for ($i = 0; $i < 30; ++$i)
     {
-      $os = new Swift_MockByteStream();
+      $os = new Swift_MockOutputByteStream();
       $os->setReturnValueAt(0, 'read', pack('C', rand(0, 255)));
       $os->setReturnValueAt(1, 'read', false);
       
-      $is = new Swift_MockByteStream();
+      $is = new Swift_MockInputByteStream();
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array(new PatternExpectation(
         '~^[a-zA-Z0-9/\+]{2}==$~',
@@ -89,12 +91,12 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     
     for ($i = 0; $i < 30; ++$i)
     {
-      $os = new Swift_MockByteStream();
+      $os = new Swift_MockOutputByteStream();
       $os->setReturnValueAt(
         0, 'read', pack('C*', rand(0, 255), rand(0, 255)));
       $os->setReturnValueAt(1, 'read', false);
       
-      $is = new Swift_MockByteStream();
+      $is = new Swift_MockInputByteStream();
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array(new PatternExpectation(
         '~^[a-zA-Z0-9/\+]{3}=$~',
@@ -106,12 +108,12 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     
     for ($i = 0; $i < 30; ++$i)
     {
-      $os = new Swift_MockByteStream();
+      $os = new Swift_MockOutputByteStream();
       $os->setReturnValueAt(
         0, 'read', pack('C*', rand(0, 255), rand(0, 255), rand(0, 255)));
       $os->setReturnValueAt(1, 'read', false);
       
-      $is = new Swift_MockByteStream();
+      $is = new Swift_MockInputByteStream();
       $is->expectCallCount('write', 1);
       $is->expectAt(0, 'write', array(new PatternExpectation(
         '~^[a-zA-Z0-9/\+]{4}$~',
@@ -130,7 +132,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
          found in Table 1 must be ignored by decoding software.
          */
          
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
     $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
     $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
@@ -141,7 +143,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     
     $os->setReturnValueAt(7, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectCallCount('write', 7);
     $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
     $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32
@@ -156,7 +158,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
   
   public function testMaximumLineLengthCanBeDifferent()
   {      
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
     $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
     $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
@@ -167,7 +169,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     
     $os->setReturnValueAt(7, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectCallCount('write', 7);
     $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
     $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32
@@ -182,7 +184,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
   
   public function testFirstLineLengthCanBeDifferent()
   {
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
     $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
     $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
@@ -193,7 +195,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     
     $os->setReturnValueAt(7, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectCallCount('write', 7);
     $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
     $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32

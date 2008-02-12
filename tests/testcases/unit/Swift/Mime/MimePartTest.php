@@ -6,14 +6,16 @@ require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
-require_once 'Swift/ByteStream.php';
+require_once 'Swift/InputByteStream.php';
+require_once 'Swift/OutputByteStream.php';
 
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
 Mock::generate('Swift_Mime_FieldChangeObserver',
   'Swift_Mime_MockFieldChangeObserver'
   );
-Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
+Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
+Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 
 class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
 {
@@ -135,8 +137,8 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     
     $part = $this->_createMimePart(array(), $this->_encoder);
     $this->_encoder->expectOnce('canonicEncodeByteStream');
-    $part->setBodyAsByteStream(new Swift_MockByteStream());
-    $part->toByteStream(new Swift_MockByteStream());
+    $part->setBodyAsByteStream(new Swift_MockOutputByteStream());
+    $part->toByteStream(new Swift_MockInputByteStream());
   }
   
   public function testFluidInterface()

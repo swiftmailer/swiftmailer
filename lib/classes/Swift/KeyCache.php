@@ -18,7 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/ByteStream.php';
+require_once dirname(__FILE__) . '/InputByteStream.php';
+require_once dirname(__FILE__) . '/OutputByteStream.php';
 
 /**
  * Provides a mechanism for storing data using two keys.
@@ -49,12 +50,21 @@ interface Swift_KeyCache
    * Set a ByteStream into the cache under $itemKey for the namespace $nsKey.
    * @param string $nsKey
    * @param string $itemKey
-   * @param Swift_ByteStream $os
+   * @param Swift_OutputByteStream $os
    * @param int $mode
    * @see MODE_WRITE, MODE_APPEND
    */
-  public function importFromByteStream($nsKey, $itemKey, Swift_ByteStream $os,
+  public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os,
     $mode);
+  
+  /**
+   * Provides a ByteStream which when written to, writes data to $itemKey.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param int $mode
+   * @return Swift_InputByteStream
+   */
+  public function getInputByteStream($nsKey, $itemKey, $mode);
   
   /**
    * Get data back out of the cache as a string.
@@ -68,9 +78,9 @@ interface Swift_KeyCache
    * Get data back out of the cache as a ByteStream.
    * @param string $nsKey
    * @param string $itemKey
-   * @param Swift_ByteStream $is to write the data to
+   * @param Swift_InputByteStream $is to write the data to
    */
-  public function exportToByteStream($nsKey, $itemKey, Swift_ByteStream $is);
+  public function exportToByteStream($nsKey, $itemKey, Swift_InputByteStream $is);
   
   /**
    * Check if the given $itemKey exists in the namespace $nsKey.

@@ -4,9 +4,6 @@ Swift Mailer SE:
  * Add a getHeader() method.
  * Caching!
  * Write some sanity tests
- * Message class
-   - Message/Partial
-   - Message/external
  * CharacterReaderFactory (map charsets to CharacterReaders).
    - Big5
    - Shift-JIS

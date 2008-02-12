@@ -21,7 +21,8 @@
 require_once dirname(__FILE__) . '/../ContentEncoder.php';
 require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
 require_once dirname(__FILE__) . '/../../Encoder/QpEncoder.php';
-require_once dirname(__FILE__) . '/../../ByteStream.php';
+require_once dirname(__FILE__) . '/../../InputByteStream.php';
+require_once dirname(__FILE__) . '/../../OutputByteStream.php';
 require_once dirname(__FILE__) . '/../../CharacterStream.php';
 
 /**
@@ -66,13 +67,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   
   /**
    * Encode $in to $out, converting all line endings to CRLF.
-   * @param Swift_ByteStream $os to read from
-   * @param Swift_ByteStream $is to write to
+   * @param Swift_OutputByteStream $os to read from
+   * @param Swift_InputByteStream $is to write to
    * @param int $firstLineOffset
    * @param int $maxLineLength - 0 indicates the default length for this encoding
    */
   public function canonicEncodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
     $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, true);
@@ -83,12 +84,12 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
    * QP encoded strings have a maximum line length of 76 characters.
    * If the first line needs to be shorter, indicate the difference with
    * $firstLineOffset.
-   * @param Swift_ByteStream $os output stream
-   * @param Swift_ByteStream $is input stream
+   * @param Swift_OutputByteStream $os output stream
+   * @param Swift_InputByteStream $is input stream
    * @param int $firstLineOffset
    */
   public function encodeByteStream(
-    Swift_ByteStream $os, Swift_ByteStream $is, $firstLineOffset = 0,
+    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
     $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, false);
@@ -134,14 +135,15 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   
   /**
    * Encode a byte stream.
-   * @param Swift_ByteStream $os
-   * @param Swift_ByteStream $is
+   * @param Swift_OutputByteStream $os
+   * @param Swift_InputByteStream $is
    * @param int $firstLineOffset
    * @param int $maxLineLength
    * @param boolean $canon, if canonicalization is needed
    * @access private
    */
-  private function _doEncodeByteStream(Swift_ByteStream $os, Swift_ByteStream $is,
+  private function _doEncodeByteStream(
+    Swift_OutputByteStream $os, Swift_InputByteStream $is,
     $firstLineOffset = 0, $maxLineLength = 0, $canon = false)
   {
     //Set default length of 76 if no other value set

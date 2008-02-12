@@ -18,7 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/ByteStream.php';
+require_once dirname(__FILE__) . '/OutputByteStream.php';
 require_once dirname(__FILE__) . '/CharacterReaderFactory.php';
 
 
@@ -49,9 +49,9 @@ interface Swift_CharacterStream
   
   /**
    * Overwrite this character stream using the byte sequence in the byte stream.
-   * @param Swift_ByteStream $os output stream to read from
+   * @param Swift_OutputByteStream $os output stream to read from
    */
-  public function importByteStream(Swift_ByteStream $os);
+  public function importByteStream(Swift_OutputByteStream $os);
   
   /**
    * Import a string a bytes into this CharacterStream, overwriting any existing

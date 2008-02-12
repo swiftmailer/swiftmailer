@@ -2,9 +2,11 @@
 
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder/PlainContentEncoder.php';
-require_once 'Swift/ByteStream.php';
+require_once 'Swift/InputByteStream.php';
+require_once 'Swift/OutputByteStream.php';
 
-Mock::generate('Swift_ByteStream', 'Swift_MockByteStream');
+Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
+Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 
 class Swift_Mime_ContentEncoder_PlainContentEncoderTest
   extends Swift_AbstractSwiftUnitTestCase
@@ -35,11 +37,11 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
     foreach (range(0x00, 0xFF) as $octet)
     {
       $byte = pack('C', $octet);
-      $os = new Swift_MockByteStream();
+      $os = new Swift_MockOutputByteStream();
       $os->setReturnValueAt(0, 'read', $byte);
       $os->setReturnValueAt(1, 'read', false);
       
-      $is = new Swift_MockByteStream();
+      $is = new Swift_MockInputByteStream();
       $is->expectOnce('write', array(new Swift_IdenticalBinaryExpectation($byte)));
       
       $encoder->encodeByteStream($os, $is);
@@ -69,8 +71,8 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
   {
     $encoder = $this->_getEncoder('7bit');
     
-    $os = new Swift_MockByteStream();
-    $is = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
+    $is = new Swift_MockInputByteStream();
     
     $callCount = 0;
     for ($i = 0; $i < 50; $i++)
@@ -116,13 +118,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
   public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_1()
   {
     $encoder = $this->_getEncoder('7bit');
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'a');
     $os->setReturnValueAt(1, 'read', "\r");
     $os->setReturnValueAt(2, 'read', 'b');
     $os->setReturnValueAt(3, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectAt(0, 'write', array('a'));
     $is->expectAt(1, 'write', array("\r"));
     $is->expectAt(2, 'write', array("\nb"));
@@ -133,13 +135,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
   public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_2()
   {
     $encoder = $this->_getEncoder('7bit');
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'a');
     $os->setReturnValueAt(1, 'read', "\n");
     $os->setReturnValueAt(2, 'read', 'b');
     $os->setReturnValueAt(3, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectAt(0, 'write', array('a'));
     $is->expectAt(1, 'write', array("\r\n"));
     $is->expectAt(2, 'write', array("b"));
@@ -150,13 +152,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
   public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_3()
   {
     $encoder = $this->_getEncoder('7bit');
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'a');
     $os->setReturnValueAt(1, 'read', "\n\r");
     $os->setReturnValueAt(2, 'read', 'b');
     $os->setReturnValueAt(3, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectAt(0, 'write', array('a'));
     $is->expectAt(1, 'write', array("\r\n\r"));
     $is->expectAt(2, 'write', array("\nb"));
@@ -167,13 +169,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
   public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_4()
   {
     $encoder = $this->_getEncoder('7bit');
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'a');
     $os->setReturnValueAt(1, 'read', "\n\n");
     $os->setReturnValueAt(2, 'read', 'b');
     $os->setReturnValueAt(3, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectAt(0, 'write', array('a'));
     $is->expectAt(1, 'write', array("\r\n\r\n"));
     $is->expectAt(2, 'write', array("b"));
@@ -184,13 +186,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
   public function testCanonicEncodeByteStreamGeneratesCorrectCrlf_5()
   {
     $encoder = $this->_getEncoder('7bit');
-    $os = new Swift_MockByteStream();
+    $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'a');
     $os->setReturnValueAt(1, 'read', "\r\r");
     $os->setReturnValueAt(2, 'read', 'b');
     $os->setReturnValueAt(3, 'read', false);
     
-    $is = new Swift_MockByteStream();
+    $is = new Swift_MockInputByteStream();
     $is->expectAt(0, 'write', array('a'));
     $is->expectAt(1, 'write', array("\r\n\r"));
     $is->expectAt(2, 'write', array("\nb"));
