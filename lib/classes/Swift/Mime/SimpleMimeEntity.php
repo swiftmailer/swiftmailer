@@ -22,7 +22,6 @@ require_once dirname(__FILE__) . '/MimeEntity.php';
 require_once dirname(__FILE__) . '/ContentEncoder.php';
 require_once dirname(__FILE__) . '/../ByteStream.php';
 require_once dirname(__FILE__) . '/FieldChangeObserver.php';
-require_once dirname(__FILE__) . '/EntityFactory.php';
 
 
 /**
@@ -32,8 +31,7 @@ require_once dirname(__FILE__) . '/EntityFactory.php';
  * @author Chris Corbyn
  */
 class Swift_Mime_SimpleMimeEntity
-  implements Swift_Mime_MimeEntity, Swift_Mime_EntityFactory,
-  Swift_Mime_FieldChangeObserver
+  implements Swift_Mime_MimeEntity, Swift_Mime_FieldChangeObserver
 {
   
   /**
@@ -489,7 +487,7 @@ class Swift_Mime_SimpleMimeEntity
       //Put any grandchildren in a subpart
       if (!empty($grandchildren))
       {
-        $subentity = $this->getEntityFactory()->createBaseEntity();
+        $subentity = $this->_createChild();
         $subentity->setNestingLevel($lowestLevel);
         $subentity->setChildren($grandchildren);
         array_unshift($immediateChildren, $subentity);
@@ -714,45 +712,6 @@ class Swift_Mime_SimpleMimeEntity
   }
   
   /**
-   * Create a base entity which contains at most, the headers
-   * Content-Type, Content-Transfer-Encoding, Content-ID and Description.
-   * @return Swift_Mime_MimeEntity
-   */
-  public function createBaseEntity()
-  {
-    $headers = array();
-    foreach ($this->_headers as $header)
-    {
-      if (in_array(
-        strtolower($header->getFieldName()),
-        array('content-type', 'content-transfer-encoding')))
-      {
-        $headers[] = clone $header;
-      }
-    }
-    $entity = new self($headers, $this->_encoder);
-    return $entity;
-  }
-  
-  /**
-   * Set a factory object which creates new mime entities (for nesting).
-   * @param Swift_Mime_EntityFactory $entityFactory
-   */
-  public function setEntityFactory(Swift_Mime_EntityFactory $entityFactory)
-  {
-    $this->_entityFactory = $entityFactory;
-  }
-  
-  /**
-   * Get a factory object which creates new mime entities (for nesting).
-   * @return Swift_Mime_EntityFactory
-   */
-  public function getEntityFactory()
-  {
-    return isset($this->_entityFactory) ? $this->_entityFactory : $this;
-  }
-  
-  /**
    * Notify this entity that a field has changed to $value in its parent.
    * "Field" is a loose term and refers to class fields rather than
    * header fields.  $field will always be in lowercase and will be alpha.
@@ -809,6 +768,27 @@ class Swift_Mime_SimpleMimeEntity
     {
       $observer->fieldChanged($field, $value);
     }
+  }
+  
+  /**
+   * Create a base entity which allow for nesting.
+   * @return Swift_Mime_MimeEntity
+   * @access protected
+   */
+  protected function _createChild()
+  {
+    $headers = array();
+    foreach ($this->_headers as $header)
+    {
+      if (in_array(
+        strtolower($header->getFieldName()),
+        array('content-type', 'content-transfer-encoding')))
+      {
+        $headers[] = clone $header;
+      }
+    }
+    $entity = new self($headers, $this->_encoder);
+    return $entity;
   }
   
   /**

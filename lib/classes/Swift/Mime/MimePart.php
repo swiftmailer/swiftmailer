@@ -249,13 +249,15 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     }
   }
   
+  // -- Protected methods
+  
   /**
-   * Create a new base entity.
-   * This is overridden so it can be used internally, and due to intricices
-   * involved (i.e. typing) it is declared final.
+   * Create a new child for nesting.
+   * Due to intricices involved (i.e. typing) this is declared final.
    * @return Swift_Mime_MimeEntity
+   * @access protected
    */
-  final public function createBaseEntity()
+  final protected function _createChild()
   {
     $headers = array();
     foreach ($this->getHeaders() as $header)
@@ -270,8 +272,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     $part = new self($headers, $this->getEncoder());
     return $part;
   }
-  
-  // -- Protected methods
   
   /**
    * Get the encoded body as a string.
@@ -392,7 +392,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
       
       if (!is_null($body))
       {
-        $subentity = $this->createBaseEntity();
+        $subentity = $this->_createChild();
         $subentity->setContentType($this->_getPreferredContentType());
         $subentity->setCharset($this->_getPreferredCharset());
         $subentity->setDelSp($this->_getPreferredDelSp());

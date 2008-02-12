@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Swift/Mime/MimeEntity.php';
-require_once 'Swift/Mime/EntityFactory.php';
 require_once 'Swift/Mime/SimpleMessage.php';
 require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder.php';
@@ -14,7 +13,6 @@ Mock::generate('Swift_Mime_FieldChangeObserver',
   'Swift_Mime_MockFieldChangeObserver'
   );
 Mock::generate('Swift_Mime_MimeEntity', 'Swift_Mime_MockMimeEntity');
-Mock::generate('Swift_Mime_EntityFactory', 'Swift_Mime_MockEntityFactory');
 
 class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
 {
@@ -471,53 +469,32 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       'xyz'
       );
     
-    //Mock out a factory which returns a mock entity
-    $emptyEntity = new Swift_Mime_MockMimeEntity();
-    $emptyEntity->expectOnce('setNestingLevel',
-      array(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      );
-    $emptyEntity->expectOnce('setChildren', array(array($entity3)));
-    $emptyEntity->setReturnValue('toString',
-      'Content-Type: multipart/alternative;' . "\r\n" .
-      ' boundary="_=_bar_=_"' . "\r\n" .
-      "\r\n" .
-      '--_=_bar_=_' . "\r\n" .
-      'Content-Type: text/plain' . "\r\n" .
-      "\r\n" .
-      'xyz' . "\r\n" .
-      '--_=_bar_=_--' . "\r\n"
-      );
-    
-    $factory = new Swift_Mime_MockEntityFactory();
-    $factory->setReturnValue('createBaseEntity', $emptyEntity);
-    
-    //Apply the mock factory
-    $entity1->setEntityFactory($factory);
-    
     $entity1->setChildren(array($entity2, $entity3));
     
     $stringEntity = $entity1->toString();
     
-    $this->assertEqual(
+    $this->assertPattern(
+      '~^' .
       'Content-Type: multipart/mixed;' . "\r\n" .
       ' boundary="_=_foo_=_"' . "\r\n" .
       "\r\n" .
       '--_=_foo_=_' . "\r\n" .
-      'Content-Type: multipart/alternative;' . "\r\n" .
-      ' boundary="_=_bar_=_"' . "\r\n" .
+      'Content-Type: multipart/.*?;' . "\r\n" .
+      ' boundary=".*?"' . "\r\n" .
       "\r\n" .
-      '--_=_bar_=_' . "\r\n" .
+      '--(.*?)' . "\r\n" .
       'Content-Type: text/plain' . "\r\n" .
       "\r\n" .
       'xyz' . "\r\n" .
-      '--_=_bar_=_--' . "\r\n" .
+      '--\\1--' . "\r\n" .
       "\r\n" .
       '--_=_foo_=_' . "\r\n" .
       'Content-Type: application/octet-stream' . "\r\n" .
       "\r\n" .
       'foo' .
       "\r\n" .
-      '--_=_foo_=_--' . "\r\n",
+      '--_=_foo_=_--' . "\r\n" .
+      '$~D',
       $stringEntity
       );
   }
