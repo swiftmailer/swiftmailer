@@ -1,14 +1,9 @@
-Swift Mailer:
--------------
+Swift Mailer SE:
+----------------
 
  * Add a getHeader() method.
  * Caching!
- * Produce a HttpDocument class (sends header() for parent part rather than echo'ing them)
  * Write some sanity tests
- * Add a canonicalizeEncodeString() and canonicalizeEncodeByteStream() to ContentEncoder.
- * MimeEntity classes
-   - ForwardedMessage
-   - Multipart/Digest type
  * Message class
    - Message/Partial
    - Message/external
@@ -23,6 +18,27 @@ Swift Mailer:
  * Caches
    - NullCache
    - FileCache
+
+Swift Mailer EE:
+----------------
+
+ * DKIM/Domain Keys
+ * PKCS signed messages
+ * XML representations of messages
+   - toXml() in the entities
+   - createFromXml() in a factory
+ * MimeFactory
+   - createFromString()
+   - createFromXml()
+ * Direct MX Transport
+   - By-pass using a single SMTP server as a relay
+   - Group recipients by domain for efficiency
+ * Advanced Content-Type support (already "supported" in community version but will add wrapper code)
+   - multipart/digest, message/external, message/partial
+ * Message forwarding
+ * REST architecture, coupled with the XML representation of emails to delegate sending large batches
+   around a cluster of hosts
+ * HttpDocument representation of multipart mime documents (for sending multipart data over HTTP).
 
 Test Suite:
 -----------
