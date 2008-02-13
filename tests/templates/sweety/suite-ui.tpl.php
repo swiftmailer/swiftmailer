@@ -1,10 +1,10 @@
+<?php if (isset($_GET['noajax'])) { include(dirname(__FILE__) . '/suite-ui-noajax.tpl.php'); exit(0); } ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title><?php echo $suiteName; ?></title>
     <link rel="stylesheet" type="text/css" href="templates/sweety/css/main.css" />
-    <?php if (!array_key_exists('noajax', $_GET)): ?>
     <script type="text/javascript">
     var sweetyTestCases = {};
     <?php foreach ($testCases as $name): ?>
@@ -15,7 +15,6 @@
     <script type="text/javascript" src="xpath-legacy.js"></script>
     <script type="text/javascript" src="sweety.js"></script>
     <script type="text/javascript" src="templates/sweety/js/sweety-template.js"></script>
-    <?php endif; ?>
   </head>
   <body>
     <div id="sweety-page">
@@ -56,11 +55,7 @@
               </div>
             <?php endif; ?>
             
-            <div id="<?php echo $testCase; ?>" class="sweety-test sweety-<?php
-            
-            if (array_key_exists($testCase, $runTests)) echo $runTests[$testCase]; else echo 'idle';
-            
-            ?>"
+            <div id="<?php echo $testCase; ?>" class="sweety-test sweety-idle"
               onmouseover="this.style.cursor='pointer';"
               onclick="sweetyUI.initialize(); sweetyRunner.runTestCase(this.id);">
               
@@ -70,7 +65,7 @@
                   src="templates/sweety/images/xmlicon.gif" alt="As XML" title="As XML" /></a>
                 <a href="?test=<?php echo $testCase; ?>&amp;format=html" onclick="event.cancelBubble=true;"><img
                   src="templates/sweety/images/htmlicon.gif" alt="As HTML" title="As HTML" /></a>
-                <a href="?runtests=<?php echo $testCase; ?>" onclick="return false;"><img
+                <a href="?runtests=<?php echo $testCase; ?>&amp;noajax=1" onclick="return false;"><img
                   src="templates/sweety/images/runicon.gif" alt="Run" title="Run this test" /></a>
                 
                 <input id="sweety-field-<?php echo $testCase; ?>" class="sweety-check"
@@ -112,52 +107,15 @@
           
           <h1><?php echo $suiteName; ?></h1>
           
-          <div id="sweety-results" class="sweety-<?php echo $result; ?>">
-            <span id="sweety-num-run"><?php echo $runCount; ?></span>/<span id="sweety-num-cases"><?php echo $caseCount; ?></span>
+          <div id="sweety-results" class="sweety-idle">
+            <span id="sweety-num-run">0</span>/<span id="sweety-num-cases">0</span>
             test cases complete:
-            <strong id="sweety-num-passes"><?php echo $passCount; ?></strong> passes,
-            <strong id="sweety-num-fails"><?php echo $failCount; ?></strong> fails and
-            <strong id="sweety-num-exceptions"><?php echo $exceptionCount; ?></strong> exceptions.
+            <strong id="sweety-num-passes">0</strong> passes,
+            <strong id="sweety-num-fails">0</strong> fails and
+            <strong id="sweety-num-exceptions">0</strong> exceptions.
           </div>
           
           <div id="sweety-messages">
-            <?php foreach ($messages as $message)
-            {
-              switch ($message['type'])
-              {
-                case 'pass':
-                  break;
-                case 'fail': ?>
-                <div class="sweety-message">
-                  <span class="sweety-fail-text">Fail</span>: <?php echo $message['text']; ?>
-                  <div class="sweety-test-path">
-                    in <?php echo $message['path']; ?>
-                  </div>
-                </div>
-                <?php
-                  break;
-                case 'exception': ?>
-                <div class="sweety-message">
-                  <span class="sweety-fail-text">Exception</span>:
-                  <strong><?php echo $message['text']; ?></strong>
-                  <div class="sweety-test-path">
-                    in <?php echo $message['path']; ?>
-                  </div>
-                </div>
-                <?php
-                  break;
-                case 'output': ?>
-                <pre class="sweety-raw-output"><?php echo $message['text']; ?></pre>
-                <?php
-                  break;
-                case 'internal': ?>
-                <div class="sweety-internal-message sweety-running">
-                  <?php echo $message['text']; ?>
-                </div>
-                <?php
-                  break;
-              }
-            } ?>
           </div>
           
         </div>

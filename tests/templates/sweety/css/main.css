@@ -184,3 +184,9 @@ span.sweety-test-package {
 .sweety-fail-text {
   color: #ee0000;
 }
+
+.sweety-skip-text {
+  color: #4444dd;
+  font-weight: bold;
+  text-decoration: underline;
+}

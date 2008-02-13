@@ -87,6 +87,22 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
   }
   
   /**
+   * Report a skipped test case.
+   * @param string $message
+   * @param string $path
+   */
+  public function reportSkip($message, $path)
+  {
+    echo '  Skip:';
+    $messageLines = explode(PHP_EOL, wordwrap($message, 74, PHP_EOL));
+    foreach ($messageLines as $line)
+    {
+      echo '  ' . $line . PHP_EOL;
+    }
+    echo '    in: ' . $path . PHP_EOL;
+  }
+  
+  /**
    * Report a passing assertion.
    * @param string $message
    * @param string $path

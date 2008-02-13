@@ -111,6 +111,10 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
           $reporter = new HtmlReporter();
           break;
         case Sweety_Runner::REPORT_XML:
+          if (!SimpleReporter::inCli())
+          {
+            header("Content-Type: text/xml"); //Sigh! SimpleTest (skip() issues).
+          }
           $reporter = new XmlReporter();
           break;
         case Sweety_Runner::REPORT_TEXT:
@@ -324,6 +328,10 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
     if ($everything = array_shift($document->xpath('/run')))
     {
       $this->_parseResults($everything, $path, $reporter);
+    }
+    elseif ($skip = array_shift($document->xpath('/skip')))
+    {
+      $reporter->reportSkip((string)$skip, $path);
     }
   }
   

@@ -111,6 +111,14 @@ function SweetyReporter() { //Interface/Base Class
   }
   
   /**
+   * Handle a skipped test case.
+   * @param {String} message
+   * @param {String} path
+   */
+  this.reportSkip = function reportSkip(message, path) {
+  }
+  
+  /**
    * Handle a passing assertion.
    * @param {String} message
    * @param {String} path
@@ -227,16 +235,25 @@ function SweetyTestCaseRun(testClass, reporter) {
         var txt = _req.responseText.replace(/[\r\n]+/g, "").
           replace(/^(.+)<\?xml.*$/, "$1");
         
-        var runElements = xml.getElementsByTagName('run');
-        
-        //Invalid document, an error probably occured
-        if (!runElements || 1 != runElements.length) {
-          reporter.reportException(
-            "Invalid XML response: " +
-            _stripTags(txt.replace(/^\s*<\?xml.+<\/(?:name|pass|fail|exception)>/g, "")), testClass);
-        } else {
-          var everything = runElements.item(0);
-          _parseResults(everything, testClass);
+        //Test case was skipped
+        var skipElements = xml.getElementsByTagName('skip');
+        if (!skipElements || 1 != skipElements.length)
+        {
+          var runElements = xml.getElementsByTagName('run');
+          //Invalid document, an error probably occured
+          if (!runElements || 1 != runElements.length) {
+            reporter.reportException(
+              "Invalid XML response: " +
+              _stripTags(txt.replace(/^\s*<\?xml.+<\/(?:name|pass|fail|exception)>/g, "")), testClass);
+          } else {
+            var everything = runElements.item(0);
+            _parseResults(everything, testClass);
+            reporter.finish();
+          }
+        }
+        else
+        {
+          reporter.reportSkip(_textValueOf(skipElements.item(0)), testClass);
           reporter.finish();
         }
       } catch (ex) {

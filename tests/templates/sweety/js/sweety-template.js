@@ -314,6 +314,28 @@ function SweetyUIManager() {
   }
   
   /**
+   * Paints a skipped testcase message to the message area.
+   * @param {String} message
+   * @param {String} path
+   */
+  this.paintSkip = function paintSkip(message, path) {
+    var skipDiv = document.createElement("div");
+    skipDiv.className = "sweety-message";
+    
+    var skipLabel = _createSkipLabel("Skip");
+    skipDiv.appendChild(skipLabel);
+    
+    var messageSpan = document.createElement("strong");
+    _setContent(messageSpan, ": " + message);
+    skipDiv.appendChild(messageSpan);
+    
+    var pathDiv = _createPathDiv(path);
+    skipDiv.appendChild(pathDiv);
+    
+    _getMessages().appendChild(skipDiv);
+  }
+  
+  /**
    * Paints an unexpected exception notice to the message area.
    * @param {String} message
    * @param {String} path
@@ -476,6 +498,18 @@ function SweetyUIManager() {
     } else {
       el.innerHTML = content;
     }
+  }
+  
+  /**
+   * Create a label used at the start of a message to indicate a skipped test case.
+   * @param {String} label
+   * @returns HTMLSpanElement
+   */
+  var _createSkipLabel = function _createSkipLabel(label) {
+    var skipLabel = document.createElement("span");
+    skipLabel.className = "sweety-skip-text";
+    _setContent(skipLabel, label);
+    return skipLabel;
   }
   
   /**
@@ -816,6 +850,15 @@ function SweetyTemplateAggregateReporter(testCaseList, reportPkgs) {
   }
   
   /**
+   * Report a skipped test case.
+   * @param {String} message
+   * @param {String} path
+   */
+  this.reportSkip = function reportSkip(message, path) {
+    sweetyUI.paintSkip(message, path);
+  }
+  
+  /**
    * Report a passing assertion.
    * @param {String} message
    * @param {String} path
@@ -958,6 +1001,15 @@ function SweetyTemplateCaseReporter(testCase, reporter) {
   this.start = function start() {
     _started = true;
     sweetyUI.paintTestCaseRunning(testCase);
+  }
+  
+  /**
+   * Report a skipped test case.
+   * @param {String} message
+   * @param {String} path
+   */
+  this.reportSkip = function reportSkip(message, path) {
+    reporter.reportSkip(message, path);
   }
   
   /**

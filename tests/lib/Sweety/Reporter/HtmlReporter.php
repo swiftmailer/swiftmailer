@@ -75,6 +75,19 @@ class Sweety_Reporter_HtmlReporter implements Sweety_Reporter
   }
   
   /**
+   * Report a skipped test case.
+   * @param string $message
+   * @param string $path
+   */
+  public function reportSkip($message, $path)
+  {
+    $this->_tplVars['messages'][] = array(
+      'type' => 'skip',
+      'path' => $path,
+      'text' => $message);
+  }
+  
+  /**
    * Report a passing assertion.
    * @param string $message
    * @param string $path

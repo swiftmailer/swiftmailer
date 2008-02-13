@@ -27,6 +27,13 @@ interface Sweety_Reporter
   public function start();
   
   /**
+   * Report a skipped test case.
+   * @param string $message
+   * @param string $path
+   */
+  public function reportSkip($message, $path);
+  
+  /**
    * Report a passing assertion.
    * @param string $message
    * @param string $path

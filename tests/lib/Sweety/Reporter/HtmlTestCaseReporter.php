@@ -100,6 +100,16 @@ class Sweety_Reporter_HtmlTestCaseReporter implements Sweety_Reporter
   }
   
   /**
+   * Report a skipped test case.
+   * @param string $message
+   * @param string $path
+   */
+  public function reportSkip($message, $path)
+  {
+    $this->_parent->reportSkip($message, $path);
+  }
+  
+  /**
    * Report a passing assertion.
    * @param string $message
    * @param string $path
