@@ -12,6 +12,8 @@ date_default_timezone_set('Australia/Melbourne');
 //Require the injector
 require_once dirname(__FILE__) . '/../../lib/swift_required.php';
 
+Swift_MimeFactory::setCacheType('array');
+
 $message = Swift_MimeFactory::create('message')
   ->setSubject('A recipe to try')
   ->setTo(array('rob@site.com' => 'Rob'))
@@ -26,4 +28,3 @@ $message = Swift_MimeFactory::create('message')
   ;
   
 echo $message->toString();
-file_put_contents('/Users/d11wtq/attachment.eml', $message->toString());

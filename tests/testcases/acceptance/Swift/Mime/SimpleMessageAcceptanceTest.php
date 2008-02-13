@@ -18,6 +18,8 @@ require_once 'Swift/Mime/ContentEncoder/PlainContentEncoder.php';
 require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
+require_once 'Swift/KeyCache/ArrayKeyCache.php';
+require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
 
 class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
 {
@@ -26,9 +28,13 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   private $_headerEncoder;
   private $_paramEncoder;
   private $_attachmentEncoder;
+  private $_cache;
   
   public function setUp()
   {
+    $this->_cache = new Swift_KeyCache_ArrayKeyCache(
+      new Swift_KeyCache_SimpleKeyCacheInputStream()
+      );
     $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     $this->_contentEncoder = new Swift_Mime_ContentEncoder_QpContentEncoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
@@ -1276,7 +1282,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
           'Content-Transfer-Encoding', $this->_headerEncoder
           )
         ),
-      $this->_contentEncoder
+      $this->_contentEncoder,
+      $this->_cache
       );
     return $message;
   }
@@ -1292,7 +1299,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
           'Content-Transfer-Encoding', $this->_headerEncoder
           )
         ),
-      $this->_contentEncoder
+      $this->_contentEncoder,
+      $this->_cache
       );
     return $entity;
   }
@@ -1311,7 +1319,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
           'Content-Disposition', $this->_headerEncoder, $this->_paramEncoder
           )
         ),
-      $this->_attachmentEncoder
+      $this->_attachmentEncoder,
+      $this->_cache
       );
     return $entity;
   }
@@ -1331,7 +1340,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
           ),
         new Swift_Mime_Header_IdentificationHeader('Content-ID')
         ),
-      $this->_attachmentEncoder
+      $this->_attachmentEncoder,
+      $this->_cache
       );
     return $entity;
   }

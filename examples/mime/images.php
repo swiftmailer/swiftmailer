@@ -29,4 +29,3 @@ $message->setSubject('A message with an embedded image')
   ;
   
 echo $message->toString();
-file_put_contents('/Users/d11wtq/image.eml', $message->toString());

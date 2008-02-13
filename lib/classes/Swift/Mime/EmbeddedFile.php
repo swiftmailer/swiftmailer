@@ -20,6 +20,7 @@
 
 //@require 'Swift/Mime/Attachment.php';
 //@require 'Swift/Mime/ContentEncoder.php';
+//@require 'Swift/KeyCache.php';
 
 /**
  * An embedded file, in a multipart message.
@@ -34,11 +35,12 @@ class Swift_Mime_EmbeddedFile extends Swift_Mime_Attachment
    * Creates a new Attachment with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
+   * @param Swift_KeyCache $cache
    */
   public function __construct(array $headers,
-    Swift_Mime_ContentEncoder $encoder)
+    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
-    parent::__construct($headers, $encoder);
+    parent::__construct($headers, $encoder, $cache);
     $this->setNestingLevel(self::LEVEL_EMBEDDED);
     $this->setDisposition('inline');
   }

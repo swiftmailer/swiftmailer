@@ -9,6 +9,8 @@ require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
 require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
+require_once 'Swift/KeyCache/ArrayKeyCache.php';
+require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
 
 class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
 {
@@ -16,9 +18,13 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
   private $_contentEncoder;
   private $_headerEncoder;
   private $_paramEncoder;
+  private $_cache;
   
   public function setUp()
   {
+    $this->_cache = new Swift_KeyCache_ArrayKeyCache(
+      new Swift_KeyCache_SimpleKeyCacheInputStream()
+      );
     $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     $this->_contentEncoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
     $this->_headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
@@ -201,7 +207,8 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
           ),
         new Swift_Mime_Header_IdentificationHeader('Content-ID')
         ),
-      $this->_contentEncoder
+      $this->_contentEncoder,
+      $this->_cache
       );
     return $entity;
   }

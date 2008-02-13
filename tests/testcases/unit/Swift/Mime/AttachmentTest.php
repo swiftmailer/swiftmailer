@@ -7,6 +7,7 @@ require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
 require_once 'Swift/FileStream.php';
+require_once 'Swift/KeyCache.php';
 
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
@@ -14,20 +15,23 @@ Mock::generate('Swift_Mime_FieldChangeObserver',
   'Swift_Mime_MockFieldChangeObserver'
   );
 Mock::generate('Swift_FileStream', 'Swift_MockFileStream');
+Mock::generate('Swift_KeyCache', 'Swift_MockKeyCache');
 
 class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
 {
   private $_encoder;
+  private $_cache;
   
   public function setUp()
   {
+    $this->_cache = new Swift_MockKeyCache();
     $this->_encoder = new Swift_Mime_MockContentEncoder();
     $this->_encoder->setReturnValue('getName', 'base64');
   }
   
   public function testNestingLevelIsAttachment()
   {
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $this->assertEqual(
       Swift_Mime_MimeEntity::LEVEL_ATTACHMENT, $attachment->getNestingLevel()
       );
@@ -38,7 +42,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2183, 2.1, 2.2.
      */
     
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $attachment->setDisposition('inline');
     $this->assertEqual('inline', $attachment->getDisposition());
   }
@@ -50,7 +54,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('disposition', 'attachment'));
 
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
 
     $attachment->registerFieldChangeObserver($observer1);
     $attachment->registerFieldChangeObserver($observer2);
@@ -60,7 +64,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testDefaultDispositionIsAttachment()
   {
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $this->assertEqual('attachment', $attachment->getDisposition());
   }
   
@@ -69,7 +73,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2183, 2.3.
      */
     
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $attachment->setFilename('some-file.pdf');
     $this->assertEqual('some-file.pdf', $attachment->getFilename());
   }
@@ -81,7 +85,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('filename', 'foo.bar'));
 
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
 
     $attachment->registerFieldChangeObserver($observer1);
     $attachment->registerFieldChangeObserver($observer2);
@@ -95,7 +99,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
      */
     
     $date = time();
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $attachment->setCreationDate($date);
     $this->assertEqual($date, $attachment->getCreationDate());
   }
@@ -109,7 +113,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('creationdate', $date));
 
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
 
     $attachment->registerFieldChangeObserver($observer1);
     $attachment->registerFieldChangeObserver($observer2);
@@ -123,7 +127,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
      */
     
     $date = time();
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $attachment->setModificationDate($date);
     $this->assertEqual($date, $attachment->getModificationDate());
   }
@@ -137,7 +141,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('modificationdate', $date));
 
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
 
     $attachment->registerFieldChangeObserver($observer1);
     $attachment->registerFieldChangeObserver($observer2);
@@ -151,7 +155,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
      */
     
     $date = time();
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $attachment->setReadDate($date);
     $this->assertEqual($date, $attachment->getReadDate());
   }
@@ -165,7 +169,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('readdate', $date));
 
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
 
     $attachment->registerFieldChangeObserver($observer1);
     $attachment->registerFieldChangeObserver($observer2);
@@ -178,7 +182,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2183, 2.7.
      */
     
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $attachment->setSize(123456);
     $this->assertEqual(123456, $attachment->getSize());
   }
@@ -190,7 +194,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('size', 123456));
 
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
 
     $attachment->registerFieldChangeObserver($observer1);
     $attachment->registerFieldChangeObserver($observer2);
@@ -205,7 +209,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
     $file->setReturnValueAt(0, 'read', '<image data>');
     $file->setReturnValueAt(1, 'read', false);
     
-    $entity = $this->_createAttachment(array(), $this->_encoder);
+    $entity = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $entity->setFile($file);
     $this->assertEqual('some-image.jpg', $entity->getFilename());
     $this->assertEqual('<image data>', $entity->getBodyAsString());
@@ -213,7 +217,7 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testFluidInterface()
   {
-    $attachment = $this->_createAttachment(array(), $this->_encoder);
+    $attachment = $this->_createAttachment(array(), $this->_encoder, $this->_cache);
     $ref = $attachment
       ->setContentType('application/pdf')
       ->setEncoder($this->_encoder)
@@ -239,9 +243,9 @@ class Swift_Mime_AttachmentTest extends Swift_AbstractSwiftUnitTestCase
   
   // -- Private helpers
   
-  private function _createAttachment($headers, $encoder)
+  private function _createAttachment($headers, $encoder, $cache)
   {
-    return new Swift_Mime_Attachment($headers, $encoder);
+    return new Swift_Mime_Attachment($headers, $encoder, $cache);
   }
   
 }

@@ -6,6 +6,8 @@ require_once 'Swift/AbstractSwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
+require_once 'Swift/KeyCache.php';
+require_once 'Swift/KeyCache/KeyCacheInputStream.php';
 
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
@@ -13,13 +15,19 @@ Mock::generate('Swift_Mime_FieldChangeObserver',
   'Swift_Mime_MockFieldChangeObserver'
   );
 Mock::generate('Swift_Mime_MimeEntity', 'Swift_Mime_MockMimeEntity');
+Mock::generate('Swift_KeyCache', 'Swift_MockKeyCache');
+Mock::generate('Swift_KeyCache_KeyCacheInputStream',
+  'Swift_KeyCache_MockKeyCacheInputStream'
+  );
 
 class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
 {
   private $_encoder;
+  private $_cache;
   
   public function setUp()
   {
+    $this->_cache = new Swift_MockKeyCache();
     $this->_encoder = new Swift_Mime_MockContentEncoder();
     $this->_encoder->setReturnValue('getName', 'quoted-printable');
   }
@@ -29,7 +37,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $h = new Swift_Mime_MockHeader();
     $h->setReturnValue('getFieldName', 'Content-Type');
     $headers = array($h);
-    $message = $this->_createMessage($headers, $this->_encoder);
+    $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $this->assertEqual($headers, $message->getHeaders());
   }
   
@@ -44,7 +52,14 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $h2->setReturnValue('getFieldBody', 'foo');
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
-    $message = $this->_createMessage($headers, $this->_encoder);
+    
+    $this->_cache->setReturnValue('getString',
+      'Content-Type: text/html' . "\r\n" .
+      'X-Header: foo' . "\r\n",
+      array('*', 'headers')
+      );
+    
+    $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $this->assertEqual(
       'Content-Type: text/html' . "\r\n" .
       'X-Header: foo' . "\r\n",
@@ -64,7 +79,17 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
     $this->_encoder->setReturnValue('canonicEncodeString', 'my body');
-    $message = $this->_createMessage($headers, $this->_encoder);
+    
+    $this->_cache->setReturnValue('getString',
+      'Content-Type: text/html' . "\r\n" .
+      'X-Header: foo' . "\r\n",
+      array('*', 'headers')
+      );
+    $this->_cache->setReturnValue('getString', "\r\n" . 'my body',
+      array('*', 'body')
+      );
+    
+    $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $message->setBodyAsString('my body');
     $this->assertEqual(
       'Content-Type: text/html' . "\r\n" .
@@ -86,7 +111,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $h->setReturnValue('getFieldName', 'Content-Type');
     $headers = array($h);
     
-    $message = $this->_createMessage($headers, $this->_encoder);
+    $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $message->setContentType('text/html');
     
     $this->assertEqual('text/html', $message->getContentType());
@@ -108,7 +133,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('contenttype', 'text/html'));
     
-    $message = $this->_createMessage($headers, $this->_encoder);
+    $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
     
@@ -125,7 +150,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     //ack!
     $observer1->expectAt(1, 'fieldChanged', array('boundary', '*'));
     
-    $entity1 = $this->_createMessage($headers1, $this->_encoder);
+    $entity1 = $this->_createMessage($headers1, $this->_encoder, $this->_cache);
     $entity1->registerFieldChangeObserver($observer1);
     
     $h2 = new Swift_Mime_MockHeader();
@@ -150,7 +175,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     for ($level = Swift_Mime_MimeEntity::LEVEL_ATTACHMENT;
       $level > Swift_Mime_MimeEntity::LEVEL_TOP; $level--)
     {
-      $message = $this->_createMessage($headers1, $this->_encoder);
+      $message = $this->_createMessage($headers1, $this->_encoder, $this->_cache);
       
       $observer = new Swift_Mime_MockFieldChangeObserver();
       $observer->expectAt(0, 'fieldChanged', array('contenttype', 'multipart/mixed'));
@@ -180,7 +205,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     for ($level = Swift_Mime_MimeEntity::LEVEL_EMBEDDED;
       $level > Swift_Mime_MimeEntity::LEVEL_ATTACHMENT; $level--)
     {
-      $message = $this->_createMessage($headers1, $this->_encoder);
+      $message = $this->_createMessage($headers1, $this->_encoder, $this->_cache);
       
       $observer = new Swift_Mime_MockFieldChangeObserver();
       $observer->expectAt(0, 'fieldChanged', array('contenttype', 'multipart/related'));
@@ -210,7 +235,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     for ($level = Swift_Mime_MimeEntity::LEVEL_SUBPART;
       $level > Swift_Mime_MimeEntity::LEVEL_EMBEDDED; $level--)
     {
-      $message = $this->_createMessage($headers1, $this->_encoder);
+      $message = $this->_createMessage($headers1, $this->_encoder, $this->_cache);
       
       $observer = new Swift_Mime_MockFieldChangeObserver();
       $observer->expectAt(0, 'fieldChanged', array('contenttype', 'multipart/alternative'));
@@ -271,7 +296,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       $h1 = new Swift_Mime_MockHeader();
       $h1->setReturnValue('getFieldName', 'Content-Type');
       
-      $message = $this->_createMessage($headers, $this->_encoder);
+      $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
       
       $observer = new Swift_Mime_MockFieldChangeObserver();
       $observer->expectAt(0, 'fieldChanged',
@@ -301,7 +326,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $h1->setReturnValue('getFieldName', 'Content-Type');
     $headers1 = array($h1);
     
-    $entity1 = $this->_createMessage($headers1, $this->_encoder);
+    $entity1 = $this->_createMessage($headers1, $this->_encoder, $this->_cache);
     
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'Content-Type');
@@ -327,7 +352,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $h1->setReturnValue('getFieldName', 'Content-Type');
     $headers1 = array($h1);
     
-    $entity1 = $this->_createMessage($headers1, $this->_encoder);
+    $entity1 = $this->_createMessage($headers1, $this->_encoder, $this->_cache);
     
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'Content-Type');
@@ -354,7 +379,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $h1->setReturnValue('getFieldName', 'Content-Type');
     $headers1 = array($h1);
     
-    $entity1 = $this->_createMessage($headers1, $this->_encoder);
+    $entity1 = $this->_createMessage($headers1, $this->_encoder, $this->_cache);
     
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'Content-Type');
@@ -390,7 +415,13 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       );
     $headers1 = array($h1);
     
-    $entity1 = $this->_createMessage($headers1, $this->_encoder);
+    $this->_cache->setReturnValue('getString',
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n",
+      array('*', 'headers')
+      );
+    
+    $entity1 = $this->_createMessage($headers1, $this->_encoder, $this->_cache);
     $entity1->setBoundary('_=_foo_=_');
     
     $entity2 = new Swift_Mime_MockMimeEntity();
@@ -445,7 +476,19 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       ' boundary="_=_foo_=_"' . "\r\n"
       );
     $headers = array($h1);
-    $entity1 = $this->_createMessage($headers, $this->_encoder);
+    
+    $this->_cache->setReturnValueAt(0, 'getString',
+      'Content-Type: multipart/mixed;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n",
+      array('*', 'headers')
+      );
+    $this->_cache->setReturnValueAt(1, 'getString',
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_bar_=_"' . "\r\n",
+      array('*', 'headers')
+      );
+    
+    $entity1 = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $entity1->setBoundary('_=_foo_=_');
     
     //Create some entities which nest differently
@@ -479,8 +522,8 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       ' boundary="_=_foo_=_"' . "\r\n" .
       "\r\n" .
       '--_=_foo_=_' . "\r\n" .
-      'Content-Type: multipart/.*?;' . "\r\n" .
-      ' boundary=".*?"' . "\r\n" .
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_bar_=_"' . "\r\n" .
       "\r\n" .
       '--(.*?)' . "\r\n" .
       'Content-Type: text/plain' . "\r\n" .
@@ -519,7 +562,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       array('encoder', $encoder)
       );
     
-    $message = $this->_createMessage($headers, $this->_encoder);
+    $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -536,20 +579,20 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     identical to the "Message-ID" header field
     */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setId('foo@bar');
     $this->assertEqual('foo@bar', $message->getId());
   }
   
   public function testIdIsAutoGenerated()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $this->assertPattern('/^.*?@.*?$/D', $message->getId());
   }
   
   public function testIdDoesntChangeForSameEntity()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $id = $message->getId();
     for ($i = 0; $i < 10; ++$i)
     {
@@ -562,7 +605,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $lastid = null;
     for ($i = 0; $i < 10; ++$i)
     {
-      $message = $this->_createMessage(array(), $this->_encoder);
+      $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
       $this->assertNotEqual($lastid, $message->getId());
       $lastid = $message->getId();
     }
@@ -579,7 +622,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       array('id', 'foo@bar')
       );
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -597,7 +640,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     field is always optional.
     */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setDescription('my mime entity');
     $this->assertEqual('my mime entity', $message->getDescription());
   }
@@ -613,7 +656,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       array('description', 'my desc')
       );
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -634,15 +677,9 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $headers = array($h1, $h2);
     $this->_encoder->expectOnce('canonicEncodeString', array('my body', '*', '*'));
     $this->_encoder->setReturnValue('canonicEncodeString', 'my body');
-    $message = $this->_createMessage($headers, $this->_encoder);
+    $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $message->setBodyAsString('my body');
-    $this->assertEqual(
-      'Content-Type: text/html' . "\r\n" .
-      'X-Header: foo' . "\r\n" .
-      "\r\n" .
-      'my body',
-      $message->toString()
-      );
+    $message->toString();
   }
   
   public function testMaxLineLengthIsProvidedForEncoding()
@@ -658,7 +695,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $this->_encoder->expectOnce('canonicEncodeString', array('my body', 0, 78));
     $this->_encoder->setReturnValue('canonicEncodeString', 'my body');
     
-    $message = $this->_createMessage($headers, $this->_encoder);
+    $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $message->setMaxLineLength(78);
     $message->setBodyAsString('my body');
     
@@ -667,7 +704,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testNestingLevelIsTop()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $this->assertEqual(
       Swift_Mime_MimeEntity::LEVEL_TOP, $message->getNestingLevel()
       );
@@ -687,7 +724,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     must be assumed in the absence of a charset parameter, is US-ASCII.
     */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setCharset('ucs2');
     $this->assertEqual('ucs2', $message->getCharset());
   }
@@ -699,7 +736,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('charset', 'utf-8'));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -712,7 +749,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 3676.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setFormat('flowed'); //'fixed' is valid too
     $this->assertEqual('flowed', $message->getFormat());
   }
@@ -724,7 +761,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('format', 'fixed'));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -737,7 +774,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 3676.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setDelSp(true); //false is valid too
     $this->assertTrue($message->getDelSp());
   }
@@ -749,7 +786,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('delsp', true));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -762,7 +799,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822, 3.6.5.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setSubject('some subject');
     $this->assertEqual('some subject', $message->getSubject());
   }
@@ -774,7 +811,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('subject', 'test'));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -787,7 +824,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822, 3.6.1.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setDate(123456);
     $this->assertEqual(123456, $message->getDate());
   }
@@ -799,7 +836,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('date', 123456));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -812,7 +849,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822, 3.6.7.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setReturnPath('chris.corbyn@swiftmailer.org');
     $this->assertEqual('chris.corbyn@swiftmailer.org', $message->getReturnPath());
   }
@@ -824,7 +861,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('returnpath', 'chris@site'));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -837,7 +874,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822, 3.6.2.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setSender('chris.corbyn@swiftmailer.org');
     $this->assertEqual(array('chris.corbyn@swiftmailer.org'=>null), $message->getSender());
   }
@@ -849,7 +886,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('sender', array('chris@site'=>null)));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -862,7 +899,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822 3.6.2.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setFrom('chris.corbyn@swiftmailer.org');
     $this->assertEqual(array('chris.corbyn@swiftmailer.org'=>null),
       $message->getFrom()
@@ -876,7 +913,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('from', array('chris@site'=>null)));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -886,7 +923,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testFromCanBeSetAsNameAddressList()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setFrom(array(
       'chris.corbyn@swiftmailer.org'=>'Chris',
       'john@site.tld' => 'John'
@@ -911,7 +948,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       'john@site.tld' => 'John'
       )));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -927,7 +964,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822 3.6.2.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setReplyTo('chris.corbyn@swiftmailer.org');
     $this->assertEqual(array('chris.corbyn@swiftmailer.org'=>null),
       $message->getReplyTo()
@@ -941,7 +978,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('replyto', array('chris@site'=>null)));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -951,7 +988,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testReplyToCanBeSetAsNameAddressList()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setReplyTo(array(
       'chris.corbyn@swiftmailer.org'=>'Chris',
       'john@site.tld' => 'John'
@@ -976,7 +1013,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       'john@site.tld' => 'John'
       )));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -992,7 +1029,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822 3.6.3.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setTo('chris.corbyn@swiftmailer.org');
     $this->assertEqual(array('chris.corbyn@swiftmailer.org'=>null),
       $message->getTo()
@@ -1006,7 +1043,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('to', array('chris@site'=>null)));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -1016,7 +1053,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testToCanBeSetAsNameAddressList()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setTo(array(
       'chris.corbyn@swiftmailer.org'=>'Chris',
       'john@site.tld' => 'John'
@@ -1041,7 +1078,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       'john@site.tld' => 'John'
       )));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -1057,7 +1094,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822 3.6.3.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setCc('chris.corbyn@swiftmailer.org');
     $this->assertEqual(array('chris.corbyn@swiftmailer.org'=>null),
       $message->getCc()
@@ -1071,7 +1108,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('cc', array('chris@site'=>null)));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -1081,7 +1118,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testCcCanBeSetAsNameAddressList()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setCc(array(
       'chris.corbyn@swiftmailer.org'=>'Chris',
       'john@site.tld' => 'John'
@@ -1106,7 +1143,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       'john@site.tld' => 'John'
       )));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -1122,7 +1159,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2822 3.6.3.
      */
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setBcc('chris.corbyn@swiftmailer.org');
     $this->assertEqual(array('chris.corbyn@swiftmailer.org'=>null),
       $message->getBcc()
@@ -1136,7 +1173,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('bcc', array('chris@site'=>null)));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -1146,7 +1183,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testBccCanBeSetAsNameAddressList()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $message->setBcc(array(
       'chris.corbyn@swiftmailer.org'=>'Chris',
       'john@site.tld' => 'John'
@@ -1171,7 +1208,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
       'john@site.tld' => 'John'
       )));
     
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $message->registerFieldChangeObserver($observer1);
     $message->registerFieldChangeObserver($observer2);
@@ -1184,7 +1221,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testChildrenCanBeAttached()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $entity1 = new Swift_Mime_MockMimeEntity();
     $entity1->setReturnValue('getNestingLevel',
@@ -1211,7 +1248,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testChildrenCanBeDetached()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $entity1 = new Swift_Mime_MockMimeEntity();
     $entity1->setReturnValue('getNestingLevel',
@@ -1246,7 +1283,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testEmbedAttachesChild()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $entity1 = new Swift_Mime_MockMimeEntity();
     $entity1->setReturnValue('getNestingLevel',
@@ -1275,7 +1312,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testEmbedReturnsValidCid()
   {
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     
     $entity1 = new Swift_Mime_MockMimeEntity();
     $entity1->setReturnValue('getNestingLevel',
@@ -1300,7 +1337,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
     $child->setReturnValue('getNestingLevel',
       Swift_Mime_MimeEntity::LEVEL_SUBPART
       );
-    $message = $this->_createMessage(array(), $this->_encoder);
+    $message = $this->_createMessage(array(), $this->_encoder, $this->_cache);
     $ref = $message
       ->setContentType('text/plain')
       ->setEncoder($this->_encoder)
@@ -1333,9 +1370,9 @@ class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
   
   // -- Private helpers
   
-  private function _createMessage($headers, $encoder)
+  private function _createMessage($headers, $encoder, $cache)
   {
-    return new Swift_Mime_SimpleMessage($headers, $encoder);
+    return new Swift_Mime_SimpleMessage($headers, $encoder, $cache);
   }
   
 }

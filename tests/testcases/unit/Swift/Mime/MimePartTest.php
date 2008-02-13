@@ -8,6 +8,8 @@ require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
 require_once 'Swift/InputByteStream.php';
 require_once 'Swift/OutputByteStream.php';
+require_once 'Swift/KeyCache.php';
+require_once 'Swift/KeyCache/KeyCacheInputStream.php';
 
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
@@ -16,20 +18,26 @@ Mock::generate('Swift_Mime_FieldChangeObserver',
   );
 Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
 Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
+Mock::generate('Swift_KeyCache', 'Swift_MockKeyCache');
+Mock::generate('Swift_KeyCache_KeyCacheInputStream',
+  'Swift_KeyCache_MockKeyCacheInputStream'
+  );
 
 class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
 {
   private $_encoder;
+  private $_cache;
   
   public function setUp()
   {
     $this->_encoder = new Swift_Mime_MockContentEncoder();
+    $this->_cache = new Swift_MockKeyCache();
     $this->_encoder->setReturnValue('getName', 'quoted-printable');
   }
   
   public function testNestingLevelIsSubpart()
   {
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     $this->assertEqual(
       Swift_Mime_MimeEntity::LEVEL_SUBPART, $part->getNestingLevel()
       );
@@ -49,7 +57,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     must be assumed in the absence of a charset parameter, is US-ASCII.
     */
     
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     $part->setCharset('ucs2');
     $this->assertEqual('ucs2', $part->getCharset());
   }
@@ -61,7 +69,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('charset', 'utf-8'));
     
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     
     $part->registerFieldChangeObserver($observer1);
     $part->registerFieldChangeObserver($observer2);
@@ -74,7 +82,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 3676.
      */
     
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     $part->setFormat('flowed'); //'fixed' is valid too
     $this->assertEqual('flowed', $part->getFormat());
   }
@@ -86,7 +94,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('format', 'fixed'));
     
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     
     $part->registerFieldChangeObserver($observer1);
     $part->registerFieldChangeObserver($observer2);
@@ -99,7 +107,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 3676.
      */
     
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     $part->setDelSp(true); //false is valid too
     $this->assertTrue($part->getDelSp());
   }
@@ -111,7 +119,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('delsp', true));
     
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     
     $part->registerFieldChangeObserver($observer1);
     $part->registerFieldChangeObserver($observer2);
@@ -124,7 +132,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
     //text parts should be presented in the canonical form, and any translation
     // should be handled by the Transport
     
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     $this->_encoder->expectOnce('canonicEncodeString');
     $part->setBodyAsString('foo');
     $part->toString();
@@ -134,8 +142,10 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
   {
     //text parts should be presented in the canonical form, and any translation
     // should be handled by the Transport
-    
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $this->_cache->setReturnValue('getInputByteStream',
+      new Swift_KeyCache_MockKeyCacheInputStream()
+      );
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     $this->_encoder->expectOnce('canonicEncodeByteStream');
     $part->setBodyAsByteStream(new Swift_MockOutputByteStream());
     $part->toByteStream(new Swift_MockInputByteStream());
@@ -143,7 +153,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testFluidInterface()
   {
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     $ref = $part
       ->setContentType('text/plain')
       ->setEncoder($this->_encoder)
@@ -165,7 +175,7 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testEncoderFieldChangeUpdatesEncoder()
   {
-    $part = $this->_createMimePart(array(), $this->_encoder);
+    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
     $this->assertReference($this->_encoder, $part->getEncoder());
     $encoder = new Swift_Mime_MockContentEncoder();
     $encoder->setReturnValue('getName', '8bit');
@@ -175,9 +185,9 @@ class Swift_Mime_MimePartTest extends Swift_AbstractSwiftUnitTestCase
   
   // -- Private helpers
   
-  private function _createMimePart($headers, $encoder)
+  private function _createMimePart($headers, $encoder, $cache)
   {
-    return new Swift_Mime_MimePart($headers, $encoder);
+    return new Swift_Mime_MimePart($headers, $encoder, $cache);
   }
   
 }

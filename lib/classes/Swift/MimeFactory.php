@@ -42,6 +42,7 @@ class Swift_MimeFactory extends Swift_Di
   private function __construct()
   {
     $this->setLookup('charset', 'string:utf-8');
+    $this->setLookup('cache', 'di:arraycache');
   }
   
   /**
@@ -51,6 +52,28 @@ class Swift_MimeFactory extends Swift_Di
   public static function setCharset($charset)
   {
     self::getInstance()->setLookup('charset', 'string:' . $charset);
+  }
+  
+  /**
+   * Set the type of cache used when rendering MIME entities.
+   * @param string $cache alias name
+   */
+  public static function setCacheType($cache)
+  {
+    $di = self::getInstance();
+    $name = strtolower($cache);
+    if (substr($name, -5) != 'cache')
+    {
+      $name .= 'cache';
+    }
+    if (array_key_exists($name, $di->getDependencyMap()))
+    {
+      $di->setLookup('cache', 'di:' . $name);
+    }
+    else
+    {
+      throw new Exception('Cache backend [' . $cache . '] does not exist.');
+    }
   }
   
   /**

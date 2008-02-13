@@ -19,7 +19,9 @@
  */
 
 //@require 'Swift/Mime/SimpleMimeEntity.php';
+//@require 'Swift/Mime/ContentEncoder.php';
 //@require 'Swift/FileStream.php';
+//@require 'Swift/KeyCache.php';
 
 /**
  * An attachment, in a multipart message.
@@ -76,11 +78,12 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    * Creates a new Attachment with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
+   * @param Swift_KeyCache $cache
    */
   public function __construct(array $headers,
-    Swift_Mime_ContentEncoder $encoder)
+    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
-    parent::__construct($headers, $encoder);
+    parent::__construct($headers, $encoder, $cache);
     $this->setNestingLevel(self::LEVEL_ATTACHMENT);
     $this->setDisposition('attachment');
     $this->setContentType('application/octet-stream');
@@ -110,6 +113,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   {
     $this->_disposition = $disposition;
     $this->_notifyFieldChanged('disposition', $disposition);
+    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
   
@@ -132,6 +136,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   {
     $this->_filename = $filename;
     $this->_notifyFieldChanged('filename', $filename);
+    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
   
@@ -154,6 +159,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   {
     $this->_creationDate = $creationDate;
     $this->_notifyFieldChanged('creationdate', $creationDate);
+    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
   
@@ -176,6 +182,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   {
     $this->_modificationDate = $modificationDate;
     $this->_notifyFieldChanged('modificationdate', $modificationDate);
+    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
   
@@ -198,6 +205,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   {
     $this->_readDate = $readDate;
     $this->_notifyFieldChanged('readdate', $readDate);
+    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
   
@@ -220,6 +228,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   {
     $this->_size = $size;
     $this->_notifyFieldChanged('size', $size);
+    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
   

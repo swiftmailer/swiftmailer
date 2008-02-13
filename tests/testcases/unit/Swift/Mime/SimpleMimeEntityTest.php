@@ -19,15 +19,18 @@ Mock::generate(
 Mock::generate('Swift_Mime_MimeEntity', 'Swift_Mime_MockMimeEntity');
 Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
 Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
+Mock::generate('Swift_KeyCache', 'Swift_MockKeyCache');
 
 class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
 {
   
   private $_encoder;
+  private $_cache;
   
   public function setUp()
   {
     $this->_encoder = new Swift_Mime_MockContentEncoder();
+    $this->_cache = new Swift_MockKeyCache();
   }
   
   public function testHeadersAreReturned()
@@ -36,7 +39,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h->setReturnValue('getFieldName', 'Content-Type');
     $h->setReturnValue('getFieldBody', 'text/plain');
     $headers = array($h);
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     $this->assertEqual($headers, $entity->getHeaders());
   }
   
@@ -51,7 +54,12 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h2->setReturnValue('getFieldBody', 'foo');
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    $this->_cache->setReturnValue('getString',
+      'Content-Type: text/html' . "\r\n" .
+      'X-Header: foo' . "\r\n",
+      array('*', 'headers')
+      );
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     $this->assertEqual(
       'Content-Type: text/html' . "\r\n" .
       'X-Header: foo' . "\r\n",
@@ -71,7 +79,17 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
     $this->_encoder->setReturnValue('encodeString', 'my body');
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    $this->_cache->setReturnValue('getString',
+      'Content-Type: text/html' . "\r\n" .
+      'X-Header: foo' . "\r\n",
+      array('*', 'headers')
+      );
+    $this->_cache->setReturnValue('getString',
+      "\r\n" .
+      'my body',
+      array('*', 'body')
+      );
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     $entity->setBodyAsString('my body');
     $this->assertEqual(
       'Content-Type: text/html' . "\r\n" .
@@ -94,7 +112,17 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
     $this->_encoder->setReturnValue('encodeString', 'my body');
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    $this->_cache->setReturnValue('getString',
+      'Content-Type: text/html' . "\r\n" .
+      'X-Header: foo' . "\r\n",
+      array('*', 'headers')
+      );
+    $this->_cache->setReturnValue('getString',
+      "\r\n" .
+      'my body',
+      array('*', 'body')
+      );
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     
     $os = new Swift_MockOutputByteStream();
     $os->setReturnValueAt(0, 'read', 'my body');
@@ -114,13 +142,10 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
   public function testEntityCanBeWrittenToByteStream()
   {
     //see acceptance test for more detail
-    $entity = $this->_getEntity(array(), $this->_encoder);
+    $this->_cache->expectAtLeastOnce('exportToByteStream');
+    $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
     $entity->setBodyAsString('test');
-    
-    $is = new Swift_MockInputByteStream();
-    $is->expectAtLeastOnce('write', array('*'));
-    
-    $entity->toByteStream($is);
+    $entity->toByteStream(new Swift_MockInputByteStream());
   }
   
   public function testContentTypeCanBeSetAndFetched()
@@ -134,7 +159,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h->setReturnValue('getFieldName', 'Content-Type');
     $headers = array($h);
     
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     $entity->setContentType('text/html');
     
     $this->assertEqual('text/html', $entity->getContentType());
@@ -156,7 +181,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('contenttype', 'text/html'));
     
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     $entity->registerFieldChangeObserver($observer1);
     $entity->registerFieldChangeObserver($observer2);
     
@@ -173,7 +198,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     //ack!
     $observer1->expectAt(1, 'fieldChanged', array('boundary', '*'));
     
-    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $entity1 = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
     $entity1->registerFieldChangeObserver($observer1);
     
     $h2 = new Swift_Mime_MockHeader();
@@ -198,7 +223,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     for ($level = Swift_Mime_MimeEntity::LEVEL_ATTACHMENT;
       $level > Swift_Mime_MimeEntity::LEVEL_TOP; $level--)
     {
-      $entity = $this->_getEntity($headers1, $this->_encoder);
+      $entity = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
       
       $observer = new Swift_Mime_MockFieldChangeObserver();
       $observer->expectAt(0, 'fieldChanged', array('contenttype', 'multipart/mixed'));
@@ -228,7 +253,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     for ($level = Swift_Mime_MimeEntity::LEVEL_EMBEDDED;
       $level > Swift_Mime_MimeEntity::LEVEL_ATTACHMENT; $level--)
     {
-      $entity = $this->_getEntity($headers1, $this->_encoder);
+      $entity = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
       
       $observer = new Swift_Mime_MockFieldChangeObserver();
       $observer->expectAt(0, 'fieldChanged', array('contenttype', 'multipart/related'));
@@ -258,7 +283,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     for ($level = Swift_Mime_MimeEntity::LEVEL_SUBPART;
       $level > Swift_Mime_MimeEntity::LEVEL_EMBEDDED; $level--)
     {
-      $entity = $this->_getEntity($headers1, $this->_encoder);
+      $entity = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
       
       $observer = new Swift_Mime_MockFieldChangeObserver();
       $observer->expectAt(0, 'fieldChanged', array('contenttype', 'multipart/alternative'));
@@ -319,7 +344,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       $h1 = new Swift_Mime_MockHeader();
       $h1->setReturnValue('getFieldName', 'Content-Type');
       
-      $entity = $this->_getEntity($headers, $this->_encoder);
+      $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
       
       $observer = new Swift_Mime_MockFieldChangeObserver();
       $observer->expectAt(0, 'fieldChanged',
@@ -349,7 +374,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h1->setReturnValue('getFieldName', 'Content-Type');
     $headers1 = array($h1);
     
-    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $entity1 = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
     
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'Content-Type');
@@ -375,7 +400,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h1->setReturnValue('getFieldName', 'Content-Type');
     $headers1 = array($h1);
     
-    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $entity1 = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
     
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'Content-Type');
@@ -402,7 +427,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h1->setReturnValue('getFieldName', 'Content-Type');
     $headers1 = array($h1);
     
-    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $entity1 = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
     
     $h2 = new Swift_Mime_MockHeader();
     $h2->setReturnValue('getFieldName', 'Content-Type');
@@ -438,7 +463,13 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       );
     $headers1 = array($h1);
     
-    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $this->_cache->setReturnValueAt(0, 'getString',
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n",
+      array('*', 'headers')
+      );
+    
+    $entity1 = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
     $entity1->setBoundary('_=_foo_=_');
     
     $entity2 = new Swift_Mime_MockMimeEntity();
@@ -493,7 +524,19 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       ' boundary="_=_foo_=_"' . "\r\n"
       );
     $headers = array($h1);
-    $entity1 = $this->_getEntity($headers, $this->_encoder);
+    
+    $this->_cache->setReturnValueAt(0, 'getString',
+      'Content-Type: multipart/mixed;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n",
+      array('*', 'headers')
+      );
+    $this->_cache->setReturnValueAt(1, 'getString',
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_bar_=_"' . "\r\n",
+      array('*', 'headers')
+      );
+    
+    $entity1 = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     $entity1->setBoundary('_=_foo_=_');
     
     //Create some entities which nest differently
@@ -527,8 +570,8 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       ' boundary="_=_foo_=_"' . "\r\n" .
       "\r\n" .
       '--_=_foo_=_' . "\r\n" .
-      'Content-Type: multipart/.*?;' . "\r\n" .
-      ' boundary=".*?"' . "\r\n" .
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_bar_=_"' . "\r\n" .
       "\r\n" .
       '--(.*?)' . "\r\n" .
       'Content-Type: text/plain' . "\r\n" .
@@ -567,7 +610,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       array('encoder', $encoder)
       );
     
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     
     $entity->registerFieldChangeObserver($observer1);
     $entity->registerFieldChangeObserver($observer2);
@@ -584,20 +627,20 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     identical to the "Message-ID" header field
     */
     
-    $entity = $this->_getEntity(array(), $this->_encoder);
+    $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
     $entity->setId('foo@bar');
     $this->assertEqual('foo@bar', $entity->getId());
   }
   
   public function testIdIsAutoGenerated()
   {
-    $entity = $this->_getEntity(array(), $this->_encoder);
+    $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
     $this->assertPattern('/^.*?@.*?$/D', $entity->getId());
   }
   
   public function testIdDoesntChangeForSameEntity()
   {
-    $entity = $this->_getEntity(array(), $this->_encoder);
+    $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
     $id = $entity->getId();
     for ($i = 0; $i < 10; ++$i)
     {
@@ -610,7 +653,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $lastid = null;
     for ($i = 0; $i < 10; ++$i)
     {
-      $entity = $this->_getEntity(array(), $this->_encoder);
+      $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
       $this->assertNotEqual($lastid, $entity->getId());
       $lastid = $entity->getId();
     }
@@ -627,7 +670,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       array('id', 'foo@bar')
       );
     
-    $entity = $this->_getEntity(array(), $this->_encoder);
+    $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
     
     $entity->registerFieldChangeObserver($observer1);
     $entity->registerFieldChangeObserver($observer2);
@@ -645,7 +688,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     field is always optional.
     */
     
-    $entity = $this->_getEntity(array(), $this->_encoder);
+    $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
     $entity->setDescription('my mime entity');
     $this->assertEqual('my mime entity', $entity->getDescription());
   }
@@ -661,7 +704,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       array('description', 'my desc')
       );
     
-    $entity = $this->_getEntity(array(), $this->_encoder);
+    $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
     
     $entity->registerFieldChangeObserver($observer1);
     $entity->registerFieldChangeObserver($observer2);
@@ -680,17 +723,12 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $h2->setReturnValue('getFieldBody', 'foo');
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
+    
     $this->_encoder->expectOnce('encodeString', array('my body', '*', '*'));
-    $this->_encoder->setReturnValue('encodeString', 'my body');
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     $entity->setBodyAsString('my body');
-    $this->assertEqual(
-      'Content-Type: text/html' . "\r\n" .
-      'X-Header: foo' . "\r\n" .
-      "\r\n" .
-      'my body',
-      $entity->toString()
-      );
+    $entity->toString();
   }
   
   public function testMaxLineLengthIsProvidedForEncoding()
@@ -706,7 +744,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
     $this->_encoder->expectOnce('encodeString', array('my body', 0, 78));
     $this->_encoder->setReturnValue('encodeString', 'my body');
     
-    $entity = $this->_getEntity($headers, $this->_encoder);
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
     $entity->setMaxLineLength(78);
     $entity->setBodyAsString('my body');
     
@@ -726,7 +764,13 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       );
     $headers1 = array($h1);
     
-    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $this->_cache->setReturnValue('getString',
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n",
+      array('*', 'headers')
+      );
+    
+    $entity1 = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
     $entity1->setBoundary('_=_foo_=_');
     
     $entity2 = new Swift_Mime_MockMimeEntity();
@@ -792,7 +836,13 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       );
     $headers1 = array($h1);
     
-    $entity1 = $this->_getEntity($headers1, $this->_encoder);
+    $this->_cache->setReturnValue('getString',
+      'Content-Type: multipart/alternative;' . "\r\n" .
+      ' boundary="_=_foo_=_"' . "\r\n",
+      array('*', 'headers')
+      );
+    
+    $entity1 = $this->_getEntity($headers1, $this->_encoder, $this->_cache);
     $entity1->setBoundary('_=_foo_=_');
     
     $entity2 = new Swift_Mime_MockMimeEntity();
@@ -847,7 +897,7 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testFluidInterface()
   {
-    $entity = $this->_getEntity(array(), $this->_encoder);
+    $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
     $ref = $entity
       ->setContentType('text/plain')
       ->setEncoder($this->_encoder)
@@ -869,9 +919,9 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
   
   // -- Private helpers
   
-  private function _getEntity($headers, $encoder)
+  private function _getEntity($headers, $encoder, $cache)
   {
-    return new Swift_Mime_SimpleMimeEntity($headers, $encoder);
+    return new Swift_Mime_SimpleMimeEntity($headers, $encoder, $cache);
   }
   
 }

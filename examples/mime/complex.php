@@ -35,4 +35,3 @@ $message->setSubject('An image and a recipe!')
   ;
   
 echo $message->toString();
-file_put_contents('/Users/d11wtq/complex.eml', $message->toString());

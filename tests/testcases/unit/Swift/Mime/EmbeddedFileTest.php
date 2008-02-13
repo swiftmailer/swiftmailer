@@ -7,6 +7,7 @@ require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
 require_once 'Swift/FileStream.php';
+require_once 'Swift/KeyCache.php';
 
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
@@ -14,20 +15,23 @@ Mock::generate('Swift_Mime_FieldChangeObserver',
   'Swift_Mime_MockFieldChangeObserver'
   );
 Mock::generate('Swift_FileStream', 'Swift_MockFileStream');
+Mock::generate('Swift_KeyCache', 'Swift_MockKeyCache');
 
 class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
 {
   private $_encoder;
+  private $_cache;
   
   public function setUp()
   {
+    $this->_cache = new Swift_MockKeyCache();
     $this->_encoder = new Swift_Mime_MockContentEncoder();
     $this->_encoder->setReturnValue('getName', 'base64');
   }
   
   public function testNestingLevelIsEmbedded()
   {
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $this->assertEqual(
       Swift_Mime_MimeEntity::LEVEL_EMBEDDED, $file->getNestingLevel()
       );
@@ -38,7 +42,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2183, 2.1, 2.2.
      */
     
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $file->setDisposition('attachment');
     $this->assertEqual('attachment', $file->getDisposition());
   }
@@ -50,7 +54,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('disposition', 'attachment'));
 
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
 
     $file->registerFieldChangeObserver($observer1);
     $file->registerFieldChangeObserver($observer2);
@@ -60,7 +64,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testDefaultDispositionIsInline()
   {
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $this->assertEqual('inline', $file->getDisposition());
   }
   
@@ -69,7 +73,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2183, 2.3.
      */
     
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $file->setFilename('some-file.pdf');
     $this->assertEqual('some-file.pdf', $file->getFilename());
   }
@@ -81,7 +85,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('filename', 'foo.bar'));
 
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
 
     $file->registerFieldChangeObserver($observer1);
     $file->registerFieldChangeObserver($observer2);
@@ -95,7 +99,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
      */
     
     $date = time();
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $file->setCreationDate($date);
     $this->assertEqual($date, $file->getCreationDate());
   }
@@ -109,7 +113,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('creationdate', $date));
 
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
 
     $file->registerFieldChangeObserver($observer1);
     $file->registerFieldChangeObserver($observer2);
@@ -123,7 +127,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
      */
     
     $date = time();
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $file->setModificationDate($date);
     $this->assertEqual($date, $file->getModificationDate());
   }
@@ -137,7 +141,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('modificationdate', $date));
 
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
 
     $file->registerFieldChangeObserver($observer1);
     $file->registerFieldChangeObserver($observer2);
@@ -151,7 +155,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
      */
     
     $date = time();
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $file->setReadDate($date);
     $this->assertEqual($date, $file->getReadDate());
   }
@@ -165,7 +169,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('readdate', $date));
 
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
 
     $file->registerFieldChangeObserver($observer1);
     $file->registerFieldChangeObserver($observer2);
@@ -178,7 +182,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     /* -- RFC 2183, 2.7.
      */
     
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $file->setSize(123456);
     $this->assertEqual(123456, $file->getSize());
   }
@@ -190,7 +194,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
     $observer2 = new Swift_Mime_MockFieldChangeObserver();
     $observer2->expectOnce('fieldChanged', array('size', 123456));
 
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
 
     $file->registerFieldChangeObserver($observer1);
     $file->registerFieldChangeObserver($observer2);
@@ -200,7 +204,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
   
   public function testFluidInterface()
   {
-    $file = $this->_createEmbeddedFile(array(), $this->_encoder);
+    $file = $this->_createEmbeddedFile(array(), $this->_encoder, $this->_cache);
     $ref = $file
       ->setContentType('application/pdf')
       ->setEncoder($this->_encoder)
@@ -226,9 +230,9 @@ class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
   
   // -- Private helpers
   
-  private function _createEmbeddedFile($headers, $encoder)
+  private function _createEmbeddedFile($headers, $encoder, $cache)
   {
-    return new Swift_Mime_EmbeddedFile($headers, $encoder);
+    return new Swift_Mime_EmbeddedFile($headers, $encoder, $cache);
   }
   
 }

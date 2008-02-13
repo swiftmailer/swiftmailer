@@ -138,13 +138,6 @@ class Swift_Mime_SimpleMimeEntity
   private $_nestingLevel = self::LEVEL_SUBPART;
   
   /**
-   * A factory which creates new skeleton mime entities.
-   * @var Swift_Mime_EntityFactory
-   * @access private
-   */
-  private $_entityFactory;
-  
-  /**
    * Encodings which are safe to use on composite media types.
    * @var string[]
    * @access private
@@ -172,13 +165,30 @@ class Swift_Mime_SimpleMimeEntity
   private $_typeOrderPreference = array();
   
   /**
+   * The KeyCache used when generating content.
+   * @var Swift_KeyCache
+   * @access private
+   */
+  private $_cache;
+  
+  /**
+   * A key to access the cache with.
+   * @var string
+   * @access private
+   */
+  private $_cacheKey;
+  
+  /**
    * Creates a new SimpleMimeEntity with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
+   * @param Swift_KeyCache $cache
    */
   public function __construct(array $headers,
-    Swift_Mime_ContentEncoder $encoder)
+    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
+    $this->_cacheKey = uniqid(microtime(), true);
+    $this->_cache = $cache;
     $this->setHeaders($headers);
     $this->setEncoder($encoder);
     $this->setId($this->_generateId());
@@ -222,6 +232,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->_registerInternalFieldChangeObservers($headers, 'headers');
     $this->_headers = $headers;
+    $this->_cache->clearKey($this->_cacheKey, 'headers');
     return $this;
   }
   
@@ -245,6 +256,7 @@ class Swift_Mime_SimpleMimeEntity
     $this->_encoder = $encoder;
     $this->_registerInternalFieldChangeObservers(array($encoder), 'encoders');
     $this->_notifyFieldChanged('encoder', $encoder);
+    $this->_cache->clearAll($this->_cacheKey);
     return $this;
   }
   
@@ -267,11 +279,13 @@ class Swift_Mime_SimpleMimeEntity
   {
     $ltype = strtolower($contentType);
     $this->_preferredContentType = $contentType;
-    if ('multipart' == array_shift(sscanf($ltype, '%[^/]'))
+    $str = (array) sscanf($ltype, '%[^/]');
+    if ('multipart' == array_shift($str)
       || empty($this->_children))
     {
       $this->_contentType = $contentType;
       $this->_notifyFieldChanged('contenttype', $contentType);
+      $this->_cache->clearKey($this->_cacheKey, 'headers');
     }
     return $this;
   }
@@ -296,6 +310,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->_id = $id;
     $this->_notifyFieldChanged('id', $id);
+    $this->_cache->clearKey($this->_cacheKey, 'headers');
     return $this;
   }
   
@@ -318,6 +333,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->_description = $description;
     $this->_notifyFieldChanged('description', $description);
+    $this->_cache->clearKey($this->_cacheKey, 'headers');
     return $this;
   }
   
@@ -340,6 +356,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->_maxLineLength = (int) $length;
     $this->_notifyFieldChanged('maxlinelength', (int) $length);
+    $this->_cache->clearKey($this->_cacheKey, 'body');
     return $this;
   }
   
@@ -380,6 +397,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->_stringBody = $stringBody;
     $this->_streamBody = null;
+    $this->_cache->clearKey($this->_cacheKey, 'body');
     return $this;
   }
   
@@ -417,6 +435,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->_streamBody = $streamBody;
     $this->_stringBody = null;
+    $this->_cache->clearKey($this->_cacheKey, 'body');
     return $this;
   }
   
@@ -508,6 +527,8 @@ class Swift_Mime_SimpleMimeEntity
     //Logically order the parts if conclusively possible
     $this->_repairOrdering();
     
+    $this->_cache->clearKey($this->_cacheKey, 'headers');
+    
     return $this;
   }
   
@@ -543,6 +564,7 @@ class Swift_Mime_SimpleMimeEntity
     {
       throw new Exception('Mime boundary set is not RFC 2046 compliant.');
     }
+    $this->_cache->clearAll($this->_cacheKey);
     return $this;
   }
   
@@ -577,6 +599,7 @@ class Swift_Mime_SimpleMimeEntity
   public function setCompositeRanges(array $ranges)
   {
     $this->_compositeRanges = $ranges;
+    $this->_cache->clearAll($this->_cacheKey);
   }
   
   /**
@@ -612,32 +635,45 @@ class Swift_Mime_SimpleMimeEntity
     $requiredFields = $this->getRequiredFields();
     
     //Append headers
-    foreach ($this->_headers as $header)
+    if (!$this->_cache->hasKey($this->_cacheKey, 'headers'))
     {
-      if ($header->getFieldBody() == ''
-        && !in_array(strtolower($header->getFieldName()), $requiredFields))
-      { //Empty fields need not be displayed
-        continue;
-      }
+      foreach ($this->_headers as $header)
+      {
+        if ($header->getFieldBody() == ''
+          && !in_array(strtolower($header->getFieldName()), $requiredFields))
+        { //Empty fields need not be displayed
+          continue;
+        }
     
-      if ($hasChildren
-        && strtolower($header->getFieldName()) == 'content-transfer-encoding'
-        && !in_array(
-          strtolower($header->getFieldBody()),
-          $this->_compositeSafeEncodings
+        if ($hasChildren
+          && strtolower($header->getFieldName()) == 'content-transfer-encoding'
+          && !in_array(
+            strtolower($header->getFieldBody()),
+            $this->_compositeSafeEncodings
+            )
           )
-        )
-      { //RFC 2045 says Content-Transfer-Encoding can only be 7bit, 8bit or
-        // binary on composite media types
-        continue;
+        { //RFC 2045 says Content-Transfer-Encoding can only be 7bit, 8bit or
+          // binary on composite media types
+          continue;
+        }
+        $this->_cache->setString($this->_cacheKey, 'headers', $header->toString(),
+          Swift_KeyCache::MODE_APPEND
+          );
       }
-      $string .= $header->toString();
     }
+    
+    $string .= $this->_cache->getString($this->_cacheKey, 'headers');
     
     //Append body
     if (!$hasChildren && (isset($this->_stringBody) || isset($this->_streamBody)))
     {
-      $string .= "\r\n" . $this->_encodeStringBody();
+      if (!$this->_cache->hasKey($this->_cacheKey, 'body'))
+      {
+        $this->_cache->setString($this->_cacheKey, 'body',
+          "\r\n" . $this->_encodeStringBody(), Swift_KeyCache::MODE_APPEND
+          );
+      }
+      $string .= $this->_cache->getString($this->_cacheKey, 'body');
     }
     
     //Nest children
@@ -665,39 +701,59 @@ class Swift_Mime_SimpleMimeEntity
     $requiredFields = $this->getRequiredFields();
     
     //Append headers
-    foreach ($this->_headers as $header)
+    if (!$this->_cache->hasKey($this->_cacheKey, 'headers'))
     {
-      if ($header->getFieldBody() == ''
-        && !in_array(strtolower($header->getFieldName()), $requiredFields))
-      { //Empty fields need not be displayed
-        continue;
-      }
+      foreach ($this->_headers as $header)
+      {
+        if ($header->getFieldBody() == ''
+          && !in_array(strtolower($header->getFieldName()), $requiredFields))
+        { //Empty fields need not be displayed
+          continue;
+        }
       
-      if ($hasChildren
-        && strtolower($header->getFieldName()) == 'content-transfer-encoding'
-        && !in_array(
-          strtolower($header->getFieldBody()),
-          $this->_compositeSafeEncodings
+        if ($hasChildren
+          && strtolower($header->getFieldName()) == 'content-transfer-encoding'
+          && !in_array(
+            strtolower($header->getFieldBody()),
+            $this->_compositeSafeEncodings
+            )
           )
-        )
-      { //RFC 2045 says Content-Transfer-Encoding can only be 7bit, 8bit or
-        // binary on composite media types
-        continue;
+        { //RFC 2045 says Content-Transfer-Encoding can only be 7bit, 8bit or
+          // binary on composite media types
+          continue;
+        }
+        $this->_cache->setString($this->_cacheKey, 'headers', $header->toString(),
+          Swift_KeyCache::MODE_APPEND
+          );
       }
-      $is->write($header->toString());
     }
     
+    $this->_cache->exportToByteStream($this->_cacheKey, 'headers', $is);
+    
     //Append body
-    if (!$hasChildren && is_string($this->_stringBody))
+    if (!$hasChildren)
     {
-      $is->write("\r\n" . $this->_encodeStringBody());
-    }
-    elseif (!$hasChildren && isset($this->_streamBody))
-    {
-      $is->write("\r\n");
-      $this->_streamBody->setReadPointer(0);
-      $this->_encodeByteStreamBody($is);
-      $this->_streamBody->setReadPointer(0);
+      if (!$this->_cache->hasKey($this->_cacheKey, 'body'))
+      {
+        if (is_string($this->_stringBody))
+        {
+          $this->_cache->setString($this->_cacheKey, 'body',
+            "\r\n" . $this->_encodeStringBody(), Swift_KeyCache::MODE_WRITE
+            );
+        }
+        elseif (isset($this->_streamBody))
+        {
+          $this->_cache->setString($this->_cacheKey, 'body', "\r\n",
+            Swift_KeyCache::MODE_WRITE
+            );
+          $this->_streamBody->setReadPointer(0);
+          $this->_encodeByteStreamBody(
+            $this->_cache->getInputByteStream($this->_cacheKey, 'body')
+            );
+          $this->_streamBody->setReadPointer(0);
+        }
+      }
+      $this->_cache->exportToByteStream($this->_cacheKey, 'body', $is);
     }
     
     //Nest children
@@ -788,7 +844,7 @@ class Swift_Mime_SimpleMimeEntity
         $headers[] = clone $header;
       }
     }
-    $entity = new self($headers, $this->_encoder);
+    $entity = new self($headers, $this->_encoder, $this->_cache);
     return $entity;
   }
   
@@ -857,6 +913,7 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->_contentType = $contentType;
     $this->_notifyFieldChanged('contenttype', $contentType);
+    $this->_cache->clearKey($this->_cacheKey, 'headers');
   }
   
   /**
@@ -875,6 +932,26 @@ class Swift_Mime_SimpleMimeEntity
         $this->_internalFieldChangeObservers[$key][] = $o;
       }
     }
+  }
+  
+  /**
+   * Get the KeyCache instance.
+   * @return Swift_KeyCache
+   * @access protected
+   */
+  protected function _getCache()
+  {
+    return $this->_cache;
+  }
+  
+  /**
+   * Get the key to access the KeyCache with.
+   * @return string
+   * @access protected
+   */
+  protected function _getCacheKey()
+  {
+    return $this->_cacheKey;
   }
   
   // -- Private methods

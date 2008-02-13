@@ -21,6 +21,7 @@
 //@require 'Swift/Mime/SimpleMimeEntity.php';
 //@require 'Swift/Mime/ContentEncoder.php';
 //@require 'Swift/InputByteStream.php';
+//@require 'Swift/KeyCache.php';
 
 /**
  * A MIME part, in a multipart message.
@@ -79,12 +80,13 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * Creates a new MimePart with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
+   * @param Swift_KeyCache $cache
    * @param string $charset, optional.
    */
   public function __construct(array $headers,
-    Swift_Mime_ContentEncoder $encoder, $charset = null)
+    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, $charset = null)
   {
-    parent::__construct($headers, $encoder);
+    parent::__construct($headers, $encoder, $cache);
     $this->setNestingLevel(self::LEVEL_SUBPART);
     $this->setContentType('text/plain');
     if (!is_null($charset))
@@ -108,6 +110,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     {
       $this->_charset = $charset;
       $this->_notifyFieldChanged('charset', $charset);
+      $this->_getCache()->clearAll($this->_getCacheKey());
     }
     return $this;
   }
@@ -134,6 +137,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     {
       $this->_format = $format;
       $this->_notifyFieldChanged('format', $format);
+      $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     }
     return $this;
   }
@@ -160,6 +164,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     {
       $this->_delSp = $delSp;
       $this->_notifyFieldChanged('delsp', $delSp);
+      $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     }
     return $this;
   }
@@ -270,7 +275,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
         $headers[] = clone $header;
       }
     }
-    $part = new self($headers, $this->getEncoder());
+    $part = new self($headers, $this->getEncoder(), $this->_getCache());
     return $part;
   }
   

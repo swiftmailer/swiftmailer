@@ -28,4 +28,3 @@ $message = Swift_MimeFactory::create('message')
   ;
   
 echo $message->toString();
-file_put_contents('/Users/d11wtq/international.eml', $message->toString());

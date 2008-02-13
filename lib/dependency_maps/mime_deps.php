@@ -23,6 +23,7 @@ $_swiftMimeDeps = array(
         'di:contenttransferencodingheader'
         ),
       'di:qpcontentencoder',
+      'lookup:cache',
       'lookup:charset'
       ),
       'shared' => false
@@ -37,6 +38,7 @@ $_swiftMimeDeps = array(
         'di:contenttransferencodingheader'
         ),
       'di:qpcontentencoder',
+      'lookup:cache',
       'lookup:charset'
       ),
       'shared' => false
@@ -51,13 +53,14 @@ $_swiftMimeDeps = array(
         'di:contenttransferencodingheader',
         'di:contentdispositionheader'
         ),
-      'di:base64contentencoder'
+      'di:base64contentencoder',
+      'lookup:cache'
       ),
       'shared' => false
     ),
     
-  //Image
-  'image' => array(
+  //EmbeddedFile
+  'embeddedfile' => array(
     'class' => 'Swift_Mime_EmbeddedFile',
     'args' => array(
       array(
@@ -66,9 +69,24 @@ $_swiftMimeDeps = array(
         'di:contentdispositionheader',
         'di:contentidheader'
         ),
-      'di:base64contentencoder'
+      'di:base64contentencoder',
+      'lookup:cache'
       ),
       'shared' => false
+    ),
+  
+  //ArrayKeyCache
+  'arraycache' => array(
+    'class' => 'Swift_KeyCache_ArrayKeyCache',
+    'args' => array('di:cacheinputstream'),
+    'shared' => true
+    ),
+    
+  //KeyCacheInputStream
+  'cacheinputstream' => array(
+    'class' => 'Swift_KeyCache_SimpleKeyCacheInputStream',
+    'args' => array(),
+    'shared' => false
     ),
   
   //Return-Path
@@ -270,6 +288,7 @@ $_swiftMimeDeps = array(
   );
   
 //Aliases
+$_swiftMimeDeps['image'] = $_swiftMimeDeps['embeddedfile'];
 $_swiftMimeDeps['7bitencoder'] = $_swiftMimeDeps['7bitcontentencoder'];
 
 return $_swiftMimeDeps;

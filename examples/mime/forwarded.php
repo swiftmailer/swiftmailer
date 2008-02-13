@@ -37,4 +37,3 @@ $forward = Swift_MimeFactory::create('message')
   ;
   
 echo $forward->toString();
-file_put_contents('/Users/d11wtq/forward.eml', $forward->toString());
