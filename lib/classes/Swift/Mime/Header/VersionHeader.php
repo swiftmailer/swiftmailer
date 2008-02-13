@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/StructuredHeader.php';
-
+//@require 'Swift/Mime/Header/StructuredHeader.php';
 
 /**
  * A MIME Version Header for Swift Mailer.

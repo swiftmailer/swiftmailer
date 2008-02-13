@@ -18,7 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/Di.php';
+//@require 'Swift/Di.php';
 
 /**
  * The factory for making classes from the MIME subpackage.

@@ -18,9 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/MailboxHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-
+//@require 'Swift/Mime/Header/MailboxHeader.php';
+//@require 'Swift/Mime/Header/HeaderEncoder.php';
 
 /**
  * An Address MIME Header for something like To or Cc.

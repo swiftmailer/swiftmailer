@@ -18,7 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/OutputByteStream.php';
+//@require 'Swift/OutputByteStream.php';
 
 /**
  * An OutputByteStream which specifically reads from a file.

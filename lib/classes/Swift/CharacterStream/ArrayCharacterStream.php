@@ -18,9 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/../CharacterStream.php';
-require_once dirname(__FILE__) . '/../OutputByteStream.php';
-
+//@require 'Swift/CharacterStream.php';
+//@require 'Swift/OutputByteStream.php';
 
 /**
  * A CharacterStream implementation which stores characters in an internal array.

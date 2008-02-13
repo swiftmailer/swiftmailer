@@ -18,10 +18,9 @@
  
  */
 
-require_once dirname(__FILE__) . '/SimpleMimeEntity.php';
-require_once dirname(__FILE__) . '/../InputByteStream.php';
-require_once dirname(__FILE__) . '/../OutputByteStream.php';
-
+//@require 'Swift/Mime/SimpleMimeEntity.php';
+//@require 'Swift/Mime/ContentEncoder.php';
+//@require 'Swift/InputByteStream.php';
 
 /**
  * A MIME part, in a multipart message.

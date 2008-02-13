@@ -18,7 +18,6 @@
  
  */
 
-
 /**
  * Interface for all observers of a Mime entity waiting for field changes.
  * @package Swift

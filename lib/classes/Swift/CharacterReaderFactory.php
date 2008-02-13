@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/CharacterReader.php';
-
+//@require 'Swift/CharacterReader.php';
 
 /**
  * A factory for creating CharacterReaders.

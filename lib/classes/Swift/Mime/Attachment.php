@@ -18,8 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/SimpleMimeEntity.php';
-require_once dirname(__FILE__) . '/../FileStream.php';
+//@require 'Swift/Mime/SimpleMimeEntity.php';
+//@require 'Swift/FileStream.php';
 
 /**
  * An attachment, in a multipart message.

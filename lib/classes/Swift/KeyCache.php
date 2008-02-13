@@ -18,8 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/InputByteStream.php';
-require_once dirname(__FILE__) . '/OutputByteStream.php';
+//@require 'Swift/InputByteStream.php';
+//@require 'Swift/OutputByteStream.php';
 
 /**
  * Provides a mechanism for storing data using two keys.

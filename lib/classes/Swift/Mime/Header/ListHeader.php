@@ -19,8 +19,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/StructuredHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
+//@require 'Swift/Mime/Header/StructuredHeader.php';
+//@require 'Swift/Mime/HeaderEncoder.php';
 
 /**
  * A List Mime Header in Swift Mailer for showing a list of comma separated

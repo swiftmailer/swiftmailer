@@ -18,7 +18,6 @@
  
  */
 
-
 /**
  * An abstract means of writing data.
  * Classes implementing this interface may use a subsystem which requires less

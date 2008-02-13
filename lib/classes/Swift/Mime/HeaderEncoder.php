@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/../Encoder.php';
-
+//@require 'Swift/Encoder.php';
 
 /**
  * Interface for all Header Encoding schemes.

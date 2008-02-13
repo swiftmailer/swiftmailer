@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/../CharacterReaderFactory.php';
-
+//@require 'Swift/CharacterReaderFactory.php';
 
 /**
  * Standard factory for creating CharacterReaders.
@@ -111,12 +110,6 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory
       {
         if (!array_key_exists($pattern, $this->_loaded))
         {
-          if (!class_exists($spec['class']))
-          {
-            $name = preg_replace('/^.*_([^_]+)$/', '$1', $spec['class']);
-            require_once dirname(__FILE__) .
-              '/../CharacterReader/' . $name . '.php';
-          }
           $reflector = new ReflectionClass($spec['class']);
           if ($reflector->getConstructor())
           {

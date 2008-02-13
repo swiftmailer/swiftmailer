@@ -18,11 +18,10 @@
  
  */
 
-require_once dirname(__FILE__) . '/UnstructuredHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
-require_once dirname(__FILE__) . '/../../Encoder.php';
-
+//@require 'Swift/Mime/Header/UnstructuredHeader.php';
+//@require 'Swift/Mime/HeaderEncoder.php';
+//@require 'Swift/Mime/FieldChangeObserver.php';
+//@require 'Swift/Encoder.php';
 
 /**
  * An abstract base MIME Header.

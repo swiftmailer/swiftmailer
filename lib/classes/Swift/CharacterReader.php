@@ -18,7 +18,6 @@
  
  */
 
-
 /**
  * Analyzes characters for a specific character set.
  * @package Swift

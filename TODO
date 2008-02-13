@@ -13,8 +13,8 @@ Swift Mailer SE:
    - FileByteStream (implements FileStream)
    - FileCharacterStream
  * Caches
-   - NullCache
    - FileCache
+   - PersistentCache?
 
 Swift Mailer EE:
 ----------------
@@ -30,6 +30,7 @@ Swift Mailer EE:
  * Direct MX Transport
    - By-pass using a single SMTP server as a relay
    - Group recipients by domain for efficiency
+   - Much more reliable failure tracking
  * Advanced Content-Type support (already "supported" in community version but will add wrapper code)
    - multipart/digest, message/external, message/partial
  * Message forwarding

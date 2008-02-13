@@ -18,7 +18,6 @@
  
  */
 
-
 /**
  * Interface for all Encoder schemes.
  * @package Swift

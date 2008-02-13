@@ -18,10 +18,9 @@
  
  */
 
-
-require_once dirname(__FILE__) . '/../ContentEncoder.php';
-require_once dirname(__FILE__) . '/../../InputByteStream.php';
-require_once dirname(__FILE__) . '/../../OutputByteStream.php';
+//@require 'Swift/Mime/ContentEncoder.php';
+//@require 'Swift/InputByteStream.php';
+//@require 'Swift/OutputByteStream.php';
 
 /**
  * Handles 7/8-bit Transfer Encoding in Swift Mailer.

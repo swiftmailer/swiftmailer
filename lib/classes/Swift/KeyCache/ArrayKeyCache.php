@@ -18,10 +18,10 @@
  
  */
 
-require_once dirname(__FILE__) . '/../KeyCache.php';
-require_once dirname(__FILE__) . '/KeyCacheInputStream.php';
-require_once dirname(__FILE__) . '/../InputByteStream.php';
-require_once dirname(__FILE__) . '/../OutputByteStream.php';
+//@require 'Swift/KeyCache.php';
+//@require 'Swift/KeyCacheInputStream.php';
+//@require 'Swift/InputByteStream.php';
+//@require 'Swift/OutputByteStrean.php';
 
 /**
  * A basic KeyCache backed by an array.

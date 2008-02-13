@@ -18,9 +18,8 @@
  
  */
 
-
-require_once dirname(__FILE__) . '/../Encoder.php';
-require_once dirname(__FILE__) . '/../CharacterStream.php';
+//@require 'Swift/Encoder.php';
+//@require 'Swift/CharacterStream.php';
 
 /**
  * Handles Quoted Printable (QP) Encoding in Swift Mailer.

@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/../InputByteStream.php';
-
+//@require 'Swift/InputByteStream.php';
 
 /**
  * A MIME entity, such as an attachment.

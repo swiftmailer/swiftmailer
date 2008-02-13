@@ -18,8 +18,7 @@
  
  */
 
-
-require_once dirname(__FILE__) . '/../Encoder.php';
+//@require 'Swift/Encoder.php';
 
 /**
  * Handles Base 64 Encoding in Swift Mailer.

@@ -18,7 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/DateHeader.php';
+//@require 'Swift/Mime/Header/DateHeader.php';
 
 /**
  * A Received (trace) Mime Header in Swift Mailer.

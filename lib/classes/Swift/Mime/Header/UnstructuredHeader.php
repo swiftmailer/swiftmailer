@@ -18,10 +18,9 @@
  
  */
 
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
-require_once dirname(__FILE__) . '/AbstractHeader.php';
-
+//@require 'Swift/Mime/Header/AbstractHeader.php';
+//@require 'Swift/Mime/FieldChangeObserver.php';
+//@require 'Swift/Mime/HeaderEncoder.php';
 
 /**
  * A Simple MIME Header.

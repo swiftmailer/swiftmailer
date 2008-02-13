@@ -28,6 +28,13 @@ class Swift_Di
 {
   
   /**
+   * Paths to scan for class files.
+   * @var array
+   * @access private
+   */
+  private static $_classPaths = array();
+  
+  /**
    * Shared instance collection.
    * @var object[]
    * @access private
@@ -203,12 +210,24 @@ class Swift_Di
       return;
     }
     
-    $path = SWIFT_CLASS_DIRECTORY . '/' . str_replace('_', '/', $class) . '.php';
-    
-    if (file_exists($path))
+    foreach (self::$_classPaths as $classPath)
     {
-      require_once $path; //change to "require" ?
+      $path = $classPath . '/' . str_replace('_', '/', $class) . '.php';
+    
+      if (file_exists($path))
+      {
+        require_once $path; //change to "require" ?
+      }
     }
+  }
+  
+  /**
+   * Set the path to class files, separated by PATH_SEPARATOR.
+   * @param string $classPath
+   */
+  public static function setClassPath($classPath)
+  {
+    self::$_classPaths = explode(PATH_SEPARATOR, $classPath);
   }
   
 }

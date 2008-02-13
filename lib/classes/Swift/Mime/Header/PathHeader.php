@@ -18,8 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/StructuredHeader.php';
-require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
+//@require 'Swift/Mime/Header/StructuredHeader.php';
+//@require 'Swift/Mime/FieldChangeObserver.php';
 
 /**
  * A Path Header in Swift Mailer, such a Return-Path.

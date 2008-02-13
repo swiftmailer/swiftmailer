@@ -18,8 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/../InputByteStream.php';
-require_once dirname(__FILE__) . '/../KeyCache.php';
+//@require 'Swift/KeyCache.php';
+//@require 'Swift/InputByteStream.php';
 
 /**
  * Writes data to a KeyCache using a stream.

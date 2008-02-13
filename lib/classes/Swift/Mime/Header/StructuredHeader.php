@@ -18,8 +18,8 @@
  
  */
 
+//@require 'Swift/Mime/Header/AbstractHeader.php';
 require_once dirname(__FILE__) . '/AbstractHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 
 /**
  * A Structured MIME Header.

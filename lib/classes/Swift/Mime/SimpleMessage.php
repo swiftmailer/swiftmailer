@@ -18,11 +18,10 @@
  
  */
 
-require_once dirname(__FILE__) . '/MimePart.php';
-require_once dirname(__FILE__) . '/Message.php';
-require_once dirname(__FILE__) . '/ContentEncoder.php';
-require_once dirname(__FILE__) . '/MimeEntity.php';
-
+//@require 'Swift/Mime/Message.php';
+//@require 'Swift/Mime/MimePart.php';
+//@require 'Swift/Mime/MimeEntity.php';
+//@require 'Swift/Mime/ContentEncoder.php';
 
 /**
  * The default email message class.

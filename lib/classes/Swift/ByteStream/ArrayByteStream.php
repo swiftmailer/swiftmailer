@@ -18,9 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/../InputByteStream.php';
-require_once dirname(__FILE__) . '/../OutputByteStream.php';
-
+//@require 'Swift/InputByteStream.php';
+//@require 'Swift/OutputByteStream.php';
 
 /**
  * Allows reading and writing of bytes to and from an array.

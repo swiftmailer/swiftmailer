@@ -18,11 +18,10 @@
  
  */
 
-
-require_once dirname(__FILE__) . '/../ContentEncoder.php';
-require_once dirname(__FILE__) . '/../../Encoder/Base64Encoder.php';
-require_once dirname(__FILE__) . '/../../InputByteStream.php';
-require_once dirname(__FILE__) . '/../../OutputByteStream.php';
+//@require 'Swift/Mime/ContentEncoder.php';
+//@require 'Swift/Encoder/Base64Encoder.php';
+//@require 'Swift/InputByteStream.php';
+//@require 'Swift/OutputByteStream.php';
 
 /**
  * Handles Base 64 Transfer Encoding in Swift Mailer.

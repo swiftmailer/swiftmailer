@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/../CharacterReader.php';
-
+//@require 'Swift/CharacterReader.php';
 
 /**
  * Provides fixed-width byte sizes for reading fixed-width character sets.

@@ -44,3 +44,6 @@ set_include_path(
 
 //Load in any dependencies
 require_once 'Sweety/TestLocator/PearStyleLocator.php';
+require_once 'Swift/Di.php';
+Swift_Di::setClassPath(SWEETY_INCLUDE_PATH);
+spl_autoload_register(array('Swift_Di', 'autoload'));

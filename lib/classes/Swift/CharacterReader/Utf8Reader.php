@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/../CharacterReader.php';
-
+//@require 'Swift/CharacterReader.php';
 
 /**
  * Analyzes UTF-8 characters.

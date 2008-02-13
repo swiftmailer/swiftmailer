@@ -18,10 +18,9 @@
  
  */
 
-require_once dirname(__FILE__) . '/StructuredHeader.php';
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
-
+//@require 'Swift/Mime/Header/StructuredHeader.php';
+//@require 'Swift/Mime/HeaderEncoder.php';
+//@require 'Swift/Mime/FieldChangeObserver.php';
 
 /**
  * A Mailbox Address MIME Header for something like From or Sender.

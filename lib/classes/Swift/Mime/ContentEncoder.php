@@ -18,10 +18,9 @@
  
  */
 
-require_once dirname(__FILE__) . '/../Encoder.php';
-require_once dirname(__FILE__) . '/../InputByteStream.php';
-require_once dirname(__FILE__) . '/../OutputByteStream.php';
-
+//@require 'Swift/Encoder.php';
+//@require 'Swift/InputByteStream.php';
+//@require 'Swift/OutputByteStream.php';
 
 /**
  * Interface for all Transfer Encoding schemes.

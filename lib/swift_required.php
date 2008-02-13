@@ -21,6 +21,7 @@
 define('SWIFT_CLASS_DIRECTORY', dirname(__FILE__) . '/classes');
 define('SWIFT_MAP_DIRECTORY', dirname(__FILE__) . '/dependency_maps');
 require_once SWIFT_CLASS_DIRECTORY . '/Swift/Di.php';
+Swift_Di::setClassPath(SWIFT_CLASS_DIRECTORY);
 spl_autoload_register(array('Swift_Di', 'autoload'));
 Swift_MimeFactory::getInstance()->registerDependencyMap(
   include(SWIFT_MAP_DIRECTORY . '/mime_deps.php')

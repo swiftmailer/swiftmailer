@@ -18,8 +18,8 @@
  
  */
 
-require_once dirname(__FILE__) . '/Attachment.php';
-
+//@require 'Swift/Mime/Attachment.php';
+//@require 'Swift/Mime/ContentEncoder.php';
 
 /**
  * An embedded file, in a multipart message.

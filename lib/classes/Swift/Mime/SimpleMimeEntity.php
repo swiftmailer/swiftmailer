@@ -18,12 +18,12 @@
  
  */
 
-require_once dirname(__FILE__) . '/MimeEntity.php';
-require_once dirname(__FILE__) . '/ContentEncoder.php';
-require_once dirname(__FILE__) . '/../InputByteStream.php';
-require_once dirname(__FILE__) . '/../OutputByteStream.php';
-require_once dirname(__FILE__) . '/FieldChangeObserver.php';
-
+//@require 'Swift/InputByteStream.php';
+//@require 'Swift/OutputByteStream.php';
+//@require 'Swift/KeyCache.php';
+//@require 'Swift/Mime/MimeEntity.php';
+//@require 'Swift/Mime/ContentEncoder.php';
+//@require 'Swift/Mime/FieldChangeObserver.php';
 
 /**
  * A MIME entity, in a multipart message.

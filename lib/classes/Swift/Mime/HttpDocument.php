@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/MimeEntity.php';
-
+//@require 'Swift/Mime/MimeEntity.php';
 
 /**
  * A Complete HttpDocument which can be sent to a web browser.

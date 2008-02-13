@@ -18,12 +18,12 @@
  
  */
 
-require_once dirname(__FILE__) . '/../ContentEncoder.php';
-require_once dirname(__FILE__) . '/../FieldChangeObserver.php';
-require_once dirname(__FILE__) . '/../../Encoder/QpEncoder.php';
-require_once dirname(__FILE__) . '/../../InputByteStream.php';
-require_once dirname(__FILE__) . '/../../OutputByteStream.php';
-require_once dirname(__FILE__) . '/../../CharacterStream.php';
+//@require 'Swift/Mime/ContentEncoder.php';
+//@require 'Swift/Mime/FieldChangeObserver.php';
+//@require 'Swift/Encoder/QpEncoder.php';
+//@require 'Swift/InputByteStrean.php';
+//@require 'Swift/OutputByteStream.php';
+//@require 'Swift/CharacterStream.php';
 
 /**
  * Handles Quoted Printable (QP) Transfer Encoding in Swift Mailer.

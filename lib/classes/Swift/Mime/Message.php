@@ -18,8 +18,7 @@
  
  */
 
-require_once dirname(__FILE__) . '/MimeEntity.php';
-
+//@require 'Swift/Mime/MimeEntity.php';
 
 /**
  * A Message (RFC 2822) object.

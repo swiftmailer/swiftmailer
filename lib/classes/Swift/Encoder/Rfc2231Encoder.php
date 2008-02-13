@@ -19,8 +19,8 @@
  */
 
 
-require_once dirname(__FILE__) . '/../Encoder.php';
-require_once dirname(__FILE__) . '/../CharacterStream.php';
+//@require 'Swift/Encoder.php';
+//@require 'Swift/CharacterStream.php';
 
 /**
  * Handles RFC 2231 specified Encoding in Swift Mailer.
