@@ -246,6 +246,42 @@ class Swift_Mime_SimpleMimeEntity
   }
   
   /**
+   * Get a single Header with $name.
+   * @param string $name
+   * @return Swift_Mime_Header
+   */
+  public function getHeader($name)
+  {
+    $lname = strtolower($name);
+    foreach ($this->_headers as $header)
+    {
+      if ($lname == strtolower($header->getFieldName()))
+      {
+        return $header;
+      }
+    }
+  }
+  
+  /**
+   * Get all headers with $name, in an array.
+   * @param string $name
+   * @return Swift_Mime_Header[]
+   */
+  public function getHeaderCollection($name)
+  {
+    $collection = array();
+    $lname = strtolower($name);
+    foreach ($this->_headers as $header)
+    {
+      if ($lname == strtolower($header->getFieldName()))
+      {
+        $collection[] = $header;
+      }
+    }
+    return $collection;
+  }
+  
+  /**
    * Set the Encoder used for transportation of this entity.
    * Returns a reference to itself for fluid interface.
    * @param Swift_Mime_ContentEncoder $encoder
@@ -806,6 +842,14 @@ class Swift_Mime_SimpleMimeEntity
     return array();
   }
   
+  /**
+   * Flush the cache so the message is forced to be re-rendered.
+   */
+  public function flushCache()
+  {
+    $this->_cache->clearAll($this->_cacheKey);
+  }
+  
   // -- Protected methods
   
   /**
@@ -1027,6 +1071,14 @@ class Swift_Mime_SimpleMimeEntity
     {
       usort($this->_immediateChildren, array($this, '_sortChildren'));
     }
+  }
+  
+  /**
+   * Destructor.
+   */
+  public function __destruct()
+  {
+    $this->_cache->clearAll($this->_cacheKey);
   }
   
 }

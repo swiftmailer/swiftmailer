@@ -1,13 +1,16 @@
 Swift Mailer SE:
 ----------------
 
- * Add a getHeader() method.
  * Write some sanity tests
  * CharacterReaderFactory (map charsets to CharacterReaders).
    - Big5
    - Shift-JIS
    - ISO-10646
    - CP950
+ * Optimize QpEncoder/Rfc2231Encoder/CharacterStream/CharacterReader
+   - Read more than 1 char at a time?
+   - Get characters already unpacked as a byte array?
+   - Avoid using pack()/unpack() completely?
  * Streams
    - FileByteStream (implements FileStream)
    - FileCharacterStream

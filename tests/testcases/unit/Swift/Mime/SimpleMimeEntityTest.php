@@ -895,6 +895,32 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_AbstractSwiftUnitTestCase
       );
   }
   
+  public function testHeaderObjectsCanBeFetched()
+  {
+    $h = new Swift_Mime_MockHeader();
+    $h->setReturnValue('getFieldName', 'Content-Type');
+    $h->setReturnValue('getFieldBody', 'text/plain');
+    $headers = array($h);
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
+    $this->assertEqual($h, $entity->getHeader('content-type'));
+  }
+  
+  public function testMultipleHeaderObjectsCanBeFetched()
+  {
+    $h1 = new Swift_Mime_MockHeader();
+    $h1->setReturnValue('getFieldName', 'Received');
+    $h1->setReturnValue('getFieldBody', 'xxx');
+    $h2 = new Swift_Mime_MockHeader();
+    $h2->setReturnValue('getFieldName', 'Content-Type');
+    $h2->setReturnValue('getFieldBody', 'text/plain');
+    $h3 = new Swift_Mime_MockHeader();
+    $h3->setReturnValue('getFieldName', 'Received');
+    $h3->setReturnValue('getFieldBody', 'yyy');
+    $headers = array($h1, $h2, $h3);
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
+    $this->assertEqual(array($h1, $h3), $entity->getHeaderCollection('Received'));
+  }
+  
   public function testFluidInterface()
   {
     $entity = $this->_getEntity(array(), $this->_encoder, $this->_cache);
