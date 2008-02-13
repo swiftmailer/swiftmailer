@@ -38,6 +38,43 @@ Swift Mailer EE:
    around a cluster of hosts
  * HttpDocument representation of multipart mime documents (for sending multipart data over HTTP).
 
+Website Re-Design:
+------------------
+
+ * New Logo
+ * New layout without sidebar
+   - See getvanilla.com for inspiration
+   - Thinking perhaps a red/white/grey color scheme
+   - Adsense ads at the end of some pages
+   - Documentation integrated
+     - User comments filtered
+     - V4/V3 separation (/docs/v3/something vs. /docs/v4/something)
+     - Duplicate content from DokuWiki and add redirects
+     - Show EE specific documentation to logged in users
+   - Scrap the www. domain and do a redirect
+   - Bug tracking
+     - Integrated
+     - Priority fixes for EE users
+   - Take PayPal express checkout payments & paypal credit card payments
+   - Issue licenses with usernames/passwords to download area
+     - Allow purchase of additional licenses
+     - Allow notification of new releases
+   - Book (PDF) download
+
+Licensing:
+----------
+
+ * Need to produce a license which allows the use of EE for 1 domain name only
+   - Includes subdomains
+   - Allow the domain name to be transferred at no cost
+   - Valid for the lifetime of v4
+
+Swift Mailer Book:
+------------------
+
+ * 30-40 pages with examples
+   - Include developer guide
+
 Test Suite:
 -----------
 
