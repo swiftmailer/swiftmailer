@@ -23,6 +23,9 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testStartSendsEhlo()
   {
+    /* -- RFC 2821, 3.
+     */
+    
     $this->assertFalse(true, 'Not implemented');
   }
   
