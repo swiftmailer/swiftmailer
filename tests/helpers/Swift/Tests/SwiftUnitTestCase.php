@@ -8,7 +8,7 @@ require_once 'Swift/Tests/IdenticalBinaryExpectation.php';
  * @subpackage Tests
  * @author Chris Corbyn
  */
-abstract class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
+class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
 {
 
   /**
