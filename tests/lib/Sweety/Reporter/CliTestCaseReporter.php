@@ -146,12 +146,12 @@ class Sweety_Reporter_CliTestCaseReporter implements Sweety_Reporter
     if (!$this->_aggregates['fails'] && !$this->_aggregates['exceptions'])
     {
       echo '  >> ' . $this->_testCase . ' ';
-      echo 'OK' . PHP_EOL;
+      echo "\033[32mOK\033[0m" . PHP_EOL;
     }
     else
     {
       echo '  !! ' . $this->_testCase . ' ';
-      echo 'FAILED' . PHP_EOL;
+      echo "\033[31mFAILED\033[0m" . PHP_EOL;
     }
     
     $this->_parent->notifyEnded($this->_testCase);

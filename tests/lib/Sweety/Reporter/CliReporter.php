@@ -93,7 +93,7 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
    */
   public function reportSkip($message, $path)
   {
-    echo '  Skip:';
+    echo "  \033[34m\033[1m\033[4mSkip\033[0m:";
     $messageLines = explode(PHP_EOL, wordwrap($message, 74, PHP_EOL));
     foreach ($messageLines as $line)
     {
@@ -121,8 +121,8 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
   {
     $this->_aggregates['fails']++;
     
-    echo $this->_aggregates['fails'] . ') ';
-    echo $message . PHP_EOL;
+    echo "\033[31m" . $this->_aggregates['fails'] . ') ';
+    echo $message . "\033[0m" . PHP_EOL;
     echo '    in: ' . $path . PHP_EOL;
   }
   
@@ -135,8 +135,8 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
   {
     $this->_aggregates['exceptions']++;
     
-    echo 'Exception ' . $this->_aggregates['exceptions'] . '!' . PHP_EOL;
-    echo $message . PHP_EOL;
+    echo "\033[31m\033[1mException" . $this->_aggregates['exceptions'] . "\033[0m!" . PHP_EOL;
+    echo "\033[1m" . $message . "\033[0m" . PHP_EOL;
     echo '    in ' . $path . PHP_EOL;
   }
   
@@ -174,11 +174,11 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
     if (!$this->_aggregates['fails'] && !$this->_aggregates['exceptions']
       && $this->_aggregates['cases'] == $this->_aggregates['run'])
     {
-      echo 'OK' . PHP_EOL;
+      echo "\033[32m\033[1mOK\033[0m" . PHP_EOL;
     }
     else
     {
-      echo 'FAILURES!!!' . PHP_EOL;
+      echo "\033[31m\033[1mFAILURES!!!\033[0m" . PHP_EOL;
     }
     
     echo 'Test cases run: ';
