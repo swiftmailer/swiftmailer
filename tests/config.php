@@ -26,7 +26,7 @@ define('SWEETY_HOME', dirname(__FILE__));
 define('SWEETY_INCLUDE_PATH',
   SWEETY_HOME . '/../lib/classes' . PATH_SEPARATOR .
   SWEETY_HOME . '/../lib' . PATH_SEPARATOR .
-  SWEETY_HOME . '/expectations'
+  SWEETY_HOME . '/helpers'
   );
 //The path to the main test suite
 define('SWEETY_LIB_PATH', SWEETY_HOME . '/lib');

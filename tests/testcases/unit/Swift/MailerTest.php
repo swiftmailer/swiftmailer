@@ -130,4 +130,36 @@ class Swift_MailerTest extends Swift_AbstractSwiftUnitTestCase
     $this->_mailer->batchSend($message);
   }
   
+  public function testSendReturnsCountFromTransport()
+  {
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getTo', array(
+      'one@domain.com' => 'One',
+      'two@domain.com' => 'Two',
+      'three@domain.com' => 'Three'
+      ));
+    
+    $this->_transport->setReturnValue('send', 2);
+    
+    $this->assertEqual(2, $this->_mailer->send($message));
+  }
+  
+  public function testBatchSendReturnCummulativeSendCount()
+  {
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getTo', array(
+      'one@domain.com' => 'One',
+      'two@domain.com' => 'Two',
+      'three@domain.com' => 'Three',
+      'four@domain.com' => 'Four'
+      ));
+    
+    $this->_transport->setReturnValueAt(0, 'send', 1);
+    $this->_transport->setReturnValueAt(1, 'send', 0);
+    $this->_transport->setReturnValueAt(2, 'send', 1);
+    $this->_transport->setReturnValueAt(3, 'send', 1);
+    
+    $this->assertEqual(3, $this->_mailer->batchSend($message));
+  }
+  
 }
