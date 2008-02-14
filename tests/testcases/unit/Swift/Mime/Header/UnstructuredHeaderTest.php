@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/UnstructuredHeader.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 require_once 'Swift/Mime/ContentEncoder.php';
@@ -8,7 +8,7 @@ require_once 'Swift/Mime/ContentEncoder.php';
 Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
 
-class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTestCase
+class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_charset = 'utf-8';
@@ -117,7 +117,7 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     
     $encoder = new Swift_Mime_MockHeaderEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($nonAsciiChar), '*', '*'
+      new Swift_Tests_IdenticalBinaryExpectation($nonAsciiChar), '*', '*'
       ));
     $encoder->setReturnValue('encodeString', '=8F');
     $encoder->setReturnValue('getName', 'Q');
@@ -143,7 +143,7 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       
       $encoder = new Swift_Mime_MockHeaderEncoder();
       $encoder->expectOnce('encodeString', array(
-        new Swift_IdenticalBinaryExpectation($char), '*', '*'
+        new Swift_Tests_IdenticalBinaryExpectation($char), '*', '*'
         ));
       $encoder->setReturnValue('encodeString', $encodedChar);
       $encoder->setReturnValue('getName', 'Q');
@@ -169,7 +169,7 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
       
       $encoder = new Swift_Mime_MockHeaderEncoder();
       $encoder->expectOnce('encodeString', array(
-        new Swift_IdenticalBinaryExpectation($char), '*', '*'
+        new Swift_Tests_IdenticalBinaryExpectation($char), '*', '*'
         ));
       $encoder->setReturnValue('encodeString', $encodedChar);
       $encoder->setReturnValue('getName', 'Q');
@@ -201,7 +201,7 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     
     $encoder = new Swift_Mime_MockHeaderEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($nonAsciiChar), 8, 63),
+      new Swift_Tests_IdenticalBinaryExpectation($nonAsciiChar), 8, 63),
       '%s: Parameters for $firstLineOffset and $maxLineLength should be 20 ' .
       'and 63 respectively');
     //Note that multi-line headers begin with LWSP which makes 75 + 1 = 76
@@ -233,7 +233,7 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     
     $encoder = new Swift_Mime_MockHeaderEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($nonAsciiChar), 8, 63)
+      new Swift_Tests_IdenticalBinaryExpectation($nonAsciiChar), 8, 63)
       );
     //Note that multi-line headers begin with LWSP which makes 75 + 1 = 76
     //Note also that =?utf-8?q??= is 12 chars which makes 75 - 12 = 63
@@ -279,12 +279,12 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_AbstractSwiftUnitTe
     $encoder->setReturnValue('getName', 'Q');
     $encoder->expectCallCount('encodeString', 2);
     $encoder->expectAt(0, 'encodeString', array(
-      new Swift_IdenticalBinaryExpectation($word . ' ' . $word), '*', '*'),
+      new Swift_Tests_IdenticalBinaryExpectation($word . ' ' . $word), '*', '*'),
       '%s: Adjacent words to be encoded should be encoded together with any WSP'
       );
     $encoder->setReturnValueAt(0, 'encodeString', 'w=8Frd_w=8Frd');
     $encoder->expectAt(1, 'encodeString', array(
-      new Swift_IdenticalBinaryExpectation($word), '*', '*'),
+      new Swift_Tests_IdenticalBinaryExpectation($word), '*', '*'),
       '%s: Full words should be encoded'
       );
     $encoder->setReturnValueAt(1, 'encodeString', 'w=8Frd');

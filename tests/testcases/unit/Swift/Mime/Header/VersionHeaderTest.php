@@ -1,10 +1,10 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/VersionHeader.php';
 
 class Swift_Mime_Header_VersionHeaderTest
-  extends Swift_AbstractSwiftUnitTestCase
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   public function testVersionCanBeSetAndFetched()

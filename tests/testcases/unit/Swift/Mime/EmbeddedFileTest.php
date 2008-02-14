@@ -2,7 +2,7 @@
 
 require_once 'Swift/Mime/MimeEntity.php';
 require_once 'Swift/Mime/EmbeddedFile.php';
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
@@ -17,7 +17,7 @@ Mock::generate('Swift_Mime_FieldChangeObserver',
 Mock::generate('Swift_FileStream', 'Swift_MockFileStream');
 Mock::generate('Swift_KeyCache', 'Swift_MockKeyCache');
 
-class Swift_Mime_EmbeddedFileTest extends Swift_AbstractSwiftUnitTestCase
+class Swift_Mime_EmbeddedFileTest extends Swift_Tests_SwiftUnitTestCase
 {
   private $_encoder;
   private $_cache;

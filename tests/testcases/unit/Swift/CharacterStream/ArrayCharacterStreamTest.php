@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory.php';
 require_once 'Swift/CharacterReader.php';
@@ -15,7 +15,7 @@ Mock::generate(
 Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 
 class Swift_CharacterStream_ArrayCharacterStreamTest
-  extends Swift_AbstractSwiftUnitTestCase
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   public function testValidatorAlgorithmOnImportString()
@@ -30,51 +30,51 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->expectAt(0, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(0, 'validateCharacter', 1);
     $reader->expectAt(1, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0x94))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0x94))
       ));
     $reader->setReturnValueAt(1, 'validateCharacter', 0);
     $reader->expectAt(2, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(2, 'validateCharacter', 1);
     $reader->expectAt(3, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB6))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB6))
       ));
     $reader->setReturnValueAt(3, 'validateCharacter', 0);
     $reader->expectAt(4, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(4, 'validateCharacter', 1);
     $reader->expectAt(5, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBE))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBE))
       ));
     $reader->setReturnValueAt(5, 'validateCharacter', 0);
     $reader->expectAt(6, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1))
       ));
     $reader->setReturnValueAt(6, 'validateCharacter', 1);
     $reader->expectAt(7, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x8D))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x8D))
       ));
     $reader->setReturnValueAt(7, 'validateCharacter', 0);
     $reader->expectAt(8, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(8, 'validateCharacter', 1);
     $reader->expectAt(9, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBB))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBB))
       ));
     $reader->setReturnValueAt(9, 'validateCharacter', 0);
     $reader->expectAt(10, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(10, 'validateCharacter', 1);
     $reader->expectAt(11, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB0))
       ));
     $reader->setReturnValueAt(11, 'validateCharacter', 0);
     
@@ -103,68 +103,68 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->expectAt(0, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(0, 'validateCharacter', 1);
     $reader->expectAt(1, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0x94))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0x94))
       ));
     $reader->setReturnValueAt(1, 'validateCharacter', 0);
     $reader->expectAt(2, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(2, 'validateCharacter', 1);
     $reader->expectAt(3, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB6))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB6))
       ));
     $reader->setReturnValueAt(3, 'validateCharacter', 0);
     $reader->expectAt(4, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(4, 'validateCharacter', 1);
     $reader->expectAt(5, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBE))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBE))
       ));
     $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
     $reader->expectAt(6, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(6, 'validateCharacter', 1);
     $reader->expectAt(7, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBB))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBB))
       ));
     $reader->setReturnValueAt(7, 'validateCharacter', 0);
     $reader->expectAt(8, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1))
       ));
     $reader->setReturnValueAt(8, 'validateCharacter', 1);
     $reader->expectAt(9, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x8E))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x8E))
       ));
     $reader->setReturnValueAt(9, 'validateCharacter', 0);
     $reader->expectAt(10, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(10, 'validateCharacter', 1);
     $reader->expectAt(11, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB1))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB1))
       ));
     $reader->setReturnValueAt(11, 'validateCharacter', 0);
     $reader->expectAt(12, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1))
       ));
     $reader->setReturnValueAt(12, 'validateCharacter', 1);
     $reader->expectAt(13, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x8B))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x8B))
       ));
     $reader->setReturnValueAt(13, 'validateCharacter', 0);
     $reader->expectAt(14, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1))
       ));
     $reader->setReturnValueAt(14, 'validateCharacter', 1);
     $reader->expectAt(15, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x85))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x85))
       ));
     $reader->setReturnValueAt(15, 'validateCharacter', 0);
     
@@ -343,27 +343,27 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     
     $reader->setReturnValue('getInitialByteSize', 1);
     $reader->expectAt(0, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(0, 'validateCharacter', 1);
     $reader->expectAt(1, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0x94))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0x94))
       ));
     $reader->setReturnValueAt(1, 'validateCharacter', 0);
     $reader->expectAt(2, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(2, 'validateCharacter', 1);
     $reader->expectAt(3, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB6))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB6))
       ));
     $reader->setReturnValueAt(3, 'validateCharacter', 0);
     $reader->expectAt(4, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0))
       ));
     $reader->setReturnValueAt(4, 'validateCharacter', 1);
     $reader->expectAt(5, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBE))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBE))
       ));
     $reader->setReturnValueAt(5, 'validateCharacter', 0);
     
@@ -458,15 +458,15 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     
     $reader->setReturnValue('getInitialByteSize', 2);
     $reader->expectAt(0, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x8D))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD1, 0x8D))
       ));
     $reader->setReturnValueAt(0, 'validateCharacter', 0);
     $reader->expectAt(1, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBB))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xBB))
       ));
     $reader->setReturnValueAt(1, 'validateCharacter', 0);
     $reader->expectAt(2, 'validateCharacter', array(
-      new Swift_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB0))
+      new Swift_Tests_IdenticalBinaryExpectation(pack('C*', 0xD0, 0xB0))
       ));
     $reader->setReturnValueAt(2, 'validateCharacter', 0);
     

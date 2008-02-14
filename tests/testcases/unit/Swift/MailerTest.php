@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mailer.php';
 require_once 'Swift/Mailer/Transport.php';
 require_once 'Swift/Mime/Message.php';
@@ -8,7 +8,7 @@ require_once 'Swift/Mime/Message.php';
 Mock::generate('Swift_Mailer_Transport', 'Swift_Mailer_MockTransport');
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
 
-class Swift_MailerTest extends Swift_AbstractSwiftUnitTestCase
+class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_transport;

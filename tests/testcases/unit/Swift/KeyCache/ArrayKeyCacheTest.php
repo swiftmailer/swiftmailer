@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/InputByteStream.php';
 require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/KeyCache/ArrayKeyCache.php';
@@ -13,7 +13,7 @@ Mock::generate('Swift_KeyCache_KeyCacheInputStream',
   'Swift_KeyCache_MockKeyCacheInputStream'
   );
 
-class Swift_KeyCache_ArrayKeyCacheTest extends Swift_AbstractSwiftUnitTestCase
+class Swift_KeyCache_ArrayKeyCacheTest extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_cache;

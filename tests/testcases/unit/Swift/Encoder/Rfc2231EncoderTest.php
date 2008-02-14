@@ -2,11 +2,11 @@
 
 require_once 'Swift/Encoder/Rfc2231Encoder.php';
 require_once 'Swift/CharacterStream.php';
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 
 Mock::Generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 
-class Swift_Encoder_Rfc2231EncoderTest extends Swift_AbstractSwiftUnitTestCase
+class Swift_Encoder_Rfc2231EncoderTest extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_encoder;
@@ -41,7 +41,7 @@ class Swift_Encoder_Rfc2231EncoderTest extends Swift_AbstractSwiftUnitTestCase
     $this->_charStream->setReturnValueAt($i++, 'read', false);
     $this->_charStream->expectCallCount('read', $i);
     $this->_charStream->expectOnce('importString', array(
-      new Swift_IdenticalBinaryExpectation($string)
+      new Swift_Tests_IdenticalBinaryExpectation($string)
       ));
     
     $encoded = $this->_encoder->encodeString($string);
@@ -66,7 +66,7 @@ class Swift_Encoder_Rfc2231EncoderTest extends Swift_AbstractSwiftUnitTestCase
     $this->_charStream->setReturnValueAt($i++, 'read', false);
     $this->_charStream->expectCallCount('read', $i);
     $this->_charStream->expectOnce('importString', array(
-      new Swift_IdenticalBinaryExpectation($string)
+      new Swift_Tests_IdenticalBinaryExpectation($string)
       ));
     
     $encoded = $this->_encoder->encodeString($string);

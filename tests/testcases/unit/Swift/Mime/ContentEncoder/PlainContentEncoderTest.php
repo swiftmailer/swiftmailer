@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder/PlainContentEncoder.php';
 require_once 'Swift/InputByteStream.php';
 require_once 'Swift/OutputByteStream.php';
@@ -9,7 +9,7 @@ Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
 Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 
 class Swift_Mime_ContentEncoder_PlainContentEncoderTest
-  extends Swift_AbstractSwiftUnitTestCase
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   public function testNameCanBeSpecifiedInConstructor()
@@ -42,7 +42,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest
       $os->setReturnValueAt(1, 'read', false);
       
       $is = new Swift_MockInputByteStream();
-      $is->expectOnce('write', array(new Swift_IdenticalBinaryExpectation($byte)));
+      $is->expectOnce('write', array(new Swift_Tests_IdenticalBinaryExpectation($byte)));
       
       $encoder->encodeByteStream($os, $is);
     }

@@ -1,10 +1,10 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/DateHeader.php';
 
 class Swift_Mime_Header_DateHeaderTest
-  extends Swift_AbstractSwiftUnitTestCase
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   /* --

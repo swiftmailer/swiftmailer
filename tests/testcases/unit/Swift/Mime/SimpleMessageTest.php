@@ -2,7 +2,7 @@
 
 require_once 'Swift/Mime/MimeEntity.php';
 require_once 'Swift/Mime/SimpleMessage.php';
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/FieldChangeObserver.php';
@@ -20,7 +20,7 @@ Mock::generate('Swift_KeyCache_KeyCacheInputStream',
   'Swift_KeyCache_MockKeyCacheInputStream'
   );
 
-class Swift_Mime_SimpleMessageTest extends Swift_AbstractSwiftUnitTestCase
+class Swift_Mime_SimpleMessageTest extends Swift_Tests_SwiftUnitTestCase
 {
   private $_encoder;
   private $_cache;

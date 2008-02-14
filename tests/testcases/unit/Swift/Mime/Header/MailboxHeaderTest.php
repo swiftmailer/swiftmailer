@@ -1,13 +1,13 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/MailboxHeader.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 
 Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 
 class Swift_Mime_Header_MailboxHeaderTest
-  extends Swift_AbstractSwiftUnitTestCase
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   /* -- RFC 2822, 3.6.2 for all tests.

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Header/ParameterizedHeader.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 require_once 'Swift/Encoder.php';
@@ -9,7 +9,7 @@ Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 Mock::generate('Swift_Encoder', 'Swift_MockEncoder');
 
 class Swift_Mime_Header_ParameterizedHeaderTest
-  extends Swift_AbstractSwiftUnitTestCase
+  extends Swift_Tests_SwiftUnitTestCase
 {
  
   private $_charset = 'utf-8';
@@ -146,7 +146,7 @@ class Swift_Mime_Header_ParameterizedHeaderTest
     
     $encoder = new Swift_MockEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($value), 12, 62
+      new Swift_Tests_IdenticalBinaryExpectation($value), 12, 62
       ));
     $encoder->setReturnValue('encodeString', str_repeat('a', 20) . '%8F' .
       str_repeat('a', 10)
@@ -201,7 +201,7 @@ class Swift_Mime_Header_ParameterizedHeaderTest
     
     $encoder = new Swift_MockEncoder();
     $encoder->expectOnce('encodeString', array(
-      new Swift_IdenticalBinaryExpectation($value), 12, 62
+      new Swift_Tests_IdenticalBinaryExpectation($value), 12, 62
       ));
     $encoder->setReturnValue('encodeString', str_repeat('a', 20) . '%8F' .
       str_repeat('a', 28) . "\r\n" . str_repeat('a', 32)

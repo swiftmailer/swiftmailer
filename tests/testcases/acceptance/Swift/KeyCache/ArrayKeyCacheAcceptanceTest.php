@@ -1,12 +1,12 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/ByteStream/ArrayByteStream.php';
 require_once 'Swift/KeyCache/ArrayKeyCache.php';
 require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
 require_once 'Swift/KeyCache.php';
 
-class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_AbstractSwiftUnitTestCase
+class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_cache;

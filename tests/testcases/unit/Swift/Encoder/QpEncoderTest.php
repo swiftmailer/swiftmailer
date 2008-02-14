@@ -1,12 +1,12 @@
 <?php
 
-require_once 'Swift/AbstractSwiftUnitTestCase.php';
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Encoder/QpEncoder.php';
 require_once 'Swift/CharacterStream.php';
 
 Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 
-class Swift_Encoder_QpEncoderTest extends Swift_AbstractSwiftUnitTestCase
+class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
 {
   
   /* -- RFC 2045, 6.7 --
@@ -43,7 +43,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_AbstractSwiftUnitTestCase
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
       $charStream->expectOnce('importString', array(
-        new Swift_IdenticalBinaryExpectation($char)
+        new Swift_Tests_IdenticalBinaryExpectation($char)
         ));
       
       $charStream->setReturnValueAt(0, 'read', $char);
@@ -250,7 +250,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_AbstractSwiftUnitTestCase
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
       $charStream->expectOnce('importString', array(
-        new Swift_IdenticalBinaryExpectation($char)
+        new Swift_Tests_IdenticalBinaryExpectation($char)
         ));
       
       $charStream->setReturnValueAt(0, 'read', $char);
@@ -275,7 +275,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_AbstractSwiftUnitTestCase
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importString', array(
-      new Swift_IdenticalBinaryExpectation($char)
+      new Swift_Tests_IdenticalBinaryExpectation($char)
       ));
       
     $charStream->setReturnValueAt(0, 'read', $char);
@@ -299,7 +299,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_AbstractSwiftUnitTestCase
       $charStream = new Swift_MockCharacterStream();
       $charStream->expectOnce('flushContents');
       $charStream->expectOnce('importString', array(
-        new Swift_IdenticalBinaryExpectation($char)
+        new Swift_Tests_IdenticalBinaryExpectation($char)
         ));
       
       $charStream->setReturnValueAt(0, 'read', $char);
