@@ -187,7 +187,7 @@ class Swift_Mime_SimpleMimeEntity
   public function __construct(array $headers,
     Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
-    $this->_cacheKey = uniqid(microtime(), true);
+    $this->_cacheKey = uniqid(microtime(true), true);
     $this->_cache = $cache;
     $this->setHeaders($headers);
     $this->setEncoder($encoder);

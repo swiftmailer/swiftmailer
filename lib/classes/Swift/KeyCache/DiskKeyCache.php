@@ -1,0 +1,316 @@
+<?php
+
+/*
+ Disk based KeyCache in Swift Mailer.
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ */
+
+//@require 'Swift/KeyCache.php';
+//@require 'Swift/KeyCacheInputStream.php';
+//@require 'Swift/InputByteStream.php';
+//@require 'Swift/OutputByteStrean.php';
+
+/**
+ * A KeyCache which streams to and from disk.
+ * @package Swift
+ * @subpackage KeyCache
+ * @author Chris Corbyn
+ */
+class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
+{
+  
+  /** Signal to place pointer at start of file */
+  const POSITION_START = 0;
+  
+  /** Signal to place pointer at end of file */
+  const POSITION_END = 1;
+  
+  /**
+   * An InputStream for cloning.
+   * @var Swift_KeyCache_KeyCacheInputStream
+   * @access private
+   */
+  private $_stream;
+  
+  /**
+   * A path to write to.
+   * @var string
+   * @access private
+   */
+  private $_path;
+  
+  /**
+   * Stored keys.
+   * @var array
+   * @access private
+   */
+  private $_keys = array();
+  
+  /**
+   * Will be true if magic_quotes_runtime is turned on.
+   * @var boolean
+   * @access private
+   */
+  private $_quotes = false;
+  
+  /**
+   * Create a new DiskKeyCache with the given $stream for cloning to make
+   * InputByteStreams, and the given $path to save to.
+   * @param Swift_KeyCache_KeyCacheInputStream $stream
+   * @param string $path to save to
+   */
+  public function __construct(Swift_KeyCache_KeyCacheInputStream $stream, $path)
+  {
+    $this->_stream = $stream;
+    $this->_path = $path;
+    $this->_quotes = get_magic_quotes_runtime();
+  }
+  
+  /**
+   * Set a string into the cache under $itemKey for the namespace $nsKey.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param string $string
+   * @param int $mode
+   * @see MODE_WRITE, MODE_APPEND
+   */
+  public function setString($nsKey, $itemKey, $string, $mode)
+  {
+    $this->_prepareCache($nsKey);
+    switch ($mode)
+    {
+      case self::MODE_WRITE:
+        $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_START);
+        break;
+      case self::MODE_APPEND:
+        $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_END);
+        break;
+      default:
+        throw new Exception(
+          'Invalid mode [' . $mode . '] used to set nsKey='.
+          $nsKey . ', itemKey=' . $itemKey
+          );
+        break;
+    }
+    fwrite($fp, $string);
+  }
+  
+  /**
+   * Set a ByteStream into the cache under $itemKey for the namespace $nsKey.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param Swift_OutputByteStream $os
+   * @param int $mode
+   * @see MODE_WRITE, MODE_APPEND
+   */
+  public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os,
+    $mode)
+  {
+    $this->_prepareCache($nsKey);
+    switch ($mode)
+    {
+      case self::MODE_WRITE:
+        $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_START);
+        break;
+      case self::MODE_APPEND:
+        $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_END);
+        break;
+      default:
+        throw new Exception(
+          'Invalid mode [' . $mode . '] used to set nsKey='.
+          $nsKey . ', itemKey=' . $itemKey
+          );
+        break;
+    }
+    while (false !== $bytes = $os->read(8192))
+    {
+      fwrite($fp, $bytes);
+    }
+  }
+  
+  /**
+   * Provides a ByteStream which when written to, writes data to $itemKey.
+   * NOTE: The stream will always write in append mode.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @return Swift_InputByteStream
+   */
+  public function getInputByteStream($nsKey, $itemKey)
+  {
+    $is = clone $this->_stream;
+    $is->setKeyCache($this);
+    $is->setNsKey($nsKey);
+    $is->setItemKey($itemKey);
+    return $is;
+  }
+  
+  /**
+   * Get data back out of the cache as a string.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @return string
+   */
+  public function getString($nsKey, $itemKey)
+  {
+    $this->_prepareCache($nsKey);
+    if ($this->hasKey($nsKey, $itemKey))
+    {
+      $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_START);
+      if ($this->_quotes)
+      {
+        set_magic_quotes_runtime(0);
+      }
+      $str = '';
+      while (!feof($fp) && false !== $bytes = fread($fp, 8192))
+      {
+        $str .= $bytes;
+      }
+      if ($this->_quotes)
+      {
+        set_magic_quotes_runtime(1);
+      }
+      return $str;
+    }
+  }
+  
+  /**
+   * Get data back out of the cache as a ByteStream.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param Swift_InputByteStream $is to write the data to
+   */
+  public function exportToByteStream($nsKey, $itemKey, Swift_InputByteStream $is)
+  {
+    if ($this->hasKey($nsKey, $itemKey))
+    {
+      $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_START);
+      if ($this->_quotes)
+      {
+        set_magic_quotes_runtime(0);
+      }
+      while (!feof($fp) && false !== $bytes = fread($fp, 8192))
+      {
+        $is->write($bytes);
+      }
+      if ($this->_quotes)
+      {
+        set_magic_quotes_runtime(1);
+      }
+    }
+  }
+  
+  /**
+   * Check if the given $itemKey exists in the namespace $nsKey.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @return boolean
+   */
+  public function hasKey($nsKey, $itemKey)
+  {
+    return is_file($this->_path . '/' . $nsKey . '/' . $itemKey);
+  }
+  
+  /**
+   * Clear data for $itemKey in the namespace $nsKey if it exists.
+   * @param string $nsKey
+   * @param string $itemKey
+   */
+  public function clearKey($nsKey, $itemKey)
+  {
+    if ($this->hasKey($nsKey, $itemKey))
+    {
+      $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_END);
+      fclose($fp);
+      unlink($this->_path . '/' . $nsKey . '/' . $itemKey);
+    }
+    unset($this->_keys[$nsKey][$itemKey]);
+  }
+  
+  /**
+   * Clear all data in the namespace $nsKey if it exists.
+   * @param string $nsKey
+   */
+  public function clearAll($nsKey)
+  {
+    if (array_key_exists($nsKey, $this->_keys))
+    {
+      foreach (array_keys($this->_keys[$nsKey]) as $itemKey)
+      {
+        $this->clearKey($nsKey, $itemKey);
+      }
+      rmdir($this->_path . '/' . $nsKey);
+      unset($this->_keys[$nsKey]);
+    }
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Initialize the namespace of $nsKey if needed.
+   * @param string $nsKey
+   * @access private
+   */
+  private function _prepareCache($nsKey)
+  {
+    $cacheDir = $this->_path . '/' . $nsKey;
+    if (!is_dir($cacheDir))
+    {
+      if (!mkdir($cacheDir))
+      {
+        throw new Exception('Failed to create cache directory ' . $cacheDir);
+      }
+      $this->_keys[$nsKey] = array();
+    }
+  }
+  
+  /**
+   * Get a file handle on the cache item.
+   * @param string $nsKey
+   * @param string $itemKey
+   * @param int $position
+   * @return resource
+   * @access private
+   */
+  private function _getHandle($nsKey, $itemKey, $position)
+  {
+    if (!array_key_exists($itemKey, $this->_keys[$nsKey]))
+    {
+      $fp = fopen($this->_path . '/' . $nsKey . '/' . $itemKey, 'w+b');
+      $this->_keys[$nsKey][$itemKey] = $fp;
+    }
+    if (self::POSITION_START == $position)
+    {
+      fseek($this->_keys[$nsKey][$itemKey], 0, SEEK_SET);
+    }
+    else
+    {
+      fseek($this->_keys[$nsKey][$itemKey], 0, SEEK_END);
+    }
+    return $this->_keys[$nsKey][$itemKey];
+  }
+  
+  /**
+   * Destructor.
+   */
+  public function __destruct()
+  {
+    foreach (array_keys($this->_keys) as $nsKey)
+    {
+      $this->clearAll($nsKey);
+    }
+  }
+  
+}

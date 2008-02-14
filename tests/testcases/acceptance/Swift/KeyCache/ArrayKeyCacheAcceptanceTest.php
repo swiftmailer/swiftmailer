@@ -129,8 +129,6 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_AbstractSwiftUnit
   
   public function testDataCanBeExportedToByteStream()
   {
-    //See acceptance test for more detail
-    
     $this->_cache->setString(
       $this->_key1, 'foo', 'test', Swift_KeyCache::MODE_WRITE
       );

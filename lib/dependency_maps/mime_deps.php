@@ -82,6 +82,13 @@ $_swiftMimeDeps = array(
     'shared' => true
     ),
     
+  //DiskKeyCache
+  'diskcache' => array(
+    'class' => 'Swift_KeyCache_DiskKeyCache',
+    'args' => array('di:cacheinputstream', 'lookup:temppath'),
+    'shared' => true
+    ),
+    
   //KeyCacheInputStream
   'cacheinputstream' => array(
     'class' => 'Swift_KeyCache_SimpleKeyCacheInputStream',

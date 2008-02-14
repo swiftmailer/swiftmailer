@@ -43,6 +43,7 @@ class Swift_MimeFactory extends Swift_Di
   {
     $this->setLookup('charset', 'string:utf-8');
     $this->setLookup('cache', 'di:arraycache');
+    $this->setLookup('temppath', 'string:/tmp');
   }
   
   /**
@@ -52,6 +53,15 @@ class Swift_MimeFactory extends Swift_Di
   public static function setCharset($charset)
   {
     self::getInstance()->setLookup('charset', 'string:' . $charset);
+  }
+  
+  /**
+   * The the path a writable directory which can be used for caching.
+   * @param string $tmpPath
+   */
+  public static function setTempPath($tmpPath)
+  {
+    self::getInstance()->setLookup('temppath', 'string:' . $tmpPath);
   }
   
   /**

@@ -12,10 +12,8 @@ Swift Mailer SE:
    - Get characters already unpacked as a byte array?
    - Avoid using pack()/unpack() completely?
  * Streams
-   - FileByteStream (implements FileStream)
    - FileCharacterStream
  * Caches
-   - FileCache
    - PersistentCache?
 
 Swift Mailer EE:

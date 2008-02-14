@@ -35,11 +35,4 @@ interface Swift_FileStream extends Swift_OutputByteStream
    */
   public function getPath();
   
-  /**
-   * Move the internal read pointer to $byteOffset in the stream.
-   * @param int $byteOffset
-   * @return boolean
-   */
-  public function setPointer($byteOffset);
-  
 }
