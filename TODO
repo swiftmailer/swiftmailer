@@ -37,6 +37,8 @@ Swift Mailer EE:
  * REST architecture, coupled with the XML representation of emails to delegate sending large batches
    around a cluster of hosts
  * HttpDocument representation of multipart mime documents (for sending multipart data over HTTP).
+ * Provide an Incoming MTA (just a Transport + the factory)
+   - Potentially handle bounce-backs?
 
 Website Re-Design:
 ------------------
