@@ -60,6 +60,13 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
   private $_started = false;
   
   /**
+   * The domain name to use in EHL0/HELO commands.
+   * @var string
+   * @access private
+   */
+  private $_domain = 'localhost';
+  
+  /**
    * Creates a new SmtpTransport using the given I/O buffer.
    * @param Swift_Mailer_Transport_IoBuffer $buf
    */
@@ -87,6 +94,16 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
       $this->_buffer->initiate($this->_params);
       $response = $this->_buffer->readLine(0);
       $this->_assertResponseCode($response, 220);
+      try
+      {
+        $seq = $this->_buffer->write(sprintf("EHLO %s\r\n", $this->_domain));
+        $this->_assertResponseCode($this->_getFullResponse($seq), 250);
+      }
+      catch (Exception $e)
+      {
+        $seq = $this->_buffer->write(sprintf("HELO %s\r\n", $this->_domain));
+        $this->_assertResponseCode($this->_getFullResponse($seq), 250);
+      }
     }
   }
   
@@ -119,14 +136,32 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
   private function _assertResponseCode($response, $wanted)
   {
     $wanted = (array) $wanted;
-    list($code, $text) = sscanf($response, '%3d %s');
+    list($code, $separator, $text) = sscanf($response, '%3d%[ -]%s');
     if (!in_array($code, $wanted))
     {
       throw new Exception(
-        'Expected response ' . implode('/', $wanted) . ' but got "' . $code . '"' .
-        ', with message "' . $text . '"'
+        'Expected response code ' . implode('/', $wanted) . ' but got code ' .
+        '"' . $code . '", with message "' . $response . '"'
         );
     }
+  }
+  
+  /**
+   * Get the entire response of a multi-line response.
+   * @param int $seq number from {@link write()}.
+   * @return string
+   * @access private
+   */
+  private function _getFullResponse($seq)
+  {
+    $response = '';
+    do
+    {
+      $line = $this->_buffer->readLine($seq);
+      $response .= $line;
+    }
+    while (null !== $line && false !== $line && ' ' != $line{3});
+    return $response;
   }
   
 }
