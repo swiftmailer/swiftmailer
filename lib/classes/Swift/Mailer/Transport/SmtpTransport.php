@@ -39,6 +39,27 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
   private $_buffer;
   
   /**
+   * Connection buffer parameters.
+   * @var array
+   * @access private
+   */
+  private $_params = array(
+    'protocol' => 'tcp',
+    'host' => 'localhost',
+    'port' => 25,
+    'timeout' => 30,
+    'blocking' => 1,
+    'type' => Swift_Mailer_Transport_IoBuffer::TYPE_SOCKET
+    );
+  
+  /**
+   * Connection status.
+   * @var boolean
+   * @access private
+   */
+  private $_started = false;
+  
+  /**
    * Creates a new SmtpTransport using the given I/O buffer.
    * @param Swift_Mailer_Transport_IoBuffer $buf
    */
@@ -53,6 +74,7 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
    */
   public function isStarted()
   {
+    return $this->_started;
   }
   
   /**
@@ -60,6 +82,12 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
    */
   public function start()
   {
+    if (!$this->_started)
+    {
+      $this->_buffer->initiate($this->_params);
+      $response = $this->_buffer->readLine(0);
+      $this->_assertResponseCode($response, 220);
+    }
   }
   
   /**
@@ -78,6 +106,27 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
    */
   public function send(Swift_Mime_Message $message)
   {
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Checks if the response code matches a given number.
+   * @param string $response
+   * @param int $wanted
+   * @throws Exception if the assertion fails
+   */
+  private function _assertResponseCode($response, $wanted)
+  {
+    $wanted = (array) $wanted;
+    list($code, $text) = sscanf($response, '%3d %s');
+    if (!in_array($code, $wanted))
+    {
+      throw new Exception(
+        'Expected response ' . implode('/', $wanted) . ' but got "' . $code . '"' .
+        ', with message "' . $text . '"'
+        );
+    }
   }
   
 }
