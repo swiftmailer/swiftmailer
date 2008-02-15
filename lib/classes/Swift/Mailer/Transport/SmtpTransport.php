@@ -91,7 +91,7 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
   {
     if (!$this->_started)
     {
-      $this->_buffer->initiate($this->_params);
+      $this->_buffer->initialize($this->_params);
       $response = $this->_buffer->readLine(0);
       $this->_assertResponseCode($response, 220);
       try

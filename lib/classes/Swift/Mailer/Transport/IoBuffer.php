@@ -41,11 +41,11 @@ interface Swift_Mailer_Transport_IoBuffer
   const TYPE_FILE = 0x0100;
   
   /**
-   * Perform any initiation needed, using the given $params.
+   * Perform any initialization needed, using the given $params.
    * Parameters will vary depending upon the type of IoBuffer used.
    * @param array $params
    */
-  public function initiate(array $params);
+  public function initialize(array $params);
   
   /**
    * Perform any shutdown logic needed.
