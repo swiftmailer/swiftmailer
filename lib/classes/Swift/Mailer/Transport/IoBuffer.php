@@ -30,23 +30,35 @@
 interface Swift_Mailer_Transport_IoBuffer
   extends Swift_InputByteStream, Swift_OutputByteStream
 {
-
-  /**
-   * Set the resource which gets written to.
-   * @param resource $input
-   */
-  public function setInputResource($input);
+  
+  /** A socket buffer over TCP */
+  const TYPE_SOCKET = 0x0001;
+  
+  /** A process buffer with I/O support */
+  const TYPE_PROCESS = 0x0010;
+  
+  /** A file buffer on disk */
+  const TYPE_FILE = 0x0100;
   
   /**
-   * Set the resource which gets read from.
-   * @param resource $output
+   * Perform any initiation needed, using the given $params.
+   * Parameters will vary depending upon the type of IoBuffer used.
+   * @param array $params
    */
-  public function setOutputResource($output);
+  public function initiate(array $params);
+  
+  /**
+   * Perform any shutdown logic needed.
+   */
+  public function terminate();
   
   /**
    * Get a line of output (including any CRLF).
+   * The $sequence number comes from any writes and may or may not be used
+   * depending upon the implementation.
+   * @param int $sequence of last write to scan from
    * @return string
    */
-  public function readLine();
+  public function readLine($sequence);
   
 }

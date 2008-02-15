@@ -31,7 +31,10 @@ interface Swift_InputByteStream
   
   /**
    * Writes $bytes to the end of the stream.
+   * This method returns the sequence ID of the write (i.e. 1 for first, 2 for
+   * second, etc etc).
    * @param string $bytes
+   * @return int
    */
   public function write($bytes);
   
