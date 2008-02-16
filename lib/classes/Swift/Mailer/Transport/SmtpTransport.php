@@ -137,10 +137,12 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
   public function send(Swift_Mime_Message $message)
   {
     $sent = 0;
+    
     if (!$reversePath = $this->_getReversePath($message))
     {
       throw new Exception('Cannot send message without a sender address');
     }
+    
     $to = $message->getTo();
     $cc = $message->getCc();
     $bcc = $message->getBcc();
@@ -153,41 +155,21 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
     //Send to all direct recipients
     if (!empty($to) || !empty($cc))
     {
-      //Provide sender address
-      $seq = $this->_buffer->write(sprintf("MAIL FROM: <%s>\r\n", $reversePath));
-      $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
-      //Provide all actual recipients
-      foreach (array_merge(array_keys((array) $to), array_keys((array) $cc))
-        as $forwardPath)
+      try
       {
-        $seq = $this->_buffer->write(sprintf("RCPT TO: <%s>\r\n", $forwardPath));
-        try
-        {
-          $this->_assertResponseCode(
-            $this->_getFullResponse($seq), array(250, 251, 252)
-            );
-          $sent++;
-        }
-        catch (Exception $e)
-        {
-        }
+        $sent += $this->_doMailTransaction(
+          $message, $reversePath, array_merge(
+            array_keys((array)$to), array_keys((array)$cc)
+            )
+          );
       }
-      
-      if ($sent > 0)
+      catch (Exception $e)
       {
-        $seq = $this->_buffer->write("DATA\r\n");
-        $this->_assertResponseCode($this->_getFullResponse($seq), array(354));
-        //Stream the message straight into the buffer
-        $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
-        $message->toByteStream($this->_buffer);
-        //End data transmission
-        $this->_buffer->setWriteTranslations(array());
-        $seq = $this->_buffer->write("\r\n.\r\n");
-        $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
-      }
-      else
-      {
-        $this->reset();
+        if (!empty($bcc)) //don't leave $message in a state it wasn't given in
+        {
+          $message->setBcc($bcc);
+        }
+        throw $e;
       }
     }
     
@@ -198,32 +180,18 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
       {
         //Update the message for this recipient
         $message->setBcc(array($forwardPath => $name));
-        //Provide sender address
-        $seq = $this->_buffer->write(sprintf("MAIL FROM: <%s>\r\n", $reversePath));
-        $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
-        $seq = $this->_buffer->write(sprintf("RCPT TO: <%s>\r\n", $forwardPath));
         try
         {
-          $this->_assertResponseCode(
-            $this->_getFullResponse($seq), array(250, 251, 252)
+          $sent += $this->_doMailTransaction(
+            $message, $reversePath, array($forwardPath)
             );
-          $sent++;
         }
         catch (Exception $e)
         {
-          $this->reset();
-          continue;
+           //don't leave $message in a state it wasn't given in
+          $message->setBcc($bcc);
+          throw $e;
         }
-        
-        $seq = $this->_buffer->write("DATA\r\n");
-        $this->_assertResponseCode($this->_getFullResponse($seq), array(354));
-        //Stream the message straight into the buffer
-        $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
-        $message->toByteStream($this->_buffer);
-        //End data transmission
-        $this->_buffer->setWriteTranslations(array());
-        $seq = $this->_buffer->write("\r\n.\r\n");
-        $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
       }
     }
     
@@ -349,6 +317,56 @@ class Swift_Mailer_Transport_SmtpTransport implements Swift_Mailer_Transport
       $path = array_shift($keys);
     }
     return $path;
+  }
+  
+  /**
+   * Send the given email to the given recipients from the given reverse path.
+   * @param Swift_Mime_Message $message
+   * @param string $reversePath
+   * @param string[] $recipients
+   * @return int
+   */
+  private function _doMailTransaction($message, $reversePath, array $recipients)
+  {
+    $sent = 0;
+    
+    //Provide sender address
+    $seq = $this->_buffer->write(sprintf("MAIL FROM: <%s>\r\n", $reversePath));
+    $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
+    
+    foreach ($recipients as $forwardPath)
+    {
+      $seq = $this->_buffer->write(sprintf("RCPT TO: <%s>\r\n", $forwardPath));
+      try
+      {
+        $this->_assertResponseCode(
+          $this->_getFullResponse($seq), array(250, 251, 252)
+          );
+        $sent++;
+      }
+      catch (Exception $e)
+      {
+      }
+    }
+    
+    if ($sent > 0)
+    {
+      $seq = $this->_buffer->write("DATA\r\n");
+      $this->_assertResponseCode($this->_getFullResponse($seq), array(354));
+      //Stream the message straight into the buffer
+      $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
+      $message->toByteStream($this->_buffer);
+      //End data transmission
+      $this->_buffer->setWriteTranslations(array());
+      $seq = $this->_buffer->write("\r\n.\r\n");
+      $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
+    }
+    else
+    {
+      $this->reset();
+    }
+    
+    return $sent;
   }
   
   /**

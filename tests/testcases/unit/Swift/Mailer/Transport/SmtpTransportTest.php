@@ -918,6 +918,46 @@ class Swift_Mailer_Transport_SmtpTransportTest
     $this->assertEqual(3, $this->_smtp->send($message));
   }
   
+  public function testMessageStateIsRestoredOnFailure()
+  {
+    $this->_buffer->expectAt(2, 'write', array("RCPT TO: <foo@bar>\r\n"));
+    $this->_buffer->setReturnValue('write', 3, array("RCPT TO: <foo@bar>\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(3));
+    
+    $this->_buffer->expectAt(3, 'write', array("DATA\r\n"));
+    $this->_buffer->setReturnValue('write', 4, array("DATA\r\n"));
+    $this->_buffer->setReturnValue('readLine', "451 No\r\n", array(4));
+    
+    $this->_buffer->expectMinimumCallCount('write', 4);
+    
+    $this->_finishBuffer();
+    
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('me@domain.com'=>'Me'));
+    $message->setReturnValue('getTo', array('foo@bar' => null));
+    $message->setReturnValue('getBcc', array(
+      'zip@button' => 'Zip Button',
+      'test@domain' => 'Test user'
+      ));
+    $message->expectAt(0, 'setBcc', array(array()));
+    $message->expectAt(1, 'setBcc', array(array(
+      'zip@button' => 'Zip Button',
+      'test@domain' => 'Test user'
+      ))); //restoration
+    $message->expectCallCount('setBcc', 2);
+    
+    $this->_smtp->start();
+    try
+    {
+      $this->_smtp->send($message);
+      $this->fail('A bad response was given so exception is expected');
+    }
+    catch (Exception $e)
+    {
+      $this->pass();
+    }
+  }
+  
   public function testStopSendsQuitCommand()
   {
     /* -- RFC 2821, 4.1.1.10.
