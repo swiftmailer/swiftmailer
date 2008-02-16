@@ -53,6 +53,13 @@ interface Swift_Mailer_Transport_IoBuffer
   public function terminate();
   
   /**
+   * Set an array of string replacements which should be made on data written
+   * to the buffer.  This could replace LF with CRLF for example.
+   * @param string[] $replacements
+   */
+  public function setWriteTranslations(array $replacements);
+  
+  /**
    * Get a line of output (including any CRLF).
    * The $sequence number comes from any writes and may or may not be used
    * depending upon the implementation.

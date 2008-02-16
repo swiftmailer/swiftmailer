@@ -39,6 +39,8 @@ Swift Mailer EE:
  * HttpDocument representation of multipart mime documents (for sending multipart data over HTTP).
  * Provide an Incoming MTA (just a Transport + the factory)
    - Potentially handle bounce-backs?
+   - Any way to forward mail to a web page on port 80?
+ * Drop-in ESMTP extension handlers?
 
 Website Re-Design:
 ------------------
