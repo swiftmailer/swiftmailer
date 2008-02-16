@@ -13,8 +13,26 @@ Swift Mailer SE:
    - Avoid using pack()/unpack() completely?
  * Streams
    - FileCharacterStream
- * Caches
-   - PersistentCache?
+ * Transports
+   - Smtp extension support
+     - AUTH types?
+   - PolymorphicIoBuffer
+     - Support sendmail proc + SMTP socket
+   - Sendmail
+     - Actually implement support for -t mode now
+     - Extend Smtp for -bs support
+   - NativeMail
+   - Rotating
+   - Multi
+ * EventFactory and EventDispatcher
+   - SendEvent
+     - getMessage()
+     - getState() [complete,failed,cancelled]
+   - ConnectionChangeEvent
+     - getConnection()
+     - getState() [open,closed,failed,cancelled]
+   - ResponseEvent
+   - CommandEvent
 
 Swift Mailer EE:
 ----------------
@@ -22,25 +40,34 @@ Swift Mailer EE:
  * DKIM/Domain Keys
  * PKCS signed messages
  * XML representations of messages
-   - toXml() in the entities
-   - createFromXml() in a factory
- * MimeFactory
+   - toXml() in mime entities
+   - createFromXml() in a MessageFactory
+ * MessageFactory
    - createFromString()
    - createFromXml()
  * Direct MX Transport
-   - By-pass using a single SMTP server as a relay
+   - By-pass using a single SMTP server as a relay and connect to needed MX
    - Group recipients by domain for efficiency
-   - Much more reliable failure tracking
- * Advanced Content-Type support (already "supported" in community version but will add wrapper code)
+   - *Much* more reliable failure tracking
+ * Advanced Content-Type support (already "supported" in SE if built manually,
+   but will add wrapper code)
    - multipart/digest, message/external, message/partial
  * Message forwarding
- * REST architecture, coupled with the XML representation of emails to delegate sending large batches
-   around a cluster of hosts
- * HttpDocument representation of multipart mime documents (for sending multipart data over HTTP).
- * Provide an Incoming MTA (just a Transport + the factory)
+ * REST architecture, coupled with the XML representation of emails to delegate
+   sending large batches around a cluster of HTTP hosts
+ * Provide an Incoming MTA (not complex, it's just a Transport + the MessageFactory)
    - Potentially handle bounce-backs?
-   - Any way to forward mail to a web page on port 80?
- * Drop-in ESMTP extension handlers?
+   - Any "voodoo" way to POST mail to a web page on port 80?
+     - Using a simple script registered with inetd or xinetd would do the trick
+ * Drop-in ESMTP extensions
+   - 8BITMIME
+   - STARTTLS (http://au.php.net/manual/en/function.stream-socket-enable-crypto.php)
+   - PIPELINING
+   - Additional NTLM authentication
+   - ETRN
+   - DSN
+ * Caches
+   - PersistentCache (for delayed/paused batch sending)?
 
 Website Re-Design:
 ------------------

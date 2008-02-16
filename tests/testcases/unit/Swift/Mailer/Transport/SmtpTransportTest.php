@@ -2,11 +2,15 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mailer/Transport/SmtpTransport.php';
+require_once 'Swift/Mailer/Transport/SmtpExtensionHandler.php';
 require_once 'Swift/Mailer/Transport/IoBuffer.php';
 require_once 'Swift/Mime/Message.php';
 
 Mock::generate('Swift_Mailer_Transport_IoBuffer',
   'Swift_Mailer_Transport_MockIoBuffer'
+  );
+Mock::generate('Swift_Mailer_Transport_SmtpExtensionHandler',
+  'Swift_Mailer_Transport_MockSmtpExtensionHandler'
   );
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
 
@@ -20,7 +24,7 @@ class Swift_Mailer_Transport_SmtpTransportTest
   public function setUp()
   {
     $this->_buffer = new Swift_Mailer_Transport_MockIoBuffer();
-    $this->_smtp = new Swift_Mailer_Transport_SmtpTransport($this->_buffer);
+    $this->_smtp = new Swift_Mailer_Transport_SmtpTransport($this->_buffer, array());
   }
   
   public function testStartAccepts220ServiceGreeting()
@@ -996,6 +1000,348 @@ class Swift_Mailer_Transport_SmtpTransportTest
     $this->assertTrue($this->_smtp->isStarted());
     $this->_smtp->stop();
     $this->assertFalse($this->_smtp->isStarted());
+  }
+  
+  ///////////////////////////////////////////////////
+  // THE FOLLOWING ADDS ESMTP SUPPORT FOR AUTH ETC //
+  ///////////////////////////////////////////////////
+  
+  public function testExtensionHandlersCanBeSetAndUnset()
+  {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2));
+    $this->assertEqual(array($ext1, $ext2), $this->_smtp->getExtensionHandlers());
+  }
+  
+  public function testExtensionHandlersAreNotifiedOfParams()
+  {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->expectOnce('setKeywordParameters', array(array('PLAIN', 'LOGIN')));
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    $ext2->expectOnce('setKeywordParameters', array(array('123456')));
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2));
+    
+    $this->_buffer->setReturnValue(
+      'readLine', '220 server.com foo' . "\r\n", array(0)
+      );
+    $this->_buffer->expectAt(
+      0, 'write', array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValue(
+      'write', 1, array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValueAt(1,
+      'readLine', '250-ServerName.tld' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(2,
+      'readLine', '250-AUTH PLAIN LOGIN' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(3,
+      'readLine', '250 SIZE=123456' . "\r\n", array(1)
+      );
+    
+    $this->_finishBuffer();
+    
+    $this->_smtp->start();
+  }
+  
+  public function testSupportedExtensionHandlersAreRunAfterEhlo()
+  {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->expectOnce('setKeywordParameters', array(array('PLAIN', 'LOGIN')));
+    $ext1->expectOnce('afterEhlo', array($this->_buffer, '*'));
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    $ext2->expectOnce('setKeywordParameters', array(array('123456')));
+    $ext2->expectOnce('afterEhlo', array($this->_buffer, '*'));
+    
+    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext3->expectNever('setKeywordParameters');
+    $ext3->expectNever('afterEhlo');
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+    
+    $this->_buffer->setReturnValue(
+      'readLine', '220 server.com foo' . "\r\n", array(0)
+      );
+    $this->_buffer->expectAt(
+      0, 'write', array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValue(
+      'write', 1, array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValueAt(1,
+      'readLine', '250-ServerName.tld' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(2,
+      'readLine', '250-AUTH PLAIN LOGIN' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(3,
+      'readLine', '250 SIZE=123456' . "\r\n", array(1)
+      );
+    
+    $this->_finishBuffer();
+    
+    $this->_smtp->start();
+  }
+  
+  public function testSupportedExtensionHandlersAreRunAtMailFrom()
+  {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->expectOnce('atMailFrom', array(
+      $this->_buffer, array('address'=>'foo@bar', 'params'=>array()), '*'
+      ));
+    $ext1->setReturnValue('atMailFrom', array('address'=>'foo@bar', 'params'=>array()));
+    $ext1->setReturnValue('atRcptTo', array('address'=>'test@user.com', 'params'=>array()));
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    $ext2->expectOnce('atMailFrom', array(
+      $this->_buffer, array('address'=>'foo@bar', 'params'=>array()), '*'
+      ));
+    $ext2->setReturnValue('atMailFrom', array('address'=>'foo@bar', 'params'=>array()));
+    $ext2->setReturnValue('atRcptTo', array('address'=>'test@user.com', 'params'=>array()));
+    
+    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext3->expectNever('atMailFrom');
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+    
+    $this->_buffer->setReturnValue(
+      'readLine', '220 server.com foo' . "\r\n", array(0)
+      );
+    $this->_buffer->expectAt(
+      0, 'write', array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValue(
+      'write', 1, array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValueAt(1,
+      'readLine', '250-ServerName.tld' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(2,
+      'readLine', '250-AUTH PLAIN LOGIN' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(3,
+      'readLine', '250 SIZE=123456' . "\r\n", array(1)
+      );
+    $this->_buffer->expectAt(1, 'write', array("MAIL FROM: <foo@bar>\r\n"));
+    $this->_buffer->setReturnValue('write', 2, array("MAIL FROM: <foo@bar>\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(2));
+    $this->_buffer->expectMinimumCallCount('write', 2);
+    
+    $this->_finishBuffer();
+    
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('foo@bar'=>'Me'));
+    $message->setReturnValue('getTo', array('test@user.com'=>null));
+    
+    $this->_smtp->start();
+    $this->_smtp->send($message);
+  }
+  
+  public function testSupportedExtensionHandlersAreRunAtRcptTo()
+  {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->expectOnce('atRcptTo', array(
+      $this->_buffer, array('address'=>'foo@bar', 'params'=>array()), '*'
+      ));
+    $ext1->setReturnValue('atMailFrom', array('address'=>'me@domain', 'params'=>array()));
+    $ext1->setReturnValue('atRcptTo', array('address'=>'foo@bar', 'params'=>array()));
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    $ext2->setReturnValue('atMailFrom', array('address'=>'me@domain', 'params'=>array()));
+    $ext2->expectOnce('atRcptTo', array(
+      $this->_buffer, array('address'=>'foo@bar', 'params'=>array()), '*'
+      ));
+    $ext2->setReturnValue('atRcptTo', array('address'=>'foo@bar', 'params'=>array()));
+    
+    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext3->expectNever('atRcptTo');
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+    
+    $this->_buffer->setReturnValue(
+      'readLine', '220 server.com foo' . "\r\n", array(0)
+      );
+    $this->_buffer->expectAt(
+      0, 'write', array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValue(
+      'write', 1, array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValueAt(1,
+      'readLine', '250-ServerName.tld' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(2,
+      'readLine', '250-AUTH PLAIN LOGIN' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(3,
+      'readLine', '250 SIZE=123456' . "\r\n", array(1)
+      );
+    $this->_buffer->expectAt(1, 'write', array("MAIL FROM: <me@domain>\r\n"));
+    $this->_buffer->setReturnValue('write', 2, array("MAIL FROM: <me@domain>\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(2));
+    
+    $this->_buffer->expectAt(2, 'write', array("RCPT TO: <foo@bar>\r\n"));
+    $this->_buffer->setReturnValue('write', 3, array("RCPT TO: <foo@bar>\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(3));
+    
+    $this->_buffer->expectMinimumCallCount('write', 3);
+    
+    $this->_finishBuffer();
+    
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('me@domain'=>'Me'));
+    $message->setReturnValue('getTo', array('foo@bar'=>null));
+    
+    $this->_smtp->start();
+    $this->_smtp->send($message);
+  }
+  
+  public function testExtensionsCanModifyParams()
+  {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->expectOnce('atRcptTo', array(
+      $this->_buffer, array('address'=>'foo@bar', 'params'=>array()), '*'
+      ));
+    $ext1->setReturnValue('atMailFrom', array('address'=>'me@domain', 'params'=>array()));
+    $ext1->setReturnValue('atRcptTo', array('address'=>'foo@bar', 'params'=>array('MEH', 'BLEH')));
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    $ext2->setReturnValue('atMailFrom', array('address'=>'me@domain', 'params'=>array()));
+    $ext2->expectOnce('atRcptTo', array(
+      $this->_buffer, array('address'=>'foo@bar', 'params'=>array('MEH', 'BLEH')), '*'
+      ));
+    $ext2->setReturnValue('atRcptTo', array('address'=>'foo@bar', 'params'=>array('MEH', 'BLEH', 'FOO')));
+    
+    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext3->expectNever('atRcptTo');
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+    
+    $this->_buffer->setReturnValue(
+      'readLine', '220 server.com foo' . "\r\n", array(0)
+      );
+    $this->_buffer->expectAt(
+      0, 'write', array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValue(
+      'write', 1, array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValueAt(1,
+      'readLine', '250-ServerName.tld' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(2,
+      'readLine', '250-AUTH PLAIN LOGIN' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(3,
+      'readLine', '250 SIZE=123456' . "\r\n", array(1)
+      );
+    $this->_buffer->expectAt(1, 'write', array("MAIL FROM: <me@domain>\r\n"));
+    $this->_buffer->setReturnValue('write', 2, array("MAIL FROM: <me@domain>\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(2));
+    
+    $this->_buffer->expectAt(2, 'write', array("RCPT TO: <foo@bar> MEH BLEH FOO\r\n"));
+    $this->_buffer->setReturnValue('write', 3, array("RCPT TO: <foo@bar> MEH BLEH FOO\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(3));
+    
+    $this->_buffer->expectMinimumCallCount('write', 3);
+    
+    $this->_finishBuffer();
+    
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('me@domain'=>'Me'));
+    $message->setReturnValue('getTo', array('foo@bar'=>null));
+    
+    $this->_smtp->start();
+    $this->_smtp->send($message);
+  }
+  
+  public function testSupportedHandlersAreRunAtDataCommand()
+  {
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('me@domain'=>'Me'));
+    $message->setReturnValue('getTo', array('foo@bar'=>null));
+    
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->setReturnValue('atMailFrom', array('address'=>'me@domain', 'params'=>array()));
+    $ext1->setReturnValue('atRcptTo', array('address'=>'foo@bar', 'params'=>array()));
+    $ext1->expectOnce('atData', array($this->_buffer, $message, '*'));
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    $ext2->setReturnValue('atMailFrom', array('address'=>'me@domain', 'params'=>array()));
+    $ext2->setReturnValue('atRcptTo', array('address'=>'foo@bar', 'params'=>array()));
+    $ext2->expectOnce('atData', array($this->_buffer, $message, '*'));
+    
+    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext3->expectNever('atData');
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+    
+    $this->_buffer->setReturnValue(
+      'readLine', '220 server.com foo' . "\r\n", array(0)
+      );
+    $this->_buffer->expectAt(
+      0, 'write', array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValue(
+      'write', 1, array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValueAt(1,
+      'readLine', '250-ServerName.tld' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(2,
+      'readLine', '250-AUTH PLAIN LOGIN' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(3,
+      'readLine', '250 SIZE=123456' . "\r\n", array(1)
+      );
+    $this->_buffer->expectAt(1, 'write', array("MAIL FROM: <me@domain>\r\n"));
+    $this->_buffer->setReturnValue('write', 2, array("MAIL FROM: <me@domain>\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(2));
+    
+    $this->_buffer->expectAt(2, 'write', array("RCPT TO: <foo@bar>\r\n"));
+    $this->_buffer->setReturnValue('write', 3, array("RCPT TO: <foo@bar>\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(3));
+    
+    $this->_buffer->expectAt(3, 'write', array("DATA\r\n"));
+    $this->_buffer->setReturnValue('write', 4, array("DATA\r\n"));
+    $this->_buffer->setReturnValue('readLine', "354 Go for it\r\n", array(4));
+    
+    $this->_buffer->expectAt(4, 'write', array("\r\n.\r\n"));
+    $this->_buffer->setReturnValue('write', 5, array("\r\n.\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(5));
+    
+    $this->_buffer->expectMinimumCallCount('write', 5);
+    
+    $this->_finishBuffer();
+    
+    $this->_smtp->start();
+    $this->_smtp->send($message);
   }
   
   // -- Private helpers

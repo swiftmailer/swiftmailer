@@ -28,4 +28,3 @@ Error Codes
    - 500 = Unknown command
  * Numeric 2yz = Normal
  * Numeric 4yz = Temporary failure??
- 
