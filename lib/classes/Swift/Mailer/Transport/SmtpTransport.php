@@ -19,8 +19,9 @@
  */
 
 //@require 'Swift/Mailer/Transport.php';
+//@require 'Swift/Mailer/Transport/SmtpExtensionHandler.php';
 //@require 'Swift/Mailer/Transport/IoBuffer.php';
-//@require 'Swift/Mailer/SmtpExtensionHandler.php';
+//@require 'Swift/Mailer/Transport/SmtpBufferWrapper.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -30,7 +31,7 @@
  * @author Chris Corbyn
  */
 class Swift_Mailer_Transport_SmtpTransport
-  implements Swift_Mailer_Transport, Swift_Mailer_Transport_SmtpExtensionHandler
+  implements Swift_Mailer_Transport, Swift_Mailer_Transport_SmtpBufferWrapper
 {
   
   /**
@@ -69,28 +70,13 @@ class Swift_Mailer_Transport_SmtpTransport
   private $_domain = 'localhost';
   
   /**
-   * ESMTP extension handlers.
-   * @var Swift_Mailer_Transport_SmtpExtensionHandler[]
-   * @access private
-   */
-  private $_extensionHandlers = array();
-  
-  /**
-   * Extensions supported by the remote server.
-   * @var string[]
-   * @access private
-   */
-  private $_extensions = array();
-  
-  /**
    * Creates a new SmtpTransport using the given I/O buffer.
    * @param Swift_Mailer_Transport_IoBuffer $buf
+   * @param Swift_Mailer_Transport_SmtpExtensionHandler[] $extensionHandlers
    */
-  public function __construct(Swift_Mailer_Transport_IoBuffer $buffer,
-    array $extensionHandlers)
+  public function __construct(Swift_Mailer_Transport_IoBuffer $buf, array $extensionHandlers)
   {
-    $this->_buffer = $buffer;
-    $this->setExtensionHandlers($extensionHandlers);
+    $this->_buffer = $buf;
   }
   
   /**
@@ -111,33 +97,14 @@ class Swift_Mailer_Transport_SmtpTransport
     {
       $this->_buffer->initialize($this->_params);
       $this->_assertResponseCode($this->_getFullResponse(0), array(220));
-      $response = null;
       try
       {
-        $seq = $this->_buffer->write(sprintf("EHLO %s\r\n", $this->_domain));
-        $response = $this->_getFullResponse($seq);
-        $this->_assertResponseCode($response, array(250));
+        $this->executeCommand(sprintf("EHLO %s\r\n", $this->_domain), array(250));
       }
       catch (Exception $e)
       {
-        $seq = $this->_buffer->write(sprintf("HELO %s\r\n", $this->_domain));
-        $response = $this->_getFullResponse($seq);
-        $this->_assertResponseCode($response, array(250));
+        $this->executeCommand(sprintf("HELO %s\r\n", $this->_domain), array(250));
       }
-      
-      //Determine ESMTP capabilities, and inform any extension handlers
-      $extensions = $this->_getExtensions($response);
-      foreach ($extensions as $extension => $params)
-      {
-        $handlers = $this->_getHandlersFor(array($extension));
-        foreach ($handlers as $handler)
-        {
-          $handler->setKeywordParameters($params);
-        }
-      }
-      
-      $this->_runHandlers('afterEhlo', null);
-      
       $this->_started = true;
     }
   }
@@ -149,10 +116,9 @@ class Swift_Mailer_Transport_SmtpTransport
   {
     if ($this->_started)
     {
-      $seq = $this->_buffer->write("QUIT\r\n");
       try
       {
-        $this->_assertResponseCode($this->_getFullResponse($seq), array(221));
+        $this->executeCommand("QUIT\r\n", array(221));
       }
       catch (Exception $e)
       {//log this? 
@@ -240,39 +206,6 @@ class Swift_Mailer_Transport_SmtpTransport
   }
   
   /**
-   * Set handlers for ESMTP keywords.
-   * @param Swift_Mailer_Transport_SmtpExtensionHandler[] $extensionHandlers
-   */
-  public function setExtensionHandlers(array $extensionHandlers)
-  {
-    $set = array();
-    foreach ($extensionHandlers as $handler)
-    {
-      $kw = $handler->getHandledKeyword();
-      if (!isset($set[$kw]))
-      {
-        $set[$kw] = array();
-      }
-      $set[$kw][] = $handler;
-    }
-    $this->_extensionHandlers = $set;
-  }
-  
-  /**
-   * Get handlers for ESMTP keywords.
-   * @return Swift_Mailer_Transport_SmtpExtensionHandler[]
-   */
-  public function getExtensionHandlers()
-  {
-    $handlers = array();
-    foreach ($this->_extensionHandlers as $list)
-    {
-      $handlers = array_merge($handlers, $list);
-    }
-    return $handlers;
-  }
-  
-  /**
    * Set the name of the local domain which Swift will identify itself as.
    * This should be a fully-qualified domain name and should be truly the domain
    * you're using.  If your server doesn't have a domain name, use the IP in square
@@ -316,111 +249,32 @@ class Swift_Mailer_Transport_SmtpTransport
    */
   public function reset()
   {
-    $seq = $this->_buffer->write("RSET\r\n");
-    $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
-  }
-  
-  // -- Extension handling methods
-  
-  /**
-   * Get the name of the ESMTP extension this handles.
-   * @return boolean
-   */
-  public function getHandledKeyword()
-  {
+    $this->executeCommand("RSET\r\n", array(250));
   }
   
   /**
-   * Set the parameters which the EHLO greeting indicated.
-   * @param string[] $parameters
+   * Get the IoBuffer where read/writes are occurring.
+   * @return Swift_Mailer_Transport_IoBuffer
    */
-  public function setKeywordParameters(array $parameters)
+  public function getBuffer()
   {
+    return $this->_buffer;
   }
   
   /**
-   * Set information about the connection (e.g. encryption, username/password).
-   * @param array $fields
+   * Run a command against the buffer, expecting the given response codes.
+   * If no response codes are given, the response will not be validated.
+   * If codes are given, an exception will be thrown on an invalid response.
+   * @param string $command
+   * @param int[] $codes
+   * @return string
    */
-  public function setConnectionFields(array $fields)
+  public function executeCommand($command, $codes = array())
   {
-  }
-  
-  /**
-   * Runs immediately after a EHLO has been issued.
-   * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
-   * @param int &$continue needs to be set FALSE if the next extension shouldn't run
-   */
-  public function afterEhlo(Swift_Mailer_Transport_IoBuffer $buf, &$continue)
-  {
-    $continue = self::CONTINUE_NONE;
-  }
-  
-  /**
-   * Runs when MAIL FROM is needed.
-   * The $command contains the elements 'address' and 'params'.
-   * This method must return $command after completion.
-   * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
-   * @param string[] $command
-   * @param int &$continue
-   * @return string[]
-   */
-  public function atMailFrom(Swift_Mailer_Transport_IoBuffer $buf,
-    array $command, &$continue)
-  {
-    $continue = self::CONTINUE_NONE;
-    $address = $command['address'];
-    $params = !empty($command['params'])
-      ? ' ' . implode(' ', $command['params'])
-      : '';
-    $seq = $buf->write(sprintf("MAIL FROM: <%s>%s\r\n", $address, $params));
-    $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
-    return $command;
-  }
-  
-  /**
-   * Runs when RCPT TO is needed.
-   * The $command contains the elements 'address' and 'params'.
-   * This method must return $command after completion.
-   * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
-   * @param string[] $command
-   * @param int &$continue
-   * @return string[]
-   */
-  public function atRcptTo(Swift_Mailer_Transport_IoBuffer $buf,
-    array $command, &$continue)
-  {
-    $continue = self::CONTINUE_NONE;
-    $address = $command['address'];
-    $params = !empty($command['params'])
-      ? ' ' . implode(' ', $command['params'])
-      : '';
-    $seq = $buf->write(sprintf("RCPT TO: <%s>%s\r\n", $address, $params));
-    $this->_assertResponseCode(
-      $this->_getFullResponse($seq), array(250, 251, 252)
-      );
-    return $command;
-  }
-  
-  /**
-   * Runs when the DATA command is due to be sent.
-   * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
-   * @param Swift_Mime_Message $message to send
-   * @param int &$continue
-   */
-  public function atData(Swift_Mailer_Transport_IoBuffer $buf,
-    Swift_Mime_Message $message, &$continue)
-  {
-    $continue = self::CONTINUE_NONE;
-    $seq = $buf->write("DATA\r\n");
-    $this->_assertResponseCode($this->_getFullResponse($seq), array(354));
-    //Stream the message straight into the buffer
-    $buf->setWriteTranslations(array("\n." => "\n.."));
-    $message->toByteStream($buf);
-    //End data transmission
-    $buf->setWriteTranslations(array());
-    $seq = $buf->write("\r\n.\r\n");
-    $this->_assertResponseCode($this->_getFullResponse($seq), array(250));
+    $seq = $this->_buffer->write($command);
+    $response = $this->_getFullResponse($seq);
+    $this->_assertResponseCode($response, $codes);
+    return $response;
   }
   
   // -- Private methods
@@ -434,7 +288,7 @@ class Swift_Mailer_Transport_SmtpTransport
   private function _assertResponseCode($response, $wanted)
   {
     list($code, $separator, $text) = sscanf($response, '%3d%[ -]%s');
-    if (!in_array($code, $wanted))
+    if (!empty($wanted) && !in_array($code, $wanted))
     {
       throw new Exception(
         'Expected response code ' . implode('/', $wanted) . ' but got code ' .
@@ -491,69 +345,6 @@ class Swift_Mailer_Transport_SmtpTransport
   }
   
   /**
-   * Parse the EHLO response to determine the capabilities of the server.
-   * @param string $response
-   * @return array
-   * @access private
-   */
-  private function _getExtensions($response)
-  {
-    $extensions = array();
-    $response = trim($response);
-    $lines = explode("\r\n", $response);
-    array_shift($lines);
-    foreach ($lines as $line)
-    {
-      if (preg_match('/^[0-9]{3}[ -]([A-Z0-9]+)(.*)$/Di', $line, $matches))
-      {
-        $params = ltrim($matches[2], ' =');
-        $extensions[strtoupper($matches[1])] = !empty($params)
-          ? explode(' ', $params)
-          : array();
-      }
-    }
-    $this->_extensions = $extensions;
-    return $extensions;
-  }
-  
-  /**
-   * Finds all extension handlers for the given keyword.
-   * @param string[] $keywords
-   * @return Swift_Mailer_Transport_SmtpExtensionHandler[]
-   * @access private
-   */
-  private function _getHandlersFor(array $keywords)
-  {
-    $handlers = array();
-    foreach ($this->_extensionHandlers as $kw => $list)
-    {
-      if (in_array($kw, $keywords))
-      {
-        $handlers = array_merge($handlers, $list);
-      }
-    }
-    return $handlers;
-  }
-  
-  /**
-   * Get all extension handlers which work on this connection.
-   * @return Swift_Mailer_Transport_SmtpExtensionHandler[]
-   * @access private
-   */
-  private function _getSupportedHandlers()
-  {
-    $handlers = array();
-    foreach (array_keys($this->_extensions) as $kw)
-    {
-      if (array_key_exists($kw, $this->_extensionHandlers))
-      {
-        $handlers[$kw] = $this->_extensionHandlers[$kw];
-      }
-    }
-    return $handlers;
-  }
-  
-  /**
    * Send the given email to the given recipients from the given reverse path.
    * @param Swift_Mime_Message $message
    * @param string $reversePath
@@ -564,16 +355,15 @@ class Swift_Mailer_Transport_SmtpTransport
   {
     $sent = 0;
     
-    $this->_runHandlers(
-      'atMailFrom', array('address' => $reversePath, 'params' => array()), true
-      );
+    //Provide sender address
+    $this->executeCommand(sprintf("MAIL FROM: <%s>\r\n", $reversePath), array(250));
     
     foreach ($recipients as $forwardPath)
     {
       try
       {
-        $this->_runHandlers(
-          'atRcptTo', array('address' => $forwardPath, 'params' => array()), true
+        $this->executeCommand(
+          sprintf("RCPT TO: <%s>\r\n", $forwardPath), array(250, 251, 252)
           );
         $sent++;
       }
@@ -584,7 +374,13 @@ class Swift_Mailer_Transport_SmtpTransport
     
     if ($sent > 0)
     {
-      $this->_runHandlers('atData', $message, false);
+      $this->executeCommand("DATA\r\n", array(354));
+      //Stream the message straight into the buffer
+      $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
+      $message->toByteStream($this->_buffer);
+      //End data transmission
+      $this->_buffer->setWriteTranslations(array());
+      $this->executeCommand("\r\n.\r\n", array(250));
     }
     else
     {
@@ -592,45 +388,6 @@ class Swift_Mailer_Transport_SmtpTransport
     }
     
     return $sent;
-  }
-  
-  /**
-   * Run all extension handlers' $method.
-   * @param string $method
-   * @param mixed $arg to use if not null
-   * @param boolean $filter true if $arg will be filtered
-   * @access private
-   */
-  private function _runHandlers($method, $arg = null, $filter = false)
-  {
-    $groups = $this->_getSupportedHandlers();
-    $groups[] = array($this);
-    do
-    {
-      $continue = self::CONTINUE_ALL;
-      $handlers = array_shift($groups);
-      do
-      {
-        $handler = array_shift($handlers);
-        if ($arg !== null)
-        {
-          if (!$filter)
-          {
-            $handler->$method($this->_buffer, $arg, $continue);
-          }
-          else
-          {
-            $arg = $handler->$method($this->_buffer, $arg, $continue);
-          }
-        }
-        else
-        {
-          $handler->$method($this->_buffer, $continue);
-        }
-      }
-      while (!empty($handlers) && self::CONTINUE_ALL == $continue);
-    }
-    while (!empty($groups) && self::CONTINUE_NONE != $continue);
   }
   
   /**

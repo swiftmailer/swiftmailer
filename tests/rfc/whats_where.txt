@@ -1,3 +1,27 @@
+RFC 1854:
+---------
+PIPELINING extension
+
+RFC 2222:
+---------
+SASL
+
+RFC 4505:
+---------
+ANYNONYMOUS SASL
+
+RFC 2487:
+---------
+STARTTLS extension
+
+RFC 2554:
+---------
+AUTH extension
+
+RFC 2821:
+---------
+SMTP protocol
+
 RFC 2822:
 ---------
 General message structure (focusing on important headers)

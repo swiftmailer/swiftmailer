@@ -1002,11 +1002,43 @@ class Swift_Mailer_Transport_SmtpTransportTest
     $this->assertFalse($this->_smtp->isStarted());
   }
   
+  public function testBufferCanBeFetched()
+  {
+    $this->assertReference($this->_buffer, $this->_smtp->getBuffer());
+  }
+  
+  public function testBufferCanBeWrittenToUsingExecuteCommand()
+  {
+    $this->_buffer->expectOnce('write', array("FOO\r\n"));
+    $this->_buffer->setReturnValue('write', 1, array("FOO\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(1));
+    
+    $res = $this->_smtp->executeCommand("FOO\r\n");
+    $this->assertEqual("250 OK\r\n", $res);
+  }
+  
+  public function testResponseCodesAreValidated()
+  {
+    $this->_buffer->expectOnce('write', array("FOO\r\n"));
+    $this->_buffer->setReturnValue('write', 1, array("FOO\r\n"));
+    $this->_buffer->setReturnValue('readLine', "551 No\r\n", array(1));
+    
+    try
+    {
+      $this->_smtp->executeCommand("FOO\r\n", array(250, 251));
+      $this->fail('A 250 or 251 response was needed but 551 was returned.');
+    }
+    catch (Exception $e)
+    {
+      $this->pass();
+    }
+  }
+  
   ///////////////////////////////////////////////////
   // THE FOLLOWING ADDS ESMTP SUPPORT FOR AUTH ETC //
   ///////////////////////////////////////////////////
   
-  public function testExtensionHandlersCanBeSetAndUnset()
+  /*public function testExtensionHandlersCanBeSetAndUnset()
   {
     $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
@@ -1343,6 +1375,18 @@ class Swift_Mailer_Transport_SmtpTransportTest
     $this->_smtp->start();
     $this->_smtp->send($message);
   }
+  
+  public function testUsernameCanBeSetAndFetched()
+  {
+    $this->_smtp->setUsername('user');
+    $this->assertEqual('user', $this->_smtp->getUsername());
+  }
+  
+  public function testPasswordCanBeSetAndFetched()
+  {
+    $this->_smtp->setPassword('pass');
+    $this->assertEqual('pass', $this->_smtp->getPassword());
+  }*/
   
   // -- Private helpers
   
