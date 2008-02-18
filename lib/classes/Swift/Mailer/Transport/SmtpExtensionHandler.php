@@ -18,8 +18,7 @@
  
  */
 
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Mailer/Transport/IoBuffer.php';
+//@require 'Swift/Mailer/Transport/SmtpBufferWrapper.php';
 
 /**
  * An ESMTP handler.
@@ -29,15 +28,6 @@
  */
 interface Swift_Mailer_Transport_SmtpExtensionHandler
 {
-  
-  /** Constant for continuing to process all other handlers */
-  const CONTINUE_ALL = 0x001;
-  
-  /** Constant for continuing to process handlers which are for other keywords */
-  const CONINTUE_OTHERS = 0x010;
-  
-  /** Constant for preventing further handlers from being invoked */
-  const CONTINUE_NONE = 0x100;
   
   /**
    * Get the name of the ESMTP extension this handles.
@@ -49,52 +39,53 @@ interface Swift_Mailer_Transport_SmtpExtensionHandler
    * Set the parameters which the EHLO greeting indicated.
    * @param string[] $parameters
    */
-  public function setKeywordParameters(array $parameters);
-  
-  /**
-   * Set information about the connection (e.g. encryption, username/password).
-   * @param array $fields
-   */
-  public function setConnectionFields(array $fields);
+  public function setKeywordParams(array $parameters);
   
   /**
    * Runs immediately after a EHLO has been issued.
    * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
    * @param boolean &$continue needs to be set FALSE if the next extension shouldn't run
    */
-  public function afterEhlo(Swift_Mailer_Transport_IoBuffer $buf, &$continue);
+  public function afterEhlo(Swift_Mailer_Transport_SmtpBufferWrapper $buf);
   
   /**
-   * Runs when MAIL FROM is needed.
-   * The $command contains the elements 'address' and 'params'.
-   * This method must return $command after completion.
-   * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
-   * @param string[] $command
-   * @param boolean &$continue
+   * Get params which are appended to MAIL FROM:<>.
    * @return string[]
    */
-  public function atMailFrom(Swift_Mailer_Transport_IoBuffer $buf,
-    array $command, &$continue);
+  public function getMailParams();
   
   /**
-   * Runs when RCPT TO is needed.
-   * The $command contains the elements 'address' and 'params'.
-   * This method must return $command after completion.
-   * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
-   * @param string[] $command
-   * @param boolean &$continue
+   * Get params which are appended to RCPT TO:<>.
    * @return string[]
    */
-  public function atRcptTo(Swift_Mailer_Transport_IoBuffer $buf,
-    array $command, &$continue);
+  public function getRcptParams();
   
   /**
-   * Runs when the DATA command is due to be sent.
-   * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
-   * @param Swift_Mime_Message $message to send
-   * @param boolean &$continue
+   * Runs when a command is due to be sent.
+   * @param Swift_Mailer_Transport_SmtpBufferWrapper $buf to read/write
+   * @param string $command to send
+   * @param int[] $codes expected in response
    */
-  public function atData(Swift_Mailer_Transport_IoBuffer $buf,
-    Swift_Mime_Message $message, &$continue);
+  public function onCommand(Swift_Mailer_Transport_SmtpBufferWrapper $buf,
+    $command, $codes = array());
+    
+  /**
+   * Returns +1, -1 or 0 according to the rules for usort().
+   * This method is called to ensure extensions can be execute in an appropriate order.
+   * @param string $esmtpKeyword to compare with
+   * @return int
+   */
+  public function getPriorityOver($esmtpKeyword);
+  
+  /**
+   * Returns an array of method names which are exposed to the Smtp class.
+   * @return string[]
+   */
+  public function exposeMixinMethods();
+  
+  /**
+   * Tells this handler to clear any buffers and reset its state.
+   */
+  public function resetState();
   
 }

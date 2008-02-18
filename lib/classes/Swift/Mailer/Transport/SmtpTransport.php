@@ -70,6 +70,20 @@ class Swift_Mailer_Transport_SmtpTransport
   private $_domain = 'localhost';
   
   /**
+   * ESMTP extension handlers.
+   * @var Swift_Mailer_Transport_SmtpExtensionHandler[]
+   * @access private
+   */
+  private $_handlers = array();
+  
+  /**
+   * ESMTP capabilities.
+   * @var string[]
+   * @access private
+   */
+  private $_capabilities = array();
+  
+  /**
    * Creates a new SmtpTransport using the given I/O buffer.
    * @param Swift_Mailer_Transport_IoBuffer $buf
    * @param Swift_Mailer_Transport_SmtpExtensionHandler[] $extensionHandlers
@@ -77,6 +91,7 @@ class Swift_Mailer_Transport_SmtpTransport
   public function __construct(Swift_Mailer_Transport_IoBuffer $buf, array $extensionHandlers)
   {
     $this->_buffer = $buf;
+    $this->setExtensionHandlers($extensionHandlers);
   }
   
   /**
@@ -95,15 +110,32 @@ class Swift_Mailer_Transport_SmtpTransport
   {
     if (!$this->_started)
     {
+      //Make sure any extension handlers are ready for a fresh start
+      foreach ($this->_handlers as $handler)
+      {
+        $handler->resetState();
+      }
+      
       $this->_buffer->initialize($this->_params);
       $this->_assertResponseCode($this->_getFullResponse(0), array(220));
       try
       {
-        $this->executeCommand(sprintf("EHLO %s\r\n", $this->_domain), array(250));
+        $seq = $this->_buffer->write(sprintf("EHLO %s\r\n", $this->_domain));
+        $response = $this->_getFullResponse($seq);
+        $this->_assertResponseCode($response, array(250));
+        $this->_capabilities = $this->_getCapabilities($response);
+        $this->_setHandlerParams();
       }
       catch (Exception $e)
       {
-        $this->executeCommand(sprintf("HELO %s\r\n", $this->_domain), array(250));
+        $seq = $this->_buffer->write(sprintf("HELO %s\r\n", $this->_domain));
+        $response = $this->_getFullResponse($seq);
+        $this->_assertResponseCode($response, array(250));
+      }
+      //Run all ESMTP handlers
+      foreach ($this->_getActiveHandlers() as $handler)
+      {
+        $handler->afterEhlo($this);
       }
       $this->_started = true;
     }
@@ -253,6 +285,30 @@ class Swift_Mailer_Transport_SmtpTransport
   }
   
   /**
+   * Set ESMTP extension handlers.
+   * @param Swift_Mailer_Transport_SmtpExtensionHandler[] $handlers
+   */
+  public function setExtensionHandlers(array $handlers)
+  {
+    $assoc = array();
+    foreach ($handlers as $handler)
+    {
+      $assoc[$handler->getHandledKeyword()] = $handler;
+    }
+    uasort($assoc, array($this, '_sortHandlers'));
+    $this->_handlers = $assoc;
+  }
+  
+  /**
+   * Get ESMTP extension handlers.
+   * @return Swift_Mailer_Transport_SmtpExtensionHandler[]
+   */
+  public function getExtensionHandlers()
+  {
+    return array_values($this->_handlers);
+  }
+  
+  /**
    * Get the IoBuffer where read/writes are occurring.
    * @return Swift_Mailer_Transport_IoBuffer
    */
@@ -316,6 +372,64 @@ class Swift_Mailer_Transport_SmtpTransport
   }
   
   /**
+   * Determine ESMTP capabilities by function group.
+   * @param string $response from EHLO
+   * @return string[]
+   * @access private
+   */
+  private function _getCapabilities($response)
+  {
+    $capabilities = array();
+    $response = trim($response);
+    $lines = explode("\r\n", $response);
+    array_shift($lines);
+    foreach ($lines as $line)
+    {
+      if (preg_match('/^[0-9]{3}[ -]([A-Z0-9-]+)((?:[ =].*)?)$/Di', $line, $matches))
+      {
+        $keyword = strtoupper($matches[1]);
+        $paramStr = strtoupper(ltrim($matches[2], ' ='));
+        $params = !empty($paramStr) ? explode(' ', $paramStr) : array();
+        $capabilities[$keyword] = $params;
+      }
+    }
+    return $capabilities;
+  }
+  
+  /**
+   * Set parameters which are used by each extension handler.
+   * @access private
+   */
+  private function _setHandlerParams()
+  {
+    foreach ($this->_handlers as $keyword => $handler)
+    {
+      if (array_key_exists($keyword, $this->_capabilities))
+      {
+        $handler->setKeywordParams($this->_capabilities[$keyword]);
+      }
+    }
+  }
+  
+  /**
+   * Get ESMTP handlers which are currently ok to use.
+   * @return Swift_Mailer_Transport_SmtpExtensionHandler[]
+   * @access private
+   */
+  private function _getActiveHandlers()
+  {
+    $handlers = array();
+    foreach ($this->_handlers as $keyword => $handler)
+    {
+      if (array_key_exists($keyword, $this->_capabilities))
+      {
+        $handlers[] = $handler;
+      }
+    }
+    return $handlers;
+  }
+  
+  /**
    * Determine the best-use reverse path for this message.
    * The preferred order is: return-path, sender, from.
    * @param Swift_Mime_Message $message
@@ -355,9 +469,22 @@ class Swift_Mailer_Transport_SmtpTransport
   {
     $sent = 0;
     
-    //Provide sender address
-    $this->executeCommand(sprintf("MAIL FROM: <%s>\r\n", $reversePath), array(250));
+    $handlers = $this->_getActiveHandlers();
     
+    $params = array();
+    foreach ($handlers as $handler)
+    {
+      if ($arr = $handler->getMailParams())
+      {
+        $params = array_merge($params, $arr);
+      }
+    }
+    $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
+    
+    //Provide sender address
+    $this->executeCommand(
+      sprintf("MAIL FROM: <%s>%s\r\n", $reversePath, $paramStr), array(250)
+      );
     foreach ($recipients as $forwardPath)
     {
       try
@@ -371,8 +498,7 @@ class Swift_Mailer_Transport_SmtpTransport
       {
       }
     }
-    
-    if ($sent > 0)
+    if ($sent != 0)
     {
       $this->executeCommand("DATA\r\n", array(354));
       //Stream the message straight into the buffer
@@ -388,6 +514,18 @@ class Swift_Mailer_Transport_SmtpTransport
     }
     
     return $sent;
+  }
+  
+  /**
+   * Custom sort for extension handler ordering.
+   * @param Swift_Mailer_Transport_SmtpExtensionHandler $a
+   * @param Swift_Mailer_Transport_SmtpExtensionHandler $b
+   * @return int
+   * @access private
+   */
+  private function _sortHandlers($a, $b)
+  {
+    return $a->getPriorityOver($b->getHandledKeyword());
   }
   
   /**
