@@ -3,7 +3,7 @@
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/PolymorphicBuffer.php';
 
-class Swift_Transport_PolymorphicBufferAcceptanceTest
+class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
   extends Swift_Tests_SwiftUnitTestCase
 {
 
