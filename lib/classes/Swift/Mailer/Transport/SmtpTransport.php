@@ -298,6 +298,7 @@ class Swift_Mailer_Transport_SmtpTransport
     }
     uasort($assoc, array($this, '_sortHandlers'));
     $this->_handlers = $assoc;
+    $this->_setHandlerParams();
   }
   
   /**
