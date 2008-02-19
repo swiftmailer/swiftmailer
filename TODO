@@ -1,23 +1,6 @@
 Swift Mailer SE:
 ----------------
 
-/Swift/Transport.php
-/Swift/Mailer.php
-/Swift/Transport/EsmtpTransport.php
-/Swift/Transport/Esmtp/Extension.php
-/Swift/Transport/Esmtp/Extension/AuthExtension.php
-/Swift/Transport/Esmtp/Extension/Auth/AuthLogin.php
-
-/Swift/Transport/EsmtpTransport.php
-/Swift/Transport/EsmtpHandler.php
-/Swift/Transport/EsmtpHandler/AuthHandler.php
-/Swift/Transport/EsmtpHandler/AuthHandler/AuthLoginHandler.php
-
-
-/Swift/Mime/Header/ParameterizedHeader.php
-/Swift/Mime/SimpleMessage.php
-
-
  * Write some sanity tests
  * CharacterReaderFactory (map charsets to CharacterReaders).
    - Big5
