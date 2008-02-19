@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Transport/SmtpBufferWrapper.php';
+//@require 'Swift/Transport/EsmtpBufferWrapper.php';
 
 /**
  * An ESMTP handler.
@@ -26,7 +26,7 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-interface Swift_Transport_SmtpExtensionHandler
+interface Swift_Transport_EsmtpHandler
 {
   
   /**
@@ -46,7 +46,7 @@ interface Swift_Transport_SmtpExtensionHandler
    * @param Swift_Transport_IoBuffer $buf to read/write
    * @param boolean &$continue needs to be set FALSE if the next extension shouldn't run
    */
-  public function afterEhlo(Swift_Transport_SmtpBufferWrapper $buf);
+  public function afterEhlo(Swift_Transport_EsmtpBufferWrapper $buf);
   
   /**
    * Get params which are appended to MAIL FROM:<>.
@@ -62,11 +62,11 @@ interface Swift_Transport_SmtpExtensionHandler
   
   /**
    * Runs when a command is due to be sent.
-   * @param Swift_Transport_SmtpBufferWrapper $buf to read/write
+   * @param Swift_Transport_EsmtpBufferWrapper $buf to read/write
    * @param string $command to send
    * @param int[] $codes expected in response
    */
-  public function onCommand(Swift_Transport_SmtpBufferWrapper $buf,
+  public function onCommand(Swift_Transport_EsmtpBufferWrapper $buf,
     $command, $codes = array());
     
   /**
@@ -78,7 +78,7 @@ interface Swift_Transport_SmtpExtensionHandler
   public function getPriorityOver($esmtpKeyword);
   
   /**
-   * Returns an array of method names which are exposed to the Smtp class.
+   * Returns an array of method names which are exposed to the Esmtp class.
    * @return string[]
    */
   public function exposeMixinMethods();

@@ -24,7 +24,7 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-interface Swift_Transport_SmtpBufferWrapper
+interface Swift_Transport_EsmtpBufferWrapper
 {
   
   /**

@@ -3,10 +3,10 @@ Swift Mailer SE:
 
 /Swift/Transport.php
 /Swift/Mailer.php
-/Swift/Transport/SmtpTransport.php
-/Swift/Transport/Smtp/Extension.php
-/Swift/Transport/Smtp/Extension/AuthExtension.php
-/Swift/Transport/Smtp/Extension/Auth/AuthLogin.php
+/Swift/Transport/EsmtpTransport.php
+/Swift/Transport/Esmtp/Extension.php
+/Swift/Transport/Esmtp/Extension/AuthExtension.php
+/Swift/Transport/Esmtp/Extension/Auth/AuthLogin.php
 
 /Swift/Transport/EsmtpTransport.php
 /Swift/Transport/EsmtpHandler.php
@@ -31,13 +31,13 @@ Swift Mailer SE:
  * Streams
    - FileCharacterStream
  * Transports
-   - Smtp extension support
+   - Esmtp extension support
      - AUTH types?
    - PolymorphicIoBuffer
      - Support sendmail proc + SMTP socket
    - Sendmail
      - Actually implement support for -t mode now
-     - Extend Smtp for -bs support
+     - Extend Esmtp for -bs support
    - NativeMail
    - Rotating
    - Multi

@@ -31,10 +31,10 @@ Error Codes
 
 <?php
 
-class SmtpTransport implements Transport, SmtpCommandWriter {
+class EsmtpTransport implements Transport, EsmtpCommandWriter {
 }
 
-interface SmtpCommandWriter {
+interface EsmtpCommandWriter {
   public function getBuffer();   
   public function executeCommand($command, $expectedCodes);
 }

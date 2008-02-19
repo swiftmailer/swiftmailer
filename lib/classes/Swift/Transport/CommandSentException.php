@@ -1,7 +1,7 @@
 <?php
 
 /*
- Exception used by SmtpExtensionHandler to intercept command sending Swift Mailer.
+ Exception used by EsmtpHandler to intercept command sending Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,12 +20,12 @@
 
 
 /**
- * Intercepts command sending from SmtpExtensionHandlers.
+ * Intercepts command sending from EsmtpHandlers.
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Transport_SmtpCommandSentException extends Exception
+class Swift_Transport_CommandSentException extends Exception
 {
   
   /**

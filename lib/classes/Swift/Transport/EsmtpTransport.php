@@ -19,10 +19,10 @@
  */
 
 //@require 'Swift/Transport.php';
-//@require 'Swift/Transport/SmtpExtensionHandler.php';
+//@require 'Swift/Transport/EsmtpHandler.php';
 //@require 'Swift/Transport/IoBuffer.php';
-//@require 'Swift/Transport/SmtpBufferWrapper.php';
-//@require 'Swift/Transport/SmtpCommandSentException.php';
+//@require 'Swift/Transport/EsmtpBufferWrapper.php';
+//@require 'Swift/Transport/CommandSentException.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -31,8 +31,8 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Transport_SmtpTransport
-  implements Swift_Transport, Swift_Transport_SmtpBufferWrapper
+class Swift_Transport_EsmtpTransport
+  implements Swift_Transport, Swift_Transport_EsmtpBufferWrapper
 {
   
   /**
@@ -72,7 +72,7 @@ class Swift_Transport_SmtpTransport
   
   /**
    * ESMTP extension handlers.
-   * @var Swift_Transport_SmtpExtensionHandler[]
+   * @var Swift_Transport_EsmtpHandler[]
    * @access private
    */
   private $_handlers = array();
@@ -85,9 +85,9 @@ class Swift_Transport_SmtpTransport
   private $_capabilities = array();
   
   /**
-   * Creates a new SmtpTransport using the given I/O buffer.
+   * Creates a new EsmtpTransport using the given I/O buffer.
    * @param Swift_Transport_IoBuffer $buf
-   * @param Swift_Transport_SmtpExtensionHandler[] $extensionHandlers
+   * @param Swift_Transport_EsmtpHandler[] $extensionHandlers
    */
   public function __construct(Swift_Transport_IoBuffer $buf, array $extensionHandlers)
   {
@@ -287,7 +287,7 @@ class Swift_Transport_SmtpTransport
   
   /**
    * Set ESMTP extension handlers.
-   * @param Swift_Transport_SmtpExtensionHandler[] $handlers
+   * @param Swift_Transport_EsmtpHandler[] $handlers
    */
   public function setExtensionHandlers(array $handlers)
   {
@@ -303,7 +303,7 @@ class Swift_Transport_SmtpTransport
   
   /**
    * Get ESMTP extension handlers.
-   * @return Swift_Transport_SmtpExtensionHandler[]
+   * @return Swift_Transport_EsmtpHandler[]
    */
   public function getExtensionHandlers()
   {
@@ -340,7 +340,7 @@ class Swift_Transport_SmtpTransport
       $response = $this->_getFullResponse($seq);
       $this->_assertResponseCode($response, $codes);
     }
-    catch (Swift_Transport_SmtpCommandSentException $e)
+    catch (Swift_Transport_CommandSentException $e)
     {
       $response = $e->getResponse();
     }
@@ -450,7 +450,7 @@ class Swift_Transport_SmtpTransport
   
   /**
    * Get ESMTP handlers which are currently ok to use.
-   * @return Swift_Transport_SmtpExtensionHandler[]
+   * @return Swift_Transport_EsmtpHandler[]
    * @access private
    */
   private function _getActiveHandlers()
@@ -559,8 +559,8 @@ class Swift_Transport_SmtpTransport
   
   /**
    * Custom sort for extension handler ordering.
-   * @param Swift_Transport_SmtpExtensionHandler $a
-   * @param Swift_Transport_SmtpExtensionHandler $b
+   * @param Swift_Transport_EsmtpHandler $a
+   * @param Swift_Transport_EsmtpHandler $b
    * @return int
    * @access private
    */
