@@ -10,12 +10,16 @@ RFC 4505:
 ---------
 ANYNONYMOUS SASL
 
+RFC 4616:
+---------
+PLAIN SASL
+
 RFC 2487:
 ---------
 STARTTLS extension
 
-RFC 2554:
----------
+RFC 2554 & 4954:
+----------------
 AUTH extension
 
 RFC 2821:

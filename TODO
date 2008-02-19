@@ -15,7 +15,12 @@ Swift Mailer SE:
    - FileCharacterStream
  * Transports
    - Esmtp extension support
-     - AUTH types?
+     - AUTH
+       - LOGIN
+       - PLAIN
+       - CRAM-MD5
+       - PopBeforeSmtp
+     - 8BITMIME
    - PolymorphicIoBuffer
      - Support sendmail proc + SMTP socket
    - Sendmail
@@ -60,7 +65,6 @@ Swift Mailer EE:
    - Any "voodoo" way to POST mail to a web page on port 80?
      - Using a simple script registered with inetd or xinetd would do the trick
  * Drop-in ESMTP extensions
-   - 8BITMIME
    - STARTTLS (http://au.php.net/manual/en/function.stream-socket-enable-crypto.php)
    - PIPELINING
    - Additional NTLM authentication

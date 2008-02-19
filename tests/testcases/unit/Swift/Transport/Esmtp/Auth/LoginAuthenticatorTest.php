@@ -2,6 +2,7 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/EsmtpBufferWrapper.php';
+require_once 'Swift/Transport/Esmtp/Auth/LoginAuthenticator.php';
 require_once 'Swift/Transport/TransportException.php';
 
 Mock::generate('Swift_Transport_EsmtpBufferWrapper',
