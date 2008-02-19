@@ -16,9 +16,6 @@ Swift Mailer SE:
  * Transports
    - Esmtp extension support
      - AUTH
-       - LOGIN
-       - PLAIN
-       - CRAM-MD5
        - PopBeforeSmtp
      - 8BITMIME
    - PolymorphicIoBuffer
@@ -68,6 +65,8 @@ Swift Mailer EE:
    - STARTTLS (http://au.php.net/manual/en/function.stream-socket-enable-crypto.php)
    - PIPELINING
    - Additional NTLM authentication
+   - Digest-MD5 authentication
+   - GSSAPI authentication
    - ETRN
    - DSN
  * Caches
