@@ -9,6 +9,14 @@ class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
 
   private $_buffer;
   
+  public function skip()
+  {
+    $this->skipUnless(SWIFT_TLS_HOST,
+      'Cannot run test without a TLS enabled SMTP host to connect to (define ' .
+      'SWIFT_TLS_HOST in tests/config.php if you wish to run this test)'
+      );
+  }
+  
   public function setUp()
   {
     $this->_buffer = new Swift_Transport_PolymorphicBuffer();

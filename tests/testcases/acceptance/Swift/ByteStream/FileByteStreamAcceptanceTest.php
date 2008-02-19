@@ -11,7 +11,8 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
   public function skip()
   {
     $this->skipUnless(
-      SWIFT_TMP_DIR, '%s: SWIFT_TMP_DIR needs to be set in tests/config.php first'
+      SWIFT_TMP_DIR, 'Cannot run test without a writable directory to use (' .
+      'define SWIFT_TMP_DIR in tests/config.php if you wish to run this test)'
       );
   }
   

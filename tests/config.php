@@ -11,8 +11,16 @@ set_time_limit(30);
 ////////////////////////////////////////////////////////
 
 //The path to a writable temp directory
-define('SWIFT_TMP_DIR', '/tmp');
+define('SWIFT_TMP_DIR', ''); //Recommended '/tmp'
 
+//An unencrypted SMTP host (hostname:port)
+define('SWIFT_SMTP_HOST', ''); //Recommended 'smtp.gmail.com:25'
+
+//An SMTP host using TLS (not STARTTLS, hostname:port)
+define('SWIFT_TLS_HOST', ''); //Recommended 'smtp.gmail.com:465'
+
+//An SMTP host using SSL (hostname:port)
+define('SWIFT_SSL_HOST', ''); //Recommended 'smtp.gmail.com:587'
 
 ///////////////////////////////////////////////////////
 // THERE IS NO PROBABLY NEED TO EDIT BELOW THIS LINE //
