@@ -1131,15 +1131,17 @@ class Swift_Mailer_Transport_SmtpTransportTest
     $this->_smtp->start();
   }
   
-  /*public function testExtensionsCanModifyMailFromParams()
+  public function testExtensionsCanModifyMailFromParams()
   {
     $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->setReturnValue('getMailParams', array('FOO'));
+    $ext1->setReturnValue('getPriorityOver', -1);
     
     $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'SIZE');
     $ext2->setReturnValue('getMailParams', array('ZIP'));
+    $ext2->setReturnValue('getPriorityOver', 1);
     
     $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
     $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
@@ -1183,14 +1185,108 @@ class Swift_Mailer_Transport_SmtpTransportTest
     
     $this->_smtp->start();
     $this->_smtp->send($message);
-  }*/
+  }
   
   public function testExtensionsCanModifyRcptParams()
   {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->setReturnValue('getRcptParams', array('FOO'));
+    $ext1->setReturnValue('getPriorityOver', -1);
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    $ext2->setReturnValue('getRcptParams', array('ZIP'));
+    $ext2->setReturnValue('getPriorityOver', 1);
+    
+    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext3->expectNever('getRcptParams');
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+    
+    $this->_buffer->setReturnValue(
+      'readLine', '220 server.com foo' . "\r\n", array(0)
+      );
+    $this->_buffer->expectAt(
+      0, 'write', array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValue(
+      'write', 1, array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValueAt(1,
+      'readLine', '250-ServerName.tld' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(2,
+      'readLine', '250-AUTH PLAIN LOGIN' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(3,
+      'readLine', '250 SIZE=123456' . "\r\n", array(1)
+      );
+    $this->_buffer->expectAt(1, 'write', array("MAIL FROM: <me@domain>\r\n"));
+    $this->_buffer->setReturnValue('write', 2, array("MAIL FROM: <me@domain>\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(2));
+    
+    $this->_buffer->expectAt(2, 'write', array("RCPT TO: <foo@bar> FOO ZIP\r\n"));
+    $this->_buffer->setReturnValue('write', 3, array("RCPT TO: <foo@bar> FOO ZIP\r\n"));
+    $this->_buffer->setReturnValue('readLine', "250 OK\r\n", array(3));
+    
+    $this->_buffer->expectMinimumCallCount('write', 3);
+    
+    $this->_finishBuffer();
+    
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('me@domain'=>'Me'));
+    $message->setReturnValue('getTo', array('foo@bar'=>null));
+    
+    $this->_smtp->start();
+    $this->_smtp->send($message);
   }
   
   public function testExtensionsAreNotifiedOnCommand()
   {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->setReturnValue('getPriorityOver', -1);
+    $ext1->expectOnce('onCommand', array($this->_smtp, "FOO\r\n", array(250, 251)));
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'SIZE');
+    $ext2->setReturnValue('getPriorityOver', 1);
+    $ext2->expectOnce('onCommand', array($this->_smtp, "FOO\r\n", array(250, 251)));
+    
+    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext3->expectNever('onCommand');
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+    
+    $this->_buffer->setReturnValue(
+      'readLine', '220 server.com foo' . "\r\n", array(0)
+      );
+    $this->_buffer->expectAt(
+      0, 'write', array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValue(
+      'write', 1, array(new PatternExpectation('~^EHLO .*?\r\n$~D'))
+      );
+    $this->_buffer->setReturnValueAt(1,
+      'readLine', '250-ServerName.tld' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(2,
+      'readLine', '250-AUTH PLAIN LOGIN' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValueAt(3,
+      'readLine', '250 SIZE=123456' . "\r\n", array(1)
+      );
+    $this->_buffer->setReturnValue('write', 2, array("FOO\r\n"));
+    $this->_buffer->setReturnValue('readLine', "251 Cool\r\n", array(2));
+    
+    $this->_finishBuffer();
+    
+    $this->_smtp->start();
+    
+    $this->_smtp->executeCommand("FOO\r\n", array(250, 251));
   }
   
   public function testChainOfCommandAlgorithmWhenNotifyingExtensions()

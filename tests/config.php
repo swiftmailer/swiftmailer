@@ -31,7 +31,7 @@ define('SWEETY_INCLUDE_PATH',
 //The path to the main test suite
 define('SWEETY_LIB_PATH', SWEETY_HOME . '/lib');
 //The path to simpletest
-define('SWEETY_SIMPLETEST_PATH', SWEETY_LIB_PATH . '/simpletest');
+define('SWEETY_SIMPLETEST_PATH', SWEETY_LIB_PATH . '/simpletest-svn');
 //The path to any testing directories
 define('SWEETY_TEST_PATH',
   SWEETY_HOME . '/testcases/unit' .
