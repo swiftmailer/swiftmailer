@@ -22,6 +22,7 @@
 //@require 'Swift/Mailer/Transport/SmtpExtensionHandler.php';
 //@require 'Swift/Mailer/Transport/IoBuffer.php';
 //@require 'Swift/Mailer/Transport/SmtpBufferWrapper.php';
+//@require 'Swift/Mailer/Transport/SmtpCommandSentException.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -327,9 +328,21 @@ class Swift_Mailer_Transport_SmtpTransport
    */
   public function executeCommand($command, $codes = array())
   {
-    $seq = $this->_buffer->write($command);
-    $response = $this->_getFullResponse($seq);
-    $this->_assertResponseCode($response, $codes);
+    $response = null;
+    try
+    {
+      foreach ($this->_getActiveHandlers() as $handler)
+      {
+        $handler->onCommand($this, $command, $codes);
+      }
+      $seq = $this->_buffer->write($command);
+      $response = $this->_getFullResponse($seq);
+      $this->_assertResponseCode($response, $codes);
+    }
+    catch (Swift_Mailer_Transport_SmtpCommandSentException $e)
+    {
+      $response = $e->getResponse();
+    }
     return $response;
   }
   
@@ -474,10 +487,7 @@ class Swift_Mailer_Transport_SmtpTransport
     $params = array();
     foreach ($handlers as $handler)
     {
-      if ($arr = $handler->getMailParams())
-      {
-        $params = array_merge($params, $arr);
-      }
+      $params = array_merge($params, (array) $handler->getMailParams());
     }
     $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
     
@@ -487,10 +497,17 @@ class Swift_Mailer_Transport_SmtpTransport
       );
     foreach ($recipients as $forwardPath)
     {
+      $params = array();
+      foreach ($handlers as $handler)
+      {
+        $params = array_merge($params, (array) $handler->getRcptParams());
+      }
+      $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
+      
       try
       {
         $this->executeCommand(
-          sprintf("RCPT TO: <%s>\r\n", $forwardPath), array(250, 251, 252)
+          sprintf("RCPT TO: <%s>%s\r\n", $forwardPath, $paramStr), array(250, 251, 252)
           );
         $sent++;
       }

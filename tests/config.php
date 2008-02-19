@@ -18,8 +18,8 @@ define('SWIFT_TMP_DIR', '/tmp');
 // THERE IS NO PROBABLY NEED TO EDIT BELOW THIS LINE //
 ///////////////////////////////////////////////////////
 
-//The path to the PHP command line executable
-define('SWEETY_PHP_EXE', '/usr/bin/php');
+//The path to the PHP command line executable (auto-detected if none set)
+define('SWEETY_PHP_EXE', '');
 //The path to this file
 define('SWEETY_HOME', dirname(__FILE__));
 //The path to the libs being tested

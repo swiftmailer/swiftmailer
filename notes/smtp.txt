@@ -28,3 +28,21 @@ Error Codes
    - 500 = Unknown command
  * Numeric 2yz = Normal
  * Numeric 4yz = Temporary failure??
+
+<?php
+
+class SmtpTransport implements Transport, SmtpCommandWriter {
+}
+
+interface SmtpCommandWriter {
+  public function getBuffer();   
+  public function executeCommand($command, $expectedCodes);
+}
+
+interface Extension {
+  public function getKeyword();
+  public function afterEhlo($commandWriter);                
+  public function getRcptParams();
+  public function getMailParams();
+  public function atCommand($commandWriter, $command, $expectedResponse) throws CommandSentException;
+}

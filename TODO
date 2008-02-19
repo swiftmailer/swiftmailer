@@ -1,6 +1,30 @@
 Swift Mailer SE:
 ----------------
 
+ * Provide this interface to Extension API
+   
+  <?php
+
+  public function executeCommand($command, $codes = array())
+  {
+    $response = null;
+    try
+    {
+      foreach ($this->_handlers as $handler)
+      {
+        $handler->notifyCommand($this->_buffer, $command, $codes);
+      }
+      $seq = $this->_buffer->write($command);
+      $response = $this->_getFullResponse($seq)l
+      $this->_assertResponseCode($response, $codes);
+    }
+    catch (CommandProcessedException $e)
+    {
+      $response = $e->getResponse();
+    }
+    return $response;
+  }
+
  * Write some sanity tests
  * CharacterReaderFactory (map charsets to CharacterReaders).
    - Big5
