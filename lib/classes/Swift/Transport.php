@@ -1,7 +1,7 @@
 <?php
 
 /*
- Exception used by SmtpExtensionHandler to intercept command sending Swift Mailer.
+ The Transport interface from Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,39 +18,40 @@
  
  */
 
+//@require 'Swift/Mime/Message.php';
 
 /**
- * Intercepts command sending from SmtpExtensionHandlers.
+ * Sends Messages via an abstract Transport subsystem.
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Mailer_Transport_SmtpCommandSentException extends Exception
+interface Swift_Transport
 {
+
+  /**
+   * Test if this Transport mechanism has started.
+   * @return boolean
+   */
+  public function isStarted();
   
   /**
-   * The response from the command being sent.
-   * @var string
-   * @access private
+   * Start this Transport mechanism.
    */
-  private $_response;
+  public function start();
   
   /**
-   * Create a new CommandSentException with $response.
-   * @param string $response
+   * Stop this Transport mechanism.
    */
-  public function __construct($response)
-  {
-    $this->_response = $response;
-  }
+  public function stop();
   
   /**
-   * Get the response.
-   * @return string
+   * Send the given Message.
+   * Recipient/sender data will be retreived from the Message API.
+   * The return value is the number of recipients who were accepted for delivery.
+   * @param Swift_Mime_Message $message
+   * @return int
    */
-  public function getResponse()
-  {
-    return $this->_response;
-  }
+  public function send(Swift_Mime_Message $message);
   
 }

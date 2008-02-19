@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Mailer/Transport.php';
+//@require 'Swift/Transport.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -31,16 +31,16 @@ class Swift_Mailer
   
   /**
    * The Transport used to send messages.
-   * @var Swift_Mailer_Transport
+   * @var Swift_Transport
    * @access private
    */
   private $_transport;
   
   /**
    * Create a new Mailer using $transport for delivery.
-   * @param Swift_Mailer_Transport $transport
+   * @param Swift_Transport $transport
    */
-  public function __construct(Swift_Mailer_Transport $transport)
+  public function __construct(Swift_Transport $transport)
   {
     $this->_transport = $transport;
   }

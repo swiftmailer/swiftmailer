@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Mailer/Transport/SmtpBufferWrapper.php';
+//@require 'Swift/Transport/SmtpBufferWrapper.php';
 
 /**
  * An ESMTP handler.
@@ -26,7 +26,7 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-interface Swift_Mailer_Transport_SmtpExtensionHandler
+interface Swift_Transport_SmtpExtensionHandler
 {
   
   /**
@@ -43,10 +43,10 @@ interface Swift_Mailer_Transport_SmtpExtensionHandler
   
   /**
    * Runs immediately after a EHLO has been issued.
-   * @param Swift_Mailer_Transport_IoBuffer $buf to read/write
+   * @param Swift_Transport_IoBuffer $buf to read/write
    * @param boolean &$continue needs to be set FALSE if the next extension shouldn't run
    */
-  public function afterEhlo(Swift_Mailer_Transport_SmtpBufferWrapper $buf);
+  public function afterEhlo(Swift_Transport_SmtpBufferWrapper $buf);
   
   /**
    * Get params which are appended to MAIL FROM:<>.
@@ -62,11 +62,11 @@ interface Swift_Mailer_Transport_SmtpExtensionHandler
   
   /**
    * Runs when a command is due to be sent.
-   * @param Swift_Mailer_Transport_SmtpBufferWrapper $buf to read/write
+   * @param Swift_Transport_SmtpBufferWrapper $buf to read/write
    * @param string $command to send
    * @param int[] $codes expected in response
    */
-  public function onCommand(Swift_Mailer_Transport_SmtpBufferWrapper $buf,
+  public function onCommand(Swift_Transport_SmtpBufferWrapper $buf,
     $command, $codes = array());
     
   /**

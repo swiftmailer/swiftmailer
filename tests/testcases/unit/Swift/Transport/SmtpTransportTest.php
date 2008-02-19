@@ -1,25 +1,25 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mailer/Transport/SmtpTransport.php';
-require_once 'Swift/Mailer/Transport/SmtpExtensionHandler.php';
-require_once 'Swift/Mailer/Transport/SmtpCommandSentException.php';
-require_once 'Swift/Mailer/Transport/IoBuffer.php';
+require_once 'Swift/Transport/SmtpTransport.php';
+require_once 'Swift/Transport/SmtpExtensionHandler.php';
+require_once 'Swift/Transport/SmtpCommandSentException.php';
+require_once 'Swift/Transport/IoBuffer.php';
 require_once 'Swift/Mime/Message.php';
 
-Mock::generate('Swift_Mailer_Transport_IoBuffer',
-  'Swift_Mailer_Transport_MockIoBuffer'
+Mock::generate('Swift_Transport_IoBuffer',
+  'Swift_Transport_MockIoBuffer'
   );
-Mock::generate('Swift_Mailer_Transport_SmtpExtensionHandler',
-  'Swift_Mailer_Transport_MockSmtpExtensionHandler'
+Mock::generate('Swift_Transport_SmtpExtensionHandler',
+  'Swift_Transport_MockSmtpExtensionHandler'
   );
-Mock::generate('Swift_Mailer_Transport_SmtpExtensionHandler',
-  'Swift_Mailer_Transport_MockSmtpExtensionHandlerMixin',
+Mock::generate('Swift_Transport_SmtpExtensionHandler',
+  'Swift_Transport_MockSmtpExtensionHandlerMixin',
   array('setUsername', 'setPassword')
   );
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
 
-class Swift_Mailer_Transport_SmtpTransportTest
+class Swift_Transport_SmtpTransportTest
   extends Swift_Tests_SwiftUnitTestCase
 {
   
@@ -28,8 +28,8 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function setUp()
   {
-    $this->_buffer = new Swift_Mailer_Transport_MockIoBuffer();
-    $this->_smtp = new Swift_Mailer_Transport_SmtpTransport($this->_buffer, array());
+    $this->_buffer = new Swift_Transport_MockIoBuffer();
+    $this->_smtp = new Swift_Transport_SmtpTransport($this->_buffer, array());
   }
   
   public function tearDown()
@@ -1050,11 +1050,11 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testExtensionHandlersAreSortedAsNeeded()
   {
-    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->setReturnValue('getPriorityOver', 0, array('STARTTLS'));
     
-    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'STARTTLS');
     $ext2->setReturnValue('getPriorityOver', -1, array('AUTH'));
     
@@ -1064,11 +1064,11 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testHandlersAreNotifiedOfParams()
   {
-    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->expectOnce('setKeywordParams', array(array('PLAIN', 'LOGIN')));
     
-    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'SIZE');
     $ext2->expectOnce('setKeywordParams', array(array('123456')));
     
@@ -1100,17 +1100,17 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testSupportedExtensionHandlersAreRunAfterEhlo()
   {
-    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->expectOnce('setKeywordParams', array(array('PLAIN', 'LOGIN')));
     $ext1->expectOnce('afterEhlo', array($this->_smtp));
     
-    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'SIZE');
     $ext2->expectOnce('setKeywordParams', array(array('123456')));
     $ext2->expectOnce('afterEhlo', array($this->_smtp));
     
-    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
     $ext3->expectNever('setKeywordParams');
     $ext3->expectNever('afterEhlo');
@@ -1143,17 +1143,17 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testExtensionsCanModifyMailFromParams()
   {
-    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->setReturnValue('getMailParams', array('FOO'));
     $ext1->setReturnValue('getPriorityOver', -1);
     
-    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'SIZE');
     $ext2->setReturnValue('getMailParams', array('ZIP'));
     $ext2->setReturnValue('getPriorityOver', 1);
     
-    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
     $ext3->expectNever('getMailParams');
     
@@ -1199,17 +1199,17 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testExtensionsCanModifyRcptParams()
   {
-    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->setReturnValue('getRcptParams', array('FOO'));
     $ext1->setReturnValue('getPriorityOver', -1);
     
-    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'SIZE');
     $ext2->setReturnValue('getRcptParams', array('ZIP'));
     $ext2->setReturnValue('getPriorityOver', 1);
     
-    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
     $ext3->expectNever('getRcptParams');
     
@@ -1255,19 +1255,19 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testExtensionsAreNotifiedOnCommand()
   {
-    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext1 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->setReturnValue('getPriorityOver', -1);
     $ext1->expectAt(0, 'onCommand', array($this->_smtp, "FOO\r\n", array(250, 251)));
     $ext1->expectAtLeastOnce('onCommand');
     
-    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'SIZE');
     $ext2->setReturnValue('getPriorityOver', 1);
     $ext2->expectAt(0, 'onCommand', array($this->_smtp, "FOO\r\n", array(250, 251)));
     $ext2->expectAtLeastOnce('onCommand');
     
-    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
     $ext3->expectNever('onCommand');
     
@@ -1303,20 +1303,20 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testChainOfCommandAlgorithmWhenNotifyingExtensions()
   {
-    $e = new Swift_Mailer_Transport_SmtpCommandSentException("250 OK\r\n");
-    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $e = new Swift_Transport_SmtpCommandSentException("250 OK\r\n");
+    $ext1 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->setReturnValue('getPriorityOver', -1);
     $ext1->expectAt(0, 'onCommand', array($this->_smtp, "FOO\r\n", array(250, 251)));
     $ext1->throwOn('onCommand', $e);
     $ext1->expectAtLeastOnce('onCommand');
     
-    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'SIZE');
     $ext2->setReturnValue('getPriorityOver', 1);
     $ext2->expectNever('onCommand');
     
-    $ext3 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext3 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext3->setReturnValue('getHandledKeyword', 'STARTTLS');
     $ext3->expectNever('onCommand');
     
@@ -1350,14 +1350,14 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testExtensionsCanExposeMixinMethods()
   {
-    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandlerMixin();
+    $ext1 = new Swift_Transport_MockSmtpExtensionHandlerMixin();
     $ext1->setReturnValue('getHandledKeyword', 'AUTH');
     $ext1->setReturnValue('getPriorityOver', 0, array('STARTTLS'));
     $ext1->setReturnValue('exposeMixinMethods', array('setUsername', 'setPassword'));
     $ext1->expectOnce('setUsername', array('mick'));
     $ext1->expectOnce('setPassword', array('pass'));
     
-    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2 = new Swift_Transport_MockSmtpExtensionHandler();
     $ext2->setReturnValue('getHandledKeyword', 'STARTTLS');
     $ext2->setReturnValue('getPriorityOver', -1, array('AUTH'));
     

@@ -1,7 +1,7 @@
 <?php
 
 /*
- The Transport interface from Swift Mailer.
+ SMTP command wrapper from Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,40 +18,28 @@
  
  */
 
-//@require 'Swift/Mime/Message.php';
-
 /**
- * Sends Messages via an abstract Transport subsystem.
+ * Wraps an IoBuffer to send/receive SMTP commands/responses.
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
  */
-interface Swift_Mailer_Transport
+interface Swift_Transport_SmtpBufferWrapper
 {
-
-  /**
-   * Test if this Transport mechanism has started.
-   * @return boolean
-   */
-  public function isStarted();
   
   /**
-   * Start this Transport mechanism.
+   * Get the IoBuffer where read/writes are occurring.
+   * @return Swift_Transport_IoBuffer
    */
-  public function start();
+  public function getBuffer();
   
   /**
-   * Stop this Transport mechanism.
+   * Run a command against the buffer, expecting the given response codes.
+   * If no response codes are given, the response will not be validated.
+   * If codes are given, an exception will be thrown on an invalid response.
+   * @param string $command
+   * @param int[] $codes
    */
-  public function stop();
-  
-  /**
-   * Send the given Message.
-   * Recipient/sender data will be retreived from the Message API.
-   * The return value is the number of recipients who were accepted for delivery.
-   * @param Swift_Mime_Message $message
-   * @return int
-   */
-  public function send(Swift_Mime_Message $message);
+  public function executeCommand($command, $codes = array());
   
 }

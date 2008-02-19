@@ -1,29 +1,22 @@
 Swift Mailer SE:
 ----------------
 
- * Provide this interface to Extension API
-   
-  <?php
+/Swift/Transport.php
+/Swift/Mailer.php
+/Swift/Transport/SmtpTransport.php
+/Swift/Transport/Smtp/Extension.php
+/Swift/Transport/Smtp/Extension/AuthExtension.php
+/Swift/Transport/Smtp/Extension/Auth/AuthLogin.php
 
-  public function executeCommand($command, $codes = array())
-  {
-    $response = null;
-    try
-    {
-      foreach ($this->_handlers as $handler)
-      {
-        $handler->notifyCommand($this->_buffer, $command, $codes);
-      }
-      $seq = $this->_buffer->write($command);
-      $response = $this->_getFullResponse($seq)l
-      $this->_assertResponseCode($response, $codes);
-    }
-    catch (CommandProcessedException $e)
-    {
-      $response = $e->getResponse();
-    }
-    return $response;
-  }
+/Swift/Transport/EsmtpTransport.php
+/Swift/Transport/EsmtpHandler.php
+/Swift/Transport/EsmtpHandler/AuthHandler.php
+/Swift/Transport/EsmtpHandler/AuthHandler/AuthLoginHandler.php
+
+
+/Swift/Mime/Header/ParameterizedHeader.php
+/Swift/Mime/SimpleMessage.php
+
 
  * Write some sanity tests
  * CharacterReaderFactory (map charsets to CharacterReaders).

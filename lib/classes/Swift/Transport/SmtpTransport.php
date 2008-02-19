@@ -18,11 +18,11 @@
  
  */
 
-//@require 'Swift/Mailer/Transport.php';
-//@require 'Swift/Mailer/Transport/SmtpExtensionHandler.php';
-//@require 'Swift/Mailer/Transport/IoBuffer.php';
-//@require 'Swift/Mailer/Transport/SmtpBufferWrapper.php';
-//@require 'Swift/Mailer/Transport/SmtpCommandSentException.php';
+//@require 'Swift/Transport.php';
+//@require 'Swift/Transport/SmtpExtensionHandler.php';
+//@require 'Swift/Transport/IoBuffer.php';
+//@require 'Swift/Transport/SmtpBufferWrapper.php';
+//@require 'Swift/Transport/SmtpCommandSentException.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -31,13 +31,13 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Mailer_Transport_SmtpTransport
-  implements Swift_Mailer_Transport, Swift_Mailer_Transport_SmtpBufferWrapper
+class Swift_Transport_SmtpTransport
+  implements Swift_Transport, Swift_Transport_SmtpBufferWrapper
 {
   
   /**
    * An Input-Output buffer for sending/receiving SMTP commands and responses.
-   * @var Swift_Mailer_Transport_IoBuffer
+   * @var Swift_Transport_IoBuffer
    * @access private
    */
   private $_buffer;
@@ -53,7 +53,7 @@ class Swift_Mailer_Transport_SmtpTransport
     'port' => 25,
     'timeout' => 30,
     'blocking' => 1,
-    'type' => Swift_Mailer_Transport_IoBuffer::TYPE_SOCKET
+    'type' => Swift_Transport_IoBuffer::TYPE_SOCKET
     );
   
   /**
@@ -72,7 +72,7 @@ class Swift_Mailer_Transport_SmtpTransport
   
   /**
    * ESMTP extension handlers.
-   * @var Swift_Mailer_Transport_SmtpExtensionHandler[]
+   * @var Swift_Transport_SmtpExtensionHandler[]
    * @access private
    */
   private $_handlers = array();
@@ -86,10 +86,10 @@ class Swift_Mailer_Transport_SmtpTransport
   
   /**
    * Creates a new SmtpTransport using the given I/O buffer.
-   * @param Swift_Mailer_Transport_IoBuffer $buf
-   * @param Swift_Mailer_Transport_SmtpExtensionHandler[] $extensionHandlers
+   * @param Swift_Transport_IoBuffer $buf
+   * @param Swift_Transport_SmtpExtensionHandler[] $extensionHandlers
    */
-  public function __construct(Swift_Mailer_Transport_IoBuffer $buf, array $extensionHandlers)
+  public function __construct(Swift_Transport_IoBuffer $buf, array $extensionHandlers)
   {
     $this->_buffer = $buf;
     $this->setExtensionHandlers($extensionHandlers);
@@ -287,7 +287,7 @@ class Swift_Mailer_Transport_SmtpTransport
   
   /**
    * Set ESMTP extension handlers.
-   * @param Swift_Mailer_Transport_SmtpExtensionHandler[] $handlers
+   * @param Swift_Transport_SmtpExtensionHandler[] $handlers
    */
   public function setExtensionHandlers(array $handlers)
   {
@@ -303,7 +303,7 @@ class Swift_Mailer_Transport_SmtpTransport
   
   /**
    * Get ESMTP extension handlers.
-   * @return Swift_Mailer_Transport_SmtpExtensionHandler[]
+   * @return Swift_Transport_SmtpExtensionHandler[]
    */
   public function getExtensionHandlers()
   {
@@ -312,7 +312,7 @@ class Swift_Mailer_Transport_SmtpTransport
   
   /**
    * Get the IoBuffer where read/writes are occurring.
-   * @return Swift_Mailer_Transport_IoBuffer
+   * @return Swift_Transport_IoBuffer
    */
   public function getBuffer()
   {
@@ -340,7 +340,7 @@ class Swift_Mailer_Transport_SmtpTransport
       $response = $this->_getFullResponse($seq);
       $this->_assertResponseCode($response, $codes);
     }
-    catch (Swift_Mailer_Transport_SmtpCommandSentException $e)
+    catch (Swift_Transport_SmtpCommandSentException $e)
     {
       $response = $e->getResponse();
     }
@@ -450,7 +450,7 @@ class Swift_Mailer_Transport_SmtpTransport
   
   /**
    * Get ESMTP handlers which are currently ok to use.
-   * @return Swift_Mailer_Transport_SmtpExtensionHandler[]
+   * @return Swift_Transport_SmtpExtensionHandler[]
    * @access private
    */
   private function _getActiveHandlers()
@@ -559,8 +559,8 @@ class Swift_Mailer_Transport_SmtpTransport
   
   /**
    * Custom sort for extension handler ordering.
-   * @param Swift_Mailer_Transport_SmtpExtensionHandler $a
-   * @param Swift_Mailer_Transport_SmtpExtensionHandler $b
+   * @param Swift_Transport_SmtpExtensionHandler $a
+   * @param Swift_Transport_SmtpExtensionHandler $b
    * @return int
    * @access private
    */

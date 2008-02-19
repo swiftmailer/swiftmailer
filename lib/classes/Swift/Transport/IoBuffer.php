@@ -27,7 +27,7 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-interface Swift_Mailer_Transport_IoBuffer
+interface Swift_Transport_IoBuffer
   extends Swift_InputByteStream, Swift_OutputByteStream
 {
   

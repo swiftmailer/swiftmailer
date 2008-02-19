@@ -1,7 +1,7 @@
 <?php
 
 /*
- SMTP command wrapper from Swift Mailer.
+ Exception used by SmtpExtensionHandler to intercept command sending Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,28 +18,39 @@
  
  */
 
+
 /**
- * Wraps an IoBuffer to send/receive SMTP commands/responses.
+ * Intercepts command sending from SmtpExtensionHandlers.
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
  */
-interface Swift_Mailer_Transport_SmtpBufferWrapper
+class Swift_Transport_SmtpCommandSentException extends Exception
 {
   
   /**
-   * Get the IoBuffer where read/writes are occurring.
-   * @return Swift_Mailer_Transport_IoBuffer
+   * The response from the command being sent.
+   * @var string
+   * @access private
    */
-  public function getBuffer();
+  private $_response;
   
   /**
-   * Run a command against the buffer, expecting the given response codes.
-   * If no response codes are given, the response will not be validated.
-   * If codes are given, an exception will be thrown on an invalid response.
-   * @param string $command
-   * @param int[] $codes
+   * Create a new CommandSentException with $response.
+   * @param string $response
    */
-  public function executeCommand($command, $codes = array());
+  public function __construct($response)
+  {
+    $this->_response = $response;
+  }
+  
+  /**
+   * Get the response.
+   * @return string
+   */
+  public function getResponse()
+  {
+    return $this->_response;
+  }
   
 }
