@@ -346,6 +346,29 @@ class Swift_Mailer_Transport_SmtpTransport
     return $response;
   }
   
+  // -- Mixin invokation code
+  
+  /**
+   * Mixin handling method.
+   * @param string $method
+   * @param array $args
+   * @return mixed
+   * @access private
+   */
+  private function __call($method, $args)
+  {
+    foreach ($this->_handlers as $handler)
+    {
+      if (in_array(strtolower($method),
+        array_map('strtolower', (array) $handler->exposeMixinMethods())
+        ))
+      {
+        return call_user_func_array(array($handler, $method), $args);
+      }
+    }
+    trigger_error('Call to undefined method ' . $method, E_USER_ERROR);
+  }
+  
   // -- Private methods
   
   /**

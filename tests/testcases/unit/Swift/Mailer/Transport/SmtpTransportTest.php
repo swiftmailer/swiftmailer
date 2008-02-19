@@ -13,6 +13,10 @@ Mock::generate('Swift_Mailer_Transport_IoBuffer',
 Mock::generate('Swift_Mailer_Transport_SmtpExtensionHandler',
   'Swift_Mailer_Transport_MockSmtpExtensionHandler'
   );
+Mock::generate('Swift_Mailer_Transport_SmtpExtensionHandler',
+  'Swift_Mailer_Transport_MockSmtpExtensionHandlerMixin',
+  array('setUsername', 'setPassword')
+  );
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
 
 class Swift_Mailer_Transport_SmtpTransportTest
@@ -1346,6 +1350,21 @@ class Swift_Mailer_Transport_SmtpTransportTest
   
   public function testExtensionsCanExposeMixinMethods()
   {
+    $ext1 = new Swift_Mailer_Transport_MockSmtpExtensionHandlerMixin();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->setReturnValue('getPriorityOver', 0, array('STARTTLS'));
+    $ext1->setReturnValue('exposeMixinMethods', array('setUsername', 'setPassword'));
+    $ext1->expectOnce('setUsername', array('mick'));
+    $ext1->expectOnce('setPassword', array('pass'));
+    
+    $ext2 = new Swift_Mailer_Transport_MockSmtpExtensionHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext2->setReturnValue('getPriorityOver', -1, array('AUTH'));
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2));
+    
+    $this->_smtp->setUsername('mick');
+    $this->_smtp->setPassword('pass');
   }
   
   // -- Private helpers
