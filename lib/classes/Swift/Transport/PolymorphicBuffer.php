@@ -30,11 +30,70 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
 {
   
   /**
+   * A primary socket.
+   * @var resource
+   * @access private
+   */
+  private $_stream;
+  
+  /**
+   * The input stream.
+   * @var resource
+   * @access private
+   */
+  private $_in;
+  
+  /**
+   * The output stream.
+   * @var resource
+   * @access private
+   */
+  private $_out;
+  
+  /**
+   * Buffer initialization parameters.
+   * @var array
+   * @access private
+   */
+  private $_params = array();
+  
+  /**
+   * Write sequence.
+   * @var int
+   * @access private
+   */
+  private $_sequence = 0;
+  
+  /**
+   * Translations performed on data being streamed into the buffer.
+   * @var string[]
+   * @access private
+   */
+  private $_translations = array();
+  
+  /**
    * Perform any initialization needed, using the given $params.
    * Parameters will vary depending upon the type of IoBuffer used.
    * @param array $params
    */
   public function initialize(array $params)
+  {
+    $this->_params = $params;
+    switch ($params['type'])
+    {
+      case self::TYPE_SOCKET:
+      default:
+        $this->_establishSocketConnection();
+        break;
+    }
+  }
+  
+  /**
+   * Set an individual param on the buffer (e.g. switching to SSL).
+   * @param string $param
+   * @param mixed $value
+   */
+  public function setParam($param, $value)
   {
   }
   
@@ -43,6 +102,13 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
    */
   public function terminate()
   {
+    if (isset($this->_stream))
+    {
+      fclose($this->_stream);
+      $this->_stream = null;
+      $this->_out = null;
+      $this->_in = null;
+    }
   }
   
   /**
@@ -52,6 +118,7 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
    */
   public function setWriteTranslations(array $replacements)
   {
+    $this->_translations = $replacements;
   }
   
   /**
@@ -63,6 +130,11 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
    */
   public function readLine($sequence)
   {
+    if (isset($this->_out) && !feof($this->_out))
+    {
+      $line = fgets($this->_out);
+      return $line;
+    }
   }
   
   /**
@@ -75,6 +147,11 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
    */
   public function read($length)
   {
+    if (isset($this->_out) && !feof($this->_out))
+    {
+      $ret = fread($this->_out, $length);
+      return $ret;
+    }
   }
   
   /**
@@ -95,6 +172,15 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
    */
   public function write($bytes)
   {
+    if (isset($this->_in)
+      && fwrite($this->_in, str_replace(
+        array_keys($this->_translations),
+        array_values($this->_translations),
+        $bytes
+      )))
+    {
+      return ++$this->_sequence;
+    }
   }
   
   /**
@@ -103,6 +189,47 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
    */
   public function flushContents()
   {
+    if (isset($this->_in))
+    {
+      fflush($this->_in);
+    }
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Establishes a connection to a remote server.
+   * @access private
+   */
+  private function _establishSocketConnection()
+  {
+    $host = $this->_params['host'];
+    if (isset($this->_params['protocol']))
+    {
+      $host = $this->_params['protocol'] . '://' . $host;
+    }
+    $timeout = 15;
+    if (isset($this->_params['timeout']))
+    {
+      $timeout = $this->_params['timeout'];
+    }
+    if (!$this->_stream = fsockopen($host, $this->_params['port'], $errno, $errstr, $timeout))
+    {
+      throw new Swift_Transport_TransportException(
+        'Connection could not be established with host ' . $this->_params['host'] .
+        ' [' . $errstr . ' #' . $errno . ']'
+        );
+    }
+    if (!empty($this->_params['blocking']))
+    {
+      stream_set_blocking($this->_stream, 1);
+    }
+    else
+    {
+      stream_set_blocking($this->_stream, 0);
+    }
+    $this->_in =& $this->_stream;
+    $this->_out =& $this->_stream;
   }
   
 }

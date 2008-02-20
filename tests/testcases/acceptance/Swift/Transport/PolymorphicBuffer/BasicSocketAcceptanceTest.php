@@ -22,9 +22,58 @@ class Swift_Transport_PolymorphicBuffer_BasicSocketAcceptanceTest
     $this->_buffer = new Swift_Transport_PolymorphicBuffer();
   }
   
-  public function testNothing()
+  public function testReadLine()
   {
-    $this->assertFalse(true);
+    $parts = explode(':', SWIFT_SMTP_HOST);
+    $host = $parts[0];
+    $port = isset($parts[1]) ? $parts[1] : 25;
+    
+    $this->_buffer->initialize(array(
+      'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
+      'host' => $host,
+      'port' => $port,
+      'protocol' => 'tcp',
+      'blocking' => 1,
+      'timeout' => 15
+      ));
+    
+    $line = $this->_buffer->readLine(0);
+    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
+    $seq = $this->_buffer->write("QUIT\r\n");
+    $this->assertTrue($seq);
+    $line = $this->_buffer->readLine($seq);
+    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
+    $this->_buffer->terminate();
+  }
+  
+  public function testWrite()
+  {
+    $parts = explode(':', SWIFT_SMTP_HOST);
+    $host = $parts[0];
+    $port = isset($parts[1]) ? $parts[1] : 25;
+    
+    $this->_buffer->initialize(array(
+      'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
+      'host' => $host,
+      'port' => $port,
+      'protocol' => 'tcp',
+      'blocking' => 1,
+      'timeout' => 15
+      ));
+    
+    $line = $this->_buffer->readLine(0);
+    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
+    
+    $seq = $this->_buffer->write("HELO foo\r\n");
+    $this->assertTrue($seq);
+    $line = $this->_buffer->readLine($seq);
+    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
+    
+    $seq = $this->_buffer->write("QUIT\r\n");
+    $this->assertTrue($seq);
+    $line = $this->_buffer->readLine($seq);
+    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
+    $this->_buffer->terminate();
   }
   
 }

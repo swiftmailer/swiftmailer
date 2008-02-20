@@ -20,7 +20,7 @@ define('SWIFT_SMTP_HOST', ''); //Recommended 'smtp.gmail.com:25'
 define('SWIFT_TLS_HOST', ''); //Recommended 'smtp.gmail.com:465'
 
 //An SMTP host using SSL (hostname:port)
-define('SWIFT_SSL_HOST', ''); //Recommended 'smtp.gmail.com:587'
+define('SWIFT_SSL_HOST', ''); //Recommended 'smtp.gmail.com:465'
 
 ///////////////////////////////////////////////////////
 // THERE IS NO PROBABLY NEED TO EDIT BELOW THIS LINE //
