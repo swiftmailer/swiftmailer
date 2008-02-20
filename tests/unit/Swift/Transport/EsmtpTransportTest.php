@@ -37,6 +37,30 @@ class Swift_Transport_EsmtpTransportTest
     $this->_smtp->stop();
   }
   
+  public function testHostCanBeSetAndFetched()
+  {
+    $this->_smtp->setHost('foo');
+    $this->assertEqual('foo', $this->_smtp->getHost());
+  }
+  
+  public function testPortCanBeSetAndFetched()
+  {
+    $this->_smtp->setPort(25);
+    $this->assertEqual(25, $this->_smtp->getPort());
+  }
+  
+  public function testTimeoutCanBeSetAndFetched()
+  {
+    $this->_smtp->setTimeout(10);
+    $this->assertEqual(10, $this->_smtp->getTimeout());
+  }
+  
+  public function testEncryptionCanBeSetAndFetched()
+  {
+    $this->_smtp->setEncryption('tls');
+    $this->assertEqual('tls', $this->_smtp->getEncryption());
+  }
+  
   public function testStartAccepts220ServiceGreeting()
   {
     /* -- RFC 2821, 4.2.
@@ -1365,6 +1389,60 @@ class Swift_Transport_EsmtpTransportTest
     
     $this->_smtp->setUsername('mick');
     $this->_smtp->setPassword('pass');
+  }
+  
+  public function testMixinMethodsBeginningWithSetAndNullReturnAreFluid()
+  {
+    $ext1 = new Swift_Transport_MockEsmtpHandlerMixin();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->setReturnValue('getPriorityOver', 0, array('STARTTLS'));
+    $ext1->setReturnValue('exposeMixinMethods', array('setUsername', 'setPassword'));
+    $ext1->expectOnce('setUsername', array('mick'));
+    $ext1->setReturnValue('setUsername', null);
+    $ext1->expectOnce('setPassword', array('pass'));
+    $ext1->setReturnValue('setPassword', null);
+    
+    $ext2 = new Swift_Transport_MockEsmtpHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext2->setReturnValue('getPriorityOver', -1, array('AUTH'));
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2));
+    
+    $this->assertReference($this->_smtp, $this->_smtp->setUsername('mick'));
+    $this->assertReference($this->_smtp, $this->_smtp->setPassword('pass'));
+  }
+  
+  public function testMixinSetterWhichReturnValuesAreNotFluid()
+  {
+    $ext1 = new Swift_Transport_MockEsmtpHandlerMixin();
+    $ext1->setReturnValue('getHandledKeyword', 'AUTH');
+    $ext1->setReturnValue('getPriorityOver', 0, array('STARTTLS'));
+    $ext1->setReturnValue('exposeMixinMethods', array('setUsername', 'setPassword'));
+    $ext1->expectOnce('setUsername', array('mick'));
+    $ext1->setReturnValue('setUsername', 'x');
+    $ext1->expectOnce('setPassword', array('pass'));
+    $ext1->setReturnValue('setPassword', 'y');
+    
+    $ext2 = new Swift_Transport_MockEsmtpHandler();
+    $ext2->setReturnValue('getHandledKeyword', 'STARTTLS');
+    $ext2->setReturnValue('getPriorityOver', -1, array('AUTH'));
+    
+    $this->_smtp->setExtensionHandlers(array($ext1, $ext2));
+    
+    $this->assertEqual('x', $this->_smtp->setUsername('mick'));
+    $this->assertEqual('y', $this->_smtp->setPassword('pass'));
+  }
+  
+  public function testFluidInterface()
+  {
+    $smtp = new Swift_Transport_EsmtpTransport($this->_buffer, array());
+    $ref = $smtp
+      ->setHost('foo')
+      ->setPort(25)
+      ->setEncryption('tls')
+      ->setTimeout(30)
+      ;
+    $this->assertReference($ref, $smtp);
   }
   
   // -- Private helpers

@@ -23,7 +23,8 @@ define('SWEETY_SIMPLETEST_PATH', SWEETY_LIB_PATH . '/simpletest-svn');
 //The path to any testing directories
 define('SWEETY_TEST_PATH',
   SWEETY_HOME . '/../tests/unit' .
-  PATH_SEPARATOR . SWEETY_HOME . '/../tests/acceptance'
+  PATH_SEPARATOR . SWEETY_HOME . '/../tests/acceptance' .
+  PATH_SEPARATOR . SWEETY_HOME . '/../tests/smoke'
   );
 //Test locator strategies, separated by commas
 define('SWEETY_TEST_LOCATOR', 'Sweety_TestLocator_PearStyleLocator');
@@ -50,3 +51,4 @@ spl_autoload_register(array('Swift_Di', 'autoload'));
 
 //Load in some swift specific testig config
 require_once SWEETY_HOME . '/../tests/acceptance.conf.php';
+require_once SWEETY_HOME . '/../tests/smoke.conf.php';

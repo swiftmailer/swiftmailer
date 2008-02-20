@@ -19,6 +19,7 @@
  */
 
 //@require 'Swift/Transport/IoBuffer.php';
+//@require 'Swift/Transport/TransportException.php';
 
 /**
  * A generic IoBuffer implementation supporting remote sockets and local processes.
@@ -95,6 +96,25 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
    */
   public function setParam($param, $value)
   {
+    if (isset($this->_stream))
+    {
+      switch ($param)
+      {
+        case 'protocol':
+          if (!array_key_exists('protocol', $this->_params)
+            || $value != $this->_params['protocol'])
+          {
+            if ('tls' == $value)
+            {
+              stream_socket_enable_crypto(
+                $this->_stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT
+                );
+            }
+          }
+          break;
+      }
+    }
+    $this->_params[$param] = $value;
   }
   
   /**

@@ -26,3 +26,6 @@ spl_autoload_register(array('Swift_Di', 'autoload'));
 Swift_MimeFactory::getInstance()->registerDependencyMap(
   include(SWIFT_MAP_DIRECTORY . '/mime_deps.php')
   );
+Swift_TransportFactory::getInstance()->registerDependencyMap(
+  include(SWIFT_MAP_DIRECTORY . '/transport_deps.php')
+  );

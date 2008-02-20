@@ -248,6 +248,7 @@ class Swift_Transport_EsmtpTransport
   public function setLocalDomain($domain)
   {
     $this->_domain = $domain;
+    return $this;
   }
   
   /**
@@ -266,6 +267,7 @@ class Swift_Transport_EsmtpTransport
   public function setHost($host)
   {
     $this->_params['host'] = $host;
+    return $this;
   }
   
   /**
@@ -278,12 +280,32 @@ class Swift_Transport_EsmtpTransport
   }
   
   /**
+   * Set the port to connect to.
+   * @param int $port
+   */
+  public function setPort($port)
+  {
+    $this->_params['port'] = (int) $port;
+    return $this;
+  }
+  
+  /**
+   * Get the port to connect to.
+   * @return int
+   */
+  public function getPort()
+  {
+    return $this->_params['port'];
+  }
+  
+  /**
    * Set the connection timeout.
    * @param int $timeout seconds
    */
   public function setTimeout($timeout)
   {
     $this->_params['timeout'] = (int) $timeout;
+    return $this;
   }
   
   /**
@@ -293,6 +315,25 @@ class Swift_Transport_EsmtpTransport
   public function getTimeout()
   {
     return $this->_params['timeout'];
+  }
+  
+  /**
+   * Set the encryption type (tls or ssl)
+   * @param string $encryption
+   */
+  public function setEncryption($enc)
+  {
+    $this->_params['protocol'] = $enc;
+    return $this;
+  }
+  
+  /**
+   * Get the encryption type.
+   * @return string
+   */
+  public function getEncryption()
+  {
+    return $this->_params['protocol'];
   }
   
   /**
@@ -317,6 +358,7 @@ class Swift_Transport_EsmtpTransport
     uasort($assoc, array($this, '_sortHandlers'));
     $this->_handlers = $assoc;
     $this->_setHandlerParams();
+    return $this;
   }
   
   /**
@@ -382,7 +424,15 @@ class Swift_Transport_EsmtpTransport
         array_map('strtolower', (array) $handler->exposeMixinMethods())
         ))
       {
-        return call_user_func_array(array($handler, $method), $args);
+        $return = call_user_func_array(array($handler, $method), $args);
+        if (is_null($return) && substr($method, 0, 3) == 'set')
+        {
+          return $this;
+        }
+        else
+        {
+          return $return;
+        }
       }
     }
     trigger_error('Call to undefined method ' . $method, E_USER_ERROR);
