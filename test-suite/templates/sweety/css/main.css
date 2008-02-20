@@ -76,6 +76,17 @@ div#sweety-messages {
   border-top: 1px solid #777;
 }
 
+div#sweety-smoke-images {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+div#sweety-smoke-images img {
+  width: 150px;
+  height: 120px;
+  margin-right: 8px;
+}
+
 div.sweety-clear {
   width: 100%;
   clear: both;

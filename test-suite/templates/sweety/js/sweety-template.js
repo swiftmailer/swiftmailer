@@ -247,6 +247,7 @@ function SweetyUIManager() {
    */
   this.resetMessageDiv = function resetMessageDiv() {
     _getMessages().innerHTML = "";
+    _getElementById("sweety-smoke-images").innerHTML = "";
   }
   
   /**
@@ -385,11 +386,26 @@ function SweetyUIManager() {
    * @param {String} path
    */
   this.paintOutput = function paintOutput(output, path) {
-    var outputPane = document.createElement("pre");
-    outputPane.className = "sweety-raw-output";
-    _setContent(outputPane, output);
+    var refs;
+    if (refs = /^\{image @ (.*?)\}$/.exec(output)) {
+      this.paintSmokeImage(refs[1]);
+    } else {
+      var outputPane = document.createElement("pre");
+      outputPane.className = "sweety-raw-output";
+      _setContent(outputPane, output);
     
-    _getMessages().appendChild(outputPane);
+      _getMessages().appendChild(outputPane);
+    }
+  }
+  
+  this.paintSmokeImage = function paintSmokeImage(imageSrc) {
+    var imagePane = _getElementById("sweety-smoke-images");
+    var smokeImg = document.createElement("img");
+    smokeImg.title = 'Smoke test image';
+    smokeImg.src = imageSrc;
+    smokeImg.style.cursor = 'pointer';
+    smokeImg.onclick = function() { window.open(imageSrc); };
+    imagePane.appendChild(smokeImg);
   }
   
   /**

@@ -115,6 +115,9 @@
             <strong id="sweety-num-exceptions">0</strong> exceptions.
           </div>
           
+          <div id="sweety-smoke-images">
+          </div>
+          
           <div id="sweety-messages">
           </div>
           
