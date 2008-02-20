@@ -260,6 +260,24 @@ class Swift_Transport_EsmtpTransport
   }
   
   /**
+   * Set the host to connect to.
+   * @param string $host
+   */
+  public function setHost($host)
+  {
+    $this->_params['host'] = $host;
+  }
+  
+  /**
+   * Get the host to connect to.
+   * @return string
+   */
+  public function getHost()
+  {
+    return $this->_params['host'];
+  }
+  
+  /**
    * Set the connection timeout.
    * @param int $timeout seconds
    */

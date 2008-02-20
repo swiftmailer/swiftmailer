@@ -23,7 +23,7 @@ $message = Swift_MimeFactory::create('message')
     Swift_MimeFactory::create('attachment')
       ->setContentType('application/pdf')
       ->setFilename('μια ωραια συνταγη.pdf')
-      ->setBody(file_get_contents(dirname(__FILE__) . '/files/stifado_recipe.pdf'))
+      ->setBody(file_get_contents(dirname(__FILE__) . '/../files/BeefStifado.pdf'))
     )
   ;
   

@@ -14,8 +14,8 @@ require_once dirname(__FILE__) . '/../../lib/swift_required.php';
 
 $message = Swift_MimeFactory::create('message');
 $message->setSubject('An image and a recipe!')
-  ->setTo(array('rob@site.com' => 'Rob'))
-  ->setFrom(array('chris@w3style.co.uk' => 'Myself'))
+  ->setTo(array('chris.corbyn@sitepoint.com' => 'Chris'))
+  ->setFrom(array('chris.corbyn@sitepoint.com' => 'Myself'))
   ->setBody(
     "Here's the Swift Mailer logo <img src=\"" . $message->embed(
           Swift_MimeFactory::create('image')
@@ -34,4 +34,10 @@ $message->setSubject('An image and a recipe!')
   ->attach(Swift_MimeFactory::create('part')->setBody('alternative part'))
   ;
   
-echo $message->toString();
+$smtp = new Swift_Transport_EsmtpTransport(new Swift_Transport_PolymorphicBuffer(), array());
+$smtp->setHost('gravity.sitepoint.com');
+
+$mailer = new Swift_Mailer($smtp);
+var_dump($mailer->send($message));
+
+//echo $message->toString();
