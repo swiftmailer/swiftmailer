@@ -10,7 +10,7 @@ class Swift_Encoder_Base64EncoderAcceptanceTest extends UnitTestCase
   
   public function setUp()
   {
-    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../samples/');
+    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../_samples/');
     $this->_encoder = new Swift_Encoder_Base64Encoder();
   }
   
