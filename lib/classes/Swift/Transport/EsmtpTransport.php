@@ -45,9 +45,9 @@ class Swift_Transport_EsmtpTransport
   /**
    * Connection buffer parameters.
    * @var array
-   * @access private
+   * @access protected
    */
-  private $_params = array(
+  protected $_params = array(
     'protocol' => 'tcp',
     'host' => 'localhost',
     'port' => 25,

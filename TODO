@@ -19,7 +19,7 @@ Swift Mailer SE:
        - PopBeforeSmtp
      - 8BITMIME
    - PolymorphicIoBuffer
-     - Support sendmail proc + SMTP socket
+     - Support sendmail proc
    - Sendmail
      - Actually implement support for -t mode now
      - Extend Esmtp for -bs support
@@ -35,6 +35,13 @@ Swift Mailer SE:
      - getState() [open,closed,failed,cancelled]
    - ResponseEvent
    - CommandEvent
+ * Plugins
+   - AntiFlood
+   - Throttler
+   - Verbose
+   - Decorator
+   - BandwidthMonitor
+   - FileEmbedder
 
 Swift Mailer EE:
 ----------------
