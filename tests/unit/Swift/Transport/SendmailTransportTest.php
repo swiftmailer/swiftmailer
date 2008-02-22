@@ -57,7 +57,7 @@ class Swift_Transport_SendmailTransportTest
     $this->_sendmailBuf->expectOnce('initialize');
     $this->_sendmailBuf->expectOnce('terminate');
     $this->_sendmailBuf->expectAt(0,
-      'setWriteTranslations', array(array("\r\n."=>"\r\n..", "\r\n"=>PHP_EOL))
+      'setWriteTranslations', array(array("\r\n"=>"\n"))
       );
     $this->_sendmailBuf->expectAt(1,
       'setWriteTranslations', array(array())

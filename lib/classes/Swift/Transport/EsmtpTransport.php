@@ -408,6 +408,38 @@ class Swift_Transport_EsmtpTransport
     return $response;
   }
   
+  // -- Protected methods
+  
+  /**
+   * Determine the best-use reverse path for this message.
+   * The preferred order is: return-path, sender, from.
+   * @param Swift_Mime_Message $message
+   * @return string
+   * @access protected
+   */
+  protected function _getReversePath(Swift_Mime_Message $message)
+  {
+    $return = $message->getReturnPath();
+    $sender = $message->getSender();
+    $from = $message->getFrom();
+    $path = null;
+    if (!empty($return))
+    {
+      $path = $return;
+    }
+    elseif (!empty($sender))
+    {
+      $keys = array_keys($sender);
+      $path = array_shift($keys);
+    }
+    elseif (!empty($from))
+    {
+      $keys = array_keys($from);
+      $path = array_shift($keys);
+    }
+    return $path;
+  }
+  
   // -- Mixin invokation code
   
   /**
@@ -533,35 +565,6 @@ class Swift_Transport_EsmtpTransport
       }
     }
     return $handlers;
-  }
-  
-  /**
-   * Determine the best-use reverse path for this message.
-   * The preferred order is: return-path, sender, from.
-   * @param Swift_Mime_Message $message
-   * @return string
-   */
-  private function _getReversePath(Swift_Mime_Message $message)
-  {
-    $return = $message->getReturnPath();
-    $sender = $message->getSender();
-    $from = $message->getFrom();
-    $path = null;
-    if (!empty($return))
-    {
-      $path = $return;
-    }
-    elseif (!empty($sender))
-    {
-      $keys = array_keys($sender);
-      $path = array_shift($keys);
-    }
-    elseif (!empty($from))
-    {
-      $keys = array_keys($from);
-      $path = array_shift($keys);
-    }
-    return $path;
   }
   
   /**

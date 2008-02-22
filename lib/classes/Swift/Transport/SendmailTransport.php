@@ -41,35 +41,62 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
     $this->_params['type'] = Swift_Transport_IoBuffer::TYPE_PROCESS;
   }
   
+  /**
+   * Start the standalone SMTP session if running in -bs mode.
+   */
+  public function start()
+  {
+    if (false !== strpos($this->getCommand(), ' -bs'))
+    {
+      parent::start();
+    }
+  }
+  
+  /**
+   * Set the command to invoke.
+   * If using -t mode you are strongly advised to include -oi or -i in the
+   * flags. For example: /usr/sbin/sendmail -oi -t
+   * Swift will append a -f<sender> flag if one is not present.
+   * The recommended mode is "-bs" since it is interactive and failure notifications
+   * are hence possible.
+   * @param string $command
+   */
   public function setCommand($command)
   {
     $this->_params['command'] = $command;
+    return $this;
   }
   
+  /**
+   * Get the sendmail command which will be invoked.
+   * @return string
+   */
   public function getCommand()
   {
     return $this->_params['command'];
   }
   
+  /**
+   * Send the given Message.
+   * Recipient/sender data will be retreived from the Message API.
+   * The return value is the number of recipients who were accepted for delivery.
+   * NOTE: If using 'sendmail -t' you will not be aware of any failures until
+   * they bounce (i.e. send() will always return 100% success).
+   * @param Swift_Mime_Message $message
+   * @return int
+   */
   public function send(Swift_Mime_Message $message)
   {
     $command = $this->getCommand();
     $buffer = $this->getBuffer();
     if (false !== strpos($command, ' -t'))
     {
-      $stripDot = (
-        false === strpos($command, ' -i')
-        && false === strpos($command, ' -oi')
-        );
-      $buffer->initialize($this->_params);
-      if ($stripDot)
+      if (false === strpos($command, ' -f'))
       {
-        $buffer->setWriteTranslations(array("\r\n."=>"\r\n..", "\r\n"=>PHP_EOL));
+        $command .= ' -f' . $this->_getReversePath($message);
       }
-      else
-      {
-        $buffer->setWriteTranslations(array("\r\n"=>PHP_EOL));
-      }
+      $buffer->initialize(array_merge($this->_params, array('command' => $command)));
+      $buffer->setWriteTranslations(array("\r\n"=>"\n"));
       $count = count((array) $message->getTo())
         + count((array) $message->getCc())
         + count((array) $message->getBcc())
@@ -86,7 +113,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
     {
       throw new Swift_Transport_TransportException(
         'Unsupported sendmail command flags [' . $command . ']. ' .
-        'Must be one of "-bs", "-t", "-i -t" or "-oi -t"'
+        'Must be one of "-bs" or "-t" but can include additional flags'
         );
     }
     
