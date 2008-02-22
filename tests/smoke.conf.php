@@ -14,7 +14,7 @@
  Defines: The an address which Swift can send to (it will also send "from" this address).
  Recommended: (your own email address?)
  */
-define('SWIFT_SMOKE_EMAIL_ADDRESS', 'chris@w3style.co.uk');
+define('SWIFT_SMOKE_EMAIL_ADDRESS', 'chris.corbyn@swiftmailer.org');
 
 /*
  Defines: The specific transport you want to mail with.
@@ -28,7 +28,7 @@ define('SWIFT_SMOKE_TRANSPORT_TYPE', 'smtp');
  Defines: An SMTP server to connect to
  Recommended: smtp.your-isp.com (varies wildly!)
  */
-define('SWIFT_SMOKE_SMTP_HOST', 'mail.bigpond.com.au');
+define('SWIFT_SMOKE_SMTP_HOST', 'gmail-smtp-in.l.google.com');
 
 /*
  Defines: The SMTP port to connect to

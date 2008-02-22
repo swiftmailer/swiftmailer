@@ -26,7 +26,10 @@ class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
       case 'smtp':
         $transport = Swift_TransportFactory::create('smtp')
           ->setHost(SWIFT_SMOKE_SMTP_HOST)
-          ->setPort(SWIFT_SMOKE_SMTP_PORT); //username/password
+          ->setPort(SWIFT_SMOKE_SMTP_PORT)
+          ->setUsername(SWIFT_SMOKE_SMTP_USER)
+          ->setPassword(SWIFT_SMOKE_SMTP_PASS)
+          ;
         break;
       default:
         throw new Exception('Undefined transport [' . SWIFT_SMOKE_TRANSPORT_TYPE . ']');

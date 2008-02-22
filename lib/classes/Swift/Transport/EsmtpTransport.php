@@ -23,6 +23,7 @@
 //@require 'Swift/Transport/IoBuffer.php';
 //@require 'Swift/Transport/EsmtpBufferWrapper.php';
 //@require 'Swift/Transport/CommandSentException.php';
+//@require 'Swift/Transport/TransportException.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -451,7 +452,7 @@ class Swift_Transport_EsmtpTransport
     list($code, $separator, $text) = sscanf($response, '%3d%[ -]%s');
     if (!empty($wanted) && !in_array($code, $wanted))
     {
-      throw new Exception(
+      throw new Swift_Transport_TransportException(
         'Expected response code ' . implode('/', $wanted) . ' but got code ' .
         '"' . $code . '", with message "' . $response . '"'
         );
@@ -603,7 +604,7 @@ class Swift_Transport_EsmtpTransport
           );
         $sent++;
       }
-      catch (Exception $e)
+      catch (Swift_Transport_TransportException $e)
       {
       }
     }

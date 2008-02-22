@@ -146,7 +146,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
    */
   public function afterEhlo(Swift_Transport_EsmtpBufferWrapper $buf)
   {
-    if (isset($this->_username))
+    if ($this->_username)
     {
       $count = 0;
       foreach ($this->_authenticators as $authenticator)
