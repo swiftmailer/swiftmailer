@@ -12,13 +12,13 @@ Swift Mailer SE:
    - Shift-JIS
    - ISO-10646
    - CP950
+ * Allow BOM in utf-8
  * Optimize QpEncoder/Rfc2231Encoder/CharacterStream/CharacterReader
    - Read more than 1 char at a time?
    - Get characters already unpacked as a byte array?
    - Avoid using pack()/unpack() completely?
  * Streams
    - FileCharacterStream
- * Logging
  * Transports
    - PopBeforeSmtp authentication
    - Esmtp extension support
@@ -40,7 +40,7 @@ Swift Mailer SE:
    - AntiFlood
    - Throttler
    - Verbose
-   - Decorator
+   - Decorator (Mime API needs improving!)
    - BandwidthMonitor
    - FileEmbedder
  * V3 Wrapper classes

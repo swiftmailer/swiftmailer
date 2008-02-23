@@ -37,6 +37,10 @@ class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
           ->setCommand(SWIFT_SMOKE_SENDMAIL_COMMAND)
           ;
         break;
+      case 'mail':
+      case 'nativemail':
+        $transport = Swift_TransportFactory::create('mail');
+        break;
       default:
         throw new Exception('Undefined transport [' . SWIFT_SMOKE_TRANSPORT_TYPE . ']');
     }

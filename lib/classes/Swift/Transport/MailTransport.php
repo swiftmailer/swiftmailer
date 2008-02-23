@@ -1,0 +1,191 @@
+<?php
+
+/*
+ The basic mail() wrapper from Swift Mailer.
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ */
+
+//@require 'Swift/Transport.php';
+//@require 'Swift/Transport/Log.php';
+//@require 'Swift/Mime/Message.php';
+
+/**
+ * Sends Messages using the mail() function.
+ * @package Swift
+ * @subpackage Transport
+ * @author Chris Corbyn
+ */
+class Swift_Transport_MailTransport implements Swift_Transport
+{
+
+  /**
+   * Addtional parameters to pass to mail().
+   * @var string
+   * @access private
+   */
+  private $_extraParams = '-f%s';
+  
+  /**
+   * The active logger instance.
+   * @var Swift_Transport_Log
+   * @access private
+   */
+  private $_log;
+  
+  /**
+   * Create a new MailTransport with the $log.
+   * @param Swift_Transport_Log $log
+   */
+  public function __construct(Swift_Transport_Log $log)
+  {
+    $this->_log = $log;
+  }
+  
+  /**
+   * Test if this Transport mechanism has started.
+   * @return boolean
+   */
+  public function isStarted()
+  {
+    return false;
+  }
+  
+  /**
+   * Start this Transport mechanism.
+   */
+  public function start()
+  {
+  }
+  
+  /**
+   * Stop this Transport mechanism.
+   */
+  public function stop()
+  {
+  }
+  
+  /**
+   * Set the additional parameters used on the mail() function.
+   * This string is formatted for sprintf() where %s is the sender address.
+   * @param string $params
+   */
+  public function setExtraParams($params)
+  {
+    $this->_extraParams = $params;
+    return $this;
+  }
+  
+  /**
+   * Get the additional parameters used on the mail() function.
+   * This string is formatted for sprintf() where %s is the sender address.
+   * @return string
+   */
+  public function getExtraParams()
+  {
+    return $this->_extraParams;
+  }
+  
+  /**
+   * Send the given Message.
+   * Recipient/sender data will be retreived from the Message API.
+   * The return value is the number of recipients who were accepted for delivery.
+   * @param Swift_Mime_Message $message
+   * @return int
+   */
+  public function send(Swift_Mime_Message $message)
+  { 
+    $count = (
+      count($message->getTo())
+      + count($message->getCc())
+      + count($message->getBcc())
+      );
+    
+    $to = $message->getHeader('to')->getFieldBody();
+    $subject = $message->getHeader('subject')->getFieldBody();
+    $reversePath = $this->_getReversePath($message);
+    $messageStr = $message->toString();
+    
+    //Separate headers from body
+    if (false !== $endHeaders = strpos($messageStr, "\r\n\r\n"))
+    {
+      $headers = substr($messageStr, 0, $endHeaders . "\r\n"); //Keep last EOL
+      $body = substr($messageStr, $endHeaders + 4);
+    }
+    else
+    {
+      $headers = $messageStr . "\r\n";
+      $body = '';
+    }
+    
+    unset($messageStr);
+    
+    if ("\r\n" != PHP_EOL) //Non-windows (not using SMTP)
+    {
+      $headers = str_replace("\r\n", PHP_EOL, $headers);
+      $body = str_replace("\r\n", PHP_EOL, $body);
+    }
+    else //Windows, using SMTP
+    {
+      $headers = str_replace("\r\n.", "\r\n..", $headers);
+      $body = str_replace("\r\n.", "\r\n..", $body);
+    }
+    
+    if (mail($to, $subject, $body, $headers,
+      sprintf($this->_extraParams, $reversePath)))
+    {
+      $this->_log->addLogEntry('++ ((MESSAGE SENT WITH MAIL()))');
+      return $count;
+    }
+    else
+    {
+      $this->_log->addLogEntry('!! ((SENDING WITH MAIL() FAILED))');
+      return 0;
+    }
+  }
+  
+  // -- Private methods
+  
+  /**
+   * Determine the best-use reverse path for this message.
+   * The preferred order is: return-path, sender, from.
+   * @param Swift_Mime_Message $message
+   * @return string
+   * @access private
+   */
+  private function _getReversePath(Swift_Mime_Message $message)
+  {
+    $return = $message->getReturnPath();
+    $sender = $message->getSender();
+    $from = $message->getFrom();
+    $path = null;
+    if (!empty($return))
+    {
+      $path = $return;
+    }
+    elseif (!empty($sender))
+    {
+      $keys = array_keys($sender);
+      $path = array_shift($keys);
+    }
+    elseif (!empty($from))
+    {
+      $keys = array_keys($from);
+      $path = array_shift($keys);
+    }
+    return $path;
+  }
+  
+}

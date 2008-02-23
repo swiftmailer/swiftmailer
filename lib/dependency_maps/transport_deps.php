@@ -65,6 +65,13 @@ $_swiftTransportDeps = array(
     'shared' => false
     ),
     
+  //Mail
+  'mail' => array(
+    'class' => 'Swift_Transport_MailTransport',
+    'args' => array('di:arraylog'),
+    'shared' => false
+    ),
+    
   //ArrayLog
   'arraylog' => array(
     'class' => 'Swift_Transport_Log_ArrayLog',
@@ -73,6 +80,8 @@ $_swiftTransportDeps = array(
     )
   
   );
+  
+$_swiftTransportDeps['nativemail'] = $_swiftTransportDeps['mail'];
 
 return $_swiftTransportDeps;
 

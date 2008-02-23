@@ -14,13 +14,13 @@
  Defines: The an address which Swift can send to (it will also send "from" this address).
  Recommended: (your own email address?)
  */
-define('SWIFT_SMOKE_EMAIL_ADDRESS', 'chris.corbyn@swiftmailer.org');
+define('SWIFT_SMOKE_EMAIL_ADDRESS', 'chris.corbyn@sitepoint.com');
 
 /*
  Defines: The specific transport you want to mail with.
  Recommended: Any of 'smtp', 'sendmail' or 'mail'
  */
-define('SWIFT_SMOKE_TRANSPORT_TYPE', 'sendmail');
+define('SWIFT_SMOKE_TRANSPORT_TYPE', 'mail');
 
 // SMTP-specific settings
 
