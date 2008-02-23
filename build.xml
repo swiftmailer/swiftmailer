@@ -1,0 +1,35 @@
+<!-- Ant build file for Swift Mailer -->
+<project name="Swift" default="bundle">
+  
+  <property name="path" value="." />
+  <property name="builddir" value="${path}/build" />
+  <property name="src.versionfile" value="${path}/VERSION" />
+  <loadfile property="bundle.name" srcFile="${src.versionfile}">
+    <filterchain>
+      <striplinebreaks />
+    </filterchain>
+  </loadfile>
+  <property name="src.libdir" value="${path}/lib" />
+  <property name="src.exampledir" value="${path}/examples" />
+  <property name="builddir.package" value="${builddir}/${bundle.name}" />
+  
+  <target name="bundle" depends="clean, copy-classes">
+    <copy file="${src.versionfile}" todir="${builddir.package}" />
+    <copy todir="${builddir.package}/examples">
+      <fileset dir="${src.exampledir}" />
+    </copy>
+  </target>
+  
+  <target name="clean">
+    <delete includeemptydirs="true">
+      <fileset dir="${builddir}" includes="**/*"/>
+    </delete>
+  </target>
+  
+  <target name="copy-classes">
+    <copy todir="${builddir.package}/lib">
+      <fileset dir="${src.libdir}" />
+    </copy>
+  </target>
+  
+</project>

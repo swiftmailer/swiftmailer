@@ -1,0 +1,1965 @@
+$Id: ChangeLog,v 1.2 2006/04/30 18:38:56 cellog Exp $
+see package.xml for newer changelogs
+----------------------------------Release 1.3.0RC3---------------------------------
+2004-04-10  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix beautifying for entities and <programlisting>
+    * add new <programlisting role="html"> for unmodified html output (form demonstration and the like)
+
+2004-04-09  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix PHP5 warnings
+    * add warning if beautifying fails
+    * XML beautifying for peardoc2 works!
+    * fix typo in HTML:Smarty:PHP class.tpl
+    * fix endless loop with HighlightParser and tab characters
+
+2004-04-04  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix [ 904823 ] IntermediateParser fatal error
+
+2004-04-02  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix [ 924313 ] Objec access on array
+    * fix [ 915770 ] Classes in file not showing
+    * fix [ 910676 ] Fatal error: Smarty error: unable to write to $compile_dir
+
+2004-03-08  Joshua Eichorn <jeichorn@phpdoc.org>
+    * Fix for [ 912064 ] Ugly CLI warning message in safe mode, in safe mode
+      give a warning instead of calling set_time_limit
+    * Possible fix for [ 910690 ] documentation might beed more updating
+    * Added a note about problems with non GNU tar, bug #908920
+    * Test case for bug [ 904820 ], it already worked
+
+2004-02-20  Gregory Beaver <cellog@users.sourceforge.net>
+    * implement [ 799026 ] Images in tutorials
+    * allow <tag /> in tutorials
+    * fix @static for peardoc converter
+
+2004-02-19  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix [ 899028 ] source_files unreadable in Opera
+
+----------------------------------Release 1.3.0RC2---------------------------------
+2004-02-12  Gregory Beaver <cellog@users.sourceforge.net>
+    * tokenizer parser is no longer experimental
+    * display PHP/phpDocumentor version to help stop stupid non-bug bug reports (older versions)
+    * fix [ 895656 ] initialized private variables not recognized as private
+
+2004-02-09  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix sourcecode=on in PHP 5, and a bug in PHP 4 if there was a page-level docblock that
+      was moved to a class-level docblock
+    * fix another clone bug, this time in IntermediateParser.inc
+    * fix major highlighting bug - endless loop - with T_DOC_COMMENT token
+    * fix warnings in HighlightParser
+    * fix [ 893470 ] __clone called directly in PackagePageElements.inc
+
+----------------------------------Release 1.3.0RC1---------------------------------
+2004-02-08  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed warning and severe bug - complete ignore of class docs - caused by
+      a docblock containing a <code> block with a class declaration
+    * multi-national charactrers are now allowed in a package name
+
+2004-02-07  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix [ 892479 ] {@link} in // comment is escaped
+    * fix [ 892306 ] peardoc2: @see of method not working
+    * fix [ 892305 ] peardoc2: summary require_once Path/File.php is PathFile.php
+
+2004-02-04  Gregory Beaver <cellog@users.sourceforge.net>
+    * remove all $this = from ParserElements
+    * add new disambiguating "constant BLAH" and "object BLAH" for Converter::getLink()
+
+2004-02-01  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 884869 ] Wrong highligthing of object type variables
+    * fixed [ 884863 ] Multiple authors get added in wrong order.
+    * fixed [ 880488 ] '0' file stops processing
+    * fixed [ 880070 ] PHP5 visability for member variables not working
+
+2004-01-31  Gregory Beaver <cellog@users.sourceforge.net>
+    * Make all source highlighting ultra-output efficient.  No enclosing thing is repeated
+      unless necessary
+    * implement source highlighting in tutorial for <programlisting role="tutorial">
+    * implement {@example} and @example for peardoc2 converter
+
+2004-01-20  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix bug in highlighting of comments introduced by bugfixing of other bugs
+
+2004-01-19  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix XML:DocBook/peardoc2 in PHP 5
+
+2004-01-18  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix [ 879068 ] var arrays tripped up by comments
+    * fix [ 879151 ] HTML:frames:earthli Top row too small for IE
+    * fix [ 877229 ] PHP 5 incompatibilities bork tutorial parsing
+
+2004-01-17  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix [ 877233 ] PHP 5 incompatibilities bork docblock source highlighting
+    * fix [ 878911 ] [PHP 5 incompatibility] argv
+
+2004-01-14  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix bug in inline example
+    * HUGE php5 incompatibility: get_class() is no longer case-sensitive, so
+      wrap all 109 mentions in phpDocumentor_get_class()
+    * fix [ 876674 ] first line of pre and code gets left trimmed
+    * merge several un-merged fixes into pear-specific Converter.inc, IntermediateParser.inc, Setup.inc.php
+    * fix a few PHP5-related warnings and issues
+
+2004-01-12  Gregory Beaver <cellog@users.sourceforge.net>
+    * fix [ 875525 ] <li> escapes <pre> and ignores paragraphs
+
+2004-01-10  Gregory Beaver <cellog@users.sourceforge.net>
+    * implement [ 799232 ] Change behavior of -c key to use any configuration file.
+    * implement [ 749279 ] inline {@example} tag
+    * implement [ 727084 ] Support for custom files to include (README etc).
+    * fix [ 871764 ] @global doesn't work properly with whitespace after the $var
+
+2004-01-09  Gregory Beaver <cellog@users.sourceforge.net>
+    * Hallelujah, thank you "Core CSS" book.  Fix for Mozilla in HTML:Smarty:*.
+      Now I just need to transfer the old colors and stuff into the new style.css
+
+2004-01-05  Gregory Beaver <cellog@users.sourceforge.net>
+    * Fix HTML:frames:* source examples.  For some reason, the IDENTICAL fix does
+      not work in ANY of the HTML:Smarty:* templates.  I hate CSS with a passion.
+
+2004-01-02  Gregory Beaver <cellog@users.sourceforge.net>
+    WARNING: this change TOTALLY f***s up netscape/mozilla - a
+    blank line is in between every line and I have no idea how
+    to get rid of it.  Someone else who is smarter will have to fix this,
+    or I'll revert it later this week
+    * Make source examples in HTML cut-and-pasteable using <ol> and 
+      <li>
+
+2003-12-30  Gregory Beaver <cellog@users.sourceforge.net>
+    * Move to version 1.3.0 since we're adding features
+
+2003-12-28  Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed [ 854321 ] web interface errors with template directory
+	* fixed [ 850767 ] MHW Reference wrong
+	* fixed [ 865126 ] CHM files use hard paths
+	* fixed [ 850731 ] No DocBlock template after page-level DocBlock?
+	* fixed [ 839092 ] CHM:default:default produces bad links
+	* fixed [ 840792 ] File Missing XML:DocBook/peardoc2:default "errors.tpl"
+	* fixed [ 856310 ] HTML:frames:DOM/earthli missing Class_logo.png image
+	* fixed [ 839466 ] {$array['Key']} in heredoc
+	* fixed [ 834941 ] inline @link doesn't work within <b>
+
+2003-12-17  Gregory Beaver <cellog@users.sourceforge.net>
+    * full PHP 5 support in all converters, all templates, as well as
+      source highlighting support
+    * Add in class constants
+    * Add in class type hints
+    * fix [ 854321 ] web interface errors with template directory
+    * Added interface/class constants support to HTML:frames:earthli
+
+2003-12-16  Gregory Beaver <cellog@users.sourceforge.net>
+    * Added template variables "is_interface" and "implements" to handle
+      PHP 5
+    * Added support for parsing access modifiers and implements
+    * Migrated to Smarty 2.6.0
+
+2003-10-19  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 823018 ] <code> in list not processed
+    * fixed [ 822373 ] global instruction in function, ',' and ';' missing
+
+-------------------------Release 1.2.3------------------------
+
+2003-10-12  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 771531 ] body styles not explicitly white
+
+2003-10-09  Gregory Beaver <cellog@users.sourceforge.net>
+    * added <!-- $Revision $ --> to all peardoc files written, for aid to
+      translators
+
+2003-10-08  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 731750 ] Links to unparsed includes shown (2nd time reopened)
+    * fixed [ 797066 ] HighlightParser stuffs whitespace in start of string in func
+    * fixed [ 795095 ] top_frame.tpl doesn't output single RIC element
+    * fixed [ 802891 ] Inline link text does not show up
+
+2003-09-19  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 792867 ] Call to undefined function
+    * fixed [ 795489 ] <p> getting escaped
+    * fixed [ 804034 ] <optional> tag not closed for peardoc2
+
+2003-08-31  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 797989 ] HTML not escaped in examples (PHP < 4.3.0)
+
+-------------------------Release 1.2.2.1 (pear)-------------------
+2003-08-20  Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+    * Added 'abstract' to available properties in the HTMLFramesConverter
+	* Updated DOM/earthli and earthli templates with new graphics showing
+	  abstract status of classes and methods. Also added icons for classes
+	  and pages to page.tpl and class.tpl.
+	  
+-------------------------Release 1.2.2------------------------
+2003-08-19  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 791030 ] old PHP version bug /t and ' becomes to &quot;
+    * fixed [ 791131 ] old PHP version bug in output, if define contains "("
+    * fixed [ 791023 ] bug in output: <br;&nbsp;/>
+    * fixed [ 791023 ] bug in output: <br;&nbsp;/>, also implemented <function>
+      handling in all html templates
+
+2003-08-18  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 790685 ] HighlightParser doesn't link class::method() outside methods
+
+2003-08-13  Gregory Beaver <cellog@users.sourceforge.net>
+    * added fix for 781913 for procedural pages
+    * really fixed [ 781913 ] usedby not when @uses at class level
+    * fixed [ 788271 ] HighlightParser links to methods before classes
+    * fixed [ 780332 ] {@link} is closing the link prematurely when a ',' is found
+    * fixed [ 788251 ] {@link function blah()} and {@link object blah} fail
+    * fixed [ 784810 ] stat failing.
+    * peardoc2: added use of &true; &false; and &null; in @param description
+    * peardoc2: added word wrapping for the benefit of translators
+    * more simple list fixes
+
+2003-08-10  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 786180 ] simple lists fail if line starts with an inline tag
+
+2003-08-08  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed bugs in constants/globals peardoc2 generation
+
+2003-08-06  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 781913 ] usedby not when @uses at class level
+
+2003-08-01  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed 2 typos in XML:DocBook/peardoc2:default
+
+2003-07-31  Joshua Eichorn <jeichorn@phpdoc.org>
+    * Spell false right
+
+2003-07-30  Joshua Eichorn <jeichorn@phpdoc.org>
+    * Don't die on empty @param or @return
+
+2003-07-29  Gregory Beaver <cellog@users.sourceforge.net>
+    * Fixed bug in PDF Converter, wasn't finding fonts (PEAR install only)
+    * Made PEAR do replacements on makedocs.ini so it works out of the box
+    * Fixed [ 779552 ] "Documention" instead of "Documentation" in generated pages
+    * Remove stupid use of publicweb_uri :)
+    * Remove possibility to change back to HTML:default
+    * Fixed pear install, to use new publicweb_dir and publicweb_uri
+    * added new pear-based docbuilder that relies on publicweb_dir config variable
+    * fixed missing {@id} in manual.pkg
+    * removed @include_once and now use file_exists/is_readable to catch
+      those errors.
+    * removed all exception handling code.  We haven't used it since June 2002.
+    * added Io::isIncludable() for future use
+
+2003-07-28  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed the last bug with linking in the PDF Converter, removed debug code
+    * fixed bug in global variable linking in PDF Converter
+    * fixed [ 778920 ] tutorial link warning
+    * fixed CHM Converter, added index generation (CHM index)
+
+2003-07-27  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed @filesource in PDF Converter
+    * fixed index and table of contents
+    * added color highlighting to PDF converter source code!
+    * started work on CHM converter.  It's generating a couple
+      of bad links that need to turn good
+
+2003-07-26  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed the PDF Converter - it's beeyootiful
+    * fixed serious bug - double postprocessing of highlighted
+      docblock source.
+    * fixed even more serious bug - splitting of tokens into
+      line numbers was totally wrong in phpDocumentorTWordParser.
+      Now file highlighting works perfectly (and even looks good in Mozilla!)
+    * moved around the manual
+    * fixed minor bugs in documentation
+    * added text color possibility to PDF Converter!  Will be modifying to
+      do color syntax highlighting over the next couple of days
+    * Modified docbuilder to add option of parsing in external window.  I like to be
+      able to just hit refresh.
+
+2003-07-25  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed some more problems - all done now
+    * fixed all the problems in XML:DocBook/peardoc2:default
+    * fixed problem with phpdoc.bat in PEAR install
+    * ran PEAR_PackageFileManager to create package.xml
+    * fixed problems with PEAR!
+    * phpDocumentor now officially conflicts with PHPDoc
+    * Applied fixes to ignore from PEAR_PackageFileManager
+
+2003-07-24  Gregory Beaver <cellog@users.sourceforge.net>
+    * Changed behavior again: If the first element in a file is a class,
+      the docblock belongs to the class.
+    * Updated all documentation to reflect this change in behavior
+    * Improved error messages for Page-level DocBlocks
+    * Changed behavior: if the first docblock in a file contains
+      a @package tag, it is a page-level DocBlock
+
+2003-07-22  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 772441 ] nested arrays fail parser
+    * fixed DocBook/peardoc2 generation
+    * fixed [ 768947 ] Multiple vars not recognised
+    * fixed [ 767251 ] broken links when no files in default package
+
+2003-07-21  Joshua Eichorn <jeichorn@phpdoc.org>
+    * fixed [ 765455 ] phpdoc can't find php if it is in /usr/local/bin
+
+-------------------------Release 1.2.1------------------------
+2003-07-03  Gregory Beaver <cellog@users.sourceforge.net>
+    * config.php fixed [ 765765 ] docbuilder can't change ini dir
+    * default.ini changed version to 1.2.1 in title
+    * DocBlockTags.ini got rid of surrounding <p></p> for
+      single-paragraph @tag descriptions
+
+2003-07-03  William Hardeman <wont@users.sourceforge.net>
+    * fixed [ 765753 ] Extraneous trailing "-" in @uses when no description
+
+2003-07-02  Gregory Beaver <cellog@users.sourceforge.net>
+    * ready version numbering/package.xml for release 1.2.1
+    * fixed [ 753641 ] phpdoc -h output
+    * fixed [ 757077 ] smarty templates_c not in release for HTML:frames:default
+    * fixed up a few bugs in the @example change
+    * fixed bugs in CHMdefault Converter and PDFdefault Converter
+    * Applied Sam Blum's fixes to @example (with a few changes)
+    * tags.example.pkg updated docs
+    * fixed [ 750264 ] @ignore won't work with DocBlock Templates /**#@+
+    * fixed [ 731750 ] Links to unparsed includes shown (reopened)
+    * fixed [ 735134 ] HTML:Smarty:default Documentation can not be printed,
+      added print.css and modified header.tpl to use it for print
+
+2003-07-01  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 764412 ] Complex class inheritance/package causes endless loop
+
+2003-06-29  Gregory Beaver <cellog@users.sourceforge.net>
+    * applied Josh's fix for 749841 to all errors.tpl
+
+2003-06-29  Joshua Eichorn <jeichorn@phpdoc.org>
+    * fixed [ 754067 ] Use the code from pear to find php
+
+2003-06-29  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed improper fix for 750392
+    * fixed [ 750392 ] Formatting doesn't work in Templates /**#@+
+    * fixed [ 752040 ] phpDocumentor 1.2.0 can't parse itself in php < 4.3.0
+    * fixed [ 751066 ] Return type of a constructor is not void.
+    * fixed [ 751101 ] output error when optional parameters are in use
+    * phpDocumentorTParser::handleFunctionParams() removed bizarre double
+      statement (not a bug, just inefficient)
+    * fixed [ 753278 ] @see parent::_privatefunc causes endless loop
+
+2003-06-28  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 752015 ] Docbuilder problems
+    * fixed [ 755681 ] include error in docbuilder file_dialog.php
+    * fixed [ 758387 ] Use of undefined constants in DocBlockTags.inc on line 830
+    * fixed [ 757841 ] JavaScript-Error cause of Package-Name
+    * updated phpdoc.bat with fix from Sam Blum
+
+2003-06-27  Gregory Beaver <cellog@users.sourceforge.net>
+    * Replaced phpdoc.bat with Sam Blum's phpdoc.bat, fixing 749446
+    * Added Release-1.2.1
+    * fixed [ 755688 ] lost image(s)
+    * fixed [ 756730 ] preview image for HTML:Smarty not found
+
+2003-06-07  William K. Hardeman <wont@users.sourceforge.net>
+    * Fixed bug [ 750461 ] by modifying HTMLSmartyConverter::WriteSource(),
+      HTMLSmartyConverter::getSourceLink(), HTMLSmartyConverter::getSourceAnchor(),
+      HTMLSmartyConverter::returnSee(), and HTMLSmartyConverter::convertClass().
+    * Fixed bug [ 750441 ] by adding HTMLSmartyConverter::getCurrentPageLink()
+      method.
+    * Updated HandS template to include a trailing space before the
+      closing ) in a function/method definition.
+
+2003-06-04  Gregory Beaver <cellog@users.sourceforge.net>
+    * made parsing stop if target is empty before any parsing is done
+
+-------------------------Release 1.2.0------------------------
+2003-06-04  Gregory Beaver <cellog@users.sourceforge.net>
+    * phpDocumentorTParser::usesTagHandler() fixed [ 748837 ] @uses with spaces
+    * tags.inlinelink.pkg fixed [ 748850 ] {@link} documentation is unclear
+
+2003-06-04  William K. Hardeman <wont@users.sourceforge.net>
+    * Added two new tags arrays available for template use:
+      $info_tags and $api_tags in Converter.inc [ 748419 ]
+    * Updated HandS template to use the new tags arrays.
+
+2003-06-03  Gregory Beaver <cellog@users.sourceforge.net>
+    * phpDocumentor_IntermediateParser::_getSourceLocation()
+      fixed [ 748314 ] --pear on php4/pear uses . as dirname
+    * parserExampleTag::parserExampleTag fixed [ 747733 ]
+      cannot use same filename + different path in @example
+
+2003-06-02  Gregory Beaver <cellog@users.sourceforge.net>
+    * changed in-file license notices to PHP license version 3
+    * updated docs to reflect new template/authorship
+    * added new HTML:Smarty:HandS template
+    * fixed [ 746690 ] DocBlocks not parsed for require_once statements
+    * fixed [ 746692 ] makedoc.sh $TITLE bug
+    * fixed [ 746674 ] phpedit - vars, methods
+    * IntermediateParser.inc fixed minor warning if converter output type not found
+
+2003-05-30  Gregory Beaver <cellog@users.sourceforge.net>
+    * changed version to 1.2.0 readying for release
+    * ProceduralPages::pathMatchesParsedFile() fixed [ 731750 ]
+      Links to unparsed includes shown
+
+2003-05-29  Gregory Beaver <cellog@users.sourceforge.net>
+    * parserLinkInlineTag fixed [ 744028 ] {@link $el, $notfound}
+      returns blank text
+    * phpDocumentor_IntermediateParser::_setupUsesList() fixed [ 744026 ]
+      @uses breaks on Classes.inc
+    * Converter::formatUsesList() removed
+    * DescHTML.inc fixed warning if <code></code> is used in docblock without
+      any contents
+    * Parser.inc fixed empty <code></code> that prompted discovery of above
+
+2003-05-26  Gregory Beaver <cellog@users.sourceforge.net>
+	* HighlightParser::getInlineTags() fixed bug in handling of the end of
+	  {@internal}} in special cases
+	* Fixed @uses docs minor typo
+	* Fixed @see docs minor typo
+    * Fixed @filesource docs to have accurate example
+
+2003-05-25  Gregory Beaver <cellog@users.sourceforge.net>
+    * Cleaned up docbuilder (no more javascript/include errors!)
+    * Switched to use of DIRECTORY_SEPARATOR (about time)
+    * fix small but significant bugs in XML:DocBook/peardoc2 thanks to A. Merz
+
+2003-05-23  Gregory Beaver <cellog@users.sourceforge.net>
+    * ParserDocBlock fixed [ 740871 ] crash in DocBlockTags.inc line 99
+    * IntermediateParser fixed [ 739740 ] Page-level docs are not generated without a @package tag
+    * fixed [ 741887 ] case-sensitivity bug
+
+2003-05-20  Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed [ 740859 ] @uses in docblock template crashes parser
+
+2003-05-17  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed [ 729841 ] Source code only for certain file if same name used
+    * fixed [ 730214 ] weird filesource
+    * fixed [ 736832 ] Fatal error in phpDocumentorTParser.inc
+    * fixed warnings if a tutorial file doesn't exist
+    * fixed [ 732642 ] DocBook support broken/incomplete.
+
+2003-05-07  Gregory Beaver <cellog@users.sourceforge.net>
+    * docbuilder fixed 731560 docbuilder include error on linux
+    * phpDocumentorhowto.pkg fixed documentation of -it command-line to make
+      it clearer
+    * ParserDescParser::doSimpleList() fixed 732900 ordered list messes up
+    * Io.inc fixed 733100 phpdoc's help output shows 2 times option "quiet"
+    * parserLicenseTag::parserLicenseTag() fixed 733352 optional description
+      parameter in @license tag
+
+2003-05-02  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed 729360 - quietMode broken
+
+2003-04-29  Gregory Beaver <cellog@users.sourceforge.net>
+    * ParserDescCleanup.inc fixed 729653, tons of warnings
+    * ObjectWordParser::getWord() fixed 729638 - case insensitivity breaks
+      tutorial parsing
+
+-----------------Release 1.2.0rc 2-----------------------
+2003-04-28  Gregory Beaver <cellog@users.sourceforge.net>
+    * readied for release
+    * phpDocumentorTParser::handleDesc() fixed [ 727823 ] "#@+"-block quirck?
+    * phpDocumentorTParser::handleJavaDocDesc() fixed [ 727823 ] "#@+"-block
+      quirck?
+    * ParserDescCleanup.inc fixed [ 728167 ] HTML tags are case sensitive
+    * all options.ini fixed [ 728585 ] static keyword
+
+2003-04-25  Gregory Beaver <cellog@users.sourceforge.net>
+    * tags.category.pkg fixed incorrect example (oops)
+
+2003-04-24  Andrew Eddie <eddieajau@users.sourceforge.net>
+    * Change CHM class icon
+    * Added suport for grouping of index entries in CHM converter
+    * Made presentation of CHM docblock and methods more like MSDN format
+    * Moved 'docBuilder' index to the root directory
+    * Added links and introduction pages to docBuilder
+
+2003-04-23  Gregory Beaver <cellog@users.sourceforge.net>
+    * Converter::getFileSourcePath() removed ending PATH_DELIMITER, removing
+      annoying extra \ in output
+    * HTML:*,CHM:* fixed getFileSourcePath() references that need PATH_DELIMITER
+    * ParserDescParser fixed [ 726195 ] Formatting tags breaks lists
+      required LOTS of changes
+    * set Smarty::$use_sub_dirs to false, removed all the %% dirs from cvs
+    * parserLicenseTag added @package to docblock
+
+2003-04-22  Gregory Beaver <cellog@users.sourceforge.net>
+    * docbuilder: changed top.html to top.php, removes warning
+    * docbuilder: changed misspelling of phpDocumentor
+    * Updated Authors/README, manual.pkg author list
+    * Applied Andrew Eddie's templates CHM:default:default method.tpl, hhp.tpl
+      and index.hhk.tpl
+    * Applied Andrew Eddie's changes to CHMdefaultConverter.inc
+    * README updated
+    * parserCode::Convert() fixed [ 725742 ] code tag alignment
+    * fixed warnings if -po and nothing parsed is in the packages specified
+    * phpDocumentor_IntermediateParser::addPageIfNecessary() fixed
+     725788 if --packageoutput excludes files with classes
+
+2003-04-21  Gregory Beaver <cellog@users.sourceforge.net>
+    * Converter::getClassesOnPage() fixed 725161, File view displays class
+      symbols without names
+    * HTMLSmartyConverter::formatLeftIndex() fixed 725745,
+      HTML:Smarty:PHP not creating ric_README.html.  Needed call to writeRIC()
+    * XMLDocBookpeardoc2Converter fixed non-linking to constants/globals
+    * fixed [ 725247 ] Wrong list handling in peardoc converter
+    * fixed [ 725251 ] Peardoc converter again
+    * XMLDocBookpeardoc2Converter fixed many fatal errors (oops)
+    * Errors.inc changed {@inheritdoc} to {@}inheritdoc} in comment (oops)
+    * RoadMap updated for 2.0
+    * parserExampleTag was no title if @example file.php instead of
+      @exampel file.php title, fixed this
+
+2003-04-20  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed mistake in reworking of getLink()
+    * parserLinkTag fixed [ 724857 ] @link URL text broken
+    * Classes::processChild() fixed 724701 conflicting package names, inherited
+      links fails to show up - this was an OLD bug, and is a good one to fix
+    * Converter::getLink() split up the method into several helper methods to
+      aid debugging.  Found a potential problem with the use of each on the
+      array $packages - moved to use of $package = array_shift(array_keys($packages))
+      instead of list ($package,) = each($packages), fixing
+      724415 Non-package references not always resolved
+    * Smarty-2.5.0/* updated to new phpDocumentor comments from Smarty
+      CVS
+    * HighlightParser fixed 724417 Multi-level method references not linked
+      and I must say it is a beautiful thing
+    * ChangeLog removed pre-l.0 changelog, people can get old changelog from cvs
+      attic or from previous releases
+
+2003-04-19  Gregory Beaver <cellog@users.sourceforge.net>
+    * HTML:frames:default top_frame.tpl added target="right"
+    * implemented feature request 722987 Relative example files
+    * implemented --examplesdir command-line for 722987
+    * tags.example.pkg updated documentation
+    * phpDocumentor.howto.pkg updated docs
+
+2003-04-19  Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+	* Converter::_processTutorials() Fixed tutorial navigation bug - 
+	  The tutorial tree builder first builds a list of tutorials that are
+	  named as parents by other tutorials. Then, for each tutorial in that
+	  list, it looks to see if each tutorial is named as a child by any other
+	  tutorial. If it found that it was, it was removed *from the list of
+	  parents*. That meant that any tutorials in the potential parents list
+	  that named a removed tutorial as a parent would be incorrectly identified
+	  as a root tutorial.
+	* Changed HTML:frames:default package selector to stop using JavaScript
+	* Small updates to the document trees in all templates
+
+2003-04-18  Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed 723947, RIC parsing not reading the correct README
+    * Setup.inc.php removed reference to Template.inc
+    * HTMLframesConverter.cls finished documentation entirely
+    * removed the HTMLdefaultConverter entirely.  No one has complained about
+      it, and we will always convert templates to framesConverter if people ask
+      removed old documentation too
+    * default.ini updated documentation, added templatebase option
+    * added --templatebase command-line to implement feature 704808,
+      command-line switch for template directory/converter directory, also
+      added documentation for this
+    * added all templates_c directories to CVS, to remove the need to have
+      write access to anywhere in phpdocumentor, unless you change the source,
+      fixing 708928 write permissions needed on some program dirs
+    * HighlightParser::retrieveType() fixed 723767 space needed after
+      @param type $var
+    * migrated to Smarty 2.5.0
+    * phpDocumentorTParser::retrieveType() fixed 723320 @param output behaves
+      funny
+    * blank.tpl fixed {$phpdocver} to {$phpdocversion}
+    * HighlightParser::retrieveType() fixed 723230 warning on line 1391,
+      HighlightParser
+    * blank.tpl made this file a little sexier in all HTML-based templates
+    * Converter.inc removed second declaration of var $class (oops)
+      now phpDocumentor is PHP5-ready (for documenting php 4, of course)
+
+2003-04-17  Gregory Beaver <cellog@users.sourceforge.net>
+    * common.inc.php changed version to 1.2.0rc2dev
+    * Release-1.2.0rc2 added, to prepare for next release
+
+-----------------Release 1.2.0rc 1-----------------------
+2003-04-16  Gregory Beaver <cellog@users.sourceforge.net>
+    * Readying for release 1.2.0rc1
+    * phpDocumentorTParser::handleGlobal() fixed global line numbering
+    * implemented feature 695621, link to section of @filesource from each
+      element
+    * phpDocumentorTWordParser::addSource() fixed case of blank lines being
+      erased from source
+    * phpDocumentor_setup::readConfigFile() fixed 710700 empty
+      defaultpackagename = caused busy loop
+    * HighlightParser::retrieveType() added function to fix 715077,
+      HighlightParser needs @tag object classname support
+    * phpDocumentorTParser::retrieveType() fixed warning in special case
+
+2003-04-15  Gregory Beaver <cellog@users.sourceforge.net>
+    * Converter::getLink() fixed 718253 Using 'parent' in @example file
+      causes crash
+
+2003-04-14  Gregory Beaver <cellog@users.sourceforge.net>
+    * HighlightParser::$tagHandlers added @tutorial and @license as core tags
+    * bug698356_Output() removed @todo
+    * parserSourceInlineTag::arrayConvert() removed @todo
+    * removed double write of example source due to double processing of
+      all class-level docblocks in HTML*Converter (small speedup too)
+    * applied fixes to CHM converter
+    * fixed @license tag
+    * HTML*Converter::writeSource/writeExample added \n to output
+      to make it prettier, easier to read
+    * HTMLSmartyConverter::getSourceLink() removed weird reference to non-
+      existing getSourceFilename() method
+    * tags.link.pkg updated docs
+    * tags.license.pkg new docs for new tag
+    * parserLicenseTag added source to DocBlockTags, implementing 714025,
+      @license tag
+    * phpDocumentorTParser::retrieveType() fixed @param object $var (was parsing
+      as "object $var" instead of "object" and "$var" as variable name
+    * HighlightParser::handleClassMember() fixed 715084 HighlightParser craps
+      out after $var->
+    * parserExampleTag::parserExampleTag() fixed 715452 @example doesn't work
+      with anything other than .php
+
+2003-04-14  Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+	* Class access level available in templates
+	* Source files no longer overwrite each other
+	* Link to file for class available in templates
+	* Access level in class icons for HTML:frames:earthli
+	* Link from class to file docs in all templates
+	* HTMLFramesConverter::writeSource() - updated to used shared file source methods
+	* HTMLFramesConverter::getSourceLink() - updated to used shared file source methods
+	* HTMLFramesConverter::makeLeft() - added 'access' as a property for classes
+
+2003-04-14  Gregory Beaver <cellog@users.sourceforge.net>
+    * parserFunction::getIntricateFunctionCall() fixed 713954, @param type $var
+      when &$var broken
+    * default.ini added new templates to example generation
+
+2003-04-13  Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+    * Updated the HTML:frames:l0l33t and HTML:frames:DOM/l0l33t to the
+      same layouter used by the other renderers. Once again, the style
+      sheet is different (and there are a couple of small differences
+      in the templates).
+    * Updated all HTML:frames templates to show other packages in a frame
+      at the top, inside a combo-box instead of in the square frame in the
+      top-left.
+    * Fixed reference to 'Class.png' which was appearing in Opera and IE.
+
+2003-04-13  Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+    * Converter::$processed_tutorials Added this property to track
+      which tutorials are already in the tutorial tree
+    * Converter::getTutorialTree() Updated to use the list of already-
+      processed tutorials.
+    * Converter::_tutorial_path() added to retrieve the string id for
+      a tutorial.
+    * Converter::_setupTutorialTree() Fixed to use new path and processed
+      tutorial functions to generate a tree with one and only one copy of
+      each tutorial.
+    * Fixed HTML:frames:default and HTML:frames:phphtmllib to handle tutorial
+      correctly.
+    * Rewrote the tutorial template layouts and XMLDocBook tag matching tables for
+      the affected templates.
+    * Moved HTML:frames:earthli to HTML:frames:DOM/earthli and added 
+      HTML:frames:earthli as a non-DOM version of the template.
+    * Integrated tutorials into the main document tree for all DOM and non-DOM
+      templates in HTML:frames (except for l0l33t -- coming soon).
+    * Updated HTML:frames:default, HTML:frames:phpdoc.de, HTML:frames:phphtmllib
+      to use the latest version of the non-DOM templates. Layout is handled by the
+      same basic templates as HTML:frames:earthli (there are, after all, only so
+      many nice ways to lay out documentation) and specializations are done using
+      the stylesheet. This allows documentation to be tweaked to a good degree after
+      it has already been generated.
+    * Updated HTML:frames:DOM/default, HTML:frames:DOM/phpdoc.de to use the WebFXTree
+      to render the tree instead of the previous custom code.
+    * Added HTML:frames:DOM/phphtmllib
+    * Fixed some bugs in the tutorial nesting for PHPDocumentor's documentation.
+    * Moved earthli image source files to 'phpdoc/media/images/earthli' to avoid 
+      copying them into each distribution of documentation.
+
+2003-04-03  Gregory Beaver <cellog@users.sourceforge.net>
+    * Setup.inc.php fixed bug if no -o command-line specified, was using default
+      instead of frames converter
+
+2003-04-03  Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+    * Converter::convertMethod() added 'access' property
+    * Converter::convertVar() added 'access' property
+    * Converter::getFormattedInheritedMethods() added 'access' property
+    * Converter::getFormattedInheritedVars() added 'access' property
+    * HTMLFramesConverter::getIndexInformation() added 'access' property
+    * Updated entire icon set for 'earthli' theme.
+    * Removed unused files from 'earthli' template.
+    * Cleaned up the HTML:frames:default and HTML:frames:phphtmllib templates.
+      Both are now based on the same layout as the HTML:frames:earthli template,
+      but use a non-DOM tree and different stylesheets. Otherwise the code for
+      all three is the same.
+
+2003-04-02  Gregory Beaver <cellog@users.sourceforge.net>
+    * added bugfix to release notes
+
+2003-04-01  Marco von Ballmoos <mvonballmo@users.sourceforge.net>
+    * Updated earthli template with properly named 'Page.gif' file. (must
+      be uppercase so that *nix-based servers can see it.)
+    
+2003-04-01  Gregory Beaver <cellog@users.sourceforge.net>
+    * XMLDocBookpeardoc2 converter: fixed several template issues
+    * Errors.inc added PDERROR_EMPTY_EXAMPLE_TITLE error for empty @example
+      title
+    * CHM, HTML, PDF converters: added warning if @example title is empty
+    * phpDocumentorTParser::handleFuncGlobal() fixed 713201 variable variables
+      are not parsed properly in @global
+    * ParserDescParser fixed 708914 <var>, <samp>, <kbd> broken
+
+2003-03-31	Gregory Beaver <cellog@users.sourceforge.net>
+    * parserDocBlock::replaceInheritDoc() fixed 711569 Fatal Error: Undefined
+      Method during write
+    * PDERROR_INHERITDOC_DONT_WORK_HERE new warning for {@inheritdoc} in
+      non-child class docblock
+    * fixed 712704 HTML:Smarty:* drops class level author information
+    * ParserDescParser::resetStartList() fixed notice
+    * ParserDescParser::setupStates() fixed 710366 <i>-Tag is ignored
+
+2003-03-23	Gregory Beaver <cellog@users.sourceforge.net>
+    * README added more notes of thanks to people who have helped make this
+      thingy better
+    * PDFdefaultConverter::writeExample() fixed stupid typo thanks to Darren
+      Cook
+    * made @returns an alias to @return
+    * ParserDescParser::handleSimpleList() fixed numbered lists
+    * Converter::sourceLine() fixed 701199 extra br in @filesource generation
+    * fixed bug 708559, @category tag not really working
+    * ParserDescParser::handleEscape() fixed rare case of <<<tag>>> not working
+      <<<<tag>>>> will never work, unless someone needs it. :)
+    * tags.abstract.pkg added new docs on @abstract
+    * tags.final.pkg added new docs on @final
+    * HighlighParser added @final as a core tag
+    * phpDocumentor.ini added @final as a valid tag
+    * ParserDescParser::handleSimpleList() fixed parsing of simple lists if
+      they are the last thing in a docblock
+    * phpDocumentorTParser::retrieveType() fixed logic bug if @param object
+      and no @param object objectname
+    * phpDocumentorTParser::retrieveType() fixed warning
+    * XML:DocBook/peardoc2 removed links to class $vars since they are not
+      documented in peardoc2
+
+2003-03-22	Gregory Beaver <cellog@users.sourceforge.net>
+    * XMLDocBookpeardoc2Converter implemented the rest of A. Merz's suggestions
+      regarding @throws and @access
+
+2003-03-20	Gregory Beaver <cellog@users.sourceforge.net>
+    * HTMLframesConverter fixed doc error
+    * phpDocumentor.howto.pkg fixed typo
+    * XMLDocBookpeardoc2Converter::endClass() removed write-out of class summary
+    * Errors.inc added missing multiple category tags
+    * Converter::walk_everything() fixed bug noticed by A. Merz
+    * XMLDocBookpeardoc2Converter fixed bugs in package.xml generation
+    * XMLDocBookpeardoc2Converter fixed bugs in category.xml generation
+    * package.tpl/class_summary.tpl for peardoc2 converter, fixed up to match
+      requirements of A. Merz.
+    * tags.example.pkg, tags.filesource.pkg added warning about PHP 4.3.0
+      requirement
+    * phpDocumentor.howto.pkg added docs about phpDocumentor.ini
+    * phpDocumentorTParser added more doc comments
+    * phpDocumentorTParser cleaned up tag handling code
+    * applied feature request for @tag object classname
+    * XMLDocBookpeardoc2Converter docblock.tpl - applied A. Merz's fix to
+      method parameters
+
+2003-03-17	Gregory Beaver <cellog@users.sourceforge.net>
+    * XMLDocBookConverter added safety catch so nobody can use it until it has
+      templates
+    * HighlightParser made @category a core tag
+    * XMLDocBookpeardoc2Converter fixed lowercasing of @category
+    * XMLDocBookpeardoc2Converter fixed directory names if @package contains
+      underscores or periods like Spreadsheet_Excel_Writer
+    * tags.return.pkg updated docs to reflect changes made in 1.1.0 with smart
+      @return value parsing (class names and value|value|classname)
+
+2003-03-14	Gregory Beaver <cellog@users.sourceforge.net>
+    * updated phpdoc.php/new_phpdoc.php to have new peardoc2 --output format
+    * updated makedocs.ini to have XML:DocBook/peardoc2:default
+
+2003-03-13	Gregory Beaver <cellog@users.sourceforge.net>
+    * HTMLframesConverter.cls added more docs
+    * HTMLframesConverter moved title to elementindex.tpl/pkgelementindex.tpl
+      to make I18N easier.
+    * Io::Io() fixed 702549, --quiet option not valid?
+    * improved phpDocumentor.howto.pkg description of --quiet
+
+2003-03-10	Gregory Beaver <cellog@users.sourceforge.net>
+    * added more docs to HTMLframesConverter.cls
+    * add warnings for use of @filesource/sourcecode = on in PHP < 4.3.0
+    * HTMLframesConverter.cls fixed typo
+    * CHMdefaultConverter::Output() fixed {@source} tag to match new syntax
+    * parserSourceInlineTag::arrayConvert() re-fixed 657041 {@source} doesn't
+      work right once and for all.
+    * ParserFunction::$returnsreference fixed minor error in docs
+    * ParserFunction::getFunctionCall() fixed minor error in docs
+    * HTMLSmartyConverter::convertTutorials() fixed 695622 HTML:Smarty:* has no
+      package-level docs
+    * phpDocumentorTParser::getInlineTags() fixed 698356 {@internal} not working
+      properly
+    * HTMLframesConverter.cls continued the march to completing documentation.
+
+2003-03-08	Gregory Beaver <cellog@users.sourceforge.net>
+    * phpDocumentorTParser fixed 698468 Fatal error when inline tag across two
+      lines
+
+2003-03-06	Gregory Beaver <cellog@users.sourceforge.net>
+    * create_package.xml.php fixed typo
+
+2003-03-05	Gregory Beaver <cellog@users.sourceforge.net>
+    * ParserDescParser::handleList() fixed 697644, text outside <li></li> crashes
+    * ParserDescParser::parse() fixed 697644, any unclosed html tag crashes
+    * Errors.inc added PDERROR_UNCLOSED_TAG and PDERROR_TEXT_OUTSIDE_LI
+    * phpDocumentorTParser::handleLinkInlineTag fixed 698417 {@link element
+      descrip} wrong
+    * HTMLframesConverter.cls fixed typo
+    * Converter::convertTutorial() fixed unterminated {@link} in docblock
+    * added new ParserPDF.cls documentation
+    * ParserPDF.inc added documentation
+    * HTMLframesConverter.cls added documentation
+    * template.vars.cls improved documentation, added some omissions
+
+2003-03-04	Gregory Beaver <cellog@users.sourceforge.net>
+    * parserCode::Convert() fixed 696883 <code> in description crashes parser,
+      was using ProgramExample() even in PHP 4.2.3
+    * fixed 697656 putting a <code> inside a <li> turns it into a literal
+    * PDFdefaultConverter::convertPage()/convertClass() tidied up a bit
+    * PDF:default:default pages.tpl - {if includeheader} should be
+      {if $includeheader}.  Fixes problem with multiple procedural page
+      headers
+    * phpdocpdf::ezNewPage() Fixed 697156 PHP Warning with PDF Converter
+    * Cezpdf::ezWhatPageNumber() patched to give error if page numbering not
+      started instead of just doing a PHP warning on line 311
+    * create_package.xml.php added dependency on PHP 4.1.0 or greater to
+      package.xml generation, and generic dependency generation
+    * Release-1.2.0rc1 update for next release
+    * package.xml change description field to be more attractive
+
+2003-03-03	Gregory Beaver <cellog@users.sourceforge.net>
+    * added question to FAQ about inline @example tag (we use <code></code>)
+
+2003-03-03	Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+    * Updated index rendering to use more variables instead of just 'listing'. 
+      Consolidated package and full index rendering into one function. 'listing'
+      property is retained for compatibility with existing templates.
+    * Updated HTML:frames:earthli template. Takes advantage of new variables in 
+      the HTMLframesConverter.
+
+2003-03-02	Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+    * fixed a bug in the generated page information. Classes were included
+      even if they were marked private and 'parseprivate' was off.
+
+2003-03-01	Gregory Beaver <cellog@users.sourceforge.net>
+    * moved what was once in classname.xml to packagename.xml
+    * fixed bugs in new packagename.xml generation
+    * XMLDocBookpeardoc2Converter::formatLeftIndex() implemented output of
+      packagename.xml file to complete DocBook/peardoc2 converter
+
+2003-02-28	Gregory Beaver <cellog@users.sourceforge.net>
+    * HTML:Smarty:PHP header.tpl fixed {$todolink} to {$subdir}{$todolink}
+    * phpDocumentor_IntermediateParser::addUses() fixed 695482, @uses not
+      checking to see if element is @access private
+    * phpDocumentor.howto.pkg, inlinetags.pkg added docs about {@*}
+    * Added use of {@*} to insert */ into a docblock for code examples
+    * Converter::formatUsesList() fixed 692552 wasn't checking for class name if
+      @uses class::method() or class::$var, so if more than one class contained
+      a method named "method()" only the first class in the list would get the
+      @usedby tag as a result
+    * Converter::formatUsesList() partial fix for 692552, @uses is screwy
+      If a @uses methodname() or @uses $varname was used in a class, no @usedby
+      would be inserted
+    * phpDocumentorTParser::getInlineTags() fixed 693215, {@internal}} on single
+      line is broken
+    * HighlightParser::getInlineTags() add missing space after {@internal
+    * added new @todo for XML:DocBook/peardoc2
+    * updated @todo tags
+    * HighlightParser::handleClassMember() fixed 687364 highlightparser
+      $class->member incorrect
+    * IntermediateParser::HandleEvent() fixed bug if --sourcecode on and a file
+      has no page-level docblock, no source was being generated
+    * IntermediateParser.inc fixed 675871, --pear breaks if non-pear repository
+    * class.phpdocpdf.php fixed 694742 PDF converter has no table of contents
+    * HTMLSmartyConverter fixed 695291 added todo list to all generated templates
+    * phpedit/class.tpl fixed 694594 PEAR mode: destructor image not shown by
+      phpedit template
+
+2003-02-27	Gregory Beaver <cellog@users.sourceforge.net>
+    * tutorials.pkg added information about {@toc}, {@id}
+    * ParserDescCleanup.inc fixed basics.desc reference
+    * phpDocumentor.howto.pkg/IntermediateParser.inc fixed using.command-line.quiet
+    * clarified phpDocumentor.pkg and tutorials.pkg slightly
+
+2003-02-25	Gregory Beaver <cellog@users.sourceforge.net>
+    * added earthli template to documentation, updated
+      XML:DocBook:peardoc2 to XML:DocBook/peardoc2:default
+    * applied 693213 to PDF Converter
+    * fixed 693213 tutorials post-processed twice
+    * fixed 689874 is_a is not avaliable in PHP 4.1.0
+    * fixed 689893 Warnings on PHP 4.1.0
+
+2003-02-24	Gregory Beaver <cellog@users.sourceforge.net>
+    * removed page_summary.tpl, page.tpl, function.tpl from peardoc2 converter
+    * added constants.tpl/globals.tpl to XML:DocBook/peardoc2:default
+    * added new constants.xml/globals.xml output for peardoc2
+    * removed function code from peardoc2 - no PEAR projects can have
+      functions
+    * removed procedural page code from peardoc2 converter
+    * fixed faulty getIncludeValue() call in CHMdefaultConverter
+    * remove pear_phpdoc, no longer necessary
+    * added tags.category.pkg (forgot last time)
+
+2003-02-18	Marco Von Ballmoos <mvonballmo@users.sourceforge.net>
+    * Added support for method and variable override resolution beyond
+      direct descendents and ancestors. That is, redefinitions in ALL descendent
+      classes are shown, and overrides are displayed if the signature matches that
+      of a method or variable in ANY ancestor class.
+    * Added a new template HTML:frames:earthli, which is driven almost purely by
+      a stylesheet (media/stylesheet.css).
+    * Fixed a bug that always returned false from CONVERTER::getvars.
+
+2003-02-18	Gregory Beaver <cellog@users.sourceforge.net>
+    * Added @category
+    * made new XML:DocBook/peardoc2 converter, was too PEAR-specific.
+    * added category support to new converter
+    * fixed several category-related bugs, may be a few left over
+    * directory hierarchy of peardoc2 converter is now 100%
+
+2003-02-17	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed toc errors in Converter.cls and Converter.methods.cls
+    * Defined PDFdefaultConverter::postProcess() 
+    * Try out fix to catch all pdf output for debugging
+
+2003-02-16	Gregory Beaver <cellog@users.sourceforge.net>
+    * template.vars.cls - fixed typo
+    * ParserDescParser::doSimpleList() - fixed PHP warning
+    * ParserDescCleanup.inc - implemented partial 687366, phpEdit-style list
+      support
+    * phpDocumentorTParser::getInlineTags() - fixed 687403 ,{@source} leaves "}" 
+
+2003-02-15	Gregory Beaver <cellog@users.sourceforge.net>
+    * template.vars.cls added in all default template vars
+    * fixed 687091 special characters not encoded
+
+2003-02-14	Gregory Beaver <cellog@users.sourceforge.net>
+    * removed default HTML converter from PEAR release
+    * changed role="script" to role="php" for phpdoc script.  the pear
+      installer has no recognition for role="script" (checked source code)
+
+2003-02-08	Gregory Beaver <cellog@users.sourceforge.net>
+    * moved convertTutorial() to Converter
+    * fixed warning in PDF converter
+    * added debug_backtrace() to class.pdf.php, maybe find the Cpdf bug
+    * implemented 683101 starting/ending line numbers for uml-related elements
+
+2003-02-07	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed bug in handling of {@internal}}
+    * changed {@source} syntax, updated manual
+    * fixed 657041 (again), {@source} not working right
+    * created Release-1.2.0rc1 to prepare
+    * fixed 680652, optional method/function parameters ignored
+    * removed debug code
+    * phpDocumentorTParser - fixed 682491, multi-line description fubared in @tag
+    * phpDocumentorTParser - fixed bug in getInlineTags() that screwed <pre></pre>
+    * fixed related bug in phpDocumentorTParser to 682490
+    * fixed 682490, {@internal}} not parsed right by highlightparser
+    * fixed 681735, need warning for {@source} in sdesc
+
+2003-02-06	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed unterminated {@internal}} in ParserElements.inc :)
+    * added error check for unterminated {@internal}}
+    * HTML-based converters - removed unused xml test for package pages
+    * Converter.inc - removed PHP warnings if tutorial child not found
+    * HighlightParser.inc - made all core tags highlighted as such
+    * HighlightParser.inc - removed @todo tags
+    * HighlightParser.inc - fixed bug if // comment is on line before
+      DocBlock
+    * HighlightParser.inc - fixed bug in handling of /**#@-*/
+    * fixed more 681470 problems
+    * fixed 681470 problems
+
+2003-02-05	Gregory Beaver <cellog@users.sourceforge.net>
+    * stupid thing isn't working, unfixing 681470
+    * fixed docblock template errors in parserdesccleanup
+    * fixed feature 681470 implementation attempt
+    * added beginning of implementation of feature 681470.  Still buggy, but
+      works very well for actual highlighting, it's the stuff around it that
+      is broken
+    * added class knowledge to {@source}
+    * fixed 681463, {@source} drops characters
+    * fixed 681459, needed strpos instead of strrpos for test, then strrpos
+      for getInlineTags()
+    * cleaned up XMLpackagePageParser.inc doc comments
+    * cleaned up Setup.inc.php doc comments
+    * cleaned up Publisher.inc doc comments
+    * cleaned up phpDocumentorTWordParser.inc doc comments
+    * cleaned up WordParser.inc doc comments
+    * cleaned up ParserElements.inc doc comments
+    * cleaned up ParserDocBlock.inc doc comments
+    * cleaned up ParserDescCleanup.inc doc comments
+    * cleaned up ParserData.inc doc comments
+    * cleaned up Parser.inc doc comments
+    * finished work on PackagePageElements doc comments
+    * fixed subtle bug in @tag description conversion if the description had
+      multiple paragraphs
+    * fixed mistakes in DocBlockTags.inc doc comments
+    * fixed 566663, @param &$arg broken
+
+2003-02-04	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed stupid bug introduced in LinkClasses
+    * started work on PackagePageElements doc comments
+    * cleaned up LinkClasses.inc doc comments
+    * cleaned up Io.inc doc comments
+    * cleaned up IntermediateParser.inc doc comments
+    * cleaned up InlineTags.inc doc comments
+    * finished documentation of HighlightParser.inc
+
+2003-02-03	Gregory Beaver <cellog@users.sourceforge.net>
+    * began documentation of HighlightParser.inc
+    * cleaned up EventStack.inc doc comments
+    * cleaned up Errors.inc doc comments
+    * cleaned up DocBlockTags.inc doc comments
+    * cleaned up DescHTML.inc doc comments
+    * cleaned up Converter.inc doc comments
+
+2003-02-02	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed up Converter.inc documentation comments
+    * made include linking MUCH smarter
+    * changed version to 1.2.0rc1, starting feature freeze
+
+-----------------Release 1.2.0beta 3-----------------------
+2003-02-02	Gregory Beaver <cellog@users.sourceforge.net>
+    * prepared release
+    * Added Harald Fielker's CSVdia2code converter, updated docs
+    * removed possibility of more than one @filesource tag
+    * fixed small mistake in IntermediateParser that disabled @filesource
+    * cleaned up some mistakes in documentation
+    * changed @uses syntax.  Now it accepts a description.  Does not allow
+      comma-delimited list, each @uses must have its own element
+    * changed every @uses in the source to match the new syntax
+
+2003-02-01	Gregory Beaver <cellog@users.sourceforge.net>
+    * added --sourcecode option, to generate highlighted source for every file
+      since source code highlighting is still unstable, this might not work
+    * added @package tags to everything, to get rid of phpdoc warnings
+    * removed cleanup_for_pear.php, not needed any longer
+    * removed --pear sets constructors to @access private as this makes no sense
+    * fixed 677826, {@link} in @see should raise error
+
+2003-01-31	Gregory Beaver <cellog@users.sourceforge.net>
+    * made --pear set constructors to @access private
+    * clarified --pear docs
+    * fixed 677105
+    * fixed broken links introduced by yesterday's changes
+    * added getId() as standard Converter function
+    * removed $local parameter from returnSee() in all HTML-based converters
+
+2003-01-30	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed 677938, whitespace screwy in highlightparser
+    * fixed 677821, define not parsed right
+    * fixed 677822, {@source} not showing whole line
+    * added docblock back into class parsing
+    * re-added missing else in Io.inc (thanks Marko)
+    * fixed bugs in inherited vars/methods introduced by last change
+    * moved most converter functions to Converter, cut down code size, make
+      updating easier
+
+2003-01-27	Gregory Beaver <cellog@users.sourceforge.net>
+    * trying fix for 675871
+    * fixed 670440, Io::getBase() error with patch from Marko Kaning
+    * moved newSmarty() to Converter
+    * fixed todolist.html to {$subdir}todolist.html for HTMLSmarty
+    * moved highlightsource/highlightdocblocksource to Converter
+    * changed getPPageId() to getTutorialId() so that it makes sense
+    * forged ahead on Converter documentation
+    * fixed stupid {$todolist} instead of {$todolink}
+    * fixed up CHMdefaultConverter, no errors with help workshop 4.4
+    * fixed fatal error in CHMdefault
+    * added forgotten link to @todo list to left frame
+    * added a few @todos
+
+2003-01-26	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed crash in Converter @todo list generation
+    * implemented 675194, -cp (Christian will be happy about this one), added
+      docs to phpDocumentor.howto.pkg about it
+    * implemented 674470, output a list of all @todos
+    * fixed bug in new tokenizer parser when inline tags have no params
+      like {@source}, {@inheritdoc}
+
+2003-01-25	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed trivial warnings in both HTML Converters
+    * fixed HighlightSource in HTMLSmarty Converter
+    * removed confusing "assuming package XXX" if no @package tag
+    * improved look of PDF Converter slightly
+    * added @filesource, @example support to PDF Converter
+    * fixed 661317, subpackage tutorial links broken in PDF Converter
+
+2003-01-24	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed 674059, added makedocs.ini
+    * fixed 674053, missing require_once support in old Parser
+    * started work on single @todo listing for whole project
+    * completed inline tag support and {@internal}} support
+    * fixed all the weird linebreak problems
+    * fixed ghastly green color of core tags in highlighted source
+    * fixed hang in HighlightParser
+
+2003-01-23	Gregory Beaver <cellog@users.sourceforge.net>
+    * applied test fix for determining whether we are in PEAR or not
+    * add find_phpdoc.php
+    * fixed 671620, warning in Parser.inc
+    * fixed 672149, @desc broken
+    * HIGHLY improved HighlightParser.  It is now stable
+    * made all source-related tags use HighlightParser
+
+2003-01-22	Gregory Beaver <cellog@users.sourceforge.net>
+    * improved documentation slightly for inline {@id} and WordParser::getWord()
+
+2003-01-21	Gregory Beaver <cellog@users.sourceforge.net>
+    * improved HighlightParser, it's almost stable now
+
+2003-01-20	Gregory Beaver <cellog@users.sourceforge.net>
+    * improved HighlightParser, it's almost stable now
+
+
+2003-01-19	Gregory Beaver <cellog@users.sourceforge.net>
+    * added new HighlightParser for doing phpxref-style stuff.  Still unstable
+    * removed faulty "fix" for HTML*Converter::PreserveWhiteSpace()
+    * added "name" to list of classes on a page, in addition to sdesc, link
+    * updated documentation for DocBlock Desc
+    * applied recent HTMLframes fixes to CHMdefault
+    * fixed stupid HTMLframes_outputfilter usage in Smarty Converter
+    * fixed 670205 inherited methods have no links
+    * fixed 670350, package-level doc woes in HTMLframes
+    * fixed documentation typos pointed out by Darren Cook
+    * added inline example using <code> to tags.example.pkg
+    * added <<tag>> for escaping tags in desc, so <<code>> instead of
+      &gt;code&lt;
+    * added <var>, <samp>, <kbd> as per request
+    * fixed terrible nesting bug(s) in ParserDescCleanup
+    * fixed 670903
+
+2003-01-18	Gregory Beaver <cellog@users.sourceforge.net>
+    * changed version to beta3 for next cycle
+    * fixed 670341, <pre> not quite working for HTML converters
+
+-----------------Release 1.2.0beta 2-----------------------
+2003-01-17	Gregory Beaver <cellog@users.sourceforge.net>
+    * implemented 650251, @filesource
+    * implemented 670184, @example
+    * added @uses documentation
+    * fixed 669909, package pages don't work with PDF, by removing package page
+      support: all package pages must be in tutorial format to work well anyways
+    * added docs for @example, haven't implemented it yet though
+    * fixed 669615, methods disappear
+    * implemented {@internal}}
+    * fixed 669613, fatal error in XML:DocBook
+    * fixed 669640 javadocdesc broken
+    * fixed 669525, child class sdesc wrong in parent documentation
+    * implemented @internal, have to think about how to do {@internal}
+    * implemented --ignore-tags feature request
+    * fixed 669132, weird @package/@ignore combo causes problems
+    * fixed bug in <p></p> handling pointed out by Dan
+    * applied Christian Dickmann's fixes to Smarty Converter
+
+2003-01-16	Gregory Beaver <cellog@users.sourceforge.net>
+    * improved use of tab panes in phpedit template
+
+2003-01-14	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed wrong linking to package-level page in HTMLframesConverter
+    * fixed phpedit template annoying bug tabpane not selected when an anchor is
+      selected
+
+2003-01-13	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed bug caused by not unsetting strings parsed in function body
+    * cleaned up inherited vars/methods in phpedit template
+    * fixed sorting of methods so constructor/destructor are always first in the list
+    * removed element index from subpackage in phpedit template, redundant
+    * fixed 666307, whitespace not ignored for @tags that need it
+    * added more documentation
+    * added pear_phpdoc file for pear release
+
+2003-01-11	Gregory Beaver <cellog@users.sourceforge.net>
+    * added use of ifunction_call to html templates
+    * added ifunction_call variable to Smarty/frames converter with intricate
+      function call output for customization
+
+2003-01-10	Gregory Beaver <cellog@users.sourceforge.net>
+    * made it 1.2.0beta1b
+    * added feature 663439 -p, --pear commandline switch
+      - destructor detection
+      - $_privatevar/$_privatemethod detection, warning if no @access private
+      - guesses package based on dir location relative to pear/ (package DB is
+        in pear/DB, package DB subpackage tests is pear/DB/tests)
+    * since pear.php.net is foobared, updating beta1a to include new features
+
+2003-01-08	Gregory Beaver <cellog@users.sourceforge.net>
+    * no @package warning was a bit overzealous (reported no @package for every
+      file, sometimes twice :).  Now it works
+    * fixed silly bug in phpDocumentorTParser.inc, no $this-> in $this->_pv_quote_data
+    * readied PEAR 1.2.0beta1a release now that Archive_Tar has been fixed
+
+2003-01-07	Gregory Beaver <cellog@users.sourceforge.net>
+    * implemented feature 663436, title available for all pages in HTMLSmarty/frames
+    * implemented feature 663437, error if @package missing
+    * fixed bug 664058, @param not displayed in HTMLframesConverter
+
+2003-01-06	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed bug in checkIgnore for parsing CHANGELOG/README/INSTALL
+    * fixed bug in checkIgnore for create_package.xml.php
+    * fixed bug 662630, {}-delimited vars in strings in functions screws up new parser
+
+2003-01-04	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed warning in new tokenizer parser
+    * fixed web interface
+
+2003-01-04	Joshua Eichorn <jeichorn@phpdoc.net>
+    * Make lists in Smarty templates have smaller padding/margin
+
+2003-01-04	Gregory Beaver <cellog@users.sourceforge.net>
+    * changed self-location code to dirname(realpath(__FILE__))
+    * fixed stupid bug introduced by removing static from frames converter
+    * removed static from frames converter
+    * fixed bug 661976 - @see broken
+    * fixed stylesheet for l0l33t
+
+2003-01-02	Gregory Beaver <cellog@users.sourceforge.net>
+    * removed all html output for xmldocbookconverter except errors.html
+    * made all DescHTML classes in DescHTML subpackage
+    * made all PackagePageElements classes in Tutorials subpackage
+    * moved Documentation/spec/ to Documentation/old/
+    * fixed up create_package.xml.php for next release
+    * added Release-1.2.0beta1
+    * fixed bug in Io.inc for ignore dir/ on windows
+    * fixed bug 661316, @tutorial tutorial.ext#section broken
+    * modified manual as per Josh's suggestions
+    * fixed bug in HTMLSmartyConverter if -o HTML:Smarty:default,HTML:Smarty:PHP
+      the second run of smarty wouldn't generate $this->package_index because of
+      the use of a static variable.  Switched it to a class variable.
+    * removed all static vars from HTMLSmartyConverter, switched them to class
+      variables.
+    * fixed HTMLSmartyConverter index.html problems
+
+2003-01-01	Gregory Beaver <cellog@users.sourceforge.net>
+    * Happy New Year!
+    * fixed new_phpdoc.php clickable helper thingies
+    * same fix for phpdoc.php
+    * fixed warning in InlineTags.inc
+    * fixed warnings in ParserDescCleanup.inc
+    * fixed crash in PDFdefaultConverter on unknown tag
+    * added media directory for PDF:default:default
+    * fixed formatting of converting information display in walk_everything()
+    * fixed bug 658120 - PDFdefaultConverter define.tpl typo that was wreaking havoc
+    * fixed warnings in phpDocumentorTParser
+    * fixed bug 658121 - sorting issues in PDFdefaultConverter
+    * fixed bug if multiple templates in -o command-line
+    * updated sample .ini files in user/
+
+2002-12-31	Gregory Beaver <cellog@users.sourceforge.net>
+    * made {@source} absolutely kickass for phpDocumentorTParser, now highlights in all output formats!
+    * fixed phpDocumentorTParser bug if there is a $variable in a "string"
+    * added more documentation, fixed up existing docs
+    * reformatted whitespace to spaces, docblocks to PEAR-desired format
+
+2002-12-30	Gregory Beaver <cellog@users.sourceforge.net>
+    * restored refnamediv - broke titles!
+    * fixed a few small bugs in new parser
+    * fixed @link tag - wasn't linking!
+    * fixed missing line number in defines for HTMLframesConverter
+    * added missing var_default to HTML:frames:phpedit vars.tpl template
+    * finished experimental tokenizer-based parser, disabled for php < 4.3.0
+    * tokenizer parser is twice as fast as original parser!
+    * updated docs to reflect new parser
+
+2002-12-29	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed bug in {@id}, tutorial name was not being passed to packagepageparser
+    * fixed problems in PDF Converter
+    * removed refnamediv from output (it is considered the title of refentry)
+    * fixed bug, no refsect1s past the first one were being parsed for {@toc}
+    * fixed bug, titles not being parsed out properly in several cases for {@toc}
+    * started work on a tokenizer-based parser, phpDocumentorTParser
+
+2002-12-27	Gregory Beaver <cellog@users.sourceforge.net>
+    * added support for <i> in DocBlock desc (oops)
+    * added tag contents detail in tutorials for unmatched tag error
+    * added unterminated attribute error in tutorials, very handy!
+    * fixed attributes in tutorials, added quote handler
+    * added {@toc} tag to allow table of contents (of current file) to be easily
+     inserted anywhere in a tutorial
+
+2002-12-26	Gregory Beaver <cellog@users.sourceforge.net>
+    * added conversion of docbook tables into html/chm, fixed bug in attribute parsing
+      of tutorials
+
+2002-12-25	Gregory Beaver <cellog@users.sourceforge.net>
+    * Merry Christmas!
+    * added automatic retrieval of section/subsection title for {@tutorial tutorial.ext#section.subsection}
+    * added missing ; to class.tpl and page.tpl in XML:DocBook:peardoc2
+    * fixed getPPageId() for HTML/CHM converters, should have just been returning id so that it
+      would allow {@tutorial tutorial.ext#section.subsection} to work
+    * fixed prev/next linking for tutorials again (this time actually works)
+    * fixed tutorial tree generation, separated it from tutorial order generation
+    * fixed tutorial linking for {@tutorial} in tutorials
+    * fixed {@tutorial package/subpackage/tutorial.ext}, was passing subpackage as package
+    * removed $childless_tutorials, no longer needed
+    * fixed wrong start page for package in HTMLframes
+    * added sorting to tutorial order, so the first tutorials are always those of the default package
+    * fixed sorting of packages in the package list for HTML converters
+    * upgraded new_phpdoc.php to HTML_Treemenu-1.1.2, fixed  addslashes($nodeObj->link) needed in TreeMenu.php
+
+2002-12-24	Gregory Beaver <cellog@users.sourceforge.net>
+    * added output of unknown tags to templates.  Nothing is done with it, but it
+      allows the option now
+    * fixed subtle bug in Converter::getLink(), if parent::method() is referenced,
+      sometimes the package was not set to the only possibility, and all the other
+      package possibilities were not removed, allowing a potential crash
+
+2002-12-23	Gregory Beaver <cellog@users.sourceforge.net>
+    * added more documentation, starting converting howto to the new manual format
+    * fixed 657934, subtrees not processed in Converter
+    * added parsing of comments/process instructions to tutorial parser.  For now,
+      it just ignores them
+    * spruced up the web interface text, it was a bit awkward, added the new
+      converters and templates
+    * fixed output for HTMLframesConverter::formatPkgIndex()
+    * fixed CHM converter so that it looks half-decent
+    * tutorials now work in every converter, every template!
+
+2002-12-22	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed {@id}, works 100% now.
+    * fixed a number of warnings in PDF conversion
+    * added {@}inlinetag} converted to {@inlinetag} to allow easy use of
+      "{@inlinetag}" as text, like "{@link}" for example
+    * added documentation for @tutorial/{@tutorial}
+    * fixed bug 657739, need separate categories for tutorial/doc inline tags
+    * fixed bug 657726, @uses pseudo-tag @usedby not working right
+    * fixed bug 657387, parent/child tutorial converted twice
+    * XML:DocBook:peardoc2 is 100%!
+    * tutorials work in every converter except CHM
+    * CHM upgrade is pushed to next release
+    * fixed case issue with README/INSTALL/CHANGELOG parsing
+
+2002-12-21	Gregory Beaver <cellog@users.sourceforge.net>
+	* added new demo .ini, generates documentation in all formats on phpDocumentor
+	* HTML:default is officially dead!
+	* change HTML:default:* to HTML:frames:*, with big warning message to users
+	* templates have stabilized, so ported DOM templates to frames converter
+	* fixed a few small bugs in HTMLframes Converter
+	* 100% of PDF converter is templatized
+	* implemented all features that HTML converters have in PDF converter
+	* added <pdffunction:funcname arg=$this->varname /> option, to use a
+	  $this->pdf variable in a function argument
+	* fixed bug in PDFdefaultConverter::returnSee()
+	* beautified PDF output a bit
+	* tutorials are working in everything except XML, CHM converters
+	* added 8 new templates for PDF Converter
+
+2002-12-20	Gregory Beaver <cellog@users.sourceforge.net>
+	* stabilized PDFdefaultConverter much more than before
+	* moved more formatting out of PDFdefaultConverter and into templates
+	* added exciting new <pdffunction:funcname [return="capturevarname"] [(arg="val"|arg=$capturevarname)...] />
+	  to PDF default converter.  Now any Cezpdf function can be called directly
+	  from the templates.  see new footer.tpl/title_page.tpl for example
+	* implemented feature 651716, find README/INSTALL/CHANGELOG
+	* fixed bug 657041, {@source} not working right
+	* fixed Parser::handleLogicBlock() docblock
+	* fixed bug 653627 staticvar doesn't work
+	* improved sub-tutorial list formatting for other frames templates
+	* converted the rest of the tag spec to the new documentation format
+	* fixed tree generation of tutorials in Converter
+	* fixed HTMLframesConverter tutorial menus
+	* fixed bug 654429, prev/next links not working
+
+2002-12-19	Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed problems with PDF Converter output!  needed "wb" in Converter::writefile()
+	* fixed phpDocumentor_parse_ini_file(), needed stripcslashes() instead of stripslashes()
+	* PDFdefaultConverter is functional, but output is buggy, needs a lot of work
+	* added type to global variables, inadvertant omission
+
+2002-12-18	Gregory Beaver <cellog@users.sourceforge.net>
+	* converted documentation for subpackage, var, version to new .pkg docbook format
+
+2002-12-17	Gregory Beaver <cellog@users.sourceforge.net>
+	* moved debug, fancy_debug, alt. def of array_key_exists to common.inc.php
+	* Began transfer of PDF converter over to using templates
+	* PDF Converter is UNSTABLE at the moment, do not use until bugs are fixed
+
+2002-12-16	Gregory Beaver <cellog@users.sourceforge.net>
+	* 100% tutorial implementation for HTML:*:*!
+	* fixed subtle bug in IntermediateParser
+	* fixed Prev/Next/Up links
+	* 100% tutorial implementation for all HTML:frames templates!
+
+2002-12-15	Gregory Beaver <cellog@users.sourceforge.net>
+	* 100% tutorial implementation for HTML:frames:phpedit!  added next/prev/up links
+	  few small bugs with next/prev, will fix later
+	* hierarchical tutorial implementation complete for phpedit template, frames converter
+	* finished core implementation of hierarchical tutorials in Converter
+	* implemented beginning of hierarchical tutorials in Converter, still need
+	  to debug it, but it doesn't give any fatal errors
+	* added tutorials to left frame of phpedit template so we can see what it
+	  looks like
+
+2002-12-14	Gregory Beaver <cellog@users.sourceforge.net>
+	* applied Smarty link fix to frames converter, removed formatUsesList() from both
+
+2002-12-13	Gregory Beaver <cellog@users.sourceforge.net>
+	* fully implemented all but the non-associated tutorials part of feature
+	  651275, tutorials, for HTML converters
+	* fully implemented feature 651723, @tutorial/{@tutorial} fully work!
+	* fixed simple bug in Converter::getTutorialLink()
+	* removed annoying DIR_SEP has docblock warning in Smarty.class.php
+	* added parsing of <refname> from <refnamediv> as main title of tutorials
+	* added <refnamediv> to both Converters.pkg and phpDocumentor.pkg - didn't
+	  realize this is a required tag of refentry!
+	* moved phpDocumentor_parse_ini_file to common.inc.php so web interface can use it
+	* implemented feature 653608, allow user-controlled .ini directory, also allows
+	  full path to --useconfig command-line for cases where phpDocumentor is installed
+	  by root and used by users with their own config files
+	* fixed accidental @tutorial tag in Converter.inc
+	* revamped returnSee() to rely on {$subdir}, added output filter function for
+	  Smarty Converter to allow removal of annoying $local value
+	* fixed Smarty tutorials
+
+2002-12-12	Gregory Beaver <cellog@users.sourceforge.net>
+	* TODO: HTMLSmartyConverter tutorial writing is more complex, gotta fix it
+	* fixed Converters.pkg.  Somehow, it was overwritten with phpDocumentor.pkg
+	* fixed header.tpl in phpedit template to allow inherited vars to work
+	* changed titles of the package-level tutorials Converters.pkg/phpDocumentor.pkg
+	* updated all the other HTMLframesConverter templates to use this new functionality
+	* added small comment to phpdoc.inc, was complaining about page-level docblock in parse
+	* changed PHPEdit tutorial to use tabpanes instead of those annoying + signs
+	* fixed Smarty cycle plugin, was adding unnecessary "\n" and screwing up output
+	* fixed bug if multiple tutorials (needed to unset $curtag in XMLpackagePageParser)
+	* fixed warning when parsing a {@tutorial} inline tag
+	* removed accidental {@tutorial} in Errors.inc
+	* fixed tutorial linking, added package page association for HTMLframesConverter
+	* finished class/procedural page-level tutorial association
+
+2002-12-12	Gregory Beaver <cellog@users.sourceforge.net>
+	* implemented parsing of @tutorial/{@tutorial} and automatic links to
+	  class tutorials from the class, and procedural file tutorials.  UNTESTED
+	  but if there are no @tutorial/{@tutorial} the parse works normally :)
+	* changed format of $tutorials array to match what Converter was expecting.
+	  organized now by package/subpackage/tutorial type.
+
+2002-12-11	Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed significant bug 651837, @see package#element, anotherelement breaks
+	* implemented core of feature 651275, tutorials.  Tutorials are parsed, and
+	  parserTutorials are passed to the Convert() function, but haven't
+	  implemented any of the convertTutorial() functions yet
+	* implemented parserTutorial, parserTutorialInlineTag, but didn't set up parsing for them
+	* added tutorial to the list of allowed tags and inline tags
+
+2002-12-10	Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed bug 650946, open new window for phpdoc.org link
+	* removed masterdirectory commandline, implemented MUCH better automatic base
+	  determination at the advent of file parsing.
+	* removes unintentional duplicate files (if -f filename.ext and -d dir include
+	  the same file)
+
+2002-12-09	Gregory Beaver <cellog@users.sourceforge.net>
+	* added htmlentities to <code></code> in desc
+	* fixed HTMLframesConverter bug in package pages, was outputting into wrong dir for linking
+	* fixed bugs in left_frame.tpl of phpedit template, fixed bugs in HTMLframeConverter::makeLeft()
+	* added sdesc processing to the list of cool items
+	* allow unterminated <p>, now we have 100% javadoc desc compliance :)
+	* added <br> to allowed tags in desc/sdesc
+	* removed need for adv_htmlentities - with new system, Converter::postProcess() is called
+	  on all non-objectified strings, so the appropriate Converter function can be applied
+	* fixed nested <ol> and <ul> parsing of descs, plus allow unterminated <li>
+	* fixed silly syntax error introduced in Setup.inc.php
+
+2002-12-08	Gregory Beaver <cellog@users.sourceforge.net>
+	* Added the last of the skeleton details to the peardoc2 template, time for testing
+	* fixed command-line error in common.inc.php and phpdoc.bat, it should work now
+	* fixed bug in @uses formatUsesList for html converters
+	* fixed extra ] in method.tpl in phpedit template
+	* added Julien Damon's fantastic adaptation of the PHPEdit template to frames converter
+
+2002-12-07	Gregory Beaver <cellog@users.sourceforge.net>
+	* implemented 645775, line numbers
+	* finished converting phphtmllib, and tweaked all templates plus HTMLframesConverter
+	* fixed bug in default converter introduced by changes to page->name
+	* converted phpdoc.de template over to ne frames converter
+	* fixed mistakes in l0l33t, default
+	* converted l0l33t template over to new frames converter
+	* took the <<< out of HTMLframesConverter, added new blank.tpl to allow
+	  customizable startup page
+
+2002-12-06	Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed 641334, no support for <script language="php">
+	* revised fix for 649646, it was not working for functions with any { } in them
+	* fixed bug 649646, comments not parsed in functions
+	* fixed broken stuff due to move
+
+2002-12-04      Joshua Eichorn <jeichorn@phpdoc.org>
+        * Basic updates of includes for new direcotry schemes
+        * Boat loads of cvs magic moves to clean up the root directory
+          nothing shows in cvs history but i broke lots
+        * Merged everything from the 1.1.0 branc back to head so if anything
+          is broke i broke it
+
+2002-12-04	Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed crash on parsing @uses class::method()
+	* partially fixed incorrect linking in HTML converters from @uses list in formatUsesList(), needed $local = true
+	* fixed 648684, links incorrect to global vars and defines in HTMLSmarty
+	* HTMLframesConverter and default template successfully working now
+
+2002-12-02	Gregory Beaver <cellog@users.sourceforge.net>
+	* ParserData.inc	fixed bug 647494 with {@link item, item}
+	* added new Smarty PHP templates from Mark van Reunswolde based on the php website look
+	* added Mark van Reunswolde to the Authors list
+
+2002-12-01	Gregory Beaver <cellog@users.sourceforge.net>
+	* Began work on new HTMLframesConverter to replace the default converter
+	  the Smarty converter will become HTMLnoframesConverter since both
+	  converters will be using the Smarty engine.
+	* added create_package.xml.php, a tool to generate the pear package.xml file
+	* added cleanup_for_pear.php, contributed by a user to make the output fit
+	  PEAR specs and his own preference for docblock formatting
+
+2002-11-30	Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed major bug introduced by flexibility :)
+	* made HTMLSmartyConverter much more flexible
+	* fixed 640507, links to constructors broken
+	* fixed 641235, need trim in -f and -d commandline
+	* fixed 646281, {@link e@a descrip} broken in package pages
+	* converted Converter and phpDocumentor package-level docs to new DocBook format
+	* added inline {@id} tag for xml package parser
+	* completed XMPpackagePageParser!
+	* added documentation for {@inheritdoc}, {@id}
+	* added XMLpackagePageParser.inc and PackagePageElements.inc to repository
+
+2002-11-29	Gregory Beaver <cellog@users.sourceforge.net>
+	* Classes.inc	fixed warning on 435
+	* Errors.inc	fixed problem with error output in web interface (<ul> to ul)
+	* phpdoc.php, new_phpdoc.php	fixed problem finding config files if running as a symlink in web interface
+	* Converter.inc	fixed 645588 - no linking to functions whose name starts with "global" or "function"
+
+2002-11-27	Gregory Beaver <cellog@users.sourceforge.net>
+	* added docblock's to class_summary.tpl
+	* added a great deal to DocBook converter templates
+	* added new ParserDescCleanup.inc, parses long descriptions into paragraphs, as well as parsing out allowed html
+	  tags into abstract structures that are automatically converted using an options.ini file in the template directory
+	  that adds the proper wrappers for the output format.  Very flexible and intuitive
+
+2002-11-24	Gregory Beaver <cellog@users.sourceforge.net>
+	* added mucho to DocBook converter and peardoc2 template.  Only need to do global, include, and define templates and it's ready to go
+	  for PEAR
+
+2002-11-22	Gregory Beaver <cellog@users.sourceforge.net>
+    * changed namespace things to fix for PEAR
+
+2002-11-20	Gregory Beaver <cellog@users.sourceforge.net>
+    * implemented feature 623055, support Zend @desc
+    * implemented feature 637920, easy way to extend a converter -o "HTML:Smarty/childofSmarty:template"
+    * implemented feature 637660, parse type|type
+
+2002-11-19	Gregory Beaver <cellog@users.sourceforge.net>
+    * implemented feature 558118, {@inheritdoc}
+    * implemented feature 577714, have master directory option
+    * implemented feature 634589, @uses
+
+2002-11-18	Gregory Beaver <cellog@users.sourceforge.net>
+    * implemented feature 562604, docblock templates
+
+2002-11-17	Gregory Beaver <cellog@users.sourceforge.net>
+    * implemented feature 566942, {@link seeelement description}
+    * implemented feature 569746, make Program_Root a template thing.  It's in phpDocumentor.ini
+    * significant improvement in DocBook converter and peardoc2 template
+    * ParserFunction added getIntricateFunctionCall()
+    * Converter added type_adjust()
+
+2002-11-16	Gregory Beaver <cellog@users.sourceforge.net>
+    * nearly 100% functional DocBook converter for peardoc2
+    * refined config option - now it is possible to set up phpdoc to run with no command-line options at all!
+    * fixed phpdoc.php, new_phpdoc.php to work with new config option
+    * added config file parsing, new command-line -c --useconfig option
+    * added new Setup.inc.php, moved almost all of phpdoc.inc into there.
+    * changed phpdoc_out to phpDocumentor_out
+    * new_phpdoc.php,phpdoc.php changed to GET interface so people can bookmark a complicated parse, added XMLDocBook
+    * IntermediateParser.inc    fixed mis-naming of bug when a Converter isn't a class
+    * Added phpDocumentor.ini, removing from phpdoc.inc data that should be separate
+
+2002-11-14	Gregory Beaver <cellog@users.sourceforge.net>
+    * updated documentation to reflect new stuff
+    * implemented feature 564991, auto-links to php manual (also uses PHP_MANUAL# as fake package to link to the manual)
+
+2002-11-13	Gregory Beaver <cellog@users.sourceforge.net>
+    * improved {@source} tag
+    * Converter.inc fixed 638128, commandline win32 fails, w/relative path
+    * Converter.inc fixed 638042, two declarations of checkstate()
+    * PDF Converter fixed 637921
+    * fixed 637928  multiple converters fails
+    * fixed bug if PDEXCEPTIONS is true
+
+----------	Release 1.1.0  ------------------
+2002-11-12	Gregory Beaver <cellog@users.sourceforge.net>
+    * PDF Converter enhanced <ul></ul> support
+    * PDF Converter added package pages
+    * Parser.inc    fixed minor bug in handling of quote data
+
+2002-11-11	Gregory Beaver <cellog@users.sourceforge.net>
+    * PDF Converter added <ul></ul> support
+
+2002-11-10	Gregory Beaver <cellog@users.sourceforge.net>
+    * new_phpdoc.php    added replace converter option for convenience
+    * PDF Converter upgraded to pdf-php 009
+    * PDFdefaultConverter   fixed bug in returnSee()
+    * PDFdefaultConverter   fixed 597089, page numbering screwy
+    * PDF Converter added linking from table of contents
+    * PDF Converter cleaned up long description formatting
+    * PDF Converter added full alphabetical index
+
+2002-11-7	Gregory Beaver <cellog@users.sourceforge.net>
+    * new_phpdoc.php,phpdoc.php fixed mistake in the dropdown for Converter choice
+    * Classes.inc   fixed 635264
+    * removed rc2 from all 1.1.0rc2
+    * Parse.inc     fixed warning on 956
+    * package.xml   updated to reflect addition of phphtmllib template
+    * added phphtmllib template
+
+2002-11-7	Joshua Eichorn <jeichorn@phpdoc.org>
+    * small clean up of documentation for the release
+        
+2002-11-7	Gregory Beaver <cellog@users.sourceforge.net>
+    * fixed 591396  package difficulties
+    * fixed 603668
+    * Release-1.1.0 added and customized
+
+2002-11-6	Gregory Beaver <cellog@users.sourceforge.net>
+	* docblock.tpl	fixed 634492, all linking broken in Smarty Converter
+
+2002-10-31	Gregory Beaver <cellog@users.sourceforge.net>
+	* package.xml	added new_phpdoc.php, changed date to November (it was August - we're behind folks!)
+	* index.html	added link to new_phpdoc.php, now that it works
+	* Parser.inc	applied superior fix for 604254
+	* Parser.inc	fixed 631853, sometimes first letter is cut off.  was using ltrim($word,' \t') instead of ltrim($word," \t")
+	* Parser.inc	fixed 631842, default value of '' is ignored
+	* var.tpl	renamed default to var_default
+	* applied fix for weird Smarty error to case where there are no files (just classes)
+
+2001-10-31      Joshua Eichorn <jeichorn@phpdoc.org>
+        * Io.inc        Fixed command line parsing, seems someone else messed it up
+
+2002-10-31	Gregory Beaver <cellog@users.sourceforge.net>
+	* applied 621416 to method.tpl
+	* fixed 631626	need pre-like stuff
+	* fixed weird Smarty error if there are no classes
+	* fixed 598086	Helvetica not added to archive
+	* fixed 625686	in DOM/default, global_summary.inc.html had typo CONSTANT instead of VARIABLE
+	* fixed 621416	need <br> in include.tpl
+	* fixed 609989	if function has no params, @param tag ignored
+	* fixed 599005	function return no longer shows up.  needed to add {$functions[func].function_return in front of
+	                {$functions[func].function_call} in function.tpl for the Smarty converter
+	* fixed 598910	Procedural page doc not working in Smarty
+	
+2002-10-30	Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed 604254	multi-line space needs ltrim.  Added code in Parser.inc Parser::handleDesc() to trim unnecessary white space at line start
+	* fixed bug 623050	class tree links in phpdoc.de templates are duds.  Also added two template variables to all pages
+	                    for all templates in HTMLdefaultConverter: cpackage and relloc.  cpackage is the current package name
+						relloc is the relative location of the current file based on package (it's either ../ or ../../ to the base)
+						this can be used to link to files in the web base
+	* bug-570040	added to package tests
+	* fixed it completely!  changes to getPath() needed to be in setPath()
+	* changed all ->path to ->getPath(), but the added code still breaks everything.  It will remain commented until the author
+	  (whoever that is) explains what he was trying to do.
+	* ParserData.inc	fixed annoying warnings created - fix is temporary, will do comprehensive fix later.
+						the problem was with parserPage::getPath(), which is not always used when it should be.
+
+2002-08-25	Gregory Beaver <cellog@users.sourceforge.net>
+    * phpdoc.inc        fixed 4.2.0-specific bugs
+    * new_phpdoc.php    fixed errors
+    * Io.inc            fixed parse error
+    * package.xml       added README
+    * new_phpdoc.php    stabilized behavior
+    * new_phpdoc.php    attempted another solution to bizarre behavior
+
+2002-08-24	Gregory Beaver <cellog@users.sourceforge.net>
+    * package.xml   fixed <> and </> to be <role> and </role>
+	* package.xml   added PEAR package.xml file.  It's incomplete, will require proofread and edit before release (558 lines!)
+
+2002-08-23	Gregory Beaver <cellog@users.sourceforge.net>
+	* new_phpdoc.php	added mega-enhanced web interface, will be moved to phpdoc.php when approved
+
+2002-08-21	Gregory Beaver <cellog@users.sourceforge.net>
+	* Parser.inc	fixed warning on 1140 if quote_data has never been set
+	* fixed bug 588453, default values in function parameters screw everything up
+	* fixed bug 587737, multi-line function name parsed incorrectly
+	* fixed bug 587733, inherited private methods/vars should not show if parseprivate is off
+	* added test case for bug 587733
+	* fixed 578143, --customtags not documented (oops)
+	* fixed 576507, first word of @global type firstword is cut off
+	* fixed all of 575532, tags.ignore.html is formatted wrong
+	* fixed 575232, phpdoc.php needs <?php instead of <?
+
+2002-08-13      Dave Viner <dviner@yahoo-inc.com>
+        * fixed 575232. uses short tag <? instead of <?php
+        * fixed 582360. windows path delimiter returned in ParserData.inc
+        * removed php warnings when run without parameters
+        * fixed display of usage message
+        * error check value of parent directory in Converter.inc
+       
+2002-08-09      Joshua Eichorn <jeichorn@phpdoc.org>
+        * edited README, Authors small changes
+
+2002-06-25	Gregory Beaver <cellog@users.sourceforge.net>
+	* fixed documentation for @ignore, edited README
+	* fixed 571677, @return type descrip not showing descrip
+
+2002-06-18	Gregory Beaver <cellog@users.sourceforge.net>
+	* added {@source} tag, can be {@source} for whole function or {@source line line} for excerpt.  only works for functions
+	* Parser.inc	removed old dockeyword handling
+	* phpdoc.inc,Parser.inc	added @parameter as alias to @param
+	* phpdoc.php	added dropdown for converters to help remember their names.  Thanks to Tim Gallagher
+	
+----------	Release 1.1.0rc2  ------------------
+2002-06-17      Joshua Eichorn <jeichorn@phpdoc.org>
+        * lots of changes to the default smarty template
+
+2002-06-17	Gregory Beaver <cellog@users.sourceforge.net>
+	* IntermediateParser.inc, Smarty_Compiler.class.php	fixed bug in @ignore
+
+2002-06-17      Roberto Berto <darkelder@users.sourceforge.net>
+    * makedoc.sh    New makedoc.sh comments and version
+
+2002-06-15	Gregory Beaver <cellog@users.sourceforge.net>
+	* Parser.inc	fixed small bug if -f filename.php used without path
+	* Prepared for rc2, phpdoc.php, README, howto.html and Release changes
+	* CHMConverter	fixed index so that it works
+
+2002-06-14	Gregory Beaver <cellog@users.sourceforge.net>
+	* CHMConverter	added pre-alpha CHM converter based on htmlsmarty converter
+
+2002-06-14	Gregory Beaver <cellog@users.sourceforge.net>
+	* PDFConverter	fixed it up real nice, for pre-alpha, it is somewhat useful
+	* Smarty_Compiler.class.php	added @ignore tag to header output for every template
+	* HTMLSmarty	fixed stylesheet/image copy
+	* Converter.inc	added indenting to writefile()
+	* HTMLSmarty	added cache for speedup, fixed warnings
+	* HTMLSmarty	fixed left index creation
+	* HTMLSmarty	fixed package index listing
+	* HTMLSmarty	fixed unnecessary classtrees output
+	* HTMLSmarty	fixed header.tpl, sped up left index creation in the process
+	* plugins/, create_example.php	fixed @package tags
+	* Parser.inc	fixed 568901 totally
+	* Parser.inc	fixed handleCR, unfixed 568901 slightly
+	* Converter.inc	fixed crash if parent::$el used and the class's parent is not fuond
+	* phpdoc.inc	turned off exception checking
+	* Io.inc	fixed @global mis-formatting
+	* Parser.inc commented out debug code
+	* ProceduralPages.inc	fixed faulty exception-checking code
+	* moved Smarty to phpdoc/
+	* howto.html,README	updated command-line for 1.1
+	* makedoc.sh	fixed small error in $TEMPLATES
+	
+2002-06-14      Joshua Eichorn <jeichorn@phpdoc.org>
+        * howto.html  bug# 568901Doc update from Julian Ladisch (julianladisch)
+        * bug-shortdesc.php     Short desc test file
+        * Parser.inc            Fix for bug #568900
+        * README                fix some grammar
+        * Updated Roadmap
+
+2002-06-13	Roberto Berto <darkelder@users.sourceforge.net>
+	* added makedoc.sh and its documentation inside INSTALL and README
+	
+2002-06-13	Gregory Beaver <cellog@users.sourceforge.net>
+	* finished skeleton HTMLSmartyConverter
+	* started a skeleton HTMLSmartyConverter.inc
+
+2002-06-12	Gregory Beaver <cellog@users.sourceforge.net>
+	* Converter.inc	added cosmetic \n to walk() after converting error log
+	* fixed bug 568146, -po broken again
+	* fixed bug 568131
+	* fixed bugs 568137, 568135
+	* Parser.inc	fixed bug 567455, incorrect short desc recognition if first line has no period and third line does
+	* Converter.inc	finished docs
+	* phpDocumentor.html	fixed missing "
+	* HTMLdefaultConverter.inc	wasn't setting {var_default} in var_detail
+	* Classes.inc	some desc comments too long for <pre></pre>
+
+2002-06-11	Gregory Beaver <cellog@users.sourceforge.net>
+	* Parser.inc	fixed 567757, EOF quotes break parsing
+	* Parser.inc	fixed 567681, global value needs whitespace
+	* Converter.inc	added new function getGlobalValue(), getIncludeValue() which link to documented elements if found.
+	* IntermediateParser.inc	fixed 567683, sorting was screwing up classes again
+	* HTMLdefaultConverter.inc	classes were not listing @package, neither were pages
+	* Converter.inc	fixed bugs 567652, 567654, 567578
+	* finished updating inline docs
+	* Parser.inc	fixed bug 567059
+	* HTMLdefaultConverter.inc	fixed bug 567090
+	* HTMLdefaultConverter.inc	fixed bug 567504, added {global_link} and {constant_link} to all default templates
+	* HTMLdefaultConverter.inc	fixed bug 567105, errors.html totally screwed up
+	
+2002-06-10	Gregory Beaver <cellog@users.sourceforge.net>
+	* IntermediateParser.inc	continued documenting
+
+2002-06-09	Gregory Beaver <cellog@users.sourceforge.net>
+	* HTMLdefaultConverter.inc	fixed bug 566655, blank.html not written
+	* IntermediateParser.inc, Converter.inc	fixed bug 566600, var/method links awry.  Was due to sorting incorrectly
+	* bug-566600.php	added test case
+	* all Converters	fixed bug 566607, image files not copied.  Had to redo args to Converter, add in $templateDir
+	* Parser.inc	fixed bug 566659, @param &$arg not working
+	* IntermediateParser.inc	nearly finished inline documenting
+	* Classes.inc	started inline documenting
+	
+----------	Release 1.1.0rc1  ------------------
+2002-06-09	Gregory Beaver <cellog@users.sourceforge.net>
+	* HTMLdefaultConverter.inc	added adv_htmlentitites to docblocks
+
+2002-06-08	Gregory Beaver <cellog@users.sourceforge.net>
+	* PDFdefaultConverter.inc	added convertGlobal() function, wasn't there.
+	* added docs for @ignore, @staticvar
+	* IntermediateParser.inc	adding sorting of all elements prior to conversion, shaves another percentage or two off of execution time
+	* Converter.inc	fixed bug 566210
+	* had no blank.html creation, added it to HTMLdefaultConverter
+	* Parser.inc	fixed warnings in functionparam handler
+	* IntermediateParser.inc	fixed 566207, crash on parsing sample
+	* Parser.inc	fixed 566200, incorrect function parameter parsing
+	* updated tag spec for @staticvar
+	* half-updated template spec for 1.1
+	* Reworked Converter::Converter() command-line args
+	* Converters.html	added package-level docs for Converters package
+	* HTMLdefaultConverter.inc	fixed bug in ConvertPackagePage(), wasn't setting target dir correctly
+	* Converter.inc	fixed bug in getLink() if explicit # package override used
+	* Parser.inc	fixed rest of bug if {@link package#element} is used
+	* Converterhowto.html	updated for 1.1rc1
+
+2002-06-07	Gregory Beaver <cellog@users.sourceforge.net>
+	* HTMLdefaultConverter.inc	fixed package-level docs output
+	* Added error/warning output into a file
+	* Merged Render into HTMLdefaultConverter
+	* moved adv_htmlentities into Converter.inc
+	* Render.inc	removed
+	* DataTypes.inc	removed
+	* INSTALL	added installation instructions for those who need it
+	* gave up on parsing PEAR.  PHP is too unstable at high memory usage
+	* DOM/default/left.html	fixed Functions label, was Classes
+	* Errors.inc	phpdoc_exception.log is now written to the target directory instead of the phpdoc base, to avoid
+					write permission issues
+	* Classes.inc	fixed the last remnant of the old bug in processChild
+	* Errors.inc	added new exception for case where a root has a parent in the same class
+	* HTMLdefaultConverter.inc	fixed formatting problem with getRootTree()
+	* HTMLdefaultConverter.inc	fixed subdirectory error in formatted inherited vars/methods
+	* ParserElements.inc	made inherited vars/methods functions non-recursive
+	* ProceduralPages.inc	fixed page packaging
+	* Classes.inc	fixed class inheritance packaging
+	* IntermediateParser.inc	fixed parserData->clean bug, was not being set to false when an element was encountered
+
+2002-06-06	Gregory Beaver <cellog@users.sourceforge.net>
+	* Classes.inc	fixed very old bug in processChild, incorrect inheritance when diff file, diff package, 1 possible parent test
+					was testing if there is 1 possible *child* instead of parent
+	* Converter.inc	fixed bug in getSortedClassTreeFromClass() if there was a parent in another package or not found
+	* IntermediateParser.inc	fixed usage of first docblock @package
+	* HTMLdefaultConverter.inc, ParserElement.inc	fixed bug in individual class tree generation
+	* ProceduralPages.inc	fixed major bug in replaceElement(), was not searching the arrays for the right element
+	* Converter.inc, HTMLdefaultConverter.inc	made root tree generation non-recursive
+	* ParserElements.inc	added cache to parserClass::getInheritedMethods()/getInheritedVars(), instead of recursion fix, will fix later
+
+2002-06-05	Gregory Beaver <cellog@users.sourceforge.net>
+	* ParserElement.inc	changed parserClass::getParentClassTree() to be non-recursive
+	* added Exception tracking for hard bugs that crash php
+	* Errors.inc	documented all the global error message arrays
+
+2002-06-04	Gregory Beaver <cellog@users.sourceforge.net>
+	* Render.inc	fixed warning on 931
+	* Converter.inc	removed recursion from getLink()
+	* IntermediateParser.inc	fixed 564681, no docblocks, no packages.html output
+	* fixed 564264, SDesc not doing {@link} right
+	* ParserElements.inc	made inheritance of subpackage from classes within page work in parserClass::setParent()
+	* HTMLdefaultConverter.inc	fixed bug 564630, need $local = false
+	* bug-542586.php	added @package tests to new classes
+	* HTML/default/default.inc	moved to HTML/default/HTMLdefaultConverter.inc
+	* PDF/default/default.inc	moved to PDF/default/PDFdefaultConverter.inc
+	* IntermediateParser.inc	changed addConverter() to reflect name changes above
+	* Converter.inc	fixed bug that was putting procedural pages in package indexes by name instead of by file
+	* ProceduralPages.inc	made inheritance of subpackage from classes within page work
+	* Classes.inc	fixed subpackage inheritance
+	* Converter.inc	fixed 563992, warning on line 861
+	* Classes.inc	fixed 564135, @access private not working right
+	* bug-542586.php	added testing for bug 564135
+
+2002-06-03	Gregory Beaver <cellog@users.sourceforge.net>
+	* Parser.inc	fixed bug 564173, global var still looked for
+	* HTML/default/default.inc	fixed minor warning on lines 804 and 805
+	* HTML/default/default.inc	made auto-include linking work for different packages
+	* Converter.inc	fixed 563995, li_0, needed uasort($this->*_elements) instead of usort
+	* Converter.inc	fixed 564115, $par set to 0 in Converter::getLink()
+	* Converter::getLink()	improved efficiency
+	* Converter.inc	fixed 564108, crash in php when package#element passed to getLink() and package doesn't exist in the documentation
+	* Io.inc	changed "cvs datei" to CVS file [EXPERIMENTAL].  CVS parsing kacks on branches
+	* changed --converters to --output, removed --templatedir
+
+2002-06-02	Gregory Beaver <cellog@users.sourceforge.net>
+	* added ParserElements.inc, containing parserElement and descendants
+	* added ParserDocBlock.inc, containing all DocBlock elements
+	* parserLinkInlineTag	added "mailto:*" as valid inline link
+	* Parser.inc	implemented feature 559339, add abstract link for email in @author tag (using parserInlineLinkTag instead of new
+					parserEmail tag)
+	* implemented feature 560892, link to classes in @var, @return and @param type if found
+	* implemented parent::* processing
+	* fully implemented feature 562650, parent::* linking to overridden methods
+	* implemented feature 561081, better indexing
+	* fixed a few warnings introduced by feature changes
+	* Parser.inc	implemented feature 560375, need whitespace
+	* implemented feature 553599, static variables should be documentable
+	* implemented feature 558757, add Functions to left.html
+	* HTMLConverter.inc	significantly reduced memory impact and increased speed as a result
+	* Render.inc	removed PreOutput(), Output() now clears template memory when finished
+	* Changed all references to PHPDocumentor to phpDocumentor for consistency
+	* re-arranged Converters for new usage in path: Converters/outputformat (html/pdf/etc.)/name/name.inc
+	* HTMLConverter.inc	fixed bug where class trees were not being written
+	* HTMLConverter.inc, Render.inc	fixed bug 563729
+	* Parser.inc	fixed bug 562653, crash on empty page with unterminated {@link}
+
+2002-06-01	Gregory Beaver <cellog@users.sourceforge.net>
+	* added documentation of inter-package class conflicts
+	* HTMLConverter.inc, Converter.inc	reorganized indexing, added informational output
+	* HTMLConverter.inc	changed all get*Link() methods to have same format at Converter::get*Link
+	* Converter.inc	added $text as a dummy parameter to all get*Link methods
+	* implemented all of feature 560888, document name conflicts
+	* create_examples.php	added inline documentation
+	* Converter.inc	added several functions to generate abstract class trees and sort them
+	* HTMLConverter.inc	changed getRootTree to work with the abstract class tree, fixing bug 561082
+	* HTMLConverter.inc, Render.inc	fixed bug 561093, no links to other packages in package element index
+	* templates	fixed <a name="#top"></a>
+	* Io.inc	implemented Jason Sweat's fix for bug 562057, fixes for directory permissions
+	* Io.inc	fixed bug 562252, ignore should be recursive for directories
+	* Io.inc	fixed bug 560603, unknown command-line options should raise an error
+	* Render.inc	added blank {function_conflicts} to methods (was missing)
+	* fully implemented auto-linking to other packages, feature 560026
+	* implemented feature 560891, make @param output type $varname instead of $varname type
+
+2002-05-31	Gregory Beaver <cellog@users.sourceforge.net>
+	* ParserData.inc	implemented feature request 562250, no die on illegal package name, set to default and continue parsing
+	* Parser.inc	fixed bug 561392, warning on line 874
+	* ProceduralPages.inc	fixed bug 561394, fatal error on line 329
+	* Parser.inc	fixed bug 562997, class being parsed out of quote in php code
+	* Parser.inc	fixed bug 563005, global handler broken
+	* fixed bug 561396, many pages not in left.html
+	* Converter.inc	moved sorting of indexes from HTMLConverter.inc
+	* tests/	removed name conflicts with function test() and function test2()
+	* fixed parse private, default package name, and package output.  All three were intertwined, and all three now work the way they should
+
+2002-05-27	Gregory Beaver <cellog@users.sourceforge.net>
+	* IntermediateParser.inc	moved all element indexing to Converter where it belongs.
+	* Classes.inc, ProceduralPages.inc	moved all indexing to fullpath for conflicts, added full conflict handling
+	* phpdoc.inc	added @ignore tag for handling conflicts
+	* Errors.inc	added several errors relating to name conflicts
+	* IntermediateParser.inc	moved all handling of procedural elements to ProceduralPages.inc, much cleaner code
+	* ParserData.inc	adjusted parserClass functions to work with fullpath instead of files
+	* ProceduralPages.inc	Works now (mostly)
+	* If a procedural page has 1 package used by classes in it, it will inherit the package now
+	* DataTypes.inc	fixed bug 562073, adv_htmlentities should use html_specialchars
+	* DataTypes.inc	fixed bug in DataDocBlock::setGlobal() causing blank @global tag in output for every function
+	* phpdoc.inc	documented global variables
+
+2002-05-26	Gregory Beaver <cellog@users.sourceforge.net>
+	* added @global for functions
+	* ParserData.inc	added getFullPath() function to parserPage, for name conflict resolution
+	* ProceduralPage.inc	added intermediary structure similar to Classes.inc
+
+2002-05-25	Gregory Beaver <cellog@users.sourceforge.net>
+	* Io.inc,phpdoc.inc,Parser.inc	added feature 556757, JavaDoc-compliant description
+	* phpdoc.php	updated for new features
+	* Io.inc,phpdoc.inc	added feature 550308, custom tags
+	* Io.inc	fixed bug 560604, phpdoc -h cuts off name in --defaultpackagename
+	* updated all docs for global variable, changed version to 1.1, since we started version 1.1 changes
+	* tags.param.html	fixed error in documentation, had reference to @return which was incorrect
+	* finished addition of @global for variable definition, added to all templates
+	* added parsing of global variables, only to l0l33t for now.  extensive changes to most files
+	* l0l33t/page.html	fixed bug 560532, was missing inclusion of page-level docblock
+	* ParserData.inc	fixed crash
+	* Classes.inc	fixed bug 560598 by adding error to Errors.inc
+	* Parser.inc	fixed bug 560595, fail on invalid docblock with @
+	* Parser.inc	fixed bug 560578, @author test @ not working
+	* IntermediateParser.inc, ParserData.inc, Errors.inc	added feature 560586
+
+----------	Release 1.0.0  ------------------
+vim: set expandtab:

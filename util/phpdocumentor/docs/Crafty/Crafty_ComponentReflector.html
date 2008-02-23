@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Crafty_ComponentReflector</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Crafty_ComponentReflector</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Reflection class which knows about setter based injection depedencies.</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Chris Corbyn</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_Crafty---Crafty---ComponentReflector.php.html">/Crafty/Crafty/ComponentReflector.php</a> (line <span class="field">8</span>)
+		</p>
+		
+				
+		<pre>ReflectionClass
+   |
+   --Crafty_ComponentReflector</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																												
+												<div class="method-definition">
+											<span class="method-result">Crafty_ComponentReflector</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$className</span>, [<span class="var-type">mixed[]</span>&nbsp;<span class="var-name">$properties</span> = <span class="var-default">array()</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">object</span>
+										<a href="#newInstance" title="details" class="method-name">newInstance</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$param1</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$param2...</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">object</span>
+										<a href="#newInstanceArgs" title="details" class="method-name">newInstanceArgs</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$args</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">23</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a new ComponentReflector for the given $className with the given  $properties.</p>
+	
+	<div class="method-signature">
+		<span class="method-result">Crafty_ComponentReflector</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$className</span>, [<span class="var-type">mixed[]</span>&nbsp;<span class="var-name">$properties</span> = <span class="var-default">array()</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$className</span>			</li>
+					<li>
+				<span class="var-type">mixed[]</span>
+				<span class="var-name">$properties</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnewInstance" id="newInstance"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">newInstance</span> (line <span class="line-number">35</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create an instance with a list of arguments passed to the constructor.</p>
+	
+	<div class="method-signature">
+		<span class="method-result">object</span>
+		<span class="method-name">
+			newInstance
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$param1</span>, <span class="var-type">mixed</span>&nbsp;<span class="var-name">$param2...</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$param1</span>			</li>
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$param2...</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnewInstanceArgs" id="newInstanceArgs"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">newInstanceArgs</span> (line <span class="line-number">45</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create an instance with the given array of arguments in the constructor.</p>
+	
+	<div class="method-signature">
+		<span class="method-result">object</span>
+		<span class="method-name">
+			newInstanceArgs
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$args</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed[]</span>
+				<span class="var-name">$args</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sat, 12 Jan 2008 15:16:31 +1100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.3.1</a>
+	</p>
+	</div></body>
+</html>

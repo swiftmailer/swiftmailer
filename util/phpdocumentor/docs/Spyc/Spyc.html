@@ -1,0 +1,1442 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Spyc</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Spyc</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The Simple PHP YAML Class.</p>
+<p class="description"><p>This class can be used to read a YAML file and convert its contents  into a PHP array.  It currently supports a very limited subsection of  the YAML spec.</p><p>Usage:  <div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$parser&nbsp;</span>=&nbsp;<span class="src-key">new&nbsp;</span><span class="src-id"><a href="../Spyc/Spyc.html">Spyc</a></span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$array&nbsp;&nbsp;</span>=&nbsp;<span class="src-var">$parser</span><span class="src-sym">-&gt;</span><a href="../Spyc/Spyc.html#methodload">load</a><span class="src-sym">(</span><span class="src-var">$file</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+		<p class="notes">
+			Located in <a class="field" href="_Crafty---Spyc.php.html">/Crafty/Spyc.php</a> (line <span class="field">26</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																																																																																																																																												<div class="method-definition">
+					static 						<span class="method-result">string</span>
+										<a href="#YAMLDump" title="details" class="method-name">YAMLDump</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$array</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$indent</span> = <span class="var-default">false</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$wordwrap</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">array</span>
+										<a href="#YAMLLoad" title="details" class="method-name">YAMLLoad</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$input</span>)
+									</div>
+																																																																																
+												<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addArray" title="details" class="method-name">addArray</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$array</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addArrayInline" title="details" class="method-name">addArrayInline</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$array</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addGroup" title="details" class="method-name">addGroup</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$group</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addLiteralLine" title="details" class="method-name">addLiteralLine</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$literalBlock</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$literalBlockStyle</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#clearBiggerPathValues" title="details" class="method-name">clearBiggerPathValues</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#dump" title="details" class="method-name">dump</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$array</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$indent</span> = <span class="var-default">false</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$wordwrap</span> = <span class="var-default">false</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#flatten" title="details" class="method-name">flatten</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$array</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getParentPathByIndent" title="details" class="method-name">getParentPathByIndent</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isArrayElement" title="details" class="method-name">isArrayElement</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isComment" title="details" class="method-name">isComment</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isHashElement" title="details" class="method-name">isHashElement</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isLiteral" title="details" class="method-name">isLiteral</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#isPlainArray" title="details" class="method-name">isPlainArray</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#literalBlockContinues" title="details" class="method-name">literalBlockContinues</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$lineIndent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#load" title="details" class="method-name">load</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$input</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#loadFromSource" title="details" class="method-name">loadFromSource</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$input</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#nodeContainsGroup" title="details" class="method-name">nodeContainsGroup</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#returnArrayElement" title="details" class="method-name">returnArrayElement</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#returnKeyValuePair" title="details" class="method-name">returnKeyValuePair</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#returnMappedSequence" title="details" class="method-name">returnMappedSequence</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#returnMappedValue" title="details" class="method-name">returnMappedValue</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#returnPlainArray" title="details" class="method-name">returnPlainArray</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#revertLiteralPlaceHolder" title="details" class="method-name">revertLiteralPlaceHolder</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$lineArray</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$literalBlock</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#startsLiteralBlock" title="details" class="method-name">startsLiteralBlock</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#startsMappedSequence" title="details" class="method-name">startsMappedSequence</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#startsMappedValue" title="details" class="method-name">startsMappedValue</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#stripGroup" title="details" class="method-name">stripGroup</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$group</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#stripIndent" title="details" class="method-name">stripIndent</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$indent</span> = <span class="var-default">-1</span>])
+									</div>
+																																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#_doFolding" title="details" class="method-name">_doFolding</a>
+											(<span class="var-type">$value</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#_doLiteralBlock" title="details" class="method-name">_doLiteralBlock</a>
+											(<span class="var-type">$value</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type">$indent</span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#_dumpNode" title="details" class="method-name">_dumpNode</a>
+											(<span class="var-type">$key</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">$value</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type">$indent</span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">int</span>
+										<a href="#_getIndent" title="details" class="method-name">_getIndent</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#_inlineEscape" title="details" class="method-name">_inlineEscape</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$inline</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#_parseLine" title="details" class="method-name">_parseLine</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$line</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">mixed</span>
+										<a href="#_toType" title="details" class="method-name">_toType</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#_yamlize" title="details" class="method-name">_yamlize</a>
+											(<span class="var-type">$key</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">$value</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type">$indent</span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#_yamlizeArray" title="details" class="method-name">_yamlizeArray</a>
+											(<span class="var-type">$array</span>&nbsp;<span class="var-name">$array</span>, <span class="var-type">$indent</span>&nbsp;<span class="var-name">$indent</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodYAMLDump" id="YAMLDump"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method YAMLDump</span> (line <span class="line-number">95</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Dump YAML from PHP array statically</p>
+<p class="description"><p>The dump method, when supplied with an array, will do its best  to convert the array into friendly YAML.  Pretty simple.  Feel free to  save the returned string as nothing.yaml and pass it around.</p><p>Oh, and you can decide how big the indent is and what the wordwrap  for folding is.  Pretty cool -- just pass in 'false' for either if  you want to use the default.</p><p>Indent's default is 2 spaces, wordwrap's default is 40 characters.  And  you can turn off wordwrap by passing in 0.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">string</span>
+		<span class="method-name">
+			YAMLDump
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$array</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$indent</span> = <span class="var-default">false</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$wordwrap</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$array</span><span class="var-description">: PHP array</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$indent</span><span class="var-description">: Pass in false to use the default, which is 2</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$wordwrap</span><span class="var-description">: Pass in 0 for no wordwrap, false for default (40)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodYAMLLoad" id="YAMLLoad"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method YAMLLoad</span> (line <span class="line-number">70</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Load YAML into a PHP array statically</p>
+<p class="description"><p>The load method, when supplied with a YAML stream (string or file),  will do its best to convert YAML in a file into a PHP array.  Pretty  simple.   Usage:   <div class="src-code"><ol><li><div class="src-line">&nbsp;&nbsp;&nbsp;<span class="src-var">$array&nbsp;</span>=&nbsp;<span class="src-id"><a href="../Spyc/Spyc.html">Spyc</a></span><span class="src-sym">::</span><a href="../Spyc/Spyc.html#methodYAMLLoad">YAMLLoad</a><span class="src-sym">(</span><span class="src-str">'lucky.yaml'</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+<li><div class="src-line">&nbsp;&nbsp;&nbsp;<a href="http://www.php.net/print_r">print_r</a><span class="src-sym">(</span><span class="src-var">$array</span><span class="src-sym">)</span><span class="src-sym">;</span></div></li>
+</ol></div></p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array</span>
+		<span class="method-name">
+			YAMLLoad
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$input</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$input</span><span class="var-description">: Path of YAML file or string containing YAML</span>			</li>
+				</ul>
+		
+			
+	</div>
+
+<a name="methodaddArray" id="addArray"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">addArray</span> (line <span class="line-number">518</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addArray
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$array</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$array</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$indent</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodaddArrayInline" id="addArrayInline"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">addArrayInline</span> (line <span class="line-number">507</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addArrayInline
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$array</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$array</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$indent</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodaddGroup" id="addGroup"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">addGroup</span> (line <span class="line-number">761</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addGroup
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$group</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$group</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodaddLiteralLine" id="addLiteralLine"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">addLiteralLine</span> (line <span class="line-number">590</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addLiteralLine
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$literalBlock</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$literalBlockStyle</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$literalBlock</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$literalBlockStyle</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodclearBiggerPathValues" id="clearBiggerPathValues"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">clearBiggerPathValues</span> (line <span class="line-number">633</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			clearBiggerPathValues
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$indent</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methoddump" id="dump"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">dump</span> (line <span class="line-number">121</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Dump PHP array to YAML</p>
+<p class="description"><p>The dump method, when supplied with an array, will do its best  to convert the array into friendly YAML.  Pretty simple.  Feel free to  save the returned string as tasteful.yaml and pass it around.</p><p>Oh, and you can decide how big the indent is and what the wordwrap  for folding is.  Pretty cool -- just pass in 'false' for either if  you want to use the default.</p><p>Indent's default is 2 spaces, wordwrap's default is 40 characters.  And  you can turn off wordwrap by passing in 0.</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			dump
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$array</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$indent</span> = <span class="var-default">false</span>], [<span class="var-type">int</span>&nbsp;<span class="var-name">$wordwrap</span> = <span class="var-default">false</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$array</span><span class="var-description">: PHP array</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$indent</span><span class="var-description">: Pass in false to use the default, which is 2</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$wordwrap</span><span class="var-description">: Pass in 0 for no wordwrap, false for default (40)</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodflatten" id="flatten"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">flatten</span> (line <span class="line-number">568</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			flatten
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$array</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$array</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetParentPathByIndent" id="getParentPathByIndent"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getParentPathByIndent</span> (line <span class="line-number">620</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getParentPathByIndent
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$indent</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisArrayElement" id="isArrayElement"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isArrayElement</span> (line <span class="line-number">653</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isArrayElement
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisComment" id="isComment"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isComment</span> (line <span class="line-number">647</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isComment
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisHashElement" id="isHashElement"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isHashElement</span> (line <span class="line-number">662</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isHashElement
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisLiteral" id="isLiteral"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">isLiteral</span> (line <span class="line-number">670</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isLiteral
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodisPlainArray" id="isPlainArray"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">isPlainArray</span> (line <span class="line-number">699</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			isPlainArray
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodliteralBlockContinues" id="literalBlockContinues"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">literalBlockContinues</span> (line <span class="line-number">501</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			literalBlockContinues
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$lineIndent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$lineIndent</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodload" id="load"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">load</span> (line <span class="line-number">264</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			load
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$input</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$input</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodloadFromSource" id="loadFromSource"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">loadFromSource</span> (line <span class="line-number">298</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			loadFromSource
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$input</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$input</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodnodeContainsGroup" id="nodeContainsGroup"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">nodeContainsGroup</span> (line <span class="line-number">750</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			nodeContainsGroup
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodreturnArrayElement" id="returnArrayElement"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">returnArrayElement</span> (line <span class="line-number">740</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			returnArrayElement
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodreturnKeyValuePair" id="returnKeyValuePair"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">returnKeyValuePair</span> (line <span class="line-number">708</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			returnKeyValuePair
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodreturnMappedSequence" id="returnMappedSequence"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">returnMappedSequence</span> (line <span class="line-number">681</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			returnMappedSequence
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodreturnMappedValue" id="returnMappedValue"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">returnMappedValue</span> (line <span class="line-number">688</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			returnMappedValue
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodreturnPlainArray" id="returnPlainArray"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">returnPlainArray</span> (line <span class="line-number">704</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			returnPlainArray
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodrevertLiteralPlaceHolder" id="revertLiteralPlaceHolder"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">revertLiteralPlaceHolder</span> (line <span class="line-number">606</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			revertLiteralPlaceHolder
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$lineArray</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$literalBlock</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$lineArray</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$literalBlock</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodstartsLiteralBlock" id="startsLiteralBlock"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">startsLiteralBlock</span> (line <span class="line-number">583</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			startsLiteralBlock
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodstartsMappedSequence" id="startsMappedSequence"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">startsMappedSequence</span> (line <span class="line-number">677</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			startsMappedSequence
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodstartsMappedValue" id="startsMappedValue"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">startsMappedValue</span> (line <span class="line-number">695</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			startsMappedValue
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodstripGroup" id="stripGroup"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">stripGroup</span> (line <span class="line-number">767</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			stripGroup
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$group</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$group</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodstripIndent" id="stripIndent"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">stripIndent</span> (line <span class="line-number">615</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			stripIndent
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$line</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$indent</span> = <span class="var-default">-1</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$line</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$indent</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_doFolding" id="_doFolding"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">_doFolding</span> (line <span class="line-number">247</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Folds a string of text, if necessary</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			_doFolding
+		</span>
+					(<span class="var-type">$value</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$value</span>
+				<span class="var-name">$value</span><span class="var-description">: The string you wish to fold</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$indent</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_doLiteralBlock" id="_doLiteralBlock"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_doLiteralBlock</span> (line <span class="line-number">230</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates a literal block for dumping</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			_doLiteralBlock
+		</span>
+					(<span class="var-type">$value</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type">$indent</span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$value</span>
+				<span class="var-name">$value</span>			</li>
+					<li>
+				<span class="var-type">$indent</span>
+				<span class="var-name">$indent</span><span class="var-description">: int The value of the indent</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_dumpNode" id="_dumpNode"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">_dumpNode</span> (line <span class="line-number">199</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Returns YAML from a key and a value</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			_dumpNode
+		</span>
+					(<span class="var-type">$key</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">$value</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type">$indent</span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$key</span>
+				<span class="var-name">$key</span><span class="var-description">: The name of the key</span>			</li>
+					<li>
+				<span class="var-type">$value</span>
+				<span class="var-name">$value</span><span class="var-description">: The value of the item</span>			</li>
+					<li>
+				<span class="var-type">$indent</span>
+				<span class="var-name">$indent</span><span class="var-description">: The indent of the current node</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_getIndent" id="_getIndent"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_getIndent</span> (line <span class="line-number">315</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Finds and returns the indentation of a YAML line</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">int</span>
+		<span class="method-name">
+			_getIndent
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$line</span><span class="var-description">: A line from the YAML file</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_inlineEscape" id="_inlineEscape"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">_inlineEscape</span> (line <span class="line-number">432</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Used in inlines to check for more inlines or quoted strings</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			_inlineEscape
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$inline</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$inline</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_parseLine" id="_parseLine"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_parseLine</span> (line <span class="line-number">327</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parses YAML code and returns an array for a node</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			_parseLine
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$line</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$line</span><span class="var-description">: A line from the YAML file</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_toType" id="_toType"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">_toType</span> (line <span class="line-number">361</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Finds the type of the passed value, returns the value as the new type.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			_toType
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_yamlize" id="_yamlize"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">_yamlize</span> (line <span class="line-number">156</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Attempts to convert a key / value array item to YAML</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			_yamlize
+		</span>
+					(<span class="var-type">$key</span>&nbsp;<span class="var-name">$key</span>, <span class="var-type">$value</span>&nbsp;<span class="var-name">$value</span>, <span class="var-type">$indent</span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$key</span>
+				<span class="var-name">$key</span><span class="var-description">: The name of the key</span>			</li>
+					<li>
+				<span class="var-type">$value</span>
+				<span class="var-name">$value</span><span class="var-description">: The value of the item</span>			</li>
+					<li>
+				<span class="var-type">$indent</span>
+				<span class="var-name">$indent</span><span class="var-description">: The indent of the current node</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="method_yamlizeArray" id="_yamlizeArray"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">_yamlizeArray</span> (line <span class="line-number">179</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Attempts to convert an array to YAML</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			_yamlizeArray
+		</span>
+					(<span class="var-type">$array</span>&nbsp;<span class="var-name">$array</span>, <span class="var-type">$indent</span>&nbsp;<span class="var-name">$indent</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">$array</span>
+				<span class="var-name">$array</span><span class="var-description">: The array you want to convert</span>			</li>
+					<li>
+				<span class="var-type">$indent</span>
+				<span class="var-name">$indent</span><span class="var-description">: The indent of the current level</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sat, 12 Jan 2008 15:16:33 +1100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.3.1</a>
+	</p>
+	</div></body>
+</html>

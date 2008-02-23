@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class Swift_Mime_ContentEncoder_QpContentEncoder</title>
+			<link rel="stylesheet" href="../../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class Swift_Mime_ContentEncoder_QpContentEncoder</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Handles Quoted Printable (QP) Transfer Encoding in Swift Mailer.</p>
+	<ul class="tags">
+				<li><span class="field">author:</span> Chris Corbyn</li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_Swift---Mime---ContentEncoder---QpContentEncoder.php.html">/Swift/Mime/ContentEncoder/QpContentEncoder.php</a> (line <span class="field">32</span>)
+		</p>
+		
+				
+		<pre><a href="../../Swift/Encoder/Swift_Encoder_QpEncoder.html">Swift_Encoder_QpEncoder</a>
+   |
+   --Swift_Mime_ContentEncoder_QpContentEncoder</pre>
+	
+			</div>
+</div>
+
+
+
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+												<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																												
+												<div class="method-definition">
+											<span class="method-result">Swift_Mime_ContentEncoder_QpContentEncoder</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$charStream</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#encodeByteStream" title="details" class="method-name">encodeByteStream</a>
+											(<span class="var-type"></span>&nbsp;<span class="var-name">$os</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$is</span>, [<span class="var-type">int</span>&nbsp;<span class="var-name">$firstLineOffset</span> = <span class="var-default">0</span>], [<span class="var-type"></span>&nbsp;<span class="var-name">$maxLineLength</span> = <span class="var-default">0</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getName" title="details" class="method-name">getName</a>
+										()
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">47</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Creates a new QpContentEncoder for the given CharacterStream.</p>
+	
+	<div class="method-signature">
+		<span class="method-result">Swift_Mime_ContentEncoder_QpContentEncoder</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$charStream</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Swift_CharacterStream</span>
+				<span class="var-name">$charStream</span><span class="var-description">: to use for reading characters</span>			</li>
+				</ul>
+		
+			<hr class="separator" />
+		<div class="notes">Redefinition of:</div>
+		<dl>
+			<dt><a href="../../Swift/Encoder/Swift_Encoder_QpEncoder.html#method__construct">Swift_Encoder_QpEncoder::__construct()</a></dt>
+						<dd>Creates a new QpEncoder for the given CharacterStream.</dd>
+					</dl>
+			
+	</div>
+<a name="methodencodeByteStream" id="encodeByteStream"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">encodeByteStream</span> (line <span class="line-number">61</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Encode stream $in to stream $out.</p>
+<p class="description"><p>QP encoded strings have a maximum line length of 76 characters.  If the first line needs to be shorter, indicate the difference with  $firstLineOffset.</p></p>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			encodeByteStream
+		</span>
+					(<span class="var-type"></span>&nbsp;<span class="var-name">$os</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$is</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">$firstLineOffset</span>, <span class="var-type"></span>&nbsp;<span class="var-name">$maxLineLength</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Swift_ByteStream</span>
+				<span class="var-name">$os</span><span class="var-description">: output stream</span>			</li>
+					<li>
+				<span class="var-type">Swift_ByteStream</span>
+				<span class="var-name">$is</span><span class="var-description">: input stream</span>			</li>
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">$firstLineOffset</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$maxLineLength</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetName" id="getName"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getName</span> (line <span class="line-number">96</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Get the name of this encoding scheme.</p>
+<p class="description"><p>Returns the string 'quoted-printable'.</p></p>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getName
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+							<h4>Inherited Methods</h4>
+				<a name='inherited_methods'><!-- --></a>	
+									<!-- =========== Summary =========== -->
+					<p>Inherited From <span class="classname"><a href="../../Swift/Encoder/Swift_Encoder_QpEncoder.html">Swift_Encoder_QpEncoder</a></span></p>
+					<blockquote>
+													<span class="method-name"><a href="../../Swift/Encoder/Swift_Encoder_QpEncoder.html#method__construct">Swift_Encoder_QpEncoder::__construct()</a></span><br>
+													<span class="method-name"><a href="../../Swift/Encoder/Swift_Encoder_QpEncoder.html#methodencodeCharacterStreamCallback">Swift_Encoder_QpEncoder::encodeCharacterStreamCallback()</a></span><br>
+													<span class="method-name"><a href="../../Swift/Encoder/Swift_Encoder_QpEncoder.html#methodencodeString">Swift_Encoder_QpEncoder::encodeString()</a></span><br>
+													<span class="method-name"><a href="../../Swift/Encoder/Swift_Encoder_QpEncoder.html#methodgetCharacterStream">Swift_Encoder_QpEncoder::getCharacterStream()</a></span><br>
+													<span class="method-name"><a href="../../Swift/Encoder/Swift_Encoder_QpEncoder.html#methodgetPermittedBytes">Swift_Encoder_QpEncoder::getPermittedBytes()</a></span><br>
+											</blockquote>
+										
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sat, 12 Jan 2008 15:16:32 +1100 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.3.1</a>
+	</p>
+	</div></body>
+</html>
