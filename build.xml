@@ -1,9 +1,11 @@
 <!-- Ant build file for Swift Mailer -->
-<project name="Swift" default="bundle">
+<project name="Swift Mailer" default="bundle">
   
+  <!-- Config settings -->
   <property name="path" value="." />
   <property name="builddir" value="${path}/build" />
   <property name="src.versionfile" value="${path}/VERSION" />
+  <!-- Generate version info from VERSION file -->
   <loadfile property="bundle.name" srcFile="${src.versionfile}">
     <filterchain>
       <striplinebreaks />
@@ -11,8 +13,11 @@
   </loadfile>
   <property name="src.libdir" value="${path}/lib" />
   <property name="src.exampledir" value="${path}/examples" />
+  <property name="src.testsuite" value="${path}/test-suite" />
+  <property name="src.tests" value="${path}/tests" />
   <property name="builddir.package" value="${builddir}/${bundle.name}" />
   
+  <!-- Bundle all files into a central location -->
   <target name="bundle" depends="clean, copy-classes">
     <copy file="${src.versionfile}" todir="${builddir.package}" />
     <copy todir="${builddir.package}/examples">
@@ -20,16 +25,31 @@
     </copy>
   </target>
   
+  <!-- Clean out the build directory -->
   <target name="clean">
     <delete includeemptydirs="true">
       <fileset dir="${builddir}" includes="**/*"/>
     </delete>
   </target>
   
+  <!-- Copy all classes from the class path to the bundle -->
   <target name="copy-classes">
     <copy todir="${builddir.package}/lib">
       <fileset dir="${src.libdir}" />
     </copy>
+    <copy todir="${builddir.package}/test-suite">
+      <fileset dir="${src.testsuite}" />
+    </copy>
+    <copy todir="${builddir.package}/tests">
+      <fileset dir="${src.tests}" />
+    </copy>
+  </target>
+  
+  <!-- Package up the project as a gzip file -->
+  <target name="package" depends="bundle">
+    <tar destfile="${builddir.package}.tar.gz" compression="gzip">
+      <fileset dir="${builddir}" />
+    </tar>
   </target>
   
 </project>
