@@ -52,4 +52,9 @@
     </tar>
   </target>
   
+  <!-- Run the included unit tests -->
+  <target name="test">
+    
+  </target>
+  
 </project>
