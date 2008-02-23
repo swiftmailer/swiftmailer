@@ -147,9 +147,17 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
    */
   public function reportOutput($output, $path)
   {
-    echo '--------------------' . PHP_EOL;
-    echo $output . PHP_EOL;
-    echo '--------------------' . PHP_EOL;
+    if (preg_match('/^\{image @ (.*?)\}$/D', $output, $matches))
+    {
+      echo "  \033[33mSmoke Test\033[0m" . PHP_EOL;
+      echo '  Compare email sent with image @ ' . $matches[1] . PHP_EOL;
+    }
+    else
+    {
+      echo '--------------------' . PHP_EOL;
+      echo $output . PHP_EOL;
+      echo '--------------------' . PHP_EOL;
+    }
   }
   
   /**

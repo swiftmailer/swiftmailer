@@ -23,9 +23,7 @@ Swift Mailer SE:
    - PopBeforeSmtp authentication
    - Esmtp extension support
      - 8BITMIME
-   - NativeMail
-   - Rotating
-   - Multi
+   - FailoverTransport
  * EventFactory and EventDispatcher
    - SendEvent
      - getMessage()
@@ -60,6 +58,10 @@ Swift Mailer EE:
    - By-pass using a single SMTP server as a relay and connect to needed MX
    - Group recipients by domain for efficiency
    - *Much* more reliable failure tracking
+ * Spooled transport
+   - Add different Spoolers
+   - Provide cron job:
+     - <?php MailQueue::process(); ?>
  * Advanced Content-Type support (already "supported" in SE if built manually,
    but will add wrapper code)
    - multipart/digest, message/external, message/partial

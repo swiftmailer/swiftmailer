@@ -17,19 +17,19 @@
  Defines: The path to a writable directory (a temporary dir).
  Recommended: /tmp
  */
-define('SWIFT_TMP_DIR', '');
+define('SWIFT_TMP_DIR', '/tmp');
 
 /*
  Defines: The name and port of a SMTP server you can connect to.
  Recommended: smtp.gmail.com:25
  */
-define('SWIFT_SMTP_HOST', '');
+define('SWIFT_SMTP_HOST', 'smtp.gmail.com:25');
 
 /*
  Defines: An SMTP server and port which uses TLS encryption.
  Recommended: smtp.gmail.com:465
  */
-define('SWIFT_TLS_HOST', '');
+define('SWIFT_TLS_HOST', 'smtp.gmail.com:465');
 
 /*
  Defines: An SMTP server and port which uses SSL encryption.
