@@ -59,10 +59,10 @@ class Swift_Mime_Header_ParameterizedHeader
    * Creates a new ParameterizedHeader with $name.
    * @param string $name
    * @param Swift_Mime_HeaderEncoder $encoder
-   * @param Swift_Encoder $paramEncoder
+   * @param Swift_Encoder $paramEncoder, optional
    */ 
   public function __construct($name, Swift_Mime_HeaderEncoder $encoder,
-    Swift_Encoder $paramEncoder)
+    Swift_Encoder $paramEncoder = null)
   {
     $this->setFieldName($name);
     $this->setEncoder($encoder);
@@ -142,6 +142,10 @@ class Swift_Mime_Header_ParameterizedHeader
           $parameters[$field] = $value;
           $this->setParameters($parameters);
           break;
+        case 'filename':
+          $parameters['name'] = $value;
+          $this->setParameters($parameters);
+          break;
       }
     }
     elseif ('content-disposition' == $fieldName)
@@ -211,7 +215,7 @@ class Swift_Mime_Header_ParameterizedHeader
   {
     $origValue = $value;
     
-    $needsEncoding = false;
+    $encoded = false;
     //Allow room for parameter name, indices, "=" and DQUOTEs
     $maxValueLength = $this->getMaxLineLength() - strlen($name . '=*N"";') - 1;
     $firstLineOffset = 0;
@@ -223,7 +227,7 @@ class Swift_Mime_Header_ParameterizedHeader
       //... and it's not ascii
       if (!preg_match('/^' . $this->getGrammar('text') . '*$/D', $value))
       {
-        $needsEncoding = true;
+        $encoded = true;
         //Allow space for the indices, charset and language
         $maxValueLength = $this->getMaxLineLength() - strlen($name . '*N*="";') - 1;
         $firstLineOffset = strlen(
@@ -233,14 +237,22 @@ class Swift_Mime_Header_ParameterizedHeader
     }
     
     //Encode if we need to
-    if ($needsEncoding || strlen($value) > $maxValueLength)
+    if ($encoded || strlen($value) > $maxValueLength)
     {
-      $value = $this->_paramEncoder->encodeString(
-        $origValue, $firstLineOffset, $maxValueLength
-      );
+      if (isset($this->_paramEncoder))
+      {
+        $value = $this->_paramEncoder->encodeString(
+          $origValue, $firstLineOffset, $maxValueLength
+          );
+      }
+      else //We have to go against RFC 2183/2231 in some areas for interoperability
+      {
+        $value = $this->getTokenAsEncodedWord($origValue);
+        $encoded = false;
+      }
     }
     
-    $valueLines = explode("\r\n", $value);
+    $valueLines = isset($this->_paramEncoder) ? explode("\r\n", $value) : array($value);
     
     //Need to add indices
     if (count($valueLines) > 1)
@@ -249,14 +261,14 @@ class Swift_Mime_Header_ParameterizedHeader
       foreach ($valueLines as $i => $line)
       {
         $paramLines[] = $name . '*' . $i .
-          $this->_getEndOfParameterValue($line, $needsEncoding, $i == 0);
+          $this->_getEndOfParameterValue($line, $encoded, $i == 0);
       }
       return implode(";\r\n ", $paramLines);
     }
     else
     {
       return $name . $this->_getEndOfParameterValue(
-        $valueLines[0], $needsEncoding, true
+        $valueLines[0], $encoded, true
         );
     }
   }

@@ -206,8 +206,7 @@ $_swiftMimeDeps = array(
     'class' => 'Swift_Mime_Header_ParameterizedHeader',
     'args' => array(
       'string:Content-Type',
-      'di:qpheaderencoder',
-      'di:rfc2231encoder'
+      'di:qpheaderencoder'
       ),
     'shared' => false
     ),

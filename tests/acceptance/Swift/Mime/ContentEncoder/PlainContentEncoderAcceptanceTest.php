@@ -12,7 +12,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderAcceptanceTest
   
   public function setUp()
   {
-    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../../_samples/');
+    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../../_samples/charsets');
     $this->_encoder = new Swift_Mime_ContentEncoder_PlainContentEncoder('8bit');
   }
   

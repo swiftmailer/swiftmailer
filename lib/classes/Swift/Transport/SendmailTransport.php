@@ -20,6 +20,7 @@
 
 //@require 'Swift/Transport/EsmtpTransport.php';
 //@require 'Swift/Transport/IoBuffer.php';
+//@require 'Swift/Transport/Log.php';
 
 /**
  * SendmailTransport for sending mail through a sendmail/postfix (etc..) binary.
@@ -34,9 +35,10 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
    * Create a new SendmailTransport with $buf for I/O.
    * @param Swift_Transport_IoBuffer $buf
    */
-  public function __construct(Swift_Transport_IoBuffer $buf)
+  public function __construct(Swift_Transport_IoBuffer $buf,
+    Swift_Transport_Log $log)
   {
-    parent::__construct($buf, array());
+    parent::__construct($buf, array(), $log);
     $this->_params['command'] = '/usr/sbin/sendmail -bs';
     $this->_params['type'] = Swift_Transport_IoBuffer::TYPE_PROCESS;
   }
@@ -102,6 +104,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
         + count((array) $message->getBcc())
         ;
       $message->toByteStream($buffer);
+      $this->_log->addLogEntry('>> ((MESSAGE DATA PIPED TO SENDMAIL))');
       $buffer->setWriteTranslations(array());
       $buffer->terminate();
     }
@@ -113,7 +116,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
     {
       throw new Swift_Transport_TransportException(
         'Unsupported sendmail command flags [' . $command . ']. ' .
-        'Must be one of "-bs" or "-t" but can include additional flags'
+        'Must be one of "-bs" or "-t" but can include additional flags.'
         );
     }
     

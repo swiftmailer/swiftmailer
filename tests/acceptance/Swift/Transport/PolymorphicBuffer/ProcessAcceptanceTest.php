@@ -3,7 +3,7 @@
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/PolymorphicBuffer.php';
 
-class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
+class Swift_Transport_PolymorphicBuffer_ProcessAcceptanceTest
   extends Swift_Tests_SwiftUnitTestCase
 {
 
@@ -11,13 +11,9 @@ class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
   
   public function skip()
   {
-    $streams = stream_get_transports();
-    $this->skipIf(!in_array('tls', $streams),
-      'TLS is not configured for your system.  It is not possible to run this test'
-      );
-    $this->skipIf(!SWIFT_TLS_HOST,
-      'Cannot run test without a TLS enabled SMTP host to connect to (define ' .
-      'SWIFT_TLS_HOST in tests/acceptance.conf.php if you wish to run this test)'
+    $this->skipIf(!SWIFT_SENDMAIL_PATH,
+      'Cannot run test without a path to sendmail (define ' .
+      'SWIFT_SENDMAIL_PATH in tests/acceptance.conf.php if you wish to run this test)'
       );
   }
   
@@ -28,17 +24,9 @@ class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
   
   public function testReadLine()
   {
-    $parts = explode(':', SWIFT_TLS_HOST);
-    $host = $parts[0];
-    $port = isset($parts[1]) ? $parts[1] : 25;
-    
     $this->_buffer->initialize(array(
-      'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
-      'host' => $host,
-      'port' => $port,
-      'protocol' => 'tls',
-      'blocking' => 1,
-      'timeout' => 15
+      'type' => Swift_Transport_IoBuffer::TYPE_PROCESS,
+      'command' => SWIFT_SENDMAIL_PATH . ' -bs'
       ));
     
     $line = $this->_buffer->readLine(0);
@@ -52,17 +40,9 @@ class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
   
   public function testWrite()
   {
-    $parts = explode(':', SWIFT_TLS_HOST);
-    $host = $parts[0];
-    $port = isset($parts[1]) ? $parts[1] : 25;
-    
     $this->_buffer->initialize(array(
-      'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
-      'host' => $host,
-      'port' => $port,
-      'protocol' => 'tls',
-      'blocking' => 1,
-      'timeout' => 15
+      'type' => Swift_Transport_IoBuffer::TYPE_PROCESS,
+      'command' => SWIFT_SENDMAIL_PATH . ' -bs'
       ));
     
     $line = $this->_buffer->readLine(0);

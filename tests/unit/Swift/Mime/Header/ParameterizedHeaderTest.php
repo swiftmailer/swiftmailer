@@ -272,6 +272,23 @@ class Swift_Mime_Header_ParameterizedHeaderTest
       );
   }
   
+  public function testParamsAreEncodedWithEncodedWordsIfNoParamEncoderSet()
+  {
+    $value = 'fo' . pack('C', 0x8F) .'bar';
+    
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $encoder->setReturnValue('getName', 'Q');
+    $encoder->expectOnce('encodeString', array($value, '*', '*'));
+    $encoder->setReturnValue('encodeString', 'fo=8Fbar');
+    
+    $header = $this->_getHeader('X-Foo', $encoder, null);
+    $header->setValue('bar');
+    $header->setParameters(array('says' => $value));
+    $this->assertEqual("X-Foo: bar; says=\"=?utf-8?Q?fo=8Fbar?=\"\r\n",
+      $header->toString()
+      );
+  }
+  
   public function testLanguageInformationAppearsInEncodedWords()
   {
     /* -- RFC 2231, 5.
@@ -426,7 +443,7 @@ class Swift_Mime_Header_ParameterizedHeaderTest
     $header->setValue('text/plain');
     $header->setParameters(array('charset' => 'iso-8859-1'));
     
-    foreach (array('filename', 'name', 'xyz') as $field)
+    foreach (array('name', 'xyz') as $field)
     {
       $header->fieldChanged($field, 'xxxx');
       $this->assertEqual(array('charset' => 'iso-8859-1'), $header->getParameters());
@@ -463,9 +480,21 @@ class Swift_Mime_Header_ParameterizedHeaderTest
       );
   }
   
-  public function testFilenameFieldChangeIsIgnoredByOtherHeaders()
+  public function testFieldChangeNotificationCanSetFilenameInContentType()
   {
     $header = $this->_getHeader('Content-Type',
+      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
+    $header->setValue('image/jpeg');
+    $header->fieldChanged('filename', 'foo.jpg');
+    $this->assertEqual(
+      array('name' => 'foo.jpg'),
+      $header->getParameters()
+      );
+  }
+  
+  public function testFilenameFieldChangeIsIgnoredByOtherHeaders()
+  {
+    $header = $this->_getHeader('X-Foo',
       new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
     $header->setValue('text/plain');
     $header->fieldChanged('filename', 'foo.txt');

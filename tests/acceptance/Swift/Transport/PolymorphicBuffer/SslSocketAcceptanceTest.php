@@ -17,7 +17,7 @@ class Swift_Transport_PolymorphicBuffer_SslSocketAcceptanceTest
       );
     $this->skipIf(!SWIFT_SSL_HOST,
       'Cannot run test without an SSL enabled SMTP host to connect to (define ' .
-      'SWIFT_SSL_HOST in tests/config.php if you wish to run this test)'
+      'SWIFT_SSL_HOST in tests/acceptance.conf.php if you wish to run this test)'
       );
   }
   

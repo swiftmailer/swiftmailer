@@ -37,9 +37,6 @@ interface Swift_Transport_IoBuffer
   /** A process buffer with I/O support */
   const TYPE_PROCESS = 0x0010;
   
-  /** A file buffer on disk */
-  const TYPE_FILE = 0x0100;
-  
   /**
    * Perform any initialization needed, using the given $params.
    * Parameters will vary depending upon the type of IoBuffer used.

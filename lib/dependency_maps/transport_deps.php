@@ -8,7 +8,8 @@ $_swiftTransportDeps = array(
     'class' => 'Swift_Transport_EsmtpTransport',
     'args' => array(
       'di:polymorphicbuffer',
-      array('di:authhandler')
+      array('di:authhandler'),
+      'di:arraylog'
       ),
       'shared' => false
     ),
@@ -52,6 +53,23 @@ $_swiftTransportDeps = array(
     'class' => 'Swift_Transport_Esmtp_Auth_PlainAuthenticator',
     'args' => array(),
     'shared' => false
+    ),
+    
+  //Sendmail
+  'sendmail' => array(
+    'class' => 'Swift_Transport_SendmailTransport',
+    'args' => array(
+      'di:polymorphicbuffer',
+      'di:arraylog'
+      ),
+    'shared' => false
+    ),
+    
+  //ArrayLog
+  'arraylog' => array(
+    'class' => 'Swift_Transport_Log_ArrayLog',
+    'args' => array(),
+    'shared' => true
     )
   
   );

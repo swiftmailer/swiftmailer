@@ -71,7 +71,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
     $file->setContentType('application/pdf');
     $file->setFilename('foo.pdf');
     $this->assertEqual(
-      'Content-Type: application/pdf' . "\r\n" .
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: inline; filename=foo.pdf' . "\r\n" .
       'Content-ID: <'. $id . '>' . "\r\n",
@@ -154,7 +154,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
     $file->setModificationDate(1234);
     $file->setReadDate(12345);
     $this->assertEqual(
-      'Content-Type: application/pdf' . "\r\n" .
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: inline; filename=foo.pdf; size=12340;' . "\r\n" .
       ' creation-date="' . date('r', 123) . '";' . "\r\n" .
@@ -177,7 +177,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
     $file->setReadDate(12345);
     $file->setBodyAsString('abcd');
     $this->assertEqual(
-      'Content-Type: application/pdf' . "\r\n" .
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: inline; filename=foo.pdf; size=12340;' . "\r\n" .
       ' creation-date="' . date('r', 123) . '";' . "\r\n" .
@@ -197,7 +197,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
     $entity = new Swift_Mime_EmbeddedFile(
       array(
         new Swift_Mime_Header_ParameterizedHeader(
-          'Content-Type', $this->_headerEncoder, $this->_paramEncoder
+          'Content-Type', $this->_headerEncoder, null
           ),
         new Swift_Mime_Header_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder

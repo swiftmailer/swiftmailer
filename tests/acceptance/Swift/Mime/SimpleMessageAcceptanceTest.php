@@ -743,7 +743,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       '--\\1--' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
-      'Content-Type: application/pdf' . "\r\n" .
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: attachment; filename=foo.pdf' . "\r\n" .
       "\r\n" .
@@ -818,7 +818,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       '--\\2--' . "\r\n" .
       "\r\n" .
       '--\\1' . "\r\n" .
-      'Content-Type: image/jpeg' . "\r\n" .
+      'Content-Type: image/jpeg; name=myimage.jpg' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: inline; filename=myimage.jpg' . "\r\n" .
       'Content-ID: <' . $cid . '>' . "\r\n" .
@@ -828,7 +828,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       '--\\1--' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
-      'Content-Type: application/pdf' . "\r\n" .
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: attachment; filename=foo.pdf' . "\r\n" .
       "\r\n" .
@@ -901,7 +901,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       '--\\2--' . "\r\n" .
       "\r\n" .
       '--\\1' . "\r\n" .
-      'Content-Type: image/jpeg' . "\r\n" .
+      'Content-Type: image/jpeg; name=myimage.jpg' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: inline; filename=myimage.jpg' . "\r\n" .
       'Content-ID: <' . $cid . '>' . "\r\n" .
@@ -911,7 +911,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       '--\\1--' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
-      'Content-Type: application/pdf' . "\r\n" .
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: attachment; filename=foo.pdf' . "\r\n" .
       "\r\n" .
@@ -984,7 +984,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       '--\\1--' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
-      'Content-Type: image/jpeg' . "\r\n" .
+      'Content-Type: image/jpeg; name=myimage.jpg' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: inline; filename=myimage.jpg' . "\r\n" .
       'Content-ID: <' . $cid . '>' . "\r\n" .
@@ -1136,7 +1136,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       'foo' .
       "\r\n" .
       '--' . $boundary . "\r\n" .
-      'Content-Type: application/pdf' . "\r\n" .
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: attachment; filename=foo.pdf' . "\r\n" .
       "\r\n" .
@@ -1276,7 +1276,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
           ),
         new Swift_Mime_Header_VersionHeader('MIME-Version'),
         new Swift_Mime_Header_ParameterizedHeader(
-          'Content-Type', $this->_headerEncoder, $this->_paramEncoder
+          'Content-Type', $this->_headerEncoder
           ),
         new Swift_Mime_Header_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder

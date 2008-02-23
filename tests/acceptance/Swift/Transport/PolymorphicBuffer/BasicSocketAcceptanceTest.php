@@ -13,7 +13,7 @@ class Swift_Transport_PolymorphicBuffer_BasicSocketAcceptanceTest
   {
     $this->skipUnless(SWIFT_SMTP_HOST,
       'Cannot run test without an SMTP host to connect to (define ' .
-      'SWIFT_SMTP_HOST in tests/config.php if you wish to run this test)'
+      'SWIFT_SMTP_HOST in tests/acceptance.conf.php if you wish to run this test)'
       );
   }
   

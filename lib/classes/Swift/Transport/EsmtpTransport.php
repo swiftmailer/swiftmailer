@@ -24,6 +24,7 @@
 //@require 'Swift/Transport/EsmtpBufferWrapper.php';
 //@require 'Swift/Transport/CommandSentException.php';
 //@require 'Swift/Transport/TransportException.php';
+//@require 'Swift/Transport/Log.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -42,20 +43,6 @@ class Swift_Transport_EsmtpTransport
    * @access private
    */
   private $_buffer;
-  
-  /**
-   * Connection buffer parameters.
-   * @var array
-   * @access protected
-   */
-  protected $_params = array(
-    'protocol' => 'tcp',
-    'host' => 'localhost',
-    'port' => 25,
-    'timeout' => 30,
-    'blocking' => 1,
-    'type' => Swift_Transport_IoBuffer::TYPE_SOCKET
-    );
   
   /**
    * Connection status.
@@ -86,12 +73,36 @@ class Swift_Transport_EsmtpTransport
   private $_capabilities = array();
   
   /**
+   * Connection buffer parameters.
+   * @var array
+   * @access protected
+   */
+  protected $_params = array(
+    'protocol' => 'tcp',
+    'host' => 'localhost',
+    'port' => 25,
+    'timeout' => 30,
+    'blocking' => 1,
+    'type' => Swift_Transport_IoBuffer::TYPE_SOCKET
+    );
+  
+  /**
+   * A logger for debug use.
+   * @var Swift_Transport_Log
+   * @access protected
+   */
+  protected $_log;
+  
+  /**
    * Creates a new EsmtpTransport using the given I/O buffer.
    * @param Swift_Transport_IoBuffer $buf
    * @param Swift_Transport_EsmtpHandler[] $extensionHandlers
+   * @param Swift_Transport_Log $log
    */
-  public function __construct(Swift_Transport_IoBuffer $buf, array $extensionHandlers)
+  public function __construct(Swift_Transport_IoBuffer $buf,
+    array $extensionHandlers, Swift_Transport_Log $log)
   {
+    $this->_log = $log;
     $this->_buffer = $buf;
     $this->setExtensionHandlers($extensionHandlers);
   }
@@ -112,6 +123,8 @@ class Swift_Transport_EsmtpTransport
   {
     if (!$this->_started)
     {
+      $this->_log->addLogEntry('++ Starting Transport');
+      
       //Make sure any extension handlers are ready for a fresh start
       foreach ($this->_handlers as $handler)
       {
@@ -119,20 +132,22 @@ class Swift_Transport_EsmtpTransport
       }
       
       $this->_buffer->initialize($this->_params);
-      $this->_assertResponseCode($this->_getFullResponse(0), array(220));
+      $greeting = $this->_getFullResponse(0);
+      $this->_log->addLogEntry(sprintf('<< %s', $greeting));
+      $this->_assertResponseCode($greeting, array(220));
       try
       {
-        $seq = $this->_buffer->write(sprintf("EHLO %s\r\n", $this->_domain));
-        $response = $this->_getFullResponse($seq);
-        $this->_assertResponseCode($response, array(250));
+        $response = $this->executeCommand(
+          sprintf("EHLO %s\r\n", $this->_domain), array(250)
+          );
         $this->_capabilities = $this->_getCapabilities($response);
         $this->_setHandlerParams();
       }
       catch (Exception $e)
       {
-        $seq = $this->_buffer->write(sprintf("HELO %s\r\n", $this->_domain));
-        $response = $this->_getFullResponse($seq);
-        $this->_assertResponseCode($response, array(250));
+        $this->executeCommand(
+          sprintf("HELO %s\r\n", $this->_domain), array(250)
+          );
       }
       //Run all ESMTP handlers
       foreach ($this->_getActiveHandlers() as $handler)
@@ -158,6 +173,7 @@ class Swift_Transport_EsmtpTransport
       {//log this? 
       }
       $this->_buffer->terminate();
+      $this->_log->addLogEntry('++ Transport stopped');
     }
     $this->_started = false;
   }
@@ -397,8 +413,10 @@ class Swift_Transport_EsmtpTransport
       {
         $handler->onCommand($this, $command, $codes);
       }
+      $this->_log->addLogEntry(sprintf('>> %s', $command));
       $seq = $this->_buffer->write($command);
       $response = $this->_getFullResponse($seq);
+      $this->_log->addLogEntry(sprintf('<< %s', $response));
       $this->_assertResponseCode($response, $codes);
     }
     catch (Swift_Transport_CommandSentException $e)
@@ -617,6 +635,7 @@ class Swift_Transport_EsmtpTransport
       //Stream the message straight into the buffer
       $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
       $message->toByteStream($this->_buffer);
+      $this->_log->addLogEntry(">> ((MESSAGE DATA STREAMED TO SMTP))");
       //End data transmission
       $this->_buffer->setWriteTranslations(array());
       $this->executeCommand("\r\n.\r\n", array(250));

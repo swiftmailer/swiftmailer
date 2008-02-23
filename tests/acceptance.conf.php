@@ -36,3 +36,9 @@ define('SWIFT_TLS_HOST', '');
  Recommended: smtp.gmail.com:465
  */
 define('SWIFT_SSL_HOST', '');
+
+/*
+ Defines: The path to a sendmail binary (one which can run in -bs mode).
+ Recommended: /usr/sbin/sendmail
+ */
+define('SWIFT_SENDMAIL_PATH', '/usr/sbin/sendmail');

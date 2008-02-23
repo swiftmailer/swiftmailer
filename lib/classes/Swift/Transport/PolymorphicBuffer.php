@@ -82,6 +82,9 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
     $this->_params = $params;
     switch ($params['type'])
     {
+      case self::TYPE_PROCESS:
+        $this->_establishProcessConnection();
+        break;
       case self::TYPE_SOCKET:
       default:
         $this->_establishSocketConnection();
@@ -124,11 +127,22 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
   {
     if (isset($this->_stream))
     {
-      fclose($this->_stream);
-      $this->_stream = null;
-      $this->_out = null;
-      $this->_in = null;
+      switch ($this->_params['type'])
+      {
+        case self::TYPE_PROCESS:
+          fclose($this->_in);
+          fclose($this->_out);
+          proc_close($this->_stream);
+          break;
+        case self::TYPE_SOCKET:
+        default:
+          fclose($this->_stream);
+          break;
+      }
     }
+    $this->_stream = null;
+    $this->_out = null;
+    $this->_in = null;
   }
   
   /**
@@ -180,7 +194,7 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
    * @return boolean
    */
   public function setReadPointer($byteOffset)
-  {
+  { //ignored
   }
   
   /**
@@ -224,12 +238,12 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
   private function _establishSocketConnection()
   {
     $host = $this->_params['host'];
-    if (isset($this->_params['protocol']))
+    if (!empty($this->_params['protocol']))
     {
       $host = $this->_params['protocol'] . '://' . $host;
     }
     $timeout = 15;
-    if (isset($this->_params['timeout']))
+    if (!empty($this->_params['timeout']))
     {
       $timeout = $this->_params['timeout'];
     }
@@ -250,6 +264,30 @@ class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
     }
     $this->_in =& $this->_stream;
     $this->_out =& $this->_stream;
+  }
+  
+  /**
+   * Opens a process for input/output.
+   * @access private
+   */
+  private function _establishProcessConnection()
+  {
+    $command = $this->_params['command'];
+    $descriptorSpec = array(
+      0 => array('pipe', 'r'),
+      1 => array('pipe', 'w'),
+      2 => array('pipe', 'w')
+      );
+    $this->_stream = proc_open($command, $descriptorSpec, $pipes);
+    stream_set_blocking($pipes[2], 0);
+    if ($err = stream_get_contents($pipes[2]))
+    {
+      throw new Swift_Transport_TransportException(
+        'Process could not be started [' . $err . ']'
+        );
+    }
+    $this->_in =& $pipes[0];
+    $this->_out =& $pipes[1];
   }
   
 }

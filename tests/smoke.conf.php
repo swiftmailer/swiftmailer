@@ -20,7 +20,7 @@ define('SWIFT_SMOKE_EMAIL_ADDRESS', 'chris.corbyn@swiftmailer.org');
  Defines: The specific transport you want to mail with.
  Recommended: Any of 'smtp', 'sendmail' or 'mail'
  */
-define('SWIFT_SMOKE_TRANSPORT_TYPE', 'smtp');
+define('SWIFT_SMOKE_TRANSPORT_TYPE', 'sendmail');
 
 // SMTP-specific settings
 
@@ -28,7 +28,7 @@ define('SWIFT_SMOKE_TRANSPORT_TYPE', 'smtp');
  Defines: An SMTP server to connect to
  Recommended: smtp.your-isp.com (varies wildly!)
  */
-define('SWIFT_SMOKE_SMTP_HOST', 'gmail-smtp-in.l.google.com');
+define('SWIFT_SMOKE_SMTP_HOST', 'mail.bigpond.com.au');
 
 /*
  Defines: The SMTP port to connect to
@@ -53,3 +53,11 @@ define('SWIFT_SMOKE_SMTP_PASS', '');
  Recommended: (none), or 'tls' or 'ssl'
  */
 define('SWIFT_SMOKE_SMTP_ENCRYPTION', '');
+
+// Sendmail specific settings
+
+/*
+ Defines: The command to use when sending via sendmail
+ Recommended: /usr/sbin/sendmail -bs (or "-oi -t")
+ */
+define('SWIFT_SMOKE_SENDMAIL_COMMAND', '/usr/sbin/sendmail -t');

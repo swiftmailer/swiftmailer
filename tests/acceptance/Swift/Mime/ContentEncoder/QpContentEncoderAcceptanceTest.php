@@ -14,7 +14,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest
   
   public function setUp()
   {
-    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../../_samples/');
+    $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../../_samples/charsets');
     $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
   }
   

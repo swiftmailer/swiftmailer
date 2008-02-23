@@ -29,6 +29,12 @@ class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
           ->setPort(SWIFT_SMOKE_SMTP_PORT)
           ->setUsername(SWIFT_SMOKE_SMTP_USER)
           ->setPassword(SWIFT_SMOKE_SMTP_PASS)
+          ->setEncryption(SWIFT_SMOKE_SMTP_ENCRYPTION)
+          ;
+        break;
+      case 'sendmail':
+        $transport = Swift_TransportFactory::create('sendmail')
+          ->setCommand(SWIFT_SMOKE_SENDMAIL_COMMAND)
           ;
         break;
       default:

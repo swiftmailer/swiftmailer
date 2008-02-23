@@ -18,23 +18,19 @@ Swift Mailer SE:
    - Avoid using pack()/unpack() completely?
  * Streams
    - FileCharacterStream
+ * Logging
  * Transports
+   - PopBeforeSmtp authentication
    - Esmtp extension support
-     - AUTH
-       - PopBeforeSmtp
      - 8BITMIME
-   - PolymorphicIoBuffer
-     - Support sendmail proc
-   - Sendmail
-     - Actually implement support for -t mode now
-     - Extend Esmtp for -bs support
    - NativeMail
    - Rotating
    - Multi
  * EventFactory and EventDispatcher
    - SendEvent
      - getMessage()
-     - getState() [complete,failed,cancelled]
+     - getTransport()
+     - getState() [pending,complete,failed,cancelled]
    - ConnectionChangeEvent
      - getConnection()
      - getState() [open,closed,failed,cancelled]
@@ -47,6 +43,7 @@ Swift Mailer SE:
    - Decorator
    - BandwidthMonitor
    - FileEmbedder
+ * V3 Wrapper classes
 
 Swift Mailer EE:
 ----------------
@@ -81,6 +78,7 @@ Swift Mailer EE:
    - GSSAPI authentication
    - ETRN
    - DSN
+   - VERP
  * Caches
    - PersistentCache (for delayed/paused batch sending)?
 
