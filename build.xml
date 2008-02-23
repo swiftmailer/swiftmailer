@@ -23,6 +23,10 @@
     <copy todir="${builddir.package}/examples">
       <fileset dir="${src.exampledir}" />
     </copy>
+    <move file="${builddir.package}/tests/acceptance.conf.php.default"
+      tofile="${builddir.package}/tests/acceptance.conf.php" />
+    <move file="${builddir.package}/tests/smoke.conf.php.default"
+      tofile="${builddir.package}/tests/smoke.conf.php" />
   </target>
   
   <!-- Clean out the build directory -->
@@ -53,8 +57,11 @@
   </target>
   
   <!-- Run the included unit tests -->
-  <target name="test">
-    
+  <target name="test" depends="clean, copy-classes">
+    <exec executable="php">
+      <env key="_" value="php" />
+      <arg value="${builddir.package}/test-suite/run.php" />
+    </exec>
   </target>
   
 </project>
