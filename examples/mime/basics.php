@@ -12,7 +12,9 @@ date_default_timezone_set('Australia/Melbourne');
 //Require the injector
 require_once dirname(__FILE__) . '/../../lib/swift_required.php';
 
-$message = Swift_MimeFactory::create('message')
+$factory = Swift_MimeFactory::getInstance();
+
+$message = $factory->create('message')
   ->setSubject('A basic message')
   ->setTo(array('chris.corbyn@swiftmailer.org' => 'Chris Corbyn'))
   ->setFrom(array('chris@w3style.co.uk' => 'Myself'))
@@ -20,4 +22,3 @@ $message = Swift_MimeFactory::create('message')
   ->setCharset('utf-8')
   ->setBody('just testing')
   ;
-

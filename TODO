@@ -5,8 +5,6 @@ Swift Mailer SE:
  * $event = $this->_eventDispatcher->createEvent('send');
    $event->setMessage($message);
    $this->_eventDispatcher->dispatchEvent($event);
- * Implement AbstractFactory (backed on Di) for the factory classes themselves
-   - Allows implementations to be swapped out more freely
  * Read-receipts
  * CharacterReaderFactory (map charsets to CharacterReaders).
    - Big5

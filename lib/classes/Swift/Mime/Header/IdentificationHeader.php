@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Mime/Header/StructuredHeader.php';
+//@require 'Swift/Mime/Header/AbstractHeader.php';
 //@require 'Swift/Mime/FieldChangeObserver.php';
 
 /**
@@ -28,7 +28,7 @@
  * @author Chris Corbyn
  */
 class Swift_Mime_Header_IdentificationHeader
-  extends Swift_Mime_Header_StructuredHeader
+  extends Swift_Mime_Header_AbstractHeader
   implements Swift_Mime_FieldChangeObserver
 {
   

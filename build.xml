@@ -1,5 +1,5 @@
-<!-- Ant build file for Swift Mailer -->
-<project name="Swift Mailer" default="bundle">
+<!-- Ant build file for Swift Mailer (Standard Edition) -->
+<project name="Swift Mailer SE" default="bundle">
   
   <!-- Config settings -->
   <property name="path" value="." />

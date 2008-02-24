@@ -19,7 +19,7 @@
  
  */
 
-//@require 'Swift/Mime/Header/StructuredHeader.php';
+//@require 'Swift/Mime/Header/AbstractHeader.php';
 //@require 'Swift/Mime/HeaderEncoder.php';
 
 /**
@@ -30,7 +30,7 @@
  * @author Chris Corbyn
  */
 class Swift_Mime_Header_ListHeader
-  extends Swift_Mime_Header_StructuredHeader
+  extends Swift_Mime_Header_AbstractHeader
 {
   
   /**
