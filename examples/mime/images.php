@@ -27,5 +27,3 @@ $message->setSubject('A message with an embedded image')
   ->setContentType('text/html')
   ->setCharset('iso-8859-1');
   ;
-  
-echo $message->toString();

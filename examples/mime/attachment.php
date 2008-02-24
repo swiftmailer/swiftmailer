@@ -24,7 +24,3 @@ $message = Swift_MimeFactory::create('message')
       ->setBody(file_get_contents(dirname(__FILE__) . '/../files/BeefStifado.pdf'))
     )
   ;
-  
-echo $message->toString();
-echo PHP_EOL;
-echo round(memory_get_peak_usage() / 1024 / 1024, 4) . PHP_EOL;

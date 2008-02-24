@@ -33,5 +33,4 @@ $message->setSubject('An image and a recipe!')
   ->setContentType('text/html')
   ->attach(Swift_MimeFactory::create('part')->setBody('alternative part'))
   ;
-  
-echo $message->toString();
+

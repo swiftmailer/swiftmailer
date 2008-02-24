@@ -35,5 +35,3 @@ $forward = Swift_MimeFactory::create('message')
       ->setBody($message->toString())
     )
   ;
-  
-echo $forward->toString();

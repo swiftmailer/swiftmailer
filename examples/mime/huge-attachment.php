@@ -33,8 +33,4 @@ $message = Swift_MimeFactory::create('message')
       ->setFile(new Swift_ByteStream_FileByteStream($hugeFile))
     )
   ;
- 
-$ios = new Swift_ByteStream_FileByteStream('/Users/d11wtq/email.eml', true);
-$message->toByteStream($ios);
-echo PHP_EOL;
-echo round(memory_get_peak_usage() / 1024 / 1024, 4) . PHP_EOL;
+

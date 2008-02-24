@@ -23,7 +23,6 @@ Swift Mailer SE:
    - PopBeforeSmtp authentication
    - Esmtp extension support
      - 8BITMIME
-   - FailoverTransport
  * EventFactory and EventDispatcher
    - SendEvent
      - getMessage()

@@ -26,5 +26,3 @@ $message = Swift_MimeFactory::create('message')
       ->setBody(file_get_contents(dirname(__FILE__) . '/../files/BeefStifado.pdf'))
     )
   ;
-  
-echo $message->toString();
