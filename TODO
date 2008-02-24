@@ -41,47 +41,6 @@ Swift Mailer SE:
    - FileEmbedder
  * V3 Wrapper classes
 
-Swift Mailer EE:
-----------------
-
- * DKIM/Domain Keys
- * PKCS signed messages
- * XML representations of messages
-   - toXml() in mime entities
-   - createFromXml() in a MessageFactory
- * MessageFactory
-   - createFromString()
-   - createFromXml()
- * Direct MX Transport
-   - By-pass using a single SMTP server as a relay and connect to needed MX
-   - Group recipients by domain for efficiency
-   - *Much* more reliable failure tracking
- * Spooled transport
-   - Add different Spoolers
-   - Provide cron job:
-     - <?php MailQueue::process(); ?>
- * Advanced Content-Type support (already "supported" in SE if built manually,
-   but will add wrapper code)
-   - multipart/digest, message/external, message/partial
- * Message forwarding
- * REST architecture, coupled with the XML representation of emails to delegate
-   sending large batches around a cluster of HTTP hosts
- * Provide an Incoming MTA (not complex, it's just a Transport + the MessageFactory)
-   - Potentially handle bounce-backs?
-   - Any "voodoo" way to POST mail to a web page on port 80?
-     - Using a simple script registered with inetd or xinetd would do the trick
- * Drop-in ESMTP extensions
-   - STARTTLS (http://au.php.net/manual/en/function.stream-socket-enable-crypto.php)
-   - PIPELINING
-   - Additional NTLM authentication
-   - Digest-MD5 authentication
-   - GSSAPI authentication
-   - ETRN
-   - DSN
-   - VERP
- * Caches
-   - PersistentCache (for delayed/paused batch sending)?
-
 Website Re-Design:
 ------------------
 
@@ -104,14 +63,6 @@ Website Re-Design:
      - Allow purchase of additional licenses
      - Allow notification of new releases
    - Book (PDF) download
-
-Licensing:
-----------
-
- * Need to produce a license which allows the use of EE for 1 domain name only
-   - Includes subdomains
-   - Allow the domain name to be transferred at no cost
-   - Valid for the lifetime of v4
 
 Swift Mailer Book:
 ------------------
