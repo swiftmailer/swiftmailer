@@ -2,11 +2,12 @@ Swift Mailer SE:
 ----------------
 
  * Write some sanity tests
- * $message->addHeader(MimeFactory::create('header')->setValue('bar'))
- * $message->removeHeader('X-Foo')
  * $event = $this->_eventDispatcher->createEvent('send');
    $event->setMessage($message);
    $this->_eventDispatcher->dispatchEvent($event);
+ * Implement AbstractFactory (backed on Di) for the factory classes themselves
+   - Allows implementations to be swapped out more freely
+ * Read-receipts
  * CharacterReaderFactory (map charsets to CharacterReaders).
    - Big5
    - Shift-JIS
@@ -119,13 +120,5 @@ Swift Mailer Book:
 
  * 30-40 pages with examples
    - Include developer guide
-
-Test Suite:
------------
-
- * Change test results bar to show actual number of tests running
- * Add a thin bar showing the percentage progress below the results bar
- * Smoke Test abilities.  Pretty much just needs to be able to display images.
-   - Define a markup? {image @ http://swiftmailer.org/testing/4.0.1/smokes/basic.png}
  
 EoM

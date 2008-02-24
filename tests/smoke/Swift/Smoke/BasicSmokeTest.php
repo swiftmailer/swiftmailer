@@ -7,8 +7,13 @@ class Swift_Smoke_BasicSmokeTest extends Swift_Tests_SwiftSmokeTestCase
   
   public function testBasicSending()
   {
+    $transportFactory = Swift_TransportFactory::getInstance();
+    $log = $transportFactory->create('arraylog');
+    $log->setLogEnabled(true);
+    
     $mailer = $this->_getMailer();
-    $message = Swift_MimeFactory::create('message')
+    $mimeFactory = Swift_MimeFactory::getInstance();
+    $message = $mimeFactory->create('message')
       ->setSubject('[Swift Mailer] BasicSmokeTest')
       ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Chris Corbyn (Swift Mailer)'))
       ->setTo(SWIFT_SMOKE_EMAIL_ADDRESS)
@@ -20,6 +25,8 @@ class Swift_Smoke_BasicSmokeTest extends Swift_Tests_SwiftSmokeTestCase
       '%s: The smoke test should send a single message'
       );
     $this->_visualCheck('http://swiftmailer.org/smoke/4.0.0/basic.jpg');
+    
+    $this->dump($log->dump());
   }
   
 }

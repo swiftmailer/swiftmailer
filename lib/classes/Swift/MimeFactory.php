@@ -44,46 +44,168 @@ class Swift_MimeFactory extends Swift_Di
     $this->setLookup('charset', 'string:utf-8');
     $this->setLookup('cache', 'di:arraycache');
     $this->setLookup('temppath', 'string:/tmp');
+    $this->setLookup('xheadername', 'string:X-Custom');
   }
   
   /**
    * Set the default character set for mime entities.
    * @param string $charset
    */
-  public static function setCharset($charset)
+  public function setCharset($charset)
   {
-    self::getInstance()->setLookup('charset', 'string:' . $charset);
+    $this->setLookup('charset', 'string:' . $charset);
   }
   
   /**
    * The the path a writable directory which can be used for caching.
    * @param string $tmpPath
    */
-  public static function setTempPath($tmpPath)
+  public function setTempPath($tmpPath)
   {
-    self::getInstance()->setLookup('temppath', 'string:' . $tmpPath);
+    $this->setLookup('temppath', 'string:' . $tmpPath);
   }
   
   /**
    * Set the type of cache used when rendering MIME entities.
    * @param string $cache alias name
    */
-  public static function setCacheType($cache)
+  public function setCacheType($cache)
   {
-    $di = self::getInstance();
     $name = strtolower($cache);
     if (substr($name, -5) != 'cache')
     {
       $name .= 'cache';
     }
-    if (array_key_exists($name, $di->getDependencyMap()))
+    if (array_key_exists($name, $this->getDependencyMap()))
     {
-      $di->setLookup('cache', 'di:' . $name);
+      $this->setLookup('cache', 'di:' . $name);
     }
     else
     {
       throw new Exception('Cache backend [' . $cache . '] does not exist.');
     }
+  }
+  
+  /**
+   * Create a new MIME Header with $name, $value and $params.
+   * @param string $name
+   * @param string $value
+   * @param string[] $params
+   * @return Swift_Mime_ParameterizedHeader
+   */
+  public function createHeader($name = null, $value = null, $params = array())
+  {
+    $lookup = $name ? array('xheadername' => 'string:' . $name) : array();
+    $header = $this->create('xheader', $lookup);
+    $header->setValue($value);
+    $header->setParameters($params);
+    return $header;
+  }
+  
+  /**
+   * Create a new Message for sending/adding content to.
+   * @param string $subject
+   * @param mixed $body
+   * @param string $contentType
+   * @param string $charset
+   * @return Swift_Mime_SimpleMessage
+   */
+  public function createMessage($subject = null, $body = null,
+    $contentType = null, $charset = null)
+  {
+    $message = $this->create('message');
+    $message->setSubject($subject);
+    $message->setBody($body);
+    if ($contentType)
+    {
+      $message->setContentType($contentType);
+    }
+    if ($charset)
+    {
+      $message->setCharset($charset);
+    }
+    return $message;
+  }
+  
+  /**
+   * Create a new MIME part for nesting in a message.
+   * @param mixed $body
+   * @param string $contentType
+   * @param string $charset
+   * @return Swift_Mime_MimePart
+   */
+  public function createPart($body = null, $contentType = null, $charset = null)
+  {
+    $part = $this->create('part');
+    $part->setBody($body);
+    if ($contentType)
+    {
+      $part->setContentType($contentType);
+    }
+    if ($charset)
+    {
+      $part->setCharset($charset);
+    }
+    return $part;
+  }
+  
+  /**
+   * Create a new Attahment for nesting in a message.
+   * @param mixed $data
+   * @param string $filename
+   * @param string $contentType
+   * @return Swift_Mime_Attachment
+   */
+  public function createAttachment($data = null, $filename = null,
+    $contentType = null)
+  {
+    $attachment = $this->create('attachment');
+    $attachment->setBody($data);
+    if ($contentType)
+    {
+      $attachment->setContentType($contentType);
+    }
+    if ($filename)
+    {
+      $attachment->setFilename($filename);
+    }
+    return $attachment;
+  }
+  
+  /**
+   * Create a new EmbeddedFile for nesting in a message.
+   * @param mixed $data
+   * @param string $filename
+   * @param string $contentType
+   * @return Swift_Mime_EmbeddedFile
+   */
+  public function createEmbeddedFile($data = null, $filename = null,
+    $contentType = null)
+  {
+    $file = $this->create('embeddedfile');
+    $file->setBody($data);
+    if ($contentType)
+    {
+      $file->setContentType($contentType);
+    }
+    if ($filename)
+    {
+      $file->setFilename($filename);
+    }
+    return $file;
+  }
+  
+  /**
+   * Create a new Image for nesting into a Message.
+   * @param mixed $data
+   * @param string $filename
+   * @param string $contentType
+   * @return Swift_Mime_EmbeddedFile
+   */
+  public function createImage($data = null, $filename = null,
+    $contentType = null)
+  {
+    return $this->createEmbeddedFile($data, $filename, $contentType);
   }
   
   /**
@@ -97,16 +219,6 @@ class Swift_MimeFactory extends Swift_Di
       self::$_instance = new self();
     }
     return self::$_instance;
-  }
-  
-  /**
-   * Create a dependency from the injector.
-   * @param string $name
-   * @return object
-   */
-  public static function create($name)
-  {
-    return self::getInstance()->createDependency($name);
   }
   
 }

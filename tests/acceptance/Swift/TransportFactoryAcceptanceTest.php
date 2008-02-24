@@ -9,10 +9,11 @@ class Swift_TransportFactoryAcceptanceTest extends UnitTestCase
   
   public function testInstantiatingAllClasses()
   {
-    $map = Swift_TransportFactory::getInstance()->getDependencyMap();
+    $factory = Swift_TransportFactory::getInstance();
+    $map = $factory->getDependencyMap();
     foreach ($map as $key => $spec)
     {
-      $object = Swift_TransportFactory::create($key);
+      $object = $factory->create($key);
       $this->assertIsA($object, $spec['class']);
     }
   }

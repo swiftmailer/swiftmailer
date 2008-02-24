@@ -56,14 +56,4 @@ class Swift_TransportFactory extends Swift_Di
     return self::$_instance;
   }
   
-  /**
-   * Create a dependency from the injector.
-   * @param string $name
-   * @return object
-   */
-  public static function create($name)
-  {
-    return self::getInstance()->createDependency($name);
-  }
-  
 }

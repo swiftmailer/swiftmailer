@@ -67,6 +67,49 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_Tests_SwiftUnitTestCase
       );
   }
   
+  public function testHeadersCanBeAdded()
+  {
+    $h1 = new Swift_Mime_MockHeader();
+    $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'text/html');
+    $h1->setReturnValue('toString', 'Content-Type: text/html' . "\r\n");
+    $h2 = new Swift_Mime_MockHeader();
+    $h2->setReturnValue('getFieldName', 'X-Header');
+    $h2->setReturnValue('getFieldBody', 'foo');
+    $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
+    $headers = array($h1, $h2);
+    
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
+    
+    $h3 = new Swift_Mime_MockHeader();
+    $h3->setReturnValue('getFieldName', 'X-Custom');
+    $h3->setReturnValue('getFieldBody', 'test');
+    $h3->setReturnValue('toString', 'X-Custom: test' . "\r\n");
+    
+    $entity->addHeader($h3);
+    
+    $this->assertEqual(array($h1, $h2, $h3), $entity->getHeaders());
+  }
+  
+  public function testHeadersCanBeRemoved()
+  {
+    $h1 = new Swift_Mime_MockHeader();
+    $h1->setReturnValue('getFieldName', 'Content-Type');
+    $h1->setReturnValue('getFieldBody', 'text/html');
+    $h1->setReturnValue('toString', 'Content-Type: text/html' . "\r\n");
+    $h2 = new Swift_Mime_MockHeader();
+    $h2->setReturnValue('getFieldName', 'X-Header');
+    $h2->setReturnValue('getFieldBody', 'foo');
+    $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
+    $headers = array($h1, $h2);
+    
+    $entity = $this->_getEntity($headers, $this->_encoder, $this->_cache);
+    
+    $entity->removeHeader('X-Header');
+    
+    $this->assertEqual(array($h1), $entity->getHeaders());
+  }
+  
   public function testBodyIsAppended()
   {
     $h1 = new Swift_Mime_MockHeader();

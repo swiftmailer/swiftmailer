@@ -58,10 +58,11 @@ class Swift_Di
   /**
    * Create a new instance of the component named $name.
    * @param string $name
+   * @param array $lookup to override any pre-defined lookups
    * @return object
    * @throws ClassNotFoundException if no such component exists
    */
-  public function createDependency($name)
+  public function create($name, $lookup = array())
   {
     if (!array_key_exists($name, $this->_map))
     {
@@ -84,7 +85,7 @@ class Swift_Di
         $className = $spec['class'];
         
         //Resolve dependencies within the constructor itself
-        $instanceArgs = $this->_resolveArgs($spec['args']);
+        $instanceArgs = $this->_resolveArgs($spec['args'], $lookup);
         
         $reflector = new ReflectionClass($className);
         if ($reflector->getConstructor())
@@ -153,17 +154,18 @@ class Swift_Di
   /**
    * Recrusively resolves dependencies in an array.
    * @param array $args
+   * @param array $lookup to override any pre-defined lookups
    * @return array
    * @access private
    */
-  private function _resolveArgs(array $args)
+  private function _resolveArgs(array $args, $lookup = array())
   {
     $instanceArgs = array();
     foreach ($args as $i => $arg)
     {
       if (is_array($arg))
       {
-        $instanceArgs[$i] = $this->_resolveArgs($arg);
+        $instanceArgs[$i] = $this->_resolveArgs($arg, $lookup);
       }
       elseif (is_object($arg))
       {
@@ -177,16 +179,21 @@ class Swift_Di
           switch ($type)
           {
             case 'di':
-              $instanceArgs[$i] = $this->createDependency($value);
+              $instanceArgs[$i] = $this->create($value, $lookup);
               break;
             case 'lookup': //Value is looked up at runtime
-              $arg = $this->lookup($value);
+              $arg = array_key_exists($value, $lookup)
+                ? $lookup[$value]
+                : $this->lookup($value);
               break;
             case 'string':
               $instanceArgs[$i] = (string) $value;
               break;
             case 'int':
               $instanceArgs[$i] = (int) $value;
+              break;
+            case 'null':
+              $instanceArgs[$i] = null;
               break;
           }
         }

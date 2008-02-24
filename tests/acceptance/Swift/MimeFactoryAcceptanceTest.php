@@ -9,12 +9,87 @@ class Swift_MimeFactoryAcceptanceTest extends UnitTestCase
   
   public function testInstantiatingAllClasses()
   {
-    $map = Swift_MimeFactory::getInstance()->getDependencyMap();
+    $fMime = Swift_MimeFactory::getInstance();
+    $map = $fMime->getDependencyMap();
     foreach ($map as $key => $spec)
     {
-      $object = Swift_MimeFactory::create($key);
+      $object = $fMime->create($key);
       $this->assertIsA($object, $spec['class']);
     }
+  }
+  
+  public function testCreateMessage()
+  {
+    $fMime = Swift_MimeFactory::getInstance();
+    $message = $fMime->createMessage('Some subject', 'test body', 'text/html', 'utf-8');
+    $id = $message->getId();
+    $date = date('r', $message->getDate());
+    $enc = $message->getEncoder()->getName();
+    $this->assertEqual(
+      'Message-ID: <' . $id . '>' . "\r\n" .
+      'Date: ' . $date . "\r\n" .
+      'Subject: Some subject' . "\r\n" .
+      'From: '. "\r\n" .
+      'MIME-Version: 1.0' . "\r\n" .
+      'Content-Type: text/html; charset=utf-8' . "\r\n" .
+      'Content-Transfer-Encoding: ' . $enc . "\r\n" .
+      "\r\n" .
+      'test body',
+      $message->toString()
+      );
+  }
+  
+  public function testCreatePart()
+  {
+    $fMime = Swift_MimeFactory::getInstance();
+    $part = $fMime->createPart('example', 'text/plain', 'us-ascii');
+    $enc = $part->getEncoder()->getName();
+    $this->assertEqual(
+      'Content-Type: text/plain; charset=us-ascii' . "\r\n" .
+      'Content-Transfer-Encoding: ' . $enc . "\r\n" .
+      "\r\n" .
+      'example',
+      $part->toString()
+      );
+  }
+  
+  public function testCreateAttachment()
+  {
+    $fMime = Swift_MimeFactory::getInstance();
+    $attachment = $fMime->createAttachment('body', 'foo.pdf', 'application/pdf');
+    $this->assertEqual(
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
+      'Content-Transfer-Encoding: base64' . "\r\n" .
+      'Content-Disposition: attachment; filename=foo.pdf' . "\r\n" .
+      "\r\n" .
+      base64_encode('body'),
+      $attachment->toString()
+      );
+  }
+  
+  public function testCreateEmbeddedFile()
+  {
+    $fMime = Swift_MimeFactory::getInstance();
+    $file = $fMime->createEmbeddedFile('body', 'foo.pdf', 'application/pdf');
+    $id = $file->getId();
+    $this->assertEqual(
+      'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
+      'Content-Transfer-Encoding: base64' . "\r\n" .
+      'Content-Disposition: inline; filename=foo.pdf' . "\r\n" .
+      'Content-ID: <' . $id . '>' . "\r\n" .
+      "\r\n" .
+      base64_encode('body'),
+      $file->toString()
+      );
+  }
+  
+  public function testCreateHeader()
+  {
+    $fMime = Swift_MimeFactory::getInstance();
+    $header = $fMime->createHeader('X-My-Header', 'something', array('foo'=>'bar'));
+    $this->assertEqual('X-My-Header: something; foo=bar' . "\r\n",
+      $header->toString()
+      );
   }
   
 }

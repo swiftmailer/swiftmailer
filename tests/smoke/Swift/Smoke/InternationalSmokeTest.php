@@ -12,11 +12,9 @@ class Swift_Smoke_InternationalSmokeTest extends Swift_Tests_SwiftSmokeTestCase
   
   public function testAttachmentSending()
   {
-    $log = Swift_TransportFactory::create('arraylog');
-    $log->setLogEnabled(true);
-    
     $mailer = $this->_getMailer();
-    $message = Swift_MimeFactory::create('message')
+    $mimeFactory = Swift_MimeFactory::getInstance();
+    $message = $mimeFactory->create('message')
       ->setCharset('utf-8')
       ->setSubject('[Swift Mailer] InternationalSmokeTest (διεθνής)')
       ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Χριστοφορου (Swift Mailer)'))
@@ -28,7 +26,7 @@ class Swift_Smoke_InternationalSmokeTest extends Swift_Tests_SwiftSmokeTestCase
         'Following is some arbitrary Greek text:' . PHP_EOL .
         'Δεν βρέθηκαν λέξεις.'
         )
-      ->attach(Swift_MimeFactory::create('attachment')
+      ->attach($mimeFactory->create('attachment')
         ->setContentType('application/zip')
         ->setFile(new Swift_ByteStream_FileByteStream($this->_attFile))
         ->setFilename('κείμενο, εδάφιο, θέμα.zip')

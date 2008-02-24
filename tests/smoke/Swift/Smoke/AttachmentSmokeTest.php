@@ -13,7 +13,8 @@ class Swift_Smoke_AttachmentSmokeTest extends Swift_Tests_SwiftSmokeTestCase
   public function testAttachmentSending()
   {
     $mailer = $this->_getMailer();
-    $message = Swift_MimeFactory::create('message')
+    $mimeFactory = Swift_MimeFactory::getInstance();
+    $message = $mimeFactory->create('message')
       ->setSubject('[Swift Mailer] AttachmentSmokeTest')
       ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Chris Corbyn (Swift Mailer)'))
       ->setTo(SWIFT_SMOKE_EMAIL_ADDRESS)
@@ -21,7 +22,7 @@ class Swift_Smoke_AttachmentSmokeTest extends Swift_Tests_SwiftSmokeTestCase
         'When unzipped, the archive should produce a text file which reads:' . PHP_EOL .
         '"This is part of a Swift Mailer v4 smoke test."'
         )
-      ->attach(Swift_MimeFactory::create('attachment')
+      ->attach($mimeFactory->create('attachment')
         ->setContentType('application/zip')
         ->setFile(new Swift_ByteStream_FileByteStream($this->_attFile))
         )

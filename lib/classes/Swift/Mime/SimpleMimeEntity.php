@@ -22,6 +22,7 @@
 //@require 'Swift/OutputByteStream.php';
 //@require 'Swift/KeyCache.php';
 //@require 'Swift/Mime/MimeEntity.php';
+//@require 'Swift/Mime/Header.php';
 //@require 'Swift/Mime/ContentEncoder.php';
 //@require 'Swift/Mime/FieldChangeObserver.php';
 
@@ -279,6 +280,31 @@ class Swift_Mime_SimpleMimeEntity
       }
     }
     return $collection;
+  }
+  
+  /**
+   * Add a Header to the existing list of Headers.
+   * @param Swift_Mime_Header $header
+   */
+  public function addHeader(Swift_Mime_Header $header)
+  {
+    $this->_headers[] = $header;
+  }
+  
+  /**
+   * Remove a Header from the existing list of Headers based on its name.
+   * @param string $name
+   */
+  public function removeHeader($name)
+  {
+    $lname = strtolower($name);
+    foreach ($this->_headers as $k => $header)
+    {
+      if ($lname == strtolower($header->getFieldName()))
+      {
+        unset($this->_headers[$k]);
+      }
+    }
   }
   
   /**

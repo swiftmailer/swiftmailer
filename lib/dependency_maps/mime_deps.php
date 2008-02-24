@@ -232,6 +232,16 @@ $_swiftMimeDeps = array(
     'shared' => false
     ),
   
+  //Cusom (X-Header)
+  'xheader' => array(
+    'class' => 'Swift_Mime_Header_ParameterizedHeader',
+    'args' => array(
+      'lookup:xheadername',
+      'di:qpheaderencoder'
+      ),
+    'shared' => false
+    ),
+  
   //Qp Header Encoder
   'qpheaderencoder' => array(
     'class' => 'Swift_Mime_HeaderEncoder_QpHeaderEncoder',
