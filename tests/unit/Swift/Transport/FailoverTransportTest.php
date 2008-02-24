@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Transport/LoadBalancedTransport.php';
+require_once 'Swift/Transport/FailoverTransport.php';
 require_once 'Swift/Transport/TransportException.php';
 require_once 'Swift/Transport/Log.php';
 require_once 'Swift/Transport.php';
@@ -10,43 +10,14 @@ Mock::generate('Swift_Transport', 'Swift_MockTransport');
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
 Mock::generate('Swift_Transport_Log', 'Swift_Transport_MockLog');
 
-class Swift_Transport_LoadBalancedTransportTest
+class Swift_Transport_FailoverTransportTest
   extends Swift_Tests_SwiftUnitTestCase
 {
   
-  public function testEachTransportIsUsedInTurn()
-  {
-    $message1 = new Swift_Mime_MockMessage();
-    
-    $t1 = new Swift_MockTransport();
-    $t1->setReturnValueAt(0, 'isStarted', false);
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('start');
-    $t1->expectOnce('send', array($message1));
-    $t1->setReturnValue('send', 1, array($message1));
-    
-    $message2 = new Swift_Mime_MockMessage();
-    
-    $t2 = new Swift_MockTransport();
-    
-    $t2->setReturnValueAt(0, 'isStarted', false);
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('start');
-    $t2->expectOnce('send', array($message2));
-    $t2->setReturnValue('send', 1, array($message2));
-    
-    $transport = $this->_getTransport(array($t1, $t2));
-    $transport->start();
-    $this->assertEqual(1, $transport->send($message1));
-    $this->assertEqual(1, $transport->send($message2));
-  }
-  
-  public function testTransportsAreReusedInRotatingFashion()
+  public function testFirstTransportIsUsed()
   {
     $message1 = new Swift_Mime_MockMessage();
     $message2 = new Swift_Mime_MockMessage();
-    $message3 = new Swift_Mime_MockMessage();
-    $message4 = new Swift_Mime_MockMessage();
     
     $t1 = new Swift_MockTransport();
     $t1->setReturnValueAt(0, 'isStarted', false);
@@ -54,28 +25,19 @@ class Swift_Transport_LoadBalancedTransportTest
     $t1->expectOnce('start');
     $t1->expectAt(0, 'send', array($message1));
     $t1->setReturnValue('send', 1, array($message1));
-    $t1->expectAt(1, 'send', array($message3));
-    $t1->setReturnValue('send', 1, array($message3));
+    $t1->expectAt(1, 'send', array($message2));
+    $t1->setReturnValue('send', 1, array($message2));
     $t1->expectCallCount('send', 2);
     
     $t2 = new Swift_MockTransport();
     
-    $t2->setReturnValueAt(0, 'isStarted', false);
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('start');
-    $t2->expectAt(0, 'send', array($message2));
-    $t2->setReturnValue('send', 1, array($message2));
-    $t2->expectAt(1, 'send', array($message4));
-    $t2->setReturnValue('send', 1, array($message4));
-    $t2->expectCallCount('send', 2);
+    $t2->expectNever('start');
+    $t2->expectNever('send');
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
-    
     $this->assertEqual(1, $transport->send($message1));
     $this->assertEqual(1, $transport->send($message2));
-    $this->assertEqual(1, $transport->send($message3));
-    $this->assertEqual(1, $transport->send($message4));
   }
   
   public function testMessageCanBeTriedOnNextTransportIfExceptionThrown()
@@ -105,7 +67,7 @@ class Swift_Transport_LoadBalancedTransportTest
     $this->assertEqual(1, $transport->send($message));
   }
   
-  public function testMessageIsTriedOnNextTransportIfZeroReturned()
+  public function testZeroIsReturnedIfTransportReturnsZero()
   {
     $message = new Swift_Mime_MockMessage();
     
@@ -117,35 +79,8 @@ class Swift_Transport_LoadBalancedTransportTest
     $t1->setReturnValue('send', 0, array($message));
     
     $t2 = new Swift_MockTransport();
-    $t2->setReturnValueAt(0, 'isStarted', false);
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('start');
-    $t2->expectOnce('send', array($message));
-    $t2->setReturnValue('send', 1, array($message));
-    
-    $transport = $this->_getTransport(array($t1, $t2));
-    $transport->start();
-    
-    $this->assertEqual(1, $transport->send($message));
-  }
-  
-  public function testZeroIsReturnedIfAllTransportsReturnZero()
-  {
-    $message = new Swift_Mime_MockMessage();
-    
-    $t1 = new Swift_MockTransport();
-    $t1->setReturnValueAt(0, 'isStarted', false);
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('start');
-    $t1->expectOnce('send', array($message));
-    $t1->setReturnValue('send', 0, array($message));
-    
-    $t2 = new Swift_MockTransport();
-    $t2->setReturnValueAt(0, 'isStarted', false);
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('start');
-    $t2->expectOnce('send', array($message));
-    $t2->setReturnValue('send', 0, array($message));
+    $t2->expectNever('start');
+    $t2->expectNever('send');
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
@@ -166,23 +101,22 @@ class Swift_Transport_LoadBalancedTransportTest
     $t1->setReturnValueAt(0, 'isStarted', false);
     $t1->setReturnValue('isStarted', true);
     $t1->expectOnce('start');
-    $t1->expectAt(0, 'send', array($message1));
-    $t1->setReturnValue('send', 1, array($message1));
-    $t1->expectAt(1, 'send', array($message2));
-    $t1->setReturnValue('send', 1, array($message2));
-    $t1->expectAt(2, 'send', array($message3));
-    $t1->setReturnValue('send', 1, array($message3));
-    $t1->expectAt(3, 'send', array($message4));
-    $t1->setReturnValue('send', 1, array($message4));
-    $t1->expectCallCount('send', 4);
+    $t1->expectOnce('send', array($message1));
+    $t1->throwOn('send', $e, array($message1));
     
     $t2 = new Swift_MockTransport();
-    
     $t2->setReturnValueAt(0, 'isStarted', false);
     $t2->setReturnValue('isStarted', true);
     $t2->expectOnce('start');
-    $t2->expectOnce('send', array($message2));
-    $t2->throwOn('send', $e, array($message2));
+    $t2->expectAt(0, 'send', array($message1));
+    $t2->setReturnValue('send', 1, array($message1));
+    $t2->expectAt(1, 'send', array($message2));
+    $t2->setReturnValue('send', 1, array($message2));
+    $t2->expectAt(2, 'send', array($message3));
+    $t2->setReturnValue('send', 1, array($message3));
+    $t2->expectAt(3, 'send', array($message4));
+    $t2->setReturnValue('send', 1, array($message4));
+    $t2->expectCallCount('send', 4);
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
@@ -299,18 +233,15 @@ class Swift_Transport_LoadBalancedTransportTest
     $t1->expectAt(0, 'send', array(new ReferenceExpectation($message1)));
     $t1->throwOn('send', $e, array(new ReferenceExpectation($message1)));
     $t1->expectAt(1, 'send', array(new ReferenceExpectation($message2)));
-    $t1->setReturnValue('send', 0, array(new ReferenceExpectation($message2)));
+    $t1->setReturnValue('send', 10, array(new ReferenceExpectation($message2)));
     $t1->expectCallCount('send', 2);
     
     $t2 = new Swift_MockTransport();
     
     $t2->setReturnValue('isStarted', false);
-    $t2->expectCallCount('start', 2);
-    $t2->expectAt(0, 'send', array(new ReferenceExpectation($message1)));
+    $t2->expectOnce('start');
+    $t2->expectOnce('send', array(new ReferenceExpectation($message1)));
     $t2->throwOn('send', $e, array(new ReferenceExpectation($message1)));
-    $t2->expectAt(1, 'send', array(new ReferenceExpectation($message2)));
-    $t2->setReturnValue('send', 10, array(new ReferenceExpectation($message2)));
-    $t2->expectCallCount('send', 2);
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
@@ -340,7 +271,7 @@ class Swift_Transport_LoadBalancedTransportTest
   
   private function _getTransport(array $transports)
   {
-    $transport = new Swift_Transport_LoadBalancedTransport(
+    $transport = new Swift_Transport_FailoverTransport(
       new Swift_Transport_MockLog()
       );
     $transport->setTransports($transports);

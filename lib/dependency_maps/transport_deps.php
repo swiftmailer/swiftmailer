@@ -75,7 +75,14 @@ $_swiftTransportDeps = array(
   //LoadBalanced
   'loadbalanced' => array(
     'class' => 'Swift_Transport_LoadBalancedTransport',
-    'args' => array(),
+    'args' => array('di:arraylog'),
+    'shared' => false
+    ),
+    
+  //Failover
+  'failover' => array(
+    'class' => 'Swift_Transport_FailoverTransport',
+    'args' => array('di:arraylog'),
     'shared' => false
     ),
     
@@ -91,6 +98,8 @@ $_swiftTransportDeps = array(
 $_swiftTransportDeps['nativemail'] = $_swiftTransportDeps['mail'];
 $_swiftTransportDeps['rotating'] = $_swiftTransportDeps['loadbalanced'];
 $_swiftTransportDeps['balanced'] = $_swiftTransportDeps['loadbalanced'];
+$_swiftTransportDeps['multi'] = $_swiftTransportDeps['failover'];
+$_swiftTransportDeps['redundant'] = $_swiftTransportDeps['failover'];
 
 return $_swiftTransportDeps;
 

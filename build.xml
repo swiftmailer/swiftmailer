@@ -11,6 +11,8 @@
       <striplinebreaks />
     </filterchain>
   </loadfile>
+  <property name="src.licensefile" value="${path}/LICENSE" />
+  <property name="src.readmefile" value="${path}/README" />
   <property name="src.libdir" value="${path}/lib" />
   <property name="src.exampledir" value="${path}/examples" />
   <property name="src.testsuite" value="${path}/test-suite" />
@@ -20,6 +22,8 @@
   <!-- Bundle all files into a central location -->
   <target name="bundle" depends="clean, copy-classes">
     <copy file="${src.versionfile}" todir="${builddir.package}" />
+    <copy file="${src.licensefile}" todir="${builddir.package}" />
+    <copy file="${src.readmefile}" todir="${builddir.package}" />
     <copy todir="${builddir.package}/examples">
       <fileset dir="${src.exampledir}" />
     </copy>
