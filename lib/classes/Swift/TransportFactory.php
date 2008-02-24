@@ -1,7 +1,7 @@
 <?php
 
 /*
- Dependency Injection factory for Transport components in Swift Mailer.
+ Abstract Dependency Injection factory for Transport components in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,12 +21,21 @@
 //@require 'Swift/Di.php';
 
 /**
- * The factory for making Transport components.
+ * The abstract factory for making Transport components.
  * @package Swift
  * @author Chris Corbyn
  */
-class Swift_TransportFactory extends Swift_Di
+abstract class Swift_TransportFactory extends Swift_Di
 {
+  
+  /** Constant for using SMTP with TLS encryption */
+  const SMTP_ENC_TLS = 'tls';
+  
+  /** Constant for using SMTP with SSL encryption */
+  const SMTP_ENC_SSL = 'ssl';
+  
+  /** Constant for using SMTP without encryption */
+  const SMTP_ENC_NONE = 'tcp';
   
   /**
    * Singleton instance.
@@ -39,7 +48,7 @@ class Swift_TransportFactory extends Swift_Di
    * Constructor cannot be used.
    * @access private
    */
-  private function __construct()
+  public function __construct()
   {
   }
   
@@ -51,9 +60,47 @@ class Swift_TransportFactory extends Swift_Di
   {
     if (!isset(self::$_instance))
     {
-      self::$_instance = new self();
+      self::$_instance = parent::getInstance()->create('transportfactory');
     }
     return self::$_instance;
   }
+  
+  /**
+   * Create a new Smtp Transport.
+   * @param string $host
+   * @param int $port
+   * @param string $encryption
+   * @return Swift_Transport
+   */
+  abstract public function createSmtp($host = null, $port = null,
+    $encryption = self::SMTP_ENC_NONE);
+    
+  /**
+   * Create a new Sendmail Transport.
+   * @param string $command
+   * @return Swift_Transport
+   */
+  abstract public function createSendmail($command = null);
+  
+  /**
+   * Create a new Mail (mail() function) Transport.
+   * @param string $params for $additional_params in mail()
+   * @return Swift_Transport
+   */
+  abstract public function createMail($params = null);
+  
+  /**
+   * Create a new Failover Transport.
+   * @param Swift_Transport[] $transports
+   * @return Swift_Transport
+   */
+  abstract public function createFailover($transports = array());
+  
+  /**
+   * Create a new load balanced Transport.
+   * @param Swift_Transport[] $transports
+   * @return Swift_Transport
+   */
+  abstract public function createLoadBalanced($transports = array());
   
 }

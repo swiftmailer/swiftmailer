@@ -55,6 +55,8 @@ class Swift_Di
    */
   private $_lookups = array();
   
+  private static $_singleton = null;
+  
   /**
    * Create a new instance of the component named $name.
    * @param string $name
@@ -204,6 +206,15 @@ class Swift_Di
   }
   
   // -- Static functions
+  
+  public static function getInstance()
+  {
+    if (!isset(self::$_singleton))
+    {
+      self::$_singleton = new self();
+    }
+    return self::$_singleton;
+  }
   
   /**
    * Require classes which are not loaded.

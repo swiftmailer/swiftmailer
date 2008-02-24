@@ -12,6 +12,7 @@
     </filterchain>
   </loadfile>
   <property name="src.readmefile" value="${path}/README" />
+  <property name="src.changesfile" value="${path}/CHANGES" />
   <property name="src.libdir" value="${path}/lib" />
   <property name="src.exampledir" value="${path}/examples" />
   <property name="src.testsuite" value="${path}/test-suite" />
@@ -38,6 +39,7 @@
       <filelist refid="src.licenses" />
     </copy>
     <copy file="${src.readmefile}" todir="${builddir.package}" />
+    <copy file="${src.changesfile}" todir="${builddir.package}" />
     <copy todir="${builddir.package}/examples">
       <fileset dir="${src.exampledir}" />
     </copy>
