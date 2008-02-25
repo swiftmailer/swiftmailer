@@ -18,17 +18,17 @@
  
  */
 
-//@require 'Swift/Event/EventDispatcher.php';
-//@require 'Swift/Event/EventListener.php';
-//@require 'Swift/Event/EventObject.php';
+//@require 'Swift/Events/EventDispatcher.php';
+//@require 'Swift/Events/EventListener.php';
+//@require 'Swift/Events/EventObject.php';
 
 /**
  * The EventDispatcher which handles the event dispatching layer.
  * @package Swift
- * @subpackage Event
+ * @subpackage Events
  * @author Chris Corbyn
  */
-class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
+class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
 {
   
   /**
@@ -47,7 +47,7 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * A lazy-loaded map of event objects.
-   * @var Swift_Event_EventObject[]
+   * @var Swift_Events_EventObject[]
    * @access private
    */
   private $_prototypes = array();
@@ -61,7 +61,7 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * Listeners queued to have an Event bubbled up the stack to them.
-   * @var Swift_Event_EventListener[]
+   * @var Swift_Events_EventListener[]
    * @access private
    */
   private $_bubbleQueue = array();
@@ -117,10 +117,10 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   /**
    * Bind an event listener to this dispatcher.
    * The listener can optionally be bound only to the given event source.
-   * @param Swift_Event_EventListener $listener
+   * @param Swift_Events_EventListener $listener
    * @param object $source, optional
    */
-  public function bindEventListener(Swift_Event_EventListener $listener,
+  public function bindEventListener(Swift_Events_EventListener $listener,
     $source = null)
   {
     $this->_listeners[] = array('listener' => $listener, 'source' => $source);
@@ -128,10 +128,10 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * Dispatch the given Event to all suitable listeners.
-   * @param Swift_Event_EventObject $evt
+   * @param Swift_Events_EventObject $evt
    * @param string $target method
    */
-  public function dispatchEvent(Swift_Event_EventObject $evt, $target)
+  public function dispatchEvent(Swift_Events_EventObject $evt, $target)
   {
     $this->_prepareBubbleQueue($evt);
     $this->_bubble($evt, $target);
@@ -141,10 +141,10 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * Queue listeners on a stack ready for $evt to be bubbled up it.
-   * @param Swift_Event_EventObject $evt
+   * @param Swift_Events_EventObject $evt
    * @access private
    */
-  private function _prepareBubbleQueue(Swift_Event_EventObject $evt)
+  private function _prepareBubbleQueue(Swift_Events_EventObject $evt)
   {
     $this->_bubbleQueue = array();
     $evtClass = get_class($evt);
@@ -162,11 +162,11 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * Bubble $evt up the stack calling $target() on each listener.
-   * @param Swift_Event_EventObject $evt
+   * @param Swift_Events_EventObject $evt
    * @param string $target
    * @access private
    */
-  private function _bubble(Swift_Event_EventObject $evt, $target)
+  private function _bubble(Swift_Events_EventObject $evt, $target)
   {
     if (!$evt->bubbleCancelled() && $listener = array_shift($this->_bubbleQueue))
     {

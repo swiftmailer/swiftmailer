@@ -1,26 +1,26 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Event/SimpleEventDispatcher.php';
-require_once 'Swift/Event/EventListener.php';
-require_once 'Swift/Event/EventObject.php';
+require_once 'Swift/Events/SimpleEventDispatcher.php';
+require_once 'Swift/Events/EventListener.php';
+require_once 'Swift/Events/EventObject.php';
 
-class Swift_Event_FooEvent extends Swift_Event_EventObject { }
-class Swift_Event_BarEvent extends Swift_Event_EventObject { }
+class Swift_Events_FooEvent extends Swift_Events_EventObject { }
+class Swift_Events_BarEvent extends Swift_Events_EventObject { }
 
-interface Swift_Event_FooListener extends Swift_Event_EventListener {
+interface Swift_Events_FooListener extends Swift_Events_EventListener {
   public function fooPerformed();
 }
-interface Swift_Event_BarListener extends Swift_Event_EventListener {
+interface Swift_Events_BarListener extends Swift_Events_EventListener {
   public function barPerformed();
 }
 
-Mock::generate('Swift_Event_EventObject', 'Swift_Event_MockFooEvent');
-Mock::generate('Swift_Event_EventObject', 'Swift_Event_MockBarEvent');
-Mock::generate('Swift_Event_FooListener', 'Swift_Event_MockFooListener');
-Mock::generate('Swift_Event_BarListener', 'Swift_Event_MockBarListener');
+Mock::generate('Swift_Events_EventObject', 'Swift_Events_MockFooEvent');
+Mock::generate('Swift_Events_EventObject', 'Swift_Events_MockBarEvent');
+Mock::generate('Swift_Events_FooListener', 'Swift_Events_MockFooListener');
+Mock::generate('Swift_Events_BarListener', 'Swift_Events_MockBarListener');
 
-class Swift_Event_SimpleEventDispatcherTest
+class Swift_Events_SimpleEventDispatcherTest
   extends Swift_Tests_SwiftUnitTestCase
 {
   
@@ -28,28 +28,28 @@ class Swift_Event_SimpleEventDispatcherTest
   {
     $source = new stdClass();
     
-    $fooEvent = new Swift_Event_MockFooEvent();
+    $fooEvent = new Swift_Events_MockFooEvent();
     $fooEvent->expectOnce('cloneFor', array($source));
     $fooEvent->setReturnValue('cloneFor', clone $fooEvent);
     
-    $barEvent = new Swift_Event_MockBarEvent();
+    $barEvent = new Swift_Events_MockBarEvent();
     $barEvent->expectOnce('cloneFor', array($source));
     $barEvent->setReturnValue('cloneFor', clone $barEvent);
     
     $dispatcher = $this->_createDispatcher(array(
       'foo' => array(
         'event' => $fooEvent,
-        'listener' => 'Swift_Event_FooListener'
+        'listener' => 'Swift_Events_FooListener'
         ),
       'bar' => array(
         'event' => $barEvent,
-        'listener' => 'Swift_Event_BarListener'
+        'listener' => 'Swift_Events_BarListener'
         )
       ));
     $evt1 = $dispatcher->createEvent('foo', $source, array());
-    $this->assertIsA($evt1, 'Swift_Event_MockFooEvent');
+    $this->assertIsA($evt1, 'Swift_Events_MockFooEvent');
     $evt2 = $dispatcher->createEvent('bar', $source, array());
-    $this->assertIsA($evt2, 'Swift_Event_MockBarEvent');
+    $this->assertIsA($evt2, 'Swift_Events_MockBarEvent');
   }
   
   public function testEventsCanBeCreatedFromClassAliases()
@@ -58,57 +58,57 @@ class Swift_Event_SimpleEventDispatcherTest
     
     $dispatcher = $this->_createDispatcher(array(
       'foo' => array(
-        'event' => 'Swift_Event_FooEvent',
-        'listener' => 'Swift_Event_FooListener'
+        'event' => 'Swift_Events_FooEvent',
+        'listener' => 'Swift_Events_FooListener'
         ),
       'bar' => array(
-        'event' => 'Swift_Event_BarEvent',
-        'listener' => 'Swift_Event_BarListener'
+        'event' => 'Swift_Events_BarEvent',
+        'listener' => 'Swift_Events_BarListener'
         )
       ));
     $evt1 = $dispatcher->createEvent('foo', $source, array());
-    $this->assertIsA($evt1, 'Swift_Event_FooEvent');
+    $this->assertIsA($evt1, 'Swift_Events_FooEvent');
     $evt2 = $dispatcher->createEvent('bar', $source, array());
-    $this->assertIsA($evt2, 'Swift_Event_BarEvent');
+    $this->assertIsA($evt2, 'Swift_Events_BarEvent');
   }
   
   public function testListenersCanBeAdded()
   {
     $dispatcher = $this->_createDispatcher(array(
       'foo' => array(
-        'event' => 'Swift_Event_FooEvent',
-        'listener' => 'Swift_Event_FooListener'
+        'event' => 'Swift_Events_FooEvent',
+        'listener' => 'Swift_Events_FooListener'
         ),
       'bar' => array(
-        'event' => 'Swift_Event_BarEvent',
-        'listener' => 'Swift_Event_BarListener'
+        'event' => 'Swift_Events_BarEvent',
+        'listener' => 'Swift_Events_BarListener'
         )
       ));
-    $dispatcher->bindEventListener(new Swift_Event_MockFooListener());
-    $dispatcher->bindEventListener(new Swift_Event_MockBarListener());
+    $dispatcher->bindEventListener(new Swift_Events_MockFooListener());
+    $dispatcher->bindEventListener(new Swift_Events_MockBarListener());
   }
   
   public function testListenersAreNotifiedOfDispatchedEvent()
   {
     $source = new stdClass();
     
-    $cloneEvt = new Swift_Event_MockFooEvent();
-    $fooEvent = new Swift_Event_MockFooEvent();
+    $cloneEvt = new Swift_Events_MockFooEvent();
+    $fooEvent = new Swift_Events_MockFooEvent();
     $fooEvent->setReturnValue('cloneFor', $cloneEvt, array($source));
     $fooEvent->setReturnValue('getSource', $source);
     
     $dispatcher = $this->_createDispatcher(array(
       'foo' => array(
         'event' => $fooEvent,
-        'listener' => 'Swift_Event_FooListener'
+        'listener' => 'Swift_Events_FooListener'
         )
       ));
     
-    $listenerA = new Swift_Event_MockFooListener();
+    $listenerA = new Swift_Events_MockFooListener();
     $listenerA->expectOnce('fooPerformed', array($cloneEvt));
-    $listenerB = new Swift_Event_MockFooListener();
+    $listenerB = new Swift_Events_MockFooListener();
     $listenerB->expectOnce('fooPerformed', array($cloneEvt));
-    $listenerC = new Swift_Event_MockFooListener();
+    $listenerC = new Swift_Events_MockFooListener();
     $listenerC->expectOnce('fooPerformed', array($cloneEvt));
     
     $dispatcher->bindEventListener($listenerA);
@@ -123,25 +123,25 @@ class Swift_Event_SimpleEventDispatcherTest
   {
     $source = new stdClass();
     
-    $cloneEvt = new Swift_Event_MockFooEvent();
-    $fooEvent = new Swift_Event_MockFooEvent();
+    $cloneEvt = new Swift_Events_MockFooEvent();
+    $fooEvent = new Swift_Events_MockFooEvent();
     $fooEvent->setReturnValue('cloneFor', $cloneEvt, array($source));
     $fooEvent->setReturnValue('getSource', $source);
     
     $dispatcher = $this->_createDispatcher(array(
       'foo' => array(
         'event' => $fooEvent,
-        'listener' => 'Swift_Event_FooListener'
+        'listener' => 'Swift_Events_FooListener'
         )
       ));
     
-    $listenerA = new Swift_Event_MockFooListener();
+    $listenerA = new Swift_Events_MockFooListener();
     $listenerA->expectOnce('fooPerformed', array($cloneEvt));
     
-    $listenerB = new Swift_Event_MockBarListener();
+    $listenerB = new Swift_Events_MockBarListener();
     $listenerB->expectNever('barPerformed');
     
-    $listenerC = new Swift_Event_MockFooListener();
+    $listenerC = new Swift_Events_MockFooListener();
     $listenerC->expectOnce('fooPerformed', array($cloneEvt));
     
     $dispatcher->bindEventListener($listenerA);
@@ -156,7 +156,7 @@ class Swift_Event_SimpleEventDispatcherTest
   {
     $source = new stdClass();
     
-    $cloneEvt = new Swift_Event_MockFooEvent();
+    $cloneEvt = new Swift_Events_MockFooEvent();
     //A
     $cloneEvt->setReturnValueAt(0, 'bubbleCancelled', false);
     //B
@@ -164,24 +164,24 @@ class Swift_Event_SimpleEventDispatcherTest
     //C
     $cloneEvt->setReturnValueAt(2, 'bubbleCancelled', true);
     
-    $fooEvent = new Swift_Event_MockFooEvent();
+    $fooEvent = new Swift_Events_MockFooEvent();
     $fooEvent->setReturnValue('cloneFor', $cloneEvt, array($source));
     $fooEvent->setReturnValue('getSource', $source);
     
     $dispatcher = $this->_createDispatcher(array(
       'foo' => array(
         'event' => $fooEvent,
-        'listener' => 'Swift_Event_FooListener'
+        'listener' => 'Swift_Events_FooListener'
         )
       ));
     
-    $listenerA = new Swift_Event_MockFooListener();
+    $listenerA = new Swift_Events_MockFooListener();
     $listenerA->expectOnce('fooPerformed', array($cloneEvt));
     
-    $listenerB = new Swift_Event_MockFooListener();
+    $listenerB = new Swift_Events_MockFooListener();
     $listenerB->expectOnce('fooPerformed', array($cloneEvt));
     
-    $listenerC = new Swift_Event_MockFooListener();
+    $listenerC = new Swift_Events_MockFooListener();
     $listenerC->expectNever('fooPerformed'); //Bubble was cancelled at ListenerB
     
     $dispatcher->bindEventListener($listenerA);
@@ -197,27 +197,27 @@ class Swift_Event_SimpleEventDispatcherTest
     $source = new stdClass();
     $otherSource = new stdClass();
     
-    $cloneEvt = new Swift_Event_MockFooEvent();
+    $cloneEvt = new Swift_Events_MockFooEvent();
     $cloneEvt->setReturnValue('getSource', $source);
     
-    $fooEvent = new Swift_Event_MockFooEvent();
+    $fooEvent = new Swift_Events_MockFooEvent();
     $fooEvent->setReturnValue('cloneFor', $cloneEvt, array($source));
     $fooEvent->setReturnValue('getSource', $source);
     
     $dispatcher = $this->_createDispatcher(array(
       'foo' => array(
         'event' => $fooEvent,
-        'listener' => 'Swift_Event_FooListener'
+        'listener' => 'Swift_Events_FooListener'
         )
       ));
     
-    $listenerA = new Swift_Event_MockFooListener();
+    $listenerA = new Swift_Events_MockFooListener();
     $listenerA->expectOnce('fooPerformed', array($cloneEvt));
     
-    $listenerB = new Swift_Event_MockFooListener();
+    $listenerB = new Swift_Events_MockFooListener();
     $listenerB->expectNever('fooPerformed');
     
-    $listenerC = new Swift_Event_MockFooListener();
+    $listenerC = new Swift_Events_MockFooListener();
     $listenerC->expectOnce('fooPerformed', array($cloneEvt));
     
     $dispatcher->bindEventListener($listenerA, $source);
@@ -232,7 +232,7 @@ class Swift_Event_SimpleEventDispatcherTest
   
   private function _createDispatcher(array $map)
   {
-    $dispatcher = new Swift_Event_SimpleEventDispatcher($map);
+    $dispatcher = new Swift_Events_SimpleEventDispatcher($map);
     return $dispatcher;
   }
   

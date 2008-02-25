@@ -1,23 +1,23 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Event/EventObject.php';
+require_once 'Swift/Events/EventObject.php';
 
-class Swift_Event_EventObjectTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_Events_EventObjectTest extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_event;
   
   public function setUp()
   {
-    $this->_event = new Swift_Event_EventObject();
+    $this->_event = new Swift_Events_EventObject();
   }
   
   public function testEventCanBeCreatedByPrototype()
   {
     $source = new stdClass();
     $evt = $this->_event->cloneFor($source);
-    $this->assertIsA($evt, 'Swift_Event_EventObject');
+    $this->assertIsA($evt, 'Swift_Events_EventObject');
     $this->assertReference($source, $evt->getSource());
   }
   

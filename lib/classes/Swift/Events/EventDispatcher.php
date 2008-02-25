@@ -18,16 +18,16 @@
  
  */
 
-//@require 'Swift/Event/EventListener.php';
+//@require 'Swift/Events/EventListener.php';
 //@require 'Swift/Event.php';
 
 /**
  * Interface for the EventDispatcher which handles the event dispatching layer.
  * @package Swift
- * @subpackage Event
+ * @subpackage Events
  * @author Chris Corbyn
  */
-interface Swift_Event_EventDispatcher
+interface Swift_Events_EventDispatcher
 {
   
   /**
@@ -35,24 +35,24 @@ interface Swift_Event_EventDispatcher
    * @param string $eventType
    * @param object $source
    * @param string[] $properties the event will contain
-   * @return Swift_Event_EventObject
+   * @return Swift_Events_EventObject
    */
   public function createEvent($eventType, $source, array $properties);
   
   /**
    * Bind an event listener to this dispatcher.
    * The listener can optionally be bound only to the given event source.
-   * @param Swift_Event_EventListener $listener
+   * @param Swift_Events_EventListener $listener
    * @param object $source, optional
    */
-  public function bindEventListener(Swift_Event_EventListener $listener,
+  public function bindEventListener(Swift_Events_EventListener $listener,
     $source = null);
   
   /**
    * Dispatch the given Event to all suitable listeners.
-   * @param Swift_Event_EventObject $evt
+   * @param Swift_Events_EventObject $evt
    * @param string $target method
    */
-  public function dispatchEvent(Swift_Event_EventObject $evt, $target);
+  public function dispatchEvent(Swift_Events_EventObject $evt, $target);
   
 }
