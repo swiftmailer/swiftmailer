@@ -20,7 +20,7 @@
 
 //@require 'Swift/Event/EventDispatcher.php';
 //@require 'Swift/Event/EventListener.php';
-//@require 'Swift/Event.php';
+//@require 'Swift/Event/EventObject.php';
 
 /**
  * The EventDispatcher which handles the event dispatching layer.
@@ -47,7 +47,7 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * A lazy-loaded map of event objects.
-   * @var Swift_Event[]
+   * @var Swift_Event_EventObject[]
    * @access private
    */
   private $_prototypes = array();
@@ -128,10 +128,10 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * Dispatch the given Event to all suitable listeners.
-   * @param Swift_Event $evt
+   * @param Swift_Event_EventObject $evt
    * @param string $target method
    */
-  public function dispatchEvent(Swift_Event $evt, $target)
+  public function dispatchEvent(Swift_Event_EventObject $evt, $target)
   {
     $this->_prepareBubbleQueue($evt);
     $this->_bubble($evt, $target);
@@ -141,10 +141,10 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * Queue listeners on a stack ready for $evt to be bubbled up it.
-   * @param Swift_Event $evt
+   * @param Swift_Event_EventObject $evt
    * @access private
    */
-  private function _prepareBubbleQueue(Swift_Event $evt)
+  private function _prepareBubbleQueue(Swift_Event_EventObject $evt)
   {
     $this->_bubbleQueue = array();
     $evtClass = get_class($evt);
@@ -162,11 +162,11 @@ class Swift_Event_SimpleEventDispatcher implements Swift_Event_EventDispatcher
   
   /**
    * Bubble $evt up the stack calling $target() on each listener.
-   * @param Swift_Event $evt
+   * @param Swift_Event_EventObject $evt
    * @param string $target
    * @access private
    */
-  private function _bubble(Swift_Event $evt, $target)
+  private function _bubble(Swift_Event_EventObject $evt, $target)
   {
     if (!$evt->bubbleCancelled() && $listener = array_shift($this->_bubbleQueue))
     {

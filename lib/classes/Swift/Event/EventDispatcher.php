@@ -35,6 +35,7 @@ interface Swift_Event_EventDispatcher
    * @param string $eventType
    * @param object $source
    * @param string[] $properties the event will contain
+   * @return Swift_Event_EventObject
    */
   public function createEvent($eventType, $source, array $properties);
   
@@ -49,9 +50,9 @@ interface Swift_Event_EventDispatcher
   
   /**
    * Dispatch the given Event to all suitable listeners.
-   * @param Swift_Event $evt
+   * @param Swift_Event_EventObject $evt
    * @param string $target method
    */
-  public function dispatchEvent(Swift_Event $evt, $target);
+  public function dispatchEvent(Swift_Event_EventObject $evt, $target);
   
 }

@@ -3,10 +3,10 @@
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Event/SimpleEventDispatcher.php';
 require_once 'Swift/Event/EventListener.php';
-require_once 'Swift/Event.php';
+require_once 'Swift/Event/EventObject.php';
 
-class Swift_Event_FooEvent extends Swift_Event { }
-class Swift_Event_BarEvent extends Swift_Event { }
+class Swift_Event_FooEvent extends Swift_Event_EventObject { }
+class Swift_Event_BarEvent extends Swift_Event_EventObject { }
 
 interface Swift_Event_FooListener extends Swift_Event_EventListener {
   public function fooPerformed();
@@ -15,8 +15,8 @@ interface Swift_Event_BarListener extends Swift_Event_EventListener {
   public function barPerformed();
 }
 
-Mock::generate('Swift_Event', 'Swift_Event_MockFooEvent');
-Mock::generate('Swift_Event', 'Swift_Event_MockBarEvent');
+Mock::generate('Swift_Event_EventObject', 'Swift_Event_MockFooEvent');
+Mock::generate('Swift_Event_EventObject', 'Swift_Event_MockBarEvent');
 Mock::generate('Swift_Event_FooListener', 'Swift_Event_MockFooListener');
 Mock::generate('Swift_Event_BarListener', 'Swift_Event_MockBarListener');
 

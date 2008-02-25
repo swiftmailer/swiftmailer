@@ -25,7 +25,7 @@
  * @subpackage Event
  * @author Chris Corbyn
  */
-class Swift_Event
+class Swift_Event_EventObject
 {
   
   /**
@@ -55,7 +55,7 @@ class Swift_Event
    * Create a new event using this one as a prototype.
    * The event source will be $source and will be immutable.
    * @param object $source
-   * @return Swift_Event
+   * @return Swift_Event_EventObject
    */
   public function cloneFor($source)
   {
