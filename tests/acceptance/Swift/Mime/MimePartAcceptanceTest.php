@@ -26,7 +26,7 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
       );
     $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     $this->_contentEncoder = new Swift_Mime_ContentEncoder_QpContentEncoder(
-      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'), true
       );
     $this->_headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
@@ -94,6 +94,24 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       'foobar',
+      $part->toString()
+      );
+  }
+  
+  public function testBodyIsCanonicalized()
+  {
+    $part = $this->_createMimePart();
+    $part->setContentType('text/plain');
+    $part->setCharset('utf-8');
+    $part->setBodyAsString("foobar\r\rtest\ning\r");
+    $this->assertEqual(
+      'Content-Type: text/plain; charset=utf-8' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      "foobar\r\n" .
+      "\r\n" .
+      "test\r\n" .
+      "ing\r\n",
       $part->toString()
       );
   }

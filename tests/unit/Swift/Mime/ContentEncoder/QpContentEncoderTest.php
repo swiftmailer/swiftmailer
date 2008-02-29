@@ -6,7 +6,15 @@ require_once 'Swift/InputByteStream.php';
 require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/CharacterStream.php';
 
-Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
+class Swift_MockInputByteStream implements Swift_InputByteStream {
+  public $content = '';
+  public function write($chars) {
+    $this->content .= $chars;
+  }
+  public function flushContents() {
+  }
+}
+
 Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
 Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
 
@@ -59,18 +67,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
       $charStream->expectOnce('flushContents');
       $charStream->expectOnce('importByteStream', array($os));
       
-      $charStream->setReturnValueAt(0, 'read', $char);
-      $charStream->setReturnValueAt(1, 'read', false);
+      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
+      $charStream->setReturnValueAt(1, 'readBytes', false);
       
       $is = new Swift_MockInputByteStream();
-      $is->expectCallCount('write', 1);
-      $is->expectAt(0, 'write', array(
-        new Swift_Tests_IdenticalBinaryExpectation($char)
-        ));
-      
       $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
-      
       $encoder->encodeByteStream($os, $is);
+      $this->assertIdenticalBinary($char, $is->content);
     }
   }
   
@@ -108,25 +111,20 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importByteStream', array($os));
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', $HT);
-    $charStream->setReturnValueAt(2, 'read', $HT);
-    $charStream->setReturnValueAt(3, 'read', "\r");
-    $charStream->setReturnValueAt(4, 'read', "\n");
-    $charStream->setReturnValueAt(5, 'read', 'b');
-    $charStream->setReturnValueAt(6, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x09));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x09));
+    $charStream->setReturnValueAt(3, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(4, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(5, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(6, 'readBytes', false);
     
     $is = new Swift_MockInputByteStream();
-    $is->expectCallCount('write', 6);
-    $is->expectAt(0, 'write', array('a'));
-    $is->expectAt(1, 'write', array($HT));
-    $is->expectAt(2, 'write', array('=09'));
-    $is->expectAt(3, 'write', array("\r"));
-    $is->expectAt(4, 'write', array("\n"));
-    $is->expectAt(5, 'write', array('b'));
     
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
     $encoder->encodeByteStream($os, $is);
+    
+    $this->assertEqual("a\t=09\r\nb", $is->content);
     
     //SPACE
     $os = new Swift_MockOutputByteStream();
@@ -134,25 +132,20 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importByteStream', array($os));
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', $SPACE);
-    $charStream->setReturnValueAt(2, 'read', $SPACE);
-    $charStream->setReturnValueAt(3, 'read', "\r");
-    $charStream->setReturnValueAt(4, 'read', "\n");
-    $charStream->setReturnValueAt(5, 'read', 'b');
-    $charStream->setReturnValueAt(6, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x20));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x20));
+    $charStream->setReturnValueAt(3, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(4, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(5, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(6, 'readBytes', false);
     
     $is = new Swift_MockInputByteStream();
-    $is->expectCallCount('write', 6);
-    $is->expectAt(0, 'write', array('a'));
-    $is->expectAt(1, 'write', array($SPACE));
-    $is->expectAt(2, 'write', array('=20'));
-    $is->expectAt(3, 'write', array("\r"));
-    $is->expectAt(4, 'write', array("\n"));
-    $is->expectAt(5, 'write', array('b'));
     
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
     $encoder->encodeByteStream($os, $is);
+    
+    $this->assertEqual("a =20\r\nb", $is->content);
   }
   
   public function testCRLFIsLeftAlone()
@@ -189,31 +182,22 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importByteStream', array($os));
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', "\r");
-    $charStream->setReturnValueAt(2, 'read', "\n");
-    $charStream->setReturnValueAt(3, 'read', 'b');
-    $charStream->setReturnValueAt(4, 'read', "\r");
-    $charStream->setReturnValueAt(5, 'read', "\n");
-    $charStream->setReturnValueAt(6, 'read', 'c');
-    $charStream->setReturnValueAt(7, 'read', "\r");
-    $charStream->setReturnValueAt(8, 'read', "\n");
-    $charStream->setReturnValueAt(9, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(3, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(4, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(5, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(6, 'readBytes', array(ord('c')));
+    $charStream->setReturnValueAt(7, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(8, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(9, 'readBytes', false);
     
     $is = new Swift_MockInputByteStream();
-    $is->expectCallCount('write', 9);
-    $is->expectAt(0, 'write', array('a'));
-    $is->expectAt(1, 'write', array("\r"));
-    $is->expectAt(2, 'write', array("\n"));
-    $is->expectAt(3, 'write', array('b'));
-    $is->expectAt(4, 'write', array("\r"));
-    $is->expectAt(5, 'write', array("\n"));
-    $is->expectAt(6, 'write', array('c'));
-    $is->expectAt(7, 'write', array("\r"));
-    $is->expectAt(8, 'write', array("\n"));
     
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
     $encoder->encodeByteStream($os, $is);
+    $this->assertEqual("a\r\nb\r\nc\r\n", $is->content);
   }
   
   public function testLinesLongerThan76CharactersAreSoftBroken()
@@ -239,22 +223,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $seq = 0;
     for (; $seq <= 140; ++$seq)
     {
-      $charStream->setReturnValueAt($seq, 'read', 'a');
-      
-      if (75 == $seq)
-      {
-        $is->expectAt($seq, 'write', array("=\r\n" . 'a'));
-      }
-      else
-      {
-        $is->expectAt($seq, 'write', array('a'));
-      }
+      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
     }
-    $charStream->setReturnValueAt($seq, 'read', false);
-    $is->expectCallCount('write', $seq);
+    $charStream->setReturnValueAt($seq, 'readBytes', false);
     
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
     $encoder->encodeByteStream($os, $is);
+    $this->assertEqual(str_repeat('a', 75) . "=\r\n" . str_repeat('a', 66), $is->content);
   }
   
   public function testMaxLineLengthCanBeSpecified()
@@ -270,22 +245,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $seq = 0;
     for (; $seq <= 100; ++$seq)
     {
-      $charStream->setReturnValueAt($seq, 'read', 'a');
-      
-      if (53 == $seq)
-      {
-        $is->expectAt($seq, 'write', array("=\r\n" . 'a'));
-      }
-      else
-      {
-        $is->expectAt($seq, 'write', array('a'));
-      }
+      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
     }
-    $charStream->setReturnValueAt($seq, 'read', false);
-    $is->expectCallCount('write', $seq);
+    $charStream->setReturnValueAt($seq, 'readBytes', false);
     
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
     $encoder->encodeByteStream($os, $is, 0, 54);
+    $this->assertEqual(str_repeat('a', 53) . "=\r\n" . str_repeat('a', 48), $is->content);
   }
   
   public function testBytesBelowPermittedRangeAreEncoded()
@@ -304,16 +270,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
       $charStream->expectOnce('flushContents');
       $charStream->expectOnce('importByteStream', array($os));
       
-      $charStream->setReturnValueAt(0, 'read', $char);
-      $charStream->setReturnValueAt(1, 'read', false);
+      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
+      $charStream->setReturnValueAt(1, 'readBytes', false);
       
       $is = new Swift_MockInputByteStream();
-      $is->expectCallCount('write', 1);
-      $is->expectAt(0, 'write', array(sprintf('=%02X', $ordinal)));
-      
       $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
-      
       $encoder->encodeByteStream($os, $is);
+      $this->assertEqual(sprintf('=%02X', $ordinal), $is->content);
     }
   }
   
@@ -331,16 +294,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importByteStream', array($os));
       
-    $charStream->setReturnValueAt(0, 'read', $char);
-    $charStream->setReturnValueAt(1, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(61));
+    $charStream->setReturnValueAt(1, 'readBytes', false);
       
     $is = new Swift_MockInputByteStream();
-    $is->expectCallCount('write', 1);
-    $is->expectAt(0, 'write', array(sprintf('=%02X', 61)));
-      
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
-      
     $encoder->encodeByteStream($os, $is);
+    $this->assertEqual(sprintf('=%02X', 61), $is->content);
   }
   
   public function testBytesAbovePermittedRangeAreEncoded()
@@ -359,16 +319,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
       $charStream->expectOnce('flushContents');
       $charStream->expectOnce('importByteStream', array($os));
       
-      $charStream->setReturnValueAt(0, 'read', $char);
-      $charStream->setReturnValueAt(1, 'read', false);
+      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
+      $charStream->setReturnValueAt(1, 'readBytes', false);
       
       $is = new Swift_MockInputByteStream();
-      $is->expectCallCount('write', 1);
-      $is->expectAt(0, 'write', array(sprintf('=%02X', $ordinal)));
-      
       $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
-      
       $encoder->encodeByteStream($os, $is);
+      $this->assertEqual(sprintf('=%02X', $ordinal), $is->content);
     }
   }
   
@@ -385,34 +342,28 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     $seq = 0;
     for (; $seq <= 140; ++$seq)
     {
-      $charStream->setReturnValueAt($seq, 'read', 'a');
-      
-      if (53 == $seq || 53 + 75 == $seq)
-      {
-        $is->expectAt($seq, 'write', array("=\r\n" . 'a'));
-      }
-      else
-      {
-        $is->expectAt($seq, 'write', array('a'));
-      }
+      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
     }
-    $charStream->setReturnValueAt($seq, 'read', false);
-    $is->expectCallCount('write', $seq);
+    $charStream->setReturnValueAt($seq, 'readBytes', false);
     
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
     $encoder->encodeByteStream($os, $is, 22);
+    $this->assertEqual(
+      str_repeat('a', 53) . "=\r\n" . str_repeat('a', 75) . "=\r\n" . str_repeat('a', 13),
+      $is->content
+      );
   }
   
   public function testCanonicEncodeStringGeneratesCorrectCrlf_1()
   {
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', "\r");
-    $charStream->setReturnValueAt(2, 'read', 'b');
-    $charStream->setReturnValueAt(3, 'read', false);
-    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(2, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(3, 'readBytes', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream, true);
     
-    $this->assertEqual("a\r\nb", $encoder->canonicEncodeString("a\rb"),
+    $this->assertEqual("a\r\nb", $encoder->encodeString("a\rb"),
       '%s: Input should be canonicalized to CRLF endings'
       );
   }
@@ -420,13 +371,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
   public function testCanonicEncodeStringGeneratesCorrectCrlf_2()
   {
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', "\n");
-    $charStream->setReturnValueAt(2, 'read', 'b');
-    $charStream->setReturnValueAt(3, 'read', false);
-    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(2, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(3, 'readBytes', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream, true);
     
-    $this->assertEqual("a\r\nb", $encoder->canonicEncodeString("a\nb"),
+    $this->assertEqual("a\r\nb", $encoder->encodeString("a\nb"),
       '%s: Input should be canonicalized to CRLF endings'
       );
   }
@@ -434,14 +385,14 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
   public function testCanonicEncodeStringGeneratesCorrectCrlf_3()
   {
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', "\r");
-    $charStream->setReturnValueAt(2, 'read', "\n");
-    $charStream->setReturnValueAt(3, 'read', 'b');
-    $charStream->setReturnValueAt(4, 'read', false);
-    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(3, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(4, 'readBytes', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream, true);
     
-    $this->assertEqual("a\r\nb", $encoder->canonicEncodeString("a\r\nb"),
+    $this->assertEqual("a\r\n\r\nb", $encoder->encodeString("a\n\rb"),
       '%s: Input should be canonicalized to CRLF endings'
       );
   }
@@ -449,14 +400,14 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
   public function testCanonicEncodeStringGeneratesCorrectCrlf_4()
   {
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', "\n");
-    $charStream->setReturnValueAt(2, 'read', "\r");
-    $charStream->setReturnValueAt(3, 'read', 'b');
-    $charStream->setReturnValueAt(4, 'read', false);
-    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(3, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(4, 'readBytes', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream, true);
     
-    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\n\rb"),
+    $this->assertEqual("a\r\n\r\nb", $encoder->encodeString("a\n\nb"),
       '%s: Input should be canonicalized to CRLF endings'
       );
   }
@@ -464,29 +415,14 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
   public function testCanonicEncodeStringGeneratesCorrectCrlf_5()
   {
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', "\n");
-    $charStream->setReturnValueAt(2, 'read', "\n");
-    $charStream->setReturnValueAt(3, 'read', 'b');
-    $charStream->setReturnValueAt(4, 'read', false);
-    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(3, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(4, 'readBytes', false);
+    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream, true);
     
-    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\n\nb"),
-      '%s: Input should be canonicalized to CRLF endings'
-      );
-  }
-  
-  public function testCanonicEncodeStringGeneratesCorrectCrlf_6()
-  {
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', "\r");
-    $charStream->setReturnValueAt(2, 'read', "\r");
-    $charStream->setReturnValueAt(3, 'read', 'b');
-    $charStream->setReturnValueAt(4, 'read', false);
-    $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
-    
-    $this->assertEqual("a\r\n\r\nb", $encoder->canonicEncodeString("a\r\rb"),
+    $this->assertEqual("a\r\n\r\nb", $encoder->encodeString("a\r\rb"),
       '%s: Input should be canonicalized to CRLF endings'
       );
   }

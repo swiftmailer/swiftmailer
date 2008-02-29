@@ -36,12 +36,11 @@ class Swift_CharacterReader_UsAsciiReader
    * this method again.
    * A value of zero means this is already a valid character.
    * A value of -1 means this cannot possibly be a valid character.
-   * @param string $partialCharacter
+   * @param string $bytes
    * @return int
    */
-  public function validateCharacter($partialCharacter)
+  public function validateByteSequence($bytes)
   {
-    $bytes = array_values(unpack('C*', $partialCharacter));
     if (1 == count($bytes) && $bytes[0] >= 0x00 && $bytes[0] <= 0x7F)
     {
       return 0;

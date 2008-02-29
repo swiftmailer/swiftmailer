@@ -78,7 +78,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Tests_SwiftUnitTestCase
     $h2->setReturnValue('getFieldBody', 'foo');
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
-    $this->_encoder->setReturnValue('canonicEncodeString', 'my body');
+    $this->_encoder->setReturnValue('encodeString', 'my body');
     
     $this->_cache->setReturnValue('getString',
       'Content-Type: text/html' . "\r\n" .
@@ -675,8 +675,8 @@ class Swift_Mime_SimpleMessageTest extends Swift_Tests_SwiftUnitTestCase
     $h2->setReturnValue('getFieldBody', 'foo');
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
-    $this->_encoder->expectOnce('canonicEncodeString', array('my body', '*', '*'));
-    $this->_encoder->setReturnValue('canonicEncodeString', 'my body');
+    $this->_encoder->expectOnce('encodeString', array('my body', '*', '*'));
+    $this->_encoder->setReturnValue('encodeString', 'my body');
     $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $message->setBodyAsString('my body');
     $message->toString();
@@ -692,8 +692,8 @@ class Swift_Mime_SimpleMessageTest extends Swift_Tests_SwiftUnitTestCase
     $h2->setReturnValue('toString', 'X-Header: foo' . "\r\n");
     $headers = array($h1, $h2);
     
-    $this->_encoder->expectOnce('canonicEncodeString', array('my body', 0, 78));
-    $this->_encoder->setReturnValue('canonicEncodeString', 'my body');
+    $this->_encoder->expectOnce('encodeString', array('my body', 0, 78));
+    $this->_encoder->setReturnValue('encodeString', 'my body');
     
     $message = $this->_createMessage($headers, $this->_encoder, $this->_cache);
     $message->setMaxLineLength(78);

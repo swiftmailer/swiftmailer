@@ -37,7 +37,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       );
     $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     $this->_contentEncoder = new Swift_Mime_ContentEncoder_QpContentEncoder(
-      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'), true
       );
     $this->_headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
@@ -1240,6 +1240,35 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       'foo' .
       "\r\n" .
       '--' . $boundary . '--' . "\r\n",
+      $message->toString()
+      );
+  }
+  
+  public function testBodyIsCanonicalized()
+  {
+    $message = $this->_createMessage();
+    $message->setReturnPath('chris@w3style.co.uk');
+    $message->setSubject('just a test subject');
+    $message->setFrom(array(
+      'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
+    $message->setBodyAsString(
+      'just a test body' . "\n" .
+      'with a new line'
+      );
+    $id = $message->getId();
+    $date = $message->getDate();
+    $this->assertEqual(
+      'Return-Path: <chris@w3style.co.uk>' . "\r\n" .
+      'Message-ID: <' . $id . '>' . "\r\n" .
+      'Date: ' . date('r', $date) . "\r\n" .
+      'Subject: just a test subject' . "\r\n" .
+      'From: Chris Corbyn <chris.corbyn@swiftmailer.org>' . "\r\n" .
+      'MIME-Version: 1.0' . "\r\n" .
+      'Content-Type: text/plain' . "\r\n" .
+      'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
+      "\r\n" .
+      'just a test body' . "\r\n" .
+      'with a new line',
       $message->toString()
       );
   }

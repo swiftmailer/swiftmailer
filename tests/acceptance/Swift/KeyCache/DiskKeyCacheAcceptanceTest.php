@@ -181,7 +181,7 @@ class Swift_KeyCache_DiskKeyCacheAcceptanceTest extends UnitTestCase
     $this->assertFalse($this->_cache->hasKey($this->_key1, 'bar'));
   }
   
-  public function XtestKeyCacheInputStream()
+  public function testKeyCacheInputStream()
   {
     $is = $this->_cache->getInputByteStream($this->_key1, 'foo');
     $is->write('abc');

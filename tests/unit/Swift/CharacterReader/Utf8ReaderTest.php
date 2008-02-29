@@ -17,8 +17,9 @@ class Swift_CharacterReader_Utf8ReaderTest
   { 
     for ($ordinal = 0x00; $ordinal <= 0x7F; ++$ordinal)
     {
-      $char = pack('C', $ordinal);
-      $this->assertIdentical(0, $this->_reader->validateCharacter($char));
+      $this->assertIdentical(
+        0, $this->_reader->validateByteSequence(array($ordinal))
+        );
     }
   }
   
@@ -26,8 +27,9 @@ class Swift_CharacterReader_Utf8ReaderTest
   {
     for ($octet = 0xC0; $octet <= 0xDF; ++$octet)
     {
-      $char = pack('C', $octet);
-      $this->assertIdentical(1, $this->_reader->validateCharacter($char));
+      $this->assertIdentical(
+        1, $this->_reader->validateByteSequence(array($octet))
+        );
     }
   }
   
@@ -35,8 +37,9 @@ class Swift_CharacterReader_Utf8ReaderTest
   {
     for ($octet = 0xE0; $octet <= 0xEF; ++$octet)
     {
-      $char = pack('C', $octet);
-      $this->assertIdentical(2, $this->_reader->validateCharacter($char));
+      $this->assertIdentical(
+        2, $this->_reader->validateByteSequence(array($octet))
+        );
     }
   }
   
@@ -44,8 +47,9 @@ class Swift_CharacterReader_Utf8ReaderTest
   {
     for ($octet = 0xF0; $octet <= 0xF7; ++$octet)
     {
-      $char = pack('C', $octet);
-      $this->assertIdentical(3, $this->_reader->validateCharacter($char));
+      $this->assertIdentical(
+        3, $this->_reader->validateByteSequence(array($octet))
+        );
     }
   }
   
@@ -53,8 +57,9 @@ class Swift_CharacterReader_Utf8ReaderTest
   {
     for ($octet = 0xF8; $octet <= 0xFB; ++$octet)
     {
-      $char = pack('C', $octet);
-      $this->assertIdentical(4, $this->_reader->validateCharacter($char));
+      $this->assertIdentical(
+        4, $this->_reader->validateByteSequence(array($octet))
+        );
     }
   }
   
@@ -62,8 +67,9 @@ class Swift_CharacterReader_Utf8ReaderTest
   {
     for ($octet = 0xFC; $octet <= 0xFD; ++$octet)
     {
-      $char = pack('C', $octet);
-      $this->assertIdentical(5, $this->_reader->validateCharacter($char));
+      $this->assertIdentical(
+        5, $this->_reader->validateByteSequence(array($octet))
+        );
     }
   }
   

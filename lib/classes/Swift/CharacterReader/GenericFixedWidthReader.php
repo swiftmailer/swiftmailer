@@ -52,12 +52,12 @@ class Swift_CharacterReader_GenericFixedWidthReader
    * this method again.
    * A value of zero means this is already a valid character.
    * A value of -1 means this cannot possibly be a valid character.
-   * @param string $partialCharacter
+   * @param string $bytes
    * @return int
    */
-  public function validateCharacter($partialCharacter)
+  public function validateByteSequence($bytes)
   {
-    return max(-1, $this->_width - count(unpack('C*', $partialCharacter)));
+    return max(-1, $this->_width - count($bytes));
   }
   
   /**

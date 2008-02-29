@@ -127,30 +127,6 @@ class Swift_Mime_MimePartTest extends Swift_Tests_SwiftUnitTestCase
     $part->setDelSp(true);
   }
   
-  public function testCanonicalEncodingIsUsedOnStrings()
-  {
-    //text parts should be presented in the canonical form, and any translation
-    // should be handled by the Transport
-    
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
-    $this->_encoder->expectOnce('canonicEncodeString');
-    $part->setBodyAsString('foo');
-    $part->toString();
-  }
-  
-  public function testCanonicalEncodingIsUsedOnByteStreams()
-  {
-    //text parts should be presented in the canonical form, and any translation
-    // should be handled by the Transport
-    $this->_cache->setReturnValue('getInputByteStream',
-      new Swift_KeyCache_MockKeyCacheInputStream()
-      );
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
-    $this->_encoder->expectOnce('canonicEncodeByteStream');
-    $part->setBodyAsByteStream(new Swift_MockOutputByteStream());
-    $part->toByteStream(new Swift_MockInputByteStream());
-  }
-  
   public function testFluidInterface()
   {
     $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);

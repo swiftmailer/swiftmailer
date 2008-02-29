@@ -4,8 +4,16 @@ require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
 require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/InputByteStream.php';
 
+class Swift_MockInputByteStream implements Swift_InputByteStream {
+  public $content = '';
+  public function write($string) {
+    $this->content .= $string;
+  }
+  public function flushContents() {
+  }
+}
+
 Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
-Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
 
 class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
 {
@@ -45,10 +53,9 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     $os->setReturnValueAt(1, 'read', false);
     
     $is = new Swift_MockInputByteStream();
-    $is->expectCallCount('write', 1);
-    $is->expectAt(0, 'write', array('MTIz'));
     
     $this->_encoder->encodeByteStream($os, $is);
+    $this->assertEqual('MTIz', $is->content);
   }
   
   public function testPadLength()
@@ -80,13 +87,11 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
       $os->setReturnValueAt(1, 'read', false);
       
       $is = new Swift_MockInputByteStream();
-      $is->expectCallCount('write', 1);
-      $is->expectAt(0, 'write', array(new PatternExpectation(
-        '~^[a-zA-Z0-9/\+]{2}==$~',
-        '%s: A single byte should have 2 bytes of padding'
-        )));
       
       $this->_encoder->encodeByteStream($os, $is);
+      $this->assertPattern('~^[a-zA-Z0-9/\+]{2}==$~', $is->content,
+        '%s: A single byte should have 2 bytes of padding'
+        );
     }
     
     for ($i = 0; $i < 30; ++$i)
@@ -97,13 +102,11 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
       $os->setReturnValueAt(1, 'read', false);
       
       $is = new Swift_MockInputByteStream();
-      $is->expectCallCount('write', 1);
-      $is->expectAt(0, 'write', array(new PatternExpectation(
-        '~^[a-zA-Z0-9/\+]{3}=$~',
-        '%s: Two bytes should have 1 byte of padding'
-        )));
       
       $this->_encoder->encodeByteStream($os, $is);
+      $this->assertPattern('~^[a-zA-Z0-9/\+]{3}=$~', $is->content,
+        '%s: Two bytes should have 1 byte of padding'
+        );
     }
     
     for ($i = 0; $i < 30; ++$i)
@@ -114,13 +117,11 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
       $os->setReturnValueAt(1, 'read', false);
       
       $is = new Swift_MockInputByteStream();
-      $is->expectCallCount('write', 1);
-      $is->expectAt(0, 'write', array(new PatternExpectation(
-        '~^[a-zA-Z0-9/\+]{4}$~',
-        '%s: Three bytes should have no padding'
-        )));
       
       $this->_encoder->encodeByteStream($os, $is);
+      $this->assertPattern('~^[a-zA-Z0-9/\+]{4}$~', $is->content,
+        '%s: Three bytes should have no padding'
+        );
     }
   }
   
@@ -144,16 +145,13 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     $os->setReturnValueAt(7, 'read', false);
     
     $is = new Swift_MockInputByteStream();
-    $is->expectCallCount('write', 7);
-    $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
-    $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32
-    $is->expectAt(2, 'write', array('eXphYmMxMjM0NTY3'));               //48
-    $is->expectAt(3, 'write', array('ODkwQUJDREVGR0hJ'));               //64
-    $is->expectAt(4, 'write', array('SktMTU5PUFFS' . "\r\n" . 'U1RV')); //76*, 4
-    $is->expectAt(5, 'write', array('VldYWVoxMjM0NTY3'));               //20
-    $is->expectAt(6, 'write', array('YWJjZGVmZ2hpamts'));               //36
     
     $this->_encoder->encodeByteStream($os, $is);
+    $this->assertEqual(
+      "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDREVGR0hJSktMTU5PUFFS\r\n" .
+      "U1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts",
+      $is->content
+      );
   }
   
   public function testMaximumLineLengthCanBeDifferent()
@@ -170,16 +168,13 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     $os->setReturnValueAt(7, 'read', false);
     
     $is = new Swift_MockInputByteStream();
-    $is->expectCallCount('write', 7);
-    $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
-    $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32
-    $is->expectAt(2, 'write', array('eXphYmMxMjM0NTY3'));               //48
-    $is->expectAt(3, 'write', array('ODkwQUJDREVGR0hJ'));               //64
-    $is->expectAt(4, 'write', array('SktMTU5PUFFSU1RV'));               //76
-    $is->expectAt(5, 'write', array("\r\n" . 'VldYWVoxMjM0NTY3'));      //80*, 16
-    $is->expectAt(6, 'write', array('YWJjZGVmZ2hpamts'));               //32
     
     $this->_encoder->encodeByteStream($os, $is, 0, 80);
+    $this->assertEqual(
+      "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDREVGR0hJSktMTU5PUFFSU1RV\r\n" .
+      "VldYWVoxMjM0NTY3YWJjZGVmZ2hpamts",
+      $is->content
+      );
   }
   
   public function testFirstLineLengthCanBeDifferent()
@@ -196,16 +191,13 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     $os->setReturnValueAt(7, 'read', false);
     
     $is = new Swift_MockInputByteStream();
-    $is->expectCallCount('write', 7);
-    $is->expectAt(0, 'write', array('YWJjZGVmZ2hpamts'));               //16
-    $is->expectAt(1, 'write', array('bW5vcHFyc3R1dnd4'));               //32
-    $is->expectAt(2, 'write', array('eXphYmMxMjM0NTY3'));               //48
-    $is->expectAt(3, 'write', array('ODkwQUJDR' . "\r\n" . 'EVGR0hJ')); //57*, 7
-    $is->expectAt(4, 'write', array('SktMTU5PUFFSU1RV'));               //23
-    $is->expectAt(5, 'write', array('VldYWVoxMjM0NTY3'));               //39
-    $is->expectAt(6, 'write', array('YWJjZGVmZ2hpamts'));               //55
     
     $this->_encoder->encodeByteStream($os, $is, 19);
+    $this->assertEqual(
+      "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDR\r\n" .
+      "EVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts",
+      $is->content
+      );
   }
   
 }

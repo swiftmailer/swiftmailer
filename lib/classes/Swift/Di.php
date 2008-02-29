@@ -55,6 +55,11 @@ class Swift_Di
    */
   private $_lookups = array();
   
+  /**
+   * Di as a singleton.
+   * @var Swift_Di
+   * @access private
+   */
   private static $_singleton = null;
   
   /**
@@ -62,13 +67,13 @@ class Swift_Di
    * @param string $name
    * @param array $lookup to override any pre-defined lookups
    * @return object
-   * @throws ClassNotFoundException if no such component exists
+   * @throws Exception if no such component exists
    */
   public function create($name, $lookup = array())
   {
     if (!array_key_exists($name, $this->_map))
     {
-      throw new ClassNotFoundException(
+      throw new Exception(
         'Cannot create ' . $name . ' since no implemenation is registered for it'
         );
     }
@@ -194,6 +199,9 @@ class Swift_Di
             case 'int':
               $instanceArgs[$i] = (int) $value;
               break;
+            case 'boolean':
+              $instanceArgs[$i] = (boolean) $value;
+              break;
             case 'null':
               $instanceArgs[$i] = null;
               break;
@@ -207,6 +215,10 @@ class Swift_Di
   
   // -- Static functions
   
+  /**
+   * Get a singleton instance of Di.
+   * @return Swift_Di
+   */
   public static function getInstance()
   {
     if (!isset(self::$_singleton))

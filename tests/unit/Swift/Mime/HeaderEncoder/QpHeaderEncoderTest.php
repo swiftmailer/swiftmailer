@@ -28,12 +28,12 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
      */
     
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', ' ');
-    $charStream->setReturnValueAt(2, 'read', "\t");
-    $charStream->setReturnValueAt(3, 'read', ' ');
-    $charStream->setReturnValueAt(4, 'read', 'b');
-    $charStream->setReturnValueAt(5, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x20));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x09));
+    $charStream->setReturnValueAt(3, 'readBytes', array(0x20));
+    $charStream->setReturnValueAt(4, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(5, 'readBytes', false);
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertNoPattern('~[ \t]~', $encoder->encodeString("a \t b"),
@@ -53,10 +53,10 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
        occupies a different code position in the character set in use.
        */
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', ' ');
-    $charStream->setReturnValueAt(2, 'read', 'b');
-    $charStream->setReturnValueAt(3, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x20));
+    $charStream->setReturnValueAt(2, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(3, 'readBytes', false);
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertEqual('a_b', $encoder->encodeString('a b'),
@@ -75,10 +75,10 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
        */
     
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', '=');
-    $charStream->setReturnValueAt(1, 'read', '?');
-    $charStream->setReturnValueAt(2, 'read', '_');
-    $charStream->setReturnValueAt(3, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('=')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(ord('?')));
+    $charStream->setReturnValueAt(2, 'readBytes', array(ord('_')));
+    $charStream->setReturnValueAt(3, 'readBytes', false);
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertEqual('=3D=3F=5F', $encoder->encodeString('=?_'),
@@ -94,10 +94,10 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
      */
     
     $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'read', '(');
-    $charStream->setReturnValueAt(1, 'read', '"');
-    $charStream->setReturnValueAt(2, 'read', ')');
-    $charStream->setReturnValueAt(3, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('(')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(ord('"')));
+    $charStream->setReturnValueAt(2, 'readBytes', array(ord(')')));
+    $charStream->setReturnValueAt(3, 'readBytes', false);
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertEqual('=28=22=29', $encoder->encodeString('(")'),
@@ -133,8 +133,8 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
       $char = pack('C', $byte);
       
       $charStream = new Swift_MockCharacterStream();
-      $charStream->setReturnValueAt(0, 'read', $char);
-      $charStream->setReturnValueAt(1, 'read', false);
+      $charStream->setReturnValueAt(0, 'readBytes', array($byte));
+      $charStream->setReturnValueAt(1, 'readBytes', false);
         
       $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
       $encodedChar = $encoder->encodeString($char);
@@ -179,7 +179,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
     $seq = 0;
     for (; $seq < 140; ++$seq)
     {
-      $charStream->setReturnValueAt($seq, 'read', 'a');
+      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
       
       if (75 == $seq)
       {
@@ -188,7 +188,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
       $output .= 'a';
     }
     
-    $charStream->setReturnValueAt($seq, 'read', false);
+    $charStream->setReturnValueAt($seq, 'readBytes', false);
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input));

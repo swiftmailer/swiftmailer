@@ -32,60 +32,25 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 {
   
   /**
-   * The CharacterStream which is used for reading characters (as opposed to bytes).
+   * The CharacterStream used for reading characters (as opposed to bytes).
    * @var Swift_CharacterStream
-   * @access private
+   * @access protected
    */
-  private $_charStream;
+  protected $_charStream;
   
   /**
-   * Linear whitespace bytes.
-   * @var int[]
-   * @access private
+   * True if input should be canonicalized.
+   * @var boolean
+   * @access protected
    */
-  private $_lwspBytes = array();
-  
-  /**
-   * Linear whitespace characters.
-   * @var string[]
-   * @access private
-   */
-  private $_lwspChars = array();
-  
-  /**
-   * CR and LF bytes.
-   * @var int[]
-   * @access private
-   */
-  private $_crlfBytes = array();
-  
-  /**
-   * CR and LF characters.
-   * @var string[]
-   * @access private
-   */
-  private $_crlfChars = array();
-  
-  /**
-   * Bytes to allow through the encoder without being translated.
-   * @var int[]
-   * @access private
-   */
-  private $_permittedBytes = array();
-  
-  /**
-   * Temporarily grows as a string to be returned during some internal writes.
-   * @var string
-   * @access private
-   */
-  private $_temporaryReturnString;
+  protected $_canonical;
   
   /**
    * Pre-computed QP for HUGE optmization.
    * @var string[]
-   * @access private
+   * @access protected
    */
-  private static $_qpMap = array(
+  protected static $_qpMap = array(
     0   => '=00', 1   => '=01', 2   => '=02', 3   => '=03', 4   => '=04',
     5   => '=05', 6   => '=06', 7   => '=07', 8   => '=08', 9   => '=09',
     10  => '=0A', 11  => '=0B', 12  => '=0C', 13  => '=0D', 14  => '=0E',
@@ -141,27 +106,29 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     );
   
   /**
+   * A map of non-encoded ascii characters.
+   * @var string[]
+   * @access protected
+   */
+  protected static $_safeMap = array();
+  
+  /**
    * Creates a new QpEncoder for the given CharacterStream.
    * @param Swift_CharacterStream $charStream to use for reading characters
+   * @param boolean $canonical true if input should be canonicalized
    */
-  public function __construct(Swift_CharacterStream $charStream)
+  public function __construct(Swift_CharacterStream $charStream, $canonical = false)
   {
     $this->_charStream = $charStream;
-    
-    $this->_crlfBytes = array('CR' => 0x0D, 'LF' => 0x0A);
-    $this->_crlfChars = array(
-      'CR' => "\r", 'LF' => "\n"
-      );
-    
-    $this->_lwspBytes = array('HT' => 0x09, 'SPACE' => 0x20);
-    $this->_lwspChars = array(
-      'HT' => "\t",
-      'SPACE' => ' '
-      );
-    
-    $this->_permittedBytes = array_merge(
-      $this->_lwspBytes, range(0x21, 0x3C), range(0x3E, 0x7E)
-      );
+    if (empty(self::$_safeMap))
+    {
+      foreach (array_merge(
+        array(0x09, 0x20), range(0x21, 0x3C), range(0x3E, 0x7E)) as $byte)
+      {
+        self::$_safeMap[$byte] = chr($byte);
+      }
+    }
+    $this->_canonical = $canonical;
   }
   
   /**
@@ -177,262 +144,122 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   public function encodeString($string, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    return $this->_doEncodeString($string, $firstLineOffset,
-      $maxLineLength, false);
-  }
-  
-  /**
-   * Get the CharacterStream used in encoding.
-   * @return Swift_CharacterStream
-   * @access protected
-   */
-  protected function getCharacterStream()
-  {
-    return $this->_charStream;
-  }
-  
-  /**
-   * Internal method which does the bulk of the work, repeatedly invoking an
-   * internal callback method to append bytes to the output.
-   * @param Swift_CharacterStream $charStream to read from
-   * @param callback $callback for appending
-   * @param int $firstlineOffset
-   * @param int $maxLineLength
-   * @param boolean $canon, if canonicalization is needed
-   * @access protected
-   */
-  protected function encodeCharacterStreamCallback(
-    Swift_CharacterStream $charStream, $callback, $firstLineOffset,
-    $maxLineLength, $canon = false)
-  {
-    //Variables used for tracking
-    $nextChar = null; $bufNext = null; $deferredLwspChar = null;
-    $expectedLfChar = false; $needLf = false;
-    $lineLength = 0; $lineCount = 0;
-    
-    do
-    {
-      //Zero the firstLineOffset if no longer on first line
-      $firstLineOffset = $lineCount > 0 ? 0 : $firstLineOffset;
-      
-      //If just starting, read from stream, else use $nextChar from last loop
-      if (false === $thisChar = is_null($nextChar) ?
-        $charStream->read(1) : $nextChar)
-      {
-        break;
-      }
-      
-      //Always have knowledge of at least two chars at a time
-      $nextChar = is_null($bufNext) ? $charStream->read(1) : $bufNext;
-      $bufNext = null;
-      
-      //Canonicalize
-      if ($canon)
-      {
-        if ($this->_crlfChars['CR'] == $thisChar)
-        {
-          $needLf = true;
-        }
-        elseif ($this->_crlfChars['LF'] == $thisChar && !$needLf)
-        {
-          $needLf = true;
-          $bufNext = $nextChar;
-          $thisChar = $this->_crlfChars['CR'];
-          $nextChar = $this->_crlfChars['LF'];
-        }
-        else
-        {
-          $needLf = false;
-        }
-        
-        if ($needLf)
-        {
-          if ($this->_crlfChars['LF'] != $nextChar)
-          {
-            $bufNext = $nextChar;
-            $nextChar = $this->_crlfChars['LF'];
-          }
-        }
-      }
-      $thisCharEncoded = $this->_encodeCharacter($thisChar);
-      
-      //Adjust max line length if needed
-      if (false !== $nextChar)
-      {
-        $thisMaxLineLength = $maxLineLength - $firstLineOffset - 1;
-      }
-      else
-      {
-        $thisMaxLineLength = $maxLineLength - $firstLineOffset;
-      }
-      
-      //Currently looking at LWSP followed by CR
-      if (in_array(ord($thisCharEncoded), $this->_lwspBytes)
-        && $this->_crlfChars['CR'] == $nextChar)
-      {
-        $deferredLwspChar = $thisCharEncoded;
-      }
-      //Looking at LWSP at end of string
-      elseif (in_array(ord($thisCharEncoded), $this->_lwspBytes)
-        && false === $nextChar)
-      {
-        $this->_writeSequenceToCallback(self::$_qpMap[ord($thisCharEncoded)],
-            $callback, $thisMaxLineLength, $lineLength, $lineCount
-            );
-      }
-      //Currently looking at CRLF
-      elseif ($this->_crlfChars['CR'] == $thisChar
-        && $this->_crlfChars['LF'] == $nextChar)
-      {
-        //If a LWSP char was deferred due to the CR
-        if (!is_null($deferredLwspChar))
-        {
-          $this->_writeSequenceToCallback(self::$_qpMap[ord($deferredLwspChar)],
-            $callback, $thisMaxLineLength, $lineLength, $lineCount
-            );
-          $deferredLwspChar = null;
-        }
-        
-        $this->_writeSequenceToCallback($thisChar, $callback, $thisMaxLineLength,
-          $lineLength, $lineCount
-          );
-        $expectedLfChar = true;
-      }
-      //Currently looking at an expected LF (following a CR)
-      elseif ($this->_crlfChars['LF'] == $thisChar && $expectedLfChar)
-      {
-        $this->_writeSequenceToCallback($thisChar, $callback, $thisMaxLineLength,
-          $lineLength, $lineCount
-          );
-        $expectedLfChar = false;
-      }
-      //Nothing special about this character, just write it
-      else
-      {
-        //If a LWSP was deferred but not used, write it as normal
-        if (!is_null($deferredLwspChar))
-        {
-          $this->_writeSequenceToCallback($deferredLwspChar, $callback,
-            $thisMaxLineLength, $lineLength, $lineCount
-            );
-          $deferredLwspChar = null;
-        }
-        
-        //Write the endoded character as normal
-        $this->_writeSequenceToCallback($thisCharEncoded, $callback,
-            $thisMaxLineLength, $lineLength, $lineCount
-            );
-      }
-    }
-    while(false !== $nextChar);
-  }
-  
-  /**
-   * Encode a single character (maybe multi-byte).
-   * @param string $char
-   * @return string
-   * @access private
-   */
-  private function _encodeCharacter($char)
-  {
-    if (!is_string($char))
-    {
-      return false;
-    }
-    
-    $charEncoded = '';
-    
-    foreach (unpack('C*', $char) as $octet)
-    {
-      if (!in_array($octet, $this->getPermittedBytes()))
-      {
-        $charEncoded .= self::$_qpMap[$octet];
-      }
-      else
-      {
-        $charEncoded .= pack('C', $octet);
-      }
-    }
-    
-    return $charEncoded;
-  }
-  
-  /**
-   * Internal method to write a sequence of bytes into a callback method.
-   * @param string $sequence of bytes
-   * @param callback $callback to send $sequence to
-   * @param int $maxLineLength
-   * @param int &$lineLength currently
-   * @param int &$lineCount currently
-   * @access private
-   */
-  private function _writeSequenceToCallback($sequence, $callback, $maxLineLength,
-    &$lineLength, &$lineCount)
-  {
-    $sequenceLength = strlen($sequence);
-    $lineLength += $sequenceLength;
-    if ($maxLineLength < $lineLength)
-    {
-      $sequence = "=\r\n" . $sequence;
-      $lineLength = $sequenceLength;
-      ++$lineCount;
-    }
-    
-    call_user_func($callback, $sequence);
-  }
-  
-  /**
-   * Internal callback method which appends bytes to the end of a string
-   * held internally temporarily.
-   * @param string $bytes
-   * @access private
-   */
-  private function _appendToTemporaryReturnString($bytes)
-  {
-    $this->_temporaryReturnString .= $bytes;
-  }
-  
-  // -- Points of extension
-  
-  /**
-   * Get the byte values which are permitted in their unencoded form.
-   * @return int[]
-   * @access protected
-   */
-  protected function getPermittedBytes()
-  {
-    return $this->_permittedBytes;
-  }
-  
-  protected function _doEncodeString($string, $firstLineOffset = 0,
-    $maxLineLength = 0, $canon = false)
-  {
-    //Set default length of 76 if no other value set
-    if (0 >= $maxLineLength || 76 < $maxLineLength)
+    if ($maxLineLength > 76 || $maxLineLength <= 0)
     {
       $maxLineLength = 76;
     }
     
-    //Empty the CharacterStream and import the string to it
+    $thisLineLength = $maxLineLength - $firstLineOffset;
+    
+    $lines = array();
+    $lNo = 0;
+    $lines[$lNo] = '';
+    $currentLine =& $lines[$lNo++];
+    
     $this->_charStream->flushContents();
     $this->_charStream->importString($string);
     
-    //Set the temporary string to write into
-    $this->_temporaryReturnString = '';
+    //Fetching more than 4 chars at one is slower, as is fetching fewer bytes
+    // Conveniently 4 chars is the UTF-8 safe number since UTF-8 has up to 6
+    // bytes per char and (6 * 4 * 3 = 72 chars per line) * =NN is 3 bytes
+    while (false !== $bytes = $this->_nextSequence())
+    {
+      if ($this->_canonical)
+      {
+        $bytes = $this->_canonicalize($bytes);
+      }
+      $enc = $this->_encodeByteSequence($bytes);
+      if ($currentLine && strlen($currentLine . $enc) >= $thisLineLength)
+      {
+        $lines[$lNo] = '';
+        $currentLine =& $lines[$lNo++];
+        $thisLineLength = $maxLineLength;
+      }
+      $currentLine .= $enc;
+    }
     
-    //Encode the CharacterStream using an append method as a callback
-    $this->encodeCharacterStreamCallback(
-      $this->_charStream, array($this, '_appendToTemporaryReturnString'),
-      $firstLineOffset, $maxLineLength, $canon
+    return $this->_standardize(implode("=\r\n", $lines));
+  }
+  
+  // -- Protected methods
+  
+  /**
+   * Encode the given byte array into a verbatim QP form.
+   * @param int[] $bytes
+   * @return string
+   * @access protected
+   */
+  protected function _encodeByteSequence(array $bytes)
+  {
+    $ret = '';
+    foreach ($bytes as $b)
+    {
+      if (isset(self::$_safeMap[$b]))
+      {
+        $ret .= self::$_safeMap[$b];
+      }
+      else
+      {
+        $ret .= self::$_qpMap[$b];
+      }
+    }
+    return $ret;
+  }
+  
+  /**
+   * Get the next sequence of bytes to read from the char stream.
+   * @return int[]
+   * @access protected
+   */
+  protected function _nextSequence()
+  {
+    return $this->_charStream->readBytes(4);
+  }
+  
+  /**
+   * Make sure CRLF is correct and HT/SPACE are in valid places.
+   * @param string $string
+   * @return string
+   * @access protected
+   */
+  protected function _standardize($string)
+  {
+    $string = str_replace(array("\t=0D=0A", " =0D=0A", "=0D=0A"),
+      array("=09\r\n", "=20\r\n", "\r\n"), $string
       );
-    
-    //Copy the temporary return value
-    $ret = $this->_temporaryReturnString;
-    
-    //Unset the temporary return value
-    $this->_temporaryReturnString = null;
-    
-    //Return string with data appended via callback
+    if (in_array($end = ord(substr($string, -1)), array(0x09, 0x20)))
+    {
+      $string = substr_replace($string, self::$_qpMap[$end], -1);
+    }
+    return $string;
+  }
+  
+  /**
+   * Canonicalize the byte sequence.
+   * @param string $string
+   * @return string
+   * @access private
+   */
+  protected function _canonicalize(array $bytes)
+  {
+    $ret = array();
+    foreach ($bytes as $k => $b)
+    {
+      if (0x0D == $b && (!isset($bytes[$k + 1]) || 0x0A != $bytes[$k + 1]))
+      {
+        $ret[] = $b;
+        $ret[] = 0x0A;
+      }
+      elseif (0x0A == $b && (!isset($bytes[$k - 1]) || 0x0D != $bytes[$k - 1]))
+      {
+        $ret[] = 0x0D;
+        $ret[] = $b;
+      }
+      else
+      {
+        $ret[] = $b;
+      }
+    }
     return $ret;
   }
   

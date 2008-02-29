@@ -70,22 +70,11 @@ class Swift_CharacterStream_ArrayCharacterStream
    * Create a new CharacterStream with the given $chars, if set.
    * @param Swift_CharacterReaderFactory $factory for loading validators
    * @param string $charset used in the stream
-   * @param mixed $chars as string or array, optional
    */
-  public function __construct(Swift_CharacterReaderFactory $factory,
-    $charset, $chars = null)
+  public function __construct(Swift_CharacterReaderFactory $factory, $charset)
   {
     $this->setCharacterReaderFactory($factory);
     $this->setCharacterSet($charset);
-    
-    if (is_array($chars))
-    {
-      $this->_array = $chars;
-    }
-    elseif (is_string($chars))
-    {
-      $this->importString($chars);
-    }
   }
   
   /**
@@ -121,26 +110,15 @@ class Swift_CharacterStream_ArrayCharacterStream
     }
     
     $startLength = $this->_charReader->getInitialByteSize();
-    $c = ''; $offset = 0; $need = $startLength;
-    
-    while (false !== $bytes = $os->read($need))
+    while (false !== $bytes = $os->read($startLength))
     {
-      $offset += $need;
-      $c .= $bytes;
-      $need = $this->_charReader->validateCharacter($c);
-      if (0 == $need)
+      $c = array_values(unpack('C*', $bytes));
+      $need = $this->_charReader->validateByteSequence($c);
+      if ($need > 0 && false !== $bytes = $os->read($need))
       {
-        $need = $startLength;
-        $this->_array[] = $c;
-        $c = '';
+        $c = array_merge($c, array_values(unpack('C*', $bytes)));
       }
-      elseif (-1 == $need)
-      {
-        throw new Exception(
-          'Invalid ' . $this->_charset . ' data at byte offset ' . $offset .
-          ' (after ' . count($this->_array) . ' chars).'
-          );
-      }
+      $this->_array[] = $c;
     }
   }
   
@@ -159,7 +137,7 @@ class Swift_CharacterStream_ArrayCharacterStream
    * Read $length characters from the stream and move the internal pointer
    * $length further into the stream.
    * @param int $length
-   * @return string[]
+   * @return string
    */
   public function read($length)
   {
@@ -168,9 +146,39 @@ class Swift_CharacterStream_ArrayCharacterStream
       return false;
     }
     
-    $ret = array_slice($this->_array, $this->_offset, $length);
-    $this->_offset += count($ret);
-    return implode('', $ret);
+    $arrays = array_slice($this->_array, $this->_offset, $length);
+    $size = count($arrays);
+    $this->_offset += $size;
+    $chars = '';
+    foreach ($arrays as $array)
+    {
+      $chars .= implode('', array_map('chr', $array));
+    }
+    return $chars;
+  }
+  
+  /**
+   * Read $length characters from the stream and return a 1-dimensional array
+   * containing there octet values.
+   * @param int $length
+   * @return int[]
+   */
+  public function readBytes($length)
+  {
+    if ($this->_offset == count($this->_array))
+    {
+      return false;
+    }
+    
+    $arrays = array_slice($this->_array, $this->_offset, $length);
+    $size = count($arrays);
+    $this->_offset += $size;
+    $bytes = array();
+    foreach ($arrays as $array)
+    {
+      $bytes = array_merge($bytes, $array);
+    }
+    return $bytes;
   }
   
   /**
@@ -186,28 +194,24 @@ class Swift_CharacterStream_ArrayCharacterStream
     }
     
     $startLength = $this->_charReader->getInitialByteSize();
-    $c = ''; $offset = 0; $need = $startLength;
     
-    while (strlen($chars) > 0)
+    $fp = fopen('php://memory', 'w+b');
+    fwrite($fp, $chars);
+    unset($chars);
+    fseek($fp, 0, SEEK_SET);
+    
+    while (!feof($fp) && false !== $bytes = fread($fp, $startLength))
     {
-      $offset += $need;
-      $c .= substr($chars, 0, $need);
-      $chars = substr($chars, $need);
-      $need = $this->_charReader->validateCharacter($c);
-      if (0 == $need)
+      $c = array_values(unpack('C*', $bytes));
+      $need = $this->_charReader->validateByteSequence($c);
+      if ($need > 0 && !feof($fp) && false !== $bytes = fread($fp, $need))
       {
-        $need = $startLength;
-        $this->_array[] = $c;
-        $c = '';
+        $c = array_merge($c, array_values(unpack('C*', $bytes)));
       }
-      elseif (-1 == $need)
-      {
-        throw new Exception(
-          'Invalid ' . $this->_charset . ' data at byte offset ' . $offset .
-          ' (after ' . count($this->_array) . ' chars).'
-          );
-      }
+      $this->_array[] = $c;
     }
+    
+    fclose($fp);
   }
   
   /**

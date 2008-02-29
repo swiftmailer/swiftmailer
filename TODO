@@ -2,20 +2,12 @@ Swift Mailer SE:
 ----------------
 
  * Write some sanity tests
- * $event = $this->_eventDispatcher->createEvent('send');
-   $event->setMessage($message);
-   $this->_eventDispatcher->dispatchEvent($event);
  * Read-receipts
  * CharacterReaderFactory (map charsets to CharacterReaders).
    - Big5
    - Shift-JIS
    - ISO-10646
    - CP950
- * Allow BOM in utf-8
- * Optimize QpEncoder/Rfc2231Encoder/CharacterStream/CharacterReader
-   - Read more than 1 char at a time?
-   - Get characters already unpacked as a byte array?
-   - Avoid using pack()/unpack() completely?
  * Streams
    - FileCharacterStream
  * Transports

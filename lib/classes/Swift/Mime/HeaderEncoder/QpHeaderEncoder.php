@@ -32,6 +32,8 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
   implements Swift_Mime_HeaderEncoder
 {
   
+  private static $_headerSafeMap = array();
+  
   /**
    * Creates a new QpHeaderEncoder for the given CharacterStream.
    * @param Swift_CharacterStream $charStream to use for reading characters
@@ -39,6 +41,16 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
   public function __construct(Swift_CharacterStream $charStream)
   {
     parent::__construct($charStream);
+    if (empty(self::$_headerSafeMap))
+    {
+      foreach (array_merge(
+        range(0x61, 0x7A), range(0x41, 0x5A),
+        range(0x30, 0x39), array(0x20, 0x21, 0x2A, 0x2B, 0x2D, 0x2F)
+        ) as $byte)
+      {
+        self::$_headerSafeMap[$byte] = chr($byte);
+      }
+    }
   }
   
   /**
@@ -69,16 +81,26 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
   // -- Overridden points of extension
   
   /**
-   * Get the byte values which are permitted in their unencoded form.
-   * @return int[]
+   * Encode the given byte array into a verbatim QP form.
+   * @param int[] $bytes
+   * @return string
    * @access protected
    */
-  protected function getPermittedBytes()
+  protected function _encodeByteSequence(array $bytes)
   {
-    return array_merge(
-      range(0x61, 0x7A), range(0x41, 0x5A),
-      range(0x30, 0x39), array(0x20, 0x21, 0x2A, 0x2B, 0x2D, 0x2F)
-      );
+    $ret = '';
+    foreach ($bytes as $b)
+    {
+      if (isset(self::$_headerSafeMap[$b]))
+      {
+        $ret .= self::$_headerSafeMap[$b];
+      }
+      else
+      {
+        $ret .= self::$_qpMap[$b];
+      }
+    }
+    return $ret;
   }
   
 }

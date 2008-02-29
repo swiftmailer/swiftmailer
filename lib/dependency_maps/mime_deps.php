@@ -269,21 +269,21 @@ $_swiftMimeDeps = array(
   //Qp content Encoder
   'qpcontentencoder' => array(
     'class' => 'Swift_Mime_ContentEncoder_QpContentEncoder',
-    'args' => array('di:charstream'),
+    'args' => array('di:charstream', 'boolean:1'),
     'shared' => false
     ),
     
   //7bit content Encoder
   '7bitcontentencoder' => array(
     'class' => 'Swift_Mime_ContentEncoder_PlainContentEncoder',
-    'args' => array('string:7bit'),
+    'args' => array('string:7bit', 'boolean:1'),
     'shared' => true
     ),
     
   //8bit content Encoder
   '8bitcontentencoder' => array(
     'class' => 'Swift_Mime_ContentEncoder_PlainContentEncoder',
-    'args' => array('string:8bit'),
+    'args' => array('string:8bit', 'boolean:1'),
     'shared' => true
     ),
   

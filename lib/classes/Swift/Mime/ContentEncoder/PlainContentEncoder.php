@@ -23,7 +23,7 @@
 //@require 'Swift/OutputByteStream.php';
 
 /**
- * Handles 7/8-bit Transfer Encoding in Swift Mailer.
+ * Handles binary/7/8-bit Transfer Encoding in Swift Mailer.
  * @package Swift
  * @subpackage Mime
  * @author Chris Corbyn
@@ -40,53 +40,37 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
   private $_name;
   
   /**
+   * True if canonical transformations should be done.
+   * @var boolean
+   * @access private
+   */
+  private $_canonical;
+  
+  /**
    * Creates a new PlainContentEncoder with $name (probably 7bit or 8bit).
    * @param string $name
+   * @param boolean $canonical If canonicalization transformation should be done.
    */
-  public function __construct($name)
+  public function __construct($name, $canonical = false)
   {
     $this->_name = $name;
-  }
-  
-  /**
-   * Used for encoding text input and ensuring the output is in the canonical
-   * form (i.e. all line endings are CRLF).
-   * @param string $string
-   * @param int $firstLineOffset if the first line needs shortening
-   * @param int $maxLineLength
-   * @return string
-   */
-  public function canonicEncodeString($string, $firstLineOffset = 0,
-    $maxLineLength = 0)
-  {
-    $string = $this->_canonicalize($string);
-    return $this->encodeString($string, $firstLineOffset, $maxLineLength);
-  }
-  
-  /**
-   * Encode $in to $out, converting all line endings to CRLF.
-   * @param Swift_OutputByteStream $os to read from
-   * @param Swift_InputByteStream $is to write to
-   * @param int $firstLineOffset
-   * @param int $maxLineLength - 0 indicates the default length for this encoding
-   */
-  public function canonicEncodeByteStream(
-    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
-    $maxLineLength = 0)
-  {
-    $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, true);
+    $this->_canonical = $canonical;
   }
   
   /**
    * Encode a given string to produce an encoded string.
    * @param string $string
-   * @param int $firstLineOffset if first line needs to be shorter
-   * @param int $maxLineLength - 0 indicates the default length for this encoding
+   * @param int $firstLineOffset, ignored
+   * @param int $maxLineLength - 0 means no wrapping will occur
    * @return string
    */
   public function encodeString($string, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
+    if ($this->_canonical)
+    {
+      $string = $this->_canonicalize($string);
+    }
     return $this->_safeWordWrap($string, $maxLineLength, "\r\n");
   }
   
@@ -94,14 +78,32 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
    * Encode stream $in to stream $out.
    * @param Swift_OutputByteStream $in
    * @param Swift_InputByteStream $out
-   * @param int $firstLineOffset
-   * @param int $maxLineLength, optional, 0 indicates the default of 78 bytes
+   * @param int $firstLineOffset, ignored
+   * @param int $maxLineLength, optional, 0 means no wrapping will occur
    */
   public function encodeByteStream(
     Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
     $maxLineLength = 0)
   {
-    $this->_doEncodeByteStream($os, $is, $firstLineOffset, $maxLineLength, false);
+    $leftOver = '';
+    while (false !== $bytes = $os->read(8192))
+    {
+      $toencode = $leftOver . $bytes;
+      if ($this->_canonical)
+      {
+        $toencode = $this->_canonicalize($toencode);
+      }
+      $wrapped = $this->_safeWordWrap($toencode, $maxLineLength, "\r\n");
+      $lastLinePos = strrpos($wrapped, "\r\n");
+      $leftOver = substr($wrapped, $lastLinePos);
+      $wrapped = substr($wrapped, 0, $lastLinePos);
+      
+      $is->write($wrapped);
+    }
+    if (strlen($leftOver))
+    {
+      $is->write($leftOver);
+    }
   }
   
   /**
@@ -140,7 +142,8 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
       $lines[] = '';
       $currentLine =& $lines[$lineCount++];
       
-      $chunks = preg_split('/(?<=[\ \t,\.!\?\-&\+\/])/', $originalLine);
+      //$chunks = preg_split('/(?<=[\ \t,\.!\?\-&\+\/])/', $originalLine);
+      $chunks = preg_split('/(?<=\s)/', $originalLine);
       
       foreach ($chunks as $chunk)
       {
@@ -158,68 +161,11 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
   }
   
   /**
-   * Encode a byte stream.
-   * @param Swift_OutputByteStream $os
-   * @param Swift_InputByteStream $is
-   * @param int $firstLineOffset
-   * @param int $maxLineLength
-   * @param boolean $canon, if canonicalization is needed
+   * Canonicalize string input (fix CRLF).
+   * @param string $string
+   * @return string
    * @access private
    */
-  private function _doEncodeByteStream(
-    Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
-    $maxLineLength = 0, $canon = false)
-  {
-    $leftOver = '';
-    $needLfStart = false;
-    while (false !== $bytes = $os->read(8192))
-    {
-      if ($canon)
-      {
-        $prepend = null;
-        $append = null;
-        if ($needLfStart)
-        {
-          $prepend = "\n";
-          if ("\n" == substr($bytes, 0, 1))
-          {
-            $bytes = substr($bytes, 1);
-          }
-        }
-        if ("\r" == substr($bytes, -1))
-        {
-          $append = "\r";
-          $bytes = substr($bytes, 0, -1);
-          $needLfStart = true;
-        }
-        else
-        {
-          $needLfStart = false;
-        }
-        $bytes = $prepend . $this->_canonicalize($bytes) . $append;
-      }
-      
-      $wrapped = $this->_safeWordWrap($leftOver . $bytes, $maxLineLength, "\r\n");
-      $wrapped = substr($wrapped, strlen($leftOver)); //remove the stuff left over
-      $lines = explode("\r\n", $wrapped);
-      $lastLine = array_pop($lines);
-      if (count($lines) == 0) //after pop
-      {
-        $leftOver .= $lastLine;
-      }
-      elseif (strlen($lastLine) < $maxLineLength)
-      {
-        $leftOver = $lastLine;
-      }
-      else
-      {
-        $leftOver = '';
-      }
-      $lines[] = $lastLine;
-      $is->write(implode("\r\n", $lines));
-    }
-  }
-  
   private function _canonicalize($string)
   {
     $string = str_replace(array("\r\n", "\r"), "\n", $string);

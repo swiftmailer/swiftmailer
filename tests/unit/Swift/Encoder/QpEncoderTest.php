@@ -46,8 +46,8 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
         new Swift_Tests_IdenticalBinaryExpectation($char)
         ));
       
-      $charStream->setReturnValueAt(0, 'read', $char);
-      $charStream->setReturnValueAt(1, 'read', false);
+      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
+      $charStream->setReturnValueAt(1, 'readBytes', false);
       
       $encoder = new Swift_Encoder_QpEncoder($charStream);
       
@@ -89,13 +89,13 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importString', array($string));
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', $HT);
-    $charStream->setReturnValueAt(2, 'read', $HT);
-    $charStream->setReturnValueAt(3, 'read', "\r");
-    $charStream->setReturnValueAt(4, 'read', "\n");
-    $charStream->setReturnValueAt(5, 'read', 'b');
-    $charStream->setReturnValueAt(6, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x09));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x09));
+    $charStream->setReturnValueAt(3, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(4, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(5, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(6, 'readBytes', false);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
@@ -109,13 +109,13 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importString', array($string));
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', $SPACE);
-    $charStream->setReturnValueAt(2, 'read', $SPACE);
-    $charStream->setReturnValueAt(3, 'read', "\r");
-    $charStream->setReturnValueAt(4, 'read', "\n");
-    $charStream->setReturnValueAt(5, 'read', 'b');
-    $charStream->setReturnValueAt(6, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x20));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x20));
+    $charStream->setReturnValueAt(3, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(4, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(5, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(6, 'readBytes', false);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
@@ -158,16 +158,16 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     $charStream = new Swift_MockCharacterStream();
     $charStream->expectOnce('flushContents');
     $charStream->expectOnce('importString', array($string));
-    $charStream->setReturnValueAt(0, 'read', 'a');
-    $charStream->setReturnValueAt(1, 'read', "\r");
-    $charStream->setReturnValueAt(2, 'read', "\n");
-    $charStream->setReturnValueAt(3, 'read', 'b');
-    $charStream->setReturnValueAt(4, 'read', "\r");
-    $charStream->setReturnValueAt(5, 'read', "\n");
-    $charStream->setReturnValueAt(6, 'read', 'c');
-    $charStream->setReturnValueAt(7, 'read', "\r");
-    $charStream->setReturnValueAt(8, 'read', "\n");
-    $charStream->setReturnValueAt(9, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
+    $charStream->setReturnValueAt(1, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(2, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(3, 'readBytes', array(ord('b')));
+    $charStream->setReturnValueAt(4, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(5, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(6, 'readBytes', array(ord('c')));
+    $charStream->setReturnValueAt(7, 'readBytes', array(0x0D));
+    $charStream->setReturnValueAt(8, 'readBytes', array(0x0A));
+    $charStream->setReturnValueAt(9, 'readBytes', false);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($string, $encoder->encodeString($string));
@@ -195,7 +195,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     $seq = 0;
     for (; $seq < 140; ++$seq)
     {
-      $charStream->setReturnValueAt($seq, 'read', 'a');
+      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
       
       if (75 == $seq)
       {
@@ -204,7 +204,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
       $output .= 'a';
     }
     
-    $charStream->setReturnValueAt($seq, 'read', false);
+    $charStream->setReturnValueAt($seq, 'readBytes', false);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input));
@@ -222,7 +222,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     $seq = 0;
     for (; $seq < 100; ++$seq)
     {
-      $charStream->setReturnValueAt($seq, 'read', 'a');
+      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
       
       if (53 == $seq)
       {
@@ -231,7 +231,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
       $output .= 'a';
     }
     
-    $charStream->setReturnValueAt($seq, 'read', false);
+    $charStream->setReturnValueAt($seq, 'readBytes', false);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input, 0, 54));
@@ -244,7 +244,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     */
     
     foreach (range(0, 32) as $ordinal)
-    { 
+    {
       $char = chr($ordinal);
       
       $charStream = new Swift_MockCharacterStream();
@@ -253,8 +253,8 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
         new Swift_Tests_IdenticalBinaryExpectation($char)
         ));
       
-      $charStream->setReturnValueAt(0, 'read', $char);
-      $charStream->setReturnValueAt(1, 'read', false);
+      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
+      $charStream->setReturnValueAt(1, 'readBytes', false);
       
       $encoder = new Swift_Encoder_QpEncoder($charStream);
       
@@ -278,8 +278,8 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
       new Swift_Tests_IdenticalBinaryExpectation($char)
       ));
       
-    $charStream->setReturnValueAt(0, 'read', $char);
-    $charStream->setReturnValueAt(1, 'read', false);
+    $charStream->setReturnValueAt(0, 'readBytes', array(61));
+    $charStream->setReturnValueAt(1, 'readBytes', false);
       
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     
@@ -302,8 +302,8 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
         new Swift_Tests_IdenticalBinaryExpectation($char)
         ));
       
-      $charStream->setReturnValueAt(0, 'read', $char);
-      $charStream->setReturnValueAt(1, 'read', false);
+      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
+      $charStream->setReturnValueAt(1, 'readBytes', false);
       
       $encoder = new Swift_Encoder_QpEncoder($charStream);
       
@@ -325,7 +325,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     $seq = 0;
     for (; $seq < 140; ++$seq)
     {
-      $charStream->setReturnValueAt($seq, 'read', 'a');
+      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
       
       if (53 == $seq || 53 + 75 == $seq)
       {
@@ -334,7 +334,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
       $output .= 'a';
     }
     
-    $charStream->setReturnValueAt($seq, 'read', false);
+    $charStream->setReturnValueAt($seq, 'readBytes', false);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(

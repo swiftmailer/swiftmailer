@@ -280,30 +280,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   }
   
   /**
-   * Get the encoded body as a string.
-   * @return string
-   * @access protected
-   */
-  protected function _encodeStringBody()
-  {
-    return $this->getEncoder()->canonicEncodeString(
-      $this->getBodyAsString(), 0, $this->getMaxLineLength()
-      );
-  }
-  
-  /**
-   * Write the encoded body to $is.
-   * @param Swift_InputByteStream $is
-   * @access protected
-   */
-  protected function _encodeByteStreamBody(Swift_InputByteStream $is)
-  {
-    $this->getEncoder()->canonicEncodeByteStream(
-      $this->_getStreamBody(), $is, 0, $this->getMaxLineLength()
-      );
-  }
-  
-  /**
    * Forcefully override the character set of this mime part.
    * @param string $charset
    * @access protected
