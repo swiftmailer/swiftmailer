@@ -91,6 +91,18 @@ $_swiftTransportDeps = array(
     'class' => 'Swift_Transport_Log_ArrayLog',
     'args' => array(),
     'shared' => true
+    ),
+  
+  //EventDispatcher
+  'eventdispatcher' => array(
+    'class' => 'Swift_Events_SimpleEventDispatcher',
+    'args' => array(array(
+      'send' => array(
+        'event' => 'string:Swift_Events_SendEvent',
+        'listener' => 'string:Swift_Events_SendListener'
+        )
+      )),
+    'shared' => true
     )
   
   );

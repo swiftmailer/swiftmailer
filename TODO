@@ -1,6 +1,9 @@
 Swift Mailer SE:
 ----------------
 
+ * Consider namespacing dependency maps and storing them all centrally
+   - e.g. "transport.smtp", "mime.message" and "events.dispatcher"
+   - This way one factory can create classes which belong to another
  * Write some sanity tests
  * Read-receipts
  * CharacterReaderFactory (map charsets to CharacterReaders).
@@ -30,7 +33,7 @@ Swift Mailer SE:
    - Verbose
    - Decorator (Mime API needs improving!)
    - BandwidthMonitor
-   - FileEmbedder
+   - FileEmbedder (Mime API issues? Streams?)
  * V3 Wrapper classes
 
 Website Re-Design:
