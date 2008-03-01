@@ -53,3 +53,4 @@ else
 {
   $runner->runAllTests();
 }
+

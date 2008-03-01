@@ -179,8 +179,10 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
       echo '**********************' . PHP_EOL;
     }
     
-    if (!$this->_aggregates['fails'] && !$this->_aggregates['exceptions']
-      && $this->_aggregates['cases'] == $this->_aggregates['run'])
+    $success = (!$this->_aggregates['fails'] && !$this->_aggregates['exceptions']
+      && $this->_aggregates['cases'] == $this->_aggregates['run']);
+    
+    if ($success)
     {
       echo "\033[32m\033[1mOK\033[0m" . PHP_EOL;
     }
@@ -194,6 +196,8 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
     echo 'Passes: ' . $this->_aggregates['passes'] . ', ';
     echo 'Failures: ' . $this->_aggregates['fails'] . ', ';
     echo 'Exceptions: '. $this->_aggregates['exceptions'] . PHP_EOL;
+    
+    exit((int) !$success);
   }
   
 }

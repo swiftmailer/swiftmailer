@@ -27,6 +27,9 @@
 //@require 'Swift/Transport/Log.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventDispatcher.php';
+//@require 'Swift/Events/CommandEvent.php';
+//@require 'Swift/Events/ResponseEvent.php';
+//@require 'Swift/Events/SendEvent.php';
 
 /**
  * Sends Messages over SMTP.
@@ -458,6 +461,13 @@ class Swift_Transport_EsmtpTransport
       $this->_log->addLogEntry(sprintf('>> %s', $command));
       $seq = $this->_buffer->write($command);
       $response = $this->_getFullResponse($seq);
+      if ($evt = $this->_eventDispatcher->createEvent('command', $this, array(
+        'command' => $command,
+        'successCodes' => $codes
+        )))
+      {
+        $this->_eventDispatcher->dispatchEvent($evt, 'commandSent');
+      }
       $this->_log->addLogEntry(sprintf('<< %s', $response));
       $this->_assertResponseCode($response, $codes);
     }
@@ -518,6 +528,7 @@ class Swift_Transport_EsmtpTransport
         ))
       {
         $return = call_user_func_array(array($handler, $method), $args);
+        //Allow fluid method calls
         if (is_null($return) && substr($method, 0, 3) == 'set')
         {
           return $this;
@@ -543,6 +554,25 @@ class Swift_Transport_EsmtpTransport
   {
     list($code, $separator, $text) = sscanf($response, '%3d%[ -]%s');
     if (!empty($wanted) && !in_array($code, $wanted))
+    {
+      $valid = false;
+    }
+    else
+    {
+      $valid = true;
+    }
+    
+    if ($evt = $this->_eventDispatcher->createEvent('response', $this, array(
+      'result' => ($valid
+        ? Swift_Events_ResponseEvent::RESULT_VALID
+        : Swift_Events_ResponseEvent::RESULT_INVALID),
+      'response' => $response
+      )))
+    {
+      $this->_eventDispatcher->dispatchEvent($evt, 'responseReceived');
+    }
+    
+    if (!$valid)
     {
       throw new Swift_Transport_TransportException(
         'Expected response code ' . implode('/', $wanted) . ' but got code ' .

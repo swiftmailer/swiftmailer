@@ -92,7 +92,7 @@
   
   <!-- Run the included unit tests -->
   <target name="test" depends="prepare, clean, copy-classes">
-    <exec executable="php">
+    <exec executable="php" failonerror="true">
       <env key="_" value="php" />
       <arg value="${builddir.package}/test-suite/run.php" />
     </exec>

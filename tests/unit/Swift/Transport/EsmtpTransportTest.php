@@ -532,6 +532,34 @@ class Swift_Transport_EsmtpTransportTest
     $this->_smtpTransport->stop();
   }
   
+  public function testResponseEventsAreGenerated()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('response', $this->_smtpTransport, '*')
+      );
+    $this->_dispatcher->expectAtLeastOnce('dispatchEvent', array($evt, 'responseReceived'));
+    
+    $this->_finishSmtpBuffer();
+    
+    $this->_smtpTransport->start();
+  }
+  
+  public function testCommandEventsAreGenerated()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('command', $this->_smtpTransport, '*')
+      );
+    $this->_dispatcher->expectAtLeastOnce('dispatchEvent', array($evt, 'commandSent'));
+    
+    $this->_finishSmtpBuffer();
+    
+    $this->_smtpTransport->start();
+  }
+  
   // -- Private helpers
   
   /**

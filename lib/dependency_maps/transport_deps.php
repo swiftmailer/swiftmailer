@@ -107,6 +107,10 @@ $_swiftTransportDeps = array(
         'event' => 'string:Swift_Events_TransportChangeEvent',
         'listener' => 'string:Swift_Events_TransportChangeListener'
         ),
+      'command' => array(
+        'event' => 'string:Swift_Events_CommandEvent',
+        'listener' => 'string:Swift_Events_CommandListener'
+        ),
       'response' => array(
         'event' => 'string:Swift_Events_ResponseEvent',
         'listener' => 'string:Swift_Events_ResponseListener'
