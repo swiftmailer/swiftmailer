@@ -1,6 +1,8 @@
 Swift Mailer SE:
 ----------------
 
+ * Allow an iterator to be passed to batchSend() instead (optional)
+   - Only needs to handle To: addresses
  * Consider namespacing dependency maps and storing them all centrally
    - e.g. "transport.smtp", "mime.message" and "events.dispatcher"
    - This way one factory can create classes which belong to another
@@ -11,20 +13,11 @@ Swift Mailer SE:
    - Shift-JIS
    - ISO-10646
    - CP950
- * Streams
-   - FileCharacterStream
  * Transports
    - PopBeforeSmtp authentication
    - Esmtp extension support
      - 8BITMIME
  * EventFactory and EventDispatcher
-   - SendEvent
-     - getMessage()
-     - getTransport()
-     - getState() [pending,complete,failed,cancelled]
-   - ConnectionChangeEvent
-     - getConnection()
-     - getState() [open,closed,failed,cancelled]
    - ResponseEvent
    - CommandEvent
  * Plugins

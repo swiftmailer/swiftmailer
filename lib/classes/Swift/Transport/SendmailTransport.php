@@ -21,6 +21,7 @@
 //@require 'Swift/Transport/EsmtpTransport.php';
 //@require 'Swift/Transport/IoBuffer.php';
 //@require 'Swift/Transport/Log.php';
+//@require 'Swift/Events/EventDispatcher.php';
 
 /**
  * SendmailTransport for sending mail through a sendmail/postfix (etc..) binary.
@@ -36,9 +37,9 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
    * @param Swift_Transport_IoBuffer $buf
    */
   public function __construct(Swift_Transport_IoBuffer $buf,
-    Swift_Transport_Log $log)
+    Swift_Transport_Log $log, Swift_Events_EventDispatcher $dispatcher)
   {
-    parent::__construct($buf, array(), $log);
+    parent::__construct($buf, array(), $log, $dispatcher);
     $this->_params['command'] = '/usr/sbin/sendmail -bs';
     $this->_params['type'] = Swift_Transport_IoBuffer::TYPE_PROCESS;
   }

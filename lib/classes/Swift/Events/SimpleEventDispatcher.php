@@ -99,17 +99,24 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
    * @param object $source
    * @param string[] $properties the event will contain
    */
-  public function createEvent($eventType, $source, array $properties)
+  public function createEvent($eventType, $source, $properties = array())
   {
-    if (!array_key_exists($eventType, $this->_prototypes))
+    if (!array_key_exists($eventType, $this->_eventMap))
     {
-      $class = $this->_eventMap[$eventType];
-      $this->_prototypes[$eventType] = new $class();
+      $evt = null;
     }
-    $evt = $this->_prototypes[$eventType]->cloneFor($source);
-    foreach ($properties as $key => $value)
+    else
     {
-      $evt->$key = $value;
+      if (!array_key_exists($eventType, $this->_prototypes))
+      {
+        $class = $this->_eventMap[$eventType];
+        $this->_prototypes[$eventType] = new $class();
+      }
+      $evt = $this->_prototypes[$eventType]->cloneFor($source);
+      foreach ($properties as $key => $value)
+      {
+        $evt->$key = $value;
+      }
     }
     return $evt;
   }

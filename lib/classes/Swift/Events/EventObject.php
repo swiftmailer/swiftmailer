@@ -68,7 +68,7 @@ class Swift_Events_EventObject
    * Prevent this Event from bubbling any further up the stack.
    * @param boolean $cancel, optional
    */
-  final public function cancelBubble($cancel = true)
+  public function cancelBubble($cancel = true)
   {
     $this->_bubbleCancelled = $cancel;
   }
@@ -77,7 +77,7 @@ class Swift_Events_EventObject
    * Returns true if this Event will not bubble any further up the stack.
    * @return boolean
    */
-  final public function bubbleCancelled()
+  public function bubbleCancelled()
   {
     return $this->_bubbleCancelled;
   }

@@ -26,6 +26,7 @@
 //@require 'Swift/Transport/TransportException.php';
 //@require 'Swift/Transport/Log.php';
 //@require 'Swift/Mime/Message.php';
+//@require 'Swift/Events/EventDispatcher.php';
 
 /**
  * Sends Messages over SMTP.
@@ -94,15 +95,24 @@ class Swift_Transport_EsmtpTransport
   protected $_log;
   
   /**
+   * The even dispatching layer.
+   * @var Swift_Events_EventDispatcher
+   * @access protected
+   */
+  protected $_eventDispatcher;
+  
+  /**
    * Creates a new EsmtpTransport using the given I/O buffer.
    * @param Swift_Transport_IoBuffer $buf
    * @param Swift_Transport_EsmtpHandler[] $extensionHandlers
    * @param Swift_Transport_Log $log
    */
   public function __construct(Swift_Transport_IoBuffer $buf,
-    array $extensionHandlers, Swift_Transport_Log $log)
+    array $extensionHandlers, Swift_Transport_Log $log,
+    Swift_Events_EventDispatcher $dispatcher)
   {
     $this->_log = $log;
+    $this->_eventDispatcher = $dispatcher;
     $this->_buffer = $buf;
     $this->setExtensionHandlers($extensionHandlers);
   }
@@ -143,7 +153,7 @@ class Swift_Transport_EsmtpTransport
         $this->_capabilities = $this->_getCapabilities($response);
         $this->_setHandlerParams();
       }
-      catch (Exception $e)
+      catch (Swift_Transport_TransportException $e)
       {
         $this->executeCommand(
           sprintf("HELO %s\r\n", $this->_domain), array(250)
@@ -154,6 +164,12 @@ class Swift_Transport_EsmtpTransport
       {
         $handler->afterEhlo($this);
       }
+      
+      if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
+      {
+        $this->_eventDispatcher->dispatchEvent($evt, 'transportStarted');
+      }
+      
       $this->_started = true;
     }
   }
@@ -174,6 +190,11 @@ class Swift_Transport_EsmtpTransport
       }
       $this->_buffer->terminate();
       $this->_log->addLogEntry('++ Transport stopped');
+      
+      if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
+      {
+        $this->_eventDispatcher->dispatchEvent($evt, 'transportStopped');
+      }
     }
     $this->_started = false;
   }
@@ -193,6 +214,21 @@ class Swift_Transport_EsmtpTransport
     {
       throw new Exception('Cannot send message without a sender address');
     }
+    
+    if ($evt = $this->_eventDispatcher->createEvent('send', $this, array(
+      'message' => $message,
+      'transport' => $this,
+      'failedRecipients' => array(),
+      'result' => Swift_Events_SendEvent::RESULT_PENDING
+      )))
+    {
+      $this->_eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+      if ($evt->bubbleCancelled())
+      {
+        return 0;
+      }
+    }
+    
     
     $to = $message->getTo();
     $cc = $message->getCc();
@@ -250,6 +286,12 @@ class Swift_Transport_EsmtpTransport
     if (!empty($bcc))
     {
       $message->setBcc($bcc);
+    }
+    
+    if ($evt)
+    {
+      $evt->result = Swift_Events_SendEvent::RESULT_SUCCESS;
+      $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
     }
     
     return $sent;

@@ -5,11 +5,15 @@ require_once 'Swift/Transport/EsmtpTransport.php';
 require_once 'Swift/Transport/EsmtpHandler.php';
 require_once 'Swift/Transport/IoBuffer.php';
 require_once 'Swift/Transport/Log.php';
+require_once 'Swift/Events/EventDispatcher.php';
+require_once 'Swift/Events/EventObject.php';
 
 Mock::generate('Swift_Transport_IoBuffer',
   'Swift_Transport_MockIoBuffer'
   );
 Mock::generate('Swift_Transport_Log', 'Swift_Transport_MockLog');
+Mock::generate('Swift_Events_EventDispatcher', 'Swift_Events_MockEventDispatcher');
+Mock::generate('Swift_Events_EventObject', 'Swift_Events_MockEventObject');
 
 class Swift_Transport_EsmtpTransportTest
   extends Swift_Transport_AbstractEsmtpTest
@@ -24,7 +28,10 @@ class Swift_Transport_EsmtpTransportTest
     parent::setUp();
     $this->_log = new Swift_Transport_MockLog();
     $this->_smtpBuf = $this->getMockBuffer();
-    $this->_smtpTransport = $this->getEsmtpTransport($this->_smtpBuf, array(), $this->_log);
+    $this->_dispatcher = new Swift_Events_MockEventDispatcher();
+    $this->_smtpTransport = $this->getEsmtpTransport(
+      $this->_smtpBuf, array(), $this->_log, $this->_dispatcher
+      );
   }
   
   public function tearDown()
@@ -38,13 +45,18 @@ class Swift_Transport_EsmtpTransportTest
     return new Swift_Transport_MockIoBuffer();
   }
   
-  public function getEsmtpTransport($buf, $extensions, $log = null)
+  public function getEsmtpTransport($buf, $extensions, $log = null,
+    $dispatcher = null)
   {
     if (is_null($log))
     {
       $log = new Swift_Transport_MockLog();
     }
-    return new Swift_Transport_EsmtpTransport($buf, $extensions, $log);
+    if (is_null($dispatcher))
+    {
+      $dispatcher = new Swift_Events_MockEventDispatcher();
+    }
+    return new Swift_Transport_EsmtpTransport($buf, $extensions, $log, $dispatcher);
   }
   
   ///////////////////////////////////////////////////
@@ -424,6 +436,100 @@ class Swift_Transport_EsmtpTransportTest
     
     $this->assertEqual('x', $this->_smtpTransport->setUsername('mick'));
     $this->assertEqual('y', $this->_smtpTransport->setPassword('pass'));
+  }
+  
+  //////////////////////////////////////////////////
+  /// THE FOLLOWING TEST EVENT HANDLING FEATURES ///
+  //////////////////////////////////////////////////
+  
+  public function testSendingDispatchesBeforeSendEvent()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('chris@swiftmailer.org'=>null));
+    $message->setReturnValue('getTo', array('mark@swiftmailer.org'=>'Mark'));
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('send', $this->_smtpTransport, '*')
+      );
+    $this->_dispatcher->expectAt(0, 'dispatchEvent', array($evt, 'beforeSendPerformed'));
+    $this->_dispatcher->expectMinimumCallCount('dispatchEvent', 1);
+    
+    $this->_finishSmtpBuffer();
+    
+    $this->_smtpTransport->start();
+    
+    $this->_smtpTransport->send($message);
+  }
+  
+  public function testSendingDispatchesSendEvent()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('chris@swiftmailer.org'=>null));
+    $message->setReturnValue('getTo', array('mark@swiftmailer.org'=>'Mark'));
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('send', $this->_smtpTransport, '*')
+      );
+    $this->_dispatcher->expectAt(0, 'dispatchEvent', array($evt, 'beforeSendPerformed'));
+    $this->_dispatcher->expectAt(1, 'dispatchEvent', array($evt, 'sendPerformed'));
+    $this->_dispatcher->expectMinimumCallCount('dispatchEvent', 2);
+    
+    $this->_finishSmtpBuffer();
+    
+    $this->_smtpTransport->start();
+    
+    $this->_smtpTransport->send($message);
+  }
+  
+  public function testCancellingEventBubbleBeforeSendStopsEvent()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    $evt->setReturnValue('bubbleCancelled', true);
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getFrom', array('chris@swiftmailer.org'=>null));
+    $message->setReturnValue('getTo', array('mark@swiftmailer.org'=>'Mark'));
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('send', $this->_smtpTransport, '*')
+      );
+    $this->_dispatcher->expectOnce('dispatchEvent', array($evt, 'beforeSendPerformed'));
+    
+    $this->_finishSmtpBuffer();
+    
+    $this->_smtpTransport->start();
+    
+    $this->assertEqual(0, $this->_smtpTransport->send($message));
+  }
+  
+  public function testStartingTransportDispatchesTransportChangeEvent()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('transportchange', $this->_smtpTransport)
+      );
+    $this->_dispatcher->expectAt(0, 'dispatchEvent', array($evt, 'transportStarted'));
+    $this->_dispatcher->expectMinimumCallCount('dispatchEvent', 1);
+    
+    $this->_finishSmtpBuffer();
+    
+    $this->_smtpTransport->start();
+  }
+  
+  public function testStoppingTransportDispatchesTransportChangeEvent()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('transportchange', $this->_smtpTransport)
+      );
+    $this->_dispatcher->expectAt(0, 'dispatchEvent', array($evt, 'transportStarted'));
+    $this->_dispatcher->expectAt(1, 'dispatchEvent', array($evt, 'transportStopped'));
+    $this->_dispatcher->expectMinimumCallCount('dispatchEvent', 2);
+    
+    $this->_finishSmtpBuffer();
+    
+    $this->_smtpTransport->start();
+    $this->_smtpTransport->stop();
   }
   
   // -- Private helpers

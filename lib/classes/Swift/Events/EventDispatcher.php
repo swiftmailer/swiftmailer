@@ -37,7 +37,7 @@ interface Swift_Events_EventDispatcher
    * @param string[] $properties the event will contain
    * @return Swift_Events_EventObject
    */
-  public function createEvent($eventType, $source, array $properties);
+  public function createEvent($eventType, $source, $properties = array());
   
   /**
    * Bind an event listener to this dispatcher.

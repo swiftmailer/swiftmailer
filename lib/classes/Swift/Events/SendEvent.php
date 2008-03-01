@@ -30,16 +30,16 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
 {
   
   /** Sending has yet to occur */
-  const RESULT_PENDING = 0x001;
+  const RESULT_PENDING = 0x0001;
   
   /** Sending was successful */
-  const RESULT_SUCCESS = 0x010;
+  const RESULT_SUCCESS = 0x0010;
   
   /** Sending worked, but there were some failures */
-  const RESULT_TENTATIVE = 0x100;
+  const RESULT_TENTATIVE = 0x0100;
   
   /** Sending failed */
-  const RESULT_FAILED = 0x000;
+  const RESULT_FAILED = 0x1000;
   
   /**
    * The Message being sent.
