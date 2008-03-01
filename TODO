@@ -18,7 +18,6 @@ Swift Mailer SE:
    - Esmtp extension support
      - 8BITMIME
  * Plugins
-   - AntiFlood
    - Throttler
    - Verbose
    - Decorator (Mime API needs improving!)
