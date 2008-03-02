@@ -9,7 +9,6 @@ $_swiftTransportDeps = array(
     'args' => array(
       'di:polymorphicbuffer',
       array('di:authhandler'),
-      'di:arraylog',
       'di:eventdispatcher'
       ),
       'shared' => false
@@ -61,7 +60,6 @@ $_swiftTransportDeps = array(
     'class' => 'Swift_Transport_SendmailTransport',
     'args' => array(
       'di:polymorphicbuffer',
-      'di:arraylog',
       'di:eventdispatcher'
       ),
     'shared' => false
@@ -70,29 +68,22 @@ $_swiftTransportDeps = array(
   //Mail
   'mail' => array(
     'class' => 'Swift_Transport_MailTransport',
-    'args' => array('di:arraylog'),
+    'args' => array(),
     'shared' => false
     ),
     
   //LoadBalanced
   'loadbalanced' => array(
     'class' => 'Swift_Transport_LoadBalancedTransport',
-    'args' => array('di:arraylog'),
+    'args' => array(),
     'shared' => false
     ),
     
   //Failover
   'failover' => array(
     'class' => 'Swift_Transport_FailoverTransport',
-    'args' => array('di:arraylog'),
-    'shared' => false
-    ),
-    
-  //ArrayLog
-  'arraylog' => array(
-    'class' => 'Swift_Transport_Log_ArrayLog',
     'args' => array(),
-    'shared' => true
+    'shared' => false
     ),
   
   //EventDispatcher

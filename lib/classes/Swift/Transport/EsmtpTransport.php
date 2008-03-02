@@ -24,7 +24,6 @@
 //@require 'Swift/Transport/EsmtpBufferWrapper.php';
 //@require 'Swift/Transport/CommandSentException.php';
 //@require 'Swift/Transport/TransportException.php';
-//@require 'Swift/Transport/Log.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventDispatcher.php';
 //@require 'Swift/Events/CommandEvent.php';
@@ -91,13 +90,6 @@ class Swift_Transport_EsmtpTransport
     );
   
   /**
-   * A logger for debug use.
-   * @var Swift_Transport_Log
-   * @access protected
-   */
-  protected $_log;
-  
-  /**
    * The even dispatching layer.
    * @var Swift_Events_EventDispatcher
    * @access protected
@@ -108,13 +100,11 @@ class Swift_Transport_EsmtpTransport
    * Creates a new EsmtpTransport using the given I/O buffer.
    * @param Swift_Transport_IoBuffer $buf
    * @param Swift_Transport_EsmtpHandler[] $extensionHandlers
-   * @param Swift_Transport_Log $log
+   * @param Swift_Events_EventDispatcher $dispatcher
    */
   public function __construct(Swift_Transport_IoBuffer $buf,
-    array $extensionHandlers, Swift_Transport_Log $log,
-    Swift_Events_EventDispatcher $dispatcher)
+    array $extensionHandlers, Swift_Events_EventDispatcher $dispatcher)
   {
-    $this->_log = $log;
     $this->_eventDispatcher = $dispatcher;
     $this->_buffer = $buf;
     $this->setExtensionHandlers($extensionHandlers);
@@ -135,9 +125,7 @@ class Swift_Transport_EsmtpTransport
   public function start()
   {
     if (!$this->_started)
-    {
-      $this->_log->addLogEntry('++ Starting Transport');
-      
+    { 
       //Make sure any extension handlers are ready for a fresh start
       foreach ($this->_handlers as $handler)
       {
@@ -146,7 +134,6 @@ class Swift_Transport_EsmtpTransport
       
       $this->_buffer->initialize($this->_params);
       $greeting = $this->_getFullResponse(0);
-      $this->_log->addLogEntry(sprintf('<< %s', $greeting));
       $this->_assertResponseCode($greeting, array(220));
       try
       {
@@ -192,7 +179,6 @@ class Swift_Transport_EsmtpTransport
       {//log this? 
       }
       $this->_buffer->terminate();
-      $this->_log->addLogEntry('++ Transport stopped');
       
       if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
       {
@@ -215,7 +201,9 @@ class Swift_Transport_EsmtpTransport
     
     if (!$reversePath = $this->_getReversePath($message))
     {
-      throw new Exception('Cannot send message without a sender address');
+      throw new Swift_Transport_TransportException(
+        'Cannot send message without a sender address'
+        );
     }
     
     if ($evt = $this->_eventDispatcher->createEvent('send', $this, array(
@@ -458,7 +446,6 @@ class Swift_Transport_EsmtpTransport
       {
         $handler->onCommand($this, $command, $codes);
       }
-      $this->_log->addLogEntry(sprintf('>> %s', $command));
       $seq = $this->_buffer->write($command);
       $response = $this->_getFullResponse($seq);
       if ($evt = $this->_eventDispatcher->createEvent('command', $this, array(
@@ -468,7 +455,6 @@ class Swift_Transport_EsmtpTransport
       {
         $this->_eventDispatcher->dispatchEvent($evt, 'commandSent');
       }
-      $this->_log->addLogEntry(sprintf('<< %s', $response));
       $this->_assertResponseCode($response, $codes);
     }
     catch (Swift_Transport_CommandSentException $e)
@@ -707,7 +693,6 @@ class Swift_Transport_EsmtpTransport
       //Stream the message straight into the buffer
       $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
       $message->toByteStream($this->_buffer);
-      $this->_log->addLogEntry(">> ((MESSAGE DATA STREAMED TO SMTP))");
       //End data transmission
       $this->_buffer->setWriteTranslations(array());
       $this->executeCommand("\r\n.\r\n", array(250));

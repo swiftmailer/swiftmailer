@@ -4,14 +4,12 @@ require_once 'Swift/Transport/AbstractEsmtpTest.php';
 require_once 'Swift/Transport/EsmtpTransport.php';
 require_once 'Swift/Transport/EsmtpHandler.php';
 require_once 'Swift/Transport/IoBuffer.php';
-require_once 'Swift/Transport/Log.php';
 require_once 'Swift/Events/EventDispatcher.php';
 require_once 'Swift/Events/EventObject.php';
 
 Mock::generate('Swift_Transport_IoBuffer',
   'Swift_Transport_MockIoBuffer'
   );
-Mock::generate('Swift_Transport_Log', 'Swift_Transport_MockLog');
 Mock::generate('Swift_Events_EventDispatcher', 'Swift_Events_MockEventDispatcher');
 Mock::generate('Swift_Events_EventObject', 'Swift_Events_MockEventObject');
 
@@ -21,16 +19,14 @@ class Swift_Transport_EsmtpTransportTest
   
   private $_smtpBuf;
   private $_smtpTransport;
-  private $_log;
   
   public function setUp()
   {
     parent::setUp();
-    $this->_log = new Swift_Transport_MockLog();
     $this->_smtpBuf = $this->getMockBuffer();
     $this->_dispatcher = new Swift_Events_MockEventDispatcher();
     $this->_smtpTransport = $this->getEsmtpTransport(
-      $this->_smtpBuf, array(), $this->_log, $this->_dispatcher
+      $this->_smtpBuf, array(), $this->_dispatcher
       );
   }
   
@@ -45,18 +41,13 @@ class Swift_Transport_EsmtpTransportTest
     return new Swift_Transport_MockIoBuffer();
   }
   
-  public function getEsmtpTransport($buf, $extensions, $log = null,
-    $dispatcher = null)
+  public function getEsmtpTransport($buf, $extensions, $dispatcher = null)
   {
-    if (is_null($log))
-    {
-      $log = new Swift_Transport_MockLog();
-    }
     if (is_null($dispatcher))
     {
       $dispatcher = new Swift_Events_MockEventDispatcher();
     }
-    return new Swift_Transport_EsmtpTransport($buf, $extensions, $log, $dispatcher);
+    return new Swift_Transport_EsmtpTransport($buf, $extensions, $dispatcher);
   }
   
   ///////////////////////////////////////////////////
@@ -312,20 +303,6 @@ class Swift_Transport_EsmtpTransportTest
     $this->_finishSmtpBuffer();
     
     $this->_smtpTransport->start();
-    
-    $this->_smtpTransport->executeCommand("FOO\r\n", array(250, 251));
-  }
-  
-  public function testCommandsAndResponsesAreLogged()
-  {
-    $this->_log->expectAt(0, 'addLogEntry', array(new PatternExpectation("/FOO\r\n/")));
-    $this->_log->expectAt(1, 'addLogEntry', array(new PatternExpectation("/251 Cool\r\n/")));
-    $this->_log->expectCallCount('addLogEntry', 2);
-    
-    $this->_smtpBuf->setReturnValue('write', 2, array("FOO\r\n"));
-    $this->_smtpBuf->setReturnValue('readLine', "251 Cool\r\n", array(2));
-    
-    $this->_finishSmtpBuffer();
     
     $this->_smtpTransport->executeCommand("FOO\r\n", array(250, 251));
   }

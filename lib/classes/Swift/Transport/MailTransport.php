@@ -19,7 +19,6 @@
  */
 
 //@require 'Swift/Transport.php';
-//@require 'Swift/Transport/Log.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -39,19 +38,11 @@ class Swift_Transport_MailTransport implements Swift_Transport
   private $_extraParams = '-f%s';
   
   /**
-   * The active logger instance.
-   * @var Swift_Transport_Log
-   * @access private
-   */
-  private $_log;
-  
-  /**
    * Create a new MailTransport with the $log.
    * @param Swift_Transport_Log $log
    */
-  public function __construct(Swift_Transport_Log $log)
+  public function __construct()
   {
-    $this->_log = $log;
   }
   
   /**
@@ -146,12 +137,10 @@ class Swift_Transport_MailTransport implements Swift_Transport
     if (mail($to, $subject, $body, $headers,
       sprintf($this->_extraParams, $reversePath)))
     {
-      $this->_log->addLogEntry('++ ((MESSAGE SENT WITH MAIL()))');
       return $count;
     }
     else
     {
-      $this->_log->addLogEntry('!! ((SENDING WITH MAIL() FAILED))');
       return 0;
     }
   }

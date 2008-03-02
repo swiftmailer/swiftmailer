@@ -4,14 +4,12 @@ require_once 'Swift/Transport/AbstractEsmtpTest.php';
 require_once 'Swift/Transport/SendmailTransport.php';
 require_once 'Swift/Transport/CommandSentException.php';
 require_once 'Swift/Transport/IoBuffer.php';
-require_once 'Swift/Transport/Log.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Events/EventDispatcher.php';
 
 Mock::generate('Swift_Transport_IoBuffer',
   'Swift_Transport_MockIoBuffer'
   );
-Mock::generate('Swift_Transport_Log', 'Swift_Transport_MockLog');
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
 Mock::generate('Swift_Events_EventDispatcher', 'Swift_Events_MockEventDispatcher');
 
@@ -21,15 +19,13 @@ class Swift_Transport_SendmailTransportTest
   
   private $_sendmailBuf;
   private $_sendmail;
-  private $_log;
   
   public function setUp()
   {
     parent::setUp();
-    $this->_log = new Swift_Transport_MockLog();
     $this->_sendmailBuf = $this->getMockBuffer();
     $this->_sendmail = new Swift_Transport_SendmailTransport(
-      $this->_sendmailBuf, $this->_log, new Swift_Events_MockEventDispatcher()
+      $this->_sendmailBuf, new Swift_Events_MockEventDispatcher()
       );
   }
   
@@ -47,7 +43,7 @@ class Swift_Transport_SendmailTransportTest
   public function getEsmtpTransport($buf, $extensions)
   {//All tests should be run for ESMTP functionality on -bs mode.
     $smtp = new Swift_Transport_SendmailTransport(
-      $buf, new Swift_Transport_MockLog(), new Swift_Events_MockEventDispatcher()
+      $buf, new Swift_Events_MockEventDispatcher()
       );
     $smtp->setCommand('/usr/sbin/sendmail -bs');
     return $smtp;

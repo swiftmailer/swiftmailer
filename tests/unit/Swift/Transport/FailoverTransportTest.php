@@ -3,12 +3,10 @@
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/FailoverTransport.php';
 require_once 'Swift/Transport/TransportException.php';
-require_once 'Swift/Transport/Log.php';
 require_once 'Swift/Transport.php';
 
 Mock::generate('Swift_Transport', 'Swift_MockTransport');
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
-Mock::generate('Swift_Transport_Log', 'Swift_Transport_MockLog');
 
 class Swift_Transport_FailoverTransportTest
   extends Swift_Tests_SwiftUnitTestCase
@@ -271,9 +269,7 @@ class Swift_Transport_FailoverTransportTest
   
   private function _getTransport(array $transports)
   {
-    $transport = new Swift_Transport_FailoverTransport(
-      new Swift_Transport_MockLog()
-      );
+    $transport = new Swift_Transport_FailoverTransport();
     $transport->setTransports($transports);
     return $transport;
   }

@@ -35,11 +35,12 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
   /**
    * Create a new SendmailTransport with $buf for I/O.
    * @param Swift_Transport_IoBuffer $buf
+   * @param Swift_Events_EventDispatcher $dispatcher
    */
   public function __construct(Swift_Transport_IoBuffer $buf,
-    Swift_Transport_Log $log, Swift_Events_EventDispatcher $dispatcher)
+    Swift_Events_EventDispatcher $dispatcher)
   {
-    parent::__construct($buf, array(), $log, $dispatcher);
+    parent::__construct($buf, array(), $dispatcher);
     $this->_params['command'] = '/usr/sbin/sendmail -bs';
     $this->_params['type'] = Swift_Transport_IoBuffer::TYPE_PROCESS;
   }
@@ -105,7 +106,6 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
         + count((array) $message->getBcc())
         ;
       $message->toByteStream($buffer);
-      $this->_log->addLogEntry('>> ((MESSAGE DATA PIPED TO SENDMAIL))');
       $buffer->setWriteTranslations(array());
       $buffer->terminate();
     }

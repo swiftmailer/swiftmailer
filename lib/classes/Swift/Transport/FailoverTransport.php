@@ -19,7 +19,6 @@
  */
 
 //@require 'Swift/Transport/LoadBalancedTransport.php';
-//@require 'Swift/Transport/Log.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -40,12 +39,11 @@ class Swift_Transport_FailoverTransport
   private $_currentTransport;
   
   /**
-   * Creates a new FailoverTransport with $log for logging.
-   * @param Swift_Transport_Log $log
+   * Creates a new FailoverTransport.
    */
-  public function __construct(Swift_Transport_Log $log)
+  public function __construct()
   {
-    parent::__construct($log);
+    parent::__construct();
   }
   
   /**

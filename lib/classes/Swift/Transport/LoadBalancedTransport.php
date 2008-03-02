@@ -19,7 +19,6 @@
  */
 
 //@require 'Swift/Transport.php';
-//@require 'Swift/Transport/Log.php';
 //@require 'Swift/Mime/Message.php';
 
 /**
@@ -39,13 +38,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   private $_deadTransports = array();
   
   /**
-   * The logger used for debug logging.
-   * @var Swift_Transport_Log
-   * @access private
-   */
-  private $_log;
-  
-  /**
    * The Transports which are used in rotation.
    * @var Swift_Transport[]
    * @access private
@@ -53,12 +45,10 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   protected $_transports = array();
   
   /**
-   * Creates a new LoadBalancedTransport with $log for logging.
-   * @param Swift_Transport_Log $log
+   * Creates a new LoadBalancedTransport.
    */
-  public function __construct(Swift_Transport_Log $log)
+  public function __construct()
   {
-    $this->_log = $log;
   }
   
   /**
@@ -67,7 +57,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
    */
   public function setTransports(array $transports)
   {
-    $this->_log->addLogEntry('++ ' . count($transports) . ' Transports loaded');
     $this->_transports = $transports;
     $this->_deadTransports = array();
   }
@@ -103,7 +92,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
    */
   public function stop()
   {
-    $this->_log->addLogEntry('++ Stopping all Transports');
     foreach ($this->_transports as $transport)
     {
       $transport->stop();
@@ -163,7 +151,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   {
     if ($next = array_shift($this->_transports))
     {
-      $this->_log->addLogEntry('++ Switched to Transport of class ' . get_class($next));
       $this->_transports[] = $next;
     }
     return $next;
@@ -184,9 +171,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
       catch (Exception $e)
       {
       }
-      $this->_log->addLogEntry(
-        '!! Transport of class ' . get_class($transport) . ' deemed useless; disabling'
-        );
       $this->_deadTransports[] = $transport;
     }
   }
