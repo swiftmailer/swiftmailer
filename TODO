@@ -1,8 +1,6 @@
 Swift Mailer SE:
 ----------------
 
- * Allow an iterator to be passed to batchSend() instead (optional)
-   - Only needs to handle To: addresses
  * Consider namespacing dependency maps and storing them all centrally
    - e.g. "transport.smtp", "mime.message" and "events.dispatcher"
    - This way one factory can create classes which belong to another
@@ -19,8 +17,7 @@ Swift Mailer SE:
      - 8BITMIME
  * Plugins
    - Throttler
-   - Verbose
-   - BandwidthMonitor
+   - Reporter (Verbose, except can write to disk etc)
    - FileEmbedder (Mime API issues? Streams?)
  * V3 Wrapper classes
  
