@@ -27,7 +27,7 @@
  * @subpackage Plugins
  * @author Chris Corbyn
  */
-class Swift_Plugins_HitReporter implements Swift_Plugins_Reporter
+class Swift_Plugins_Reporters_HitReporter implements Swift_Plugins_Reporter
 {
   
   /**

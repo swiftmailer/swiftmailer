@@ -1,19 +1,20 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Plugins/HtmlReporter.php';
+require_once 'Swift/Plugins/Reporters/HtmlReporter.php';
 require_once 'Swift/Mime/Message.php';
 
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
 
-class Swift_Plugins_HtmlReporterTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_Plugins_Reporters_HtmlReporterTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
 
   private $_html;
   
   public function setUp()
   {
-    $this->_html = new Swift_Plugins_HtmlReporter();
+    $this->_html = new Swift_Plugins_Reporters_HtmlReporter();
   }
   
   public function testReportingPass()

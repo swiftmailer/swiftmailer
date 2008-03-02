@@ -1,19 +1,20 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Plugins/HitReporter.php';
+require_once 'Swift/Plugins/Reporters/HitReporter.php';
 require_once 'Swift/Mime/Message.php';
 
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
 
-class Swift_Plugins_HitReporterTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_Plugins_Reporters_HitReporterTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
 
   private $_hitReporter;
   
   public function setUp()
   {
-    $this->_hitReporter = new Swift_Plugins_HitReporter();
+    $this->_hitReporter = new Swift_Plugins_Reporters_HitReporter();
   }
   
   public function testReportingFail()
