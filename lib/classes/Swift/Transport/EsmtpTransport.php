@@ -132,7 +132,15 @@ class Swift_Transport_EsmtpTransport
         $handler->resetState();
       }
       
-      $this->_buffer->initialize($this->_params);
+      try
+      {
+        $this->_buffer->initialize($this->_params);
+      }
+      catch (Swift_Transport_TransportException $e)
+      {
+        $this->_throwException($e);
+      }
+      
       $greeting = $this->_getFullResponse(0);
       $this->_assertResponseCode($greeting, array(220));
       try
@@ -178,11 +186,19 @@ class Swift_Transport_EsmtpTransport
       catch (Exception $e)
       {//log this? 
       }
-      $this->_buffer->terminate();
       
-      if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
+      try
       {
-        $this->_eventDispatcher->dispatchEvent($evt, 'transportStopped');
+        $this->_buffer->terminate();
+      
+        if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
+        {
+          $this->_eventDispatcher->dispatchEvent($evt, 'transportStopped');
+        }
+      }
+      catch (Swift_Transport_TransportException $e)
+      {
+        $this->_throwException($e);
       }
     }
     $this->_started = false;
@@ -560,10 +576,36 @@ class Swift_Transport_EsmtpTransport
     
     if (!$valid)
     {
-      throw new Swift_Transport_TransportException(
-        'Expected response code ' . implode('/', $wanted) . ' but got code ' .
-        '"' . $code . '", with message "' . $response . '"'
+      $this->_throwException(
+        new Swift_Transport_TransportException(
+          'Expected response code ' . implode('/', $wanted) . ' but got code ' .
+          '"' . $code . '", with message "' . $response . '"'
+          )
         );
+    }
+  }
+  
+  /**
+   * Throw a TransportException, first sending it to any listeners.
+   * @param Swift_Transport_TransportException $e
+   * @access private
+   * @throws Swift_Transport_TransportException
+   */
+  private function _throwException(Swift_Transport_TransportException $e)
+  {
+    if ($evt = $this->_eventDispatcher->createEvent('exception', $this, array(
+      'exception' => $e
+      )))
+    {
+      $this->_eventDispatcher->dispatchEvent($evt, 'exceptionThrown');
+      if (!$evt->bubbleCancelled())
+      {
+        throw $e;
+      }
+    }
+    else
+    {
+      throw $e;
     }
   }
   
@@ -576,12 +618,19 @@ class Swift_Transport_EsmtpTransport
   private function _getFullResponse($seq)
   {
     $response = '';
-    do
+    try
     {
-      $line = $this->_buffer->readLine($seq);
-      $response .= $line;
+      do
+      {
+        $line = $this->_buffer->readLine($seq);
+        $response .= $line;
+      }
+      while (null !== $line && false !== $line && ' ' != $line{3});
     }
-    while (null !== $line && false !== $line && ' ' != $line{3});
+    catch (Swift_Transport_TransportException $e)
+    {
+      $this->_throwException($e);
+    }
     return $response;
   }
   
@@ -687,12 +736,20 @@ class Swift_Transport_EsmtpTransport
       {
       }
     }
+    
     if ($sent != 0)
     {
       $this->executeCommand("DATA\r\n", array(354));
       //Stream the message straight into the buffer
       $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
-      $message->toByteStream($this->_buffer);
+      try
+      {
+        $message->toByteStream($this->_buffer);
+      }
+      catch (Swift_Transport_TransportException $e)
+      {
+        $this->_throwException($e);
+      }
       //End data transmission
       $this->_buffer->setWriteTranslations(array());
       $this->executeCommand("\r\n.\r\n", array(250));

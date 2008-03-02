@@ -11,6 +11,8 @@ Swift Mailer SE:
    - Shift-JIS
    - ISO-10646
    - CP950
+ * Refactor the Smtp part of Smtp transport into a Superclass Sendmail and
+   Esmtp can extend. It's too big!
  * Transports
    - PopBeforeSmtp authentication
    - Esmtp extension support

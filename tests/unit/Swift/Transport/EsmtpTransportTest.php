@@ -537,6 +537,51 @@ class Swift_Transport_EsmtpTransportTest
     $this->_smtpTransport->start();
   }
   
+  public function testExceptionsCauseExceptionEvents()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('exception', $this->_smtpTransport, '*')
+      );
+    $this->_dispatcher->expectAtLeastOnce('dispatchEvent', array($evt, 'exceptionThrown'));
+    
+    $this->_smtpBuf->setReturnValue(
+      'readLine', '503 I am sleepy, go away!' . "\r\n", array(0)
+      );
+    
+    $this->_finishSmtpBuffer();
+    
+    try
+    {
+      $this->_smtpTransport->start();
+      $this->fail('TransportException should be thrown on invalid response');
+    }
+    catch (Swift_Transport_TransportException $e)
+    {
+      $this->pass();
+    }
+  }
+  
+  public function testExceptionsBubblesCanBeCancelled()
+  {
+    $evt = new Swift_Events_MockEventObject();
+    $evt->setReturnValue('bubbleCancelled', true);
+    
+    $this->_dispatcher->setReturnValue(
+      'createEvent', $evt, array('exception', $this->_smtpTransport, '*')
+      );
+    $this->_dispatcher->expectAtLeastOnce('dispatchEvent', array($evt, 'exceptionThrown'));
+    
+    $this->_smtpBuf->setReturnValue(
+      'readLine', '503 I am sleepy, go away!' . "\r\n", array(0)
+      );
+    
+    $this->_finishSmtpBuffer();
+    
+    $this->_smtpTransport->start();
+  }
+  
   // -- Private helpers
   
   /**

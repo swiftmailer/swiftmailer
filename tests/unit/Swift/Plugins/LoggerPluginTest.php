@@ -6,13 +6,20 @@ require_once 'Swift/Plugins/Logger.php';
 require_once 'Swift/Events/CommandEvent.php';
 require_once 'Swift/Events/ResponseEvent.php';
 require_once 'Swift/Events/TransportChangeEvent.php';
+require_once 'Swift/Events/TransportExceptionEvent.php';
 require_once 'Swift/Transport.php';
+require_once 'Swift/Transport/TransportException.php';
 
 Mock::generate('Swift_Transport', 'Swift_MockTransport');
 Mock::generate('Swift_Plugins_Logger', 'Swift_Plugins_MockLogger');
 Mock::generate('Swift_Events_CommandEvent', 'Swift_Events_MockCommandEvent');
 Mock::generate('Swift_Events_ResponseEvent', 'Swift_Events_MockResponseEvent');
-Mock::generate('Swift_Events_TransportChangeEvent', 'Swift_Events_MockTransportChangeEvent');
+Mock::generate('Swift_Events_TransportChangeEvent',
+  'Swift_Events_MockTransportChangeEvent'
+  );
+Mock::generate('Swift_Events_TransportExceptionEvent',
+  'Swift_Events_MockTransportExceptionEvent'
+  );
 
 class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
 {
@@ -96,6 +103,29 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
     
     $plugin = new Swift_Plugins_LoggerPlugin($logger);
     $plugin->transportStopped($evt);
+  }
+  
+  public function testExceptionsArePassedToDelegateAndLeftToBubbleUp()
+  {
+    $e = new Swift_Transport_TransportException('foo');
+    $transport = new Swift_MockTransport();
+    
+    $evt = new Swift_Events_MockTransportExceptionEvent();
+    $evt->setReturnValue('getException', $e);
+    
+    $logger = new Swift_Plugins_MockLogger();
+    $logger->expectOnce('add');
+    
+    $plugin = new Swift_Plugins_LoggerPlugin($logger);
+    try
+    {
+      $plugin->exceptionThrown($evt);
+      $this->fail('Exception should bubble up.');
+    }
+    catch (Swift_Transport_TransportException $ex)
+    {
+      $this->pass();
+    }
   }
   
 }

@@ -24,6 +24,9 @@
 //@require 'Swift/Events/ResponseEvent.php';
 //@require 'Swift/Events/TransportChangeListener.php';
 //@require 'Swift/Events/TransportChangeEvent.php';
+//@require 'Swift/Events/TransportExceptionEvent.php';
+//@require 'Swift/Events/TransportExceptionListener.php';
+//@require 'Swift/Events/TransportException.php';
 //@require 'Swift/Plugins/Logger.php';
 
 /**
@@ -34,7 +37,8 @@
  */
 class Swift_Plugins_LoggerPlugin
   implements Swift_Events_CommandListener, Swift_Events_ResponseListener,
-  Swift_Events_TransportChangeListener, Swift_Plugins_Logger
+  Swift_Events_TransportChangeListener, Swift_Events_TransportExceptionListener,
+  Swift_Plugins_Logger
 {
   
   /**
@@ -117,6 +121,22 @@ class Swift_Plugins_LoggerPlugin
   {
     $transportName = get_class($evt->getSource());
     $this->_logger->add(sprintf("++ %s stopped", $transportName));
+  }
+  
+  /**
+   * Invoked as a TransportException is thrown in the Transport system.
+   * @param Swift_Events_TransportExceptionEvent $evt
+   */
+  public function exceptionThrown(Swift_Events_TransportExceptionEvent $evt)
+  {
+    $e = $evt->getException();
+    $message = $e->getMessage();
+    $this->_logger->add(sprintf("!! %s", $message));
+    $message .= PHP_EOL;
+    $message .= 'Log data:' . PHP_EOL;
+    $message .= $this->_logger->dump();
+    $evt->cancelBubble();
+    throw new Swift_Transport_TransportException($message);
   }
   
 }
