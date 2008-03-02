@@ -4,9 +4,11 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mailer.php';
 require_once 'Swift/Transport.php';
 require_once 'Swift/Mime/Message.php';
+require_once 'Swift/Mailer/RecipientIterator.php';
 
 Mock::generate('Swift_Transport', 'Swift_Mailer_MockTransport');
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
+Mock::generate('Swift_Mailer_RecipientIterator', 'Swift_Mailer_MockRecipientIterator');
 
 class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
 {
@@ -160,6 +162,32 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     $this->_transport->setReturnValueAt(3, 'send', 1);
     
     $this->assertEqual(3, $this->_mailer->batchSend($message));
+  }
+  
+  public function testBatchSendCanReadFromIterator()
+  {
+    $it = new Swift_Mailer_MockRecipientIterator();
+    $it->setReturnValueAt(0, 'hasNext', true);
+    $it->setReturnValueAt(0, 'nextRecipient', array('one@domain.com' => 'One'));
+    $it->setReturnValueAt(1, 'hasNext', true);
+    $it->setReturnValueAt(1, 'nextRecipient', array('two@domain.com' => 'Two'));
+    $it->setReturnValueAt(2, 'hasNext', true);
+    $it->setReturnValueAt(2, 'nextRecipient', array('three@domain.com' => 'Three'));
+    $it->setReturnValueAt(0, 'hasNext', false);
+    
+    $message = new Swift_Mime_MockMessage();
+    $message->setReturnValue('getTo', array());
+    $message->expectAt(0, 'setTo', array(array('one@domain.com' => 'One')));
+    $message->expectAt(1, 'setTo', array(array('two@domain.com' => 'Two')));
+    $message->expectAt(2, 'setTo', array(array('three@domain.com' => 'Three')));
+    //The message needs to remain in the state in which it was provided
+    $message->expectAt(3, 'setTo', array(array()));
+    
+    $message->expectCallCount('setTo', 4);
+    
+    $this->_transport->expectCallCount('send', 3);
+    
+    $this->_mailer->batchSend($message, $it);
   }
   
 }

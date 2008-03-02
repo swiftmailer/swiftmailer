@@ -20,6 +20,7 @@
 
 //@require 'Swift/Transport.php';
 //@require 'Swift/Mime/Message.php';
+//@require 'Swift/Mailer/RecipientIterator.php';
 
 /**
  * Swift Mailer class.
@@ -71,13 +72,17 @@ class Swift_Mailer
    * This differs from {@link send()} in the way headers are presented to the
    * recipient.  The only recipient in the "To:" field will be the individual
    * recipient it was sent to.
-   * Recipient/sender data will be retreived from the Message API.
+   * If an iterator is provided, recipients will be read from the iterator
+   * on-the-fly, otherwise recipient data will be retreived from the Message API.
+   * Sender information is always read from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
    * @param Swift_Mime_Message $message
+   * @param Swift_Mailer_RecipientIterator $it, optional
    * @return int
    * @see send()
    */
-  public function batchSend(Swift_Mime_Message $message)
+  public function batchSend(Swift_Mime_Message $message,
+    Swift_Mailer_RecipientIterator $it = null)
   {
     $sent = 0;
     $to = $message->getTo();
@@ -91,10 +96,22 @@ class Swift_Mailer
     {
       $message->setBcc(array());
     }
-    foreach ($to as $address => $name)
+    //Use an iterator if set
+    if (isset($it))
     {
-      $message->setTo(array($address => $name));
-      $sent += $this->send($message);
+      while ($it->hasNext())
+      {
+        $message->setTo($it->nextRecipient());
+        $sent += $this->send($message);
+      }
+    }
+    else
+    {
+      foreach ($to as $address => $name)
+      {
+        $message->setTo(array($address => $name));
+        $sent += $this->send($message);
+      }
     }
     $message->setTo($to);
     if (!empty($cc))
