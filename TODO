@@ -4,7 +4,6 @@ Swift Mailer SE:
  * Consider namespacing dependency maps and storing them all centrally
    - e.g. "transport.smtp", "mime.message" and "events.dispatcher"
    - This way one factory can create classes which belong to another
- * Make the Log a plugin
  * Write some sanity tests
  * Read-receipts
  * CharacterReaders
@@ -19,7 +18,6 @@ Swift Mailer SE:
  * Add a TransportExceptionEvent and TransportExceptionListener
    - Make logger throw a new TransportException with the log appended.
  * Plugins
-   - Logger
    - Throttler
    - FileEmbedder (Mime API issues? Streams?)
  * V3 Wrapper classes
