@@ -20,10 +20,14 @@ Swift Mailer SE:
  * Plugins
    - Throttler
    - Verbose
-   - Decorator (Mime API needs improving!)
    - BandwidthMonitor
    - FileEmbedder (Mime API issues? Streams?)
  * V3 Wrapper classes
+ 
+Interface Refactoring:
+----------------------
+
+ * Change setBodyAsString() and getBodyAsString() to just setBody() and getBody()
 
 Website Re-Design:
 ------------------

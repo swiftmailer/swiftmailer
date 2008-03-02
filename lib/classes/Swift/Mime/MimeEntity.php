@@ -103,6 +103,12 @@ interface Swift_Mime_MimeEntity
   public function getBodyAsString();
   
   /**
+   * Set the body content of this entity as a string.
+   * @param string $body
+   */
+  public function setBodyAsString($body);
+  
+  /**
    * Get this entire entity in its string form.
    * @return string
    */
