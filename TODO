@@ -1,33 +1,55 @@
-Swift Mailer SE:
-----------------
+Swift Mailer SE TODO:
+---------------------
 
- * Consider namespacing dependency maps and storing them all centrally
-   - e.g. "transport.smtp", "mime.message" and "events.dispatcher"
-   - This way one factory can create classes which belong to another
  * Write some sanity tests
  * Read-receipts
+ * Think about the interface for loading plugins
+ * Failed recipients?
+ * Event dispatching
+   - Sendmail
+   - Mail
+ * Rename "Header" subpackage to "Headers"
  * CharacterReaders
    - Big5
    - Shift-JIS
    - ISO-10646
    - CP950
- * Refactor the Smtp part of Smtp transport into a Superclass Sendmail and
-   Esmtp can extend. It's too big!
  * Transports
    - PopBeforeSmtp authentication
    - Esmtp extension support
      - 8BITMIME
- * Add a TransportExceptionEvent and TransportExceptionListener
-   - Make logger throw a new TransportException with the log appended.
  * Plugins
-   - Throttler
    - FileEmbedder (Mime API issues? Streams?)
  * V3 Wrapper classes
  
-Interface Refactoring:
-----------------------
+Weaknesses:
+-----------
+
+ * writeTransformations() in buffer could fail
+ * canonicalization logic could fail
+ * streams aren't used in the decorator plugin
+ * DI is a bit unclear what goes where
+ * Mime layer interaction between headers/entities sucks
+   - a suitable trade-off would be to add generic methods:
+     - interface Header {
+        setModel($data);
+        getModel();
+       }
+       interface ParamHeader extends Header {
+         setParam($key, $value);
+         getParam($key);
+       }
+ * Drop FieldChangeObserver since won't be needed any longer
+   - Pass content-transfer-encoding changes directly to children
+  
+Refactors:
+----------
 
  * Change setBodyAsString() and getBodyAsString() to just setBody() and getBody()
+ * Split Esmtp into two classes and change what Sendmail extends
+ * Consider namespacing dependency maps and storing them all centrally
+   - e.g. "transport.smtp", "mime.message" and "events.dispatcher"
+   - This way one factory can create classes which belong to another
 
 Website Re-Design:
 ------------------

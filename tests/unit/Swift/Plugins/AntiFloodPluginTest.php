@@ -4,9 +4,11 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Plugins/AntiFloodPlugin.php';
 require_once 'Swift/Events/SendEvent.php';
 require_once 'Swift/Transport.php';
+require_once 'Swift/Plugins/Sleeper.php';
 
 Mock::generate('Swift_Events_SendEvent', 'Swift_Events_MockSendEvent');
 Mock::generate('Swift_Transport', 'Swift_MockTransport');
+Mock::generate('Swift_Plugins_Sleeper', 'Swift_Plugins_MockSleeper');
 
 class Swift_Plugins_AntiFloodPluginTest extends Swift_Tests_SwiftUnitTestCase
 {
@@ -56,6 +58,26 @@ class Swift_Plugins_AntiFloodPluginTest extends Swift_Tests_SwiftUnitTestCase
     
     $plugin = new Swift_Plugins_AntiFloodPlugin(2);
     for ($i = 0; $i < 11; $i++)
+    {
+      $plugin->sendPerformed($evt);
+    }
+  }
+  
+  public function testPluginCanSleepDuringRestart()
+  {
+    $sleeper = new Swift_Plugins_MockSleeper();
+    $sleeper->expectOnce('sleep', array(10));
+    
+    $transport = new Swift_MockTransport();
+    $transport->expectOnce('stop');
+    $transport->expectOnce('start');
+    
+    $evt = new Swift_Events_MockSendEvent();
+    $evt->setReturnValue('getSource', $transport);
+    $evt->setReturnValue('getTransport', $transport);
+    
+    $plugin = new Swift_Plugins_AntiFloodPlugin(99, 10, $sleeper);
+    for ($i = 0; $i < 101; $i++)
     {
       $plugin->sendPerformed($evt);
     }
