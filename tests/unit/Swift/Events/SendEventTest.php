@@ -5,15 +5,13 @@ require_once 'Swift/Events/SendEvent.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Transport.php';
 
-Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
-Mock::generate('Swift_Transport', 'Swift_MockTransport');
-
 class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
 {
   
   public function testMessageCanBeInjected()
   {
-    $message = new Swift_Mime_MockMessage();
+    $context = new Mockery();
+    $message = $context->mock('Swift_Mime_Message');
     
     $evt = new Swift_Events_SendEvent();
     $evt->message = $message;
@@ -46,7 +44,8 @@ class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testTransportCanBeInjected()
   {
-    $transport = new Swift_MockTransport();
+    $context = new Mockery();
+    $transport = $context->mock('Swift_Transport');
     
     $evt = new Swift_Events_SendEvent();
     $evt->transport = $transport;
@@ -58,8 +57,9 @@ class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testCloneIsGeneratedWithCleanDefaults()
   {
-    $message = new Swift_Mime_MockMessage();
-    $transport = new Swift_MockTransport();
+    $context = new Mockery();
+    $transport = $context->mock('Swift_Transport');
+    $message = $context->mock('Swift_Mime_Message');
     
     $evt = new Swift_Events_SendEvent();
     $evt->message = $message;

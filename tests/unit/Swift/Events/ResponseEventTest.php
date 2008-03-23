@@ -4,10 +4,6 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Events/ResponseEvent.php';
 require_once 'Swift/Transport/EsmtpBufferWrapper.php';
 
-Mock::generate('Swift_Transport_EsmtpBufferWrapper',
-  'Swift_Transport_MockEsmtpBufferWrapper'
-  );
-
 class Swift_Events_ResponseEventTest extends Swift_Tests_SwiftUnitTestCase
 {
   
@@ -32,7 +28,9 @@ class Swift_Events_ResponseEventTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testCleanCloneIsCreated()
   {
-    $buf = new Swift_Transport_MockEsmtpBufferWrapper();
+    $context = new Mockery();
+    $buf = $context->mock('Swift_Transport_EsmtpBufferWrapper');
+    
     $evt = new Swift_Events_ResponseEvent();
     $evt->response = "250 Ok\r\n";
     $evt->result = Swift_Events_ResponseEvent::RESULT_INVALID;

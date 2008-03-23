@@ -5,8 +5,6 @@ require_once 'Swift/Events/TransportExceptionEvent.php';
 require_once 'Swift/Transport.php';
 require_once 'Swift/Transport/TransportException.php';
 
-Mock::generate('Swift_Transport', 'Swift_MockTransport');
-
 class Swift_Events_TransportExceptionEventTest extends Swift_Tests_SwiftUnitTestCase
 {
 
@@ -22,7 +20,9 @@ class Swift_Events_TransportExceptionEventTest extends Swift_Tests_SwiftUnitTest
   
   public function testCleanCloneIsGenerated()
   {
-    $transport = new Swift_MockTransport();
+    $context = new Mockery();
+    $transport = $context->mock('Swift_Transport');
+    
     $evt = new Swift_Events_TransportExceptionEvent();
     $evt->exception = new Swift_Transport_TransportException('foo');
     

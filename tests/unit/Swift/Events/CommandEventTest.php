@@ -4,10 +4,6 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Events/CommandEvent.php';
 require_once 'Swift/Transport/EsmtpBufferWrapper.php';
 
-Mock::generate('Swift_Transport_EsmtpBufferWrapper',
-  'Swift_Transport_MockEsmtpBufferWrapper'
-  );
-
 class Swift_Events_CommandEventTest extends Swift_Tests_SwiftUnitTestCase
 {
   
@@ -27,7 +23,8 @@ class Swift_Events_CommandEventTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testCleanCloneIsGenerated()
   {
-    $buf = new Swift_Transport_MockEsmtpBufferWrapper();
+    $context = new Mockery();
+    $buf = $context->mock('Swift_Transport_EsmtpBufferWrapper');
     
     $evt = new Swift_Events_CommandEvent();
     $evt->command = "HELO foobar.net\r\n";
