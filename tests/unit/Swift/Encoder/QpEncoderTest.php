@@ -4,8 +4,6 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Encoder/QpEncoder.php';
 require_once 'Swift/CharacterStream.php';
 
-Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
-
 class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
 {
   
@@ -36,23 +34,26 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
           respectively).
           */
     
+    $context = new Mockery();
+    
     foreach (array_merge(range(33, 60), range(62, 126)) as $ordinal)
     {
       $char = chr($ordinal);
       
-      $charStream = new Swift_MockCharacterStream();
-      $charStream->expectOnce('flushContents');
-      $charStream->expectOnce('importString', array(
-        new Swift_Tests_IdenticalBinaryExpectation($char)
-        ));
-      
-      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
-      $charStream->setReturnValueAt(1, 'readBytes', false);
+      $charStream = $context->mock('Swift_CharacterStream');
+      $context->checking(Expectations::create()
+        -> one($charStream)->flushContents()
+        -> one($charStream)->importString($char)
+        -> one($charStream)->readBytes(optional()) -> returns(array($ordinal))
+        -> atLeast(1)->of($charStream)->readBytes(optional()) -> returns(false)
+        );
       
       $encoder = new Swift_Encoder_QpEncoder($charStream);
       
       $this->assertIdenticalBinary($char, $encoder->encodeString($char));
     }
+    
+    $context->assertIsSatisfied();
   }
   
   public function testWhiteSpaceAtLineEndingIsEncoded()
@@ -80,22 +81,27 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
           intermediate transport agents.
           */
     
+    $context = new Mockery();
+    
     $HT = chr(0x09); //9
     $SPACE = chr(0x20); //32
     
     //HT
     $string = 'a' . $HT . $HT . "\r\n" . 'b';
     
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->expectOnce('flushContents');
-    $charStream->expectOnce('importString', array($string));
-    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
-    $charStream->setReturnValueAt(1, 'readBytes', array(0x09));
-    $charStream->setReturnValueAt(2, 'readBytes', array(0x09));
-    $charStream->setReturnValueAt(3, 'readBytes', array(0x0D));
-    $charStream->setReturnValueAt(4, 'readBytes', array(0x0A));
-    $charStream->setReturnValueAt(5, 'readBytes', array(ord('b')));
-    $charStream->setReturnValueAt(6, 'readBytes', false);
+    $seq = $context->sequence('byte-sequence');
+    $charStream = $context->mock('Swift_CharacterStream');
+    $context->checking(Expectations::create()
+      -> one($charStream)->flushContents()
+      -> one($charStream)->importString($string)
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x09))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x09))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0D))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0A))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('b')))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false)
+      );
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
@@ -106,22 +112,27 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     //SPACE
     $string = 'a' . $SPACE . $SPACE . "\r\n" . 'b';
     
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->expectOnce('flushContents');
-    $charStream->expectOnce('importString', array($string));
-    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
-    $charStream->setReturnValueAt(1, 'readBytes', array(0x20));
-    $charStream->setReturnValueAt(2, 'readBytes', array(0x20));
-    $charStream->setReturnValueAt(3, 'readBytes', array(0x0D));
-    $charStream->setReturnValueAt(4, 'readBytes', array(0x0A));
-    $charStream->setReturnValueAt(5, 'readBytes', array(ord('b')));
-    $charStream->setReturnValueAt(6, 'readBytes', false);
+    $seq = $context->sequence('byte-sequence');
+    $charStream = $context->mock('Swift_CharacterStream');
+    $context->checking(Expectations::create()
+      -> one($charStream)->flushContents()
+      -> one($charStream)->importString($string)
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x20))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x20))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0D))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0A))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('b')))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false)
+      );
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
       'a' . $SPACE . '=20' . "\r\n" . 'b',
       $encoder->encodeString($string)
       );
+    
+    $context->assertIsSatisfied();
   }
   
   public function testCRLFIsLeftAlone()
@@ -153,21 +164,26 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
           equivalent to performing the three steps separately.
           */
     
+    $context = new Mockery();
+    
     $string = 'a' . "\r\n" . 'b' . "\r\n" . 'c' . "\r\n";
     
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->expectOnce('flushContents');
-    $charStream->expectOnce('importString', array($string));
-    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
-    $charStream->setReturnValueAt(1, 'readBytes', array(0x0D));
-    $charStream->setReturnValueAt(2, 'readBytes', array(0x0A));
-    $charStream->setReturnValueAt(3, 'readBytes', array(ord('b')));
-    $charStream->setReturnValueAt(4, 'readBytes', array(0x0D));
-    $charStream->setReturnValueAt(5, 'readBytes', array(0x0A));
-    $charStream->setReturnValueAt(6, 'readBytes', array(ord('c')));
-    $charStream->setReturnValueAt(7, 'readBytes', array(0x0D));
-    $charStream->setReturnValueAt(8, 'readBytes', array(0x0A));
-    $charStream->setReturnValueAt(9, 'readBytes', false);
+    $seq = $context->sequence('byte-sequence');
+    $charStream = $context->mock('Swift_CharacterStream');
+    $context->checking(Expectations::create()
+      -> one($charStream)->flushContents()
+      -> one($charStream)->importString($string)
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0D))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0A))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('b')))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0D))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0A))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('c')))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0D))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(0x0A))
+      -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false)
+      );
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($string, $encoder->encodeString($string));
@@ -185,56 +201,75 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
           line break in the encoded text.
           */
     
+    $context = new Mockery();
+    
     $input = str_repeat('a', 140);
     
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->expectOnce('flushContents');
-    $charStream->expectOnce('importString', array($input));
+    $charStream = $context->mock('Swift_CharacterStream');
+    $seq = $context->sequence('byte-sequence');
+    
+    $exps = Expectations::create();
+    
+    $exps -> one($charStream)->flushContents()
+     -> one($charStream)->importString($input)
+     ;
     
     $output = '';
-    $seq = 0;
-    for (; $seq < 140; ++$seq)
+    for ($i = 0; $i < 140; ++$i)
     {
-      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
+      $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')));
       
-      if (75 == $seq)
+      if (75 == $i)
       {
         $output .= "=\r\n";
       }
       $output .= 'a';
     }
     
-    $charStream->setReturnValueAt($seq, 'readBytes', false);
+    $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false);
+    
+    $context->checking($exps);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input));
+    
+    $context->assertIsSatisfied();
   }
   
   public function testMaxLineLengthCanBeSpecified()
   {
+    $context = new Mockery();
+    
     $input = str_repeat('a', 100);
     
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->expectOnce('flushContents');
-    $charStream->expectOnce('importString', array($input));
+    $charStream = $context->mock('Swift_CharacterStream');
+    $seq = $context->sequence('byte-sequence');
+    
+    $exps = Expectations::create();
+    
+    $exps -> one($charStream)->flushContents()
+     -> one($charStream)->importString($input)
+     ;
     
     $output = '';
-    $seq = 0;
-    for (; $seq < 100; ++$seq)
+    for ($i = 0; $i < 100; ++$i)
     {
-      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
+      $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')));
       
-      if (53 == $seq)
+      if (53 == $i)
       {
         $output .= "=\r\n";
       }
       $output .= 'a';
     }
+    $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false);
     
-    $charStream->setReturnValueAt($seq, 'readBytes', false);
+    $context->checking($exps);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input, 0, 54));
+    
+    $context->assertIsSatisfied();
   }
   
   public function testBytesBelowPermittedRangeAreEncoded()
@@ -243,18 +278,19 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     According to Rule (1 & 2)
     */
     
+    $context = new Mockery();
+    
     foreach (range(0, 32) as $ordinal)
     {
       $char = chr($ordinal);
       
-      $charStream = new Swift_MockCharacterStream();
-      $charStream->expectOnce('flushContents');
-      $charStream->expectOnce('importString', array(
-        new Swift_Tests_IdenticalBinaryExpectation($char)
-        ));
-      
-      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
-      $charStream->setReturnValueAt(1, 'readBytes', false);
+      $charStream = $context->mock('Swift_CharacterStream');
+      $context->checking(Expectations::create()
+        -> one($charStream)->flushContents()
+        -> one($charStream)->importString($char)
+        -> one($charStream)->readBytes(optional()) -> returns(array($ordinal))
+        -> atLeast(1)->of($charStream)->readBytes(optional()) -> returns(false)
+        );
       
       $encoder = new Swift_Encoder_QpEncoder($charStream);
       
@@ -262,6 +298,8 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
         sprintf('=%02X', $ordinal), $encoder->encodeString($char)
         );
     }
+    
+    $context->assertIsSatisfied();
   }
   
   public function testDecimalByte61IsEncoded()
@@ -270,20 +308,23 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     According to Rule (1 & 2)
     */
     
+    $context = new Mockery();
+    
     $char = '=';
-      
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->expectOnce('flushContents');
-    $charStream->expectOnce('importString', array(
-      new Swift_Tests_IdenticalBinaryExpectation($char)
-      ));
-      
-    $charStream->setReturnValueAt(0, 'readBytes', array(61));
-    $charStream->setReturnValueAt(1, 'readBytes', false);
+    
+    $charStream = $context->mock('Swift_CharacterStream');
+    $context->checking(Expectations::create()
+      -> one($charStream)->flushContents()
+      -> one($charStream)->importString($char)
+      -> one($charStream)->readBytes(optional()) -> returns(array(61))
+      -> atLeast(1)->of($charStream)->readBytes(optional()) -> returns(false)
+      );
       
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     
     $this->assertEqual('=3D', $encoder->encodeString('='));
+    
+    $context->assertIsSatisfied();
   }
   
   public function testBytesAbovePermittedRangeAreEncoded()
@@ -292,18 +333,19 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     According to Rule (1 & 2)
     */
     
+    $context = new Mockery();
+    
     foreach (range(127, 255) as $ordinal)
     {
       $char = chr($ordinal);
       
-      $charStream = new Swift_MockCharacterStream();
-      $charStream->expectOnce('flushContents');
-      $charStream->expectOnce('importString', array(
-        new Swift_Tests_IdenticalBinaryExpectation($char)
-        ));
-      
-      $charStream->setReturnValueAt(0, 'readBytes', array($ordinal));
-      $charStream->setReturnValueAt(1, 'readBytes', false);
+      $charStream = $context->mock('Swift_CharacterStream');
+      $context->checking(Expectations::create()
+        -> one($charStream)->flushContents()
+        -> one($charStream)->importString($char)
+        -> one($charStream)->readBytes(optional()) -> returns(array($ordinal))
+        -> atLeast(1)->of($charStream)->readBytes(optional()) -> returns(false)
+        );
       
       $encoder = new Swift_Encoder_QpEncoder($charStream);
       
@@ -311,36 +353,47 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
         sprintf('=%02X', $ordinal), $encoder->encodeString($char)
         );
     }
+    
+    $context->assertIsSatisfied();
   }
   
   public function testFirstLineLengthCanBeDifferent()
   {
+    $context = new Mockery();
+    
     $input = str_repeat('a', 140);
     
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->expectOnce('flushContents');
-    $charStream->expectOnce('importString', array($input));
+    $charStream = $context->mock('Swift_CharacterStream');
+    $seq = $context->sequence('byte-sequence');
+    
+    $exps = Expectations::create();
+    
+    $exps -> one($charStream)->flushContents();
+    $exps -> one($charStream)->importString($input);
     
     $output = '';
-    $seq = 0;
-    for (; $seq < 140; ++$seq)
+    for ($i = 0; $i < 140; ++$i)
     {
-      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
+      $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')));
       
-      if (53 == $seq || 53 + 75 == $seq)
+      if (53 == $i || 53 + 75 == $i)
       {
         $output .= "=\r\n";
       }
       $output .= 'a';
     }
     
-    $charStream->setReturnValueAt($seq, 'readBytes', false);
+    $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false);
+    
+    $context->checking($exps);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
       $output, $encoder->encodeString($input, 22),
       '%s: First line should start at offset 22 so can only have max length 54'
       );
+      
+    $context->assertIsSatisfied();
   }
   
 }
