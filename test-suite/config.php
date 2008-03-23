@@ -52,3 +52,5 @@ spl_autoload_register(array('Swift_Di', 'autoload'));
 //Load in some swift specific testig config
 require_once SWEETY_HOME . '/../tests/acceptance.conf.php';
 require_once SWEETY_HOME . '/../tests/smoke.conf.php';
+require_once SWEETY_HOME . '/lib/yaymock-svn/yay_mock.php';
+require_once SWEETY_HOME . '/lib/yaymock-svn/yay_convenience.php';
