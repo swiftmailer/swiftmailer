@@ -5,6 +5,12 @@ Swift Mailer SE TODO:
  * Read-receipts
  * Think about the interface for loading plugins
  * Failed recipients?
+   interface Transport {
+     send($message, &$failArray);
+   }
+   class Mailer {
+     send($message, &$failArray = null, $iterator = null);
+   }
  * Event dispatching
    - Sendmail
    - Mail
