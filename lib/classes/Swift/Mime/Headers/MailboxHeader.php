@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Mime/Header/AbstractHeader.php';
+//@require 'Swift/Mime/Headers/AbstractHeader.php';
 //@require 'Swift/Mime/HeaderEncoder.php';
 
 /**
@@ -27,7 +27,7 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_Header_MailboxHeader extends Swift_Mime_Header_AbstractHeader
+class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
 {
   
   /**
@@ -99,7 +99,7 @@ class Swift_Mime_Header_MailboxHeader extends Swift_Mime_Header_AbstractHeader
    * Example:
    * <code>
    * <?php
-   * $header = new Swift_Mime_Header_MailboxHeader('From',
+   * $header = new Swift_Mime_Headers_MailboxHeader('From',
    *  array('chris@swiftmailer.org' => 'Chris Corbyn',
    *  'mark@swiftmailer.org' => 'Mark Corbyn')
    *  );
@@ -125,7 +125,7 @@ class Swift_Mime_Header_MailboxHeader extends Swift_Mime_Header_AbstractHeader
    * Example:
    * <code>
    * <?php
-   * $header = new Swift_Mime_Header_MailboxHeader('From',
+   * $header = new Swift_Mime_Headers_MailboxHeader('From',
    *  array('chris@swiftmailer.org' => 'Chris Corbyn',
    *  'mark@swiftmailer.org' => 'Mark Corbyn')
    *  );

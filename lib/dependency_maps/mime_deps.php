@@ -98,14 +98,14 @@ $_swiftMimeDeps = array(
   
   //Return-Path
   'returnpathheader' => array(
-    'class' => 'Swift_Mime_Header_PathHeader',
+    'class' => 'Swift_Mime_Headers_PathHeader',
     'args' => array('string:Return-Path'),
     'shared' => false
     ),
 
   //Sender
   'senderheader' => array(
-    'class' => 'Swift_Mime_Header_MailboxHeader',
+    'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:Sender',
       'di:qpheaderencoder'
@@ -115,28 +115,28 @@ $_swiftMimeDeps = array(
 
   //Message-ID
   'messageidheader' => array(
-    'class' => 'Swift_Mime_Header_IdentificationHeader',
+    'class' => 'Swift_Mime_Headers_IdentificationHeader',
     'args' => array('string:Message-ID'),
     'shared' => false
     ),
     
   //Content-ID
   'contentidheader' => array(
-    'class' => 'Swift_Mime_Header_IdentificationHeader',
+    'class' => 'Swift_Mime_Headers_IdentificationHeader',
     'args' => array('string:Content-ID'),
     'shared' => false
     ),
 
   //Date
   'dateheader' => array(
-    'class' => 'Swift_Mime_Header_DateHeader',
+    'class' => 'Swift_Mime_Headers_DateHeader',
     'args' => array('string:Date'),
     'shared' => false
     ),
 
   //Subject
   'subjectheader' => array(
-    'class' => 'Swift_Mime_Header_UnstructuredHeader',
+    'class' => 'Swift_Mime_Headers_UnstructuredHeader',
     'args' => array(
       'string:Subject',
       'di:qpheaderencoder'
@@ -146,7 +146,7 @@ $_swiftMimeDeps = array(
 
   //From
   'fromheader' => array(
-    'class' => 'Swift_Mime_Header_MailboxHeader',
+    'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:From',
       'di:qpheaderencoder'
@@ -156,7 +156,7 @@ $_swiftMimeDeps = array(
 
   //Reply-To
   'replytoheader' => array(
-    'class' => 'Swift_Mime_Header_MailboxHeader',
+    'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:Reply-To',
       'di:qpheaderencoder'
@@ -166,7 +166,7 @@ $_swiftMimeDeps = array(
 
   //To
   'toheader' => array(
-    'class' => 'Swift_Mime_Header_MailboxHeader',
+    'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:To',
       'di:qpheaderencoder'
@@ -176,7 +176,7 @@ $_swiftMimeDeps = array(
 
   //Cc
   'ccheader' => array(
-    'class' => 'Swift_Mime_Header_MailboxHeader',
+    'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:Cc',
       'di:qpheaderencoder'
@@ -186,7 +186,7 @@ $_swiftMimeDeps = array(
 
   //Bcc
   'bccheader' => array(
-    'class' => 'Swift_Mime_Header_MailboxHeader',
+    'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:Bcc',
       'di:qpheaderencoder'
@@ -196,14 +196,14 @@ $_swiftMimeDeps = array(
   
   //MIME-Version
   'mimeversionheader' => array(
-    'class' => 'Swift_Mime_Header_VersionHeader',
+    'class' => 'Swift_Mime_Headers_VersionHeader',
     'args' => array('string:MIME-Version'),
     'shared' => false
     ),
 
   //Content-Type
   'contenttypeheader' => array(
-    'class' => 'Swift_Mime_Header_ParameterizedHeader',
+    'class' => 'Swift_Mime_Headers_ParameterizedHeader',
     'args' => array(
       'string:Content-Type',
       'di:qpheaderencoder'
@@ -213,7 +213,7 @@ $_swiftMimeDeps = array(
     
   //Content-Disposition
   'contentdispositionheader' => array(
-    'class' => 'Swift_Mime_Header_ParameterizedHeader',
+    'class' => 'Swift_Mime_Headers_ParameterizedHeader',
     'args' => array(
       'string:Content-Disposition',
       'di:qpheaderencoder',
@@ -224,7 +224,7 @@ $_swiftMimeDeps = array(
   
   //Content-Transfer-Encoding
   'contenttransferencodingheader' => array(
-    'class' => 'Swift_Mime_Header_UnstructuredHeader',
+    'class' => 'Swift_Mime_Headers_UnstructuredHeader',
     'args' => array(
       'string:Content-Transfer-Encoding',
       'di:qpheaderencoder'
@@ -234,7 +234,7 @@ $_swiftMimeDeps = array(
   
   //Cusom (X-Header)
   'xheader' => array(
-    'class' => 'Swift_Mime_Header_ParameterizedHeader',
+    'class' => 'Swift_Mime_Headers_ParameterizedHeader',
     'args' => array(
       'lookup:xheadername',
       'di:qpheaderencoder'

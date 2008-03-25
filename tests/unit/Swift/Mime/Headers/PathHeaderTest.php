@@ -1,8 +1,8 @@
 <?php
 
-require_once 'Swift/Mime/Header/PathHeader.php';
+require_once 'Swift/Mime/Headers/PathHeader.php';
 
-class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
+class Swift_Mime_Headers_PathHeaderTest extends UnitTestCase
 {
   
   public function testSingleAddressCanBeSetAndFetched()
@@ -74,7 +74,7 @@ class Swift_Mime_Header_PathHeaderTest extends UnitTestCase
   
   private function _getHeader($name)
   {
-    return new Swift_Mime_Header_PathHeader($name);
+    return new Swift_Mime_Headers_PathHeader($name);
   }
   
 }

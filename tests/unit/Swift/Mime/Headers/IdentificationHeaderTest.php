@@ -1,8 +1,8 @@
 <?php
 
-require_once 'Swift/Mime/Header/IdentificationHeader.php';
+require_once 'Swift/Mime/Headers/IdentificationHeader.php';
 
-class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
+class Swift_Mime_Headers_IdentificationHeaderTest extends UnitTestCase
 {
   
   public function testValueMatchesMsgIdSpec()
@@ -195,7 +195,7 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
   
   private function _getHeader($name)
   {
-    return new Swift_Mime_Header_IdentificationHeader($name);
+    return new Swift_Mime_Headers_IdentificationHeader($name);
   }
   
 }

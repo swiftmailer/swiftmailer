@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Mime/Header/AbstractHeader.php';
+//@require 'Swift/Mime/Headers/AbstractHeader.php';
 
 /**
  * A MIME Version Header for Swift Mailer.
@@ -26,8 +26,8 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_Header_VersionHeader
-  extends Swift_Mime_Header_AbstractHeader
+class Swift_Mime_Headers_VersionHeader
+  extends Swift_Mime_Headers_AbstractHeader
 {
   
   /**

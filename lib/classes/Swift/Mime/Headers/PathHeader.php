@@ -1,7 +1,7 @@
 <?php
 
 /*
- A Date Mime Header in Swift Mailer.
+ A Path Header in Swift Mailer, such a Return-Path.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,81 +18,86 @@
  
  */
 
-//@require 'Swift/Mime/Header/AbstractHeader.php';
-
+//@require 'Swift/Mime/Headers/AbstractHeader.php';
 
 /**
- * A Date MIME Header for Swift Mailer.
+ * A Path Header in Swift Mailer, such a Return-Path.
  * @package Swift
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_Header_DateHeader extends Swift_Mime_Header_AbstractHeader
+class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
 {
   
   /**
-   * The UNIX timestamp value of this Header.
-   * @var int
+   * The address in this Header (if specified).
+   * @var string
    * @access private
    */
-  private $_timestamp;
+  private $_address;
   
   /**
-   * Creates a new DateHeader with $name and $timestamp.
-   * Example:
-   * <code>
-   * <?php
-   * $header = new Swift_Mime_Header_DateHeader('Date', time());
-   * ?>
-   * </code>
-   * @param string $name of Header
+   * Creates a new PathHeader with the given $name.
+   * @param string $name
    */
   public function __construct($name)
   {
     $this->setFieldName($name);
+    $this->initializeGrammar();
   }
   
   /**
    * Set the model for the field body.
-   * This method takes a UNIX timestamp.
-   * @param int $model
+   * This method takes a string for an address.
+   * @param string $model
    */
   public function setFieldBodyModel($model)
   {
-    $this->setTimestamp($model);
+    $this->setAddress($model);
   }
   
   /**
    * Get the model for the field body.
-   * This method returns a UNIX timestamp.
+   * This method returns a string email address.
    * @return mixed
    */
   public function getFieldBodyModel()
   {
-    return $this->getTimestamp();
+    return $this->getAddress();
   }
   
   /**
-   * Get the UNIX timestamp of the Date in this Header.
-   * @return int
+   * Set the Address which should appear in this Header.
+   * @param string $address
    */
-  public function getTimestamp()
+  public function setAddress($address)
   {
-    return $this->_timestamp;
-  }
-  
-  /**
-   * Set the UNIX timestamp of the Date in this Header.
-   * @param int $timestamp
-   */
-  public function setTimestamp($timestamp)
-  {
-    if (!is_null($timestamp))
+    if (is_null($address))
     {
-      $timestamp = (int) $timestamp;
+      $this->_address = null;
     }
-    $this->_timestamp = $timestamp;
+    elseif ('' == $address
+      || preg_match('/^' . $this->getGrammar('addr-spec') . '$/D', $address))
+    {
+      $this->_address = $address;
+    }
+    else
+    {
+      throw new Exception(
+        'Address set in PathHeader does not comply with addr-spec of RFC 2822.'
+        );
+    }
     $this->setCachedValue(null);
+  }
+  
+  /**
+   * Get the address which is used in this Header (if any).
+   * Null is returned if no address is set.
+   * @return string
+   */
+  public function getAddress()
+  {
+    return $this->_address;
   }
   
   /**
@@ -106,9 +111,9 @@ class Swift_Mime_Header_DateHeader extends Swift_Mime_Header_AbstractHeader
   {
     if (!$this->getCachedValue())
     {
-      if (isset($this->_timestamp))
+      if (isset($this->_address))
       {
-        $this->setCachedValue(date('r', $this->_timestamp));
+        $this->setCachedValue('<' . $this->_address . '>');
       }
     }
     return $this->getCachedValue();

@@ -4,13 +4,13 @@ require_once 'Swift/Mime/SimpleMessage.php';
 require_once 'Swift/Mime/MimePart.php';
 require_once 'Swift/Mime/Attachment.php';
 require_once 'Swift/Mime/EmbeddedFile.php';
-require_once 'Swift/Mime/Header/UnstructuredHeader.php';
-require_once 'Swift/Mime/Header/ParameterizedHeader.php';
-require_once 'Swift/Mime/Header/PathHeader.php';
-require_once 'Swift/Mime/Header/DateHeader.php';
-require_once 'Swift/Mime/Header/MailboxHeader.php';
-require_once 'Swift/Mime/Header/VersionHeader.php';
-require_once 'Swift/Mime/Header/IdentificationHeader.php';
+require_once 'Swift/Mime/Headers/UnstructuredHeader.php';
+require_once 'Swift/Mime/Headers/ParameterizedHeader.php';
+require_once 'Swift/Mime/Headers/PathHeader.php';
+require_once 'Swift/Mime/Headers/DateHeader.php';
+require_once 'Swift/Mime/Headers/MailboxHeader.php';
+require_once 'Swift/Mime/Headers/VersionHeader.php';
+require_once 'Swift/Mime/Headers/IdentificationHeader.php';
 require_once 'Swift/Encoder/Rfc2231Encoder.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
 require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
@@ -1279,35 +1279,35 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   {
     $message = new Swift_Mime_SimpleMessage(
       array(
-        new Swift_Mime_Header_PathHeader('Return-Path'),
-        new Swift_Mime_Header_MailboxHeader(
+        new Swift_Mime_Headers_PathHeader('Return-Path'),
+        new Swift_Mime_Headers_MailboxHeader(
           'Sender', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_IdentificationHeader('Message-ID'),
-        new Swift_Mime_Header_DateHeader('Date'),
-        new Swift_Mime_Header_UnstructuredHeader(
+        new Swift_Mime_Headers_IdentificationHeader('Message-ID'),
+        new Swift_Mime_Headers_DateHeader('Date'),
+        new Swift_Mime_Headers_UnstructuredHeader(
           'Subject', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_MailboxHeader(
+        new Swift_Mime_Headers_MailboxHeader(
           'From', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_MailboxHeader(
+        new Swift_Mime_Headers_MailboxHeader(
           'Reply-To', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_MailboxHeader(
+        new Swift_Mime_Headers_MailboxHeader(
           'To', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_MailboxHeader(
+        new Swift_Mime_Headers_MailboxHeader(
           'Cc', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_MailboxHeader(
+        new Swift_Mime_Headers_MailboxHeader(
           'Bcc', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_VersionHeader('MIME-Version'),
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_VersionHeader('MIME-Version'),
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Type', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_UnstructuredHeader(
+        new Swift_Mime_Headers_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder
           )
         ),
@@ -1321,10 +1321,10 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   {
     $entity = new Swift_Mime_MimePart(
       array(
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Type', $this->_headerEncoder, $this->_paramEncoder
           ),
-        new Swift_Mime_Header_UnstructuredHeader(
+        new Swift_Mime_Headers_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder
           )
         ),
@@ -1338,13 +1338,13 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   {
     $entity = new Swift_Mime_Attachment(
       array(
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Type', $this->_headerEncoder, $this->_paramEncoder
           ),
-        new Swift_Mime_Header_UnstructuredHeader(
+        new Swift_Mime_Headers_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Disposition', $this->_headerEncoder, $this->_paramEncoder
           )
         ),
@@ -1358,16 +1358,16 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   {
     $entity = new Swift_Mime_EmbeddedFile(
       array(
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Type', $this->_headerEncoder, $this->_paramEncoder
           ),
-        new Swift_Mime_Header_UnstructuredHeader(
+        new Swift_Mime_Headers_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Disposition', $this->_headerEncoder, $this->_paramEncoder
           ),
-        new Swift_Mime_Header_IdentificationHeader('Content-ID')
+        new Swift_Mime_Headers_IdentificationHeader('Content-ID')
         ),
       $this->_attachmentEncoder,
       $this->_cache

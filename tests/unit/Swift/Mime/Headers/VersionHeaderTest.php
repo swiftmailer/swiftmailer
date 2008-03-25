@@ -1,9 +1,9 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/Header/VersionHeader.php';
+require_once 'Swift/Mime/Headers/VersionHeader.php';
 
-class Swift_Mime_Header_VersionHeaderTest
+class Swift_Mime_Headers_VersionHeaderTest
   extends Swift_Tests_SwiftUnitTestCase
 {
   
@@ -59,7 +59,7 @@ class Swift_Mime_Header_VersionHeaderTest
   
   private function _getHeader($name)
   {
-    return new Swift_Mime_Header_VersionHeader($name);
+    return new Swift_Mime_Headers_VersionHeader($name);
   }
   
 }

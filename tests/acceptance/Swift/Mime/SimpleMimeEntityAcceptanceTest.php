@@ -1,9 +1,9 @@
 <?php
 
 require_once 'Swift/Mime/SimpleMimeEntity.php';
-require_once 'Swift/Mime/Header/UnstructuredHeader.php';
-require_once 'Swift/Mime/Header/ParameterizedHeader.php';
-require_once 'Swift/Mime/Header/IdentificationHeader.php';
+require_once 'Swift/Mime/Headers/UnstructuredHeader.php';
+require_once 'Swift/Mime/Headers/ParameterizedHeader.php';
+require_once 'Swift/Mime/Headers/IdentificationHeader.php';
 require_once 'Swift/Encoder/Rfc2231Encoder.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
 require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
@@ -392,7 +392,7 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
   {
     $entity = $this->_createEntity();
     $headers = $entity->getHeaders();
-    $headers[] = new Swift_Mime_Header_IdentificationHeader('Content-ID');
+    $headers[] = new Swift_Mime_Headers_IdentificationHeader('Content-ID');
     $entity->setHeaders($headers);
     
     $entity->setContentType('text/plain');
@@ -410,7 +410,7 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
   {
     $entity = $this->_createEntity();
     $headers = $entity->getHeaders();
-    $headers[] = new Swift_Mime_Header_UnstructuredHeader(
+    $headers[] = new Swift_Mime_Headers_UnstructuredHeader(
       'Content-Description', $this->_headerEncoder
       );
     $entity->setHeaders($headers);
@@ -581,10 +581,10 @@ class Swift_Mime_SimpleMimeEntityAcceptanceTest extends UnitTestCase
   {
     $entity = new Swift_Mime_SimpleMimeEntity(
       array(
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Type', $this->_headerEncoder, $this->_paramEncoder
           ),
-        new Swift_Mime_Header_UnstructuredHeader(
+        new Swift_Mime_Headers_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder
           )
         ),

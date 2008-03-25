@@ -1,8 +1,8 @@
 <?php
 
 require_once 'Swift/Mime/MimePart.php';
-require_once 'Swift/Mime/Header/UnstructuredHeader.php';
-require_once 'Swift/Mime/Header/ParameterizedHeader.php';
+require_once 'Swift/Mime/Headers/UnstructuredHeader.php';
+require_once 'Swift/Mime/Headers/ParameterizedHeader.php';
 require_once 'Swift/Encoder/Rfc2231Encoder.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
 require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
@@ -122,10 +122,10 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
   {
     $entity = new Swift_Mime_MimePart(
       array(
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Type', $this->_headerEncoder, $this->_paramEncoder
           ),
-        new Swift_Mime_Header_UnstructuredHeader(
+        new Swift_Mime_Headers_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder
           )
         ),

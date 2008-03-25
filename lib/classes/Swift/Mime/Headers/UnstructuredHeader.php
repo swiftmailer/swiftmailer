@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Mime/Header/AbstractHeader.php';
+//@require 'Swift/Mime/Headers/AbstractHeader.php';
 //@require 'Swift/Mime/HeaderEncoder.php';
 
 /**
@@ -27,8 +27,8 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_Header_UnstructuredHeader
-  extends Swift_Mime_Header_AbstractHeader
+class Swift_Mime_Headers_UnstructuredHeader
+  extends Swift_Mime_Headers_AbstractHeader
 {
   
   /**

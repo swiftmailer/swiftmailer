@@ -1,14 +1,14 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/Header/ParameterizedHeader.php';
+require_once 'Swift/Mime/Headers/ParameterizedHeader.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 require_once 'Swift/Encoder.php';
 
 Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 Mock::generate('Swift_Encoder', 'Swift_MockEncoder');
 
-class Swift_Mime_Header_ParameterizedHeaderTest
+class Swift_Mime_Headers_ParameterizedHeaderTest
   extends Swift_Tests_SwiftUnitTestCase
 {
  
@@ -367,7 +367,7 @@ class Swift_Mime_Header_ParameterizedHeaderTest
   
   private function _getHeader($name, $encoder, $paramEncoder)
   {
-    $header = new Swift_Mime_Header_ParameterizedHeader($name, $encoder,
+    $header = new Swift_Mime_Headers_ParameterizedHeader($name, $encoder,
       $paramEncoder
       );
     $header->setCharset($this->_charset);

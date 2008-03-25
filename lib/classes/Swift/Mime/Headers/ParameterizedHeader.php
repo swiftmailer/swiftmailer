@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Mime/Header/UnstructuredHeader.php';
+//@require 'Swift/Mime/Headers/UnstructuredHeader.php';
 //@require 'Swift/Mime/HeaderEncoder.php';
 //@require 'Swift/Mime/ParameterizedHeader.php';
 //@require 'Swift/Encoder.php';
@@ -29,8 +29,8 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_Header_ParameterizedHeader
-  extends Swift_Mime_Header_UnstructuredHeader
+class Swift_Mime_Headers_ParameterizedHeader
+  extends Swift_Mime_Headers_UnstructuredHeader
   implements Swift_Mime_ParameterizedHeader
 {
   

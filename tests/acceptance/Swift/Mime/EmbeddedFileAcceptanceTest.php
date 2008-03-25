@@ -1,9 +1,9 @@
 <?php
 
 require_once 'Swift/Mime/EmbeddedFile.php';
-require_once 'Swift/Mime/Header/UnstructuredHeader.php';
-require_once 'Swift/Mime/Header/ParameterizedHeader.php';
-require_once 'Swift/Mime/Header/IdentificationHeader.php';
+require_once 'Swift/Mime/Headers/UnstructuredHeader.php';
+require_once 'Swift/Mime/Headers/ParameterizedHeader.php';
+require_once 'Swift/Mime/Headers/IdentificationHeader.php';
 require_once 'Swift/Encoder/Rfc2231Encoder.php';
 require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
 require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
@@ -196,16 +196,16 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
   {
     $entity = new Swift_Mime_EmbeddedFile(
       array(
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Type', $this->_headerEncoder, null
           ),
-        new Swift_Mime_Header_UnstructuredHeader(
+        new Swift_Mime_Headers_UnstructuredHeader(
           'Content-Transfer-Encoding', $this->_headerEncoder
           ),
-        new Swift_Mime_Header_ParameterizedHeader(
+        new Swift_Mime_Headers_ParameterizedHeader(
           'Content-Disposition', $this->_headerEncoder, $this->_paramEncoder
           ),
-        new Swift_Mime_Header_IdentificationHeader('Content-ID')
+        new Swift_Mime_Headers_IdentificationHeader('Content-ID')
         ),
       $this->_contentEncoder,
       $this->_cache

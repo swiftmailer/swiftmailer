@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Mime/Header/AbstractHeader.php';
+//@require 'Swift/Mime/Headers/AbstractHeader.php';
 
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.
@@ -26,8 +26,8 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_Header_IdentificationHeader
-  extends Swift_Mime_Header_AbstractHeader
+class Swift_Mime_Headers_IdentificationHeader
+  extends Swift_Mime_Headers_AbstractHeader
 {
   
   /**

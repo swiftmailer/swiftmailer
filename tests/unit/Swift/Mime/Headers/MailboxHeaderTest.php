@@ -1,12 +1,12 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/Header/MailboxHeader.php';
+require_once 'Swift/Mime/Headers/MailboxHeader.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 
 Mock::generate('Swift_Mime_HeaderEncoder', 'Swift_Mime_MockHeaderEncoder');
 
-class Swift_Mime_Header_MailboxHeaderTest
+class Swift_Mime_Headers_MailboxHeaderTest
   extends Swift_Tests_SwiftUnitTestCase
 {
   
@@ -296,7 +296,7 @@ class Swift_Mime_Header_MailboxHeaderTest
   
   private function _getHeader($name, $encoder)
   {
-    $header = new Swift_Mime_Header_MailboxHeader($name, $encoder);
+    $header = new Swift_Mime_Headers_MailboxHeader($name, $encoder);
     $header->setCharset($this->_charset);
     return $header;
   }

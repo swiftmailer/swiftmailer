@@ -8,7 +8,6 @@ Swift Mailer SE TODO:
  * Event dispatching
    - Sendmail
    - Mail
- * Rename "Header" subpackage to "Headers"
  * CharacterReaders
    - Big5
    - Shift-JIS

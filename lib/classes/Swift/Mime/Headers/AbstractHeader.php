@@ -27,7 +27,7 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-abstract class Swift_Mime_Header_AbstractHeader implements Swift_Mime_Header
+abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 {
   
   /**
