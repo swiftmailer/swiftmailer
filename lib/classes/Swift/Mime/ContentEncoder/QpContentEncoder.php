@@ -19,7 +19,6 @@
  */
 
 //@require 'Swift/Mime/ContentEncoder.php';
-//@require 'Swift/Mime/FieldChangeObserver.php';
 //@require 'Swift/Encoder/QpEncoder.php';
 //@require 'Swift/InputByteStrean.php';
 //@require 'Swift/OutputByteStream.php';
@@ -32,7 +31,7 @@
  * @author Chris Corbyn
  */
 class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
-  implements Swift_Mime_ContentEncoder, Swift_Mime_FieldChangeObserver
+  implements Swift_Mime_ContentEncoder
 {
   
   /**
@@ -105,16 +104,12 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   }
   
   /**
-   * Changes the charset of the CharacterStream if changed.
-   * @param string $field in lowercase ALPHA
-   * @param mixed $value
+   * Notify this observer that the entity's charset has changed.
+   * @param string $charset
    */
-  public function fieldChanged($field, $value)
+  public function charsetChanged($charset)
   {
-    if ('charset' == $field)
-    {
-      $this->_charStream->setCharacterSet($value);
-    }
+    $this->_charStream->setCharacterSet($charset);
   }
   
 }

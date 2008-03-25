@@ -33,14 +33,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
 {
   
   /**
-   * The charset of this mime part.
-   * This defaults to unspecified, which according to RFC 2046 is US-ASCII.
-   * @var string
-   * @access private
-   */
-  private $_charset;
-  
-  /**
    * The charset which the user specified, even if it can't be used.
    * @var string
    * @access private
@@ -48,26 +40,11 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   private $_preferredCharset;
   
   /**
-   * The format of this mime part (i.e. flowed or fixed).
-   * If unspecified, the default is fixed as per RFC 3676.
-   * @var string
-   * @access private
-   */
-  private $_format;
-  
-  /**
    * The format the user specified, even if it can't be used.
    * @var string
    * @access private
    */
   private $_preferredFormat;
-  
-  /**
-   * Whether delsp is turned on or off according to RFC 3676.
-   * @var boolean
-   * @access private
-   */
-  private $_delSp;
   
   /**
    * DelSp as specified by the user, even if it not being used.
@@ -108,10 +85,10 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     $this->_preferredCharset = $charset;
     if (count($this->getChildren()) == 0)
     {
-      $this->_charset = $charset;
-      $this->_notifyFieldChanged('charset', $charset);
+      $this->_setHeaderParameter('content-type', 'charset', $charset);
       $this->_getCache()->clearAll($this->_getCacheKey());
     }
+    parent::charsetChanged($charset);
     return $this;
   }
   
@@ -123,7 +100,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function getCharset()
   {
-    return $this->_charset;
+    return $this->_getHeaderParameter('content-type', 'charset');
   }
   
   /**
@@ -135,8 +112,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     $this->_preferredFormat = $format;
     if (count($this->getChildren()) == 0)
     {
-      $this->_format = $format;
-      $this->_notifyFieldChanged('format', $format);
+      $this->_setHeaderParameter('content-type', 'format', $format);
       $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     }
     return $this;
@@ -150,7 +126,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function getFormat()
   {
-    return $this->_format;
+    return $this->_getHeaderParameter('content-type', 'format');
   }
   
   /**
@@ -159,11 +135,11 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function setDelSp($delSp)
   {
+    $value = $delSp ? 'yes' : null;
     $this->_preferredDelSp = $delSp;
     if (count($this->getChildren()) == 0)
     {
-      $this->_delSp = $delSp;
-      $this->_notifyFieldChanged('delsp', $delSp);
+      $this->_setHeaderParameter('content-type', 'delsp', $value);
       $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     }
     return $this;
@@ -176,7 +152,8 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function getDelSp()
   {
-    return !is_null($this->_delSp) && $this->_delSp;
+    $value = $this->_getHeaderParameter('content-type', 'delsp');
+    return (strtolower($value) == 'yes');
   }
   
   /**
@@ -235,24 +212,12 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   }
   
   /**
-   * Used to update the line length and encoding requirements from the parent.
-   * @param string $field in lowercase ALPHA
-   * @param mixed $value
+   * Overrides the superclass implementation to update this part's charset.
+   * @param string $charset
    */
-  public function fieldChanged($field, $value)
+  public function charsetChanged($charset)
   {
-    if ('encoder' == $field && ($value instanceof Swift_Mime_ContentEncoder))
-    {
-      $this->setEncoder($value);
-    }
-    elseif ('maxlinelength' == $field)
-    {
-      $this->setMaxLineLength($value);
-    }
-    elseif ('typeorderpreference' == $field)
-    {
-      $this->setTypeOrderPreference($value);
-    }
+    $this->setCharset($charset);
   }
   
   // -- Protected methods
@@ -286,8 +251,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   protected function _overrideCharset($charset)
   {
-    $this->_charset = $charset;
-    $this->_notifyFieldChanged('charset', $charset);
+    $this->_setHeaderParameter('content-type', 'charset', $charset);
   }
   
   /**
@@ -297,8 +261,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   protected function _overrideFormat($format)
   {
-    $this->_format = $format;
-    $this->_notifyFieldChanged('format', $format);
+    $this->_setHeaderParameter('content-type', 'format', $format);
   }
   
   /**
@@ -308,8 +271,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   protected function _overrideDelSp($delSp)
   {
-    $this->_delSp = $delSp;
-    $this->_notifyFieldChanged('delsp', $delSp);
+    $this->_setHeaderParameter('content-type', 'delsp', $delSp);
   }
   
   /**
@@ -345,12 +307,9 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   // -- Private methods
   
   /**
-   * Injects its own body as a subpart of the overal structure so it's still
+   * Injects its own body as a subpart of the overall structure so it's still
    * readable.
    * Returns true only if the structure was modified.
-   * @param Swift_Mime_MimeEntity[] $children
-   * @return boolean
-   * @access private
    */
   private function _moveBody(array $children)
   {

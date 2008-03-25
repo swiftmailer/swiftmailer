@@ -2,48 +2,72 @@
 
 require_once 'Swift/Mime/MimeEntity.php';
 require_once 'Swift/Mime/MimePart.php';
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/ContentEncoder.php';
+require_once 'Swift/Mime/AbstractMimeEntityTest.php';
 require_once 'Swift/Mime/Header.php';
-require_once 'Swift/Mime/FieldChangeObserver.php';
-require_once 'Swift/InputByteStream.php';
-require_once 'Swift/OutputByteStream.php';
-require_once 'Swift/KeyCache.php';
-require_once 'Swift/KeyCache/KeyCacheInputStream.php';
 
-Mock::generate('Swift_Mime_ContentEncoder', 'Swift_Mime_MockContentEncoder');
-Mock::generate('Swift_Mime_Header', 'Swift_Mime_MockHeader');
-Mock::generate('Swift_Mime_FieldChangeObserver',
-  'Swift_Mime_MockFieldChangeObserver'
-  );
-Mock::generate('Swift_InputByteStream', 'Swift_MockInputByteStream');
-Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
-Mock::generate('Swift_KeyCache', 'Swift_MockKeyCache');
-Mock::generate('Swift_KeyCache_KeyCacheInputStream',
-  'Swift_KeyCache_MockKeyCacheInputStream'
-  );
-
-class Swift_Mime_MimePartTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 {
-  private $_encoder;
-  private $_cache;
-  
-  public function setUp()
-  {
-    $this->_encoder = new Swift_Mime_MockContentEncoder();
-    $this->_cache = new Swift_MockKeyCache();
-    $this->_encoder->setReturnValue('getName', 'quoted-printable');
-  }
   
   public function testNestingLevelIsSubpart()
   {
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
+    $context = new Mockery();
+    $part = $this->_createMimePart(
+      array(), $this->_getEncoder($context), $this->_getCache($context)
+      );
     $this->assertEqual(
       Swift_Mime_MimeEntity::LEVEL_SUBPART, $part->getNestingLevel()
       );
   }
   
-  public function testCharsetCanBeSetAndFetched()
+  public function testSettingCharsetNotifiesEncoder()
+  {
+    $context = new Mockery();
+    
+    $encoder = $this->_getEncoder($context, false);
+    $context->checking(Expectations::create()
+      -> one($encoder)->charsetChanged('utf-32')
+      -> ignoring($encoder)
+      );
+    $part = $this->_createMimePart(array(), $encoder, $this->_getCache($context));
+    $part->setCharset('utf-32');
+    
+    $context->assertIsSatisfied();
+  }
+  
+  public function testSettingCharsetNotifiesChildren()
+  {
+    $context = new Mockery();
+    
+    $child1 = $context->mock('Swift_Mime_MimeEntity');
+    $child2 = $context->mock('Swift_Mime_MimeEntity');
+    $context->checking(Expectations::create()
+      -> one($child1)->charsetChanged('utf-32')
+      -> ignoring($child1)
+      -> one($child2)->charsetChanged('utf-32')
+      -> ignoring($child2)
+      );
+    $part = $this->_createMimePart(
+      array(), $this->_getEncoder($context), $this->_getCache($context)
+      );
+    $part->setChildren(array($child1, $child2));
+    $part->setCharset('utf-32');
+    
+    $context->assertIsSatisfied();
+  }
+  
+  public function testCharsetChangeUpdatesCharset()
+  {
+    $context = new Mockery();
+    $part = $this->_createMimePart(
+      array(), $this->_getEncoder($context), $this->_getCache($context)
+      );
+    $part->setCharset('utf-32');
+    $this->assertEqual('utf-32', $part->getCharset());
+    $part->charsetChanged('iso-8859-1');
+    $this->assertEqual('iso-8859-1', $part->getCharset());
+  }
+  
+  public function testCharsetIsSetInHeader()
   {
     /* -- RFC 2046, 4.1.2.
     A critical parameter that may be specified in the Content-Type field
@@ -57,89 +81,158 @@ class Swift_Mime_MimePartTest extends Swift_Tests_SwiftUnitTestCase
     must be assumed in the absence of a charset parameter, is US-ASCII.
     */
     
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
-    $part->setCharset('ucs2');
-    $this->assertEqual('ucs2', $part->getCharset());
-  }
-  
-  public function testSettingCharsetNotifiesFieldChangeObservers()
-  {
-    $observer1 = new Swift_Mime_MockFieldChangeObserver();
-    $observer1->expectOnce('fieldChanged', array('charset', 'utf-8'));
-    $observer2 = new Swift_Mime_MockFieldChangeObserver();
-    $observer2->expectOnce('fieldChanged', array('charset', 'utf-8'));
+    $context = new Mockery();
     
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
+    $h = $context->mock('Swift_Mime_ParameterizedHeader');
+    $context->checking(Expectations::create()
+      -> atLeast(1)->of($h)->setParameter('charset', 'utf-8')
+      -> allowing($h)->getFieldName() -> returns('Content-Type')
+      -> ignoring($h)
+      );
     
-    $part->registerFieldChangeObserver($observer1);
-    $part->registerFieldChangeObserver($observer2);
+    $headers = array($h);
     
+    $part = $this->_createMimePart(
+      $headers, $this->_getEncoder($context), $this->_getCache($context)
+      );
     $part->setCharset('utf-8');
+    
+    $context->assertIsSatisfied();
   }
   
-  public function testFormatCanBeSetAndFetched()
+  public function testCharsetIsReadFromHeader()
+  {
+    $context = new Mockery();
+    
+    $h = $context->mock('Swift_Mime_ParameterizedHeader');
+    $context->checking(Expectations::create()
+      -> atLeast(1)->of($h)->getParameter('charset') -> returns('iso-8859-1')
+      -> allowing($h)->getFieldName() -> returns('Content-Type')
+      -> ignoring($h)
+      );
+    
+    $headers = array($h);
+    
+    $part = $this->_createMimePart(
+      $headers, $this->_getEncoder($context), $this->_getCache($context)
+      );
+    $this->assertEqual('iso-8859-1', $part->getCharset());
+    
+    $context->assertIsSatisfied();
+  }
+  
+  public function testFormatIsSetInHeader()
   {
     /* -- RFC 3676.
      */
     
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
-    $part->setFormat('flowed'); //'fixed' is valid too
-    $this->assertEqual('flowed', $part->getFormat());
-  }
-  
-  public function testSettingFormatNotifiesFieldChangeObservers()
-  {
-    $observer1 = new Swift_Mime_MockFieldChangeObserver();
-    $observer1->expectOnce('fieldChanged', array('format', 'fixed'));
-    $observer2 = new Swift_Mime_MockFieldChangeObserver();
-    $observer2->expectOnce('fieldChanged', array('format', 'fixed'));
+    $context = new Mockery();
     
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
+    $h = $context->mock('Swift_Mime_ParameterizedHeader');
+    $context->checking(Expectations::create()
+      -> atLeast(1)->of($h)->setParameter('format', 'fixed')
+      -> allowing($h)->getFieldName() -> returns('Content-Type')
+      -> ignoring($h)
+      );
     
-    $part->registerFieldChangeObserver($observer1);
-    $part->registerFieldChangeObserver($observer2);
+    $headers = array($h);
     
+    $part = $this->_createMimePart(
+      $headers, $this->_getEncoder($context), $this->_getCache($context)
+      );
     $part->setFormat('fixed');
+    
+    $context->assertIsSatisfied();
   }
   
-  public function testDelSpCanBeSetAndFetched()
+  public function testFormatIsReadFromHeader()
+  {
+    $context = new Mockery();
+    
+    $h = $context->mock('Swift_Mime_ParameterizedHeader');
+    $context->checking(Expectations::create()
+      -> atLeast(1)->of($h)->getParameter('format') -> returns('flowed')
+      -> allowing($h)->getFieldName() -> returns('Content-Type')
+      -> ignoring($h)
+      );
+    
+    $headers = array($h);
+    
+    $part = $this->_createMimePart(
+      $headers, $this->_getEncoder($context), $this->_getCache($context)
+      );
+    $this->assertEqual('flowed', $part->getFormat());
+    
+    $context->assertIsSatisfied();
+  }
+  
+  public function testDelSpIsSetInHeader()
   {
     /* -- RFC 3676.
      */
+     
+    $context = new Mockery();
     
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
-    $part->setDelSp(true); //false is valid too
-    $this->assertTrue($part->getDelSp());
+    $h = $context->mock('Swift_Mime_ParameterizedHeader');
+    $context->checking(Expectations::create()
+      -> atLeast(1)->of($h)->setParameter('delsp', 'yes')
+      -> allowing($h)->getFieldName() -> returns('Content-Type')
+      -> ignoring($h)
+      );
+    
+    $headers = array($h);
+    
+    $part = $this->_createMimePart(
+      $headers, $this->_getEncoder($context), $this->_getCache($context)
+      );
+    $part->setDelSp(true);
+    
+    $context->assertIsSatisfied();
   }
   
-  public function testSettingDelSpNotifiesFieldChangeObservers()
+  public function testDelSpIsReadFromHeader()
   {
-    $observer1 = new Swift_Mime_MockFieldChangeObserver();
-    $observer1->expectOnce('fieldChanged', array('delsp', true));
-    $observer2 = new Swift_Mime_MockFieldChangeObserver();
-    $observer2->expectOnce('fieldChanged', array('delsp', true));
+    $context = new Mockery();
     
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
+    $h = $context->mock('Swift_Mime_ParameterizedHeader');
+    $context->checking(Expectations::create()
+      -> atLeast(1)->of($h)->getParameter('delsp') -> returns('yes')
+      -> allowing($h)->getFieldName() -> returns('Content-Type')
+      -> ignoring($h)
+      );
     
-    $part->registerFieldChangeObserver($observer1);
-    $part->registerFieldChangeObserver($observer2);
+    $headers = array($h);
     
-    $part->setDelSp(true);
+    $part = $this->_createMimePart(
+      $headers, $this->_getEncoder($context), $this->_getCache($context)
+      );
+    $this->assertTrue($part->getDelSp());
+    
+    $context->assertIsSatisfied();
   }
   
   public function testFluidInterface()
   {
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
+    $context = new Mockery();
+    $child = $context->mock('Swift_Mime_MimeEntity');
+    $encoder = $this->_getEncoder($context);
+    $context->checking(Expectations::create()
+      -> allowing($child)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
+      -> ignoring($child)
+      );
+    $part = $this->_createMimePart(
+      array(), $encoder, $this->_getCache($context)
+      );
     $ref = $part
       ->setContentType('text/plain')
-      ->setEncoder($this->_encoder)
+      ->setEncoder($encoder)
       ->setId('foo@bar')
       ->setDescription('my description')
       ->setMaxLineLength(998)
       ->setBodyAsString('xx')
       ->setNestingLevel(10)
       ->setBoundary('xyz')
-      ->setChildren(array())
+      ->setChildren(array($child))
       ->setHeaders(array())
       ->setCharset('iso-8859-1')
       ->setFormat('flowed')
@@ -147,21 +240,19 @@ class Swift_Mime_MimePartTest extends Swift_Tests_SwiftUnitTestCase
       ;
     
     $this->assertReference($part, $ref);
-  }
-  
-  public function testEncoderFieldChangeUpdatesEncoder()
-  {
-    $part = $this->_createMimePart(array(), $this->_encoder, $this->_cache);
-    $this->assertReference($this->_encoder, $part->getEncoder());
-    $encoder = new Swift_Mime_MockContentEncoder();
-    $encoder->setReturnValue('getName', '8bit');
-    $part->fieldChanged('encoder', $encoder);
-    $this->assertReference($encoder, $part->getEncoder());
+    
+    $context->assertIsSatisfied();
   }
   
   // -- Private helpers
   
-  private function _createMimePart($headers, $encoder, $cache)
+  //abstract
+  protected function _createEntity($headers, $encoder, $cache)
+  {
+    return $this->_createMimePart($headers, $encoder, $cache);
+  }
+  
+  protected function _createMimePart($headers, $encoder, $cache)
   {
     return new Swift_Mime_MimePart($headers, $encoder, $cache);
   }

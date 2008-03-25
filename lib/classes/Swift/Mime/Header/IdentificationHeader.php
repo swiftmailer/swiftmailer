@@ -19,7 +19,6 @@
  */
 
 //@require 'Swift/Mime/Header/AbstractHeader.php';
-//@require 'Swift/Mime/FieldChangeObserver.php';
 
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.
@@ -29,7 +28,6 @@
  */
 class Swift_Mime_Header_IdentificationHeader
   extends Swift_Mime_Header_AbstractHeader
-  implements Swift_Mime_FieldChangeObserver
 {
   
   /**
@@ -48,6 +46,26 @@ class Swift_Mime_Header_IdentificationHeader
   {
     $this->setFieldName($name);
     $this->initializeGrammar();
+  }
+  
+  /**
+   * Set the model for the field body.
+   * This method takes a string ID, or an array of IDs
+   * @param mixed $model
+   */
+  public function setFieldBodyModel($model)
+  {
+    $this->setId($model);
+  }
+  
+  /**
+   * Get the model for the field body.
+   * This method returns an array of IDs
+   * @return array
+   */
+  public function getFieldBodyModel()
+  {
+    return $this->getIds();
   }
   
   /**
@@ -130,29 +148,6 @@ class Swift_Mime_Header_IdentificationHeader
       $this->setCachedValue(implode(' ', $angleAddrs));
     }
     return $this->getCachedValue();
-  }
-  
-  /**
-   * Notify this observer that a field has changed to $value.
-   * "Field" is a loose term and refers to class fields rather than
-   * header fields.  $field will always be in lowercase and will be alpha.
-   * only.
-   * An example could be fieldChanged('contenttype', 'text/plain');
-   * This of course reflects a change in the body of the Content-Type header.
-   * Another example could be fieldChanged('charset', 'us-ascii');
-   * This reflects a change in the charset parameter of the Content-Type header.
-   * @param string $field in lowercase ALPHA
-   * @param mixed $value
-   */
-  public function fieldChanged($field, $value)
-  {
-    $fieldName = strtolower($this->getFieldName());
-    
-    if (('content-id' == $fieldName && 'id' == $field)
-      || ('message-id' == $fieldName && 'id' == $field))
-    {
-      $this->setId($value);
-    }
   }
   
 }

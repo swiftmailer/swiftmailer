@@ -21,6 +21,7 @@
 //@require 'Swift/Encoder.php';
 //@require 'Swift/InputByteStream.php';
 //@require 'Swift/OutputByteStream.php';
+//@require 'Swift/Mime/CharsetObserver.php';
 
 /**
  * Interface for all Transfer Encoding schemes.
@@ -28,7 +29,8 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-interface Swift_Mime_ContentEncoder extends Swift_Encoder
+interface Swift_Mime_ContentEncoder
+  extends Swift_Encoder, Swift_Mime_CharsetObserver
 {
   
   /**

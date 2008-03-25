@@ -335,108 +335,20 @@ class Swift_Mime_Header_UnstructuredHeaderTest extends Swift_Tests_SwiftUnitTest
       );
   }
   
-  // --- THESE TESTS ARE IMPLEMENTATION SPECIFIC FOR COMPATIBILITY WITH --
-  // --- SimpleMimeEntity ---
-  
-  public function testFieldChangeObserverCanSetContentTransferEncoding()
+  public function testSetBodyModel()
   {
-    $header = $this->_getHeader('Content-Transfer-Encoding',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setValue('7bit');
-    $encoder = new Swift_Mime_MockContentEncoder();
-    $encoder->setReturnValue('getName', 'quoted-printable');
-    $header->fieldChanged('encoder', $encoder);
-    $this->assertEqual('quoted-printable', $header->getValue());
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $header = $this->_getHeader('Subject', $encoder);
+    $header->setFieldBodyModel('test');
+    $this->assertEqual('test', $header->getValue());
   }
   
-  public function testTransferEncodingFieldChangeIsIgnoredByOtherHeaders()
+  public function testGetBodyModel()
   {
-    $header = $this->_getHeader('Subject',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setValue('My subject');
-    $encoder = new Swift_Mime_MockContentEncoder();
-    $encoder->setReturnValue('getName', 'quoted-printable');
-    $header->fieldChanged('encoding', $encoder);
-    $this->assertEqual('My subject', $header->getValue());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForTransferEncoding()
-  {
-    $header = $this->_getHeader('Content-Transfer-Encoding',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setValue('7bit');
-    foreach (array('subject', 'comments', 'x-foo') as $field)
-    {
-      $header->fieldChanged($field, 'xxxxx');
-      $this->assertEqual('7bit', $header->getValue());
-    }
-  }
-  
-  public function testObserverInterfaceChangesContentDescription()
-  {
-    $header = $this->_getHeader('Content-Description',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->fieldChanged('description', 'testing');
-    $this->assertEqual('testing', $header->getValue());
-  }
-  
-  public function testDescriptionFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Subject',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setValue('subj');
-    $header->fieldChanged('description', 'testing');
-    $this->assertEqual('subj', $header->getValue());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForContentDescription()
-  {
-    $header = $this->_getHeader('Content-Description',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setValue('testing');
-    foreach (array('subject', 'comments', 'x-foo') as $field)
-    {
-      $header->fieldChanged($field, 'xxxxx');
-      $this->assertEqual('testing', $header->getValue());
-    }
-  }
-  
-  public function testFieldChangeObserverCanSetSubject()
-  {
-    $header = $this->_getHeader('Subject',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->fieldChanged('subject', 'testing');
-    $this->assertEqual('testing', $header->getValue());
-  }
-  
-  public function testSubjectFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setValue('text/plain');
-    $header->fieldChanged('subject', 'testing');
-    $this->assertEqual('text/plain', $header->getValue());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForSubject()
-  {
-    $header = $this->_getHeader('Subject',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setValue('testing');
-    foreach (array('charset', 'comments', 'x-foo') as $field)
-    {
-      $header->fieldChanged($field, 'xxxxx');
-      $this->assertEqual('testing', $header->getValue());
-    }
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $header = $this->_getHeader('Subject', $encoder);
+    $header->setValue('test');
+    $this->assertEqual('test', $header->getFieldBodyModel());
   }
   
   // -- Private methods

@@ -29,6 +29,20 @@ interface Swift_Mime_Header
 {
   
   /**
+   * Set the model for the field body.
+   * The actual types needed will vary depending upon the type of Header.
+   * @param mixed $model
+   */
+  public function setFieldBodyModel($model);
+  
+  /**
+   * Get the model for the field body.
+   * The return type depends on the specifics of the Header.
+   * @return mixed
+   */
+  public function getFieldBodyModel();
+  
+  /**
    * Get the name of this header (e.g. Subject).
    * The name is an identifier and as such will be immutable.
    * @return string

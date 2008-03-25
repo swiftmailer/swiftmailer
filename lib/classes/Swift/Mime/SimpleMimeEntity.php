@@ -24,7 +24,6 @@
 //@require 'Swift/Mime/MimeEntity.php';
 //@require 'Swift/Mime/Header.php';
 //@require 'Swift/Mime/ContentEncoder.php';
-//@require 'Swift/Mime/FieldChangeObserver.php';
 
 /**
  * A MIME entity, in a multipart message.
@@ -32,8 +31,7 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Mime_SimpleMimeEntity
-  implements Swift_Mime_MimeEntity, Swift_Mime_FieldChangeObserver
+class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 {
   
   /**
@@ -51,32 +49,25 @@ class Swift_Mime_SimpleMimeEntity
   private $_headers = array();
   
   /**
-   * The Content-type of this entity.
-   * @var string
+   * Model data for Header fields where the actual Header is not present.
+   * @var array
    * @access private
    */
-  private $_contentType = 'text/plain';
+  private $_fieldModels = array();
+  
+  /**
+   * Parameters set on header fields where the header is not present.
+   * @var array
+   * @access private
+   */
+  private $_parameters = array();
   
   /**
    * The preferred Content-type of this entity.
    * @var string
    * @access private
    */
-  private $_preferredContentType = 'text/plain';
-  
-  /**
-   * The unique ID of this entity.
-   * @var string
-   * @access private
-   */
-  private $_id;
-  
-  /**
-   * The optional description of this entity.
-   * @var string
-   * @access private
-   */
-  private $_description;
+  private $_preferredContentType;
   
   /**
    * The maximum length of all lines in this entity (excluding the CRLF).
@@ -112,24 +103,6 @@ class Swift_Mime_SimpleMimeEntity
    * @access private
    */
   private $_immediateChildren = array();
-  
-  /**
-   * Observers which watch for fields being changed in the entity.
-   * @var Swift_Mime_FieldChangeObserver[]
-   * @access private
-   */
-  private $_fieldChangeObservers = array();
-  
-  /**
-   * Internally set FieldChangeObservers.
-   * @var Swift_Mime_FieldChangeObserver[]
-   * @access private
-   */
-  private $_internalFieldChangeObservers = array(
-    'headers' => array(),
-    'children' => array(),
-    'encoders' => array()
-    );
   
   /**
    * The level at which this entity nests.
@@ -193,6 +166,7 @@ class Swift_Mime_SimpleMimeEntity
     $this->setHeaders($headers);
     $this->setEncoder($encoder);
     $this->setId($this->_generateId());
+    $this->setContentType('text/plain');
     $this->setChildren(array());
   }
   
@@ -231,7 +205,6 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function setHeaders(array $headers)
   {
-    $this->_registerInternalFieldChangeObservers($headers, 'headers');
     $this->_headers = $headers;
     $this->_cache->clearKey($this->_cacheKey, 'headers');
     return $this;
@@ -316,8 +289,8 @@ class Swift_Mime_SimpleMimeEntity
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_encoder = $encoder;
-    $this->_registerInternalFieldChangeObservers(array($encoder), 'encoders');
-    $this->_notifyFieldChanged('encoder', $encoder);
+    $this->_setHeaderModel('content-transfer-encoding', $encoder->getName());
+    $this->_notifyEncoderChanged($encoder);
     $this->_cache->clearAll($this->_cacheKey);
     return $this;
   }
@@ -345,8 +318,7 @@ class Swift_Mime_SimpleMimeEntity
     if ('multipart' == array_shift($str)
       || empty($this->_children))
     {
-      $this->_contentType = $contentType;
-      $this->_notifyFieldChanged('contenttype', $contentType);
+      $this->_setHeaderModel('content-type', $contentType);
       $this->_cache->clearKey($this->_cacheKey, 'headers');
     }
     return $this;
@@ -358,31 +330,26 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function getContentType()
   {
-    return $this->_contentType;
+    return $this->_getHeaderModel('content-type');
   }
   
   /**
-   * Set the unique ID of this mime entity.
-   * This should be valid syntax for a Content-ID header (i.e. xxx@yyy).
-   * Returns a reference to itself for fluid interface.
+   * Set the Content-ID.
    * @param string $id
-   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setId($id)
   {
-    $this->_id = $id;
-    $this->_notifyFieldChanged('id', $id);
-    $this->_cache->clearKey($this->_cacheKey, 'headers');
-    return $this;
+    return $this->_setHeaderModel('content-id', $id);
   }
   
   /**
-   * Get the unique identifier for this mime entity.
+   * Get the Content-ID.
    * @return string
    */
   public function getId()
   {
-    return $this->_id;
+    $model = (array) $this->_getHeaderModel('content-id');
+    return current($model);
   }
   
   /**
@@ -393,10 +360,7 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function setDescription($description)
   {
-    $this->_description = $description;
-    $this->_notifyFieldChanged('description', $description);
-    $this->_cache->clearKey($this->_cacheKey, 'headers');
-    return $this;
+    return $this->_setHeaderModel('content-description', $description);
   }
   
   /**
@@ -405,7 +369,7 @@ class Swift_Mime_SimpleMimeEntity
    */
   public function getDescription()
   {
-    return $this->_description;
+    return $this->_getHeaderModel('content-description');
   }
   
   /**
@@ -417,7 +381,6 @@ class Swift_Mime_SimpleMimeEntity
   public function setMaxLineLength($length)
   {
     $this->_maxLineLength = (int) $length;
-    $this->_notifyFieldChanged('maxlinelength', (int) $length);
     $this->_cache->clearKey($this->_cacheKey, 'body');
     return $this;
   }
@@ -502,16 +465,6 @@ class Swift_Mime_SimpleMimeEntity
   }
   
   /**
-   * Register a new observer for changes to fields in this entity.
-   * @param Swift_Mime_FieldChangeObserver $observer
-   */
-  public function registerFieldChangeObserver(
-    Swift_Mime_FieldChangeObserver $observer)
-  {
-    $this->_fieldChangeObservers[] = $observer;
-  }
-  
-  /**
    * Attach an array of other entities to this entity.
    * These will be re-ordered according to their nesting levels.
    * Returns a reference to itself for fluid interface.
@@ -582,10 +535,8 @@ class Swift_Mime_SimpleMimeEntity
     $this->_children = $children;
     //Update the content-type
     $this->_overrideContentType($newContentType);
-    //Check if any of these entities are observers
-    $this->_registerInternalFieldChangeObservers($immediateChildren, 'children');
     //Make sure the boundary is integral
-    $this->_refreshBoundary(!empty($children));
+    $this->_refreshBoundary();
     //Logically order the parts if conclusively possible
     $this->_repairOrdering();
     
@@ -619,12 +570,16 @@ class Swift_Mime_SimpleMimeEntity
       $this->_boundary = $boundary;
       if (!empty($this->_children))
       {
-        $this->_notifyFieldChanged('boundary', $boundary);
+        $this->_setHeaderParameter('content-type', 'boundary', $boundary);
+      }
+      else
+      {
+        $this->_setHeaderParameter('content-type', 'boundary', null);
       }
     }
     else
     {
-      throw new Exception('Mime boundary set is not RFC 2046 compliant.');
+      trigger_error('Mime boundary set is not RFC 2046 compliant.');
     }
     $this->_cache->clearAll($this->_cacheKey);
     return $this;
@@ -683,7 +638,6 @@ class Swift_Mime_SimpleMimeEntity
   {
     $this->_typeOrderPreference = $order;
     $this->setChildren($this->_children);
-    $this->_notifyFieldChanged('typeorderpreference', $order);
   }
   
   /**
@@ -831,35 +785,6 @@ class Swift_Mime_SimpleMimeEntity
   }
   
   /**
-   * Notify this entity that a field has changed to $value in its parent.
-   * "Field" is a loose term and refers to class fields rather than
-   * header fields.  $field will always be in lowercase and will be alpha.
-   * only.
-   * An example could be fieldChanged('contenttype', 'text/plain');
-   * This of course reflects a change in the body of the Content-Type header.
-   * Another example could be fieldChanged('charset', 'us-ascii');
-   * This reflects a change in the charset parameter of the Content-Type header.
-   * @param string $field in lowercase ALPHA
-   * @param mixed $value
-   */
-  public function fieldChanged($field, $value)
-  {
-    if ('encoder' == $field && substr($this->_contentType, 0, 10) == 'multipart/'
-      && ($value instanceof Swift_Mime_ContentEncoder))
-    {
-      $this->setEncoder($value);
-    }
-    elseif ('maxlinelength' == $field)
-    {
-      $this->setMaxLineLength($value);
-    }
-    elseif ('typeorderpreference' == $field)
-    {
-      $this->setTypeOrderPreference($value);
-    }
-  }
-  
-  /**
    * Get a list of (lowercased) header field names which will always be displayed.
    * @return string[]
    */
@@ -876,25 +801,119 @@ class Swift_Mime_SimpleMimeEntity
     $this->_cache->clearAll($this->_cacheKey);
   }
   
+  /**
+   * Notify this observer that the observed entity's ContentEncoder has changed.
+   * @param Swift_Mime_ContentEncoder $encoder
+   */
+  public function encoderChanged(Swift_Mime_ContentEncoder $encoder)
+  {
+    $this->_notifyEncoderChanged($encoder);
+  }
+  
+  /**
+   * Notify this observer that the observed entity's charset has changed.
+   * @param string $charset
+   */
+  public function charsetChanged($charset)
+  {
+    $this->_notifyCharsetChanged($charset);
+  }
+  
   // -- Protected methods
   
   /**
-   * Notify all observers of a field being changed.
+   * Set Model data which belongs in the Headers of the Entity.
    * @param string $field
-   * @param mixed $value
+   * @param mixed $model
+   * @return Swift_Mime_SimpleMimeEntity
    * @access protected
    */
-  protected function _notifyFieldChanged($field, $value)
+  protected function _setHeaderModel($field, $model)
   {
-    foreach (array_merge(
-      $this->_fieldChangeObservers,
-      $this->_internalFieldChangeObservers['headers'],
-      $this->_internalFieldChangeObservers['children'],
-      $this->_internalFieldChangeObservers['encoders']
-      ) as $observer)
+    if ($header = $this->getHeader($field))
     {
-      $observer->fieldChanged($field, $value);
+      $header->setFieldBodyModel($model);
     }
+    else
+    {
+      $field = strtolower($field);
+      $this->_fieldModels[$field] = $model;
+    }
+    return $this;
+  }
+  
+  /**
+   * Get Model data from the Headers of the Entity.
+   * @return mixed
+   * @access protected
+   */
+  protected function _getHeaderModel($field)
+  {
+    if ($header = $this->getHeader($field))
+    {
+      return $header->getFieldBodyModel();
+    }
+    else
+    {
+      $field = strtolower($field);
+      return array_key_exists($field, $this->_fieldModels)
+        ? $this->_fieldModels[$field]
+        : null;
+    }
+  }
+  
+  /**
+   * Set a parameter in a Header.
+   * @param string $field
+   * @param string $parameter
+   * @param string $value
+   * @access protected
+   */
+  protected function _setHeaderParameter($field, $parameter, $value)
+  {
+    if (($header = $this->getHeader($field))
+      && ($header instanceof Swift_Mime_ParameterizedHeader))
+    {
+      $header->setParameter($parameter, $value);
+    }
+    else
+    {
+      $field = strtolower($field);
+      if (!isset($this->_parameters[$field]))
+      {
+        $this->_parameters[$field] = array();
+      }
+      $this->_parameters[$field][$parameter] = $value;
+    }
+    return $this;
+  }
+  
+  /**
+   * Get a parameter in a Header.
+   * @param string $field
+   * @param string $parameter
+   * @access protected
+   */
+  protected function _getHeaderParameter($field, $parameter)
+  {
+    if (($header = $this->getHeader($field))
+      && ($header instanceof Swift_Mime_ParameterizedHeader))
+    {
+      $value = $header->getParameter($parameter);
+    }
+    else
+    {
+      $field = strtolower($field);
+      if (!isset($this->_parameters[$field]))
+      {
+        $this->_parameters[$field] = array();
+      }
+      $value = isset($this->_parameters[$field][$parameter])
+        ? $this->_parameters[$field][$parameter]
+        : null
+        ;
+    }
+    return $value;
   }
   
   /**
@@ -981,27 +1000,8 @@ class Swift_Mime_SimpleMimeEntity
    */
   protected function _overrideContentType($contentType)
   {
-    $this->_contentType = $contentType;
-    $this->_notifyFieldChanged('contenttype', $contentType);
+    $this->_setHeaderModel('content-type', $contentType);
     $this->_cache->clearKey($this->_cacheKey, 'headers');
-  }
-  
-  /**
-   * Scan an array of objects and register any observers found using $key.
-   * @param array $objects
-   * @param string $key
-   * @access protected
-   */
-  protected function _registerInternalFieldChangeObservers(array $objects, $key)
-  {
-    $this->_internalFieldChangeObservers[$key] = array();
-    foreach ($objects as $o)
-    {
-      if ($o instanceof Swift_Mime_FieldChangeObserver)
-      {
-        $this->_internalFieldChangeObservers[$key][] = $o;
-      }
-    }
   }
   
   /**
@@ -1042,12 +1042,11 @@ class Swift_Mime_SimpleMimeEntity
   
   /**
    * Inform observers of the currently active boundary.
-   * @param boolean $apply if boundary is used
    * @access private
    */
-  private function _refreshBoundary($apply)
+  private function _refreshBoundary()
   {
-    $this->_notifyFieldChanged('boundary', $apply ? $this->getBoundary() : null);
+    $this->setBoundary($this->getBoundary());
   }
   
   /**
@@ -1096,6 +1095,29 @@ class Swift_Mime_SimpleMimeEntity
     if ($shouldSort)
     {
       usort($this->_immediateChildren, array($this, '_sortChildren'));
+    }
+  }
+  
+  /**
+   * Notify all children that the Encoder has been changed.
+   */
+  private function _notifyEncoderChanged(Swift_Mime_ContentEncoder $encoder)
+  {
+    foreach ($this->_children as $child)
+    {
+      $child->encoderChanged($encoder);
+    }
+  }
+  
+  /**
+   * Notify all children and encoder that the charset has been changed.
+   */
+  private function _notifyCharsetChanged($charset)
+  {
+    $this->_encoder->charsetChanged($charset);
+    foreach ($this->_children as $child)
+    {
+      $child->charsetChanged($charset);
     }
   }
   

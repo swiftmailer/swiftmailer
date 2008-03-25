@@ -328,266 +328,39 @@ class Swift_Mime_Header_ParameterizedHeaderTest
       );
   }
   
-  // --- THESE TESTS ARE IMPLEMENTATION SPECIFIC FOR COMPATIBILITY WITH --
-  // --- SimpleMimeEntity ---
-  
-  public function testFieldChangeNotificationCanSetContentType()
+  public function testSetBodyModel()
   {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->setParameters(array('charset' => 'iso-8859-1'));
-    $header->fieldChanged('contenttype', 'text/html');
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $header = $this->_getHeader('Content-Type', $encoder, new Swift_MockEncoder());
+    $header->setFieldBodyModel('text/html');
     $this->assertEqual('text/html', $header->getValue());
   }
   
-  public function testContentTypeFieldChangeIsIgnoredForOtherHeaders()
+  public function testGetBodyModel()
   {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('inline');
-    $header->setParameters(array('charset' => 'iso-8859-1'));
-    $header->fieldChanged('contenttype', 'text/html');
-    $this->assertEqual('inline', $header->getValue());
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $header = $this->_getHeader('Content-Type', $encoder, new Swift_MockEncoder());
+    $header->setValue('text/plain');
+    $this->assertEqual('text/plain', $header->getFieldBodyModel());
   }
   
-  public function testFieldChangeNotificationCanSetCharset()
+  public function testSetParameter()
   {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->setParameters(array('charset' => 'iso-8859-1'));
-    $header->fieldChanged('charset', 'utf-8');
-    $this->assertEqual(array('charset' => 'utf-8'), $header->getParameters());
-  }
-  
-  public function testCharsetFieldChangeIsIgnoredForOtherHeaders()
-  {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->setParameters(array('charset' => 'iso-8859-1'));
-    $header->fieldChanged('charset', 'utf-8');
-    $this->assertEqual(array('charset' => 'iso-8859-1'), $header->getParameters());
-  }
-  
-  public function testFormatFieldChangeCanSetFormat()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->setParameters(array('charset' => 'iso-8859-1'));
-    $header->fieldChanged('format', 'flowed');
-    $this->assertEqual(
-      array('charset' => 'iso-8859-1', 'format' => 'flowed'),
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $header = $this->_getHeader('Content-Type', $encoder, new Swift_MockEncoder());
+    $header->setParameters(array('charset'=>'utf-8', 'delsp' => 'yes'));
+    $header->setParameter('delsp', 'no');
+    $this->assertEqual(array('charset'=>'utf-8', 'delsp'=>'no'),
       $header->getParameters()
       );
   }
   
-  public function testFormatFieldChangeDoesNotAffectOtherHeaders()
+  public function testGetParameter()
   {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('attachment');
-    $header->setParameters(array('filename' => 'foo.txt'));
-    $header->fieldChanged('format', 'flowed');
-    $this->assertEqual(
-      array('filename' => 'foo.txt'),
-      $header->getParameters()
-      );
-  }
-  
-  public function testDelSpFieldChangeCanSetFormat()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->setParameters(array('charset' => 'iso-8859-1'));
-    $header->fieldChanged('delsp', true);
-    $this->assertEqual(
-      array('charset' => 'iso-8859-1', 'delsp' => 'yes'),
-      $header->getParameters()
-      );
-  }
-  
-  public function testFieldChangeNotificationCanSetBoundary()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('multipart/mixed');
-    $header->setParameters(array('charset' => '7bit'));
-    $header->fieldChanged('boundary', 'foobar_-_123');
-    $this->assertEqual(
-      array('charset' => '7bit', 'boundary' => 'foobar_-_123'),
-      $header->getParameters()
-      );
-  }
-  
-  public function testBoundaryFieldChangeDoesNotAffectOtherHeaders()
-  {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('attachment');
-    $header->setParameters(array('filename' => 'foo.txt'));
-    $header->fieldChanged('boundary', 'foobar_-_123');
-    $this->assertEqual(
-      array('filename' => 'foo.txt'),
-      $header->getParameters()
-      );
-  }
-  
-  public function testIrrelevantFieldsAreIgnoredForContentTypeHeaders()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->setParameters(array('charset' => 'iso-8859-1'));
-    
-    foreach (array('name', 'xyz') as $field)
-    {
-      $header->fieldChanged($field, 'xxxx');
-      $this->assertEqual(array('charset' => 'iso-8859-1'), $header->getParameters());
-      $this->assertEqual('text/plain', $header->getValue());
-    }
-  }
-  
-  public function testFieldChangeNotificationCanSetDisposition()
-  {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->fieldChanged('disposition', 'inline');
-    $this->assertEqual('inline', $header->getValue());
-  }
-  
-  public function testDispositionFieldChangeDoesNotAffectOtherHeaders()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->fieldChanged('disposition', 'inline');
-    $this->assertEqual('text/plain', $header->getValue());
-  }
-  
-  public function testFieldChangeNotificationCanSetFilename()
-  {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('inline');
-    $header->fieldChanged('filename', 'foo.pdf');
-    $this->assertEqual(
-      array('filename' => 'foo.pdf'),
-      $header->getParameters()
-      );
-  }
-  
-  public function testFieldChangeNotificationCanSetFilenameInContentType()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('image/jpeg');
-    $header->fieldChanged('filename', 'foo.jpg');
-    $this->assertEqual(
-      array('name' => 'foo.jpg'),
-      $header->getParameters()
-      );
-  }
-  
-  public function testFilenameFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('X-Foo',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->fieldChanged('filename', 'foo.txt');
-    $this->assertEqual('text/plain', $header->getValue());
-    $this->assertEqual(array(), $header->getParameters());
-  }
-  
-  public function testFieldChangeNotificationCanSetCreationDate()
-  {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('inline');
-    $header->fieldChanged('creationdate', 123456);
-    $this->assertEqual(
-      array('creation-date' => date('r', 123456)),
-      $header->getParameters()
-      );
-  }
-  
-  public function testCreationDateFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->fieldChanged('creationdate', 123456);
-    $this->assertEqual('text/plain', $header->getValue());
-    $this->assertEqual(array(), $header->getParameters());
-  }
-  
-  public function testFieldChangeNotificationCanSetModificationDate()
-  {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('inline');
-    $header->fieldChanged('modificationdate', 123456);
-    $this->assertEqual(
-      array('modification-date' => date('r', 123456)),
-      $header->getParameters()
-      );
-  }
-  
-  public function testModificationDateFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->fieldChanged('modificationdate', 123456);
-    $this->assertEqual('text/plain', $header->getValue());
-    $this->assertEqual(array(), $header->getParameters());
-  }
-  
-  public function testFieldChangeNotificationCanSetReadDate()
-  {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('inline');
-    $header->fieldChanged('readdate', 123456);
-    $this->assertEqual(
-      array('read-date' => date('r', 123456)),
-      $header->getParameters()
-      );
-  }
-  
-  public function testReadDateFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->fieldChanged('readdate', 123456);
-    $this->assertEqual('text/plain', $header->getValue());
-    $this->assertEqual(array(), $header->getParameters());
-  }
-  
-  public function testFieldChangeNotificationCanSetSize()
-  {
-    $header = $this->_getHeader('Content-Disposition',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('inline');
-    $header->fieldChanged('size', 123456);
-    $this->assertEqual(
-      array('size' => 123456),
-      $header->getParameters()
-      );
-  }
-  
-  public function testSizeFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Content-Type',
-      new Swift_Mime_MockHeaderEncoder(), new Swift_MockEncoder());
-    $header->setValue('text/plain');
-    $header->fieldChanged('size', 123456);
-    $this->assertEqual('text/plain', $header->getValue());
-    $this->assertEqual(array(), $header->getParameters());
+    $encoder = new Swift_Mime_MockHeaderEncoder();
+    $header = $this->_getHeader('Content-Type', $encoder, new Swift_MockEncoder());
+    $header->setParameters(array('charset'=>'utf-8', 'delsp' => 'yes'));
+    $this->assertEqual('utf-8', $header->getParameter('charset'));
   }
   
   // -- Private helper

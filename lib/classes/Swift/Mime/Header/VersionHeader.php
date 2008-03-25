@@ -48,6 +48,24 @@ class Swift_Mime_Header_VersionHeader
   }
   
   /**
+   * Set the model for the field body.
+   * This method takes a string for the version number.
+   * @param string $model
+   */
+  public function setFieldBodyModel($model)
+  {
+  }
+  
+  /**
+   * Get the model for the field body.
+   * This method returns a string
+   * @return string
+   */
+  public function getFieldBodyModel()
+  {
+  }
+  
+  /**
    * Get the version stored in this Header.
    * @return string
    */

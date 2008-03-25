@@ -33,48 +33,6 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
 {
   
   /**
-   * The disposition of this attachment (inline or attachment).
-   * @var string
-   * @access private
-   */
-  private $_disposition;
-  
-  /**
-   * The name of this attachment when saved as a file (optional).
-   * @var string
-   * @access private
-   */
-  private $_filename;
-  
-  /**
-   * The creation-date attribute of this attachment if specified.
-   * @var int
-   * @access private
-   */
-  private $_creationDate;
-  
-  /**
-   * The modification-date attribute of this attachment if specified.
-   * @var int
-   * @access private
-   */
-  private $_modificationDate;
-  
-  /**
-   * The read-date attribute of this attachment if specified.
-   * @var int
-   * @access private
-   */
-  private $_readDate;
-  
-  /**
-   * The size of this attachment in bytes (if set).
-   * @var int
-   * @access private
-   */
-  private $_size;
-  
-  /**
    * Creates a new Attachment with $headers and $encoder.
    * @param string[] $headers
    * @param Swift_Mime_ContentEncoder $encoder
@@ -111,8 +69,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function setDisposition($disposition)
   {
-    $this->_disposition = $disposition;
-    $this->_notifyFieldChanged('disposition', $disposition);
+    $this->_setHeaderModel('content-disposition', $disposition);
     $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
@@ -123,7 +80,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function getDisposition()
   {
-    return $this->_disposition;
+    return $this->_getHeaderModel('content-disposition');
   }
   
   /**
@@ -134,8 +91,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function setFilename($filename)
   {
-    $this->_filename = $filename;
-    $this->_notifyFieldChanged('filename', $filename);
+    $this->_setHeaderParameter('content-disposition', 'filename', $filename);
+    $this->_setHeaderParameter('content-type', 'name', $filename);
     $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
@@ -147,7 +104,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function getFilename()
   {
-    return $this->_filename;
+    return $this->_getHeaderParameter('content-disposition', 'filename');
   }
   
   /**
@@ -157,8 +114,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function setCreationDate($creationDate)
   {
-    $this->_creationDate = $creationDate;
-    $this->_notifyFieldChanged('creationdate', $creationDate);
+    $value = isset($creationDate) ? date('r', $creationDate) : null;
+    $this->_setHeaderParameter('content-disposition', 'creation-date', $value);
     $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
@@ -170,7 +127,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function getCreationDate()
   {
-    return $this->_creationDate;
+    $value = $this->_getHeaderParameter('content-disposition', 'creation-date');
+    return isset($value) ? strtotime($value) : null;
   }
   
   /**
@@ -180,8 +138,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function setModificationDate($modificationDate)
   {
-    $this->_modificationDate = $modificationDate;
-    $this->_notifyFieldChanged('modificationdate', $modificationDate);
+    $value = isset($modificationDate) ? date('r', $modificationDate) : null;
+    $this->_setHeaderParameter('content-disposition', 'modification-date', $value);
     $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
@@ -193,7 +151,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function getModificationDate()
   {
-    return $this->_modificationDate;
+    $value = $this->_getHeaderParameter('content-disposition', 'modification-date');
+    return isset($value) ? strtotime($value) : null;
   }
   
   /**
@@ -203,8 +162,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function setReadDate($readDate)
   {
-    $this->_readDate = $readDate;
-    $this->_notifyFieldChanged('readdate', $readDate);
+    $value = isset($readDate) ? date('r', $readDate) : null;
+    $this->_setHeaderParameter('content-disposition', 'read-date', $value);
     $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
@@ -216,7 +175,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function getReadDate()
   {
-    return $this->_readDate;
+    $value = $this->_getHeaderParameter('content-disposition', 'read-date');
+    return isset($value) ? strtotime($value) : null;
   }
   
   /**
@@ -226,8 +186,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function setSize($size)
   {
-    $this->_size = $size;
-    $this->_notifyFieldChanged('size', $size);
+    $this->_setHeaderParameter('content-disposition', 'size', $size);
     $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
     return $this;
   }
@@ -239,16 +198,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function getSize()
   {
-    return $this->_size;
-  }
-  
-  /**
-   * Overridden to prevent conflict.
-   * @param string $field in lowercase ALPHA
-   * @param mixed $value
-   */
-  public function fieldChanged($field, $value)
-  {
+    return $this->_getHeaderParameter('content-disposition', 'size');
   }
   
 }

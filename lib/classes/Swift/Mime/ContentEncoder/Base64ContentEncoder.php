@@ -88,4 +88,11 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoder
     return 'base64';
   }
   
+  /**
+   * Not used.
+   */
+  public function charsetChanged($charset)
+  {
+  }
+  
 }

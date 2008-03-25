@@ -35,6 +35,22 @@ class Swift_Mime_Header_DateHeaderTest
     $this->assertEqual(date('r', $timestamp), $header->getFieldBody());
   }
   
+  public function testSetBodyModel()
+  {
+    $timestamp = time();
+    $header = $this->_getHeader('Date');
+    $header->setFieldBodyModel($timestamp);
+    $this->assertEqual(date('r', $timestamp), $header->getFieldBody());
+  }
+  
+  public function testGetBodyModel()
+  {
+    $timestamp = time();
+    $header = $this->_getHeader('Date');
+    $header->setTimestamp($timestamp);
+    $this->assertEqual($timestamp, $header->getFieldBodyModel());
+  }
+  
   public function testToString()
   {
     $timestamp = time();
@@ -43,32 +59,6 @@ class Swift_Mime_Header_DateHeaderTest
     $this->assertEqual('Date: ' . date('r', $timestamp) . "\r\n",
       $header->toString()
       );
-  }
-  
-  public function testFieldChangeObserverCanSetDate()
-  {
-    $header = $this->_getHeader('Date');
-    $header->fieldChanged('date', 12345);
-    $this->assertEqual(12345, $header->getTimestamp());
-  }
-  
-  public function testDateFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Received');
-    $header->setTimestamp(123456);
-    $header->fieldChanged('date', 123);
-    $this->assertEqual(123456, $header->getTimestamp());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForDate()
-  {
-    $header = $this->_getHeader('Date');
-    $header->setTimestamp(123);
-    foreach (array('charset', 'comments', 'x-foo') as $field)
-    {
-      $header->fieldChanged($field, 'xxxxx');
-      $this->assertEqual(123, $header->getTimestamp());
-    }
   }
   
   // -- Private methods

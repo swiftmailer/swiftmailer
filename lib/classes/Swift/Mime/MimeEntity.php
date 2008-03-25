@@ -19,6 +19,8 @@
  */
 
 //@require 'Swift/InputByteStream.php';
+//@require 'Swift/Mime/EncodingObserver.php';
+//@require 'Swift/Mime/CharsetObserver.php';
 
 /**
  * A MIME entity, such as an attachment.
@@ -27,6 +29,7 @@
  * @author Chris Corbyn
  */
 interface Swift_Mime_MimeEntity
+  extends Swift_Mime_CharsetObserver, Swift_Mime_EncodingObserver
 {
   
   /** Main message document; there can only be one of these */

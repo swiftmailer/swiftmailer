@@ -20,7 +20,7 @@
 
 //@require 'Swift/Mime/Header/UnstructuredHeader.php';
 //@require 'Swift/Mime/HeaderEncoder.php';
-//@require 'Swift/Mime/FieldChangeObserver.php';
+//@require 'Swift/Mime/ParameterizedHeader.php';
 //@require 'Swift/Encoder.php';
 
 /**
@@ -31,7 +31,7 @@
  */
 class Swift_Mime_Header_ParameterizedHeader
   extends Swift_Mime_Header_UnstructuredHeader
-  implements Swift_Mime_FieldChangeObserver
+  implements Swift_Mime_ParameterizedHeader
 {
   
   /**
@@ -72,6 +72,28 @@ class Swift_Mime_Header_ParameterizedHeader
   }
   
   /**
+   * Set the value of $parameter.
+   * @param string $parameter
+   * @param string $value
+   */
+  public function setParameter($parameter, $value)
+  {
+    $this->setParameters(array_merge($this->getParameters(), array($parameter => $value)));
+  }
+  
+  /**
+   * Get the value of $parameter.
+   * @return string
+   */
+  public function getParameter($parameter)
+  {
+    $params = $this->getParameters();
+    return array_key_exists($parameter, $params)
+      ? $params[$parameter]
+      : null;
+  }
+  
+  /**
    * Set an associative array of parameter names mapped to values.
    * @param string[]
    */
@@ -105,72 +127,6 @@ class Swift_Mime_Header_ParameterizedHeader
       }
     }
     return $body;
-  }
-  
-  /**
-   * Notify this observer that a field has changed to $value.
-   * "Field" is a loose term and refers to class fields rather than
-   * header fields.  $field will always be in lowercase and will be alpha.
-   * only.
-   * An example could be fieldChanged('contenttype', 'text/plain');
-   * This of course reflects a change in the body of the Content-Type header.
-   * Another example could be fieldChanged('charset', 'us-ascii');
-   * This reflects a change in the charset parameter of the Content-Type header.
-   * @param string $field in lowercase ALPHA
-   * @param mixed $value
-   */
-  public function fieldChanged($field, $value)
-  {
-    $fieldName = strtolower($this->getFieldName());
-    
-    $parameters = $this->getParameters();
-    if ('content-type' == $fieldName)
-    {
-      switch ($field)
-      {
-        case 'contenttype':
-          $this->setValue($value);
-          break;
-        case 'delsp':
-          if (!is_null($value))
-          {
-            $value = $value ? 'yes' : 'no';
-          }
-        case 'charset':
-        case 'boundary':
-        case 'format':
-          $parameters[$field] = $value;
-          $this->setParameters($parameters);
-          break;
-        case 'filename':
-          $parameters['name'] = $value;
-          $this->setParameters($parameters);
-          break;
-      }
-    }
-    elseif ('content-disposition' == $fieldName)
-    {
-      switch ($field)
-      {
-        case 'disposition':
-          $this->setValue($value);
-          break;
-        case 'creationdate':
-          $parameters['creation-date'] = is_null($value) ? null : date('r', $value);
-          break;
-        case 'modificationdate':
-          $parameters['modification-date'] = is_null($value) ? null : date('r', $value);
-          break;
-        case 'readdate':
-          $parameters['read-date'] = is_null($value) ? null : date('r', $value);
-          break;
-        case 'size':
-        case 'filename':
-          $parameters[$field] = $value;
-          break;
-      }
-      $this->setParameters($parameters);
-    }
   }
   
   // -- Protected methods

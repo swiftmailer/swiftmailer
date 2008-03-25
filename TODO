@@ -29,18 +29,6 @@ Weaknesses:
  * canonicalization logic could fail
  * streams aren't used in the decorator plugin
  * DI is a bit unclear what goes where
- * Mime layer interaction between headers/entities sucks
-   - a suitable trade-off would be to add generic methods:
-     - interface Header {
-        setModel($data);
-        getModel();
-       }
-       interface ParamHeader extends Header {
-         setParam($key, $value);
-         getParam($key);
-       }
- * Drop FieldChangeObserver since won't be needed any longer
-   - Pass content-transfer-encoding changes directly to children
   
 Refactors:
 ----------

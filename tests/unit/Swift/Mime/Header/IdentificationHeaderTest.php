@@ -170,52 +170,25 @@ class Swift_Mime_Header_IdentificationHeaderTest extends UnitTestCase
     }
   }
   
+  public function testSetBodyModel()
+  {
+    $header = $this->_getHeader('Message-ID');
+    $header->setFieldBodyModel('a@b');
+    $this->assertEqual(array('a@b'), $header->getIds());
+  }
+  
+  public function testGetBodyModel()
+  {
+    $header = $this->_getHeader('Message-ID');
+    $header->setId('a@b');
+    $this->assertEqual(array('a@b'), $header->getFieldBodyModel());
+  }
+  
   public function testStringValue()
   {
     $header = $this->_getHeader('References');
     $header->setIds(array('a@b', 'x@y'));
     $this->assertEqual('References: <a@b> <x@y>' . "\r\n", $header->toString());
-  }
-  
-  // --- THESE TESTS ARE IMPLEMENTATION SPECIFIC FOR COMPATIBILITY WITH --
-  // --- SimpleMimeEntity ---
-  
-  public function testObserverInterfaceUpdatesContentId()
-  {
-    $header = $this->_getHeader('Content-ID');
-    $header->fieldChanged('id', 'fooxyz@bar.abc');
-    $this->assertEqual('fooxyz@bar.abc', $header->getId());
-  }
-  
-  public function testContentIdIsNotChangedForOtherFields()
-  {
-    $header = $this->_getHeader('Content-ID');
-    $header->fieldChanged('to', 'fooxyz@bar.abc');
-    $this->assertNotEqual('fooxyz@bar.abc', $header->getId());
-  }
-  
-  public function testObserverInterfaceUpdatesMessageId()
-  {
-    $header = $this->_getHeader('Message-ID');
-    $header->fieldChanged('id', 'fooxyz@bar.abc');
-    $this->assertEqual('fooxyz@bar.abc', $header->getId());
-  }
-  
-  public function testMessageIdIsNotChangedForOtherFields()
-  {
-    $header = $this->_getHeader('Message-ID');
-    $header->fieldChanged('to', 'fooxyz@bar.abc');
-    $this->assertNotEqual('fooxyz@bar.abc', $header->getId());
-  }
-  
-  public function testIdIsIgnoredForOtherHeaders()
-  {
-    foreach (array('References', 'In-Reply-To') as $name)
-    {
-      $header = $this->_getHeader($name);
-      $header->fieldChanged('id', 'foo@bar');
-      $this->assertNotEqual('foo@bar', $header->getId());
-    }
   }
   
   // -- Private methods

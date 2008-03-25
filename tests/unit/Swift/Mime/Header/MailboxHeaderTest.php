@@ -264,6 +264,20 @@ class Swift_Mime_Header_MailboxHeaderTest
     $this->assertEqual(array(), $header->getAddresses());
   }
   
+  public function testSetBodyModel()
+  {
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setFieldBodyModel('chris@swiftmailer.org');
+    $this->assertEqual(array('chris@swiftmailer.org'=>null), $header->getNameAddresses());
+  }
+  
+  public function testGetBodyModel()
+  {
+    $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
+    $header->setAddresses(array('chris@swiftmailer.org'));
+    $this->assertEqual(array('chris@swiftmailer.org'=>null), $header->getFieldBodyModel());
+  }
+  
   public function testToString()
   {
     $header = $this->_getHeader('From', new Swift_Mime_MockHeaderEncoder());
@@ -276,198 +290,6 @@ class Swift_Mime_Header_MailboxHeaderTest
       'Mark Corbyn <mark@swiftmailer.org>' . "\r\n",
       $header->toString()
       );
-  }
-  
-  public function testFieldChangeObserverCanSetSender()
-  {
-    $header = $this->_getHeader('Sender',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->fieldChanged('sender', array('abc@xyz'=>null));
-    $this->assertEqual(array('abc@xyz'=>null), $header->getNameAddresses());
-  }
-  
-  public function testSenderFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    $header->fieldChanged('sender', array('foo@bar'=>'Foobar'));
-    $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForSender()
-  {
-    $header = $this->_getHeader('Sender',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    foreach (array('to', 'cc', 'bcc', 'from', 'replyto') as $field)
-    {
-      $header->fieldChanged($field, array('xxx@yyy'=>null));
-      $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-    }
-  }
-  
-  public function testFieldChangeObserverCanSetFrom()
-  {
-    $header = $this->_getHeader('From',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->fieldChanged('from', array('abc@xyz'=>null));
-    $this->assertEqual(array('abc@xyz'=>null), $header->getNameAddresses());
-  }
-  
-  public function testFromFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    $header->fieldChanged('from', array('foo@bar'=>'Foobar'));
-    $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForFrom()
-  {
-    $header = $this->_getHeader('From',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    foreach (array('to', 'cc', 'bcc', 'sender', 'replyto') as $field)
-    {
-      $header->fieldChanged($field, array('xxx@yyy'=>null));
-      $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-    }
-  }
-  
-  public function testFieldChangeObserverCanSetReplyTo()
-  {
-    $header = $this->_getHeader('Reply-To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->fieldChanged('replyto', array('abc@xyz'=>null));
-    $this->assertEqual(array('abc@xyz'=>null), $header->getNameAddresses());
-  }
-  
-  public function testReplyToFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    $header->fieldChanged('replyto', array('foo@bar'=>'Foobar'));
-    $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForReplyTo()
-  {
-    $header = $this->_getHeader('Reply-To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    foreach (array('to', 'cc', 'bcc', 'sender', 'from') as $field)
-    {
-      $header->fieldChanged($field, array('xxx@yyy'=>null));
-      $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-    }
-  }
-  
-  public function testFieldChangeObserverCanSetTo()
-  {
-    $header = $this->_getHeader('To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->fieldChanged('to', array('abc@xyz'=>null));
-    $this->assertEqual(array('abc@xyz'=>null), $header->getNameAddresses());
-  }
-  
-  public function testToFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Reply-To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    $header->fieldChanged('to', array('foo@bar'=>'Foobar'));
-    $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForTo()
-  {
-    $header = $this->_getHeader('To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    foreach (array('replyto', 'cc', 'bcc', 'sender', 'from') as $field)
-    {
-      $header->fieldChanged($field, array('xxx@yyy'=>null));
-      $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-    }
-  }
-  
-  public function testFieldChangeObserverCanSetCc()
-  {
-    $header = $this->_getHeader('Cc',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->fieldChanged('cc', array('abc@xyz'=>null));
-    $this->assertEqual(array('abc@xyz'=>null), $header->getNameAddresses());
-  }
-  
-  public function testCcFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Reply-To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    $header->fieldChanged('cc', array('foo@bar'=>'Foobar'));
-    $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForCc()
-  {
-    $header = $this->_getHeader('Cc',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    foreach (array('replyto', 'to', 'bcc', 'sender', 'from') as $field)
-    {
-      $header->fieldChanged($field, array('xxx@yyy'=>null));
-      $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-    }
-  }
-  
-  public function testFieldChangeObserverCanSetBcc()
-  {
-    $header = $this->_getHeader('Bcc',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->fieldChanged('bcc', array('abc@xyz'=>null));
-    $this->assertEqual(array('abc@xyz'=>null), $header->getNameAddresses());
-  }
-  
-  public function testBccFieldChangeIsIgnoredByOtherHeaders()
-  {
-    $header = $this->_getHeader('Reply-To',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    $header->fieldChanged('bcc', array('foo@bar'=>'Foobar'));
-    $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-  }
-  
-  public function testOtherFieldChangesAreIgnoredForBcc()
-  {
-    $header = $this->_getHeader('Bcc',
-      new Swift_Mime_MockHeaderEncoder()
-      );
-    $header->setNameAddresses(array('abc@xyz'=>'Person'));
-    foreach (array('replyto', 'to', 'cc', 'sender', 'from') as $field)
-    {
-      $header->fieldChanged($field, array('xxx@yyy'=>null));
-      $this->assertEqual(array('abc@xyz'=>'Person'), $header->getNameAddresses());
-    }
   }
   
   // -- Private methods

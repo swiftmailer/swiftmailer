@@ -115,6 +115,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
     return $this->_name;
   }
   
+  /**
+   * Not used.
+   */
+  public function charsetChanged($charset)
+  {
+  }
+  
   // -- Private methods
   
   /**

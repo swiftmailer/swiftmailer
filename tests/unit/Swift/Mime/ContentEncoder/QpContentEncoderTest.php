@@ -6,6 +6,17 @@ require_once 'Swift/InputByteStream.php';
 require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/CharacterStream.php';
 
+class Swift_StreamCollector implements Yay_Action {
+  public $content = '';
+  public function &invoke(Yay_Invocation $inv) {
+    $args = $inv->getArguments();
+    $this->content .= current($args);
+  }
+  public function describeTo(Yay_Description $d) {
+    $description->appendText(' gathers input;');
+  }
+}
+
 class Swift_MockInputByteStream implements Swift_InputByteStream {
   public $content = '';
   public function write($chars) {
@@ -429,10 +440,15 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
   
   public function testObserverInterfaceCanChangeCharset()
   {
-    $stream = new Swift_MockCharacterStream();
-    $stream->expectOnce('setCharacterSet', array('windows-1252'));
+    $context = new Mockery();
+    $stream = $context->mock('Swift_CharacterStream');
+    $context->checking(Expectations::create()
+      -> one($stream)->setCharacterSet('windows-1252')
+      -> ignoring($stream)
+      );
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($stream);
-    $encoder->fieldChanged('charset', 'windows-1252');
+    $encoder->charsetChanged('windows-1252');
+    $context->assertIsSatisfied();
   }
   
 }
