@@ -87,10 +87,12 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
    * NOTE: If using 'sendmail -t' you will not be aware of any failures until
    * they bounce (i.e. send() will always return 100% success).
    * @param Swift_Mime_Message $message
+   * @param string[] &$failedRecipients to collect failures by-reference
    * @return int
    */
-  public function send(Swift_Mime_Message $message)
+  public function send(Swift_Mime_Message $message, &$failedRecipients = null)
   {
+    $failedRecipients = (array) $failedRecipients;
     $command = $this->getCommand();
     $buffer = $this->getBuffer();
     if (false !== strpos($command, ' -t'))
@@ -111,7 +113,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
     }
     elseif (false !== strpos($command, ' -bs'))
     {
-      $count = parent::send($message);
+      $count = parent::send($message, $failedRecipients);
     }
     else
     {

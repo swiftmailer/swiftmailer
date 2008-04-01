@@ -50,8 +50,9 @@ interface Swift_Transport
    * Recipient/sender data will be retreived from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
    * @param Swift_Mime_Message $message
+   * @param string[] &$failedRecipients to collect failures by-reference
    * @return int
    */
-  public function send(Swift_Mime_Message $message);
+  public function send(Swift_Mime_Message $message, &$failedRecipients = null);
   
 }

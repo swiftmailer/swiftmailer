@@ -39,7 +39,8 @@ interface Swift_Transport_EsmtpBufferWrapper
    * If codes are given, an exception will be thrown on an invalid response.
    * @param string $command
    * @param int[] $codes
+   * @param string[] &$failures
    */
-  public function executeCommand($command, $codes = array());
+  public function executeCommand($command, $codes = array(), &$failures = null);
   
 }

@@ -18,6 +18,7 @@
  
  */
 
+//@require 'Swift/Transport/TransportException.php';
 //@require 'Swift/Transport/EsmtpHandler.php';
 //@require 'Swift/Transport/EsmtpBufferWrapper.php';
 
@@ -161,7 +162,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
           }
         }
       }
-      throw new Exception(
+      throw new Swift_Transport_TransportException(
         'Failed to authenticate on SMTP server with username "' .
         $this->_username . '" using ' . $count . ' possible authenticators'
         );
@@ -169,8 +170,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   }
   
   /**
-   * Get params which are appended to MAIL FROM:<>.
-   * @return string[]
+   * Not used.
    */
   public function getMailParams()
   {
@@ -178,8 +178,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   }
   
   /**
-   * Get params which are appended to RCPT TO:<>.
-   * @return string[]
+   * Not used.
    */
   public function getRcptParams()
   {
@@ -187,13 +186,10 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   }
   
   /**
-   * Runs when a command is due to be sent.
-   * @param Swift_Transport_EsmtpBufferWrapper $buf to read/write
-   * @param string $command to send
-   * @param int[] $codes expected in response
+   * Not used.
    */
   public function onCommand(Swift_Transport_EsmtpBufferWrapper $buf,
-    $command, $codes = array())
+    $command, $codes = array(), &$failedRecipients = null)
   {
   }
     
@@ -218,7 +214,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   }
   
   /**
-   * Tells this handler to clear any buffers and reset its state.
+   * Not used.
    */
   public function resetState()
   {

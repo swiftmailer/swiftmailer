@@ -209,11 +209,13 @@ class Swift_Transport_EsmtpTransport
    * Recipient/sender data will be retreived from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
    * @param Swift_Mime_Message $message
+   * @param string[] &$failedRecipients to collect failures by-reference
    * @return int
    */
-  public function send(Swift_Mime_Message $message)
+  public function send(Swift_Mime_Message $message, &$failedRecipients = null)
   {
     $sent = 0;
+    $failedRecipients = (array) $failedRecipients;
     
     if (!$reversePath = $this->_getReversePath($message))
     {
@@ -254,7 +256,7 @@ class Swift_Transport_EsmtpTransport
         $sent += $this->_doMailTransaction(
           $message, $reversePath, array_merge(
             array_keys((array)$to), array_keys((array)$cc)
-            )
+            ), $failedRecipients
           );
       }
       catch (Exception $e)
@@ -277,7 +279,7 @@ class Swift_Transport_EsmtpTransport
         try
         {
           $sent += $this->_doMailTransaction(
-            $message, $reversePath, array($forwardPath)
+            $message, $reversePath, array($forwardPath), $failedRecipients
             );
         }
         catch (Exception $e)
@@ -451,16 +453,18 @@ class Swift_Transport_EsmtpTransport
    * If codes are given, an exception will be thrown on an invalid response.
    * @param string $command
    * @param int[] $codes
+   * @param string[] &$failures
    * @return string
    */
-  public function executeCommand($command, $codes = array())
+  public function executeCommand($command, $codes = array(), &$failures = null)
   {
+    $failures = (array) $failures;
     $response = null;
     try
     {
       foreach ($this->_getActiveHandlers() as $handler)
       {
-        $handler->onCommand($this, $command, $codes);
+        $handler->onCommand($this, $command, $codes, $failures);
       }
       $seq = $this->_buffer->write($command);
       $response = $this->_getFullResponse($seq);
@@ -512,14 +516,10 @@ class Swift_Transport_EsmtpTransport
     return $path;
   }
   
-  // -- Mixin invokation code
+  // -- Mixin invocation code
   
   /**
-   * Mixin handling method.
-   * @param string $method
-   * @param array $args
-   * @return mixed
-   * @access private
+   * Mixin handling method for ESMTP handlers.
    */
   private function __call($method, $args)
   {
@@ -547,22 +547,12 @@ class Swift_Transport_EsmtpTransport
   // -- Private methods
   
   /**
-   * Checks if the response code matches a given number.
-   * @param string $response
-   * @param int $wanted
-   * @throws Exception if the assertion fails
+   * Checks if the response code matches a given number and throws an Exception if not.
    */
   private function _assertResponseCode($response, $wanted)
   {
     list($code, $separator, $text) = sscanf($response, '%3d%[ -]%s');
-    if (!empty($wanted) && !in_array($code, $wanted))
-    {
-      $valid = false;
-    }
-    else
-    {
-      $valid = true;
-    }
+    $valid = (empty($wanted) || in_array($code, $wanted));
     
     if ($evt = $this->_eventDispatcher->createEvent('response', $this, array(
       'result' => ($valid
@@ -587,9 +577,6 @@ class Swift_Transport_EsmtpTransport
   
   /**
    * Throw a TransportException, first sending it to any listeners.
-   * @param Swift_Transport_TransportException $e
-   * @access private
-   * @throws Swift_Transport_TransportException
    */
   private function _throwException(Swift_Transport_TransportException $e)
   {
@@ -610,10 +597,7 @@ class Swift_Transport_EsmtpTransport
   }
   
   /**
-   * Get the entire response of a multi-line response.
-   * @param int $seq number from {@link write()}.
-   * @return string
-   * @access private
+   * Get the entire response of a multi-line response using it's sequence number.
    */
   private function _getFullResponse($seq)
   {
@@ -636,15 +620,12 @@ class Swift_Transport_EsmtpTransport
   
   /**
    * Determine ESMTP capabilities by function group.
-   * @param string $response from EHLO
-   * @return string[]
-   * @access private
    */
-  private function _getCapabilities($response)
+  private function _getCapabilities($ehloResponse)
   {
     $capabilities = array();
-    $response = trim($response);
-    $lines = explode("\r\n", $response);
+    $ehloResponse = trim($ehloResponse);
+    $lines = explode("\r\n", $ehloResponse);
     array_shift($lines);
     foreach ($lines as $line)
     {
@@ -661,7 +642,6 @@ class Swift_Transport_EsmtpTransport
   
   /**
    * Set parameters which are used by each extension handler.
-   * @access private
    */
   private function _setHandlerParams()
   {
@@ -676,8 +656,6 @@ class Swift_Transport_EsmtpTransport
   
   /**
    * Get ESMTP handlers which are currently ok to use.
-   * @return Swift_Transport_EsmtpHandler[]
-   * @access private
    */
   private function _getActiveHandlers()
   {
@@ -694,12 +672,9 @@ class Swift_Transport_EsmtpTransport
   
   /**
    * Send the given email to the given recipients from the given reverse path.
-   * @param Swift_Mime_Message $message
-   * @param string $reversePath
-   * @param string[] $recipients
-   * @return int
    */
-  private function _doMailTransaction($message, $reversePath, array $recipients)
+  private function _doMailTransaction($message, $reversePath,
+    array $recipients, array &$failedRecipients)
   {
     $sent = 0;
     
@@ -734,6 +709,7 @@ class Swift_Transport_EsmtpTransport
       }
       catch (Swift_Transport_TransportException $e)
       {
+        $failedRecipients[] = $forwardPath;
       }
     }
     
@@ -764,10 +740,6 @@ class Swift_Transport_EsmtpTransport
   
   /**
    * Custom sort for extension handler ordering.
-   * @param Swift_Transport_EsmtpHandler $a
-   * @param Swift_Transport_EsmtpHandler $b
-   * @return int
-   * @access private
    */
   private function _sortHandlers($a, $b)
   {
