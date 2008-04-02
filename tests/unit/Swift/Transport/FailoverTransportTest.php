@@ -5,120 +5,132 @@ require_once 'Swift/Transport/FailoverTransport.php';
 require_once 'Swift/Transport/TransportException.php';
 require_once 'Swift/Transport.php';
 
-Mock::generate('Swift_Transport', 'Swift_MockTransport');
-Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
-
 class Swift_Transport_FailoverTransportTest
   extends Swift_Tests_SwiftUnitTestCase
 {
   
   public function testFirstTransportIsUsed()
   {
-    $message1 = new Swift_Mime_MockMessage();
-    $message2 = new Swift_Mime_MockMessage();
-    
-    $t1 = new Swift_MockTransport();
-    $t1->setReturnValueAt(0, 'isStarted', false);
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('start');
-    $t1->expectAt(0, 'send', array($message1));
-    $t1->setReturnValue('send', 1, array($message1));
-    $t1->expectAt(1, 'send', array($message2));
-    $t1->setReturnValue('send', 1, array($message2));
-    $t1->expectCallCount('send', 2);
-    
-    $t2 = new Swift_MockTransport();
-    
-    $t2->expectNever('start');
-    $t2->expectNever('send');
+    $context = new Mockery();
+    $message1 = $context->mock('Swift_Mime_Message');
+    $message2 = $context->mock('Swift_Mime_Message');
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $con = $context->states('Connection')->startsAs('off');
+    $context->checking(Expectations::create()
+      -> ignoring($message1)
+      -> ignoring($message2)
+      -> allowing($t1)->isStarted() -> returns(false) -> when($con->is('off'))
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con->is('on'))
+      -> one($t1)->start() -> when($con->isNot('on')) -> then($con->is('on'))
+      -> one($t1)->send($message1) -> returns(1) -> when($con->is('on'))
+      -> one($t1)->send($message2) -> returns(1) -> when($con->is('on'))
+      -> ignoring($t1)
+      -> never($t2)->start()
+      -> never($t2)->send(any())
+      -> ignoring($t2)
+      );
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
     $this->assertEqual(1, $transport->send($message1));
     $this->assertEqual(1, $transport->send($message2));
+    $context->assertIsSatisfied();
   }
   
   public function testMessageCanBeTriedOnNextTransportIfExceptionThrown()
   {
-    $message = new Swift_Mime_MockMessage();
-    
     $e = new Swift_Transport_TransportException('b0rken');
     
-    $t1 = new Swift_MockTransport();
-    $t1->setReturnValueAt(0, 'isStarted', false);
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('start');
-    $t1->expectOnce('send', array($message));
-    $t1->throwOn('send', $e, array($message));
-    
-    $t2 = new Swift_MockTransport();
-    
-    $t2->setReturnValueAt(0, 'isStarted', false);
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('start');
-    $t2->expectOnce('send', array($message));
-    $t2->setReturnValue('send', 1, array($message));
+    $context = new Mockery();
+    $message = $context->mock('Swift_Mime_Message');
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $con1 = $context->states('Connection')->startsAs('off');
+    $con2 = $context->states('Connection')->startsAs('off');
+    $context->checking(Expectations::create()
+      -> ignoring($message)
+      -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
+      -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
+      -> one($t1)->send($message) -> throws($e) -> when($con1->is('on'))
+      -> ignoring($t1)
+      -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
+      -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
+      -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
+      -> one($t2)->send($message) -> returns(1) -> when($con2->is('on'))
+      -> ignoring($t2)
+      );
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
-    
     $this->assertEqual(1, $transport->send($message));
+    $context->assertIsSatisfied();
   }
   
   public function testZeroIsReturnedIfTransportReturnsZero()
   {
-    $message = new Swift_Mime_MockMessage();
-    
-    $t1 = new Swift_MockTransport();
-    $t1->setReturnValueAt(0, 'isStarted', false);
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('start');
-    $t1->expectOnce('send', array($message));
-    $t1->setReturnValue('send', 0, array($message));
-    
-    $t2 = new Swift_MockTransport();
-    $t2->expectNever('start');
-    $t2->expectNever('send');
+    $context = new Mockery();
+    $message = $context->mock('Swift_Mime_Message');
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $con = $context->states('Connection')->startsAs('off');
+    $context->checking(Expectations::create()
+      -> ignoring($message)
+      -> allowing($t1)->isStarted() -> returns(false) -> when($con->is('off'))
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con->is('on'))
+      -> one($t1)->start() -> when($con->isNot('on')) -> then($con->is('on'))
+      -> one($t1)->send($message) -> returns(0) -> when($con->is('on'))
+      -> ignoring($t1)
+      -> never($t2)->start()
+      -> never($t2)->send(any())
+      -> ignoring($t2)
+      );
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
-    
     $this->assertEqual(0, $transport->send($message));
+    $context->assertIsSatisfied();
   }
   
   public function testTransportsWhichThrowExceptionsAreNotRetried()
   {
-    $message1 = new Swift_Mime_MockMessage();
-    $message2 = new Swift_Mime_MockMessage();
-    $message3 = new Swift_Mime_MockMessage();
-    $message4 = new Swift_Mime_MockMessage();
-    
     $e = new Swift_Transport_TransportException('maur b0rken');
     
-    $t1 = new Swift_MockTransport();
-    $t1->setReturnValueAt(0, 'isStarted', false);
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('start');
-    $t1->expectOnce('send', array($message1));
-    $t1->throwOn('send', $e, array($message1));
-    
-    $t2 = new Swift_MockTransport();
-    $t2->setReturnValueAt(0, 'isStarted', false);
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('start');
-    $t2->expectAt(0, 'send', array($message1));
-    $t2->setReturnValue('send', 1, array($message1));
-    $t2->expectAt(1, 'send', array($message2));
-    $t2->setReturnValue('send', 1, array($message2));
-    $t2->expectAt(2, 'send', array($message3));
-    $t2->setReturnValue('send', 1, array($message3));
-    $t2->expectAt(3, 'send', array($message4));
-    $t2->setReturnValue('send', 1, array($message4));
-    $t2->expectCallCount('send', 4);
+    $context = new Mockery();
+    $message1 = $context->mock('Swift_Mime_Message');
+    $message2 = $context->mock('Swift_Mime_Message');
+    $message3 = $context->mock('Swift_Mime_Message');
+    $message4 = $context->mock('Swift_Mime_Message');
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $con1 = $context->states('Connection')->startsAs('off');
+    $con2 = $context->states('Connection')->startsAs('off');
+    $context->checking(Expectations::create()
+      -> ignoring($message1)
+      -> ignoring($message2)
+      -> ignoring($message3)
+      -> ignoring($message4)
+      -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
+      -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
+      -> one($t1)->send($message1) -> throws($e) -> when($con1->is('on'))
+      -> never($t1)->send($message2)
+      -> never($t1)->send($message3)
+      -> never($t1)->send($message4)
+      -> ignoring($t1)
+      -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
+      -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
+      -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
+      -> one($t2)->send($message1) -> returns(1) -> when($con2->is('on'))
+      -> one($t2)->send($message2) -> returns(1) -> when($con2->is('on'))
+      -> one($t2)->send($message3) -> returns(1) -> when($con2->is('on'))
+      -> one($t2)->send($message4) -> returns(1) -> when($con2->is('on'))
+      -> ignoring($t2)
+      );
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
-    
     $this->assertEqual(1, $transport->send($message1));
     $this->assertEqual(1, $transport->send($message2));
     $this->assertEqual(1, $transport->send($message3));
@@ -127,29 +139,30 @@ class Swift_Transport_FailoverTransportTest
   
   public function testExceptionIsThrownIfAllTransportsDie()
   {
-    $message = new Swift_Mime_MockMessage();
+    $e = new Swift_Transport_TransportException('b0rken');
     
-    $e = new Swift_Transport_TransportException('maur b0rken');
-    
-    $t1 = new Swift_MockTransport();
-    
-    $t1->setReturnValueAt(0, 'isStarted', false);
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('start');
-    $t1->expectOnce('send', array($message));
-    $t1->throwOn('send', $e, array($message));
-    
-    $t2 = new Swift_MockTransport();
-    
-    $t2->setReturnValueAt(0, 'isStarted', false);
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('start');
-    $t2->expectOnce('send', array($message));
-    $t2->throwOn('send', $e, array($message));
+    $context = new Mockery();
+    $message = $context->mock('Swift_Mime_Message');
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $con1 = $context->states('Connection')->startsAs('off');
+    $con2 = $context->states('Connection')->startsAs('off');
+    $context->checking(Expectations::create()
+      -> ignoring($message)
+      -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
+      -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
+      -> one($t1)->send($message) -> throws($e) -> when($con1->is('on'))
+      -> ignoring($t1)
+      -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
+      -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
+      -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
+      -> one($t2)->send($message) -> throws($e) -> when($con2->is('on'))
+      -> ignoring($t2)
+      );
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
-    
     try
     {
       $transport->send($message);
@@ -157,53 +170,59 @@ class Swift_Transport_FailoverTransportTest
     }
     catch (Exception $e)
     {
-      $this->pass();
     }
+    $context->assertIsSatisfied();
   }
   
   public function testStoppingTransportStopsAllDelegates()
   {
-    $t1 = new Swift_MockTransport();
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('stop');
-    
-    $t2 = new Swift_MockTransport();
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('stop');
+    $context = new Mockery();
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $con1 = $context->states('Connection')->startsAs('on');
+    $con2 = $context->states('Connection')->startsAs('on');
+    $context->checking(Expectations::create()
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
+      -> one($t1)->stop() -> when($con1->is('on')) -> then($con1->is('off'))
+      -> ignoring($t1)
+      -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
+      -> one($t2)->stop() -> when($con2->is('on')) -> then($con2->is('off'))
+      -> ignoring($t2)
+      );
     
     $transport = $this->_getTransport(array($t1, $t2));
-    
     $transport->start();
     $transport->stop();
+    $context->assertIsSatisfied();
   }
   
   public function testTransportShowsAsNotStartedIfAllDelegatesDead()
   {
-    $message = new Swift_Mime_MockMessage();
+    $e = new Swift_Transport_TransportException('b0rken');
     
-    $e = new Swift_Transport_TransportException('maur b0rken');
-    
-    $t1 = new Swift_MockTransport();
-    
-    $t1->setReturnValueAt(0, 'isStarted', false);
-    $t1->setReturnValue('isStarted', true);
-    $t1->expectOnce('start');
-    $t1->expectOnce('send', array($message));
-    $t1->throwOn('send', $e, array($message));
-    
-    $t2 = new Swift_MockTransport();
-    
-    $t2->setReturnValueAt(0, 'isStarted', false);
-    $t2->setReturnValue('isStarted', true);
-    $t2->expectOnce('start');
-    $t2->expectOnce('send', array($message));
-    $t2->throwOn('send', $e, array($message));
+    $context = new Mockery();
+    $message = $context->mock('Swift_Mime_Message');
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $con1 = $context->states('Connection')->startsAs('off');
+    $con2 = $context->states('Connection')->startsAs('off');
+    $context->checking(Expectations::create()
+      -> ignoring($message)
+      -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
+      -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
+      -> one($t1)->send($message) -> throws($e) -> when($con1->is('on'))
+      -> ignoring($t1)
+      -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
+      -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
+      -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
+      -> one($t2)->send($message) -> throws($e) -> when($con2->is('on'))
+      -> ignoring($t2)
+      );
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
-    
     $this->assertTrue($transport->isStarted());
-    
     try
     {
       $transport->send($message);
@@ -211,41 +230,42 @@ class Swift_Transport_FailoverTransportTest
     }
     catch (Exception $e)
     {
-      $this->pass();
+      $this->assertFalse($transport->isStarted());
     }
-    
-    $this->assertFalse($transport->isStarted());
+    $context->assertIsSatisfied();
   }
   
   public function testRestartingTransportRestartsDeadDelegates()
   {
-    $message1 = new Swift_Mime_MockMessage();
-    $message2 = new Swift_Mime_MockMessage();
+    $e = new Swift_Transport_TransportException('b0rken');
     
-    $e = new Swift_Transport_TransportException('maur b0rken');
-    
-    $t1 = new Swift_MockTransport();
-    
-    $t1->setReturnValue('isStarted', false);
-    $t1->expectCallCount('start', 2);
-    $t1->expectAt(0, 'send', array(new ReferenceExpectation($message1)));
-    $t1->throwOn('send', $e, array(new ReferenceExpectation($message1)));
-    $t1->expectAt(1, 'send', array(new ReferenceExpectation($message2)));
-    $t1->setReturnValue('send', 10, array(new ReferenceExpectation($message2)));
-    $t1->expectCallCount('send', 2);
-    
-    $t2 = new Swift_MockTransport();
-    
-    $t2->setReturnValue('isStarted', false);
-    $t2->expectOnce('start');
-    $t2->expectOnce('send', array(new ReferenceExpectation($message1)));
-    $t2->throwOn('send', $e, array(new ReferenceExpectation($message1)));
+    $context = new Mockery();
+    $message1 = $context->mock('Swift_Mime_Message');
+    $message2 = $context->mock('Swift_Mime_Message');
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $con1 = $context->states('Connection')->startsAs('off');
+    $con2 = $context->states('Connection')->startsAs('off');
+    $context->checking(Expectations::create()
+      -> ignoring($message1)
+      -> ignoring($message2)
+      -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
+      -> exactly(2)->of($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
+      -> one($t1)->send($message1) -> throws($e) -> when($con1->is('on')) -> then($con1->is('off'))
+      -> one($t1)->send($message2) -> returns(10) -> when($con1->is('on'))
+      -> ignoring($t1)
+      -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
+      -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
+      -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
+      -> one($t2)->send($message1) -> throws($e) -> when($con2->is('on'))
+      -> never($t2)->send($message2)
+      -> ignoring($t2)
+      );
     
     $transport = $this->_getTransport(array($t1, $t2));
     $transport->start();
-    
     $this->assertTrue($transport->isStarted());
-    
     try
     {
       $transport->send($message1);
@@ -253,16 +273,13 @@ class Swift_Transport_FailoverTransportTest
     }
     catch (Exception $e)
     {
-      $this->pass();
+      $this->assertFalse($transport->isStarted());
     }
-    
-    $this->assertFalse($transport->isStarted());
-    
+    //Restart and re-try
     $transport->start();
-    
     $this->assertTrue($transport->isStarted());
-    
     $this->assertEqual(10, $transport->send($message2));
+    $context->assertIsSatisfied();
   }
   
   // -- Private helpers
