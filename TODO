@@ -5,10 +5,9 @@ Swift Mailer SE TODO:
  * Read-receipts (Something in $message like CustomHeaderFactory?)
  * Think about the interface for loading plugins
  * Failed recipients?
-   - LoadBalanced
    - Mail
    - Sendmail
-   - Mailer class
+   - SendEvent
  * Event dispatching
    - Sendmail
    - Mail
@@ -23,6 +22,7 @@ Swift Mailer SE TODO:
      - 8BITMIME
  * Plugins
    - FileEmbedder (Mime API issues? Streams?)
+   - VERP
  * V3 Wrapper classes
  
 Weaknesses:

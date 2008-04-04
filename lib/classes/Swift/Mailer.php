@@ -55,16 +55,18 @@ class Swift_Mailer
    * Recipient/sender data will be retreived from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
    * @param Swift_Mime_Message $message
+   * @param array &$failedRecipients, optional
    * @return int
    * @see batchSend()
    */
-  public function send(Swift_Mime_Message $message)
+  public function send(Swift_Mime_Message $message, &$failedRecipients = null)
   {
+    $failedRecipients = (array) $failedRecipients;
     if (!$this->_transport->isStarted())
     {
       $this->_transport->start();
     }
-    return $this->_transport->send($message);
+    return $this->_transport->send($message, $failedRecipients);
   }
   
   /**
@@ -77,13 +79,16 @@ class Swift_Mailer
    * Sender information is always read from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
    * @param Swift_Mime_Message $message
+   * @param array &$failedRecipients, optional
    * @param Swift_Mailer_RecipientIterator $it, optional
    * @return int
    * @see send()
    */
   public function batchSend(Swift_Mime_Message $message,
+    &$failedRecipients = null,
     Swift_Mailer_RecipientIterator $it = null)
   {
+    $failedRecipients = (array) $failedRecipients;
     $sent = 0;
     $to = $message->getTo();
     $cc = $message->getCc();
@@ -102,7 +107,7 @@ class Swift_Mailer
       while ($it->hasNext())
       {
         $message->setTo($it->nextRecipient());
-        $sent += $this->send($message);
+        $sent += $this->send($message, $failedRecipients);
       }
     }
     else
@@ -110,7 +115,7 @@ class Swift_Mailer
       foreach ($to as $address => $name)
       {
         $message->setTo(array($address => $name));
-        $sent += $this->send($message);
+        $sent += $this->send($message, $failedRecipients);
       }
     }
     $message->setTo($to);
