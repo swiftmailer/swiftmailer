@@ -120,7 +120,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
         {
           $transport->start();
         }
-        if ($sent = $transport->send($message))
+        if ($sent = $transport->send($message, $failedRecipients))
         {
           break;
         }

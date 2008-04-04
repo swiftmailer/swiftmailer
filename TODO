@@ -2,15 +2,13 @@ Swift Mailer SE TODO:
 ---------------------
 
  * Write some sanity tests
- * Read-receipts
+ * Read-receipts (Something in $message like CustomHeaderFactory?)
  * Think about the interface for loading plugins
  * Failed recipients?
-   interface Transport {
-     send($message, &$failArray);
-   }
-   class Mailer {
-     send($message, &$failArray = null, $iterator = null);
-   }
+   - LoadBalanced
+   - Mail
+   - Sendmail
+   - Mailer class
  * Event dispatching
    - Sendmail
    - Mail

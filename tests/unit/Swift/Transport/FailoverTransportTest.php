@@ -23,11 +23,11 @@ class Swift_Transport_FailoverTransportTest
       -> allowing($t1)->isStarted() -> returns(false) -> when($con->is('off'))
       -> allowing($t1)->isStarted() -> returns(true) -> when($con->is('on'))
       -> one($t1)->start() -> when($con->isNot('on')) -> then($con->is('on'))
-      -> one($t1)->send($message1) -> returns(1) -> when($con->is('on'))
-      -> one($t1)->send($message2) -> returns(1) -> when($con->is('on'))
+      -> one($t1)->send($message1, optional()) -> returns(1) -> when($con->is('on'))
+      -> one($t1)->send($message2, optional()) -> returns(1) -> when($con->is('on'))
       -> ignoring($t1)
       -> never($t2)->start()
-      -> never($t2)->send(any())
+      -> never($t2)->send(any(), optional())
       -> ignoring($t2)
       );
     
@@ -53,12 +53,12 @@ class Swift_Transport_FailoverTransportTest
       -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
       -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
       -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-      -> one($t1)->send($message) -> throws($e) -> when($con1->is('on'))
+      -> one($t1)->send($message, optional()) -> throws($e) -> when($con1->is('on'))
       -> ignoring($t1)
       -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
       -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
       -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-      -> one($t2)->send($message) -> returns(1) -> when($con2->is('on'))
+      -> one($t2)->send($message, optional()) -> returns(1) -> when($con2->is('on'))
       -> ignoring($t2)
       );
     
@@ -73,21 +73,17 @@ class Swift_Transport_FailoverTransportTest
     $context = new Mockery();
     $message = $context->mock('Swift_Mime_Message');
     $t1 = $context->mock('Swift_Transport');
-    $t2 = $context->mock('Swift_Transport');
     $con = $context->states('Connection')->startsAs('off');
     $context->checking(Expectations::create()
       -> ignoring($message)
       -> allowing($t1)->isStarted() -> returns(false) -> when($con->is('off'))
       -> allowing($t1)->isStarted() -> returns(true) -> when($con->is('on'))
       -> one($t1)->start() -> when($con->isNot('on')) -> then($con->is('on'))
-      -> one($t1)->send($message) -> returns(0) -> when($con->is('on'))
+      -> one($t1)->send($message, optional()) -> returns(0) -> when($con->is('on'))
       -> ignoring($t1)
-      -> never($t2)->start()
-      -> never($t2)->send(any())
-      -> ignoring($t2)
       );
     
-    $transport = $this->_getTransport(array($t1, $t2));
+    $transport = $this->_getTransport(array($t1));
     $transport->start();
     $this->assertEqual(0, $transport->send($message));
     $context->assertIsSatisfied();
@@ -114,18 +110,18 @@ class Swift_Transport_FailoverTransportTest
       -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
       -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
       -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-      -> one($t1)->send($message1) -> throws($e) -> when($con1->is('on'))
-      -> never($t1)->send($message2)
-      -> never($t1)->send($message3)
-      -> never($t1)->send($message4)
+      -> one($t1)->send($message1, optional()) -> throws($e) -> when($con1->is('on'))
+      -> never($t1)->send($message2, optional())
+      -> never($t1)->send($message3, optional())
+      -> never($t1)->send($message4, optional())
       -> ignoring($t1)
       -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
       -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
       -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-      -> one($t2)->send($message1) -> returns(1) -> when($con2->is('on'))
-      -> one($t2)->send($message2) -> returns(1) -> when($con2->is('on'))
-      -> one($t2)->send($message3) -> returns(1) -> when($con2->is('on'))
-      -> one($t2)->send($message4) -> returns(1) -> when($con2->is('on'))
+      -> one($t2)->send($message1, optional()) -> returns(1) -> when($con2->is('on'))
+      -> one($t2)->send($message2, optional()) -> returns(1) -> when($con2->is('on'))
+      -> one($t2)->send($message3, optional()) -> returns(1) -> when($con2->is('on'))
+      -> one($t2)->send($message4, optional()) -> returns(1) -> when($con2->is('on'))
       -> ignoring($t2)
       );
     
@@ -152,12 +148,12 @@ class Swift_Transport_FailoverTransportTest
       -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
       -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
       -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-      -> one($t1)->send($message) -> throws($e) -> when($con1->is('on'))
+      -> one($t1)->send($message, optional()) -> throws($e) -> when($con1->is('on'))
       -> ignoring($t1)
       -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
       -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
       -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-      -> one($t2)->send($message) -> throws($e) -> when($con2->is('on'))
+      -> one($t2)->send($message, optional()) -> throws($e) -> when($con2->is('on'))
       -> ignoring($t2)
       );
     
@@ -211,12 +207,12 @@ class Swift_Transport_FailoverTransportTest
       -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
       -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
       -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-      -> one($t1)->send($message) -> throws($e) -> when($con1->is('on'))
+      -> one($t1)->send($message, optional()) -> throws($e) -> when($con1->is('on'))
       -> ignoring($t1)
       -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
       -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
       -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-      -> one($t2)->send($message) -> throws($e) -> when($con2->is('on'))
+      -> one($t2)->send($message, optional()) -> throws($e) -> when($con2->is('on'))
       -> ignoring($t2)
       );
     
@@ -252,14 +248,14 @@ class Swift_Transport_FailoverTransportTest
       -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
       -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
       -> exactly(2)->of($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-      -> one($t1)->send($message1) -> throws($e) -> when($con1->is('on')) -> then($con1->is('off'))
-      -> one($t1)->send($message2) -> returns(10) -> when($con1->is('on'))
+      -> one($t1)->send($message1, optional()) -> throws($e) -> when($con1->is('on')) -> then($con1->is('off'))
+      -> one($t1)->send($message2, optional()) -> returns(10) -> when($con1->is('on'))
       -> ignoring($t1)
       -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
       -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
       -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-      -> one($t2)->send($message1) -> throws($e) -> when($con2->is('on'))
-      -> never($t2)->send($message2)
+      -> one($t2)->send($message1, optional()) -> throws($e) -> when($con2->is('on'))
+      -> never($t2)->send($message2, optional())
       -> ignoring($t2)
       );
     
@@ -279,6 +275,29 @@ class Swift_Transport_FailoverTransportTest
     $transport->start();
     $this->assertTrue($transport->isStarted());
     $this->assertEqual(10, $transport->send($message2));
+    $context->assertIsSatisfied();
+  }
+  
+  public function testFailureReferenceIsPassedToDelegates()
+  {
+    $failures = array();
+    
+    $context = new Mockery();
+    $message = $context->mock('Swift_Mime_Message');
+    $t1 = $context->mock('Swift_Transport');
+    $con = $context->states('Connection')->startsAs('off');
+    $context->checking(Expectations::create()
+      -> ignoring($message)
+      -> allowing($t1)->isStarted() -> returns(false) -> when($con->is('off'))
+      -> allowing($t1)->isStarted() -> returns(true) -> when($con->is('on'))
+      -> one($t1)->start() -> when($con->isNot('on')) -> then($con->is('on'))
+      -> one($t1)->send($message, reference($failures)) -> returns(1) -> when($con->is('on'))
+      -> ignoring($t1)
+      );
+    
+    $transport = $this->_getTransport(array($t1));
+    $transport->start();
+    $transport->send($message, $failures);
     $context->assertIsSatisfied();
   }
   

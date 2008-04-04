@@ -69,7 +69,7 @@ class Swift_Transport_FailoverTransport
           $transport->start();
         }
         
-        return $transport->send($message);
+        return $transport->send($message, $failedRecipients);
       }
       catch (Swift_Transport_TransportException $e)
       {
