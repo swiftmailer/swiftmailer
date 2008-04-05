@@ -517,6 +517,27 @@ class Swift_Transport_EsmtpTransport
     return $path;
   }
   
+  /**
+   * Throw a TransportException, first sending it to any listeners.
+   */
+  protected function _throwException(Swift_Transport_TransportException $e)
+  {
+    if ($evt = $this->_eventDispatcher->createEvent('exception', $this, array(
+      'exception' => $e
+      )))
+    {
+      $this->_eventDispatcher->dispatchEvent($evt, 'exceptionThrown');
+      if (!$evt->bubbleCancelled())
+      {
+        throw $e;
+      }
+    }
+    else
+    {
+      throw $e;
+    }
+  }
+  
   // -- Mixin invocation code
   
   /**
@@ -573,27 +594,6 @@ class Swift_Transport_EsmtpTransport
           '"' . $code . '", with message "' . $response . '"'
           )
         );
-    }
-  }
-  
-  /**
-   * Throw a TransportException, first sending it to any listeners.
-   */
-  private function _throwException(Swift_Transport_TransportException $e)
-  {
-    if ($evt = $this->_eventDispatcher->createEvent('exception', $this, array(
-      'exception' => $e
-      )))
-    {
-      $this->_eventDispatcher->dispatchEvent($evt, 'exceptionThrown');
-      if (!$evt->bubbleCancelled())
-      {
-        throw $e;
-      }
-    }
-    else
-    {
-      throw $e;
     }
   }
   

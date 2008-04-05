@@ -6,9 +6,7 @@ Swift Mailer SE TODO:
  * Think about the interface for loading plugins
  * Failed recipients?
    - Mail
-   - Sendmail
  * Event dispatching
-   - Sendmail
    - Mail
  * CharacterReaders
    - Big5

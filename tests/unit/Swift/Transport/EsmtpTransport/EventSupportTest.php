@@ -2,7 +2,6 @@
 
 require_once 'Swift/Transport/EsmtpTransportTest.php';
 require_once 'Swift/Transport/EsmtpTransport.php';
-require_once 'Swift/Transport/EsmtpHandler.php';
 require_once 'Swift/Events/EventDispatcher.php';
 require_once 'Swift/Events/EventObject.php';
 
