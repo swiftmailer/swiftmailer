@@ -1062,6 +1062,8 @@ abstract class Swift_Transport_AbstractEsmtpTest extends Swift_Tests_SwiftUnitTe
       -> ignoring($buf)->readLine($x) -> returns('354 OK' . "\r\n")
       -> ignoring($buf)->write("\r\n.\r\n") -> returns($x = uniqid())
       -> ignoring($buf)->readLine($x) -> returns('250 OK' . "\r\n")
+      -> ignoring($buf)->write("RSET\r\n") -> returns($x = uniqid())
+      -> ignoring($buf)->readLine($x) -> returns("250 OK\r\n")
       -> ignoring($buf) -> returns(false)
       );
   }

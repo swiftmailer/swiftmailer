@@ -66,6 +66,37 @@ class Swift_Transport_EsmtpTransport_EventSupportTest
     $context->assertIsSatisfied();
   }
   
+  public function testSendEventCapturesFailures()
+  {
+    $context = new Mockery();
+    $buf = $this->_getBuffer($context);
+    $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+    $evt = $context->mock('Swift_Events_SendEvent');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $message = $context->mock('Swift_Mime_Message');
+    $context->checking(Expectations::create()
+      -> allowing($message)->getFrom() -> returns(array('chris@swiftmailer.org'=>null))
+      -> allowing($message)->getTo() -> returns(array('mark@swiftmailer.org'=>'Mark'))
+      -> ignoring($message)
+      -> one($buf)->write("MAIL FROM: <chris@swiftmailer.org>\r\n") -> returns(1)
+      -> one($buf)->readLine(1) -> returns("250 OK\r\n")
+      -> one($buf)->write("RCPT TO: <mark@swiftmailer.org>\r\n") -> returns(2)
+      -> one($buf)->readLine(2) -> returns("500 Not now\r\n")
+      -> allowing($dispatcher)->createEvent('send', $smtp, optional()) -> returns($evt)
+      -> one($dispatcher)->dispatchEvent($evt, 'sendPerformed') -> calls(create_function('$inv',
+        '$args =& $inv->getArguments(); SimpleTest::getContext()->getTest()->assertEqual(
+          array("mark@swiftmailer.org"), $args[0]->failedRecipients
+          );'
+        ))
+      -> ignoring($dispatcher)
+      -> ignoring($evt)
+      );
+    $this->_finishBuffer($context, $buf);
+    $smtp->start();
+    $this->assertEqual(0, $smtp->send($message));
+    $context->assertIsSatisfied();
+  }
+  
   public function testCancellingEventBubbleBeforeSendStopsEvent()
   {
     $context = new Mockery();

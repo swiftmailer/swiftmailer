@@ -7,7 +7,6 @@ Swift Mailer SE TODO:
  * Failed recipients?
    - Mail
    - Sendmail
-   - SendEvent
  * Event dispatching
    - Sendmail
    - Mail

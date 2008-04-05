@@ -300,6 +300,7 @@ class Swift_Transport_EsmtpTransport
     if ($evt)
     {
       $evt->result = Swift_Events_SendEvent::RESULT_SUCCESS;
+      $evt->failedRecipients = $failedRecipients;
       $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
     }
     
