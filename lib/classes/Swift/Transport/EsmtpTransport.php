@@ -1,7 +1,7 @@
 <?php
 
 /*
- The SMTP Transport from Swift Mailer.
+ The ESMTP Transport from Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Transport.php';
+//@require 'Swift/Transport/AbstractSmtpTransport.php';
 //@require 'Swift/Transport/EsmtpHandler.php';
 //@require 'Swift/Transport/IoBuffer.php';
 //@require 'Swift/Transport/EsmtpBufferWrapper.php';
@@ -26,40 +26,17 @@
 //@require 'Swift/Transport/TransportException.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventDispatcher.php';
-//@require 'Swift/Events/CommandEvent.php';
-//@require 'Swift/Events/ResponseEvent.php';
-//@require 'Swift/Events/SendEvent.php';
 
 /**
- * Sends Messages over SMTP.
+ * Sends Messages over SMTP with ESMTP support.
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
  */
 class Swift_Transport_EsmtpTransport
-  implements Swift_Transport, Swift_Transport_EsmtpBufferWrapper
+  extends Swift_Transport_AbstractSmtpTransport
+  implements Swift_Transport_EsmtpBufferWrapper
 {
-  
-  /**
-   * An Input-Output buffer for sending/receiving SMTP commands and responses.
-   * @var Swift_Transport_IoBuffer
-   * @access private
-   */
-  private $_buffer;
-  
-  /**
-   * Connection status.
-   * @var boolean
-   * @access private
-   */
-  private $_started = false;
-  
-  /**
-   * The domain name to use in EHL0/HELO commands.
-   * @var string
-   * @access private
-   */
-  private $_domain = 'localhost';
   
   /**
    * ESMTP extension handlers.
@@ -80,7 +57,7 @@ class Swift_Transport_EsmtpTransport
    * @var array
    * @access protected
    */
-  protected $_params = array(
+  private $_params = array(
     'protocol' => 'tcp',
     'host' => 'localhost',
     'port' => 25,
@@ -88,13 +65,6 @@ class Swift_Transport_EsmtpTransport
     'blocking' => 1,
     'type' => Swift_Transport_IoBuffer::TYPE_SOCKET
     );
-  
-  /**
-   * The even dispatching layer.
-   * @var Swift_Events_EventDispatcher
-   * @access protected
-   */
-  protected $_eventDispatcher;
   
   /**
    * Creates a new EsmtpTransport using the given I/O buffer.
@@ -105,228 +75,8 @@ class Swift_Transport_EsmtpTransport
   public function __construct(Swift_Transport_IoBuffer $buf,
     array $extensionHandlers, Swift_Events_EventDispatcher $dispatcher)
   {
-    $this->_eventDispatcher = $dispatcher;
-    $this->_buffer = $buf;
+    parent::__construct($buf, $dispatcher);
     $this->setExtensionHandlers($extensionHandlers);
-  }
-  
-  /**
-   * Test if an SMTP connection has been established.
-   * @return boolean
-   */
-  public function isStarted()
-  {
-    return $this->_started;
-  }
-  
-  /**
-   * Start the SMTP connection.
-   */
-  public function start()
-  {
-    if (!$this->_started)
-    { 
-      //Make sure any extension handlers are ready for a fresh start
-      foreach ($this->_handlers as $handler)
-      {
-        $handler->resetState();
-      }
-      
-      try
-      {
-        $this->_buffer->initialize($this->_params);
-      }
-      catch (Swift_Transport_TransportException $e)
-      {
-        $this->_throwException($e);
-      }
-      
-      $greeting = $this->_getFullResponse(0);
-      $this->_assertResponseCode($greeting, array(220));
-      try
-      {
-        $response = $this->executeCommand(
-          sprintf("EHLO %s\r\n", $this->_domain), array(250)
-          );
-        $this->_capabilities = $this->_getCapabilities($response);
-        $this->_setHandlerParams();
-      }
-      catch (Swift_Transport_TransportException $e)
-      {
-        $this->executeCommand(
-          sprintf("HELO %s\r\n", $this->_domain), array(250)
-          );
-      }
-      //Run all ESMTP handlers
-      foreach ($this->_getActiveHandlers() as $handler)
-      {
-        $handler->afterEhlo($this);
-      }
-      
-      if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
-      {
-        $this->_eventDispatcher->dispatchEvent($evt, 'transportStarted');
-      }
-      
-      $this->_started = true;
-    }
-  }
-  
-  /**
-   * Stop the SMTP connection.
-   */
-  public function stop()
-  {
-    if ($this->_started)
-    {
-      try
-      {
-        $this->executeCommand("QUIT\r\n", array(221));
-      }
-      catch (Exception $e)
-      {//log this? 
-      }
-      
-      try
-      {
-        $this->_buffer->terminate();
-      
-        if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
-        {
-          $this->_eventDispatcher->dispatchEvent($evt, 'transportStopped');
-        }
-      }
-      catch (Swift_Transport_TransportException $e)
-      {
-        $this->_throwException($e);
-      }
-    }
-    $this->_started = false;
-  }
-  
-  /**
-   * Send the given Message.
-   * Recipient/sender data will be retreived from the Message API.
-   * The return value is the number of recipients who were accepted for delivery.
-   * @param Swift_Mime_Message $message
-   * @param string[] &$failedRecipients to collect failures by-reference
-   * @return int
-   */
-  public function send(Swift_Mime_Message $message, &$failedRecipients = null)
-  {
-    $sent = 0;
-    $failedRecipients = (array) $failedRecipients;
-    
-    if (!$reversePath = $this->_getReversePath($message))
-    {
-      throw new Swift_Transport_TransportException(
-        'Cannot send message without a sender address'
-        );
-    }
-    
-    if ($evt = $this->_eventDispatcher->createEvent('send', $this, array(
-      'message' => $message,
-      'transport' => $this,
-      'failedRecipients' => array(),
-      'result' => Swift_Events_SendEvent::RESULT_PENDING
-      )))
-    {
-      $this->_eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
-      if ($evt->bubbleCancelled())
-      {
-        return 0;
-      }
-    }
-    
-    
-    $to = $message->getTo();
-    $cc = $message->getCc();
-    $bcc = $message->getBcc();
-    //Remove Bcc headers initially
-    if (!empty($bcc))
-    {
-      $message->setBcc(array());
-    }
-    
-    //Send to all direct recipients
-    if (!empty($to) || !empty($cc))
-    {
-      try
-      {
-        $sent += $this->_doMailTransaction(
-          $message, $reversePath, array_merge(
-            array_keys((array)$to), array_keys((array)$cc)
-            ), $failedRecipients
-          );
-      }
-      catch (Exception $e)
-      {
-        if (!empty($bcc)) //don't leave $message in a state it wasn't given in
-        {
-          $message->setBcc($bcc);
-        }
-        throw $e;
-      }
-    }
-    
-    //Send blind copies
-    if (!empty($bcc))
-    {
-      foreach ((array) $bcc as $forwardPath => $name)
-      {
-        //Update the message for this recipient
-        $message->setBcc(array($forwardPath => $name));
-        try
-        {
-          $sent += $this->_doMailTransaction(
-            $message, $reversePath, array($forwardPath), $failedRecipients
-            );
-        }
-        catch (Exception $e)
-        {
-           //don't leave $message in a state it wasn't given in
-          $message->setBcc($bcc);
-          throw $e;
-        }
-      }
-    }
-    
-    //Restore Bcc headers
-    if (!empty($bcc))
-    {
-      $message->setBcc($bcc);
-    }
-    
-    if ($evt)
-    {
-      $evt->result = Swift_Events_SendEvent::RESULT_SUCCESS;
-      $evt->failedRecipients = $failedRecipients;
-      $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
-    }
-    
-    return $sent;
-  }
-  
-  /**
-   * Set the name of the local domain which Swift will identify itself as.
-   * This should be a fully-qualified domain name and should be truly the domain
-   * you're using.  If your server doesn't have a domain name, use the IP in square
-   * brackets (i.e. [127.0.0.1]).
-   * @param string $domain
-   */
-  public function setLocalDomain($domain)
-  {
-    $this->_domain = $domain;
-    return $this;
-  }
-  
-  /**
-   * Get the name of the domain Swift will identify as.
-   * @return string
-   */
-  public function getLocalDomain()
-  {
-    return $this->_domain;
   }
   
   /**
@@ -406,14 +156,6 @@ class Swift_Transport_EsmtpTransport
   }
   
   /**
-   * Reset the current mail transaction.
-   */
-  public function reset()
-  {
-    $this->executeCommand("RSET\r\n", array(250));
-  }
-  
-  /**
    * Set ESMTP extension handlers.
    * @param Swift_Transport_EsmtpHandler[] $handlers
    */
@@ -440,15 +182,6 @@ class Swift_Transport_EsmtpTransport
   }
   
   /**
-   * Get the IoBuffer where read/writes are occurring.
-   * @return Swift_Transport_IoBuffer
-   */
-  public function getBuffer()
-  {
-    return $this->_buffer;
-  }
-  
-  /**
    * Run a command against the buffer, expecting the given response codes.
    * If no response codes are given, the response will not be validated.
    * If codes are given, an exception will be thrown on an invalid response.
@@ -467,17 +200,9 @@ class Swift_Transport_EsmtpTransport
       {
         $handler->onCommand($this, $command, $codes, $failures);
       }
-      $seq = $this->_buffer->write($command);
-      $response = $this->_getFullResponse($seq);
-      if ($evt = $this->_eventDispatcher->createEvent('command', $this, array(
-        'command' => $command,
-        'successCodes' => $codes
-        )))
-      {
-        $this->_eventDispatcher->dispatchEvent($evt, 'commandSent');
-      }
-      $this->_assertResponseCode($response, $codes);
+      $response = parent::executeCommand($command, $codes, $failures);
     }
+    //WTF is this?  Get rid of it and just check for !is_null() in $response
     catch (Swift_Transport_CommandSentException $e)
     {
       $response = $e->getResponse();
@@ -485,64 +210,9 @@ class Swift_Transport_EsmtpTransport
     return $response;
   }
   
-  // -- Protected methods
-  
-  /**
-   * Determine the best-use reverse path for this message.
-   * The preferred order is: return-path, sender, from.
-   * @param Swift_Mime_Message $message
-   * @return string
-   * @access protected
-   */
-  protected function _getReversePath(Swift_Mime_Message $message)
-  {
-    $return = $message->getReturnPath();
-    $sender = $message->getSender();
-    $from = $message->getFrom();
-    $path = null;
-    if (!empty($return))
-    {
-      $path = $return;
-    }
-    elseif (!empty($sender))
-    {
-      $keys = array_keys($sender);
-      $path = array_shift($keys);
-    }
-    elseif (!empty($from))
-    {
-      $keys = array_keys($from);
-      $path = array_shift($keys);
-    }
-    return $path;
-  }
-  
-  /**
-   * Throw a TransportException, first sending it to any listeners.
-   */
-  protected function _throwException(Swift_Transport_TransportException $e)
-  {
-    if ($evt = $this->_eventDispatcher->createEvent('exception', $this, array(
-      'exception' => $e
-      )))
-    {
-      $this->_eventDispatcher->dispatchEvent($evt, 'exceptionThrown');
-      if (!$evt->bubbleCancelled())
-      {
-        throw $e;
-      }
-    }
-    else
-    {
-      throw $e;
-    }
-  }
-  
   // -- Mixin invocation code
   
-  /**
-   * Mixin handling method for ESMTP handlers.
-   */
+  /** Mixin handling method for ESMTP handlers */
   private function __call($method, $args)
   {
     foreach ($this->_handlers as $handler)
@@ -566,62 +236,68 @@ class Swift_Transport_EsmtpTransport
     trigger_error('Call to undefined method ' . $method, E_USER_ERROR);
   }
   
-  // -- Private methods
+  // -- Protected methods
   
-  /**
-   * Checks if the response code matches a given number and throws an Exception if not.
-   */
-  private function _assertResponseCode($response, $wanted)
+  /** Get the params to initialize the buffer */
+  protected function _getBufferParams()
   {
-    list($code, $separator, $text) = sscanf($response, '%3d%[ -]%s');
-    $valid = (empty($wanted) || in_array($code, $wanted));
-    
-    if ($evt = $this->_eventDispatcher->createEvent('response', $this, array(
-      'result' => ($valid
-        ? Swift_Events_ResponseEvent::RESULT_VALID
-        : Swift_Events_ResponseEvent::RESULT_INVALID),
-      'response' => $response
-      )))
-    {
-      $this->_eventDispatcher->dispatchEvent($evt, 'responseReceived');
-    }
-    
-    if (!$valid)
-    {
-      $this->_throwException(
-        new Swift_Transport_TransportException(
-          'Expected response code ' . implode('/', $wanted) . ' but got code ' .
-          '"' . $code . '", with message "' . $response . '"'
-          )
-        );
-    }
+    return $this->_params;
   }
   
-  /**
-   * Get the entire response of a multi-line response using it's sequence number.
-   */
-  private function _getFullResponse($seq)
+  /** Overridden to perform EHLO instead */
+  protected function _doHeloCommand()
   {
-    $response = '';
     try
     {
-      do
+      $response = $this->executeCommand(
+        sprintf("EHLO %s\r\n", $this->_domain), array(250)
+        );
+      $this->_capabilities = $this->_getCapabilities($response);
+      $this->_setHandlerParams();
+      foreach ($this->_getActiveHandlers() as $handler)
       {
-        $line = $this->_buffer->readLine($seq);
-        $response .= $line;
+        $handler->afterEhlo($this);
       }
-      while (null !== $line && false !== $line && ' ' != $line{3});
     }
     catch (Swift_Transport_TransportException $e)
     {
-      $this->_throwException($e);
+      parent::_doHeloCommand();
     }
-    return $response;
   }
   
-  /**
-   * Determine ESMTP capabilities by function group.
-   */
+  /** Overridden to add Extension support */
+  protected function _doMailFromCommand($address)
+  {
+    $handlers = $this->_getActiveHandlers();
+    $params = array();
+    foreach ($handlers as $handler)
+    {
+      $params = array_merge($params, (array) $handler->getMailParams());
+    }
+    $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
+    $this->executeCommand(
+      sprintf("MAIL FROM: <%s>%s\r\n", $address, $paramStr), array(250)
+      );
+  }
+  
+  /** Overridden to add Extension support */
+  protected function _doRcptToCommand($address)
+  {
+    $handlers = $this->_getActiveHandlers();
+    $params = array();
+    foreach ($handlers as $handler)
+    {
+      $params = array_merge($params, (array) $handler->getRcptParams());
+    }
+    $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
+    $this->executeCommand(
+      sprintf("RCPT TO: <%s>%s\r\n", $address, $paramStr), array(250, 251, 252)
+      );
+  }
+  
+  // -- Private methods
+  
+  /** Determine ESMTP capabilities by function group */
   private function _getCapabilities($ehloResponse)
   {
     $capabilities = array();
@@ -641,9 +317,7 @@ class Swift_Transport_EsmtpTransport
     return $capabilities;
   }
   
-  /**
-   * Set parameters which are used by each extension handler.
-   */
+  /** Set parameters which are used by each extension handler */
   private function _setHandlerParams()
   {
     foreach ($this->_handlers as $keyword => $handler)
@@ -655,9 +329,7 @@ class Swift_Transport_EsmtpTransport
     }
   }
   
-  /**
-   * Get ESMTP handlers which are currently ok to use.
-   */
+  /** Get ESMTP handlers which are currently ok to use */
   private function _getActiveHandlers()
   {
     $handlers = array();
@@ -671,88 +343,10 @@ class Swift_Transport_EsmtpTransport
     return $handlers;
   }
   
-  /**
-   * Send the given email to the given recipients from the given reverse path.
-   */
-  private function _doMailTransaction($message, $reversePath,
-    array $recipients, array &$failedRecipients)
-  {
-    $sent = 0;
-    
-    $handlers = $this->_getActiveHandlers();
-    
-    $params = array();
-    foreach ($handlers as $handler)
-    {
-      $params = array_merge($params, (array) $handler->getMailParams());
-    }
-    $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
-    
-    //Provide sender address
-    $this->executeCommand(
-      sprintf("MAIL FROM: <%s>%s\r\n", $reversePath, $paramStr), array(250)
-      );
-    foreach ($recipients as $forwardPath)
-    {
-      $params = array();
-      foreach ($handlers as $handler)
-      {
-        $params = array_merge($params, (array) $handler->getRcptParams());
-      }
-      $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
-      
-      try
-      {
-        $this->executeCommand(
-          sprintf("RCPT TO: <%s>%s\r\n", $forwardPath, $paramStr), array(250, 251, 252)
-          );
-        $sent++;
-      }
-      catch (Swift_Transport_TransportException $e)
-      {
-        $failedRecipients[] = $forwardPath;
-      }
-    }
-    
-    if ($sent != 0)
-    {
-      $this->executeCommand("DATA\r\n", array(354));
-      //Stream the message straight into the buffer
-      $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
-      try
-      {
-        $message->toByteStream($this->_buffer);
-      }
-      catch (Swift_Transport_TransportException $e)
-      {
-        $this->_throwException($e);
-      }
-      //End data transmission
-      $this->_buffer->setWriteTranslations(array());
-      $this->executeCommand("\r\n.\r\n", array(250));
-    }
-    else
-    {
-      $this->reset();
-    }
-    
-    return $sent;
-  }
-  
-  /**
-   * Custom sort for extension handler ordering.
-   */
+  /** Custom sort for extension handler ordering */
   private function _sortHandlers($a, $b)
   {
     return $a->getPriorityOver($b->getHandledKeyword());
-  }
-  
-  /**
-   * Destructor.
-   */
-  public function __destruct()
-  {
-    $this->stop();
   }
   
 }

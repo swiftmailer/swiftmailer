@@ -1,7 +1,6 @@
 Swift Mailer SE TODO:
 ---------------------
 
- * Write some sanity tests
  * Read-receipts (Something in $message like CustomHeaderFactory?)
  * Think about the interface for loading plugins
  * Failed recipients?
@@ -34,7 +33,7 @@ Refactors:
 ----------
 
  * Change setBodyAsString() and getBodyAsString() to just setBody() and getBody()
- * Split Esmtp into two classes and change what Sendmail extends
+ * Make SendmailTransport a subclass of AbstractSmtpTransport
  * Consider namespacing dependency maps and storing them all centrally
    - e.g. "transport.smtp", "mime.message" and "events.dispatcher"
    - This way one factory can create classes which belong to another

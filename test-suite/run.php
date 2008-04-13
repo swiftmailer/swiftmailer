@@ -32,7 +32,7 @@ $runner = new Sweety_Runner_CliRunner(
   );
 
 $name = isset($argv[1]) ? $argv[1] : 'All Tests';
-$runner->setReporter(new Sweety_Reporter_CliReporter($name));
+$runner->setReporter(new Sweety_Reporter_CliReporter(sprintf('%s - %s', SWEETY_SUITE_NAME, $name)));
 
 $runner->setIgnoredClassRegex(SWEETY_IGNORED_CLASSES);
 

@@ -232,7 +232,7 @@ $_swiftMimeDeps = array(
     'shared' => false
     ),
   
-  //Cusom (X-Header)
+  //Custom (X-Header)
   'xheader' => array(
     'class' => 'Swift_Mime_Headers_ParameterizedHeader',
     'args' => array(
