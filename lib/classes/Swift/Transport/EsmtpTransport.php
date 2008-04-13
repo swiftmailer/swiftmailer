@@ -22,7 +22,6 @@
 //@require 'Swift/Transport/EsmtpHandler.php';
 //@require 'Swift/Transport/IoBuffer.php';
 //@require 'Swift/Transport/EsmtpBufferWrapper.php';
-//@require 'Swift/Transport/CommandSentException.php';
 //@require 'Swift/Transport/TransportException.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventDispatcher.php';
@@ -193,21 +192,19 @@ class Swift_Transport_EsmtpTransport
   public function executeCommand($command, $codes = array(), &$failures = null)
   {
     $failures = (array) $failures;
+    $stopSignal = false;
     $response = null;
-    try
+    foreach ($this->_getActiveHandlers() as $handler)
     {
-      foreach ($this->_getActiveHandlers() as $handler)
+      $response = $handler->onCommand(
+        $this, $command, $codes, $failures, $stopSignal
+        );
+      if ($stopSignal)
       {
-        $handler->onCommand($this, $command, $codes, $failures);
+        return $response;
       }
-      $response = parent::executeCommand($command, $codes, $failures);
     }
-    //WTF is this?  Get rid of it and just check for !is_null() in $response
-    catch (Swift_Transport_CommandSentException $e)
-    {
-      $response = $e->getResponse();
-    }
-    return $response;
+    return parent::executeCommand($command, $codes, $failures);
   }
   
   // -- Mixin invocation code

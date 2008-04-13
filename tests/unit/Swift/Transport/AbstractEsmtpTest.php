@@ -2,7 +2,6 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/EsmtpHandler.php';
-require_once 'Swift/Transport/CommandSentException.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Transport/IoBuffer.php';
 

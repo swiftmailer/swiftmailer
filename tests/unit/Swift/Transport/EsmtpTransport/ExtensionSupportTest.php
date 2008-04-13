@@ -220,8 +220,6 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
   
   public function testChainOfCommandAlgorithmWhenNotifyingExtensions()
   {
-    $e = new Swift_Transport_CommandSentException("250 OK\r\n");
-    
     $context = new Mockery();
     $buf = $this->_getBuffer($context);
     $smtp = $this->_getTransport($buf);
@@ -238,7 +236,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> never($buf)->write("FOO\r\n")
       
       -> allowing($ext1)->getHandledKeyword() -> returns('AUTH')
-      -> one($ext1)->onCommand($smtp, "FOO\r\n", array(250, 251), optional()) -> throws($e)
+      -> one($ext1)->onCommand($smtp, "FOO\r\n", array(250, 251), optional()) -> calls(array($this, 'cbStopCommand'))
       -> allowing($ext2)->getHandledKeyword() -> returns('SIZE')
       -> never($ext2)->onCommand(any(), any(), any(), optional())
       -> allowing($ext3)->getHandledKeyword() -> returns('STARTTLS')
@@ -252,6 +250,14 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
     $smtp->start();
     $smtp->executeCommand("FOO\r\n", array(250, 251));
     $context->assertIsSatisfied();
+  }
+  
+  public function cbStopCommand(Yay_Invocation $invocation)
+  {
+    $args =& $invocation->getArguments();
+    $stop =& $args[4];
+    $stop = true;
+    return "250 ok";
   }
   
   public function testExtensionsCanExposeMixinMethods()

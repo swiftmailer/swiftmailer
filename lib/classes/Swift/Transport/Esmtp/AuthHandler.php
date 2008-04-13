@@ -189,7 +189,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
    * Not used.
    */
   public function onCommand(Swift_Transport_EsmtpBufferWrapper $buf,
-    $command, $codes = array(), &$failedRecipients = null)
+    $command, $codes = array(), &$failedRecipients = null, &$stop = false)
   {
   }
     

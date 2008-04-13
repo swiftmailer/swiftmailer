@@ -66,9 +66,10 @@ interface Swift_Transport_EsmtpHandler
    * @param string $command to send
    * @param int[] $codes expected in response
    * @param string[] &$failedRecipients
+   * @param boolean &$stop to be set true if the command is now sent
    */
   public function onCommand(Swift_Transport_EsmtpBufferWrapper $buf,
-    $command, $codes = array(), &$failedRecipients = null);
+    $command, $codes = array(), &$failedRecipients = null, &$stop = false);
     
   /**
    * Returns +1, -1 or 0 according to the rules for usort().
