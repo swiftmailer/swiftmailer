@@ -63,5 +63,10 @@ class Swift_Transport_SendmailTransportTest
     
     $context->assertIsSatisfied();
   }
+  
+  public function testFluidInterface()
+  {
+    $this->fail('TODO');
+  }
 
 }
