@@ -29,8 +29,20 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
+class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTransport
 {
+  
+  /**
+   * Connection buffer parameters.
+   * @var array
+   * @access protected
+   */
+  private $_params = array(
+    'timeout' => 30,
+    'blocking' => 1,
+    'command' => '/usr/sbin/sendmail -bs',
+    'type' => Swift_Transport_IoBuffer::TYPE_PROCESS
+    );
   
   /**
    * Create a new SendmailTransport with $buf for I/O.
@@ -40,9 +52,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
   public function __construct(Swift_Transport_IoBuffer $buf,
     Swift_Events_EventDispatcher $dispatcher)
   {
-    parent::__construct($buf, array(), $dispatcher);
-    $this->_params['command'] = '/usr/sbin/sendmail -bs';
-    $this->_params['type'] = Swift_Transport_IoBuffer::TYPE_PROCESS;
+    parent::__construct($buf, $dispatcher);
   }
   
   /**
@@ -124,6 +134,14 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_EsmtpTransport
     }
     
     return $count;
+  }
+  
+  // -- Protected methods
+  
+  /** Get the params to initialize the buffer */
+  protected function _getBufferParams()
+  {
+    return $this->_params;
   }
   
 }

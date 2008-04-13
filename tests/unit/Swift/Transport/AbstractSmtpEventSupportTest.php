@@ -1,23 +1,12 @@
 <?php
 
-require_once 'Swift/Transport/EsmtpTransportTest.php';
-require_once 'Swift/Transport/EsmtpTransport.php';
+require_once 'Swift/Transport/AbstractSmtpTest.php';
 require_once 'Swift/Events/EventDispatcher.php';
 require_once 'Swift/Events/EventObject.php';
 
-class Swift_Transport_EsmtpTransport_EventSupportTest
-  extends Swift_Transport_EsmtpTransportTest
+abstract class Swift_Transport_AbstractSmtpEventSupportTest
+  extends Swift_Transport_AbstractSmtpTest
 {
-  
-  protected function _getTransport($buf, $dispatcher = null)
-  {
-    if (!$dispatcher)
-    {
-      $context = new Mockery();
-      $dispatcher = $context->mock('Swift_Events_EventDispatcher');
-    }
-    return new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher);
-  }
   
   public function testSendingDispatchesBeforeSendEvent()
   {

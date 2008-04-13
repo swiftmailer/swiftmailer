@@ -1,19 +1,24 @@
 <?php
 
-require_once 'Swift/Transport/AbstractEsmtpTest.php';
+require_once 'Swift/Transport/AbstractSmtpEventSupportTest.php';
 require_once 'Swift/Transport/SendmailTransport.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Events/EventDispatcher.php';
 
 class Swift_Transport_SendmailTransportTest
-  extends Swift_Transport_AbstractEsmtpTest
+  extends Swift_Transport_AbstractSmtpEventSupportTest
 {
   
-  protected function _getTransport($buf)
+  protected function _getTransport($buf, $dispatcher = null, $command = '/usr/sbin/sendmail -bs')
   {
-    $smtp = $this->_getSendmail($buf);
-    $smtp->setCommand('/usr/sbin/sendmail -bs');
-    return $smtp;
+    if (!$dispatcher)
+    {
+      $context = new Mockery();
+      $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+    }
+    $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher);
+    $transport->setCommand($command);
+    return $transport;
   }
   
   protected function _getSendmail($buf, $dispatcher = null)
@@ -66,7 +71,16 @@ class Swift_Transport_SendmailTransportTest
   
   public function testFluidInterface()
   {
-    $this->fail('TODO');
+    $context = new Mockery();
+    $buf = $this->_getBuffer($context);
+    $sendmail = $this->_getTransport($buf);
+    
+    $ref = $sendmail
+      ->setCommand('/foo')
+      ;
+    $this->assertReference($ref, $sendmail);
+    
+    $context->assertIsSatisfied();
   }
 
 }
