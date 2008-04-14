@@ -13,7 +13,8 @@ class Swift_Events_TransportExceptionEventTest extends Swift_Tests_SwiftUnitTest
     $e = new Swift_Transport_TransportException('foo');
     $evt = new Swift_Events_TransportExceptionEvent();
     $evt->exception = $e;
-    $this->assertReference($e, $evt->getException(),
+    $ref = $evt->getException();
+    $this->assertReference($e, $ref,
       '%s: Exception should be injectable'
       );
   }
@@ -29,7 +30,8 @@ class Swift_Events_TransportExceptionEventTest extends Swift_Tests_SwiftUnitTest
     $clone = $evt->cloneFor($transport);
     
     $this->assertNull($clone->getException());
-    $this->assertReference($transport, $clone->getSource(),
+    $source = $clone->getSource();
+    $this->assertReference($transport, $source,
       '%s: Transport should be available via getSource()'
       );
   }

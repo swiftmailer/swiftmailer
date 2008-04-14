@@ -189,9 +189,10 @@ class Swift_Mime_Headers_MailboxHeaderTest
     $header = $this->_getHeader('From', $encoder);
     $header->setNameAddresses(array('chris@swiftmailer.org'=>'Chris ' . $name));
     
+    $addresses = $header->getNameAddressStrings();
     $this->assertEqual(
       'Chris =?' . $this->_charset . '?Q?C=8Frbyn?= <chris@swiftmailer.org>',
-      array_shift($header->getNameAddressStrings())
+      array_shift($addresses)
       );
   }
   

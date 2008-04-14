@@ -34,7 +34,8 @@ class Swift_Events_CommandEventTest extends Swift_Tests_SwiftUnitTestCase
     
     $this->assertEqual('', $clone->getCommand());
     $this->assertEqual(array(), $clone->getSuccessCodes());
-    $this->assertReference($buf, $clone->getSource());
+    $source = $clone->getSource();
+    $this->assertReference($buf, $source);
   }
   
 }

@@ -16,10 +16,12 @@ class Swift_Events_TransportChangeEventTest extends Swift_Tests_SwiftUnitTestCas
     
     $clone = $evt->cloneFor($transport);
     
-    $this->assertReference($transport, $clone->getSource(),
+    $source = $clone->getSource();
+    $this->assertReference($transport, $source,
       '%s: Transport should be available via getSource()'
       );
-    $this->assertReference($transport, $clone->getTransport(),
+    $ref = $clone->getTransport();
+    $this->assertReference($transport, $ref,
       '%s: Transport should be available via getTransport()'
       );
   }

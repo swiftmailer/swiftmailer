@@ -843,8 +843,8 @@ abstract class Swift_Transport_AbstractSmtpTest extends Swift_Tests_SwiftUnitTes
     $context = new Mockery();
     $buf = $this->_getBuffer($context);
     $smtp = $this->_getTransport($buf);
-    
-    $this->assertReference($buf, $smtp->getBuffer());
+    $ref = $smtp->getBuffer();
+    $this->assertReference($buf, $ref);
     
     $context->assertIsSatisfied();
   }

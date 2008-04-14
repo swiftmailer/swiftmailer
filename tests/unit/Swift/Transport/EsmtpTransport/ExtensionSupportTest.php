@@ -301,8 +301,10 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       );
     $this->_finishBuffer($context, $buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2));
-    $this->assertReference($smtp, $smtp->setUsername('mick'));
-    $this->assertReference($smtp, $smtp->setPassword('pass'));
+    $ret = $smtp->setUsername('mick');
+    $this->assertReference($smtp, $ret);
+    $ret = $smtp->setPassword('pass');
+    $this->assertReference($smtp, $ret);
     $context->assertIsSatisfied();
   }
   

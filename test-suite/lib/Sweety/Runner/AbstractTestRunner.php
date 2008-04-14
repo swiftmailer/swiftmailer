@@ -250,7 +250,7 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
   { 
     foreach ($testCase->xpath('./test') as $testMethod)
     {
-      $testMethodName = (string) array_shift($testMethod->xpath('./name'));
+      $testMethodName = (string) $this->_firstNodeValue($testMethod->xpath('./name'));
       
       foreach ($testMethod->xpath('./formatted') as $formatted)
       {
@@ -303,7 +303,7 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
     { 
       foreach ($groups as $group)
       { 
-        $groupName = (string) array_shift($group->xpath('./name'));
+        $groupName = (string) $this->_firstNodeValue($group->xpath('./name'));
         $this->_parseResults($group, $path . ' -> ' . $groupName, $reporter);
       }
     }
@@ -325,13 +325,13 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
   private function _parseDocument(SimpleXMLElement $document, $path = '',
     Sweety_Reporter $reporter)
   {
-    if ($everything = array_shift($document->xpath('/run')))
+    if ($everything = $this->_firstNodeValue($document->xpath('/run')))
     {
       $this->_parseResults($everything, $path, $reporter);
     }
-    elseif ($skip = array_shift($document->xpath('/skip')))
+    elseif ($skip = $this->_firstNodeValue($document->xpath('/skip')))
     {
-      $reporter->reportSkip((string)$skip, $path);
+      $reporter->reportSkip((string) $skip, $path);
     }
   }
   
@@ -354,6 +354,12 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
     {
       return ($apkg > $bpkg) ? 1 : -1;
     }
+  }
+  
+  private function _firstNodeValue($nodeSet)
+  {
+    $first = array_shift($nodeSet);
+    return $first;
   }
   
 }

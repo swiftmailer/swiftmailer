@@ -18,7 +18,8 @@ class Swift_Events_EventObjectTest extends Swift_Tests_SwiftUnitTestCase
     $source = new stdClass();
     $evt = $this->_event->cloneFor($source);
     $this->assertIsA($evt, 'Swift_Events_EventObject');
-    $this->assertReference($source, $evt->getSource());
+    $ref = $evt->getSource();
+    $this->assertReference($source, $ref);
   }
   
   public function testEventDoesNotHaveCancelledBubbleAfterClone()

@@ -36,7 +36,8 @@ class Swift_Events_ResponseEventTest extends Swift_Tests_SwiftUnitTestCase
     $evt->result = Swift_Events_ResponseEvent::RESULT_INVALID;
     
     $clone = $evt->cloneFor($buf);
-    $this->assertReference($buf, $clone->getSource());
+    $source = $clone->getSource();
+    $this->assertReference($buf, $source);
     $this->assertEqual('', $clone->getResponse());
     $this->assertEqual(Swift_Events_ResponseEvent::RESULT_VALID, $clone->getResult());
   }

@@ -16,7 +16,8 @@ class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
     $evt = new Swift_Events_SendEvent();
     $evt->message = $message;
     
-    $this->assertReference($message, $evt->getMessage(),
+    $ref = $evt->getMessage();
+    $this->assertReference($message, $ref,
       '%s: Message should be injectable'
       );
   }
@@ -50,7 +51,8 @@ class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
     $evt = new Swift_Events_SendEvent();
     $evt->transport = $transport;
     
-    $this->assertReference($transport, $evt->getTransport(),
+    $ref = $evt->getTransport();
+    $this->assertReference($transport, $ref,
       '%s: Transport should be injectable'
       );
   }
@@ -71,7 +73,8 @@ class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
     
     $cloned = $evt->cloneFor($obj);
     
-    $this->assertReference($obj, $cloned->getSource());
+    $source = $cloned->getSource();
+    $this->assertReference($obj, $source);
     $this->assertEqual(Swift_Events_SendEvent::RESULT_PENDING, $cloned->getResult());
     $this->assertEqual(array(), $cloned->getFailedRecipients());
     $this->assertNull($cloned->getMessage());
