@@ -7,6 +7,9 @@ Swift Mailer SE TODO:
    - Mail
  * Event dispatching
    - Mail
+ * Re-write the DI stuff
+   - Singleton of everything called by several wrapper factories
+ * CharacterReaderFactory to use DI lookups
  * CharacterReaders
    - Big5
    - Shift-JIS
@@ -26,16 +29,12 @@ Weaknesses:
 
  * writeTransformations() in buffer could fail
  * canonicalization logic could fail
- * streams aren't used in the decorator plugin
  * DI is a bit unclear what goes where
   
 Refactors:
 ----------
 
  * Change setBodyAsString() and getBodyAsString() to just setBody() and getBody()
- * Consider namespacing dependency maps and storing them all centrally
-   - e.g. "transport.smtp", "mime.message" and "events.dispatcher"
-   - This way one factory can create classes which belong to another
 
 Website Re-Design:
 ------------------

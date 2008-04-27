@@ -23,7 +23,7 @@ class Swift_Tests_IdenticalBinaryExpectation extends SimpleExpectation
    */
   public function __construct($left, $message = '%s')
   {
-    $this->SimpleExpectation($message);
+    parent::__construct($message);
     $this->_left = $left;
   }
   
