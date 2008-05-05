@@ -12,19 +12,13 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
   
   public function testValidatorAlgorithmOnImportString()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $seq = $context->sequence('read-sequence');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-sequence');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -43,25 +37,17 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
       0xD0, 0xB0
       )
     );
-    
-    $context->assertIsSatisfied();
   }
   
   public function testCharactersWrittenUseValidator()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $seq = $context->sequence('read-sequence');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-sequence');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -83,25 +69,17 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
       0xD1, 0x85
       )
     );
-    
-    $context->assertIsSatisfied();
   }
   
   public function testReadCharactersAreInTact()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $seq = $context->sequence('read-sequence');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-sequence');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       //String
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -137,25 +115,17 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $this->assertIdenticalBinary(pack('C*', 0xD1, 0x85), $stream->read(1));
     
     $this->assertIdentical(false, $stream->read(1));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testCharactersCanBeReadAsByteArrays()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $seq = $context->sequence('read-sequence');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-sequence');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       //String
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -189,25 +159,17 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $this->assertEqual(array(0xD1, 0x85), $stream->readBytes(1));
     
     $this->assertIdentical(false, $stream->readBytes(1));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testRequestingLargeCharCountPastEndOfStream()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $seq = $context->sequence('read-sequence');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-sequence');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -221,25 +183,17 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
       );
     
     $this->assertIdentical(false, $stream->read(1));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testRequestingByteArrayCountPastEndOfStream()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $seq = $context->sequence('read-sequence');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-sequence');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -253,25 +207,17 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
       );
     
     $this->assertIdentical(false, $stream->readBytes(1));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testPointerOffsetCanBeSet()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $seq = $context->sequence('read-sequence');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-sequence');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -289,25 +235,17 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $stream->setPointer(2);
     
     $this->assertIdenticalBinary(pack('C*', 0xD0, 0xBE), $stream->read(1));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testContentsCanBeFlushed()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $seq = $context->sequence('read-sequence');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-sequence');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -319,27 +257,18 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $stream->flushContents();
     
     $this->assertIdentical(false, $stream->read(1));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testByteStreamCanBeImportingUsesValidator()
   { 
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
+    $os = $this->_getByteStream();
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $os = $context->mock('Swift_OutputByteStream');
-    
-    $seq = $context->sequence('read-stream');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-stream');
+    $this->_mockery()->checking(Expectations::create()
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0xD0))
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0x94))
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0xD0))
@@ -349,8 +278,8 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
       -> ignoring($os)->read(any()) -> returns(false)
       );
       
-    $seq = $context->sequence('read-chars');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-chars');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -358,27 +287,18 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
       );
     
     $stream->importByteStream($os);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testImportingStreamProducesCorrectCharArray()
   {
-    $context = new Mockery();
-    
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
+    $os = $this->_getByteStream();
     
     $stream = new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8');
     
-    $os = $context->mock('Swift_OutputByteStream');
-    
-    $seq = $context->sequence('read-stream');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-stream');
+    $this->_mockery()->checking(Expectations::create()
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0xD0))
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0x94))
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0xD0))
@@ -388,8 +308,8 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
       -> ignoring($os)->read(any()) -> returns(false)
       );
     
-    $seq = $context->sequence('read-chars');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-chars');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
       -> one($reader)->validateByteSequence(array(0xD0)) -> inSequence($seq) -> returns(1)
@@ -403,23 +323,15 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $this->assertIdenticalBinary(pack('C*', 0xD0, 0xBE), $stream->read(1));
     
     $this->assertIdentical(false, $stream->read(1));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testAlgorithmWithFixedWidthCharsets()
   {
-    $context = new Mockery();
+    $reader = $this->_getReader();
+    $factory = $this->_getFactory($reader);
     
-    $reader = $context->mock('Swift_CharacterReader');
-    $factory = $context->mock('Swift_CharacterReaderFactory');
-    
-    $context->checking(Expectations::create()
-      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
-      );
-    
-    $seq = $context->sequence('read-chars');
-    $context->checking(Expectations::create()
+    $seq = $this->_mockery()->sequence('read-chars');
+    $this->_mockery()->checking(Expectations::create()
       -> ignoring($reader)->getInitialByteSize() -> returns(2)
       -> one($reader)->validateByteSequence(array(0xD1, 0x8D)) -> inSequence($seq)
       -> one($reader)->validateByteSequence(array(0xD0, 0xBB)) -> inSequence($seq)
@@ -436,8 +348,27 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
     $this->assertIdenticalBinary(pack('C*', 0xD0, 0xB0), $stream->read(1));
     
     $this->assertIdentical(false, $stream->read(1));
-    
-    $context->assertIsSatisfied();
+  }
+  
+  // -- Creation methods
+  
+  private function _getReader()
+  {
+    return $this->_mockery()->mock('Swift_CharacterReader');
+  }
+  
+  private function _getFactory($reader)
+  {
+    $factory = $this->_mockery()->mock('Swift_CharacterReaderFactory');
+    $this->_mockery()->checking(Expectations::create()
+      -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
+      );
+    return $factory;
+  }
+  
+  private function _getByteStream()
+  {
+    return $this->_mockery()->mock('Swift_OutputByteStream');
   }
   
 }
