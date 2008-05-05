@@ -7,9 +7,6 @@ Swift Mailer SE TODO:
    - Mail
  * Event dispatching
    - Mail
- * Re-write the DI stuff
-   - Singleton of everything called by several wrapper factories
- * CharacterReaderFactory to use DI lookups
  * CharacterReaders
    - Big5
    - Shift-JIS
@@ -17,8 +14,8 @@ Swift Mailer SE TODO:
    - CP950
  * Transports
    - PopBeforeSmtp authentication
-   - Esmtp extension support
-     - 8BITMIME
+ * Swift_ByteStream_FileByteStream is too long
+   - Swift_File ?
  * Plugins
    - FileEmbedder (Mime API issues? Streams?)
    - VERP
@@ -29,7 +26,6 @@ Weaknesses:
 
  * writeTransformations() in buffer could fail
  * canonicalization logic could fail
- * DI is a bit unclear what goes where
   
 Refactors:
 ----------
