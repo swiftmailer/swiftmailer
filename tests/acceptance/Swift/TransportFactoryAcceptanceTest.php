@@ -7,17 +7,6 @@ require_once 'swift_required.php';
 class Swift_TransportFactoryAcceptanceTest extends UnitTestCase
 {
   
-  public function testInstantiatingAllClasses()
-  {
-    $fTransport = Swift_TransportFactory::getInstance();
-    $map = $fTransport->getDependencyMap();
-    foreach ($map as $key => $spec)
-    {
-      $object = $fTransport->create($key);
-      $this->assertIsA($object, $spec['class']);
-    }
-  }
-  
   public function testCreateSmtp()
   {
     $fTransport = Swift_TransportFactory::getInstance();

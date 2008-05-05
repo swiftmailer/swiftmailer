@@ -25,7 +25,7 @@
  * @package Swift
  * @author Chris Corbyn
  */
-abstract class Swift_TransportFactory extends Swift_Di
+class Swift_TransportFactory
 {
   
   /** Constant for using SMTP with TLS encryption */
@@ -48,7 +48,7 @@ abstract class Swift_TransportFactory extends Swift_Di
    * Constructor cannot be used.
    * @access private
    */
-  public function __construct()
+  private function __construct()
   {
   }
   
@@ -60,9 +60,22 @@ abstract class Swift_TransportFactory extends Swift_Di
   {
     if (!isset(self::$_instance))
     {
-      self::$_instance = parent::getInstance()->create('transportfactory');
+      self::$_instance = new self();
     }
     return self::$_instance;
+  }
+  
+  /**
+   * Create a new instance of the component named $name.
+   * @param string $name
+   * @param array $lookup to override any pre-defined lookups
+   * @return object
+   * @throws Exception if no such component exists
+   */
+  public function create($name, $lookup = array(), $fqName = false)
+  {
+    $name = $fqName ? $name : sprintf('transport.%s', $name);
+    return Swift_Di::getInstance()->create($name, $lookup);
   }
   
   /**
@@ -72,35 +85,77 @@ abstract class Swift_TransportFactory extends Swift_Di
    * @param string $encryption
    * @return Swift_Transport
    */
-  abstract public function createSmtp($host = null, $port = null,
-    $encryption = self::SMTP_ENC_NONE);
+  public function createSmtp($host = null, $port = null,
+    $encryption = self::SMTP_ENC_NONE)
+  {
+    $smtp = $this->create('smtp');
+    if ($host)
+    {
+      $smtp->setHost($host);
+    }
+    if ($port)
+    {
+      $smtp->setPort($port);
+    }
+    if ($encryption)
+    {
+      $smtp->setEncryption($encryption);
+    }
+    return $smtp;
+  }
     
   /**
    * Create a new Sendmail Transport.
    * @param string $command
    * @return Swift_Transport
    */
-  abstract public function createSendmail($command = null);
+  public function createSendmail($command = null)
+  {
+    $sendmail = $this->create('sendmail');
+    if ($command)
+    {
+      $sendmail->setCommand($command);
+    }
+    return $sendmail;
+  }
   
   /**
    * Create a new Mail (mail() function) Transport.
    * @param string $params for $additional_params in mail()
    * @return Swift_Transport
    */
-  abstract public function createMail($params = null);
+  public function createMail($params = null)
+  {
+    $mail = $this->create('mail');
+    if ($params)
+    {
+      $mail->setExtraParams($params);
+    }
+    return $mail;
+  }
   
   /**
    * Create a new Failover Transport.
    * @param Swift_Transport[] $transports
    * @return Swift_Transport
    */
-  abstract public function createFailover($transports = array());
+  public function createFailover($transports = array())
+  {
+    $failover = $this->create('failover');
+    $failover->setTransports($transports);
+    return $failover;
+  }
   
   /**
    * Create a new load balanced Transport.
    * @param Swift_Transport[] $transports
    * @return Swift_Transport
    */
-  abstract public function createLoadBalanced($transports = array());
+  public function createLoadBalanced($transports = array())
+  {
+    $balanced = $this->create('failover');
+    $balanced->setTransports($transports);
+    return $balanced;
+  }
   
 }

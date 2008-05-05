@@ -25,7 +25,7 @@
  * @package Swift
  * @author Chris Corbyn
  */
-abstract class Swift_MimeFactory extends Swift_Di
+class Swift_MimeFactory
 {
   
   /**
@@ -39,12 +39,12 @@ abstract class Swift_MimeFactory extends Swift_Di
    * Constructor cannot be used.
    * @access private
    */
-  public function __construct()
+  private function __construct()
   {
-    $this->setLookup('charset', 'string:utf-8');
-    $this->setLookup('cache', 'di:arraycache');
-    $this->setLookup('temppath', 'string:/tmp');
-    $this->setLookup('xheadername', 'string:X-Custom');
+    $this->setCharset('utf-8');
+    $this->setCacheType('arraycache');
+    $this->setTempPath('/tmp');
+    Swift_Di::getInstance()->setLookup('xheadername', 'string:X-Custom');
   }
   
   /**
@@ -53,7 +53,7 @@ abstract class Swift_MimeFactory extends Swift_Di
    */
   public function setCharset($charset)
   {
-    $this->setLookup('charset', 'string:' . $charset);
+    Swift_Di::getInstance()->setLookup('charset', 'string:' . $charset);
   }
   
   /**
@@ -62,7 +62,7 @@ abstract class Swift_MimeFactory extends Swift_Di
    */
   public function setTempPath($tmpPath)
   {
-    $this->setLookup('temppath', 'string:' . $tmpPath);
+    Swift_Di::getInstance()->setLookup('temppath', 'string:' . $tmpPath);
   }
   
   /**
@@ -71,19 +71,156 @@ abstract class Swift_MimeFactory extends Swift_Di
    */
   public function setCacheType($cache)
   {
-    $name = strtolower($cache);
+    $name = sprintf('mime.%s', strtolower($cache));
     if (substr($name, -5) != 'cache')
     {
       $name .= 'cache';
     }
-    if (array_key_exists($name, $this->getDependencyMap()))
+    if (array_key_exists($name, Swift_Di::getInstance()->getDependencyMap()))
     {
-      $this->setLookup('cache', 'di:' . $name);
+      Swift_Di::getInstance()->setLookup('cache', 'di:' . $name);
     }
     else
     {
       throw new Exception('Cache backend [' . $cache . '] does not exist.');
     }
+  }
+  
+  /**
+   * Create a new instance of the component named $name.
+   * @param string $name
+   * @param array $lookup to override any pre-defined lookups
+   * @return object
+   * @throws Exception if no such component exists
+   */
+  public function create($name, $lookup = array(), $fqName = false)
+  {
+    $name = $fqName ? $name : sprintf('mime.%s', $name);
+    return Swift_Di::getInstance()->create($name, $lookup);
+  }
+  
+  /**
+   * Create a new MIME Header with $name, $value and $params.
+   * @param string $name
+   * @param string $value
+   * @param string[] $params
+   * @return Swift_Mime_Header
+   */
+  public function createHeader($name = null, $value = null,
+    $params = array())
+  {
+    $lookup = $name ? array('xheadername' => 'string:' . $name) : array();
+    $header = $this->create('xheader', $lookup);
+    $header->setValue($value);
+    $header->setParameters($params);
+    return $header;
+  }
+    
+  /**
+   * Create a new Message for sending/adding content to.
+   * @param string $subject
+   * @param mixed $body
+   * @param string $contentType
+   * @param string $charset
+   * @return Swift_Mime_Message
+   */
+  public function createMessage($subject = null, $body = null,
+    $contentType = null, $charset = null)
+  {
+    $message = $this->create('message');
+    $message->setSubject($subject);
+    $message->setBody($body);
+    if ($contentType)
+    {
+      $message->setContentType($contentType);
+    }
+    if ($charset)
+    {
+      $message->setCharset($charset);
+    }
+    return $message;
+  }
+  
+  /**
+   * Create a new MIME part for nesting in a message.
+   * @param mixed $body
+   * @param string $contentType
+   * @param string $charset
+   * @return Swift_Mime_MimeEntity
+   */
+  public function createPart($body = null, $contentType = null,
+    $charset = null)
+  {
+    $part = $this->create('part');
+    $part->setBody($body);
+    if ($contentType)
+    {
+      $part->setContentType($contentType);
+    }
+    if ($charset)
+    {
+      $part->setCharset($charset);
+    }
+    return $part;
+  }
+    
+  /**
+   * Create a new Attahment for nesting in a message.
+   * @param mixed $data
+   * @param string $filename
+   * @param string $contentType
+   * @return Swift_Mime_MimeEntity
+   */
+  public function createAttachment($data = null, $filename = null,
+    $contentType = null)
+  {
+    $attachment = $this->create('attachment');
+    $attachment->setBody($data);
+    if ($contentType)
+    {
+      $attachment->setContentType($contentType);
+    }
+    if ($filename)
+    {
+      $attachment->setFilename($filename);
+    }
+    return $attachment;
+  }
+    
+  /**
+   * Create a new EmbeddedFile for nesting in a message.
+   * @param mixed $data
+   * @param string $filename
+   * @param string $contentType
+   * @return Swift_Mime_MimeEntity
+   */
+  public function createEmbeddedFile($data = null, $filename = null,
+    $contentType = null)
+  {
+    $file = $this->create('embeddedfile');
+    $file->setBody($data);
+    if ($contentType)
+    {
+      $file->setContentType($contentType);
+    }
+    if ($filename)
+    {
+      $file->setFilename($filename);
+    }
+    return $file;
+  }
+    
+  /**
+   * Create a new Image for nesting into a Message.
+   * @param mixed $data
+   * @param string $filename
+   * @param string $contentType
+   * @return Swift_Mime_MimeEntity
+   */
+  public function createImage($data = null, $filename = null,
+    $contentType = null)
+  {
+    return $this->createEmbeddedFile($data, $filename, $contentType);
   }
   
   /**
@@ -94,70 +231,9 @@ abstract class Swift_MimeFactory extends Swift_Di
   {
     if (!isset(self::$_instance))
     {
-      self::$_instance = parent::getInstance()->create('mimefactory');
+      self::$_instance = new self();
     }
     return self::$_instance;
   }
-  
-  /**
-   * Create a new MIME Header with $name, $value and $params.
-   * @param string $name
-   * @param string $value
-   * @param string[] $params
-   * @return Swift_Mime_Header
-   */
-  abstract public function createHeader($name = null, $value = null,
-    $params = array());
-    
-  /**
-   * Create a new Message for sending/adding content to.
-   * @param string $subject
-   * @param mixed $body
-   * @param string $contentType
-   * @param string $charset
-   * @return Swift_Mime_Message
-   */
-  abstract public function createMessage($subject = null, $body = null,
-    $contentType = null, $charset = null);
-  
-  /**
-   * Create a new MIME part for nesting in a message.
-   * @param mixed $body
-   * @param string $contentType
-   * @param string $charset
-   * @return Swift_Mime_MimeEntity
-   */
-  abstract public function createPart($body = null, $contentType = null,
-    $charset = null);
-    
-  /**
-   * Create a new Attahment for nesting in a message.
-   * @param mixed $data
-   * @param string $filename
-   * @param string $contentType
-   * @return Swift_Mime_MimeEntity
-   */
-  abstract public function createAttachment($data = null, $filename = null,
-    $contentType = null);
-    
-  /**
-   * Create a new EmbeddedFile for nesting in a message.
-   * @param mixed $data
-   * @param string $filename
-   * @param string $contentType
-   * @return Swift_Mime_MimeEntity
-   */
-  abstract public function createEmbeddedFile($data = null, $filename = null,
-    $contentType = null);
-    
-  /**
-   * Create a new Image for nesting into a Message.
-   * @param mixed $data
-   * @param string $filename
-   * @param string $contentType
-   * @return Swift_Mime_MimeEntity
-   */
-  abstract public function createImage($data = null, $filename = null,
-    $contentType = null);
   
 }

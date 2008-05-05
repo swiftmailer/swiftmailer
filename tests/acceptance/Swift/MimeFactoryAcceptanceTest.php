@@ -7,18 +7,33 @@ require_once 'swift_required.php';
 class Swift_MimeFactoryAcceptanceTest extends UnitTestCase
 {
   
-  public function testInstantiatingAllClasses()
+  public function testCreateForMessage()
   {
     $fMime = Swift_MimeFactory::getInstance();
-    $map = $fMime->getDependencyMap();
-    foreach ($map as $key => $spec)
-    {
-      $object = $fMime->create($key);
-      $this->assertIsA($object, $spec['class']);
-    }
+    $message = $fMime->create('message')
+      ->setSubject('Some subject')
+      ->setBody('test body')
+      ->setContentType('text/html')
+      ->setCharset('utf-8')
+      ;
+    $id = $message->getId();
+    $date = date('r', $message->getDate());
+    $enc = $message->getEncoder()->getName();
+    $this->assertEqual(
+      'Message-ID: <' . $id . '>' . "\r\n" .
+      'Date: ' . $date . "\r\n" .
+      'Subject: Some subject' . "\r\n" .
+      'From: '. "\r\n" .
+      'MIME-Version: 1.0' . "\r\n" .
+      'Content-Type: text/html; charset=utf-8' . "\r\n" .
+      'Content-Transfer-Encoding: ' . $enc . "\r\n" .
+      "\r\n" .
+      'test body',
+      $message->toString()
+      );
   }
   
-  public function testCreateMessage()
+  public function testCreateMessageWrapper()
   {
     $fMime = Swift_MimeFactory::getInstance();
     $message = $fMime->createMessage('Some subject', 'test body', 'text/html', 'utf-8');

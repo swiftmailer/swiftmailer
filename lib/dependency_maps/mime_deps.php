@@ -4,25 +4,25 @@
 $_swiftMimeDeps = array(
     
   //Message
-  'message' => array(
+  'mime.message' => array(
     'class' => 'Swift_Mime_SimpleMessage',
     'args' => array(
       array(
-        'di:returnpathheader',
-        'di:senderheader',
-        'di:messageidheader',
-        'di:dateheader',
-        'di:subjectheader',
-        'di:fromheader',
-        'di:replytoheader',
-        'di:toheader',
-        'di:ccheader',
-        'di:bccheader',
-        'di:mimeversionheader',
-        'di:contenttypeheader',
-        'di:contenttransferencodingheader'
+        'di:mime.returnpathheader',
+        'di:mime.senderheader',
+        'di:mime.messageidheader',
+        'di:mime.dateheader',
+        'di:mime.subjectheader',
+        'di:mime.fromheader',
+        'di:mime.replytoheader',
+        'di:mime.toheader',
+        'di:mime.ccheader',
+        'di:mime.bccheader',
+        'di:mime.mimeversionheader',
+        'di:mime.contenttypeheader',
+        'di:mime.contenttransferencodingheader'
         ),
-      'di:qpcontentencoder',
+      'di:mime.qpcontentencoder',
       'lookup:cache',
       'lookup:charset'
       ),
@@ -30,14 +30,14 @@ $_swiftMimeDeps = array(
     ),
     
   //Mime Part
-  'part' => array(
+  'mime.part' => array(
     'class' => 'Swift_Mime_MimePart',
     'args' => array(
       array(
-        'di:contenttypeheader',
-        'di:contenttransferencodingheader'
+        'di:mime.contenttypeheader',
+        'di:mime.contenttransferencodingheader'
         ),
-      'di:qpcontentencoder',
+      'di:mime.qpcontentencoder',
       'lookup:cache',
       'lookup:charset'
       ),
@@ -45,267 +45,267 @@ $_swiftMimeDeps = array(
     ),
     
   //Attachment
-  'attachment' => array(
+  'mime.attachment' => array(
     'class' => 'Swift_Mime_Attachment',
     'args' => array(
       array(
-        'di:contenttypeheader',
-        'di:contenttransferencodingheader',
-        'di:contentdispositionheader'
+        'di:mime.contenttypeheader',
+        'di:mime.contenttransferencodingheader',
+        'di:mime.contentdispositionheader'
         ),
-      'di:base64contentencoder',
+      'di:mime.base64contentencoder',
       'lookup:cache'
       ),
       'shared' => false
     ),
     
   //EmbeddedFile
-  'embeddedfile' => array(
+  'mime.embeddedfile' => array(
     'class' => 'Swift_Mime_EmbeddedFile',
     'args' => array(
       array(
-        'di:contenttypeheader',
-        'di:contenttransferencodingheader',
-        'di:contentdispositionheader',
-        'di:contentidheader'
+        'di:mime.contenttypeheader',
+        'di:mime.contenttransferencodingheader',
+        'di:mime.contentdispositionheader',
+        'di:mime.contentidheader'
         ),
-      'di:base64contentencoder',
+      'di:mime.base64contentencoder',
       'lookup:cache'
       ),
       'shared' => false
     ),
   
   //ArrayKeyCache
-  'arraycache' => array(
+  'mime.arraycache' => array(
     'class' => 'Swift_KeyCache_ArrayKeyCache',
-    'args' => array('di:cacheinputstream'),
+    'args' => array('di:mime.cacheinputstream'),
     'shared' => true
     ),
     
   //DiskKeyCache
-  'diskcache' => array(
+  'mime.diskcache' => array(
     'class' => 'Swift_KeyCache_DiskKeyCache',
-    'args' => array('di:cacheinputstream', 'lookup:temppath'),
+    'args' => array('di:mime.cacheinputstream', 'lookup:temppath'),
     'shared' => true
     ),
     
   //KeyCacheInputStream
-  'cacheinputstream' => array(
+  'mime.cacheinputstream' => array(
     'class' => 'Swift_KeyCache_SimpleKeyCacheInputStream',
     'args' => array(),
     'shared' => false
     ),
   
   //Return-Path
-  'returnpathheader' => array(
+  'mime.returnpathheader' => array(
     'class' => 'Swift_Mime_Headers_PathHeader',
     'args' => array('string:Return-Path'),
     'shared' => false
     ),
 
   //Sender
-  'senderheader' => array(
+  'mime.senderheader' => array(
     'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:Sender',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
 
   //Message-ID
-  'messageidheader' => array(
+  'mime.messageidheader' => array(
     'class' => 'Swift_Mime_Headers_IdentificationHeader',
     'args' => array('string:Message-ID'),
     'shared' => false
     ),
     
   //Content-ID
-  'contentidheader' => array(
+  'mime.contentidheader' => array(
     'class' => 'Swift_Mime_Headers_IdentificationHeader',
     'args' => array('string:Content-ID'),
     'shared' => false
     ),
 
   //Date
-  'dateheader' => array(
+  'mime.dateheader' => array(
     'class' => 'Swift_Mime_Headers_DateHeader',
     'args' => array('string:Date'),
     'shared' => false
     ),
 
   //Subject
-  'subjectheader' => array(
+  'mime.subjectheader' => array(
     'class' => 'Swift_Mime_Headers_UnstructuredHeader',
     'args' => array(
       'string:Subject',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
 
   //From
-  'fromheader' => array(
+  'mime.fromheader' => array(
     'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:From',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
 
   //Reply-To
-  'replytoheader' => array(
+  'mime.replytoheader' => array(
     'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:Reply-To',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
 
   //To
-  'toheader' => array(
+  'mime.toheader' => array(
     'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:To',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
 
   //Cc
-  'ccheader' => array(
+  'mime.ccheader' => array(
     'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:Cc',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
 
   //Bcc
-  'bccheader' => array(
+  'mime.bccheader' => array(
     'class' => 'Swift_Mime_Headers_MailboxHeader',
     'args' => array(
       'string:Bcc',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
   
   //MIME-Version
-  'mimeversionheader' => array(
+  'mime.mimeversionheader' => array(
     'class' => 'Swift_Mime_Headers_VersionHeader',
     'args' => array('string:MIME-Version'),
     'shared' => false
     ),
 
   //Content-Type
-  'contenttypeheader' => array(
+  'mime.contenttypeheader' => array(
     'class' => 'Swift_Mime_Headers_ParameterizedHeader',
     'args' => array(
       'string:Content-Type',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
     
   //Content-Disposition
-  'contentdispositionheader' => array(
+  'mime.contentdispositionheader' => array(
     'class' => 'Swift_Mime_Headers_ParameterizedHeader',
     'args' => array(
       'string:Content-Disposition',
-      'di:qpheaderencoder',
-      'di:rfc2231encoder'
+      'di:mime.qpheaderencoder',
+      'di:mime.rfc2231encoder'
       ),
     'shared' => false
     ),
   
   //Content-Transfer-Encoding
-  'contenttransferencodingheader' => array(
+  'mime.contenttransferencodingheader' => array(
     'class' => 'Swift_Mime_Headers_UnstructuredHeader',
     'args' => array(
       'string:Content-Transfer-Encoding',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
   
   //Custom (X-Header)
-  'xheader' => array(
+  'mime.xheader' => array(
     'class' => 'Swift_Mime_Headers_ParameterizedHeader',
     'args' => array(
       'lookup:xheadername',
-      'di:qpheaderencoder'
+      'di:mime.qpheaderencoder'
       ),
     'shared' => false
     ),
   
   //Qp Header Encoder
-  'qpheaderencoder' => array(
+  'mime.qpheaderencoder' => array(
     'class' => 'Swift_Mime_HeaderEncoder_QpHeaderEncoder',
-    'args' => array('di:charstream'),
+    'args' => array('di:mime.charstream'),
     'shared' => true
     ),
   
   //CharStream
-  'charstream' => array(
+  'mime.charstream' => array(
     'class' => 'Swift_CharacterStream_ArrayCharacterStream',
     'args' => array(
-      'di:characterreaderfactory',
+      'di:mime.characterreaderfactory',
       'lookup:charset'
       ),
     'shared' => false
     ),
   
   //Character Reader Factory
-  'characterreaderfactory' => array(
+  'mime.characterreaderfactory' => array(
     'class' => 'Swift_CharacterReaderFactory_SimpleCharacterReaderFactory',
     'args' => array(),
     'shared' => true
     ),
   
   //Qp content Encoder
-  'qpcontentencoder' => array(
+  'mime.qpcontentencoder' => array(
     'class' => 'Swift_Mime_ContentEncoder_QpContentEncoder',
-    'args' => array('di:charstream', 'boolean:1'),
+    'args' => array('di:mime.charstream', 'boolean:1'),
     'shared' => false
     ),
     
   //7bit content Encoder
-  '7bitcontentencoder' => array(
+  'mime.7bitcontentencoder' => array(
     'class' => 'Swift_Mime_ContentEncoder_PlainContentEncoder',
     'args' => array('string:7bit', 'boolean:1'),
     'shared' => true
     ),
     
   //8bit content Encoder
-  '8bitcontentencoder' => array(
+  'mime.8bitcontentencoder' => array(
     'class' => 'Swift_Mime_ContentEncoder_PlainContentEncoder',
     'args' => array('string:8bit', 'boolean:1'),
     'shared' => true
     ),
   
   //Base64 content Encoder
-  'base64contentencoder' => array(
+  'mime.base64contentencoder' => array(
     'class' => 'Swift_Mime_ContentEncoder_Base64ContentEncoder',
     'args' => array(),
     'shared' => true
     ),
   
   //Parameter (RFC 2231) Encoder
-  'rfc2231encoder' => array(
+  'mime.rfc2231encoder' => array(
     'class' => 'Swift_Encoder_Rfc2231Encoder',
-    'args' => array('di:charstream'),
+    'args' => array('di:mime.charstream'),
     'shared' => false
     ),
   
   );
   
 //Aliases
-$_swiftMimeDeps['image'] = $_swiftMimeDeps['embeddedfile'];
-$_swiftMimeDeps['7bitencoder'] = $_swiftMimeDeps['7bitcontentencoder'];
+$_swiftMimeDeps['mime.image'] = $_swiftMimeDeps['mime.embeddedfile'];
+$_swiftMimeDeps['mime.7bitencoder'] = $_swiftMimeDeps['mime.7bitcontentencoder'];
 
 return $_swiftMimeDeps;
 

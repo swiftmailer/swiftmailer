@@ -4,90 +4,90 @@
 $_swiftTransportDeps = array(
     
   //Smtp
-  'smtp' => array(
+  'transport.smtp' => array(
     'class' => 'Swift_Transport_EsmtpTransport',
     'args' => array(
-      'di:polymorphicbuffer',
-      array('di:authhandler'),
-      'di:eventdispatcher'
+      'di:transport.polymorphicbuffer',
+      array('di:transport.authhandler'),
+      'di:transport.eventdispatcher'
       ),
       'shared' => false
     ),
     
   //IOBuffer
-  'polymorphicbuffer' => array(
+  'transport.polymorphicbuffer' => array(
     'class' => 'Swift_Transport_PolymorphicBuffer',
     'args' => array(),
       'shared' => false
     ),
     
   //AUTH handler
-  'authhandler' => array(
+  'transport.authhandler' => array(
     'class' => 'Swift_Transport_Esmtp_AuthHandler',
     'args' => array(
       array(
-        'di:crammd5auth',
-        'di:loginauth',
-        'di:plainauth'
+        'di:transport.crammd5auth',
+        'di:transport.loginauth',
+        'di:transport.plainauth'
         )
       ),
       'shared' => false
     ),
     
   //CRAM-MD5
-  'crammd5auth' => array(
+  'transport.crammd5auth' => array(
     'class' => 'Swift_Transport_Esmtp_Auth_CramMd5Authenticator',
     'args' => array(),
       'shared' => false
     ),
   
   //LOGIN
-  'loginauth' => array(
+  'transport.loginauth' => array(
     'class' => 'Swift_Transport_Esmtp_Auth_LoginAuthenticator',
     'args' => array(),
     'shared' => false
     ),
     
   //PLAIN
-  'plainauth' => array(
+  'transport.plainauth' => array(
     'class' => 'Swift_Transport_Esmtp_Auth_PlainAuthenticator',
     'args' => array(),
     'shared' => false
     ),
     
   //Sendmail
-  'sendmail' => array(
+  'transport.sendmail' => array(
     'class' => 'Swift_Transport_SendmailTransport',
     'args' => array(
-      'di:polymorphicbuffer',
-      'di:eventdispatcher'
+      'di:transport.polymorphicbuffer',
+      'di:transport.eventdispatcher'
       ),
     'shared' => false
     ),
     
   //Mail
-  'mail' => array(
+  'transport.mail' => array(
     'class' => 'Swift_Transport_MailTransport',
     'args' => array(),
     'shared' => false
     ),
     
   //LoadBalanced
-  'loadbalanced' => array(
+  'transport.loadbalanced' => array(
     'class' => 'Swift_Transport_LoadBalancedTransport',
     'args' => array(),
     'shared' => false
     ),
     
   //Failover
-  'failover' => array(
+  'transport.failover' => array(
     'class' => 'Swift_Transport_FailoverTransport',
     'args' => array(),
     'shared' => false
     ),
   
   //EventDispatcher
-  'eventdispatcher' => array(
+  'transport.eventdispatcher' => array(
     'class' => 'Swift_Events_SimpleEventDispatcher',
     'args' => array(array(
       'send' => array(
@@ -112,11 +112,11 @@ $_swiftTransportDeps = array(
   
   );
   
-$_swiftTransportDeps['nativemail'] = $_swiftTransportDeps['mail'];
-$_swiftTransportDeps['rotating'] = $_swiftTransportDeps['loadbalanced'];
-$_swiftTransportDeps['balanced'] = $_swiftTransportDeps['loadbalanced'];
-$_swiftTransportDeps['multi'] = $_swiftTransportDeps['failover'];
-$_swiftTransportDeps['redundant'] = $_swiftTransportDeps['failover'];
+$_swiftTransportDeps['transport.nativemail'] = $_swiftTransportDeps['transport.mail'];
+$_swiftTransportDeps['transport.rotating'] = $_swiftTransportDeps['transport.loadbalanced'];
+$_swiftTransportDeps['transport.balanced'] = $_swiftTransportDeps['transport.loadbalanced'];
+$_swiftTransportDeps['transport.multi'] = $_swiftTransportDeps['transport.failover'];
+$_swiftTransportDeps['transport.redundant'] = $_swiftTransportDeps['transport.failover'];
 
 return $_swiftTransportDeps;
 

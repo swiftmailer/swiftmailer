@@ -77,41 +77,39 @@ class Swift_Di
         'Cannot create ' . $name . ' since no implemenation is registered for it'
         );
     }
+    
+    //Find the details of this dependency
+    $spec = $this->_map[$name];
+    if ($spec['shared'] && array_key_exists($name, $this->_shared))
+    {
+      //Return a shared instance if one exists
+      return $this->_shared[$name];
+    }
     else
     {
-      //Find the details of this dependency
-      $spec = $this->_map[$name];
-      if ($spec['shared'] && array_key_exists($name, $this->_shared))
+      //Otherwise, create it through reflection
+      $className = $spec['class'];
+      
+      //Resolve dependencies within the constructor itself
+      $instanceArgs = $this->_resolveArgs($spec['args'], $lookup);
+      
+      $reflector = new ReflectionClass($className);
+      if ($reflector->getConstructor())
       {
-        //Return a shared instance if one exists
-        return $this->_shared[$name];
+        $instance = $reflector->newInstanceArgs($instanceArgs);
       }
       else
       {
-        //Otherwise, create it through reflection
-        $className = $spec['class'];
-        
-        //Resolve dependencies within the constructor itself
-        $instanceArgs = $this->_resolveArgs($spec['args'], $lookup);
-        
-        $reflector = new ReflectionClass($className);
-        if ($reflector->getConstructor())
-        {
-          $instance = $reflector->newInstanceArgs($instanceArgs);
-        }
-        else
-        {
-          $instance = $reflector->newInstance();
-        }
-        
-        //Register a shared instance where needed
-        if ($spec['shared'])
-        {
-          $this->_shared[$name] = $instance;
-        }
-        
-        return $instance;
+        $instance = $reflector->newInstance();
       }
+      
+      //Register a shared instance where needed
+      if ($spec['shared'])
+      {
+        $this->_shared[$name] = $instance;
+      }
+      
+      return $instance;
     }
   }
   
