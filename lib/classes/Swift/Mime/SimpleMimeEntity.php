@@ -25,6 +25,8 @@
 //@require 'Swift/Mime/Header.php';
 //@require 'Swift/Mime/ContentEncoder.php';
 
+//@require 'Swift/Mime/HeaderFactory.php';
+
 /**
  * A MIME entity, in a multipart message.
  * @package Swift
@@ -41,19 +43,14 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   private $_encoder;
   
+  private $_headerFactory;
+  
   /**
    * The collection of Headers in this entity.
    * @var Swift_Mime_Header[]
    * @access private
    */
   private $_headers = array();
-  
-  /**
-   * Model data for Header fields where the actual Header is not present.
-   * @var array
-   * @access private
-   */
-  private $_fieldModels = array();
   
   /**
    * Parameters set on header fields where the header is not present.
@@ -158,16 +155,51 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * @param Swift_Mime_ContentEncoder $encoder
    * @param Swift_KeyCache $cache
    */
-  public function __construct(array $headers,
+  public function __construct(Swift_Mime_HeaderFactory $headerFactory,
     Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
     $this->_cacheKey = uniqid(microtime(true), true);
     $this->_cache = $cache;
-    $this->setHeaders($headers);
+    $this->_headerFactory = $headerFactory;
     $this->setEncoder($encoder);
     $this->setId($this->_generateId());
     $this->setContentType('text/plain');
     $this->setChildren(array());
+  }
+  
+  public function addDateHeader($name, $timestamp = null)
+  {
+    $this->_headers[] = $this->_headerFactory->createDateHeader($name,
+      $timestamp);
+  }
+  
+  public function addMailboxHeader($name, $mailboxes = null)
+  {
+    $this->_headers[] = $this->_headerFactory->createMailboxHeader($name,
+      $mailboxes);
+  }
+  
+  public function addTextHeader($name, $value = null)
+  {
+    $this->_headers[] = $this->_headerFactory->createTextHeader($name,
+      $value);
+  }
+  
+  public function addIdHeader($name, $ids = null)
+  {
+    $this->_headers[] = $this->_headerFactory->createIdHeader($name, $ids);
+  }
+  
+  public function addPathHeader($name, $path = null)
+  {
+    $this->_headers[] = $this->_headerFactory->createPathHeader($name, $path);
+  }
+  
+  public function addParameterizedHeader($name, $value = null,
+    $params = array())
+  {
+    $this->_headers[] = $this->_headerFactory->createParameterizedHeader($name,
+      $value, $params);
   }
   
   /**
@@ -256,15 +288,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   }
   
   /**
-   * Add a Header to the existing list of Headers.
-   * @param Swift_Mime_Header $header
-   */
-  public function addHeader(Swift_Mime_Header $header)
-  {
-    $this->_headers[] = $header;
-  }
-  
-  /**
    * Remove a Header from the existing list of Headers based on its name.
    * @param string $name
    */
@@ -289,7 +312,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_encoder = $encoder;
-    $this->_setHeaderModel('content-transfer-encoding', $encoder->getName());
+    $this->_setHeaderModel('Content-Transfer-Encoding', $encoder->getName(),
+      'addTextHeader'
+      );
     $this->_notifyEncoderChanged($encoder);
     $this->_cache->clearAll($this->_cacheKey);
     return $this;
@@ -318,7 +343,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     if ('multipart' == array_shift($str)
       || empty($this->_children))
     {
-      $this->_setHeaderModel('content-type', $contentType);
+      $this->_setHeaderModel('Content-Type', $contentType, 'addParameterizedHeader');
       $this->_cache->clearKey($this->_cacheKey, 'headers');
     }
     return $this;
@@ -330,7 +355,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function getContentType()
   {
-    return $this->_getHeaderModel('content-type');
+    return $this->_getHeaderModel('Content-Type');
   }
   
   /**
@@ -339,7 +364,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function setId($id)
   {
-    return $this->_setHeaderModel('content-id', $id);
+    return $this->_setHeaderModel('Content-ID', $id, 'addIdHeader');
   }
   
   /**
@@ -348,7 +373,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function getId()
   {
-    $model = (array) $this->_getHeaderModel('content-id');
+    $model = (array) $this->_getHeaderModel('Content-ID');
     return current($model);
   }
   
@@ -360,7 +385,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function setDescription($description)
   {
-    return $this->_setHeaderModel('content-description', $description);
+    return $this->_setHeaderModel('Content-Description', $description,
+      'addTextHeader');
   }
   
   /**
@@ -369,7 +395,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function getDescription()
   {
-    return $this->_getHeaderModel('content-description');
+    return $this->_getHeaderModel('Content-Description');
   }
   
   /**
@@ -570,11 +596,11 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
       $this->_boundary = $boundary;
       if (!empty($this->_children))
       {
-        $this->_setHeaderParameter('content-type', 'boundary', $boundary);
+        $this->_setHeaderParameter('Content-Type', 'boundary', $boundary);
       }
       else
       {
-        $this->_setHeaderParameter('content-type', 'boundary', null);
+        $this->_setHeaderParameter('Content-Type', 'boundary', null);
       }
     }
     else
@@ -828,7 +854,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * @return Swift_Mime_SimpleMimeEntity
    * @access protected
    */
-  protected function _setHeaderModel($field, $model)
+  protected function _setHeaderModel($field, $model, $creationMethod)
   {
     if ($header = $this->getHeader($field))
     {
@@ -836,8 +862,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     }
     else
     {
-      $field = strtolower($field);
-      $this->_fieldModels[$field] = $model;
+      call_user_func_array(array($this, $creationMethod), array($field, $model));
     }
     return $this;
   }
@@ -852,13 +877,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     if ($header = $this->getHeader($field))
     {
       return $header->getFieldBodyModel();
-    }
-    else
-    {
-      $field = strtolower($field);
-      return array_key_exists($field, $this->_fieldModels)
-        ? $this->_fieldModels[$field]
-        : null;
     }
   }
   
@@ -1000,7 +1018,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   protected function _overrideContentType($contentType)
   {
-    $this->_setHeaderModel('content-type', $contentType);
+    $this->_setHeaderModel('Content-Type', $contentType,
+      'addParameterizedHeader');
     $this->_cache->clearKey($this->_cacheKey, 'headers');
   }
   

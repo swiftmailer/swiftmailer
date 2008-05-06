@@ -17,11 +17,18 @@ class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
   /**
    * Decorates SimpleTest's implementation to auto-validate mock objects.
    */
-  public function before($method)
+  public function after($method)
   {
-    $this->_mockery()->assertIsSatisfied();
+    try
+    {
+      $this->_mockery()->assertIsSatisfied();
+    }
+    catch (Yay_NotSatisfiedException $e)
+    {
+      $this->fail($e->getMessage());
+    }
     $this->_mockery = null;
-    return parent::before($method); 
+    return parent::after($method); 
   }
   
   /**
