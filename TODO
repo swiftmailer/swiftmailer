@@ -7,6 +7,8 @@ Swift Mailer SE TODO:
    - Mail
  * Event dispatching
    - Mail
+ * Simplify the event system:
+   - Get rid of the ability to bind to a source
  * CharacterReaders
    - Big5
    - Shift-JIS
