@@ -50,4 +50,17 @@ class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
     return $this->_mockery;
   }
   
+  /**
+   * Create a mock object which does nothing.
+   * @return $class
+   */
+  protected function _stub($class)
+  {
+    $stub = $this->_mockery()->mock($class);
+    $this->_mockery()->checking(Yay_Expectations::create()
+      -> ignoring($stub)
+      );
+    return $stub;
+  }
+  
 }

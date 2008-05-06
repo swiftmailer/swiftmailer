@@ -34,7 +34,7 @@ interface Swift_Mime_HeaderFactory
    * @param array|string $addresses
    * @return Swift_Mime_Header
    */
-  public function createMailboxHeader($name, $addresses);
+  public function createMailboxHeader($name, $addresses = null);
   
   /**
    * Create a new Date header using $timestamp (UNIX time).
@@ -42,7 +42,7 @@ interface Swift_Mime_HeaderFactory
    * @param int $timestamp
    * @return Swift_Mime_Header
    */
-  public function createDateHeader($name, $timestamp);
+  public function createDateHeader($name, $timestamp = null);
   
   /**
    * Create a new basic text header with $name and $value.
@@ -50,7 +50,7 @@ interface Swift_Mime_HeaderFactory
    * @param string $value
    * @return Swift_Mime_Header
    */
-  public function createTextHeader($name, $value);
+  public function createTextHeader($name, $value = null);
   
   /**
    * Create a new ParameterizedHeader with $name, $value and $params.
@@ -59,7 +59,8 @@ interface Swift_Mime_HeaderFactory
    * @param array $params
    * @return Swift_Mime_ParameterizedHeader
    */
-  public function createParameterizedHeader($name, $value, $params = array());
+  public function createParameterizedHeader($name, $value = null,
+    $params = array());
   
   /**
    * Create a new ID header for Message-ID or Content-ID.
@@ -67,7 +68,7 @@ interface Swift_Mime_HeaderFactory
    * @param string|array $ids
    * @return Swift_Mime_Header
    */
-  public function createdIdHeader($name, $ids);
+  public function createIdHeader($name, $ids = null);
   
   /**
    * Create a new Path header with an address (path) in it.
@@ -75,6 +76,6 @@ interface Swift_Mime_HeaderFactory
    * @param string $path
    * @return Swift_Mime_Header
    */
-  public function createPathHeader($name, $path);
+  public function createPathHeader($name, $path = null);
   
 }
