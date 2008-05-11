@@ -7,21 +7,7 @@ $_swiftMimeDeps = array(
   'mime.message' => array(
     'class' => 'Swift_Mime_SimpleMessage',
     'args' => array(
-      array(
-        'di:mime.returnpathheader',
-        'di:mime.senderheader',
-        'di:mime.messageidheader',
-        'di:mime.dateheader',
-        'di:mime.subjectheader',
-        'di:mime.fromheader',
-        'di:mime.replytoheader',
-        'di:mime.toheader',
-        'di:mime.ccheader',
-        'di:mime.bccheader',
-        'di:mime.mimeversionheader',
-        'di:mime.contenttypeheader',
-        'di:mime.contenttransferencodingheader'
-        ),
+      'di:mime.headerset',
       'di:mime.qpcontentencoder',
       'lookup:cache',
       'lookup:charset'
@@ -33,10 +19,7 @@ $_swiftMimeDeps = array(
   'mime.part' => array(
     'class' => 'Swift_Mime_MimePart',
     'args' => array(
-      array(
-        'di:mime.contenttypeheader',
-        'di:mime.contenttransferencodingheader'
-        ),
+      'di:mime.headerset',
       'di:mime.qpcontentencoder',
       'lookup:cache',
       'lookup:charset'
@@ -48,11 +31,7 @@ $_swiftMimeDeps = array(
   'mime.attachment' => array(
     'class' => 'Swift_Mime_Attachment',
     'args' => array(
-      array(
-        'di:mime.contenttypeheader',
-        'di:mime.contenttransferencodingheader',
-        'di:mime.contentdispositionheader'
-        ),
+      'di:mime.headerset',
       'di:mime.base64contentencoder',
       'lookup:cache'
       ),
@@ -63,12 +42,7 @@ $_swiftMimeDeps = array(
   'mime.embeddedfile' => array(
     'class' => 'Swift_Mime_EmbeddedFile',
     'args' => array(
-      array(
-        'di:mime.contenttypeheader',
-        'di:mime.contenttransferencodingheader',
-        'di:mime.contentdispositionheader',
-        'di:mime.contentidheader'
-        ),
+      'di:mime.headerset',
       'di:mime.base64contentencoder',
       'lookup:cache'
       ),
@@ -96,149 +70,17 @@ $_swiftMimeDeps = array(
     'shared' => false
     ),
   
-  //Return-Path
-  'mime.returnpathheader' => array(
-    'class' => 'Swift_Mime_Headers_PathHeader',
-    'args' => array('string:Return-Path'),
-    'shared' => false
-    ),
-
-  //Sender
-  'mime.senderheader' => array(
-    'class' => 'Swift_Mime_Headers_MailboxHeader',
-    'args' => array(
-      'string:Sender',
-      'di:mime.qpheaderencoder'
-      ),
-    'shared' => false
-    ),
-
-  //Message-ID
-  'mime.messageidheader' => array(
-    'class' => 'Swift_Mime_Headers_IdentificationHeader',
-    'args' => array('string:Message-ID'),
-    'shared' => false
-    ),
-    
-  //Content-ID
-  'mime.contentidheader' => array(
-    'class' => 'Swift_Mime_Headers_IdentificationHeader',
-    'args' => array('string:Content-ID'),
-    'shared' => false
-    ),
-
-  //Date
-  'mime.dateheader' => array(
-    'class' => 'Swift_Mime_Headers_DateHeader',
-    'args' => array('string:Date'),
-    'shared' => false
-    ),
-
-  //Subject
-  'mime.subjectheader' => array(
-    'class' => 'Swift_Mime_Headers_UnstructuredHeader',
-    'args' => array(
-      'string:Subject',
-      'di:mime.qpheaderencoder'
-      ),
-    'shared' => false
-    ),
-
-  //From
-  'mime.fromheader' => array(
-    'class' => 'Swift_Mime_Headers_MailboxHeader',
-    'args' => array(
-      'string:From',
-      'di:mime.qpheaderencoder'
-      ),
-    'shared' => false
-    ),
-
-  //Reply-To
-  'mime.replytoheader' => array(
-    'class' => 'Swift_Mime_Headers_MailboxHeader',
-    'args' => array(
-      'string:Reply-To',
-      'di:mime.qpheaderencoder'
-      ),
-    'shared' => false
-    ),
-
-  //To
-  'mime.toheader' => array(
-    'class' => 'Swift_Mime_Headers_MailboxHeader',
-    'args' => array(
-      'string:To',
-      'di:mime.qpheaderencoder'
-      ),
-    'shared' => false
-    ),
-
-  //Cc
-  'mime.ccheader' => array(
-    'class' => 'Swift_Mime_Headers_MailboxHeader',
-    'args' => array(
-      'string:Cc',
-      'di:mime.qpheaderencoder'
-      ),
-    'shared' => false
-    ),
-
-  //Bcc
-  'mime.bccheader' => array(
-    'class' => 'Swift_Mime_Headers_MailboxHeader',
-    'args' => array(
-      'string:Bcc',
-      'di:mime.qpheaderencoder'
-      ),
+  //HeaderFactory
+  'mime.headerfactory' => array(
+    'class' => 'Swift_Mime_SimpleHeaderFactory',
+    'args' => array('di:mime.qpheaderencoder', 'di:mime.rfc2231encoder'),
     'shared' => false
     ),
   
-  //MIME-Version
-  'mime.mimeversionheader' => array(
-    'class' => 'Swift_Mime_Headers_VersionHeader',
-    'args' => array('string:MIME-Version'),
-    'shared' => false
-    ),
-
-  //Content-Type
-  'mime.contenttypeheader' => array(
-    'class' => 'Swift_Mime_Headers_ParameterizedHeader',
-    'args' => array(
-      'string:Content-Type',
-      'di:mime.qpheaderencoder'
-      ),
-    'shared' => false
-    ),
-    
-  //Content-Disposition
-  'mime.contentdispositionheader' => array(
-    'class' => 'Swift_Mime_Headers_ParameterizedHeader',
-    'args' => array(
-      'string:Content-Disposition',
-      'di:mime.qpheaderencoder',
-      'di:mime.rfc2231encoder'
-      ),
-    'shared' => false
-    ),
-  
-  //Content-Transfer-Encoding
-  'mime.contenttransferencodingheader' => array(
-    'class' => 'Swift_Mime_Headers_UnstructuredHeader',
-    'args' => array(
-      'string:Content-Transfer-Encoding',
-      'di:mime.qpheaderencoder'
-      ),
-    'shared' => false
-    ),
-  
-  //Custom (X-Header)
-  'mime.xheader' => array(
-    'class' => 'Swift_Mime_Headers_ParameterizedHeader',
-    'args' => array(
-      'lookup:xheadername',
-      'di:mime.qpheaderencoder'
-      ),
+  //HeaderSet
+  'mime.headerset' => array(
+    'class' => 'Swift_Mime_SimpleHeaderSet',
+    'args' => array('di:mime.headerfactory'),
     'shared' => false
     ),
   

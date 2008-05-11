@@ -20,6 +20,7 @@
 
 //@require 'Swift/Mime/SimpleMimeEntity.php';
 //@require 'Swift/Mime/ContentEncoder.php';
+//@require 'Swift/Mime/HeaderSet.php';
 //@require 'Swift/FileStream.php';
 //@require 'Swift/KeyCache.php';
 
@@ -32,173 +33,63 @@
 class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
 {
   
-  /**
-   * Creates a new Attachment with $headers and $encoder.
-   * @param string[] $headers
-   * @param Swift_Mime_ContentEncoder $encoder
-   * @param Swift_KeyCache $cache
-   */
-  public function __construct(array $headers,
+  public function __construct(Swift_Mime_HeaderSet $headers,
     Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
     parent::__construct($headers, $encoder, $cache);
-    $this->setNestingLevel(self::LEVEL_ATTACHMENT);
     $this->setDisposition('attachment');
     $this->setContentType('application/octet-stream');
   }
   
-  /**
-   * Set a file into this EmbeddedFile entity.
-   * The data from the file will be used as the body, and the filename will be
-   * used by default.  You can override this with {@link setFilename()}.
-   * This method returns an instance of $this so can be used in a fluid interface.
-   * @param Swift_FileStream $file
-   * @return Swift_Mime_MimeEntity
-   */
-  public function setFile(Swift_FileStream $file)
+  public function getNestingLevel()
   {
-    $this->setBodyAsByteStream($file);
-    $this->setFilename(basename($file->getPath()));
-    return $this;
+    return self::LEVEL_ATTACHMENT;
   }
   
-  /**
-   * Set the disposition of this attachment.
-   * Valid values according to RFC 2183 are 'inline' or 'attachment'.
-   * @param string $disposition
-   */
-  public function setDisposition($disposition)
-  {
-    $this->_setHeaderModel('content-disposition', $disposition);
-    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
-    return $this;
-  }
-  
-  /**
-   * Get the disposition of this attachment.
-   * @return string
-   */
   public function getDisposition()
   {
-    return $this->_getHeaderModel('content-disposition');
+    return $this->_getHeaderFieldModel('Content-Disposition');
   }
   
-  /**
-   * Set the filename of this attachment if it is downloaded by the client.
-   * This is an optional setting but it is STRONGLY advised a filename be
-   * assigned to it, otherwise the client behaviour may be unpredictable.
-   * @param string $filename
-   */
-  public function setFilename($filename)
+  public function setDisposition($disposition)
   {
-    $this->_setHeaderParameter('content-disposition', 'filename', $filename);
-    $this->_setHeaderParameter('content-type', 'name', $filename);
-    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
+    if (!$this->_setHeaderFieldModel('Content-Disposition', $disposition))
+    {
+      $this->getHeaders()->addParameterizedHeader(
+        'Content-Disposition', $disposition
+        );
+    }
     return $this;
   }
   
-  /**
-   * Get the filename of this attachment if it's to be downloaded by the client.
-   * Returns NULL if none set.
-   * @return string
-   */
   public function getFilename()
   {
-    return $this->_getHeaderParameter('content-disposition', 'filename');
+    return $this->_getHeaderParameter('Content-Disposition', 'filename');
   }
   
-  /**
-   * Set the creation-date of this attachment as a UNIX timestamp.
-   * This is an optional setting.
-   * @param int $date
-   */
-  public function setCreationDate($creationDate)
+  public function setFilename($filename)
   {
-    $value = isset($creationDate) ? date('r', $creationDate) : null;
-    $this->_setHeaderParameter('content-disposition', 'creation-date', $value);
-    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
+    $this->_setHeaderParameter('Content-Disposition', 'filename', $filename);
+    $this->_setHeaderParameter('Content-Type', 'name', $filename);
     return $this;
   }
   
-  /**
-   * Get the creation-date of this attachment as a UNIX timestamp if set.
-   * Returns NULL if none set.
-   * @return int
-   */
-  public function getCreationDate()
-  {
-    $value = $this->_getHeaderParameter('content-disposition', 'creation-date');
-    return isset($value) ? strtotime($value) : null;
-  }
-  
-  /**
-   * Set the modificaton-date of this attachment as a UNIX timestamp.
-   * This is an optional setting.
-   * @param int $date
-   */
-  public function setModificationDate($modificationDate)
-  {
-    $value = isset($modificationDate) ? date('r', $modificationDate) : null;
-    $this->_setHeaderParameter('content-disposition', 'modification-date', $value);
-    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
-    return $this;
-  }
-  
-  /**
-   * Get the modification-date of this attachment as a UNIX timestamp if set.
-   * Returns NULL if none set.
-   * @return int
-   */
-  public function getModificationDate()
-  {
-    $value = $this->_getHeaderParameter('content-disposition', 'modification-date');
-    return isset($value) ? strtotime($value) : null;
-  }
-  
-  /**
-   * Set the read-date of this attachment as a UNIX timestamp.
-   * This is an optional setting.
-   * @param int $date
-   */
-  public function setReadDate($readDate)
-  {
-    $value = isset($readDate) ? date('r', $readDate) : null;
-    $this->_setHeaderParameter('content-disposition', 'read-date', $value);
-    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
-    return $this;
-  }
-  
-  /**
-   * Get the read-date of this attachment as a UNIX timestamp if set.
-   * Returns NULL if none set.
-   * @return int
-   */
-  public function getReadDate()
-  {
-    $value = $this->_getHeaderParameter('content-disposition', 'read-date');
-    return isset($value) ? strtotime($value) : null;
-  }
-  
-  /**
-   * Set the size of this attachment in bytes.
-   * This is an optional setting.
-   * @param int $size
-   */
-  public function setSize($size)
-  {
-    $this->_setHeaderParameter('content-disposition', 'size', $size);
-    $this->_getCache()->clearKey($this->_getCacheKey(), 'headers');
-    return $this;
-  }
-  
-  /**
-   * Get the size of this attachment in bytes if set.
-   * Returns NULL if none set.
-   * @return int
-   */
   public function getSize()
   {
-    return $this->_getHeaderParameter('content-disposition', 'size');
+    return $this->_getHeaderParameter('Content-Disposition', 'size');
+  }
+  
+  public function setSize($size)
+  {
+    $this->_setHeaderParameter('Content-Disposition', 'size', $size);
+    return $this;
+  }
+  
+  public function setFile(Swift_FileStream $file)
+  {
+    $this->setFilename(basename($file->getPath()));
+    $this->setBody($file);
+    return $this;
   }
   
 }

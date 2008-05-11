@@ -2,6 +2,8 @@ Swift Mailer SE TODO:
 ---------------------
 
  * Read-receipts (Something in $message like CustomHeaderFactory?)
+ * setPriority()
+ * setMimeWarning() ?
  * Think about the interface for loading plugins
  * Failed recipients?
    - Mail
@@ -23,16 +25,20 @@ Swift Mailer SE TODO:
    - VERP
  * V3 Wrapper classes
  
-Weaknesses:
------------
+Missing tests:
+--------------
 
+ * Writing to byte streams
+ * Effective use of caching
+ * Message body becoming mime part if attachment added
+   - Make sure content-type header has no charset etc
+ 
+Poorly implemented:
+-------------------
+
+ * PolymorphicBuffer == shite; should be two classes
  * writeTransformations() in buffer could fail
  * canonicalization logic could fail
-  
-Refactors:
-----------
-
- * Change setBodyAsString() and getBodyAsString() to just setBody() and getBody()
 
 Website Re-Design:
 ------------------

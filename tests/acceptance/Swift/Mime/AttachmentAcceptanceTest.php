@@ -15,9 +15,8 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
 {
 
   private $_contentEncoder;
-  private $_headerEncoder;
-  private $_paramEncoder;
   private $_cache;
+  private $_headers;
   
   public function setUp()
   {
@@ -26,11 +25,15 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
       );
     $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     $this->_contentEncoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
-    $this->_headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
+    
+    $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
       );
-    $this->_paramEncoder = new Swift_Encoder_Rfc2231Encoder(
+    $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+      );
+    $this->_headers = new Swift_Mime_SimpleHeaderSet(
+      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder)
       );
   }
   
@@ -72,50 +75,6 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
       );
   }
   
-  public function testCreationDateIsSetInHeader()
-  {
-    $date = time();
-    $attachment = $this->_createAttachment();
-    $attachment->setContentType('application/pdf');
-    $attachment->setCreationDate($date);
-    $this->assertEqual(
-      'Content-Type: application/pdf' . "\r\n" .
-      'Content-Transfer-Encoding: base64' . "\r\n" .
-      'Content-Disposition: attachment;' . "\r\n" .
-      ' creation-date="' . date('r', $date) . '"' . "\r\n",
-      $attachment->toString()
-      );
-  }
-  
-  public function testModificationDateIsSetInHeader()
-  {
-    $date = time();
-    $attachment = $this->_createAttachment();
-    $attachment->setContentType('application/pdf');
-    $attachment->setModificationDate($date);
-    $this->assertEqual(
-      'Content-Type: application/pdf' . "\r\n" .
-      'Content-Transfer-Encoding: base64' . "\r\n" .
-      'Content-Disposition: attachment;' . "\r\n" .
-      ' modification-date="' . date('r', $date) . '"' . "\r\n",
-      $attachment->toString()
-      );
-  }
-  
-  public function testReadDateIsSetInHeader()
-  {
-    $date = time();
-    $attachment = $this->_createAttachment();
-    $attachment->setContentType('application/pdf');
-    $attachment->setReadDate($date);
-    $this->assertEqual(
-      'Content-Type: application/pdf' . "\r\n" .
-      'Content-Transfer-Encoding: base64' . "\r\n" .
-      'Content-Disposition: attachment; read-date="' . date('r', $date) . '"' . "\r\n",
-      $attachment->toString()
-      );
-  }
-  
   public function testSizeIsSetInHeader()
   {
     $attachment = $this->_createAttachment();
@@ -135,16 +94,10 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
     $attachment->setContentType('application/pdf');
     $attachment->setFilename('foo.pdf');
     $attachment->setSize(12340);
-    $attachment->setCreationDate(123);
-    $attachment->setModificationDate(1234);
-    $attachment->setReadDate(12345);
     $this->assertEqual(
       'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
-      'Content-Disposition: attachment; filename=foo.pdf; size=12340;' . "\r\n" .
-      ' creation-date="' . date('r', 123) . '";' . "\r\n" .
-      ' modification-date="' . date('r', 1234) . '";' . "\r\n" .
-      ' read-date="' . date('r', 12345) . '"' . "\r\n",
+      'Content-Disposition: attachment; filename=foo.pdf; size=12340' . "\r\n",
       $attachment->toString()
       );
   }
@@ -155,17 +108,11 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
     $attachment->setContentType('application/pdf');
     $attachment->setFilename('foo.pdf');
     $attachment->setSize(12340);
-    $attachment->setCreationDate(123);
-    $attachment->setModificationDate(1234);
-    $attachment->setReadDate(12345);
-    $attachment->setBodyAsString('abcd');
+    $attachment->setBody('abcd');
     $this->assertEqual(
       'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
-      'Content-Disposition: attachment; filename=foo.pdf; size=12340;' . "\r\n" .
-      ' creation-date="' . date('r', 123) . '";' . "\r\n" .
-      ' modification-date="' . date('r', 1234) . '";' . "\r\n" .
-      ' read-date="' . date('r', 12345) . '"' . "\r\n" .
+      'Content-Disposition: attachment; filename=foo.pdf; size=12340' . "\r\n" .
       "\r\n" .
       base64_encode('abcd'),
       $attachment->toString()
@@ -177,17 +124,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
   private function _createAttachment()
   {
     $entity = new Swift_Mime_Attachment(
-      array(
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Type', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_UnstructuredHeader(
-          'Content-Transfer-Encoding', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Disposition', $this->_headerEncoder, $this->_paramEncoder
-          )
-        ),
+      $this->_headers,
       $this->_contentEncoder,
       $this->_cache
       );

@@ -9,49 +9,70 @@ require_once 'Swift/Mime/ParameterizedHeader.php';
 class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 {
   
+  public function testNestingLevelIsSubpart()
+  { //Overridden
+  }
+  
+  public function testNestingLevelIsTop()
+  {
+    $message = $this->_createMessage($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertEqual(
+      Swift_Mime_MimeEntity::LEVEL_TOP, $message->getNestingLevel()
+      );
+  }
+  
+  public function testDateIsReturnedFromHeader()
+  {
+    $date = $this->_createHeader('Date', 123);
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Date' => $date)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertEqual(123, $message->getDate());
+  }
+  
   public function testDateIsSetInHeader()
   {
-    $context = new Mockery();
-    
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->setFieldBodyModel(123)
-      -> allowing($h)->getFieldName() -> returns('Date')
-      -> ignoring($h)
+    $date = $this->_createHeader('Date', 123, array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($date)->setFieldBodyModel(1234)
+      -> ignoring($date)
       );
-    
-    $headers = array($h);
-    
     $message = $this->_createMessage(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Date' => $date)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setDate(123);
-    
-    $context->assertIsSatisfied();
+    $message->setDate(1234);
   }
   
-  public function testDateIsReadFromHeader()
+  public function testDateHeaderIsCreatedIfNonePresent()
   {
-    $context = new Mockery();
-    
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns(123456)
-      -> allowing($h)->getFieldName() -> returns('Date')
-      -> ignoring($h)
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addDateHeader('Date', 1234)
+      -> ignoring($headers)
       );
-    
-    $headers = array($h);
-    
-    $message = $this->_createMessage(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
       );
-    $this->assertEqual(123456, $message->getDate());
-    
-    $context->assertIsSatisfied();
+    $message->setDate(1234);
   }
   
-  public function testIdIsSetInHeader()
+  public function testDateHeaderIsAddedDuringConstruction()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addDateHeader('Date', pattern('/^[0-9]+$/D'))
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+  }
+  
+  public function testIdIsReturnedFromHeader()
   {
     /* -- RFC 2045, 7.
     In constructing a high-level user agent, it may be desirable to allow
@@ -60,542 +81,453 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     identical to the "Message-ID" header field
     */
     
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->setFieldBodyModel('foo@bar')
-      -> allowing($h)->getFieldName() -> returns('Message-ID')
-      -> ignoring($h)
-      );
+    $messageId = $this->_createHeader('Message-ID', 'a@b');
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Message-ID' => $messageId)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setId('foo@bar');
-    $context->assertIsSatisfied();
+    $this->assertEqual('a@b', $message->getId());
   }
   
-  public function testIdIsReadFromHeader()
+  public function testIdIsSetInHeader()
   {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns('xyz@somewhere.tld')
-      -> allowing($h)->getFieldName() -> returns('Message-ID')
-      -> ignoring($h)
+    $messageId = $this->_createHeader('Message-ID', 'a@b', array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($messageId)->setFieldBodyModel('x@y')
+      -> ignoring($messageId)
       );
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Message-ID' => $messageId)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $this->assertEqual('xyz@somewhere.tld', $message->getId());
-    $context->assertIsSatisfied();
+    $message->setId('x@y');
   }
   
   public function testIdIsAutoGenerated()
   {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->setFieldBodyModel(pattern('/^.*?@.*?$/D'))
-      -> allowing($h)->getFieldName() -> returns('Message-ID')
-      -> ignoring($h)
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addIdHeader('Message-ID', pattern('/^.*?@.*?$/D'))
+      -> ignoring($headers)
       );
-    $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $context->assertIsSatisfied();
-  }
-  
-  public function testNestingLevelIsSubpart()
-  { //Overridden
-  }
-  
-  public function testNestingLevelIsTop()
-  {
-    $context = new Mockery();
-    $message = $this->_createMessage(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $this->assertEqual(
-      Swift_Mime_MimeEntity::LEVEL_TOP, $message->getNestingLevel()
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
       );
   }
   
-  public function testSubjectIsSetInHeader()
+  public function testSubjectIsReturnedFromHeader()
   {
     /* -- RFC 2822, 3.6.5.
      */
     
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> one($h)->setFieldBodyModel('foo')
-      -> allowing($h)->getFieldName() -> returns('Subject')
-      -> ignoring($h)
+    $subject = $this->_createHeader('Subject', 'example subject');
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Subject' => $subject)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertEqual('example subject', $message->getSubject());
+  }
+  
+  public function testSubjectIsSetInHeader()
+  {
+    $subject = $this->_createHeader('Subject', '', array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($subject)->setFieldBodyModel('foo')
+      -> ignoring($subject)
       );
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Subject' => $subject)),
+      $this->_createEncoder(), $this->_createCache()
       );
     $message->setSubject('foo');
-    $context->assertIsSatisfied();
   }
   
-  public function testSubjectIsReadFromHeader()
+  public function testSubjectHeaderIsCreatedIfNotPresent()
   {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns('foo')
-      -> allowing($h)->getFieldName() -> returns('Subject')
-      -> ignoring($h)
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addTextHeader('Subject', 'example subject')
+      -> ignoring($headers)
       );
-    $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
       );
-    $this->assertEqual('foo', $message->getSubject());
-    $context->assertIsSatisfied();
+    $message->setSubject('example subject');
   }
   
-  public function testDateCanBeSetAndFetched()
-  {
-    /* -- RFC 2822, 3.6.1.
-     */
-    
-    $context = new Mockery();
-    $message = $this->_createMessage(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $message->setDate(123456);
-    $this->assertEqual(123456, $message->getDate());
-  }
-  
-  public function testReturnPathIsSetInHeader()
+  public function testReturnPathIsReturnedFromHeader()
   {
     /* -- RFC 2822, 3.6.7.
      */
     
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> one($h)->setFieldBodyModel('chris.corbyn@swiftmailer.org')
-      -> allowing($h)->getFieldName() -> returns('Return-Path')
-      -> ignoring($h)
-      );
+    $path = $this->_createHeader('Return-Path', 'bounces@domain');
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Return-Path' => $path)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setReturnPath('chris.corbyn@swiftmailer.org');
-    $context->assertIsSatisfied();
+    $this->assertEqual('bounces@domain', $message->getReturnPath());
   }
   
-  public function testReturnPathIsReadFromHeader()
+  public function testReturnPathIsSetInHeader()
   {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns('chris.corbyn@swiftmailer.org')
-      -> allowing($h)->getFieldName() -> returns('Return-Path')
-      -> ignoring($h)
+    $path = $this->_createHeader('Return-Path', '', array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($path)->setFieldBodyModel('bounces@domain')
+      -> ignoring($path)
       );
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Return-Path' => $path)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $this->assertEqual('chris.corbyn@swiftmailer.org', $message->getReturnPath());
-    $context->assertIsSatisfied();
+    $message->setReturnPath('bounces@domain');
+  }
+  
+  public function testReturnPathHeaderIsAddedIfNoneSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addPathHeader('Return-Path', 'bounces@domain')
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setReturnPath('bounces@domain');
+  }
+  
+  public function testSenderIsReturnedFromHeader()
+  {
+    /* -- RFC 2822, 3.6.2.
+     */
+    
+    $sender = $this->_createHeader('Sender', array('sender@domain'=>'Name'));
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Sender' => $sender)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertEqual(array('sender@domain'=>'Name'), $message->getSender());
   }
   
   public function testSenderIsSetInHeader()
   {
+    $sender = $this->_createHeader('Sender', array('sender@domain'=>'Name'),
+      array(), false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($sender)->setFieldBodyModel(array('other@domain'=>'Other'))
+      -> ignoring($sender)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Sender' => $sender)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->setSender(array('other@domain'=>'Other'));
+  }
+  
+  public function testSenderHeaderIsAddedIfNoneSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('Sender', (array) 'sender@domain')
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setSender('sender@domain');
+  }
+  
+  public function testFromIsReturnedFromHeader()
+  {
     /* -- RFC 2822, 3.6.2.
      */
     
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> one($h)->setFieldBodyModel(array('chris.corbyn@swiftmailer.org'=>null))
-      -> allowing($h)->getFieldName() -> returns('Sender')
-      -> ignoring($h)
-      );
+    $from = $this->_createHeader('From', array('from@domain'=>'Name'));
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('From' => $from)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setSender('chris.corbyn@swiftmailer.org');
-    $context->assertIsSatisfied();
-  }
-  
-  public function testSenderIsReadFromHeader()
-  {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns(array('chris.corbyn@swiftmailer.org'=>'Chris'))
-      -> allowing($h)->getFieldName() -> returns('Sender')
-      -> ignoring($h)
-      );
-    $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $this->assertEqual(
-      array('chris.corbyn@swiftmailer.org'=>'Chris'),
-      $message->getSender()
-      );
-    $context->assertIsSatisfied();
+    $this->assertEqual(array('from@domain'=>'Name'), $message->getFrom());
   }
   
   public function testFromIsSetInHeader()
   {
+    $from = $this->_createHeader('From', array('from@domain'=>'Name'),
+      array(), false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($from)->setFieldBodyModel(array('other@domain'=>'Other'))
+      -> ignoring($from)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('From' => $from)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->setFrom(array('other@domain'=>'Other'));
+  }
+  
+  public function testFromHeaderIsAddedIfNoneSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('From', (array) 'from@domain')
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setFrom('from@domain');
+  }
+  
+  public function testReplyToIsReturnedFromHeader()
+  {
     /* -- RFC 2822, 3.6.2.
      */
     
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> one($h)->setFieldBodyModel(array('chris.corbyn@swiftmailer.org'=>null))
-      -> allowing($h)->getFieldName() -> returns('From')
-      -> ignoring($h)
-      );
+    $reply = $this->_createHeader('Reply-To', array('reply@domain'=>'Name'));
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Reply-To' => $reply)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setFrom('chris.corbyn@swiftmailer.org');
-    $context->assertIsSatisfied();
-  }
-  
-  public function testFromIsReadFromHeader()
-  {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns(array('chris.corbyn@swiftmailer.org'=>'Chris'))
-      -> allowing($h)->getFieldName() -> returns('From')
-      -> ignoring($h)
-      );
-    $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $this->assertEqual(
-      array('chris.corbyn@swiftmailer.org'=>'Chris'),
-      $message->getFrom()
-      );
-    $context->assertIsSatisfied();
+    $this->assertEqual(array('reply@domain'=>'Name'), $message->getReplyTo());
   }
   
   public function testReplyToIsSetInHeader()
   {
-    /* -- RFC 2822, 3.6.2.
-     */
-    
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> one($h)->setFieldBodyModel(array('chris.corbyn@swiftmailer.org'=>null))
-      -> allowing($h)->getFieldName() -> returns('Reply-To')
-      -> ignoring($h)
+    $reply = $this->_createHeader('Reply-To', array('reply@domain'=>'Name'),
+      array(), false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($reply)->setFieldBodyModel(array('other@domain'=>'Other'))
+      -> ignoring($reply)
       );
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Reply-To' => $reply)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setReplyTo('chris.corbyn@swiftmailer.org');
-    $context->assertIsSatisfied();
+    $message->setReplyTo(array('other@domain'=>'Other'));
   }
   
-  public function testReplyToIsReadFromHeader()
+  public function testReplyToHeaderIsAddedIfNoneSet()
   {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns(array(
-        'chris.corbyn@swiftmailer.org'=>'Chris',
-        'mark@swiftmailer.org'=>'Mark'
-        ))
-      -> allowing($h)->getFieldName() -> returns('Reply-To')
-      -> ignoring($h)
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('Reply-To', (array) 'reply@domain')
+      -> ignoring($headers)
       );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setReplyTo('reply@domain');
+  }
+  
+  public function testToIsReturnedFromHeader()
+  {
+    /* -- RFC 2822, 3.6.3.
+     */
+    
+    $to = $this->_createHeader('To', array('to@domain'=>'Name'));
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('To' => $to)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $this->assertEqual(
-      array('chris.corbyn@swiftmailer.org'=>'Chris',
-      'mark@swiftmailer.org'=>'Mark'),
-      $message->getReplyTo()
-      );
-    $context->assertIsSatisfied();
+    $this->assertEqual(array('to@domain'=>'Name'), $message->getTo());
   }
   
   public function testToIsSetInHeader()
   {
+    $to = $this->_createHeader('To', array('to@domain'=>'Name'),
+      array(), false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($to)->setFieldBodyModel(array('other@domain'=>'Other'))
+      -> ignoring($to)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('To' => $to)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->setTo(array('other@domain'=>'Other'));
+  }
+  
+  public function testToHeaderIsAddedIfNoneSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('To', (array) 'to@domain')
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setTo('to@domain');
+  }
+  
+  
+  public function testCcIsReturnedFromHeader()
+  {
     /* -- RFC 2822, 3.6.3.
      */
     
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> one($h)->setFieldBodyModel(array('chris.corbyn@swiftmailer.org'=>null))
-      -> allowing($h)->getFieldName() -> returns('To')
-      -> ignoring($h)
-      );
+    $cc = $this->_createHeader('Cc', array('cc@domain'=>'Name'));
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Cc' => $cc)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setTo('chris.corbyn@swiftmailer.org');
-    $context->assertIsSatisfied();
-  }
-  
-  public function testToIsReadFromHeader()
-  {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns(array(
-        'chris.corbyn@swiftmailer.org'=>'Chris',
-        'mark@swiftmailer.org'=>'Mark'
-        ))
-      -> allowing($h)->getFieldName() -> returns('To')
-      -> ignoring($h)
-      );
-    $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $this->assertEqual(
-      array('chris.corbyn@swiftmailer.org'=>'Chris',
-      'mark@swiftmailer.org'=>'Mark'),
-      $message->getTo()
-      );
-    $context->assertIsSatisfied();
+    $this->assertEqual(array('cc@domain'=>'Name'), $message->getCc());
   }
   
   public function testCcIsSetInHeader()
   {
+    $cc = $this->_createHeader('Cc', array('cc@domain'=>'Name'),
+      array(), false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($cc)->setFieldBodyModel(array('other@domain'=>'Other'))
+      -> ignoring($cc)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Cc' => $cc)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->setCc(array('other@domain'=>'Other'));
+  }
+  
+  public function testCcHeaderIsAddedIfNoneSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('Cc', (array) 'cc@domain')
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setCc('cc@domain');
+  }
+  
+  
+  
+  
+  public function testBccIsReturnedFromHeader()
+  {
     /* -- RFC 2822, 3.6.3.
      */
     
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> one($h)->setFieldBodyModel(array('chris.corbyn@swiftmailer.org'=>null))
-      -> allowing($h)->getFieldName() -> returns('Cc')
-      -> ignoring($h)
-      );
+    $bcc = $this->_createHeader('Bcc', array('bcc@domain'=>'Name'));
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Bcc' => $bcc)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setCc('chris.corbyn@swiftmailer.org');
-    $context->assertIsSatisfied();
-  }
-  
-  public function testCcIsReadFromHeader()
-  {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns(array(
-        'chris.corbyn@swiftmailer.org'=>'Chris',
-        'mark@swiftmailer.org'=>'Mark'
-        ))
-      -> allowing($h)->getFieldName() -> returns('Cc')
-      -> ignoring($h)
-      );
-    $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $this->assertEqual(
-      array('chris.corbyn@swiftmailer.org'=>'Chris',
-      'mark@swiftmailer.org'=>'Mark'),
-      $message->getCc()
-      );
-    $context->assertIsSatisfied();
+    $this->assertEqual(array('bcc@domain'=>'Name'), $message->getBcc());
   }
   
   public function testBccIsSetInHeader()
   {
-    /* -- RFC 2822, 3.6.3.
-     */
-    
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> one($h)->setFieldBodyModel(array('chris.corbyn@swiftmailer.org'=>null))
-      -> allowing($h)->getFieldName() -> returns('Bcc')
-      -> ignoring($h)
+    $bcc = $this->_createHeader('Bcc', array('bcc@domain'=>'Name'),
+      array(), false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($bcc)->setFieldBodyModel(array('other@domain'=>'Other'))
+      -> ignoring($bcc)
       );
     $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+      $this->_createHeaderSet(array('Bcc' => $bcc)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message->setBcc('chris.corbyn@swiftmailer.org');
-    $context->assertIsSatisfied();
+    $message->setBcc(array('other@domain'=>'Other'));
   }
   
-  public function testBccIsReadFromHeader()
+  public function testBccHeaderIsAddedIfNoneSet()
   {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns(array(
-        'chris.corbyn@swiftmailer.org'=>'Chris',
-        'mark@swiftmailer.org'=>'Mark'
-        ))
-      -> allowing($h)->getFieldName() -> returns('Bcc')
-      -> ignoring($h)
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('Bcc', (array) 'bcc@domain')
+      -> ignoring($headers)
       );
-    $message = $this->_createMessage(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
       );
-    $this->assertEqual(
-      array('chris.corbyn@swiftmailer.org'=>'Chris',
-      'mark@swiftmailer.org'=>'Mark'),
-      $message->getBcc()
-      );
-    $context->assertIsSatisfied();
+    $message->setBcc('bcc@domain');
   }
   
   public function testChildrenCanBeAttached()
   {
-    $context = new Mockery();
-    $entity1 = $context->mock('Swift_Mime_MimeEntity');
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity1)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> ignoring($entity1)
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> ignoring($entity2)
+    $child1 = $this->_createChild();
+    $child2 = $this->_createChild();
+    
+    $message = $this->_createMessage($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
       );
     
-    $message = $this->_createMessage(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
+    $message->attach($child1);
+    $message->attach($child2);
     
-    $message->attach($entity1);
-    
-    $this->assertEqual(array($entity1), $message->getChildren(),
-      '%s: Child should be appended'
-      );
-    
-    $message->attach($entity2);
-    
-    $this->assertEqual(array($entity1, $entity2), $message->getChildren(),
-      '%s: Children should be incrementally appended'
-      );
-    
-    $context->assertIsSatisfied();
+    $this->assertEqual(array($child1, $child2), $message->getChildren());
   }
   
   public function testChildrenCanBeDetached()
   {
-    $context = new Mockery();
-    $entity1 = $context->mock('Swift_Mime_MimeEntity');
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity1)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> allowing($entity1)->getId() -> returns('foo@bar')
-      -> ignoring($entity1)
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity2)->getId() -> returns('zip@button')
-      -> ignoring($entity2)
+    $child1 = $this->_createChild();
+    $child2 = $this->_createChild();
+    
+    $message = $this->_createMessage($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
       );
     
-    $message = $this->_createMessage(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
+    $message->attach($child1);
+    $message->attach($child2);
     
-    $message->attach($entity1);
+    $message->detach($child1);
     
-    $this->assertEqual(array($entity1), $message->getChildren(),
-      '%s: Child should be appended'
-      );
-    
-    $message->attach($entity2);
-    
-    $this->assertEqual(array($entity1, $entity2), $message->getChildren(),
-      '%s: Children should be incrementally appended'
-      );
-      
-    $message->detach($entity1);
-    
-    $this->assertEqual(array($entity2), $message->getChildren(),
-      '%s: Child should be detached'
-      );
-    
-    $context->assertIsSatisfied();
+    $this->assertEqual(array($child2), $message->getChildren());
   }
   
   public function testEmbedAttachesChild()
   {
-    $context = new Mockery();
-    $entity1 = $context->mock('Swift_Mime_MimeEntity');
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity1)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> allowing($entity1)->getId() -> returns('foo@bar')
-      -> ignoring($entity1)
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity2)->getId() -> returns('zip@button')
-      -> ignoring($entity2)
+    $child = $this->_createChild();
+    
+    $message = $this->_createMessage($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
       );
     
-    $message = $this->_createMessage(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
+    $message->embed($child);
     
-    $message->embed($entity1);
-    
-    $this->assertEqual(array($entity1), $message->getChildren(),
-      '%s: embed() should attach child'
-      );
-    
-    $message->embed($entity2);
-    
-    $this->assertEqual(array($entity1, $entity2), $message->getChildren(),
-      '%s: Children should be incrementally appended'
-      );
-    
-    $context->assertIsSatisfied();
+    $this->assertEqual(array($child), $message->getChildren());
   }
   
   public function testEmbedReturnsValidCid()
   {
-    $context = new Mockery();
-    $entity1 = $context->mock('Swift_Mime_MimeEntity');
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity1)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> allowing($entity1)->getId() -> returns('foo@bar')
-      -> ignoring($entity1)
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity2)->getId() -> returns('zip@button')
-      -> ignoring($entity2)
+    $child = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_EMBEDDED, '',
+      false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($child)->getId() -> returns('foo@bar')
+      -> ignoring($child)
+      );
+    $message = $this->_createMessage($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
       );
     
-    $message = $this->_createMessage(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    
-    $this->assertEqual('cid:foo@bar', $message->embed($entity1));
-    $this->assertEqual('cid:zip@button', $message->embed($entity2));
-    
-    $context->assertIsSatisfied();
+    $this->assertEqual('cid:foo@bar', $message->embed($child));
   }
   
   public function testFluidInterface()
   {
-    $context = new Mockery();
-    $child = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($child)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> ignoring($child)
+    $child = $this->_createChild();
+    $message = $this->_createMessage($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $message = $this->_createMessage(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $ref = $message
+    $this->assertSame($message,
+      $message
       ->setContentType('text/plain')
-      ->setEncoder($this->_getEncoder($context))
+      ->setEncoder($this->_createEncoder())
       ->setId('foo@bar')
       ->setDescription('my description')
       ->setMaxLineLength(998)
-      ->setBodyAsString('xx')
-      ->setNestingLevel(10)
+      ->setBody('xx')
       ->setBoundary('xyz')
       ->setChildren(array())
-      ->setHeaders(array())
       ->setCharset('iso-8859-1')
       ->setFormat('flowed')
       ->setDelSp(false)
@@ -610,11 +542,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
       ->setBcc(array('one@site', 'two@site' => 'Two'))
       ->attach($child)
       ->detach($child)
-      ;
-    
-    $this->assertReference($message, $ref);
-    
-    $context->assertIsSatisfied();
+      );
   }
   
   // -- Private helpers

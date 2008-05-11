@@ -10,14 +10,15 @@ require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
 require_once 'Swift/KeyCache/ArrayKeyCache.php';
 require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
+require_once 'Swift/Mime/SimpleHeaderSet.php';
+require_once 'Swift/Mime/SimpleHeaderFactory.php';
 
 class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
 {
 
   private $_contentEncoder;
-  private $_headerEncoder;
-  private $_paramEncoder;
   private $_cache;
+  private $_headers;
   
   public function setUp()
   {
@@ -28,11 +29,15 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
     $this->_contentEncoder = new Swift_Mime_ContentEncoder_QpContentEncoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'), true
       );
-    $this->_headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
+    
+    $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
       );
-    $this->_paramEncoder = new Swift_Encoder_Rfc2231Encoder(
+    $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+      );
+    $this->_headers = new Swift_Mime_SimpleHeaderSet(
+      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder)
       );
   }
   
@@ -41,7 +46,7 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
     $part = $this->_createMimePart();
     $part->setContentType('text/plain');
     $part->setCharset('utf-8');
-    $part->setBodyAsString('foobar');
+    $part->setBody('foobar');
     $this->assertEqual(
       'Content-Type: text/plain; charset=utf-8' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
@@ -56,7 +61,7 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
     $part = $this->_createMimePart();
     $part->setContentType('text/plain');
     $part->setFormat('flowed');
-    $part->setBodyAsString('> foobar');
+    $part->setBody('> foobar');
     $this->assertEqual(
       'Content-Type: text/plain; format=flowed' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
@@ -71,7 +76,7 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
     $part = $this->_createMimePart();
     $part->setContentType('text/plain');
     $part->setDelSp(true);
-    $part->setBodyAsString('foobar');
+    $part->setBody('foobar');
     $this->assertEqual(
       'Content-Type: text/plain; delsp=yes' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
@@ -88,7 +93,7 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
     $part->setCharset('utf-8');
     $part->setFormat('fixed');
     $part->setDelSp(true);
-    $part->setBodyAsString('foobar');
+    $part->setBody('foobar');
     $this->assertEqual(
       'Content-Type: text/plain; charset=utf-8; format=fixed; delsp=yes' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
@@ -103,7 +108,7 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
     $part = $this->_createMimePart();
     $part->setContentType('text/plain');
     $part->setCharset('utf-8');
-    $part->setBodyAsString("foobar\r\rtest\ning\r");
+    $part->setBody("foobar\r\rtest\ning\r");
     $this->assertEqual(
       'Content-Type: text/plain; charset=utf-8' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
@@ -121,14 +126,7 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
   private function _createMimePart()
   {
     $entity = new Swift_Mime_MimePart(
-      array(
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Type', $this->_headerEncoder, $this->_paramEncoder
-          ),
-        new Swift_Mime_Headers_UnstructuredHeader(
-          'Content-Transfer-Encoding', $this->_headerEncoder
-          )
-        ),
+      $this->_headers,
       $this->_contentEncoder,
       $this->_cache
       );

@@ -1,0 +1,299 @@
+<?php
+
+/*
+ Standard HeaderSet implementation from Swift Mailer.
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ */
+
+//@require 'Swift/Mime/HeaderSet.php';
+//@require 'Swift/InputByteStream.php';
+
+/**
+ * A collection of MIME headers.
+ * @package Swift
+ * @subpackage Mime
+ * @author Chris Corbyn
+ */
+class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
+{
+  
+  /** HeaderFactory */
+  private $_factory;
+  
+  /** Collection of set Headers */
+  private $_headers = array();
+  
+  /** Field ordering details */
+  private $_order = array();
+  
+  /** List of fields which are required to be displayed */
+  private $_required = array();
+  
+  /**
+   * Create a new SimpleHeaderSet with the given $factory.
+   * @param Swift_Mime_HeaderFactory $factory
+   */
+  public function __construct(Swift_Mime_HeaderFactory $factory)
+  {
+    $this->_factory = $factory;
+  }
+  
+  /**
+   * Add a new Mailbox Header with a list of $addresses.
+   * @param string $name
+   * @param array|string $addresses
+   */
+  public function addMailboxHeader($name, $addresses = null)
+  {
+    $this->_storeHeader($name,
+      $this->_factory->createMailboxHeader($name, $addresses));
+  }
+  
+  /**
+   * Add a new Date header using $timestamp (UNIX time).
+   * @param string $name
+   * @param int $timestamp
+   */
+  public function addDateHeader($name, $timestamp = null)
+  {
+    $this->_storeHeader($name,
+      $this->_factory->createDateHeader($name, $timestamp));
+  }
+  
+  /**
+   * Add a new basic text header with $name and $value.
+   * @param string $name
+   * @param string $value
+   */
+  public function addTextHeader($name, $value = null)
+  {
+    $this->_storeHeader($name,
+      $this->_factory->createTextHeader($name, $value));
+  }
+  
+  /**
+   * Add a new ParameterizedHeader with $name, $value and $params.
+   * @param string $name
+   * @param string $value
+   * @param array $params
+   */
+  public function addParameterizedHeader($name, $value = null,
+    $params = array())
+  {
+    $this->_storeHeader($name,
+      $this->_factory->createParameterizedHeader($name, $value,
+      $params));
+  }
+  
+  /**
+   * Add a new ID header for Message-ID or Content-ID.
+   * @param string $name
+   * @param string|array $ids
+   */
+  public function addIdHeader($name, $ids = null)
+  {
+    $this->_storeHeader($name, $this->_factory->createIdHeader($name, $ids));
+  }
+  
+  /**
+   * Add a new Path header with an address (path) in it.
+   * @param string $name
+   * @param string $path
+   */
+  public function addPathHeader($name, $path = null)
+  {
+    $this->_storeHeader($name, $this->_factory->createPathHeader($name, $path));
+  }
+  
+  /**
+   * Returns true if at least one header with the given $name exists.
+   * If multiple headers match, the actual one may be specified by $index.
+   * @param string $name
+   * @param int $index
+   * @return boolean
+   */
+  public function has($name, $index = 0)
+  {
+    $lowerName = strtolower($name);
+    return array_key_exists($lowerName, $this->_headers)
+      && array_key_exists($index, $this->_headers[$lowerName]);
+  }
+  
+  /**
+   * Get the header with the given $name.
+   * If multiple headers match, the actual one may be specified by $index.
+   * Returns NULL if none present.
+   * @param string $name
+   * @param int $index
+   * @return Swift_Mime_Header
+   */
+  public function get($name, $index = 0)
+  {
+    if ($this->has($name, $index))
+    {
+      $lowerName = strtolower($name);
+      return $this->_headers[$lowerName][$index];
+    }
+  }
+  
+  /**
+   * Get all headers with the given $name.
+   * @param string $name
+   * @return array
+   */
+  public function getAll($name)
+  {
+    $lowerName = strtolower($name);
+    if (!array_key_exists($lowerName, $this->_headers))
+    {
+      return array();
+    }
+    return $this->_headers[$lowerName];
+  }
+  
+  /**
+   * Remove the header with the given $name if it's set.
+   * If multiple headers match, the actual one may be specified by $index.
+   * @param string $name
+   * @param int $index
+   */
+  public function remove($name, $index = 0)
+  {
+    $lowerName = strtolower($name);
+    unset($this->_headers[$lowerName][$index]);
+  }
+  
+  /**
+   * Remove all headers with the given $name.
+   * @param string $name
+   */
+  public function removeAll($name)
+  {
+    $lowerName = strtolower($name);
+    unset($this->_headers[$lowerName]);
+  }
+  
+  /**
+   * Create a new instance of this HeaderSet.
+   * @return Swift_Mime_HeaderSet
+   */
+  public function newInstance()
+  {
+    return new self($this->_factory);
+  }
+  
+  /**
+   * Define a list of Header names as an array in the correct order.
+   * These Headers will be output in the given order where present.
+   * @param array $sequence
+   */
+  public function defineOrdering(array $sequence)
+  {
+    $this->_order = array_flip(array_map('strtolower', $sequence));
+  }
+  
+  /**
+   * Set a list of header names which must always be displayed when set.
+   * Usually headers without a field value won't be output unless set here.
+   * @param array $names
+   */
+  public function setAlwaysDisplayed(array $names)
+  {
+    $this->_required = array_map('strtolower', $names);
+  }
+  
+  /**
+   * Returns a string with a representation of all headers.
+   * @return string
+   */
+  public function toString()
+  {
+    $string = '';
+    $headers = $this->_headers;
+    if ($this->_canSort())
+    {
+      uksort($headers, array($this, '_sortHeaders'));
+    }
+    foreach ($headers as $collection)
+    {
+      foreach ($collection as $header)
+      {
+        if ($this->_isDisplayed($header) || $header->getFieldBody() != '')
+        {
+          $string .= $header->toString();
+        }
+      }
+    }
+    return $string;
+  }
+  
+  /**
+   * Write all Headers to to the byte stream.
+   * @param Swift_InputByteStream $is
+   */
+  public function toByteStream(Swift_InputByteStream $is)
+  {
+  }
+  
+  // -- Private methods
+  
+  /** Save a Header to the internal collection */
+  private function _storeHeader($name, Swift_Mime_Header $header)
+  {
+    if (!isset($this->_headers[strtolower($name)]))
+    {
+      $this->_headers[strtolower($name)] = array();
+    }
+    $this->_headers[strtolower($name)][] = $header;
+  }
+  
+  /** Test if the headers can be sorted */
+  private function _canSort()
+  {
+    return count($this->_order) > 0;
+  }
+  
+  /** uksort() algorithm for Header ordering */
+  private function _sortHeaders($a, $b)
+  {
+    $lowerA = strtolower($a);
+    $lowerB = strtolower($b);
+    $aPos = array_key_exists($lowerA, $this->_order)
+      ? $this->_order[$lowerA]
+      : -1;
+    $bPos = array_key_exists($lowerB, $this->_order)
+      ? $this->_order[$lowerB]
+      : -1;
+      
+    if ($aPos == -1)
+    {
+      return 1;
+    }
+    elseif ($bPos == -1)
+    {
+      return -1;
+    }
+    
+    return ($aPos < $bPos) ? -1 : 1;
+  }
+  
+  /** Test if the given Header is always displayed */
+  private function _isDisplayed(Swift_Mime_Header $header)
+  {
+    return in_array(strtolower($header->getFieldName()), $this->_required);
+  }
+  
+}

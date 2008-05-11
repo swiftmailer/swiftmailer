@@ -4,13 +4,6 @@ require_once 'Swift/Mime/SimpleMessage.php';
 require_once 'Swift/Mime/MimePart.php';
 require_once 'Swift/Mime/Attachment.php';
 require_once 'Swift/Mime/EmbeddedFile.php';
-require_once 'Swift/Mime/Headers/UnstructuredHeader.php';
-require_once 'Swift/Mime/Headers/ParameterizedHeader.php';
-require_once 'Swift/Mime/Headers/PathHeader.php';
-require_once 'Swift/Mime/Headers/DateHeader.php';
-require_once 'Swift/Mime/Headers/MailboxHeader.php';
-require_once 'Swift/Mime/Headers/VersionHeader.php';
-require_once 'Swift/Mime/Headers/IdentificationHeader.php';
 require_once 'Swift/Encoder/Rfc2231Encoder.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
 require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
@@ -20,13 +13,15 @@ require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
 require_once 'Swift/KeyCache/ArrayKeyCache.php';
 require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
+require_once 'Swift/Mime/SimpleHeaderFactory.php';
+require_once 'Swift/Mime/SimpleHeaderSet.php';
 
 class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
 {
 
-  private $_contentEncoder;
   private $_headerEncoder;
   private $_paramEncoder;
+  private $_contentEncoder;
   private $_attachmentEncoder;
   private $_cache;
   
@@ -589,7 +584,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $message->setSubject('just a test subject');
     $message->setFrom(array(
       'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
-    $message->setBodyAsString(
+    $message->setBody(
       'just a test body' . "\r\n" .
       'with a new line'
       );
@@ -618,7 +613,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $message->setSubject('just a test subject');
     $message->setFrom(array(
       'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
-    $message->setBodyAsString(
+    $message->setBody(
       'Just s' . pack('C*', 0xC2, 0x01, 0x01) . 'me multi-' . "\r\n" .
       'line message!'
       );
@@ -655,14 +650,14 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $part1 = $this->_createMimePart();
     $part1->setContentType('text/plain');
     $part1->setCharset('iso-8859-1');
-    $part1->setBodyAsString('foo');
+    $part1->setBody('foo');
     
     $message->attach($part1);
     
     $part2 = $this->_createMimePart();
     $part2->setContentType('text/html');
     $part2->setCharset('iso-8859-1');
-    $part2->setBodyAsString('test <b>foo</b>');
+    $part2->setBody('test <b>foo</b>');
     
     $message->attach($part2);
     
@@ -708,14 +703,14 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $part = $this->_createMimePart();
     $part->setContentType('text/plain');
     $part->setCharset('iso-8859-1');
-    $part->setBodyAsString('foo');
+    $part->setBody('foo');
     
     $message->attach($part);
     
     $attachment = $this->_createAttachment();
     $attachment->setContentType('application/pdf');
     $attachment->setFilename('foo.pdf');
-    $attachment->setBodyAsString('<pdf data>');
+    $attachment->setBody('<pdf data>');
     
     $message->attach($attachment);
     
@@ -770,21 +765,21 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $part = $this->_createMimePart();
     $part->setContentType('text/plain');
     $part->setCharset('iso-8859-1');
-    $part->setBodyAsString('foo');
+    $part->setBody('foo');
     
     $message->attach($part);
     
     $attachment = $this->_createAttachment();
     $attachment->setContentType('application/pdf');
     $attachment->setFilename('foo.pdf');
-    $attachment->setBodyAsString('<pdf data>');
+    $attachment->setBody('<pdf data>');
     
     $message->attach($attachment);
     
     $file = $this->_createEmbeddedFile();
     $file->setContentType('image/jpeg');
     $file->setFilename('myimage.jpg');
-    $file->setBodyAsString('<image data>');
+    $file->setBody('<image data>');
     
     $message->attach($file);
     
@@ -855,19 +850,19 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $attachment = $this->_createAttachment();
     $attachment->setContentType('application/pdf');
     $attachment->setFilename('foo.pdf');
-    $attachment->setBodyAsString('<pdf data>');
+    $attachment->setBody('<pdf data>');
     
     $message->attach($attachment);
     
     $file = $this->_createEmbeddedFile();
     $file->setContentType('image/jpeg');
     $file->setFilename('myimage.jpg');
-    $file->setBodyAsString('<image data>');
+    $file->setBody('<image data>');
     
     $part = $this->_createMimePart();
     $part->setContentType('text/html');
     $part->setCharset('iso-8859-1');
-    $part->setBodyAsString('foo <img src="' . $message->embed($file) . '" />');
+    $part->setBody('foo <img src="' . $message->embed($file) . '" />');
     
     $message->attach($part);
     
@@ -938,21 +933,21 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $part = $this->_createMimePart();
     $part->setContentType('text/plain');
     $part->setCharset('iso-8859-1');
-    $part->setBodyAsString('foo');
+    $part->setBody('foo');
     
     $message->attach($part);
     
     $attachment = $this->_createAttachment();
     $attachment->setContentType('application/pdf');
     $attachment->setFilename('foo.pdf');
-    $attachment->setBodyAsString('<pdf data>');
+    $attachment->setBody('<pdf data>');
     
     $message->attach($attachment);
     
     $file = $this->_createEmbeddedFile();
     $file->setContentType('image/jpeg');
     $file->setFilename('myimage.jpg');
-    $file->setBodyAsString('<image data>');
+    $file->setBody('<image data>');
     
     $message->attach($file);
     
@@ -1013,14 +1008,14 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $part1 = $this->_createMimePart();
     $part1->setContentType('text/plain');
     $part1->setCharset('iso-8859-1');
-    $part1->setBodyAsString('foo');
+    $part1->setBody('foo');
     
     $message->attach($part1);
     
     $part2 = $this->_createMimePart();
     $part2->setContentType('text/html');
     $part2->setCharset('iso-8859-1');
-    $part2->setBodyAsString('test <b>foo</b>');
+    $part2->setBody('test <b>foo</b>');
     
     $message->attach($part2);
     
@@ -1059,14 +1054,14 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $part1 = $this->_createMimePart();
     $part1->setContentType('text/plain');
     $part1->setCharset('iso-8859-1');
-    $part1->setBodyAsString('foo');
+    $part1->setBody('foo');
     
     $message->attach($part1);
     
     $part2 = $this->_createMimePart();
     $part2->setContentType('text/html');
     $part2->setCharset('iso-8859-1');
-    $part2->setBodyAsString('test <b>foo</b>');
+    $part2->setBody('test <b>foo</b>');
     
     $message->attach($part2);
     
@@ -1106,7 +1101,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
       'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
     $message->setContentType('text/html');
     $message->setCharset('iso-8859-1');
-    $message->setBodyAsString('foo');
+    $message->setBody('foo');
     
     $id = $message->getId();
     $date = date('r', $message->getDate());
@@ -1115,7 +1110,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $attachment = $this->_createAttachment();
     $attachment->setContentType('application/pdf');
     $attachment->setFilename('foo.pdf');
-    $attachment->setBodyAsString('<pdf data>');
+    $attachment->setBody('<pdf data>');
     
     $message->attach($attachment);
     
@@ -1161,11 +1156,11 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     
     $part1 = $this->_createMimePart();
     $part1->setContentType('text/html');
-    $part1->setBodyAsString('foo');
+    $part1->setBody('foo');
     
     $part2 = $this->_createMimePart();
     $part2->setContentType('text/plain');
-    $part2->setBodyAsString('bar');
+    $part2->setBody('bar');
     
     $message->attach($part1);
     $message->attach($part2);
@@ -1205,7 +1200,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $message->setFrom(array(
       'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
     $message->setContentType('text/html');
-    $message->setBodyAsString('foo');
+    $message->setBody('foo');
     
     $id = $message->getId();
     $date = date('r', $message->getDate());
@@ -1213,7 +1208,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     
     $part2 = $this->_createMimePart();
     $part2->setContentType('text/plain');
-    $part2->setBodyAsString('bar');
+    $part2->setBody('bar');
     
     $message->attach($part2);
     
@@ -1251,7 +1246,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     $message->setSubject('just a test subject');
     $message->setFrom(array(
       'chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
-    $message->setBodyAsString(
+    $message->setBody(
       'just a test body' . "\n" .
       'with a new line'
       );
@@ -1278,39 +1273,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   private function _createMessage()
   {
     $message = new Swift_Mime_SimpleMessage(
-      array(
-        new Swift_Mime_Headers_PathHeader('Return-Path'),
-        new Swift_Mime_Headers_MailboxHeader(
-          'Sender', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_IdentificationHeader('Message-ID'),
-        new Swift_Mime_Headers_DateHeader('Date'),
-        new Swift_Mime_Headers_UnstructuredHeader(
-          'Subject', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_MailboxHeader(
-          'From', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_MailboxHeader(
-          'Reply-To', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_MailboxHeader(
-          'To', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_MailboxHeader(
-          'Cc', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_MailboxHeader(
-          'Bcc', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_VersionHeader('MIME-Version'),
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Type', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_UnstructuredHeader(
-          'Content-Transfer-Encoding', $this->_headerEncoder
-          )
-        ),
+      $this->_createHeaders(),
       $this->_contentEncoder,
       $this->_cache
       );
@@ -1320,14 +1283,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   private function _createMimePart()
   {
     $entity = new Swift_Mime_MimePart(
-      array(
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Type', $this->_headerEncoder, $this->_paramEncoder
-          ),
-        new Swift_Mime_Headers_UnstructuredHeader(
-          'Content-Transfer-Encoding', $this->_headerEncoder
-          )
-        ),
+      $this->_createHeaders(),
       $this->_contentEncoder,
       $this->_cache
       );
@@ -1337,17 +1293,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   private function _createAttachment()
   {
     $entity = new Swift_Mime_Attachment(
-      array(
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Type', $this->_headerEncoder, $this->_paramEncoder
-          ),
-        new Swift_Mime_Headers_UnstructuredHeader(
-          'Content-Transfer-Encoding', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Disposition', $this->_headerEncoder, $this->_paramEncoder
-          )
-        ),
+      $this->_createHeaders(),
       $this->_attachmentEncoder,
       $this->_cache
       );
@@ -1357,22 +1303,19 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   private function _createEmbeddedFile()
   {
     $entity = new Swift_Mime_EmbeddedFile(
-      array(
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Type', $this->_headerEncoder, $this->_paramEncoder
-          ),
-        new Swift_Mime_Headers_UnstructuredHeader(
-          'Content-Transfer-Encoding', $this->_headerEncoder
-          ),
-        new Swift_Mime_Headers_ParameterizedHeader(
-          'Content-Disposition', $this->_headerEncoder, $this->_paramEncoder
-          ),
-        new Swift_Mime_Headers_IdentificationHeader('Content-ID')
-        ),
+      $this->_createHeaders(),
       $this->_attachmentEncoder,
       $this->_cache
       );
     return $entity;
+  }
+  
+  private function _createHeaders()
+  {
+    return new Swift_Mime_SimpleHeaderSet(
+      new Swift_Mime_SimpleHeaderFactory($this->_headerEncoder,
+        $this->_paramEncoder)
+      );
   }
   
 }

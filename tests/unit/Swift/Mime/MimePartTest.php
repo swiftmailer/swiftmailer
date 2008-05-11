@@ -3,71 +3,21 @@
 require_once 'Swift/Mime/MimeEntity.php';
 require_once 'Swift/Mime/MimePart.php';
 require_once 'Swift/Mime/AbstractMimeEntityTest.php';
-require_once 'Swift/Mime/Header.php';
 
 class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 {
   
   public function testNestingLevelIsSubpart()
   {
-    $context = new Mockery();
-    $part = $this->_createMimePart(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
+    $part = $this->_createMimePart($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
       );
     $this->assertEqual(
       Swift_Mime_MimeEntity::LEVEL_SUBPART, $part->getNestingLevel()
       );
   }
   
-  public function testSettingCharsetNotifiesEncoder()
-  {
-    $context = new Mockery();
-    
-    $encoder = $this->_getEncoder($context, false);
-    $context->checking(Expectations::create()
-      -> one($encoder)->charsetChanged('utf-32')
-      -> ignoring($encoder)
-      );
-    $part = $this->_createMimePart(array(), $encoder, $this->_getCache($context));
-    $part->setCharset('utf-32');
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function testSettingCharsetNotifiesChildren()
-  {
-    $context = new Mockery();
-    
-    $child1 = $context->mock('Swift_Mime_MimeEntity');
-    $child2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> one($child1)->charsetChanged('utf-32')
-      -> ignoring($child1)
-      -> one($child2)->charsetChanged('utf-32')
-      -> ignoring($child2)
-      );
-    $part = $this->_createMimePart(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $part->setChildren(array($child1, $child2));
-    $part->setCharset('utf-32');
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function testCharsetChangeUpdatesCharset()
-  {
-    $context = new Mockery();
-    $part = $this->_createMimePart(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $part->setCharset('utf-32');
-    $this->assertEqual('utf-32', $part->getCharset());
-    $part->charsetChanged('iso-8859-1');
-    $this->assertEqual('iso-8859-1', $part->getCharset());
-  }
-  
-  public function testCharsetIsSetInHeader()
+  public function testCharsetIsReturnedFromHeader()
   {
     /* -- RFC 2046, 4.1.2.
     A critical parameter that may be specified in the Content-Type field
@@ -81,167 +31,155 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
     must be assumed in the absence of a charset parameter, is US-ASCII.
     */
     
-    $context = new Mockery();
-    
-    $h = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->setParameter('charset', 'utf-8')
-      -> allowing($h)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h)
+    $cType = $this->_createHeader('Content-Type', 'text/plain',
+      array('charset' => 'iso-8859-1')
       );
-    
-    $headers = array($h);
-    
-    $part = $this->_createMimePart(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $part->setCharset('utf-8');
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function testCharsetIsReadFromHeader()
-  {
-    $context = new Mockery();
-    
-    $h = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getParameter('charset') -> returns('iso-8859-1')
-      -> allowing($h)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h)
-      );
-    
-    $headers = array($h);
-    
-    $part = $this->_createMimePart(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
+    $part = $this->_createMimePart($this->_createHeaderSet(array(
+      'Content-Type' => $cType)),
+      $this->_createEncoder(), $this->_createCache()
       );
     $this->assertEqual('iso-8859-1', $part->getCharset());
+  }
+  
+  public function testCharsetIsSetInHeader()
+  {
+    $cType = $this->_createHeader('Content-Type', 'text/plain',
+      array('charset' => 'iso-8859-1'), false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($cType)->setParameter('charset', 'utf-8')
+      -> ignoring($cType)
+      );
+    $part = $this->_createMimePart($this->_createHeaderSet(array(
+      'Content-Type' => $cType)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $part->setCharset('utf-8');
+  }
+  
+  public function testSettingCharsetNotifiesEncoder()
+  {
+    $encoder = $this->_createEncoder('quoted-printable', false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($encoder)->charsetChanged('utf-8')
+      -> ignoring($encoder)
+      );
+    $part = $this->_createMimePart($this->_createHeaderSet(),
+      $encoder, $this->_createCache()
+      );
+    $part->setCharset('utf-8');
+  }
+  
+  public function testSettingCharsetNotifiesChildren()
+  {
+    $child = $this->_createChild(0, '', false);
     
-    $context->assertIsSatisfied();
+    $this->_mockery()->checking(Expectations::create()
+      -> one($child)->charsetChanged('windows-874')
+      -> ignoring($child)
+      );
+    
+    $part = $this->_createMimePart($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $part->setChildren(array($child));
+    $part->setCharset('windows-874');
+  }
+  
+  public function testCharsetChangeUpdatesCharset()
+  {
+    $cType = $this->_createHeader('Content-Type', 'text/plain',
+      array('charset' => 'iso-8859-1'), false
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($cType)->setParameter('charset', 'utf-8')
+      -> ignoring($cType)
+      );
+    $part = $this->_createMimePart($this->_createHeaderSet(array(
+      'Content-Type' => $cType)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $part->charsetChanged('utf-8');
+  }
+  
+  public function testFormatIsReturnedFromHeader()
+  {
+    /* -- RFC 3676.
+     */
+    
+    $cType = $this->_createHeader('Content-Type', 'text/plain',
+      array('format' => 'flowed')
+      );
+    $part = $this->_createMimePart($this->_createHeaderSet(array(
+      'Content-Type' => $cType)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertEqual('flowed', $part->getFormat());
   }
   
   public function testFormatIsSetInHeader()
   {
+    $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($cType)->setParameter('format', 'fixed')
+      -> ignoring($cType)
+      );
+    $part = $this->_createMimePart($this->_createHeaderSet(array(
+      'Content-Type' => $cType)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $part->setFormat('fixed');
+  }
+  
+  public function testDelSpIsReturnedFromHeader()
+  {
     /* -- RFC 3676.
      */
     
-    $context = new Mockery();
-    
-    $h = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->setParameter('format', 'fixed')
-      -> allowing($h)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h)
+    $cType = $this->_createHeader('Content-Type', 'text/plain',
+      array('delsp' => 'no')
       );
-    
-    $headers = array($h);
-    
-    $part = $this->_createMimePart(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
+    $part = $this->_createMimePart($this->_createHeaderSet(array(
+      'Content-Type' => $cType)),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $part->setFormat('fixed');
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function testFormatIsReadFromHeader()
-  {
-    $context = new Mockery();
-    
-    $h = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getParameter('format') -> returns('flowed')
-      -> allowing($h)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h)
-      );
-    
-    $headers = array($h);
-    
-    $part = $this->_createMimePart(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $this->assertEqual('flowed', $part->getFormat());
-    
-    $context->assertIsSatisfied();
+    $this->assertIdentical(false, $part->getDelSp());
   }
   
   public function testDelSpIsSetInHeader()
-  {
-    /* -- RFC 3676.
-     */
-     
-    $context = new Mockery();
-    
-    $h = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->setParameter('delsp', 'yes')
-      -> allowing($h)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h)
+  { 
+    $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($cType)->setParameter('delsp', 'yes')
+      -> ignoring($cType)
       );
-    
-    $headers = array($h);
-    
-    $part = $this->_createMimePart(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
+    $part = $this->_createMimePart($this->_createHeaderSet(array(
+      'Content-Type' => $cType)),
+      $this->_createEncoder(), $this->_createCache()
       );
     $part->setDelSp(true);
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function testDelSpIsReadFromHeader()
-  {
-    $context = new Mockery();
-    
-    $h = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getParameter('delsp') -> returns('yes')
-      -> allowing($h)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h)
-      );
-    
-    $headers = array($h);
-    
-    $part = $this->_createMimePart(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $this->assertTrue($part->getDelSp());
-    
-    $context->assertIsSatisfied();
   }
   
   public function testFluidInterface()
   {
-    $context = new Mockery();
-    $child = $context->mock('Swift_Mime_MimeEntity');
-    $encoder = $this->_getEncoder($context);
-    $context->checking(Expectations::create()
-      -> allowing($child)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> ignoring($child)
+    $part = $this->_createMimePart($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $part = $this->_createMimePart(
-      array(), $encoder, $this->_getCache($context)
-      );
-    $ref = $part
+    
+    $this->assertSame($part,
+      $part
       ->setContentType('text/plain')
-      ->setEncoder($encoder)
+      ->setEncoder($this->_createEncoder())
       ->setId('foo@bar')
       ->setDescription('my description')
       ->setMaxLineLength(998)
-      ->setBodyAsString('xx')
-      ->setNestingLevel(10)
+      ->setBody('xx')
       ->setBoundary('xyz')
-      ->setChildren(array($child))
-      ->setHeaders(array())
-      ->setCharset('iso-8859-1')
+      ->setChildren(array())
+      ->setCharset('utf-8')
       ->setFormat('flowed')
-      ->setDelSp(false)
-      ;
-    
-    $this->assertReference($part, $ref);
-    
-    $context->assertIsSatisfied();
+      ->setDelSp(true)
+      );
   }
   
   // -- Private helpers

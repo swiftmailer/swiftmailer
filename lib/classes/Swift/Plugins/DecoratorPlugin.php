@@ -87,14 +87,14 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener
     if (array_key_exists($address, $this->_replacements))
     {
       $replacements = $this->_replacements[$address];
-      $body = $message->getBodyAsString();
+      $body = $message->getBody();
       $bodyReplaced = str_replace(
         array_keys($replacements), array_values($replacements), $body
         );
       if ($body != $bodyReplaced)
       {
         $this->_originalBody = $body;
-        $message->setBodyAsString($bodyReplaced);
+        $message->setBody($bodyReplaced);
       }
       $subject = $message->getSubject();
       $subjectReplaced = str_replace(
@@ -111,13 +111,13 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener
         list($type, $subType) = sscanf($child->getContentType(), '%[^/]/%s');
         if ('text' == $type)
         {
-          $body = $child->getBodyAsString();
+          $body = $child->getBody();
           $bodyReplaced = str_replace(
             array_keys($replacements), array_values($replacements), $body
             );
           if ($body != $bodyReplaced)
           {
-            $child->setBodyAsString($bodyReplaced);
+            $child->setBody($bodyReplaced);
             $this->_originalChildBodies[$child->getId()] = $body;
           }
         }
@@ -148,7 +148,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener
     {
       if (isset($this->_originalBody))
       {
-        $message->setBodyAsString($this->_originalBody);
+        $message->setBody($this->_originalBody);
         $this->_originalBody = null;
       }
       if (isset($this->_originalSubject))
@@ -164,7 +164,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener
           $id = $child->getId();
           if (array_key_exists($id, $this->_originalChildBodies))
           {
-            $child->setBodyAsString($this->_originalChildBodies[$id]);
+            $child->setBody($this->_originalChildBodies[$id]);
           }
         }
         $this->_originalChildBodies = array();

@@ -45,15 +45,6 @@ interface Swift_Mime_MimeEntity
   const LEVEL_SUBPART = 30;
   
   /**
-   * Set the level at which this entity nests.
-   * A lower value is closer to the top (i.e. the message itself is zero (0)),
-   * and a higher value is nested deeper in.
-   * @param int $level
-   * @see LEVEL_TOP, LEVEL_ATTACHMENT, LEVEL_EMBEDDED, LEVEL_SUBPART
-   */
-  public function setNestingLevel($level);
-  
-  /**
    * Get the level at which this entity shall be nested in final document.
    * The lower the value, the more outermost the entity will be nested.
    * @return int
@@ -103,13 +94,13 @@ interface Swift_Mime_MimeEntity
    * Returns NULL if no body has been set.
    * @return string
    */
-  public function getBodyAsString();
+  public function getBody();
   
   /**
    * Set the body content of this entity as a string.
    * @param string $body
    */
-  public function setBodyAsString($body);
+  public function setBody($body);
   
   /**
    * Get this entire entity in its string form.

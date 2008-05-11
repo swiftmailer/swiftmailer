@@ -44,7 +44,6 @@ class Swift_MimeFactory
     $this->setCharset('utf-8');
     $this->setCacheType('arraycache');
     $this->setTempPath('/tmp');
-    Swift_Di::getInstance()->setLookup('xheadername', 'string:X-Custom');
   }
   
   /**
@@ -97,23 +96,6 @@ class Swift_MimeFactory
   {
     $name = $fqName ? $name : sprintf('mime.%s', $name);
     return Swift_Di::getInstance()->create($name, $lookup);
-  }
-  
-  /**
-   * Create a new MIME Header with $name, $value and $params.
-   * @param string $name
-   * @param string $value
-   * @param string[] $params
-   * @return Swift_Mime_Header
-   */
-  public function createHeader($name = null, $value = null,
-    $params = array())
-  {
-    $lookup = $name ? array('xheadername' => 'string:' . $name) : array();
-    $header = $this->create('xheader', $lookup);
-    $header->setValue($value);
-    $header->setParameters($params);
-    return $header;
   }
     
   /**

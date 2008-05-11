@@ -6,534 +6,438 @@ require_once 'Swift/Mime/ContentEncoder.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/ParameterizedHeader.php';
 require_once 'Swift/KeyCache.php';
+require_once 'Swift/Mime/HeaderSet.php';
 
 abstract class Swift_Mime_AbstractMimeEntityTest
   extends Swift_Tests_SwiftUnitTestCase
 {
   
-  public function testDateHeaderCreationUsesFactory()
+  public function testGetHeadersReturnsHeaderSet()
   {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> one($factory)->createDateHeader('X-Date', 123) -> returns($this->_stubHeader())
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
+    $headers = $this->_createHeaderSet();
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
       $this->_createCache()
       );
-    $entity->addDateHeader('X-Date', 123);
+    $this->assertSame($headers, $entity->getHeaders());
   }
   
-  public function testMailboxHeaderCreationUsesFactory()
+  public function testContentTypeIsReturnedFromHeader()
   {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> one($factory)->createMailboxHeader('X-Foo', 'z@y') -> returns($this->_stubHeader())
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
+    $ctype = $this->_createHeader('Content-Type', 'image/jpeg-test');
+    $headers = $this->_createHeaderSet(array('Content-Type' => $ctype));
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
       $this->_createCache()
       );
-    $entity->addMailboxHeader('X-Foo', 'z@y');
-  }
-  
-  public function testTextHeaderCreationUsesFactory()
-  {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> one($factory)->createTextHeader('X-Foo', 'x') -> returns($this->_stubHeader())
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addTextHeader('X-Foo', 'x');
-  }
-  
-  public function testIdHeaderCreationUsesFactory()
-  {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> one($factory)->createIdHeader('X-ID', 'x@y') -> returns($this->_stubHeader())
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addIdHeader('X-ID', 'x@y');
-  }
-  
-  public function testPathHeaderCreationUsesFactory()
-  {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> one($factory)->createPathHeader('X-Path', 'x@y') -> returns($this->_stubHeader())
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addPathHeader('X-Path', 'x@y');
-  }
-  
-  public function testParamHeaderCreationUsesFactory()
-  {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> one($factory)->createParameterizedHeader('X-Foo', 'x', array('a'=>'b')) -> returns($this->_stubHeader())
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addParameterizedHeader('X-Foo', 'x', array('a'=>'b'));
-  }
-  
-  public function testHeadersAreReturned()
-  {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> ignoring($factory)->createTextHeader('X-Foo', 'x') -> returns($this->_stubHeader())
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addTextHeader('X-Foo', 'x');
-    $this->assertTrue(count($entity->getHeaders()) > 0,
-      '%s: Headers should be returned'
-      );
-  }
-  
-  public function testHeadersAreInstancesOfHeader()
-  {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> ignoring($factory)->createTextHeader('X-Foo', 'x') -> returns($this->_stubHeader())
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addTextHeader('X-Foo', 'x');
-    foreach ($entity->getHeaders() as $header)
-    {
-      $this->assertIsA($header, 'Swift_Mime_Header');
-    }
-  }
-  
-  public function testHeaderObjectsCanBeFetched()
-  {
-    $h = $this->_mockery()->mock('Swift_Mime_Header');
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> ignoring($h)->getFieldName() -> returns('X-Foo')
-      -> ignoring($factory)->createTextHeader('X-Foo', 'x') -> returns($h)
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addTextHeader('X-Foo', 'x');
-    $this->assertEqual($h, $entity->getHeader('x-foo'));
-  }
-  
-  public function testMultipleHeaderObjectsCanBeFetched()
-  {
-    $h1 = $this->_mockery()->mock('Swift_Mime_Header');
-    $h2 = $this->_mockery()->mock('Swift_Mime_Header');
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> ignoring($h1)->getFieldName() -> returns('X-Foo')
-      -> ignoring($h2)->getFieldName() -> returns('X-Foo')
-      -> ignoring($factory)->createTextHeader('X-Foo', 'x') -> returns($h1)
-      -> ignoring($factory)->createTextHeader('X-Foo', 'y') -> returns($h2)
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addTextHeader('X-Foo', 'x');
-    $entity->addTextHeader('X-Foo', 'y');
-    $this->assertEqual(array($h1, $h2), $entity->getHeaderCollection('x-foo'));
-  }
-  
-  public function testHeadersCanBeRemoved()
-  {
-    $h = $this->_mockery()->mock('Swift_Mime_Header');
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $this->_mockery()->checking(Expectations::create()
-      -> ignoring($h)->getFieldName() -> returns('X-Foo')
-      -> ignoring($factory)->createTextHeader('X-Foo', 'x') -> returns($h)
-      );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->addTextHeader('X-Foo', 'x');
-    $beforeCount = count($entity->getHeaderCollection('x-foo'));
-    $entity->removeHeader('x-foo');
-    $this->assertEqual($beforeCount - 1,
-      count($entity->getHeaderCollection('x-foo'))
-      );
+    $this->assertEqual('image/jpeg-test', $entity->getContentType());
   }
   
   public function testContentTypeIsSetInHeader()
   {
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
+    $ctype = $this->_createHeader('Content-Type', 'text/plain', array(), false);
+    $headers = $this->_createHeaderSet(array('Content-Type' => $ctype));
     $this->_mockery()->checking(Expectations::create()
-      -> one($factory)->createParameterizedHeader('Content-Type', 'image/jpeg', optional())
+      -> one($ctype)->setFieldBodyModel('image/jpeg')
+      -> ignoring($ctype)
       );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
       $this->_createCache()
       );
     $entity->setContentType('image/jpeg');
   }
   
-  public function testContentTypeIsReadFromHeader()
+  public function testContentTypeHeaderIsAddedIfNoneSet()
   {
-    $h = $this->_mockery()->mock('Swift_Mime_ParameterizedHeader');
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
+    $headers = $this->_createHeaderSet(array(), false);
     $this->_mockery()->checking(Expectations::create()
-      -> one($h)->getFieldBodyModel() -> returns('image/gif')
-      -> ignoring($h)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h)
-      -> ignoring($factory)->createParameterizedHeader(any(), optional()) -> returns($h)
+      -> one($headers)->addParameterizedHeader('Content-Type', 'image/jpeg')
+      -> ignoring($headers)
       );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(),
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
       $this->_createCache()
       );
-    $entity->setContentType('image/gif');
-    $this->assertEqual('image/gif', $entity->getContentType());
+    $entity->setContentType('image/jpeg');
+  }
+  
+  public function testGetEncoderFromConstructor()
+  {
+    $encoder = $this->_createEncoder('base64');
+    $entity = $this->_createEntity($this->_createHeaderSet(), $encoder,
+      $this->_createCache()
+      );
+    $this->assertSame($encoder, $entity->getEncoder());
+  }
+  
+  public function testSetAndGetEncoder()
+  {
+    $encoder = $this->_createEncoder('base64');
+    $headers = $this->_createHeaderSet();
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setEncoder($encoder);
+    $this->assertSame($encoder, $entity->getEncoder());
+  }
+  
+  public function testSettingEncoderUpdatesTransferEncoding()
+  {
+    $encoder = $this->_createEncoder('base64');
+    $encoding = $this->_createHeader(
+      'Content-Transfer-Encoding', '8bit', array(), false
+      );
+    $headers = $this->_createHeaderSet(array(
+      'Content-Transfer-Encoding' => $encoding
+      ));
+    $this->_mockery()->checking(Expectations::create()
+      -> one($encoding)->setFieldBodyModel('base64')
+      -> ignoring($encoding)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setEncoder($encoder);
+  }
+  
+  public function testSettingEncoderAddsEncodingHeaderIfNonePresent()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addTextHeader('Content-Transfer-Encoding', 'something')
+      -> ignoring($headers)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setEncoder($this->_createEncoder('something'));
+  }
+  
+  public function testIdIsReturnedFromHeader()
+  {
+    /* -- RFC 2045, 7.
+    In constructing a high-level user agent, it may be desirable to allow
+    one body to make reference to another.  Accordingly, bodies may be
+    labelled using the "Content-ID" header field, which is syntactically
+    identical to the "Message-ID" header field
+    */
+    
+    $cid = $this->_createHeader('Content-ID', 'zip@button');
+    $headers = $this->_createHeaderSet(array('Content-ID' => $cid));
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $this->assertEqual('zip@button', $entity->getId());
+  }
+  
+  public function testIdIsSetInHeader()
+  {
+    $cid = $this->_createHeader('Content-ID', 'zip@button', array(), false);
+    $headers = $this->_createHeaderSet(array('Content-ID' => $cid));
+    $this->_mockery()->checking(Expectations::create()
+      -> one($cid)->setFieldBodyModel('foo@bar')
+      -> ignoring($cid)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setId('foo@bar');
+  }
+  
+  public function testIdIsAutoGenerated()
+  {
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertPattern('/^.*?@.*?$/D', $entity->getId());
+  }
+  
+  public function testDescriptionIsReadFromHeader()
+  {
+    /* -- RFC 2045, 8.
+    The ability to associate some descriptive information with a given
+    body is often desirable.  For example, it may be useful to mark an
+    "image" body as "a picture of the Space Shuttle Endeavor."  Such text
+    may be placed in the Content-Description header field.  This header
+    field is always optional.
+    */
+    
+    $desc = $this->_createHeader('Content-Description', 'something');
+    $headers = $this->_createHeaderSet(array('Content-Description' => $desc));
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $this->assertEqual('something', $entity->getDescription());
+  }
+  
+  public function testDescriptionIsSetInHeader()
+  {
+    $desc = $this->_createHeader('Content-Description', '', array(), false);
+    $headers = $this->_createHeaderSet(array('Content-Description' => $desc));
+    $this->_mockery()->checking(Expectations::create()
+      -> one($desc)->setFieldBodyModel('whatever')
+      -> ignoring($desc)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setDescription('whatever');
+  }
+  
+  public function testDescriptionHeaderIsAddedIfNotPresent()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addTextHeader('Content-Description', 'whatever')
+      -> ignoring($headers)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setDescription('whatever');
+  }
+  
+  public function testSetAndGetMaxLineLength()
+  {
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $entity->setMaxLineLength(60);
+    $this->assertEqual(60, $entity->getMaxLineLength());
+  }
+  
+  public function testEncoderIsUsedForStringGeneration()
+  {
+    $encoder = $this->_createEncoder('base64', false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($encoder)->encodeString('blah', optional())
+      -> ignoring($encoder)
+      );
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $encoder, $this->_createCache()
+      );
+    $entity->setBody("blah");
+    $entity->toString();
+  }
+  
+  public function testMaxLineLengthIsProvidedWhenEncoding()
+  {
+    $encoder = $this->_createEncoder('base64', false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($encoder)->encodeString('blah', 0, 65)
+      -> ignoring($encoder)
+      );
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $encoder, $this->_createCache()
+      );
+    $entity->setBody("blah");
+    $entity->setMaxLineLength(65);
+    $entity->toString();
   }
   
   public function testHeadersAppearInString()
   {
-    $h1 = $this->_mockery()->mock('Swift_Mime_ParameterizedHeader');
-    $h2 = $this->_mockery()->mock('Swift_Mime_ParameterizedHeader');
-    $factory = $this->_mockery()->mock('Swift_Mime_HeaderFactory');
-    $cache = $this->_createCache(false);
+    $headers = $this->_createHeaderSet(array(), false);
     $this->_mockery()->checking(Expectations::create()
-      -> ignoring($h1)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h1)->getFieldBody() -> returns('text/html')
-      -> ignoring($h1)->toString() -> returns('Content-Type: text/html' . "\r\n")
-      -> ignoring($h1)
-      -> ignoring($h2)->getFieldName() -> returns('X-Header')
-      -> ignoring($h2)->getFieldBody() -> returns('foo')
-      -> ignoring($h2)->toString() -> returns('X-Header: foo' . "\r\n")
-      -> ignoring($h2)
-      -> ignoring($factory)->createParameterizedHeader('Content-Type', optional()) -> returns($h1)
-      -> ignoring($factory)->createParameterizedHeader('X-Header', optional()) -> returns($h2)
-      -> ignoring($cache)->getString(any(), 'headers') -> returns(
-        'Content-Type: text/html' . "\r\n" .
-       'X-Header: foo' . "\r\n"
-       )
-      -> ignoring($cache)
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n" .
+        "X-MyHeader: foobar\r\n"
+        )
+      -> ignoring($headers)
       );
-    $this->_fillInHeaders($factory);
-    $entity = $this->_createEntity($factory, $this->_createEncoder(), $cache);
-    $entity->setContentType('text/html');
-    $entity->addParameterizedHeader('X-Header', 'foo');
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
     $this->assertEqual(
-      'Content-Type: text/html' . "\r\n" .
-      'X-Header: foo' . "\r\n",
+      "Content-Type: text/plain; charset=utf-8\r\n" .
+      "X-MyHeader: foobar\r\n",
       $entity->toString()
       );
   }
   
-  public function XtestBodyIsAppended()
+  public function testSetAndGetBody()
   {
-    $context = new Mockery();
-    
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> allowing($h1)->getFieldBody() -> returns('text/html')
-      -> allowing($h1)->toString() -> returns('Content-Type: text/html' . "\r\n")
-      -> ignoring($h1)
-      -> allowing($h2)->getFieldName() -> returns('X-Header')
-      -> allowing($h2)->getFieldBody() -> returns('foo')
-      -> allowing($h2)->toString() -> returns('X-Header: foo' . "\r\n")
-      -> ignoring($h2)
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
       );
-    
-    $headers = array($h1, $h2);
-    
-    $encoder = $this->_getEncoder($context, false);
-    $cache = $this->_getCache($context, false);
-    $context->checking(Expectations::create()
-      -> allowing($encoder)->encodeString('my body') -> returns('my body')
-      -> ignoring($encoder)
-      -> allowing($cache)->getString(any(), 'headers') -> returns(
-        'Content-Type: text/html' . "\r\n" .
-        'X-Header: foo' . "\r\n"
-        )
-      -> allowing($cache)->getString(any(), 'body') -> returns("\r\n" . 'my body')
-      -> ignoring($cache)
-      );
-    
-    $mime = $this->_createEntity($headers, $encoder, $cache);
-    $mime->setBodyAsString('my body');
-    $this->assertEqual(
-      'Content-Type: text/html' . "\r\n" .
-      'X-Header: foo' . "\r\n" .
-      "\r\n" .
-      'my body',
-      $mime->toString()
-      );
-      
-    $context->assertIsSatisfied();
+    $entity->setBody("blah\r\nblah!");
+    $this->assertEqual("blah\r\nblah!", $entity->getBody());
   }
   
-  public function XtestByteStreamBodyIsAppended()
+  public function testBodyIsAppended()
   {
-    $context = new Mockery();
-    
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $encoder = $this->_getEncoder($context, false);
-    $cache = $this->_getCache($context, false);
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> allowing($h1)->getFieldBody() -> returns('text/html')
-      -> allowing($h1)->toString() -> returns('Content-Type: text/html' . "\r\n")
-      -> ignoring($h1)
-      -> allowing($h2)->getFieldName() -> returns('X-Header')
-      -> allowing($h2)->getFieldBody() -> returns('foo')
-      -> allowing($h2)->toString() -> returns('X-Header: foo' . "\r\n")
-      -> ignoring($h2)
-      -> allowing($encoder)->encodeString('my body') -> returns('my body')
-      -> ignoring($encoder)
-      -> allowing($cache)->getString(any(), 'headers') -> returns(
-        'Content-Type: text/html' . "\r\n" .
-        'X-Header: foo' . "\r\n"
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
         )
-      -> allowing($cache)->getString(any(), 'body') -> returns(
-        "\r\n" .
-        'my body'
-        )
-      -> ignoring($cache)
+      -> ignoring($headers)
       );
-    $headers = array($h1, $h2);
-    
-    $entity = $this->_createEntity($headers, $encoder, $cache);
-    
-    $os = $context->mock('Swift_OutputByteStream');
-    $context->checking(Expectations::create()
-      -> one($os)->read(optional()) -> returns('my body')
-      -> allowing($os)->read(optional()) -> returns(false)
-      -> ignoring($os)
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
       );
-    
-    $entity->setBodyAsByteStream($os);
-    
+    $entity->setBody("blah\r\nblah!");
     $this->assertEqual(
-      'Content-Type: text/html' . "\r\n" .
-      'X-Header: foo' . "\r\n" .
+      "Content-Type: text/plain; charset=utf-8\r\n" .
       "\r\n" .
-      'my body',
+      "blah\r\nblah!",
       $entity->toString()
       );
+  }
+  
+  public function testGetBodyReturnsStringFromByteStream()
+  {
+    $os = $this->_createOutputStream("byte stream string");
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $entity->setBody($os);
+    $this->assertEqual("byte stream string", $entity->getBody());
+  }
+  
+  public function testByteStreamBodyIsAppended()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $os = $this->_createOutputStream("streamed");
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setBody($os);
+    $this->assertEqual(
+      "Content-Type: text/plain; charset=utf-8\r\n" .
+      "\r\n" .
+      "streamed",
+      $entity->toString()
+      );
+  }
+  
+  public function testBoundaryCanBeRetrieved()
+  {
+    /* -- RFC 2046, 5.1.1.
+     boundary := 0*69<bchars> bcharsnospace
+
+     bchars := bcharsnospace / " "
+
+     bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
+                      "+" / "_" / "," / "-" / "." /
+                      "/" / ":" / "=" / "?"
+    */
+    
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertPattern(
+      '/^[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?]$/D',
+      $entity->getBoundary()
+      );
+  }
+  
+  public function testBoundaryNeverChanges()
+  {
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $firstBoundary = $entity->getBoundary();
+    for ($i = 0; $i < 10; $i++)
+    {
+      $this->assertEqual($firstBoundary, $entity->getBoundary());
+    }
+  }
+  
+  public function testBoundaryCanBeSet()
+  {
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $entity->setBoundary('foobar');
+    $this->assertEqual('foobar', $entity->getBoundary());
+  }
+  
+  public function testAddingChildrenGeneratesBoundaryInHeaders()
+  {
+    $child = $this->_createChild();
+    $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($cType)->setParameter('boundary', any())
+      -> ignoring($cType)
+      );
       
-    $context->assertIsSatisfied();
+    $entity = $this->_createEntity($this->_createHeaderSet(array(
+      'Content-Type' => $cType
+      )),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $entity->setChildren(array($child));
   }
   
-  public function XtestSettingEncoderUpdatesTransferEncoding()
+  public function testChildrenOfLevelAttachmentAndLessCauseMultipartMixed()
   {
-    $context = new Mockery();
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $h2 = $context->mock('Swift_Mime_Header');
-    $encoder = $context->mock('Swift_Mime_ContentEncoder');
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h1)
-      -> allowing($h2)->getFieldName() -> returns('Content-Transfer-Encoding')
-      -> one($h2)->setFieldBodyModel('quoted-printable')
-      -> one($h2)->setFieldBodyModel('base64')
-      -> ignoring($h2)
-      -> allowing($encoder)->getName() -> returns('base64')
-      -> ignoring($encoder)
-      );
-    
-    $headers = array($h1, $h2);
-    
-    $entity = $this->_createEntity(
-      $headers, $this->_getEncoder($context), $this->_getCache($context)
-      );
-    
-    $entity->setEncoder($encoder);
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestAddingChildrenGeneratesBoundary()
-  {
-    $context = new Mockery();
-    
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h1)->setParameter('boundary', any())
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h1)
-      );
-    $headers1 = array($h1);
-    
-    $entity1 = $this->_createEntity(
-      $headers1, $this->_getEncoder($context), $this->_getCache($context)
-      );
-    
-    $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h2)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h2)
-      );
-    $headers2 = array($h2);
-    
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity2)->getHeaders() -> returns($headers2)
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> ignoring($entity2)
-      );
-    
-    $entity1->setChildren(array($entity2));
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestChildrenOfLevelAttachmentOrLessGeneratesMultipartMixed()
-  {
-    $context = new Mockery();
-    
     for ($level = Swift_Mime_MimeEntity::LEVEL_ATTACHMENT;
       $level > Swift_Mime_MimeEntity::LEVEL_TOP; $level--)
     {
-      $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-      $context->checking(Expectations::create()
-        -> one($h1)->setFieldBodyModel('multipart/mixed')
-        -> ignoring($h1)->setFieldBodyModel(any())
-        -> allowing($h1)->getFieldName() -> returns('Content-Type')
-        -> atLeast(1)->of($h1)->setParameter('boundary', any())
-        -> ignoring($h1)
+      $child = $this->_createChild($level);
+      $cType = $this->_createHeader(
+        'Content-Type', 'text/plain', array(), false
         );
-    
-      $headers1 = array($h1);
-    
-      $entity = $this->_createEntity(
-        $headers1, $this->_getEncoder($context), $this->_getCache($context)
+      $this->_mockery()->checking(Expectations::create()
+        -> one($cType)->setFieldBodyModel('multipart/mixed')
+        -> ignoring($cType)
         );
-      
-      $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-      $context->checking(Expectations::create()
-        -> allowing($h2)->getFieldName() -> returns('Content-Type')
-        -> ignoring($h2)
+      $entity = $this->_createEntity($this->_createHeaderSet(array(
+        'Content-Type' => $cType)),
+        $this->_createEncoder(), $this->_createCache()
         );
-      $headers2 = array($h2);
-      
-      $entity2 = $context->mock('Swift_Mime_MimeEntity');
-      $context->checking(Expectations::create()
-        -> allowing($entity2)->getHeaders() -> returns($headers2)
-        -> allowing($entity2)->getNestingLevel() -> returns($level)
-        -> ignoring($entity2)
-        );
-    
-      $entity->setChildren(array($entity2));
+      $entity->setChildren(array($child));
     }
-    
-    $context->assertIsSatisfied();
   }
   
-  public function XtestChildrenOfLevelEmbeddedOrLessGeneratesMultipartRelated()
+  public function testChildrenOfLevelEmbeddedAndLessCauseMultipartMixed()
   {
-    $context = new Mockery();
-    
     for ($level = Swift_Mime_MimeEntity::LEVEL_EMBEDDED;
       $level > Swift_Mime_MimeEntity::LEVEL_ATTACHMENT; $level--)
     {
-      $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-      $context->checking(Expectations::create()
-        -> one($h1)->setFieldBodyModel('multipart/related')
-        -> allowing($h1)->getFieldName() -> returns('Content-Type')
-        -> atLeast(1)->of($h1)->setParameter('boundary', any())
-        -> ignoring($h1)
+      $child = $this->_createChild($level);
+      $cType = $this->_createHeader(
+        'Content-Type', 'text/plain', array(), false
         );
-    
-      $headers1 = array($h1);
-      
-      $entity = $this->_createEntity(
-        $headers1, $this->_getEncoder($context), $this->_getCache($context)
+      $this->_mockery()->checking(Expectations::create()
+        -> one($cType)->setFieldBodyModel('multipart/related')
+        -> ignoring($cType)
         );
-      
-      $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-      $context->checking(Expectations::create()
-        -> allowing($h2)->getFieldName() -> returns('Content-Type')
-        -> ignoring($h2)
+      $entity = $this->_createEntity($this->_createHeaderSet(array(
+        'Content-Type' => $cType)),
+        $this->_createEncoder(), $this->_createCache()
         );
-      
-      $headers2 = array($h2);
-    
-      $entity2 = $context->mock('Swift_Mime_MimeEntity');
-      $context->checking(Expectations::create()
-        -> allowing($entity2)->getHeaders() -> returns($headers2)
-        -> allowing($entity2)->getNestingLevel() -> returns($level)
-        -> ignoring($entity2)
-        );
-    
-      $entity->setChildren(array($entity2));
+      $entity->setChildren(array($child));
     }
-    
-    $context->assertIsSatisfied();
   }
   
-  public function XtestChildrenOfLevelSubpartOrLessGeneratesMultipartAlternative()
+  public function testChildrenOfLevelSubpartAndLessCauseMultipartMixed()
   {
-    $context = new Mockery();
-    
     for ($level = Swift_Mime_MimeEntity::LEVEL_SUBPART;
       $level > Swift_Mime_MimeEntity::LEVEL_EMBEDDED; $level--)
     {
-      $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-      $context->checking(Expectations::create()
-        -> one($h1)->setFieldBodyModel('multipart/alternative')
-        -> allowing($h1)->getFieldName() -> returns('Content-Type')
-        -> atLeast(1)->of($h1)->setParameter('boundary', any())
-        -> ignoring($h1)
+      $child = $this->_createChild($level);
+      $cType = $this->_createHeader(
+        'Content-Type', 'text/plain', array(), false
         );
-      
-      $headers1 = array($h1);
-      
-      $entity = $this->_createEntity(
-        $headers1, $this->_getEncoder($context), $this->_getCache($context)
+      $this->_mockery()->checking(Expectations::create()
+        -> one($cType)->setFieldBodyModel('multipart/alternative')
+        -> ignoring($cType)
         );
-      
-      $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-      $context->checking(Expectations::create()
-        -> allowing($h2)->getFieldName() -> returns('Content-Type')
-        -> ignoring($h2)
+      $entity = $this->_createEntity($this->_createHeaderSet(array(
+        'Content-Type' => $cType)),
+        $this->_createEncoder(), $this->_createCache()
         );
-      
-      $headers2 = array($h2);
-    
-      $entity2 = $context->mock('Swift_Mime_MimeEntity');
-      $context->checking(Expectations::create()
-        -> allowing($entity2)->getHeaders() -> returns($headers2)
-        -> allowing($entity2)->getNestingLevel() -> returns($level)
-        -> ignoring($entity2)
-        );
-    
-      $entity->setChildren(array($entity2));
+      $entity->setChildren(array($child));
     }
-    
-    $context->assertIsSatisfied();
   }
   
-  public function XtestHighestLevelChildDeterminesContentType()
+  public function testHighestLevelChildDeterminesContentType()
   {
-    $context = new Mockery();
-    
     $combinations  = array(
       array('levels' => array(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT,
         Swift_Mime_MimeEntity::LEVEL_EMBEDDED,
@@ -563,531 +467,179 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       $children = array();
       foreach ($combination['levels'] as $level)
       {
-        $subentity = $context->mock('Swift_Mime_MimeEntity');
-        $context->checking(Expectations::create()
-          -> allowing($subentity)->getNestingLevel() -> returns($level)
-          -> ignoring($subentity)
-          );
-        
-        $children[] = $subentity;
+        $children[] = $this->_createChild($level);
       }
       
-      $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-      $context->checking(Expectations::create()
-        -> one($h1)->setFieldBodyModel($combination['type'])
-        -> allowing($h1)->getFieldName() -> returns('Content-Type')
-        -> atLeast(1)->of($h1)->setParameter('boundary', any())
-        -> ignoring($h1)
+      $cType = $this->_createHeader(
+        'Content-Type', 'text/plain', array(), false
         );
-      
-      $headers = array($h1);
-      
-      $entity = $this->_createEntity(
-        $headers, $this->_getEncoder($context), $this->_getCache($context)
+      $this->_mockery()->checking(Expectations::create()
+        -> one($cType)->setFieldBodyModel($combination['type'])
+        -> ignoring($cType)
         );
-      
+      $entity = $this->_createEntity($this->_createHeaderSet(array(
+        'Content-Type' => $cType)),
+        $this->_createEncoder(), $this->_createCache()
+        );
       $entity->setChildren($children);
     }
-    
-    $context->assertIsSatisfied();
   }
   
-  public function XtestBoundaryCanBeRetrieved()
-  {
-    /* -- RFC 2046, 5.1.1.
-     boundary := 0*69<bchars> bcharsnospace
-
-     bchars := bcharsnospace / " "
-
-     bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
-                      "+" / "_" / "," / "-" / "." /
-                      "/" / ":" / "=" / "?"
-    */
-    
-    $context = new Mockery();
-    
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h1)
-      );
-    $headers1 = array($h1);
-    
-    $entity1 = $this->_createEntity(
-      $headers1, $this->_getEncoder($context), $this->_getCache($context)
-      );
-    
-    $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h2)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h2)
-      );
-    $headers2 = array($h2);
-    
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity2)->getHeaders() -> returns($headers2)
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> ignoring($entity2)
-      );
-    
-    $entity1->setChildren(array($entity2));
-    
-    $this->assertPattern(
-      '/^[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?]$/D',
-      $entity1->getBoundary()
-      );
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestBoundaryNeverChanges()
-  {
-    $context = new Mockery();
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h1)
-      );
-    $headers1 = array($h1);
-    
-    $entity1 = $this->_createEntity(
-      $headers1, $this->_getEncoder($context), $this->_getCache($context)
-      );
-    
-    $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h2)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h2)
-      );
-    $headers2 = array($h2);
-    
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity2)->getHeaders() -> returns($headers2)
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> ignoring($entity2)
-      );
-    
-    $entity1->setChildren(array($entity2));
-    
-    $boundary = $entity1->getBoundary();
-    for ($i = 0; $i < 10; $i++)
-    {
-      $this->assertEqual($boundary, $entity1->getBoundary());
-    }
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestBoundaryCanBeManuallySet()
-  {
-    $context = new Mockery();
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h1)
-      );
-    $headers1 = array($h1);
-    
-    $entity1 = $this->_createEntity(
-      $headers1, $this->_getEncoder($context), $this->_getCache($context)
-      );
-    
-    $h2 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h2)->getFieldName() -> returns('Content-Type')
-      -> ignoring($h2)
-      );
-    $headers2 = array($h2);
-    
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity2)->getHeaders() -> returns($headers2)
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> ignoring($entity2)
-      );
-      
-    $entity1->setBoundary('my_boundary');
-    
-    $entity1->setChildren(array($entity2));
-    
-    $this->assertEqual('my_boundary', $entity1->getBoundary());
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestChildrenAppearInString()
+  public function testChildrenAppearNestedInString()
   {
     /* -- RFC 2046, 5.1.1.
      (excerpt too verbose to paste here)
      */
     
-    $context = new Mockery();
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> allowing($h1)->getFieldBody() -> returns(
-        'multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"'
-        )
-      -> allowing($h1)->toString() -> returns(
-        'Content-Type: multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"' . "\r\n"
-        )
-      -> ignoring($h1)
+    $headers = $this->_createHeaderSet(array(), false);
+    
+    $child1 = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+      "Content-Type: text/plain\r\n" .
+      "\r\n" .
+      "foobar"
       );
     
-    $headers1 = array($h1);
-    
-    $cache = $this->_getCache($context, false);
-    $context->checking(Expectations::create()
-      -> allowing($cache)->getString(any(), 'headers') -> returns(
-        'Content-Type: multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"' . "\r\n"
-        )
-      -> ignoring($cache)
-      );
-    
-    $entity1 = $this->_createEntity($headers1, $this->_getEncoder($context), $cache);
-    $entity1->setBoundary('_=_foo_=_');
-    
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity2)->toString() -> returns(
-        'Content-Type: text/plain' . "\r\n" .
-        "\r\n" .
-        'foobar test'
-        )
-      -> ignoring($entity2)
+    $child2 = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+      "Content-Type: text/html\r\n" .
+      "\r\n" .
+      "<b>foobar</b>"
       );
       
-    $entity3 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity3)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity3)->toString() -> returns(
-        'Content-Type: text/html' . "\r\n" .
-        "\r\n" .
-        'foobar <strong>test</strong>'
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n"
         )
-      -> ignoring($entity3)
+      -> ignoring($headers)
       );
     
-    $entity1->setChildren(array($entity2, $entity3));
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setBoundary('xxx');
+    $entity->setChildren(array($child1, $child2));
     
     $this->assertEqual(
-      'Content-Type: multipart/alternative;' . "\r\n" .
-      ' boundary="_=_foo_=_"' . "\r\n" .
+      "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
       "\r\n" .
-      '--_=_foo_=_' . "\r\n" .
-      'Content-Type: text/plain' . "\r\n" .
+      "--xxx\r\n" .
+      "Content-Type: text/plain\r\n" .
       "\r\n" .
-      'foobar test' . "\r\n" .
-      '--_=_foo_=_' . "\r\n" .
-      'Content-Type: text/html' . "\r\n" .
+      "foobar\r\n" .
+      "--xxx\r\n" .
+      "Content-Type: text/html\r\n" .
       "\r\n" .
-      'foobar <strong>test</strong>' . "\r\n" .
-      '--_=_foo_=_--' . "\r\n"
-      ,
-      $entity1->toString()
+      "<b>foobar</b>\r\n" .
+      "--xxx--\r\n",
+      $entity->toString()
       );
-    
-    $context->assertIsSatisfied();
   }
   
-  public function XtestMixingLevelsIsHierarchical()
+  public function testMixingLevelsIsHierarchical()
   {
-    $context = new Mockery();
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> allowing($h1)->getFieldBody() -> returns(
-        'multipart/mixed;' . "\r\n" .
-        ' boundary="_=_foo_=_"'
-        )
-      -> allowing($h1)->toString() -> returns(
-        'Content-Type: multipart/mixed;' . "\r\n" .
-        ' boundary="_=_foo_=_"' . "\r\n"
-        )
-      -> ignoring($h1)
+    $headers = $this->_createHeaderSet(array(), false);
+    $newHeaders = $this->_createHeaderSet(array(), false);
+    
+    $part = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+      "Content-Type: text/plain\r\n" .
+      "\r\n" .
+      "foobar"
       );
     
-    $headers = array($h1);
-    
-    $cache = $this->_getCache($context, false);
-    $context->checking(Expectations::create()
-      //Parent generated content
-      -> one($cache)->getString(any(), 'headers') -> returns(
-        'Content-Type: multipart/mixed;' . "\r\n" .
-        ' boundary="_=_foo_=_"' . "\r\n"
-        )
-      //Child generated content
-      -> one($cache)->getString(any(), 'headers') -> returns(
-        'Content-Type: multipart/alternative;' . "\r\n" .
-        ' boundary="_=_bar_=_"' . "\r\n"
-        )
-      -> ignoring($cache)
+    $attachment = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT,
+      "Content-Type: application/octet-stream\r\n" .
+      "\r\n" .
+      "data"
       );
     
-    $entity1 = $this->_createEntity($headers, $this->_getEncoder($context), $cache);
-    $entity1->setBoundary('_=_foo_=_');
-    
-    //Create some entities which nest differently
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT)
-      -> allowing($entity2)->toString() -> returns(
-        'Content-Type: application/octet-stream' . "\r\n" .
-        "\r\n" .
-        'foo'
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: multipart/mixed; boundary=\"xxx\"\r\n"
         )
-      -> ignoring($entity2)
-      );
-      
-    $entity3 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity3)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity3)->toString() -> returns(
-        'Content-Type: text/plain' . "\r\n" .
-        "\r\n" .
-        'xyz'
+      -> ignoring($headers)->newInstance() -> returns($newHeaders)
+      -> ignoring($headers)
+      -> ignoring($newHeaders)->toString() -> returns(
+        "Content-Type: multipart/alternative; boundary=\"yyy\"\r\n"
         )
-      -> ignoring($entity3)
+      -> ignoring($newHeaders)
       );
     
-    $entity1->setChildren(array($entity2, $entity3));
-    
-    $stringEntity = $entity1->toString();
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setBoundary('xxx');
+    $entity->setChildren(array($part, $attachment));
     
     $this->assertPattern(
-      '~^' .
-      'Content-Type: multipart/mixed;' . "\r\n" .
-      ' boundary="_=_foo_=_"' . "\r\n" .
+      "~^" .
+      "Content-Type: multipart/mixed; boundary=\"xxx\"\r\n" .
+      "\r\n--xxx\r\n" .
+      "Content-Type: multipart/alternative; boundary=\"yyy\"\r\n" .
+      "\r\n--(.*?)\r\n" .
+      "Content-Type: text/plain\r\n" .
       "\r\n" .
-      '--_=_foo_=_' . "\r\n" .
-      'Content-Type: multipart/alternative;' . "\r\n" .
-      ' boundary="_=_bar_=_"' . "\r\n" .
+      "foobar" .
+      "\r\n--\\1--\r\n" .
+      "\r\n--xxx\r\n" .
+      "Content-Type: application/octet-stream\r\n" .
       "\r\n" .
-      '--(.*?)' . "\r\n" .
-      'Content-Type: text/plain' . "\r\n" .
-      "\r\n" .
-      'xyz' . "\r\n" .
-      '--\\1--' . "\r\n" .
-      "\r\n" .
-      '--_=_foo_=_' . "\r\n" .
-      'Content-Type: application/octet-stream' . "\r\n" .
-      "\r\n" .
-      'foo' .
-      "\r\n" .
-      '--_=_foo_=_--' . "\r\n" .
-      '$~D',
-      $stringEntity
+      "data" .
+      "\r\n--xxx--\r\n" .
+      "\$~",
+      $entity->toString()
       );
-      
-    $context->assertIsSatisfied();
   }
   
-  public function XtestSettingEncoderNotifiesChildren()
+  public function testSettingEncoderNotifiesChildren()
   {
-    $context = new Mockery();
+    $child = $this->_createChild(0, '', false);
+    $encoder = $this->_createEncoder('base64');
     
-    $encoder1 = $this->_getEncoder($context);
-    $encoder2 = $this->_getEncoder($context);
-    $child1 = $context->mock('Swift_Mime_MimeEntity');
-    $child2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> one($child1)->encoderChanged($encoder2)
-      -> ignoring($child1)
-      -> one($child2)->encoderChanged($encoder2)
-      -> ignoring($child2)
+    $this->_mockery()->checking(Expectations::create()
+      -> one($child)->encoderChanged($encoder)
+      -> ignoring($child)
       );
-    $mime = $this->_createEntity(array(), $encoder1, $this->_getCache($context));
-    $mime->setChildren(array($child1, $child2));
-    $mime->setEncoder($encoder2);
     
-    $context->assertIsSatisfied();
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $entity->setChildren(array($child));
+    $entity->setEncoder($encoder);
   }
   
-  public function XtestEncoderChangeIsCascadedToChildren()
+  public function testReceiptOfEncoderChangeNotifiesChildren()
   {
-    $context = new Mockery();
+    $child = $this->_createChild(0, '', false);
+    $encoder = $this->_createEncoder('base64');
     
-    $encoder1 = $this->_getEncoder($context);
-    $encoder2 = $this->_getEncoder($context);
-    $child1 = $context->mock('Swift_Mime_MimeEntity');
-    $child2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> one($child1)->encoderChanged($encoder2)
-      -> ignoring($child1)
-      -> one($child2)->encoderChanged($encoder2)
-      -> ignoring($child2)
+    $this->_mockery()->checking(Expectations::create()
+      -> one($child)->encoderChanged($encoder)
+      -> ignoring($child)
       );
-    $mime = $this->_createEntity(array(), $encoder1, $this->_getCache($context));
-    $mime->setChildren(array($child1, $child2));
-    $mime->encoderChanged($encoder2);
     
-    $context->assertIsSatisfied();
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $entity->setChildren(array($child));
+    $entity->encoderChanged($encoder);
   }
   
-  public function XtestCharsetChangeIsCascadedToChildren()
+  public function testReceiptOfCharsetChangeNotifiesChildren()
   {
-    $context = new Mockery();
+    $child = $this->_createChild(0, '', false);
     
-    $child1 = $context->mock('Swift_Mime_MimeEntity');
-    $child2 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> one($child1)->charsetChanged('windows-874')
-      -> ignoring($child1)
-      -> one($child2)->charsetChanged('windows-874')
-      -> ignoring($child2)
+    $this->_mockery()->checking(Expectations::create()
+      -> one($child)->charsetChanged('windows-874')
+      -> ignoring($child)
       );
-    $mime = $this->_createEntity(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $mime->setChildren(array($child1, $child2));
-    $mime->charsetChanged('windows-874');
     
-    $context->assertIsSatisfied();
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $entity->setChildren(array($child));
+    $entity->charsetChanged('windows-874');
   }
   
-  public function XtestIdIsSetInHeader()
-  {
-    /* -- RFC 2045, 7.
-    In constructing a high-level user agent, it may be desirable to allow
-    one body to make reference to another.  Accordingly, bodies may be
-    labelled using the "Content-ID" header field, which is syntactically
-    identical to the "Message-ID" header field
-    */
-    
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->setFieldBodyModel('foo@bar')
-      -> allowing($h)->getFieldName() -> returns('Content-ID')
-      -> ignoring($h)
-      );
-    $mime = $this->_createEntity(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $mime->setId('foo@bar');
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestIdIsReadFromHeader()
-  {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->getFieldBodyModel() -> returns('xyz@somewhere.tld')
-      -> allowing($h)->getFieldName() -> returns('Content-ID')
-      -> ignoring($h)
-      );
-    $mime = $this->_createEntity(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $this->assertEqual('xyz@somewhere.tld', $mime->getId());
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestIdIsAutoGenerated()
-  {
-    $context = new Mockery();
-    $h = $context->mock('Swift_Mime_Header');
-    $context->checking(Expectations::create()
-      -> atLeast(1)->of($h)->setFieldBodyModel(pattern('/^.*?@.*?$/D'))
-      -> allowing($h)->getFieldName() -> returns('Content-ID')
-      -> ignoring($h)
-      );
-    $mime = $this->_createEntity(
-      array($h), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestDescriptionCanBeSet()
-  {
-    /* -- RFC 2045, 8.
-    The ability to associate some descriptive information with a given
-    body is often desirable.  For example, it may be useful to mark an
-    "image" body as "a picture of the Space Shuttle Endeavor."  Such text
-    may be placed in the Content-Description header field.  This header
-    field is always optional.
-    */
-    
-    $context = new Mockery();
-    $mime = $this->_createEntity(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
-      );
-    $mime->setDescription('my mime entity');
-    $this->assertEqual('my mime entity', $mime->getDescription());
-  }
-  
-  public function XtestEncoderIsUsedForStringGeneration()
-  {
-    $context = new Mockery();
-    
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $h2 = $context->mock('Swift_Mime_Header');
-    $encoder = $this->_getEncoder($context, false);
-    
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> allowing($h1)->getFieldBody() -> returns('text/html')
-      -> allowing($h1)->toString() -> returns('Content-Type: text/html' . "\r\n")
-      -> ignoring($h1)
-      -> allowing($h2)->getFieldName() -> returns('X-Header')
-      -> allowing($h2)->getFieldBody() -> returns('foo')
-      -> allowing($h2)->toString() -> returns('X-Header: foo' . "\r\n")
-      -> ignoring($h2)
-      -> one($encoder)->encodeString(
-        'my body', optional(), optional()
-        ) ->  returns('my body')
-      -> ignoring($encoder)
-      );
-    
-    $headers = array($h1, $h2);
-    
-    $mime = $this->_createEntity($headers, $encoder, $this->_getCache($context));
-    $mime->setBodyAsString('my body');
-    $mime->toString();
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestMaxLineLengthIsProvidedForEncoding()
-  {
-    $context = new Mockery();
-    
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $h2 = $context->mock('Swift_Mime_Header');
-    $encoder = $this->_getEncoder($context, false);
-    
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> allowing($h1)->getFieldBody() -> returns('text/html')
-      -> allowing($h1)->toString() -> returns('Content-Type: text/html' . "\r\n")
-      -> ignoring($h1)
-      -> allowing($h2)->getFieldName() -> returns('X-Header')
-      -> allowing($h2)->getFieldBody() -> returns('foo')
-      -> allowing($h2)->toString() -> returns('X-Header: foo' . "\r\n")
-      -> ignoring($h2)
-      -> one($encoder)->encodeString('my body', 0, 78) ->  returns('my body')
-      -> ignoring($encoder)
-      );
-    
-    $headers = array($h1, $h2);
-    
-    $entity = $this->_createEntity($headers, $encoder, $this->_getCache($context));
-    $entity->setMaxLineLength(78);
-    $entity->setBodyAsString('my body');
-    
-    $entity->toString();
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function XtestEntityCanBeWrittenToByteStream()
+  public function FRAGILE_testEntityCanBeWrittenToByteStream()
   {
     $context = new Mockery();
     $cache = $this->_getCache($context, false);
@@ -1105,221 +657,191 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $context->assertIsSatisfied();
   }
   
-  public function XtestOrderingOfAlternativePartsCanBeSpecified_1()
+  public function testOrderingHtmlBeforeText()
   {
-    $context = new Mockery();
-    
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $cache = $this->_getCache($context, false);
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> allowing($h1)->getFieldBody() -> returns(
-        'multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"'
-        )
-      -> allowing($h1)->toString() -> returns(
-        'Content-Type: multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"' . "\r\n"
-        )
-      -> ignoring($h1)
-      -> allowing($cache)->getString(any(), 'headers') -> returns(
-        'Content-Type: multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"' . "\r\n"
-        )
-      -> ignoring($cache)
+    $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+      "Content-Type: text/html\r\n" .
+      "\r\n" .
+      "HTML PART",
+      false
       );
-    $headers1 = array($h1);
-    
-    $entity1 = $this->_createEntity($headers1, $this->_getEncoder($context), $cache);
-    $entity1->setBoundary('_=_foo_=_');
-    
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $entity3 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity2)->getContentType() -> returns('text/plain')
-      -> allowing($entity2)->toString() -> returns(
-        'Content-Type: text/plain' . "\r\n" .
-        "\r\n" .
-        'foobar test'
-        )
-      -> ignoring($entity2)
-      
-      -> allowing($entity3)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity3)->getContentType() -> returns('text/html')
-      -> allowing($entity3)->toString() -> returns(
-        'Content-Type: text/html' . "\r\n" .
-        "\r\n" .
-        'foobar <strong>test</strong>'
-        )
-      -> ignoring($entity3)
+    $textChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+      "Content-Type: text/plain\r\n" .
+      "\r\n" .
+      "TEXT PART",
+      false
       );
-    
-    $entity1->setChildren(array($entity2, $entity3));
-    
-    $entity1->setTypeOrderPreference(array(
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n"
+        )
+      -> ignoring($headers)
+      -> ignoring($htmlChild)->getContentType() -> returns('text/html')
+      -> ignoring($htmlChild)
+      -> ignoring($textChild)->getContentType() -> returns('text/plain')
+      -> ignoring($textChild)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setBoundary('xxx');
+    $entity->setChildren(array($htmlChild, $textChild));
+    $entity->setTypeOrderPreference(array(
       'text/html' => 1,
       'text/plain' => 2
       ));
-      
-    $this->assertEqual(
-      'Content-Type: multipart/alternative;' . "\r\n" .
-      ' boundary="_=_foo_=_"' . "\r\n" .
-      "\r\n" .
-      '--_=_foo_=_' . "\r\n" .
-      'Content-Type: text/html' . "\r\n" .
-      "\r\n" .
-      'foobar <strong>test</strong>' .
-      "\r\n" .
-      '--_=_foo_=_' . "\r\n" .
-      'Content-Type: text/plain' . "\r\n" .
-      "\r\n" .
-      'foobar test' .
-      "\r\n" .
-      '--_=_foo_=_--' . "\r\n",
-      $entity1->toString(),
-      '%s: The type order preference should cause the html version to appear '. 
-      'before the plain version'
-      );
     
-    $context->assertIsSatisfied();
+    $this->assertEqual(
+      "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
+      "\r\n--xxx\r\n" .
+      "Content-Type: text/html\r\n" .
+      "\r\n" .
+      "HTML PART" .
+      "\r\n--xxx\r\n" .
+      "Content-Type: text/plain\r\n" .
+      "\r\n" .
+      "TEXT PART" .
+      "\r\n--xxx--\r\n",
+      $entity->toString()
+      );
   }
   
-  public function XtestOrderingOfAlternativePartsCanBeSpecified_2()
+  public function testOrderingTextBeforeHtml()
   {
-    $context = new Mockery();
-    
-    $h1 = $context->mock('Swift_Mime_ParameterizedHeader');
-    $cache = $this->_getCache($context, false);
-    $context->checking(Expectations::create()
-      -> allowing($h1)->getFieldName() -> returns('Content-Type')
-      -> allowing($h1)->getFieldBody() -> returns(
-        'multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"'
-        )
-      -> allowing($h1)->toString() -> returns(
-        'Content-Type: multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"' . "\r\n"
-        )
-      -> ignoring($h1)
-      -> allowing($cache)->getString(any(), 'headers') -> returns(
-        'Content-Type: multipart/alternative;' . "\r\n" .
-        ' boundary="_=_foo_=_"' . "\r\n"
-        )
-      -> ignoring($cache)
+    $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+      "Content-Type: text/html\r\n" .
+      "\r\n" .
+      "HTML PART",
+      false
       );
-    $headers1 = array($h1);
-    
-    $entity1 = $this->_createEntity($headers1, $this->_getEncoder($context), $cache);
-    $entity1->setBoundary('_=_foo_=_');
-    
-    $entity2 = $context->mock('Swift_Mime_MimeEntity');
-    $entity3 = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($entity2)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity2)->getContentType() -> returns('text/plain')
-      -> allowing($entity2)->toString() -> returns(
-        'Content-Type: text/plain' . "\r\n" .
-        "\r\n" .
-        'foobar test'
-        )
-      -> ignoring($entity2)
-      
-      -> allowing($entity3)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> allowing($entity3)->getContentType() -> returns('text/html')
-      -> allowing($entity3)->toString() -> returns(
-        'Content-Type: text/html' . "\r\n" .
-        "\r\n" .
-        'foobar <strong>test</strong>'
-        )
-      -> ignoring($entity3)
+    $textChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+      "Content-Type: text/plain\r\n" .
+      "\r\n" .
+      "TEXT PART",
+      false
       );
-    
-    $entity1->setChildren(array($entity2, $entity3));
-    
-    $entity1->setTypeOrderPreference(array(
-      'text/html' => 2,
-      'text/plain' => 1
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n"
+        )
+      -> ignoring($headers)
+      -> ignoring($htmlChild)->getContentType() -> returns('text/html')
+      -> ignoring($htmlChild)
+      -> ignoring($textChild)->getContentType() -> returns('text/plain')
+      -> ignoring($textChild)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setBoundary('xxx');
+    $entity->setChildren(array($htmlChild, $textChild));
+    $entity->setTypeOrderPreference(array(
+      'text/plain' => 1,
+      'text/html' => 2
       ));
     
     $this->assertEqual(
-      'Content-Type: multipart/alternative;' . "\r\n" .
-      ' boundary="_=_foo_=_"' . "\r\n" .
+      "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
+      "\r\n--xxx\r\n" .
+      "Content-Type: text/plain\r\n" .
       "\r\n" .
-      '--_=_foo_=_' . "\r\n" .
-      'Content-Type: text/plain' . "\r\n" .
+      "TEXT PART" .
+      "\r\n--xxx\r\n" .
+      "Content-Type: text/html\r\n" .
       "\r\n" .
-      'foobar test' .
-      "\r\n" .
-      '--_=_foo_=_' . "\r\n" .
-      'Content-Type: text/html' . "\r\n" .
-      "\r\n" .
-      'foobar <strong>test</strong>' .
-      "\r\n" .
-      '--_=_foo_=_--' . "\r\n",
-      $entity1->toString(),
-      '%s: The type order preference should cause the plain version to appear '. 
-      'before the html version'
+      "HTML PART" .
+      "\r\n--xxx--\r\n",
+      $entity->toString()
       );
-    
-    $context->assertIsSatisfied();
   }
   
-  public function XtestFluidInterface()
+  public function testUnsettingChildrenRestoresContentType()
   {
-    $context = new Mockery();
-    $child = $context->mock('Swift_Mime_MimeEntity');
-    $context->checking(Expectations::create()
-      -> allowing($child)->getNestingLevel() -> returns(Swift_Mime_MimeEntity::LEVEL_SUBPART)
-      -> ignoring($child)
+    $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
+    $child = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART);
+    
+    $s = $this->_mockery()->sequence('Type setting');
+    $this->_mockery()->checking(Expectations::create()
+      -> one($cType)->setFieldBodyModel('image/jpeg') -> inSequence($s)
+      -> one($cType)->setFieldBodyModel('multipart/alternative') -> inSequence($s)
+      -> one($cType)->setFieldBodyModel('image/jpeg') -> inSequence($s)
+      -> ignoring($cType)
       );
-    $mime = $this->_createEntity(
-      array(), $this->_getEncoder($context), $this->_getCache($context)
+    
+    $entity = $this->_createEntity($this->_createHeaderSet(array(
+      'Content-Type' => $cType
+      )),
+      $this->_createEncoder(), $this->_createCache()
       );
-    $ref = $mime
+    
+    $entity->setContentType('image/jpeg');
+    $entity->setChildren(array($child));
+    $entity->setChildren(array());
+  }
+  
+  public function TODO_testCachingIsUsed()
+  {
+    $this->fail('TODO');
+  }
+  
+  public function testFluidInterface()
+  {
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    
+    $this->assertSame($entity,
+      $entity
       ->setContentType('text/plain')
-      ->setEncoder($this->_getEncoder($context))
+      ->setEncoder($this->_createEncoder())
       ->setId('foo@bar')
       ->setDescription('my description')
       ->setMaxLineLength(998)
-      ->setBodyAsString('xx')
-      ->setNestingLevel(10)
+      ->setBody('xx')
       ->setBoundary('xyz')
       ->setChildren(array())
-      ->setHeaders(array())
-      ;
-    
-    $this->assertReference($mime, $ref);
-    
-    $context->assertIsSatisfied();
+      );
   }
   
   // -- Private helpers
   
-  abstract protected function _createBaseEntity($headers, $encoder, $cache);
+  abstract protected function _createEntity($headers, $encoder, $cache);
   
-  protected function _createEntity($headerFactory, $encoder, $cache)
+  protected function _createChild($level = null, $string = '', $stub = true)
   {
-    $entity = $this->_createBaseEntity($headerFactory, $encoder, $cache);
-    $entity->setHeaders(array());
-    return $entity;
+    $child = $this->_mockery()->mock('Swift_Mime_MimeEntity');
+    if (isset($level))
+    {
+      $this->_mockery()->checking(Expectations::create()
+        -> ignoring($child)->getNestingLevel() -> returns($level)
+        );
+    }
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($child)->toString() -> returns($string)
+      );
+    if ($stub)
+    {
+      $this->_mockery()->checking(Expectations::create()
+        -> ignoring($child)
+        );
+    }
+    return $child;
   }
   
-  protected function _stubHeader()
-  {
-    return $this->_stub('Swift_Mime_Header');
-  }
-  
-  protected function _createEncoder($stub = true)
+  protected function _createEncoder($name = 'quoted-printable', $stub = true)
   {
     $encoder = $this->_mockery()->mock('Swift_Mime_ContentEncoder');
     $this->_mockery()->checking(Expectations::create()
-      -> ignoring($encoder)->getName() -> returns('quoted-printable')
+      -> ignoring($encoder)->getName() -> returns($name)
       );
       
     if ($stub)
     {
       $this->_mockery()->checking(Expectations::create()
+        -> ignoring($encoder)->encodeString(any(), optional())
+          -> calls(array($this, 'returnStringFromEncoder'))
         -> ignoring($encoder)
         );
     }
@@ -1339,11 +861,76 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     return $cache;
   }
   
-  protected function _fillInHeaders($factory)
+  protected function _createHeaderSet($headers = array(), $stub = true)
   {
+    $set = $this->_mockery()->mock('Swift_Mime_HeaderSet');
+    foreach ($headers as $key => $header)
+    {
+      $this->_mockery()->checking(Expectations::create()
+        -> ignoring($set)->has($key) -> returns(true)
+        -> ignoring($set)->get($key) -> returns($header)
+        );
+    }
+    if ($stub)
+    {
+      $this->_mockery()->checking(Expectations::create()
+        -> ignoring($set)->newInstance() -> returns($set)
+        -> ignoring($set)
+        );
+    }
+    return $set;
+  }
+  
+  protected function _createHeader($name, $model = null, $params = array(), $stub = true)
+  {
+    $header = $this->_mockery()->mock('Swift_Mime_ParameterizedHeader');
     $this->_mockery()->checking(Expectations::create()
-      -> ignoring($factory) -> returns($this->_stubHeader())
+      -> ignoring($header)->getFieldName() -> returns($name)
+      -> ignoring($header)->getFieldBodyModel() -> returns($model)
       );
+    foreach ($params as $key => $value)
+    {
+      $this->_mockery()->checking(Expectations::create()
+        -> ignoring($header)->getParameter($key) -> returns($value)
+        );
+    }
+    if ($stub)
+    {
+      $this->_mockery()->checking(Expectations::create()
+        -> ignoring($header)
+        );
+    }
+    return $header;
+  }
+  
+  protected function _createOutputStream($data = null, $stub = true)
+  {
+    $os = $this->_mockery()->mock('Swift_OutputByteStream');
+    if (isset($data))
+    {
+      $pos = $this->_mockery()->states('position')->startsAs('at beginning');
+      $this->_mockery()->checking(Expectations::create()
+        -> ignoring($os)->read(optional()) -> returns($data)
+          -> when($pos->isNot('at end')) -> then($pos->is('at end'))
+
+        -> ignoring($os)->read(optional()) -> returns(false)
+        );
+      if ($stub)
+      {
+        $this->_mockery()->checking(Expectations::create()
+          -> ignoring($os)
+          );
+      }
+    }
+    return $os;
+  }
+  
+  // -- Mock helpers
+  
+  public function returnStringFromEncoder(Yay_Invocation $invocation)
+  {
+    $args = $invocation->getArguments();
+    return array_shift($args);
   }
   
 }

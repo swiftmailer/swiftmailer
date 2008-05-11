@@ -98,13 +98,4 @@ class Swift_MimeFactoryAcceptanceTest extends UnitTestCase
       );
   }
   
-  public function testCreateHeader()
-  {
-    $fMime = Swift_MimeFactory::getInstance();
-    $header = $fMime->createHeader('X-My-Header', 'something', array('foo'=>'bar'));
-    $this->assertEqual('X-My-Header: something; foo=bar' . "\r\n",
-      $header->toString()
-      );
-  }
-  
 }

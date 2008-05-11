@@ -114,7 +114,9 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     $params = array())
   {
     $header = new Swift_Mime_Headers_ParameterizedHeader($name,
-      $this->_encoder, $this->_paramEncoder
+      $this->_encoder, (strtolower($name) == 'content-disposition')
+        ? $this->_paramEncoder
+        : null
       );
     if (isset($value))
     {
