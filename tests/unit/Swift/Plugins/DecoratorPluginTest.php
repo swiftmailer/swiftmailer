@@ -6,31 +6,27 @@ require_once 'Swift/Events/SendEvent.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Mime/MimeEntity.php';
 
-Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
-Mock::generate('Swift_Mime_MimeEntity', 'Swift_Mime_MockMimeEntity');
-Mock::generate('Swift_Events_SendEvent', 'Swift_Events_MockSendEvent');
-
 class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
 {
 
-  public function testMessageBodyHasReplacements()
+  public function testMessageBodyReceivesReplacements()
   {
-    $message = new Swift_Mime_MockMessage();
-    $message->setReturnValue('getTo', array('zip@button.tld' => 'Zipathon'));
-    $message->setReturnValue('getFrom', array('chris.corbyn@swiftmailer.org' => 'Chris'));
-    $message->setReturnValue('getBodyAsString', 'Hello {name}, you are customer #{id}');
-    $message->expectAt(0, 'setBodyAsString', array('Hello Zip, you are customer #456'));
-    $message->expectMinimumCallCount('setBodyAsString', 1);
-    
-    $plugin = new Swift_Plugins_DecoratorPlugin(
-      array(
-        'foo@bar.tld' => array('{name}' => 'Foo', '{id}' => '123'),
-        'zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456')
-        )
+    $message = $this->_createMessage(
+      array('zip@button.tld' => 'Zipathon'),
+      array('chris.corbyn@swiftmailer.org' => 'Chris'),
+      'Subject',
+      'Hello {name}, you are customer #{id}'
       );
-      
-    $evt = new Swift_Events_MockSendEvent();
-    $evt->setReturnValue('getMessage', $message);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($message)->setBody('Hello Zip, you are customer #456')
+      -> ignoring($message)
+      );
+    
+    $plugin = $this->_createPlugin(
+      array('zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456'))
+      );
+    
+    $evt = $this->_createSendEvent($message);
     
     $plugin->beforeSendPerformed($evt);
     $plugin->sendPerformed($evt);
@@ -38,25 +34,27 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testReplacementsCanBeAppliedToSameMessageMultipleTimes()
   {
-    $message = new Swift_Mime_MockMessage();
-    $message->setReturnValueAt(0, 'getTo', array('zip@button.tld' => 'Zipathon'));
-    $message->setReturnValue('getFrom', array('chris.corbyn@swiftmailer.org' => 'Chris'));
-    $message->setReturnValue('getBodyAsString', 'Hello {name}, you are customer #{id}');
-    $message->expectAt(0, 'setBodyAsString', array('Hello Zip, you are customer #456'));
-    $message->setReturnValueAt(1, 'getTo', array('foo@bar.tld' => 'Foo'));
-    $message->expectAt(1, 'setBodyAsString', array('Hello {name}, you are customer #{id}'));
-    $message->expectAt(2, 'setBodyAsString', array('Hello Foo, you are customer #123'));
-    $message->expectMinimumCallCount('setBodyAsString', 3);
+    $message = $this->_createMessage(
+      array('zip@button.tld' => 'Zipathon', 'foo@bar.tld' => 'Foo'),
+      array('chris.corbyn@swiftmailer.org' => 'Chris'),
+      'Subject',
+      'Hello {name}, you are customer #{id}'
+      );
+    $this->_mockery()->checking(Expectations::create()
+      -> one($message)->setBody('Hello Zip, you are customer #456')
+      -> one($message)->setBody('Hello {name}, you are customer #{id}')
+      -> one($message)->setBody('Hello Foo, you are customer #123')
+      -> ignoring($message)
+      );
     
-    $plugin = new Swift_Plugins_DecoratorPlugin(
+    $plugin = $this->_createPlugin(
       array(
         'foo@bar.tld' => array('{name}' => 'Foo', '{id}' => '123'),
         'zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456')
         )
       );
-      
-    $evt = new Swift_Events_MockSendEvent();
-    $evt->setReturnValue('getMessage', $message);
+    
+    $evt = $this->_createSendEvent($message);
     
     $plugin->beforeSendPerformed($evt);
     $plugin->sendPerformed($evt);
@@ -66,25 +64,23 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testReplacementsCanBeMadeInSubject()
   {
-    $message = new Swift_Mime_MockMessage();
-    $message->setReturnValue('getSubject', 'A message for {name}!');
-    $message->setReturnValue('getTo', array('zip@button.tld' => 'Zipathon'));
-    $message->setReturnValue('getFrom', array('chris.corbyn@swiftmailer.org' => 'Chris'));
-    $message->setReturnValue('getBodyAsString', 'Hello {name}, you are customer #{id}');
-    $message->expectAt(0, 'setBodyAsString', array('Hello Zip, you are customer #456'));
-    $message->expectAt(0, 'setSubject', array('A message for Zip!'));
-    $message->expectMinimumCallCount('setBodyAsString', 1);
-    $message->expectMinimumCallCount('setSubject', 1);
-    
-    $plugin = new Swift_Plugins_DecoratorPlugin(
-      array(
-        'foo@bar.tld' => array('{name}' => 'Foo', '{id}' => '123'),
-        'zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456')
-        )
+    $message = $this->_createMessage(
+      array('zip@button.tld' => 'Zipathon'),
+      array('chris.corbyn@swiftmailer.org' => 'Chris'),
+      'A message for {name}!',
+      'Hello {name}, you are customer #{id}'
       );
-      
-    $evt = new Swift_Events_MockSendEvent();
-    $evt->setReturnValue('getMessage', $message);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($message)->setBody('Hello Zip, you are customer #456')
+      -> one($message)->setSubject('A message for Zip!')
+      -> ignoring($message)
+      );
+    
+    $plugin = $this->_createPlugin(
+      array('zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456'))
+      );
+    
+    $evt = $this->_createSendEvent($message);
     
     $plugin->beforeSendPerformed($evt);
     $plugin->sendPerformed($evt);
@@ -92,45 +88,77 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testReplacementsAreMadeOnSubparts()
   {
-    $message = new Swift_Mime_MockMessage();
-    $message->setReturnValue('getSubject', 'A message for {name}!');
-    $message->setReturnValue('getTo', array('zip@button.tld' => 'Zipathon'));
-    $message->setReturnValue('getFrom', array('chris.corbyn@swiftmailer.org' => 'Chris'));
-    $message->setReturnValue('getBodyAsString', 'Hello {name}, you are customer #{id}');
-    $message->expectAt(0, 'setBodyAsString', array('Hello Zip, you are customer #456'));
-    $message->expectAt(0, 'setSubject', array('A message for Zip!'));
-    
-    $part1 = new Swift_Mime_MockMimeEntity();
-    $part1->setReturnValue('getContentType', 'text/plain');
-    $part1->setReturnValue('getBodyAsString', 'Your name is {name}?');
-    $part1->setReturnValue('getId', 'foo123@bar');
-    $part1->expectAt(0, 'setBodyAsString', array('Your name is Zip?'));
-    $part1->expectMinimumCallCount('setBodyAsString', 1);
-    
-    $part2 = new Swift_Mime_MockMimeEntity();
-    $part2->setReturnValue('getContentType', 'text/html');
-    $part2->setReturnValue('getBodyAsString', 'Your <em>name</em> is {name}?');
-    $part2->setReturnValue('getId', 'foo123@bar');
-    $part2->expectAt(0, 'setBodyAsString', array('Your <em>name</em> is Zip?'));
-    $part2->expectMinimumCallCount('setBodyAsString', 1);
-    
-    $message->setReturnValue('getChildren', array($part1, $part2));
-    
-    $message->expectMinimumCallCount('setBodyAsString', 1);
-    $message->expectMinimumCallCount('setSubject', 1);
-    
-    $plugin = new Swift_Plugins_DecoratorPlugin(
-      array(
-        'foo@bar.tld' => array('{name}' => 'Foo', '{id}' => '123'),
-        'zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456')
-        )
+    $part1 = $this->_createPart('text/plain', 'Your name is {name}?', '1@x');
+    $part2 = $this->_createPart('text/html', 'Your <em>name</em> is {name}?', '2@x');
+    $message = $this->_createMessage(
+      array('zip@button.tld' => 'Zipathon'),
+      array('chris.corbyn@swiftmailer.org' => 'Chris'),
+      'A message for {name}!',
+      'Subject'
       );
-      
-    $evt = new Swift_Events_MockSendEvent();
-    $evt->setReturnValue('getMessage', $message);
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($message)->getChildren() -> returns(array($part1, $part2))
+      -> one($part1)->setBody('Your name is Zip?')
+      -> one($part2)->setBody('Your <em>name</em> is Zip?')
+      -> ignoring($part1)
+      -> ignoring($part2)
+      -> ignoring($message)
+      );
+    
+    $plugin = $this->_createPlugin(
+      array('zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456'))
+      );
+    
+    $evt = $this->_createSendEvent($message);
     
     $plugin->beforeSendPerformed($evt);
     $plugin->sendPerformed($evt);
+  }
+  
+  // -- Creation methods
+  
+  private function _createMessage($to = array(), $from = null, $subject = null,
+    $body = null)
+  {
+    $message = $this->_mockery()->mock('Swift_Mime_Message');
+    foreach ($to as $addr => $name)
+    {
+      $this->_mockery()->checking(Expectations::create()
+        -> one($message)->getTo() -> returns(array($addr => $name))
+        );
+    }
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($message)->getFrom() -> returns($from)
+      -> ignoring($message)->getSubject() -> returns($subject)
+      -> ignoring($message)->getBody() -> returns($body)
+      );
+    return $message;
+  }
+  
+  private function _createPlugin($replacements)
+  {
+    return new Swift_Plugins_DecoratorPlugin($replacements);
+  }
+  
+  private function _createSendEvent(Swift_Mime_Message $message)
+  {
+    $evt = $this->_mockery()->mock('Swift_Events_SendEvent');
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($evt)->getMessage() -> returns($message)
+      -> ignoring($evt)
+      );
+    return $evt;
+  }
+  
+  private function _createPart($type, $body, $id)
+  {
+    $part = $this->_mockery()->mock('Swift_Mime_MimeEntity');
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($part)->getContentType() -> returns($type)
+      -> ignoring($part)->getBody() -> returns($body)
+      -> ignoring($part)->getId() -> returns($id)
+      );
+    return $part;
   }
   
 }

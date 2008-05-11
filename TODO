@@ -25,8 +25,8 @@ Swift Mailer SE TODO:
    - VERP
  * V3 Wrapper classes
  
-Missing tests:
---------------
+Missing unit tests:
+-------------------
 
  * Writing to byte streams
  * Effective use of caching
