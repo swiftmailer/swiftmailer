@@ -1,8 +1,6 @@
 Swift Mailer SE TODO:
 ---------------------
 
- * Read-receipts (Something in $message like CustomHeaderFactory?)
- * setPriority()
  * setMimeWarning() ?
  * Think about the interface for loading plugins
  * Failed recipients?

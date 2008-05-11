@@ -451,6 +451,86 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     $message->setBcc('bcc@domain');
   }
   
+  public function testPriorityIsReadFromHeader()
+  {
+    $prio = $this->_createHeader('X-Priority', '2 (High)');
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('X-Priority' => $prio)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertEqual(2, $message->getPriority());
+  }
+  
+  public function testPriorityIsSetInHeader()
+  {
+    $prio = $this->_createHeader('X-Priority', '2 (High)', array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($prio)->setFieldBodyModel('5 (Lowest)')
+      -> ignoring($prio)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('X-Priority' => $prio)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->setPriority(5);
+  }
+  
+  public function testPriorityHeaderIsAddedIfNoneSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addTextHeader('X-Priority', '4 (Low)')
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setPriority(4);
+  }
+  
+  public function testReadReceiptAddressReadFromHeader()
+  {
+    $rcpt = $this->_createHeader('Disposition-Notification-To',
+      array('chris@swiftmailer.org'=>'Chris')
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Disposition-Notification-To' => $rcpt)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $this->assertEqual(array('chris@swiftmailer.org'=>'Chris'),
+      $message->getReadReceiptTo()
+      );
+  }
+  
+  public function testReadReceiptIsSetInHeader()
+  {
+    $rcpt = $this->_createHeader('Disposition-Notification-To', array(), array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($rcpt)->setFieldBodyModel('mark@swiftmailer.org')
+      -> ignoring($rcpt)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Disposition-Notification-To' => $rcpt)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->setReadReceiptTo('mark@swiftmailer.org');
+  }
+  
+  public function testReadReceiptHeaderIsAddedIfNoneSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->addMailboxHeader(
+        'Disposition-Notification-To', 'mark@swiftmailer.org'
+        )
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setReadReceiptTo('mark@swiftmailer.org');
+  }
+  
   public function testChildrenCanBeAttached()
   {
     $child1 = $this->_createChild();
@@ -540,6 +620,8 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
       ->setTo(array('chris@site.tld', 'mark@site.tld'))
       ->setCc('john@somewhere.tld')
       ->setBcc(array('one@site', 'two@site' => 'Two'))
+      ->setPriority(4)
+      ->setReadReceiptTo('a@b')
       ->attach($child)
       ->detach($child)
       );

@@ -193,6 +193,55 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     return $this->_getHeaderFieldModel('Bcc');
   }
   
+  public function setPriority($priority)
+  {
+    $priorityMap = array(
+      1 => 'Highest',
+      2 => 'High',
+      3 => 'Normal',
+      4 => 'Low',
+      5 => 'Lowest'
+      );
+    if ($priority > max(array_keys($priorityMap)))
+    {
+      $priority = max(array_keys($priorityMap));
+    }
+    elseif ($priority < min(array_keys($priorityMap)))
+    {
+      $priority = min(array_keys($priorityMap));
+    }
+    if (!$this->_setHeaderFieldModel('X-Priority',
+      sprintf('%d (%s)', $priority, $priorityMap[$priority])))
+    {
+      $this->getHeaders()->addTextHeader('X-Priority',
+        sprintf('%d (%s)', $priority, $priorityMap[$priority]));
+    }
+    return $this;
+  }
+  
+  public function getPriority()
+  {
+    list($priority) = sscanf($this->_getHeaderFieldModel('X-Priority'),
+      '%[1-5]'
+      );
+    return isset($priority) ? $priority : 3;
+  }
+  
+  public function setReadReceiptTo($addresses)
+  {
+    if (!$this->_setHeaderFieldModel('Disposition-Notification-To', $addresses))
+    {
+      $this->getHeaders()
+        ->addMailboxHeader('Disposition-Notification-To', $addresses);
+    }
+    return $this;
+  }
+  
+  public function getReadReceiptTo()
+  {
+    return $this->_getHeaderFieldModel('Disposition-Notification-To');
+  }
+  
   public function attach(Swift_Mime_MimeEntity $entity)
   {
     $this->setChildren(array_merge($this->getChildren(), array($entity)));
