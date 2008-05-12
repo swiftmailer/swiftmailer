@@ -19,6 +19,7 @@
  */
 
 //@require 'Swift/Mime/SimpleMessage.php';
+//@require 'Swift/MimePart.php';
 //@require 'Swift/DependencyContainer.php';
 
 /**

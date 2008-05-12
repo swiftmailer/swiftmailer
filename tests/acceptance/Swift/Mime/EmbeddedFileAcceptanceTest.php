@@ -134,7 +134,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
   
   // -- Private helpers
   
-  private function _createEmbeddedFile()
+  protected function _createEmbeddedFile()
   {
     $entity = new Swift_Mime_EmbeddedFile(
       $this->_headers,
