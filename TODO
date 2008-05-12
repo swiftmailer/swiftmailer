@@ -1,8 +1,24 @@
 Swift Mailer SE TODO:
 ---------------------
 
- * setMimeWarning() ?
+ * setMimeWarning()
  * Think about the interface for loading plugins
+ * CharsetChangeObserver
+   - MimeEntities
+   - Headers
+   - HeaderEncoders
+   - HeaderSet
+   - HeaderFactory
+ * Re-implement caching
+ * Re-implement toByteStream()
+   - On SimpleMimeEntity
+   - On SimpleMessage
+   - On SimpleHeaderSet
+ * Re-think how to avoid CRLF . CRLF
+ * Re-think how to convert CRLF to LF & Vice Versa
+ * Aim to make DI transparent
+   - Get rid of the factories and write wrapper classes
+ * Split PolymorphicBuffer into two distinct classes
  * Failed recipients?
    - Mail
  * Event dispatching
@@ -34,7 +50,6 @@ Missing unit tests:
 Poorly implemented:
 -------------------
 
- * PolymorphicBuffer == shite; should be two classes
  * writeTransformations() in buffer could fail
  * canonicalization logic could fail
 

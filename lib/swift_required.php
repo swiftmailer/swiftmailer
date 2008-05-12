@@ -20,12 +20,31 @@
 
 define('SWIFT_CLASS_DIRECTORY', dirname(__FILE__) . '/classes');
 define('SWIFT_MAP_DIRECTORY', dirname(__FILE__) . '/dependency_maps');
-require_once SWIFT_CLASS_DIRECTORY . '/Swift/Di.php';
-Swift_Di::setClassPath(SWIFT_CLASS_DIRECTORY);
-spl_autoload_register(array('Swift_Di', 'autoload'));
-Swift_Di::getInstance()->registerDependencyMap(
-  include(SWIFT_MAP_DIRECTORY . '/mime_deps.php')
-  );
-Swift_Di::getInstance()->registerDependencyMap(
-  include(SWIFT_MAP_DIRECTORY . '/transport_deps.php')
-  );
+define('SWIFT_CLASSPATH', SWIFT_CLASS_DIRECTORY);
+
+/**
+ * Swift's autoload implementation.
+ * @param string $class
+ */
+function swift_autoload($class)
+{
+  if (substr($class, 0, 5) != 'Swift')
+  {
+    return;
+  }
+  
+  foreach (explode(PATH_SEPARATOR, SWIFT_CLASSPATH) as $classPath)
+  {
+    $path = $classPath . '/' . str_replace('_', '/', $class) . '.php';
+  
+    if (file_exists($path))
+    {
+      require_once $path;
+    }
+  }
+}
+
+spl_autoload_register('swift_autoload');
+
+require_once SWIFT_MAP_DIRECTORY . '/mime_deps.php';
+require_once SWIFT_MAP_DIRECTORY . '/transport_deps.php';

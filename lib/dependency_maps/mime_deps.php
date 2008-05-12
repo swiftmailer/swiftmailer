@@ -1,154 +1,89 @@
 <?php
 
-//Dependency map
-$_swiftMimeDeps = array(
+Swift_DependencyContainer::getInstance()
     
-  //Message
-  'mime.message' => array(
-    'class' => 'Swift_Mime_SimpleMessage',
-    'args' => array(
-      'di:mime.headerset',
-      'di:mime.qpcontentencoder',
-      'lookup:cache',
-      'lookup:charset'
-      ),
-      'shared' => false
-    ),
-    
-  //Mime Part
-  'mime.part' => array(
-    'class' => 'Swift_Mime_MimePart',
-    'args' => array(
-      'di:mime.headerset',
-      'di:mime.qpcontentencoder',
-      'lookup:cache',
-      'lookup:charset'
-      ),
-      'shared' => false
-    ),
-    
-  //Attachment
-  'mime.attachment' => array(
-    'class' => 'Swift_Mime_Attachment',
-    'args' => array(
-      'di:mime.headerset',
-      'di:mime.base64contentencoder',
-      'lookup:cache'
-      ),
-      'shared' => false
-    ),
-    
-  //EmbeddedFile
-  'mime.embeddedfile' => array(
-    'class' => 'Swift_Mime_EmbeddedFile',
-    'args' => array(
-      'di:mime.headerset',
-      'di:mime.base64contentencoder',
-      'lookup:cache'
-      ),
-      'shared' => false
-    ),
+  ->register('properties.charset')
+  ->asValue(null)
   
-  //ArrayKeyCache
-  'mime.arraycache' => array(
-    'class' => 'Swift_KeyCache_ArrayKeyCache',
-    'args' => array('di:mime.cacheinputstream'),
-    'shared' => true
-    ),
-    
-  //DiskKeyCache
-  'mime.diskcache' => array(
-    'class' => 'Swift_KeyCache_DiskKeyCache',
-    'args' => array('di:mime.cacheinputstream', 'lookup:temppath'),
-    'shared' => true
-    ),
-    
-  //KeyCacheInputStream
-  'mime.cacheinputstream' => array(
-    'class' => 'Swift_KeyCache_SimpleKeyCacheInputStream',
-    'args' => array(),
-    'shared' => false
-    ),
+  ->register('properties.cache')
+  ->asSharedInstanceOf('Swift_KeyCache_ArrayKeyCache')
+  ->withDependencies(array('mime.cacheinputstream'))
   
-  //HeaderFactory
-  'mime.headerfactory' => array(
-    'class' => 'Swift_Mime_SimpleHeaderFactory',
-    'args' => array('di:mime.qpheaderencoder', 'di:mime.rfc2231encoder'),
-    'shared' => false
-    ),
+  ->register('mime.message')
+  ->asNewInstanceOf('Swift_Mime_SimpleMessage')
+  ->withDependencies(array(
+    'mime.headerset',
+    'mime.qpcontentencoder',
+    'properties.cache',
+    'properties.charset'
+  ))
   
-  //HeaderSet
-  'mime.headerset' => array(
-    'class' => 'Swift_Mime_SimpleHeaderSet',
-    'args' => array('di:mime.headerfactory'),
-    'shared' => false
-    ),
+  ->register('mime.part')
+  ->asNewInstanceOf('Swift_Mime_MimePart')
+  ->withDependencies(array(
+    'mime.headerset',
+    'mime.qpcontentencoder',
+    'properties.cache',
+    'properties.charset'
+  ))
   
-  //Qp Header Encoder
-  'mime.qpheaderencoder' => array(
-    'class' => 'Swift_Mime_HeaderEncoder_QpHeaderEncoder',
-    'args' => array('di:mime.charstream'),
-    'shared' => true
-    ),
+  ->register('mime.attachment')
+  ->asNewInstanceOf('Swift_Mime_Attachment')
+  ->withDependencies(array(
+    'mime.headerset',
+    'mime.base64contentencoder',
+    'properties.cache'
+  ))
   
-  //CharStream
-  'mime.charstream' => array(
-    'class' => 'Swift_CharacterStream_ArrayCharacterStream',
-    'args' => array(
-      'di:mime.characterreaderfactory',
-      'lookup:charset'
-      ),
-    'shared' => false
-    ),
+  ->register('mime.embeddedfile')
+  ->asNewInstanceOf('Swift_Mime_EmbeddedFile')
+  ->withDependencies(array(
+    'mime.headerset',
+    'mime.base64contentencoder',
+    'properties.cache'
+  ))
   
-  //Character Reader Factory
-  'mime.characterreaderfactory' => array(
-    'class' => 'Swift_CharacterReaderFactory_SimpleCharacterReaderFactory',
-    'args' => array(),
-    'shared' => true
-    ),
+  ->register('mime.cacheinputstream')
+  ->asNewInstanceOf('Swift_KeyCache_SimpleKeyCacheInputStream')
   
-  //Qp content Encoder
-  'mime.qpcontentencoder' => array(
-    'class' => 'Swift_Mime_ContentEncoder_QpContentEncoder',
-    'args' => array('di:mime.charstream', 'boolean:1'),
-    'shared' => false
-    ),
-    
-  //7bit content Encoder
-  'mime.7bitcontentencoder' => array(
-    'class' => 'Swift_Mime_ContentEncoder_PlainContentEncoder',
-    'args' => array('string:7bit', 'boolean:1'),
-    'shared' => true
-    ),
-    
-  //8bit content Encoder
-  'mime.8bitcontentencoder' => array(
-    'class' => 'Swift_Mime_ContentEncoder_PlainContentEncoder',
-    'args' => array('string:8bit', 'boolean:1'),
-    'shared' => true
-    ),
+  ->register('mime.headerfactory')
+  ->asSharedInstanceOf('Swift_Mime_SimpleHeaderFactory')
+  ->withDependencies(array('mime.qpheaderencoder', 'mime.rfc2231encoder'))
   
-  //Base64 content Encoder
-  'mime.base64contentencoder' => array(
-    'class' => 'Swift_Mime_ContentEncoder_Base64ContentEncoder',
-    'args' => array(),
-    'shared' => true
-    ),
+  ->register('mime.headerset')
+  ->asNewInstanceOf('Swift_Mime_SimpleHeaderSet')
+  ->withDependencies(array('mime.headerfactory'))
   
-  //Parameter (RFC 2231) Encoder
-  'mime.rfc2231encoder' => array(
-    'class' => 'Swift_Encoder_Rfc2231Encoder',
-    'args' => array('di:mime.charstream'),
-    'shared' => false
-    ),
+  ->register('mime.qpheaderencoder')
+  ->asNewInstanceOf('Swift_Mime_HeaderEncoder_QpHeaderEncoder')
+  ->withDependencies(array('mime.charstream'))
   
-  );
+  ->register('mime.charstream')
+  ->asNewInstanceOf('Swift_CharacterStream_ArrayCharacterStream')
+  ->withDependencies(array('mime.characterreaderfactory', 'properties.charset'))
   
-//Aliases
-$_swiftMimeDeps['mime.image'] = $_swiftMimeDeps['mime.embeddedfile'];
-$_swiftMimeDeps['mime.7bitencoder'] = $_swiftMimeDeps['mime.7bitcontentencoder'];
-
-return $_swiftMimeDeps;
-
-//EOF
+  ->register('mime.characterreaderfactory')
+  ->asSharedInstanceOf('Swift_CharacterReaderFactory_SimpleCharacterReaderFactory')
+  
+  ->register('mime.qpcontentencoder')
+  ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
+  ->addConstructorLookup('mime.charstream')
+  ->addConstructorValue(true)
+  
+  ->register('mime.7bitcontentencoder')
+  ->asNewInstanceOf('Swift_Mime_ContentEncoder_PlainContentEncoder')
+  ->addConstructorValue('7bit')
+  ->addConstructorValue(true)
+  
+  ->register('mime.8bitcontentencoder')
+  ->asNewInstanceOf('Swift_Mime_ContentEncoder_PlainContentEncoder')
+  ->addConstructorValue('8bit')
+  ->addConstructorValue(true)
+  
+  ->register('mime.base64contentencoder')
+  ->asSharedInstanceOf('Swift_Mime_ContentEncoder_Base64ContentEncoder')
+  
+  ->register('mime.rfc2231encoder')
+  ->asNewInstanceOf('Swift_Encoder_Rfc2231Encoder')
+  ->withDependencies(array('mime.charstream'))
+  ;

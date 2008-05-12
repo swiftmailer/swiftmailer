@@ -37,6 +37,9 @@ class Swift_DependencyContainer
   /** Constant for shared instance types */
   const TYPE_SHARED = 0x100;
   
+  /** Singleton instance */
+  private static $_instance = null;
+  
   /** The data container */
   private $_store = array();
   
@@ -60,6 +63,15 @@ class Swift_DependencyContainer
       self::$_instance = new self();
     }
     return self::$_instance;
+  }
+  
+  /**
+   * List the names of all items stored in the Container.
+   * @return array
+   */
+  public function listItems()
+  {
+    return array_keys($this->_store);
   }
   
   /**
