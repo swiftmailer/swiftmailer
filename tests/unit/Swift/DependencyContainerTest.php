@@ -144,4 +144,22 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertIdentical('FOO', $obj->arg2);
   }
   
+  public function testAliasCanBeSet()
+  {
+    $this->_container->register('foo')->asValue('FOO');
+    $this->_container->register('bar')->asAliasOf('foo');
+    
+    $this->assertIdentical('FOO', $this->_container->lookup('bar'));
+  }
+  
+  public function testAliasOfAliasCanBeSet()
+  {
+    $this->_container->register('foo')->asValue('FOO');
+    $this->_container->register('bar')->asAliasOf('foo');
+    $this->_container->register('zip')->asAliasOf('bar');
+    $this->_container->register('button')->asAliasOf('zip');
+    
+    $this->assertIdentical('FOO', $this->_container->lookup('button'));
+  }
+  
 }

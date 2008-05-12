@@ -6,8 +6,7 @@ Swift_DependencyContainer::getInstance()
   -> asValue(null)
   
   -> register('properties.cache')
-  -> asSharedInstanceOf('Swift_KeyCache_ArrayKeyCache')
-  -> withDependencies(array('mime.cacheinputstream'))
+  -> asAliasOf('mime.arraycache')
   
   -> register('mime.message')
   -> asNewInstanceOf('Swift_Mime_SimpleMessage')
@@ -42,6 +41,10 @@ Swift_DependencyContainer::getInstance()
     'mime.base64contentencoder',
     'properties.cache'
   ))
+  
+  -> register('mime.arraycache')
+  -> asSharedInstanceOf('Swift_KeyCache_ArrayKeyCache')
+  -> withDependencies(array('mime.cacheinputstream'))
   
   -> register('mime.cacheinputstream')
   -> asNewInstanceOf('Swift_KeyCache_SimpleKeyCacheInputStream')

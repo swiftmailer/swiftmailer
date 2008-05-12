@@ -16,21 +16,25 @@ date_default_timezone_set('Australia/Melbourne');
 //Require the injector
 require_once dirname(__FILE__) . '/../../lib/swift_required.php';
 
-$hugeFile = '/Users/d11wtq/last.fm.dmg'; //Change this
-
-Swift_MimeFactory::setCacheType('disk');
-Swift_MimeFactory::setTempPath('/tmp');
-
-$message = Swift_MimeFactory::create('message')
+for ($i = 1; $i <= 10; $i++)
+{
+  @unlink('sample-file');
+  `dd if=/dev/random of=sample-file bs=1048576 count=$i`;
+  
+  $message = Swift_Message::newInstance()
   ->setSubject('Last.fm download')
   ->setTo(array('rob@site.com' => 'Rob'))
   ->setFrom(array('chris@w3style.co.uk' => 'Myself'))
   ->setBody("Here's the last.fm dmg you needed")
-  ->attach(
-    Swift_MimeFactory::create('attachment')
-      ->setContentType('application/octet-stream')
-      ->setFilename('photoshop.dmg')
-      ->setFile(new Swift_ByteStream_FileByteStream($hugeFile))
-    )
+  ->attach(Swift_Attachment::fromPath('sample-file'))
   ;
+  
+  $message->toString();
+
+  echo "Memory @ {$i}MB = ";
+  echo round((memory_get_peak_usage() / ( 1024 * 1024)), 3) . PHP_EOL;
+
+  $message = null;
+  unset($message);
+}
 

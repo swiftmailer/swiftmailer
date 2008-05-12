@@ -29,13 +29,16 @@ class Swift_DependencyContainer
 {
   
   /** Constant for literal value types */
-  const TYPE_VALUE = 0x001;
+  const TYPE_VALUE = 0x0001;
   
   /** Constant for new instance types */
-  const TYPE_INSTANCE = 0x010;
+  const TYPE_INSTANCE = 0x0010;
   
   /** Constant for shared instance types */
-  const TYPE_SHARED = 0x100;
+  const TYPE_SHARED = 0x0100;
+  
+  /** Constant for aliases */
+  const TYPE_ALIAS = 0x1000;
   
   /** Singleton instance */
   private static $_instance = null;
@@ -104,6 +107,8 @@ class Swift_DependencyContainer
     
     switch ($this->_store[$itemName]['lookupType'])
     {
+      case self::TYPE_ALIAS:
+        return $this->_createAlias($itemName);
       case self::TYPE_VALUE:
         return $this->_getValue($itemName);
       case self::TYPE_INSTANCE:
@@ -142,6 +147,19 @@ class Swift_DependencyContainer
     $endPoint =& $this->_getEndPoint();
     $endPoint['lookupType'] = self::TYPE_VALUE;
     $endPoint['value'] = $value;
+    return $this;
+  }
+  
+  /**
+   * Specify the previously registered item as an alias of another item.
+   * @param string $lookup
+   * @return Swift_DependencyContainer
+   */
+  public function asAliasOf($lookup)
+  {
+    $endPoint =& $this->_getEndPoint();
+    $endPoint['lookupType'] = self::TYPE_ALIAS;
+    $endPoint['ref'] = $lookup;
     return $this;
   }
   
@@ -240,6 +258,12 @@ class Swift_DependencyContainer
   private function _getValue($itemName)
   {
     return $this->_store[$itemName]['value'];
+  }
+  
+  /** Resolve an alias to another item */
+  private function _createAlias($itemName)
+  {
+    return $this->lookup($this->_store[$itemName]['ref']);
   }
   
   /** Create a fresh instance of $itemName */
