@@ -189,9 +189,9 @@ class Swift_DependencyContainer
   {
     $endPoint =& $this->_getEndPoint();
     $endPoint['args'] = array();
-    foreach ($lookups as $arg)
+    foreach ($lookups as $lookup)
     {
-      $endPoint['args'][] = array('type' => 'lookup', 'item' => $arg);
+      $this->addConstructorLookup($lookup);
     }
     return $this;
   }
@@ -251,18 +251,7 @@ class Swift_DependencyContainer
       $args = array();
       if (isset($this->_store[$itemName]['args']))
       {
-        foreach ($this->_store[$itemName]['args'] as $argDefinition)
-        {
-          switch ($argDefinition['type'])
-          {
-            case 'lookup':
-              $args[] = $this->lookup($argDefinition['item']);
-              break;
-            case 'value':
-              $args[] = $argDefinition['item'];
-              break;
-          }
-        }
+        $args = $this->_resolveArgs($this->_store[$itemName]['args']);
       }
       return $reflector->newInstanceArgs($args);
     }
@@ -292,6 +281,43 @@ class Swift_DependencyContainer
         );
     }
     return $this->_endPoint;
+  }
+  
+  /** Get an argument list with dependencies resolved */
+  private function _resolveArgs(array $args)
+  {
+    $resolved = array();
+    foreach ($args as $argDefinition)
+    {
+      switch ($argDefinition['type'])
+      {
+        case 'lookup':
+          $resolved[] = $this->_lookupRecursive($argDefinition['item']);
+          break;
+        case 'value':
+          $resolved[] = $argDefinition['item'];
+          break;
+      }
+    }
+    return $resolved;
+  }
+  
+  /** Resolve a single dependency with an collections */
+  private function _lookupRecursive($item)
+  {
+    if (is_array($item))
+    {
+      $collection = array();
+      foreach ($item as $k => $v)
+      {
+        $collection[$k] = $this->_lookupRecursive($v);
+      }
+      return $collection;
+    }
+    else
+    {
+      return $this->lookup($item);
+    }
   }
   
 }

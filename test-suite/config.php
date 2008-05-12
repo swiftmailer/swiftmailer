@@ -50,9 +50,7 @@ set_include_path(
 
 //Load in any dependencies
 require_once 'Sweety/TestLocator/PearStyleLocator.php';
-require_once 'Swift/Di.php';
-Swift_Di::setClassPath(SWEETY_INCLUDE_PATH);
-spl_autoload_register(array('Swift_Di', 'autoload'));
+require_once 'swift_required.php';
 
 //Load in some swift specific testig config
 require_once SWEETY_HOME . '/../tests/acceptance.conf.php';

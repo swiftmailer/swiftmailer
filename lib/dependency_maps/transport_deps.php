@@ -1,123 +1,75 @@
 <?php
 
-//Dependency map
-$_swiftTransportDeps = array(
-    
-  //Smtp
-  'transport.smtp' => array(
-    'class' => 'Swift_Transport_EsmtpTransport',
-    'args' => array(
-      'di:transport.polymorphicbuffer',
-      array('di:transport.authhandler'),
-      'di:transport.eventdispatcher'
-      ),
-      'shared' => false
-    ),
-    
-  //IOBuffer
-  'transport.polymorphicbuffer' => array(
-    'class' => 'Swift_Transport_PolymorphicBuffer',
-    'args' => array(),
-      'shared' => false
-    ),
-    
-  //AUTH handler
-  'transport.authhandler' => array(
-    'class' => 'Swift_Transport_Esmtp_AuthHandler',
-    'args' => array(
-      array(
-        'di:transport.crammd5auth',
-        'di:transport.loginauth',
-        'di:transport.plainauth'
-        )
-      ),
-      'shared' => false
-    ),
-    
-  //CRAM-MD5
-  'transport.crammd5auth' => array(
-    'class' => 'Swift_Transport_Esmtp_Auth_CramMd5Authenticator',
-    'args' => array(),
-      'shared' => false
-    ),
+Swift_DependencyContainer::getInstance()
   
-  //LOGIN
-  'transport.loginauth' => array(
-    'class' => 'Swift_Transport_Esmtp_Auth_LoginAuthenticator',
-    'args' => array(),
-    'shared' => false
-    ),
-    
-  //PLAIN
-  'transport.plainauth' => array(
-    'class' => 'Swift_Transport_Esmtp_Auth_PlainAuthenticator',
-    'args' => array(),
-    'shared' => false
-    ),
-    
-  //Sendmail
-  'transport.sendmail' => array(
-    'class' => 'Swift_Transport_SendmailTransport',
-    'args' => array(
-      'di:transport.polymorphicbuffer',
-      'di:transport.eventdispatcher'
-      ),
-    'shared' => false
-    ),
-    
-  //Mail
-  'transport.mail' => array(
-    'class' => 'Swift_Transport_MailTransport',
-    'args' => array(),
-    'shared' => false
-    ),
-    
-  //LoadBalanced
-  'transport.loadbalanced' => array(
-    'class' => 'Swift_Transport_LoadBalancedTransport',
-    'args' => array(),
-    'shared' => false
-    ),
-    
-  //Failover
-  'transport.failover' => array(
-    'class' => 'Swift_Transport_FailoverTransport',
-    'args' => array(),
-    'shared' => false
-    ),
+  -> register('transport.smtp')
+  -> asNewInstanceOf('Swift_Transport_EsmtpTransport')
+  -> withDependencies(array(
+    'transport.buffer',
+    array('transport.authhandler'),
+    'transport.eventdispatcher'
+  ))
   
-  //EventDispatcher
-  'transport.eventdispatcher' => array(
-    'class' => 'Swift_Events_SimpleEventDispatcher',
-    'args' => array(array(
-      'send' => array(
-        'event' => 'string:Swift_Events_SendEvent',
-        'listener' => 'string:Swift_Events_SendListener'
-        ),
-      'transportchange' => array(
-        'event' => 'string:Swift_Events_TransportChangeEvent',
-        'listener' => 'string:Swift_Events_TransportChangeListener'
-        ),
-      'command' => array(
-        'event' => 'string:Swift_Events_CommandEvent',
-        'listener' => 'string:Swift_Events_CommandListener'
-        ),
-      'response' => array(
-        'event' => 'string:Swift_Events_ResponseEvent',
-        'listener' => 'string:Swift_Events_ResponseListener'
-        )
-      )),
-    'shared' => true
+  -> register('transport.sendmail')
+  -> asNewInstanceOf('Swift_Transport_SendmailTransport')
+  -> withDependencies(array(
+    'transport.buffer',
+    'transport.eventdispatcher'
+  ))
+  
+  -> register('transport.mail')
+  -> asNewInstanceOf('Swift_Transport_MailTransport')
+  
+  -> register('transport.loadbalanced')
+  -> asNewInstanceOf('Swift_Transport_LoadBalancedTransport')
+  
+  -> register('transport.failover')
+  -> asNewInstanceOf('Swift_Transport_FailoverTransport')
+  
+  -> register('transport.buffer')
+  -> asNewInstanceOf('Swift_Transport_PolymorphicBuffer')
+  
+  -> register('transport.authhandler')
+  -> asNewInstanceOf('Swift_Transport_Esmtp_AuthHandler')
+  -> withDependencies(array(
+    array(
+      'transport.crammd5auth',
+      'transport.loginauth',
+      'transport.plainauth'
     )
+  ))
   
-  );
+  -> register('transport.crammd5auth')
+  -> asNewInstanceOf('Swift_Transport_Esmtp_Auth_CramMd5Authenticator')
   
-$_swiftTransportDeps['transport.nativemail'] = $_swiftTransportDeps['transport.mail'];
-$_swiftTransportDeps['transport.rotating'] = $_swiftTransportDeps['transport.loadbalanced'];
-$_swiftTransportDeps['transport.balanced'] = $_swiftTransportDeps['transport.loadbalanced'];
-$_swiftTransportDeps['transport.multi'] = $_swiftTransportDeps['transport.failover'];
-$_swiftTransportDeps['transport.redundant'] = $_swiftTransportDeps['transport.failover'];
-
-return $_swiftTransportDeps;
-
-//EOF
+  -> register('transport.loginauth')
+  -> asNewInstanceOf('Swift_Transport_Esmtp_Auth_LoginAuthenticator')
+  
+  -> register('transport.plainauth')
+  -> asNewInstanceOf('Swift_Transport_Esmtp_Auth_PlainAuthenticator')
+  
+  -> register('transport.eventdispatcher')
+  -> asSharedInstanceOf('Swift_Events_SimpleEventDispatcher')
+  -> addConstructorLookup('transport.eventtypes')
+  
+  -> register('transport.eventtypes')
+  -> asValue(array(
+      'send' => array(
+        'event' => 'Swift_Events_SendEvent',
+        'listener' => 'Swift_Events_SendListener'
+      ),
+      'transportchange' => array(
+        'event' => 'Swift_Events_TransportChangeEvent',
+        'listener' => 'Swift_Events_TransportChangeListener'
+      ),
+      'command' => array(
+        'event' => 'Swift_Events_CommandEvent',
+        'listener' => 'Swift_Events_CommandListener'
+      ),
+      'response' => array(
+        'event' => 'Swift_Events_ResponseEvent',
+        'listener' => 'Swift_Events_ResponseListener'
+      )
+  ))
+  
+  ;

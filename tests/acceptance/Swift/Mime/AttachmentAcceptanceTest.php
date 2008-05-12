@@ -121,7 +121,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
   
   // -- Private helpers
   
-  private function _createAttachment()
+  protected function _createAttachment()
   {
     $entity = new Swift_Mime_Attachment(
       $this->_headers,

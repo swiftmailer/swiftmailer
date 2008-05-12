@@ -21,11 +21,10 @@ class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
   
   protected function _getMailer()
   {
-    $factory = Swift_TransportFactory::getInstance();
     switch (SWIFT_SMOKE_TRANSPORT_TYPE)
     {
       case 'smtp':
-        $transport = $factory->create('smtp')
+        $transport = Swift_DependencyContainer::getInstance()->lookup('transport.smtp')
           ->setHost(SWIFT_SMOKE_SMTP_HOST)
           ->setPort(SWIFT_SMOKE_SMTP_PORT)
           ->setUsername(SWIFT_SMOKE_SMTP_USER)
@@ -34,13 +33,13 @@ class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
           ;
         break;
       case 'sendmail':
-        $transport = $factory->create('sendmail')
+        $transport = Swift_DependencyContainer::getInstance()->lookup('transport.sendmail')
           ->setCommand(SWIFT_SMOKE_SENDMAIL_COMMAND)
           ;
         break;
       case 'mail':
       case 'nativemail':
-        $transport = $factory->create('mail');
+        $transport = Swift_DependencyContainer::getInstance()->lookup('transport.mail');
         break;
       default:
         throw new Exception('Undefined transport [' . SWIFT_SMOKE_TRANSPORT_TYPE . ']');

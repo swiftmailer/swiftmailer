@@ -1,5 +1,6 @@
 <?php
 
+require_once 'swift_required.php';
 require_once 'Swift/Tests/SwiftSmokeTestCase.php';
 
 class Swift_Smoke_BasicSmokeTest extends Swift_Tests_SwiftSmokeTestCase
@@ -7,11 +8,8 @@ class Swift_Smoke_BasicSmokeTest extends Swift_Tests_SwiftSmokeTestCase
   
   public function testBasicSending()
   {
-    $transportFactory = Swift_TransportFactory::getInstance();
-    
     $mailer = $this->_getMailer();
-    $mimeFactory = Swift_MimeFactory::getInstance();
-    $message = $mimeFactory->create('message')
+    $message = Swift_Message::newInstance()
       ->setSubject('[Swift Mailer] BasicSmokeTest')
       ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Chris Corbyn (Swift Mailer)'))
       ->setTo(SWIFT_SMOKE_EMAIL_ADDRESS)

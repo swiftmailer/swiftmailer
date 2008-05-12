@@ -1270,7 +1270,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
   
   // -- Private helpers
   
-  private function _createMessage()
+  protected function _createMessage()
   {
     $message = new Swift_Mime_SimpleMessage(
       $this->_createHeaders(),
@@ -1280,7 +1280,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     return $message;
   }
   
-  private function _createMimePart()
+  protected function _createMimePart()
   {
     $entity = new Swift_Mime_MimePart(
       $this->_createHeaders(),
@@ -1290,7 +1290,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     return $entity;
   }
   
-  private function _createAttachment()
+  protected function _createAttachment()
   {
     $entity = new Swift_Mime_Attachment(
       $this->_createHeaders(),
@@ -1300,7 +1300,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends UnitTestCase
     return $entity;
   }
   
-  private function _createEmbeddedFile()
+  protected function _createEmbeddedFile()
   {
     $entity = new Swift_Mime_EmbeddedFile(
       $this->_createHeaders(),

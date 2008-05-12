@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/DependencyContainer.php';
 
 class One {
@@ -129,6 +130,18 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
     $obj = $this->_container->lookup('one');
     $this->assertIdentical('FOO', $obj->arg1);
     $this->assertIdentical(42, $obj->arg2);
+  }
+  
+  public function testArrayOfDependenciesCanBeSpecified()
+  {
+    $this->_container->register('foo')->asValue('FOO');
+    $this->_container->register('one')->asNewInstanceOf('One');
+    $this->_container->register('two')->asNewInstanceOf('One')
+      ->withDependencies(array(array('one', 'foo'), 'foo'));
+    
+    $obj = $this->_container->lookup('two');
+    $this->assertEqual(array($this->_container->lookup('one'), 'FOO'), $obj->arg1);
+    $this->assertIdentical('FOO', $obj->arg2);
   }
   
 }
