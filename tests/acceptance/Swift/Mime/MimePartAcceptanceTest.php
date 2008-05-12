@@ -123,7 +123,7 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
   
   // -- Private helpers
   
-  private function _createMimePart()
+  protected function _createMimePart()
   {
     $entity = new Swift_Mime_MimePart(
       $this->_headers,

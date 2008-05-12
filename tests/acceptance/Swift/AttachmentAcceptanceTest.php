@@ -1,6 +1,6 @@
 <?php
 
-require_once 'Swift/Attachment.php';
+require_once 'swift_required.php';
 require_once 'Swift/Mime/AttachmentAcceptanceTest.php';
 
 class Swift_AttachmentAcceptanceTest

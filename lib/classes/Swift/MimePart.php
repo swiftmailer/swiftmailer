@@ -1,7 +1,7 @@
 <?php
 
 /*
- Message wrapper class Swift Mailer.
+ MimePart wrapper class in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,28 +18,27 @@
  
  */
 
-//@require 'Swift/Mime/SimpleMessage.php';
+//@require 'Swift/Mime/MimePart.php';
 //@require 'Swift/DependencyContainer.php';
 
 /**
- * The Message class for building emails.
+ * A MIME part, in a multipart message.
  * @package Swift
  * @subpackage Mime
  * @author Chris Corbyn
  */
-class Swift_Message extends Swift_Mime_SimpleMessage
+class Swift_MimePart extends Swift_Mime_MimePart
 {
   
   /**
-   * Create a new Message.
+   * Create a new MimePart.
    * Details may be optionally passed into the constructor.
-   * @param string $subject
    * @param string $body
    * @param string $contentType
    * @param string $charset
    */
-  public function __construct($subject = null, $body = null,
-    $contentType = null, $charset = null)
+  public function __construct($body = null, $contentType = null,
+    $charset = null)
   {
     parent::__construct(
       Swift_DependencyContainer::getInstance()->lookup('mime.headerset'),
@@ -52,7 +51,6 @@ class Swift_Message extends Swift_Mime_SimpleMessage
       $charset = Swift_DependencyContainer::getInstance()
         ->lookup('properties.charset');
     }
-    $this->setSubject($subject);
     $this->setBody($body);
     $this->setCharset($charset);
     if ($contentType)
@@ -62,30 +60,16 @@ class Swift_Message extends Swift_Mime_SimpleMessage
   }
   
   /**
-   * Create a new Message.
-   * @param string $subject
+   * Create a new MimePart.
    * @param string $body
    * @param string $contentType
    * @param string $charset
-   * @return Swift_Mime_Message
+   * @return Swift_Mime_MimePart
    */
-  public static function newInstance($subject = null, $body = null,
-    $contentType = null, $charset = null)
+  public static function newInstance($body = null, $contentType = null,
+    $charset = null)
   {
-    return new self($subject, $body, $contentType, $charset);
-  }
-  
-  /**
-   * Add a MimePart to this Message.
-   * @param string|Swift_OutputByteStream $body
-   * @param string $contentType
-   * @param string $charset
-   */
-  public function addPart($body, $contentType = null, $charset = null)
-  {
-    return $this->attach(Swift_MimePart::newInstance(
-      $body, $contentType, $charset
-      ));
+    return new self($body, $contentType, $charset);
   }
   
 }
