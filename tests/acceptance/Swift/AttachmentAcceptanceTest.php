@@ -9,7 +9,7 @@ class Swift_AttachmentAcceptanceTest
   
   protected function _createAttachment()
   {
-    return new Swift_Attachment();
+    return Swift_Attachment::newInstance();
   }
   
 }
