@@ -26,7 +26,7 @@ $attachment_path = '../files/BeefStifado.pdf';
 
 require_once '../../lib/swift_required.php';
 
-$mailer = new Swift_Mailer(new Swift_SmtpTransport('mail.bigpond.com.au'));
+$mailer = new Swift_Mailer(new Swift_SendmailTransport());
 
 $message = Swift_Message::newInstance()
   ->setSubject('A recipe for beef stifado')

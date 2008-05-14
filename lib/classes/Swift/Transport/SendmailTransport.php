@@ -29,7 +29,8 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTransport
+class Swift_Transport_SendmailTransport
+  extends Swift_Transport_AbstractSmtpTransport
 {
   
   /**
