@@ -105,8 +105,8 @@ class Swift_Transport_MailTransport implements Swift_Transport
       + count($message->getBcc())
       );
     
-    $to = $message->getHeader('to')->getFieldBody();
-    $subject = $message->getHeader('subject')->getFieldBody();
+    $to = $message->getHeaders()->get('To')->getFieldBody();
+    $subject = $message->getHeaders()->get('Subject')->getFieldBody();
     $reversePath = $this->_getReversePath($message);
     $messageStr = $message->toString();
     
