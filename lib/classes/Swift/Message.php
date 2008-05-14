@@ -42,10 +42,10 @@ class Swift_Message extends Swift_Mime_SimpleMessage
   public function __construct($subject = null, $body = null,
     $contentType = null, $charset = null)
   {
-    parent::__construct(
-      Swift_DependencyContainer::getInstance()->lookup('mime.headerset'),
-      Swift_DependencyContainer::getInstance()->lookup('mime.qpcontentencoder'),
-      Swift_DependencyContainer::getInstance()->lookup('properties.cache')
+    call_user_func_array(
+      array($this, 'parent::__construct'),
+      Swift_DependencyContainer::getInstance()
+        ->createDependenciesFor('mime.message')
       );
     
     if (!isset($charset))

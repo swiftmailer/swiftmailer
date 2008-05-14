@@ -46,5 +46,6 @@ function swift_autoload($class)
 
 spl_autoload_register('swift_autoload');
 
+require_once SWIFT_MAP_DIRECTORY . '/cache_deps.php';
 require_once SWIFT_MAP_DIRECTORY . '/mime_deps.php';
 require_once SWIFT_MAP_DIRECTORY . '/transport_deps.php';

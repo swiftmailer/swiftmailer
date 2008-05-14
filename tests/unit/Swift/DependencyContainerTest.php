@@ -132,6 +132,18 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertIdentical(42, $obj->arg2);
   }
   
+  public function testResolvedDependenciesCanBeLookedUp()
+  {
+    $this->_container->register('foo')->asValue('FOO');
+    $this->_container->register('one')->asNewInstanceOf('One');
+    $this->_container->register('two')->asNewInstanceOf('One')
+      ->withDependencies(array('one', 'foo'));
+    $deps = $this->_container->createDependenciesFor('two');
+    $this->assertEqual(
+      array($this->_container->lookup('one'), 'FOO'), $deps
+      );
+  }
+  
   public function testArrayOfDependenciesCanBeSpecified()
   {
     $this->_container->register('foo')->asValue('FOO');

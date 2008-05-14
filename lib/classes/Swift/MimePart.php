@@ -40,10 +40,10 @@ class Swift_MimePart extends Swift_Mime_MimePart
   public function __construct($body = null, $contentType = null,
     $charset = null)
   {
-    parent::__construct(
-      Swift_DependencyContainer::getInstance()->lookup('mime.headerset'),
-      Swift_DependencyContainer::getInstance()->lookup('mime.qpcontentencoder'),
-      Swift_DependencyContainer::getInstance()->lookup('properties.cache')
+    call_user_func_array(
+      array($this, 'parent::__construct'),
+      Swift_DependencyContainer::getInstance()
+        ->createDependenciesFor('mime.part')
       );
     
     if (!isset($charset))

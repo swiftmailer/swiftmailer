@@ -119,6 +119,21 @@ class Swift_DependencyContainer
   }
   
   /**
+   * Create an array of arguments passed to the constructor of $itemName.
+   * @param string $itemName
+   * @return array
+   */
+  public function createDependenciesFor($itemName)
+  {
+    $args = array();
+    if (isset($this->_store[$itemName]['args']))
+    {
+      $args = $this->_resolveArgs($this->_store[$itemName]['args']);
+    }
+    return $args;
+  }
+  
+  /**
    * Register a new dependency with $itemName.
    * This method returns the current DependencyContainer instance because it
    * requires the use of the fluid interface to set the specific details for the
@@ -272,12 +287,9 @@ class Swift_DependencyContainer
     $reflector = new ReflectionClass($this->_store[$itemName]['className']);
     if ($reflector->getConstructor())
     {
-      $args = array();
-      if (isset($this->_store[$itemName]['args']))
-      {
-        $args = $this->_resolveArgs($this->_store[$itemName]['args']);
-      }
-      return $reflector->newInstanceArgs($args);
+      return $reflector->newInstanceArgs(
+        $this->createDependenciesFor($itemName)
+        );
     }
     else
     {

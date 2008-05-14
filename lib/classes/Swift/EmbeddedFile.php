@@ -41,10 +41,10 @@ class Swift_EmbeddedFile extends Swift_Mime_EmbeddedFile
   public function __construct($data = null, $filename = null,
     $contentType = null)
   {
-    parent::__construct(
-      Swift_DependencyContainer::getInstance()->lookup('mime.headerset'),
-      Swift_DependencyContainer::getInstance()->lookup('mime.base64contentencoder'),
-      Swift_DependencyContainer::getInstance()->lookup('properties.cache')
+    call_user_func_array(
+      array($this, 'parent::__construct'),
+      Swift_DependencyContainer::getInstance()
+        ->createDependenciesFor('mime.embeddedfile')
       );
     
     $this->setBody($data);

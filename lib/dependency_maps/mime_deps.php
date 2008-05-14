@@ -5,15 +5,12 @@ Swift_DependencyContainer::getInstance()
   -> register('properties.charset')
   -> asValue(null)
   
-  -> register('properties.cache')
-  -> asAliasOf('mime.arraycache')
-  
   -> register('mime.message')
   -> asNewInstanceOf('Swift_Mime_SimpleMessage')
   -> withDependencies(array(
     'mime.headerset',
     'mime.qpcontentencoder',
-    'properties.cache',
+    'cache',
     'properties.charset'
   ))
   
@@ -22,7 +19,7 @@ Swift_DependencyContainer::getInstance()
   -> withDependencies(array(
     'mime.headerset',
     'mime.qpcontentencoder',
-    'properties.cache',
+    'cache',
     'properties.charset'
   ))
   
@@ -31,7 +28,7 @@ Swift_DependencyContainer::getInstance()
   -> withDependencies(array(
     'mime.headerset',
     'mime.base64contentencoder',
-    'properties.cache'
+    'cache'
   ))
   
   -> register('mime.embeddedfile')
@@ -39,15 +36,8 @@ Swift_DependencyContainer::getInstance()
   -> withDependencies(array(
     'mime.headerset',
     'mime.base64contentencoder',
-    'properties.cache'
+    'cache'
   ))
-  
-  -> register('mime.arraycache')
-  -> asSharedInstanceOf('Swift_KeyCache_ArrayKeyCache')
-  -> withDependencies(array('mime.cacheinputstream'))
-  
-  -> register('mime.cacheinputstream')
-  -> asNewInstanceOf('Swift_KeyCache_SimpleKeyCacheInputStream')
   
   -> register('mime.headerfactory')
   -> asSharedInstanceOf('Swift_Mime_SimpleHeaderFactory')
