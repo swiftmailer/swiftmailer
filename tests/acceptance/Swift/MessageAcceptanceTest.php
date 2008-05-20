@@ -51,6 +51,8 @@ class Swift_MessageAcceptanceTest
   
   protected function _createMessage()
   {
+    Swift_DependencyContainer::getInstance()
+      ->register('properties.charset')->asValue(null);
     return Swift_Message::newInstance();
   }
   

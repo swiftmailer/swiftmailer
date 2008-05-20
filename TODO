@@ -26,7 +26,7 @@ Swift Mailer SE TODO:
    - CP950
  * Transports
    - PopBeforeSmtp authentication
- * Add a Swift_Image::fromPath() method
+ * Add a Swift_Image::fromPath() method?
  * Plugins
    - FileEmbedder (Mime API issues? Streams?)
    - VERP

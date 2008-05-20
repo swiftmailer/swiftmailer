@@ -3,7 +3,7 @@
 Swift_DependencyContainer::getInstance()
     
   -> register('properties.charset')
-  -> asValue(null)
+  -> asValue('utf-8')
   
   -> register('mime.message')
   -> asNewInstanceOf('Swift_Mime_SimpleMessage')

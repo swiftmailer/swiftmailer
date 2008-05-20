@@ -289,10 +289,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
       if ($this->_body instanceof Swift_OutputByteStream)
       {
         $is->write("\r\n");
-        while (false !== $bytes = $this->_body->read(8192))
-        {
-          $is->write($bytes);
-        }
+        $this->_encoder->encodeByteStream($this->_body, $is, 0,
+          $this->getMaxLineLength()
+          );
       }
       elseif (isset($this->_body))
       {
