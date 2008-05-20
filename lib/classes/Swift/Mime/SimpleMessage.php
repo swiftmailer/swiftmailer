@@ -283,6 +283,20 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     return $string;
   }
   
+  public function toByteStream(Swift_InputByteStream $is)
+  {
+    if (count($children = $this->getChildren()) > 0 && $this->getBody() != '')
+    {
+      $this->setChildren(array_merge(array($this->_becomeMimePart()), $children));
+      parent::toByteStream($is);
+      $this->setChildren($children);
+    }
+    else
+    {
+      parent::toByteStream($is);
+    }
+  }
+  
   // -- Protected methods
   
   protected function _getIdField()

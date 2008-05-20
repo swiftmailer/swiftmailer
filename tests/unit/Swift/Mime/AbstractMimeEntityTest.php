@@ -639,22 +639,18 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $entity->charsetChanged('windows-874');
   }
   
-  public function FRAGILE_testEntityCanBeWrittenToByteStream()
+  public function testEntityIsWrittenToByteStream()
   {
-    $context = new Mockery();
-    $cache = $this->_getCache($context, false);
-    $is = $context->mock('Swift_InputByteStream');
-    $context->checking(Expectations::create()
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $is = $this->_createInputStream(false);
+    $this->_mockery()->checking(Expectations::create()
+      -> atLeast(1)->of($is)->write(any())
       -> ignoring($is)
-      -> atLeast(1)->of($cache)->exportToByteStream(any(), any(), $is)
-      -> ignoring($cache)
       );
     
-    $entity = $this->_createEntity(array(), $this->_getEncoder($context), $cache);
-    $entity->setBodyAsString('test');
     $entity->toByteStream($is);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testOrderingHtmlBeforeText()
@@ -923,6 +919,18 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       }
     }
     return $os;
+  }
+  
+  protected function _createInputStream($stub = true)
+  {
+    $is = $this->_mockery()->mock('Swift_InputByteStream');
+    if ($stub)
+    {
+      $this->_mockery()->checking(Expectations::create()
+        -> ignoring($is)
+        );
+    }
+    return $is;
   }
   
   // -- Mock helpers

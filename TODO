@@ -4,21 +4,15 @@ Swift Mailer SE TODO:
  * setMimeWarning()
  * Think about the interface for loading plugins
  * CharsetChangeObserver
-   - MimeEntities
+   - MimeEntities #
    - Headers
    - HeaderEncoders
    - HeaderSet
    - HeaderFactory
  * Re-implement caching
- * Re-implement toByteStream()
-   - On SimpleMimeEntity
-   - On SimpleMessage
-   - On SimpleHeaderSet
- * Re-think how to avoid CRLF . CRLF
- * Re-think how to convert CRLF to LF & Vice Versa
- * Aim to make DI transparent
-   - Get rid of the factories and write wrapper classes
- * Split PolymorphicBuffer into two distinct classes
+ * Re-think how to avoid CRLF . CRLF* (Filters?) - Done, needs implementing
+ * Re-think how to convert CRLF to LF & Vice Versa*
+ * Re-name PolymorphicBuffer to StreamBuffer
  * Failed recipients?
    - Mail
  * Event dispatching
@@ -32,8 +26,7 @@ Swift Mailer SE TODO:
    - CP950
  * Transports
    - PopBeforeSmtp authentication
- * Swift_ByteStream_FileByteStream is too long
-   - Swift_File ?
+ * Add a Swift_Image::fromPath() method
  * Plugins
    - FileEmbedder (Mime API issues? Streams?)
    - VERP
@@ -42,7 +35,6 @@ Swift Mailer SE TODO:
 Missing unit tests:
 -------------------
 
- * Writing to byte streams
  * Effective use of caching
  * Message body becoming mime part if attachment added
    - Make sure content-type header has no charset etc
@@ -50,33 +42,7 @@ Missing unit tests:
 Poorly implemented:
 -------------------
 
- * writeTransformations() in buffer could fail
+ * writeTransformations() in buffer could fail*
  * canonicalization logic could fail
-
-Website Re-Design:
-------------------
-
- * New Logo
- * New layout without sidebar
-   - Documentation integrated
-     - User comments filtered
-     - V4/V3 separation (/docs/v3/something vs. /docs/v4/something)
-     - Duplicate content from DokuWiki and add redirects
-     - Show EE specific documentation to logged in users
-   - Scrap the www. domain and do a redirect
-   - Bug tracking
-     - Integrated
-     - Priority fixes for EE users
-   - Take PayPal express checkout payments & paypal credit card payments
-   - Issue licenses with usernames/passwords to download area
-     - Allow purchase of additional licenses
-     - Allow notification of new releases
-   - Book (PDF) download
-
-Swift Mailer Book:
-------------------
-
- * 30-40 pages with examples
-   - Include developer guide
  
 EoM

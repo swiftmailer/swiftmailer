@@ -283,6 +283,34 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   
   public function toByteStream(Swift_InputByteStream $is)
   {
+    $is->write($this->_headers->toString());
+    if (empty($this->_immediateChildren))
+    {
+      if ($this->_body instanceof Swift_OutputByteStream)
+      {
+        $is->write("\r\n");
+        while (false !== $bytes = $this->_body->read(8192))
+        {
+          $is->write($bytes);
+        }
+      }
+      elseif (isset($this->_body))
+      {
+        $is->write("\r\n" . $this->_encoder->encodeString($this->getBody(), 0,
+          $this->getMaxLineLength()
+          ));
+      }
+    }
+    
+    if (!empty($this->_immediateChildren))
+    {
+      foreach ($this->_immediateChildren as $child)
+      {
+        $is->write("\r\n--" . $this->getBoundary() . "\r\n");
+        $child->toByteStream($is);
+      }
+      $is->write("\r\n--" . $this->getBoundary() . "--\r\n");
+    }
   }
   
   // -- Protected methods
