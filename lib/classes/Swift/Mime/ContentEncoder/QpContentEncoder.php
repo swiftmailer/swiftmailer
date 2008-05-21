@@ -103,13 +103,4 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
     return 'quoted-printable';
   }
   
-  /**
-   * Notify this observer that the entity's charset has changed.
-   * @param string $charset
-   */
-  public function charsetChanged($charset)
-  {
-    $this->_charStream->setCharacterSet($charset);
-  }
-  
 }

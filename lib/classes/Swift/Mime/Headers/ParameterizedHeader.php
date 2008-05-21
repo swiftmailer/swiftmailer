@@ -72,6 +72,19 @@ class Swift_Mime_Headers_ParameterizedHeader
   }
   
   /**
+   * Set the character set used in this Header.
+   * @param string $charset
+   */
+  public function setCharset($charset)
+  {
+    parent::setCharset($charset);
+    if (isset($this->_paramEncoder))
+    {
+      $this->_paramEncoder->charsetChanged($charset);
+    }
+  }
+  
+  /**
    * Set the value of $parameter.
    * @param string $parameter
    * @param string $value
@@ -99,6 +112,7 @@ class Swift_Mime_Headers_ParameterizedHeader
    */
   public function setParameters(array $parameters)
   {
+    $this->clearCachedValueIf($this->_params != $parameters);
     $this->_params = $parameters;
   }
   
@@ -115,7 +129,7 @@ class Swift_Mime_Headers_ParameterizedHeader
    * Get the value of this header prepared for rendering.
    * @return string
    */
-  public function getFieldBody()
+  public function getFieldBody() //TODO: Check caching here
   {
     $body = parent::getFieldBody();
     foreach ($this->_params as $name => $value)

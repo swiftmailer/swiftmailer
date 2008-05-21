@@ -3,12 +3,6 @@ Swift Mailer SE TODO:
 
  * setMimeWarning()
  * Think about the interface for loading plugins
- * CharsetChangeObserver
-   - MimeEntities #
-   - Headers
-   - HeaderEncoders
-   - HeaderSet
-   - HeaderFactory
  * Re-implement caching
  * Re-think how to avoid CRLF . CRLF* (Filters?) - Done, needs implementing
  * Re-think how to convert CRLF to LF & Vice Versa*

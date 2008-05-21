@@ -541,6 +541,60 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
       );
   }
   
+  public function testSettingCharsetNotifiesAlreadyExistingHeaders()
+  {
+    $subject = $this->_createHeader('Subject', 'some text');
+    $xHeader = $this->_createHeader('X-Header', 'some text');
+    $factory = $this->_createFactory();
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($factory)->createTextHeader('Subject', 'some text')
+        -> returns($subject)
+      -> ignoring($factory)->createTextHeader('X-Header', 'some text')
+        -> returns($xHeader)
+      -> ignoring($factory)
+      -> one($subject)->setCharset('utf-8')
+      -> one($xHeader)->setCharset('utf-8')
+      );
+    $set = $this->_createSet($factory);
+    $set->addTextHeader('Subject', 'some text');
+    $set->addTextHeader('X-Header', 'some text');
+    
+    $set->setCharset('utf-8');
+  }
+  
+  public function testCharsetChangeNotifiesAlreadyExistingHeaders()
+  {
+    $subject = $this->_createHeader('Subject', 'some text');
+    $xHeader = $this->_createHeader('X-Header', 'some text');
+    $factory = $this->_createFactory();
+    $this->_mockery()->checking(Expectations::create()
+      -> ignoring($factory)->createTextHeader('Subject', 'some text')
+        -> returns($subject)
+      -> ignoring($factory)->createTextHeader('X-Header', 'some text')
+        -> returns($xHeader)
+      -> ignoring($factory)
+      -> one($subject)->setCharset('utf-8')
+      -> one($xHeader)->setCharset('utf-8')
+      );
+    $set = $this->_createSet($factory);
+    $set->addTextHeader('Subject', 'some text');
+    $set->addTextHeader('X-Header', 'some text');
+    
+    $set->charsetChanged('utf-8');
+  }
+  
+  public function testCharsetChangeNotifiesFactory()
+  {
+    $factory = $this->_createFactory();
+    $this->_mockery()->checking(Expectations::create()
+      -> one($factory)->charsetChanged('utf-8')
+      -> ignoring($factory)
+      );
+    $set = $this->_createSet($factory);
+    
+    $set->setCharset('utf-8');
+  }
+  
   // -- Creation methods
   
   private function _createSet($factory)

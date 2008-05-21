@@ -43,16 +43,21 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
   /** The Encoder used by parameters */
   private $_paramEncoder;
   
+  /** The charset of created Headers */
+  private $_charset;
+  
   /**
    * Creates a new SimpleHeaderFactory using $encoder and $paramEncoder.
    * @param Swift_Mime_HeaderEncoder $encoder
    * @param Swift_Encoder $paramEncoder
+   * @param string $charset
    */
   public function __construct(Swift_Mime_HeaderEncoder $encoder,
-    Swift_Encoder $paramEncoder)
+    Swift_Encoder $paramEncoder, $charset = null)
   {
     $this->_encoder = $encoder;
     $this->_paramEncoder = $paramEncoder;
+    $this->_charset = $charset;
   }
   
   /**
@@ -68,6 +73,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     {
       $header->setFieldBodyModel($addresses);
     }
+    $this->_setHeaderCharset($header);
     return $header;
   }
   
@@ -84,6 +90,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     {
       $header->setFieldBodyModel($timestamp);
     }
+    $this->_setHeaderCharset($header);
     return $header;
   }
   
@@ -100,6 +107,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     {
       $header->setFieldBodyModel($value);
     }
+    $this->_setHeaderCharset($header);
     return $header;
   }
   
@@ -126,6 +134,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     {
       $header->setParameter($k, $v);
     }
+    $this->_setHeaderCharset($header);
     return $header;
   }
   
@@ -142,6 +151,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     {
       $header->setFieldBodyModel($ids);
     }
+    $this->_setHeaderCharset($header);
     return $header;
   }
   
@@ -158,7 +168,30 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     {
       $header->setFieldBodyModel($path);
     }
+    $this->_setHeaderCharset($header);
     return $header;
+  }
+  
+  /**
+   * Notify this observer that the entity's charset has changed.
+   * @param string $charset
+   */
+  public function charsetChanged($charset)
+  {
+    $this->_charset = $charset;
+    $this->_encoder->charsetChanged($charset);
+    $this->_paramEncoder->charsetChanged($charset);
+  }
+  
+  // -- Private methods
+  
+  /** Apply the charset to the Header */
+  private function _setHeaderCharset(Swift_Mime_Header $header)
+  {
+    if (isset($this->_charset))
+    {
+      $header->setCharset($this->_charset);
+    }
   }
   
 }

@@ -181,6 +181,15 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     return $this->_standardize(implode("=\r\n", $lines));
   }
   
+  /**
+   * Updates the charset used.
+   * @param string $charset
+   */
+  public function charsetChanged($charset)
+  {
+    $this->_charStream->setCharacterSet($charset);
+  }
+  
   // -- Protected methods
   
   /**

@@ -133,23 +133,47 @@ class Swift_Mime_SimpleHeaderFactoryTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertEqual('foo@bar', $header->getFieldBodyModel());
   }
   
+  public function testCharsetChangeNotificationNotifiesEncoders()
+  {
+    $encoder = $this->_createHeaderEncoder(false);
+    $paramEncoder = $this->_createParamEncoder(false);
+    
+    $factory = $this->_createFactory($encoder, $paramEncoder);
+    
+    $this->_mockery()->checking(Expectations::create()
+      -> one($encoder)->charsetChanged('utf-8')
+      -> one($paramEncoder)->charsetChanged('utf-8')
+      -> ignoring($encoder)
+      -> ignoring($paramEncoder)
+      );
+    
+    $factory->charsetChanged('utf-8');
+  }
+  
   // -- Creation methods
   
-  private function _createFactory()
+  private function _createFactory($encoder = null, $paramEncoder = null)
   {
-    return new Swift_Mime_SimpleHeaderFactory($this->_createHeaderEncoder(),
-      $this->_createParamEncoder()
+    return new Swift_Mime_SimpleHeaderFactory(
+      $encoder
+        ? $encoder : $this->_createHeaderEncoder(),
+      $paramEncoder
+        ? $paramEncoder : $this->_createParamEncoder()
       );
   }
   
-  private function _createHeaderEncoder()
+  private function _createHeaderEncoder($stub = true)
   {
-    return $this->_stub('Swift_Mime_HeaderEncoder');
+    return $stub
+      ? $this->_stub('Swift_Mime_HeaderEncoder')
+      : $this->_mockery()->mock('Swift_Mime_HeaderEncoder');
   }
   
-  private function _createParamEncoder()
+  private function _createParamEncoder($stub = true)
   {
-    return $this->_stub('Swift_Encoder');
+    return $stub
+      ? $this->_stub('Swift_Encoder')
+      : $this->_mockery()->mock('Swift_Encoder');
   }
   
 }

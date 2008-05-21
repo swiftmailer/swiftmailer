@@ -70,6 +70,19 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
     $part->setCharset('utf-8');
   }
   
+  public function testSettingCharsetNotifiesHeaders()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_mockery()->checking(Expectations::create()
+      -> one($headers)->charsetChanged('utf-8')
+      -> ignoring($headers)
+      );
+    $part = $this->_createMimePart($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $part->setCharset('utf-8');
+  }
+  
   public function testSettingCharsetNotifiesChildren()
   {
     $child = $this->_createChild(0, '', false);

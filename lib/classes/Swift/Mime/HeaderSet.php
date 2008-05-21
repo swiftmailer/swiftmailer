@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/InputByteStream.php';
+//@require 'Swift/Mime/CharsetObserver.php';
 
 /**
  * A collection of MIME headers.
@@ -26,7 +26,7 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-interface Swift_Mime_HeaderSet
+interface Swift_Mime_HeaderSet extends Swift_Mime_CharsetObserver
 {
   
   /**
@@ -138,11 +138,5 @@ interface Swift_Mime_HeaderSet
    * @return string
    */
   public function toString();
-  
-  /**
-   * Write all Headers to to the byte stream.
-   * @param Swift_InputByteStream $is
-   */
-  public function toByteStream(Swift_InputByteStream $is);
   
 }

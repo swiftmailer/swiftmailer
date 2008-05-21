@@ -451,6 +451,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   private function _notifyCharsetChanged($charset)
   {
     $this->_encoder->charsetChanged($charset);
+    $this->_headers->charsetChanged($charset);
     foreach ($this->_immediateChildren as $child)
     {
       $child->charsetChanged($charset);

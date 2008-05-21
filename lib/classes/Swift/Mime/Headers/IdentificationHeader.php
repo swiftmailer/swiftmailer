@@ -114,8 +114,8 @@ class Swift_Mime_Headers_IdentificationHeader
       }
     }
     
+    $this->clearCachedValueIf($this->_ids != $actualIds);
     $this->_ids = $actualIds;
-    $this->setCachedValue(null);
   }
   
   /**

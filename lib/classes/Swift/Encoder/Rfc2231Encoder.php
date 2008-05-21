@@ -88,4 +88,13 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
     return implode("\r\n", $lines);
   }
   
+  /**
+   * Updates the charset used.
+   * @param string $charset
+   */
+  public function charsetChanged($charset)
+  {
+    $this->_charStream->setCharacterSet($charset);
+  }
+  
 }

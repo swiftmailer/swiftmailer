@@ -63,4 +63,11 @@ class Swift_Encoder_Base64Encoder implements Swift_Encoder
     return $firstLine . trim(chunk_split($encodedString, $maxLineLength, "\r\n"));
   }
   
+  /**
+   * Does nothing.
+   */
+  public function charsetChanged($charset)
+  {
+  }
+  
 }

@@ -84,8 +84,8 @@ class Swift_Mime_Headers_UnstructuredHeader
    */
   public function setValue($value)
   {
+    $this->clearCachedValueIf($this->_value != $value);
     $this->_value = $value;
-    $this->setCachedValue(null);
   }
   
   /**

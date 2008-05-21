@@ -36,6 +36,12 @@ interface Swift_Mime_Header
   public function setFieldBodyModel($model);
   
   /**
+   * Set the charset used when rendering the Header.
+   * @param string $charset
+   */
+  public function setCharset($charset);
+  
+  /**
    * Get the model for the field body.
    * The return type depends on the specifics of the Header.
    * @return mixed

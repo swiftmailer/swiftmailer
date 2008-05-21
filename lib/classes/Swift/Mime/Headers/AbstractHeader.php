@@ -91,7 +91,12 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
    */
   public function setCharset($charset)
   {
+    $this->clearCachedValueIf($charset != $this->_charset);
     $this->_charset = $charset;
+    if (isset($this->_encoder))
+    {
+      $this->_encoder->charsetChanged($charset);
+    }
   }
   
   /**
@@ -111,6 +116,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
    */
   public function setLanguage($lang)
   {
+    $this->clearCachedValueIf($this->_lang != $lang);
     $this->_lang = $lang;
   }
   
@@ -130,6 +136,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
   public function setEncoder(Swift_Mime_HeaderEncoder $encoder)
   {
     $this->_encoder = $encoder;
+    $this->setCachedValue(null);
   }
   
   /**
@@ -156,6 +163,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
    */
   public function setMaxLineLength($lineLength)
   {
+    $this->clearCachedValueIf($this->_lineLength != $lineLength);
     $this->_lineLength = $lineLength;
   }
   
@@ -499,6 +507,19 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
   protected function getCachedValue()
   {
     return $this->_cachedValue;
+  }
+  
+  /**
+   * Clear the cached value if $condition is met.
+   * @param boolean $condition
+   * @access protected
+   */
+  protected function clearCachedValueIf($condition)
+  {
+    if ($condition)
+    {
+      $this->setCachedValue(null);
+    }
   }
   
   // -- Private methods

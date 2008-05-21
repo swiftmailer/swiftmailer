@@ -19,7 +19,7 @@
  */
 
 //@require 'Swift/Mime/HeaderSet.php';
-//@require 'Swift/InputByteStream.php';
+//@require 'Swift/Mime/HeaderFactory.php';
 
 /**
  * A collection of MIME headers.
@@ -42,13 +42,33 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   /** List of fields which are required to be displayed */
   private $_required = array();
   
+  /** The charset used by Headers */
+  private $_charset;
+  
   /**
    * Create a new SimpleHeaderSet with the given $factory.
    * @param Swift_Mime_HeaderFactory $factory
+   * @param string $charset
    */
-  public function __construct(Swift_Mime_HeaderFactory $factory)
+  public function __construct(Swift_Mime_HeaderFactory $factory,
+    $charset = null)
   {
     $this->_factory = $factory;
+    if (isset($charset))
+    {
+      $this->setCharset($charset);
+    }
+  }
+  
+  /**
+   * Set the charset used by these headers.
+   * @param string $charset
+   */
+  public function setCharset($charset)
+  {
+    $this->_charset = $charset;
+    $this->_factory->charsetChanged($charset);
+    $this->_notifyHeadersOfCharset($charset);
   }
   
   /**
@@ -214,6 +234,15 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   {
     $this->_required = array_map('strtolower', $names);
   }
+
+  /**
+   * Notify this observer that the entity's charset has changed.
+   * @param string $charset
+   */
+  public function charsetChanged($charset)
+  {
+    $this->setCharset($charset);
+  }
   
   /**
    * Returns a string with a representation of all headers.
@@ -238,14 +267,6 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
       }
     }
     return $string;
-  }
-  
-  /**
-   * Write all Headers to to the byte stream.
-   * @param Swift_InputByteStream $is
-   */
-  public function toByteStream(Swift_InputByteStream $is)
-  {
   }
   
   // -- Private methods
@@ -294,6 +315,18 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   private function _isDisplayed(Swift_Mime_Header $header)
   {
     return in_array(strtolower($header->getFieldName()), $this->_required);
+  }
+  
+  /** Notify all Headers of the new charset */
+  private function _notifyHeadersOfCharset($charset)
+  {
+    foreach ($this->_headers as $headerGroup)
+    {
+      foreach ($headerGroup as $header)
+      {
+        $header->setCharset($charset);
+      }
+    }
   }
   
 }

@@ -18,6 +18,7 @@
  
  */
 
+//@require 'Swift/Mime/CharsetObserver.php';
 
 /**
  * Creates MIME headers.
@@ -25,7 +26,7 @@
  * @subpackage Mime
  * @author Chris Corbyn
  */
-interface Swift_Mime_HeaderFactory
+interface Swift_Mime_HeaderFactory extends Swift_Mime_CharsetObserver
 {
   
   /**

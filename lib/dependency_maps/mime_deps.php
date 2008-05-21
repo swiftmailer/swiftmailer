@@ -40,12 +40,16 @@ Swift_DependencyContainer::getInstance()
   ))
   
   -> register('mime.headerfactory')
-  -> asSharedInstanceOf('Swift_Mime_SimpleHeaderFactory')
-  -> withDependencies(array('mime.qpheaderencoder', 'mime.rfc2231encoder'))
+  -> asNewInstanceOf('Swift_Mime_SimpleHeaderFactory')
+  -> withDependencies(array(
+      'mime.qpheaderencoder',
+      'mime.rfc2231encoder',
+      'properties.charset'
+      ))
   
   -> register('mime.headerset')
   -> asNewInstanceOf('Swift_Mime_SimpleHeaderSet')
-  -> withDependencies(array('mime.headerfactory'))
+  -> withDependencies(array('mime.headerfactory', 'properties.charset'))
   
   -> register('mime.qpheaderencoder')
   -> asNewInstanceOf('Swift_Mime_HeaderEncoder_QpHeaderEncoder')
