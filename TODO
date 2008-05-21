@@ -6,7 +6,7 @@ Swift Mailer SE TODO:
  * Re-implement caching
  * Re-think how to avoid CRLF . CRLF* (Filters?) - Done, needs implementing
  * Re-think how to convert CRLF to LF & Vice Versa*
- * Re-name PolymorphicBuffer to StreamBuffer
+ * Re-name StreamBuffer to StreamBuffer
  * Failed recipients?
    - Mail
  * Event dispatching
@@ -25,13 +25,6 @@ Swift Mailer SE TODO:
    - FileEmbedder (Mime API issues? Streams?)
    - VERP
  * V3 Wrapper classes
- 
-Missing unit tests:
--------------------
-
- * Effective use of caching
- * Message body becoming mime part if attachment added
-   - Make sure content-type header has no charset etc
  
 Poorly implemented:
 -------------------

@@ -1,9 +1,9 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Transport/PolymorphicBuffer.php';
+require_once 'Swift/Transport/StreamBuffer.php';
 
-class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
+class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest
   extends Swift_Tests_SwiftUnitTestCase
 {
 
@@ -12,23 +12,23 @@ class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
   public function skip()
   {
     $streams = stream_get_transports();
-    $this->skipIf(!in_array('tls', $streams),
-      'TLS is not configured for your system.  It is not possible to run this test'
+    $this->skipIf(!in_array('ssl', $streams),
+      'SSL is not configured for your system.  It is not possible to run this test'
       );
-    $this->skipIf(!SWIFT_TLS_HOST,
-      'Cannot run test without a TLS enabled SMTP host to connect to (define ' .
-      'SWIFT_TLS_HOST in tests/acceptance.conf.php if you wish to run this test)'
+    $this->skipIf(!SWIFT_SSL_HOST,
+      'Cannot run test without an SSL enabled SMTP host to connect to (define ' .
+      'SWIFT_SSL_HOST in tests/acceptance.conf.php if you wish to run this test)'
       );
   }
   
   public function setUp()
   {
-    $this->_buffer = new Swift_Transport_PolymorphicBuffer();
+    $this->_buffer = new Swift_Transport_StreamBuffer();
   }
   
   public function testReadLine()
   {
-    $parts = explode(':', SWIFT_TLS_HOST);
+    $parts = explode(':', SWIFT_SSL_HOST);
     $host = $parts[0];
     $port = isset($parts[1]) ? $parts[1] : 25;
     
@@ -36,7 +36,7 @@ class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
       'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
       'host' => $host,
       'port' => $port,
-      'protocol' => 'tls',
+      'protocol' => 'ssl',
       'blocking' => 1,
       'timeout' => 15
       ));
@@ -52,7 +52,7 @@ class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
   
   public function testWrite()
   {
-    $parts = explode(':', SWIFT_TLS_HOST);
+    $parts = explode(':', SWIFT_SSL_HOST);
     $host = $parts[0];
     $port = isset($parts[1]) ? $parts[1] : 25;
     
@@ -60,7 +60,7 @@ class Swift_Transport_PolymorphicBuffer_TlsSocketAcceptanceTest
       'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
       'host' => $host,
       'port' => $port,
-      'protocol' => 'tls',
+      'protocol' => 'ssl',
       'blocking' => 1,
       'timeout' => 15
       ));

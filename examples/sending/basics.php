@@ -21,7 +21,7 @@ $message = Swift_MimeFactory::create('message')
   ->setBody('just testing')
   ;
   
-$smtp = new Swift_Transport_EsmtpTransport(new Swift_Transport_PolymorphicBuffer(), array());
+$smtp = new Swift_Transport_EsmtpTransport(new Swift_Transport_StreamBuffer(), array());
 $smtp->setHost('gravity.sitepoint.com');
 
 $mailer = new Swift_Mailer($smtp);

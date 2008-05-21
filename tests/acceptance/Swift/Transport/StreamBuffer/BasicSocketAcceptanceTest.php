@@ -1,9 +1,9 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Transport/PolymorphicBuffer.php';
+require_once 'Swift/Transport/StreamBuffer.php';
 
-class Swift_Transport_PolymorphicBuffer_BasicSocketAcceptanceTest
+class Swift_Transport_StreamBuffer_BasicSocketAcceptanceTest
   extends Swift_Tests_SwiftUnitTestCase
 {
 
@@ -19,7 +19,7 @@ class Swift_Transport_PolymorphicBuffer_BasicSocketAcceptanceTest
   
   public function setUp()
   {
-    $this->_buffer = new Swift_Transport_PolymorphicBuffer();
+    $this->_buffer = new Swift_Transport_StreamBuffer();
   }
   
   public function testReadLine()

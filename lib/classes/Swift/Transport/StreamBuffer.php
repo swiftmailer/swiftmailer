@@ -27,7 +27,7 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Transport_PolymorphicBuffer implements Swift_Transport_IoBuffer
+class Swift_Transport_StreamBuffer implements Swift_Transport_IoBuffer
 {
   
   /**

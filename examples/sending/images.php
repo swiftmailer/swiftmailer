@@ -28,7 +28,7 @@ $message->setSubject('A message with an embedded image')
   ->setCharset('iso-8859-1');
   ;
   
-$smtp = new Swift_Transport_EsmtpTransport(new Swift_Transport_PolymorphicBuffer(), array());
+$smtp = new Swift_Transport_EsmtpTransport(new Swift_Transport_StreamBuffer(), array());
 $smtp->setHost('gravity.sitepoint.com');
 
 $mailer = new Swift_Mailer($smtp);

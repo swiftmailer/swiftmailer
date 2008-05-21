@@ -27,7 +27,7 @@ Swift_DependencyContainer::getInstance()
   -> asNewInstanceOf('Swift_Transport_FailoverTransport')
   
   -> register('transport.buffer')
-  -> asNewInstanceOf('Swift_Transport_PolymorphicBuffer')
+  -> asNewInstanceOf('Swift_Transport_StreamBuffer')
   
   -> register('transport.authhandler')
   -> asNewInstanceOf('Swift_Transport_Esmtp_AuthHandler')
