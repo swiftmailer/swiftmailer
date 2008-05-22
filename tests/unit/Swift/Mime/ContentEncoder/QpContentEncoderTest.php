@@ -19,7 +19,7 @@ class Swift_StreamCollector implements Yay_Action {
 
 class Swift_MockInputByteStream implements Swift_InputByteStream {
   public $content = '';
-  public function write($chars) {
+  public function write($chars, Swift_InputByteStream $is = null) {
     $this->content .= $chars;
   }
   public function flushContents() {

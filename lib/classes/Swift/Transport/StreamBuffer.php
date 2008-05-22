@@ -204,8 +204,13 @@ class Swift_Transport_StreamBuffer implements Swift_Transport_IoBuffer
    * @param string $bytes
    * @return int
    */
-  public function write($bytes)
+  public function write($bytes, Swift_InputByteStream $is = null)
   {
+    if (isset($is))
+    {
+      $is->write($bytes);
+    }
+    
     if (isset($this->_in)
       && fwrite($this->_in, str_replace(
         array_keys($this->_translations),

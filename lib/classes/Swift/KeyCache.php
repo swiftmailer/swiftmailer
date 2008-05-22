@@ -60,11 +60,14 @@ interface Swift_KeyCache
   /**
    * Provides a ByteStream which when written to, writes data to $itemKey.
    * NOTE: The stream will always write in append mode.
+   * If the optional third parameter is passed all writes will go through $is.
    * @param string $nsKey
    * @param string $itemKey
+   * @param Swift_InputByteStream $is, optional
    * @return Swift_InputByteStream
    */
-  public function getInputByteStream($nsKey, $itemKey);
+  public function getInputByteStream($nsKey, $itemKey,
+    Swift_InputByteStream $is = null);
   
   /**
    * Get data back out of the cache as a string.

@@ -6,7 +6,7 @@ require_once 'Swift/InputByteStream.php';
 
 class Swift_MockInputByteStream implements Swift_InputByteStream {
   public $content = '';
-  public function write($string) {
+  public function write($string, Swift_InputByteStream $is = null) {
     $this->content .= $string;
   }
   public function flushContents() {

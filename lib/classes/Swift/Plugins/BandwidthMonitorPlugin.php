@@ -92,9 +92,13 @@ class Swift_Plugins_BandwidthMonitorPlugin
    * Called when a message is sent so that the outgoing counter can be increased.
    * @param string $bytes
    */
-  public function write($bytes)
+  public function write($bytes, Swift_InputByteStream $is = null)
   {
     $this->_out += strlen($bytes);
+    if (isset($is))
+    {
+      $is->write($bytes);
+    }
   }
   
   /**

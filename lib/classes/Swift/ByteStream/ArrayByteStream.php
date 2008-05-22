@@ -89,12 +89,17 @@ class Swift_ByteStream_ArrayByteStream
   /**
    * Writes $bytes to the end of the stream.
    * @param string $bytes
+   * @param Swift_InputByteStream $is, optional
    */
-  public function write($bytes)
+  public function write($bytes, Swift_InputByteStream $is = null)
   {
     foreach (unpack('C*', $bytes) as $byte)
     {
       $this->_array[] = pack('C', $byte);
+    }
+    if (isset($is))
+    {
+      $is->write($bytes);
     }
   }
   

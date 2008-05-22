@@ -1,35 +1,33 @@
 Swift Mailer SE TODO:
 ---------------------
 
- * setMimeWarning()
- * Think about the interface for loading plugins
- * Re-implement caching
+ * Think about the interface for loading plugins ($transport->getEventDispatcher())
  * Re-think how to avoid CRLF . CRLF* (Filters?) - Done, needs implementing
- * Re-think how to convert CRLF to LF & Vice Versa*
- * Re-name StreamBuffer to StreamBuffer
- * Failed recipients?
-   - Mail
- * Event dispatching
-   - Mail
- * Simplify the event system:
-   - Get rid of the ability to bind to a source
+ * Failed recipients in MailTransport
+ * Event dispatching in MailTransport
+ * Add test coverage for cache write through
+ * Add a Swift_Image::fromPath() method?
+ * FileEmbedder (Mime API issues? Streams?)
+ * Test with qMail
+ 
+Poorly implemented:
+-------------------
+
+ * Canonicalization logic in QpEncoder could lead to sporadic double line breaks
+ 
+After first beta:
+-----------------
+
+* Simplify the event system:
+   - Get rid of the ability to bind to a specific source
+   - Benchmark difference creating "New" events instead of current convoluted setup
  * CharacterReaders
    - Big5
    - Shift-JIS
    - ISO-10646
    - CP950
- * Transports
-   - PopBeforeSmtp authentication
- * Add a Swift_Image::fromPath() method?
- * Plugins
-   - FileEmbedder (Mime API issues? Streams?)
-   - VERP
+ * VerpPlugin
+ * PopBeforeSmtpPlugin
  * V3 Wrapper classes
- 
-Poorly implemented:
--------------------
-
- * writeTransformations() in buffer could fail*
- * canonicalization logic could fail
  
 EoM

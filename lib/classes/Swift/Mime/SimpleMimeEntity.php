@@ -48,12 +48,14 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   private $_maxLineLength = 78;
   private $_typeOrderPreference = array();
   private $_id;
+  private $_cacheKey;
   
   protected $_userContentType;
   
   public function __construct(Swift_Mime_HeaderSet $headers,
     Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
+    $this->_cacheKey = uniqid();
     $this->_headers = $headers;
     $this->setEncoder($encoder);
     $this->_cache = $cache;
@@ -263,9 +265,20 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     $string = $this->_headers->toString();
     if (isset($this->_body) && empty($this->_immediateChildren))
     {
-      $string .= "\r\n" . $this->_encoder->encodeString($this->getBody(), 0,
-        $this->getMaxLineLength()
-        );
+      if ($this->_cache->hasKey($this->_cacheKey, 'body'))
+      {
+        $body = $this->_cache->getString($this->_cacheKey, 'body');
+      }
+      else
+      {
+        $body = "\r\n" . $this->_encoder->encodeString($this->getBody(), 0,
+          $this->getMaxLineLength()
+          );
+        $this->_cache->setString($this->_cacheKey, 'body', $body,
+          Swift_KeyCache::MODE_WRITE
+          );
+      }
+      $string .= $body;
     }
     
     if (!empty($this->_immediateChildren))
@@ -286,18 +299,32 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     $is->write($this->_headers->toString());
     if (empty($this->_immediateChildren))
     {
-      if ($this->_body instanceof Swift_OutputByteStream)
+      if (isset($this->_body))
       {
-        $is->write("\r\n");
-        $this->_encoder->encodeByteStream($this->_body, $is, 0,
-          $this->getMaxLineLength()
-          );
-      }
-      elseif (isset($this->_body))
-      {
-        $is->write("\r\n" . $this->_encoder->encodeString($this->getBody(), 0,
-          $this->getMaxLineLength()
-          ));
+        if ($this->_cache->hasKey($this->_cacheKey, 'body'))
+        {
+          $this->_cache->exportToByteStream($this->_cacheKey, 'body', $is);
+        }
+        else
+        {
+          $is->write("\r\n",
+            $this->_cache->getInputByteStream($this->_cacheKey, 'body')
+            );
+          if ($this->_body instanceof Swift_OutputByteStream)
+          {
+            $this->_encoder->encodeByteStream($this->_body,
+              $this->_cache->getInputByteStream($this->_cacheKey, 'body', $is),
+              0, $this->getMaxLineLength()
+              );
+          }
+          else
+          {
+            $is->write($this->_encoder->encodeString($this->getBody(), 0,
+              $this->getMaxLineLength()),
+              $this->_cache->getInputByteStream($this->_cacheKey, 'body')
+              );
+          }
+        }
       }
     }
     
@@ -380,6 +407,11 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   protected function _getCache()
   {
     return $this->_cache;
+  }
+  
+  protected function _clearCache()
+  {
+    $this->_cache->clearKey($this->_cacheKey, 'body');
   }
   
   // -- Private methods

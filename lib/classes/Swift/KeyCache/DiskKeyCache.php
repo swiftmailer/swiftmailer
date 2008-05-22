@@ -148,7 +148,8 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    * @param string $itemKey
    * @return Swift_InputByteStream
    */
-  public function getInputByteStream($nsKey, $itemKey)
+  public function getInputByteStream($nsKey, $itemKey,
+    Swift_InputByteStream $is = null)
   {
     $is = clone $this->_stream;
     $is->setKeyCache($this);

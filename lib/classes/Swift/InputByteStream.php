@@ -33,10 +33,14 @@ interface Swift_InputByteStream
    * Writes $bytes to the end of the stream.
    * This method returns the sequence ID of the write (i.e. 1 for first, 2 for
    * second, etc etc).
+   * If the optional second parameter is passed a write-through will occur
+   * where $bytes first get written to this ByteStream and then to $is.
+   *
    * @param string $bytes
+   * @param Swift_InputByteStream $is
    * @return int
    */
-  public function write($bytes);
+  public function write($bytes, Swift_InputByteStream $is = null);
   
   /**
    * Flush the contents of the stream (empty it) and set the internal pointer

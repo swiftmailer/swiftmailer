@@ -128,12 +128,17 @@ class Swift_ByteStream_FileByteStream
   /**
    * Writes $bytes to the end of the stream.
    * @param string $bytes
+   * @param Swift_InputByteStream $is, optional
    */
-  public function write($bytes)
+  public function write($bytes, Swift_InputByteStream $is = null)
   {
     $fp = $this->_getWriteHandle();
     fwrite($fp, $bytes);
     $this->_resetReadHandle();
+    if (isset($is))
+    {
+      $is->write($bytes);
+    }
   }
   
   /**
