@@ -46,6 +46,10 @@ function swift_autoload($class)
 
 spl_autoload_register('swift_autoload');
 
+//Load in dependency maps
 require_once SWIFT_MAP_DIRECTORY . '/cache_deps.php';
 require_once SWIFT_MAP_DIRECTORY . '/mime_deps.php';
 require_once SWIFT_MAP_DIRECTORY . '/transport_deps.php';
+
+//Load in global library preferences
+require_once dirname(__FILE__) . '/preferences.php';

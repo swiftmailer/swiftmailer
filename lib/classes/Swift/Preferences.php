@@ -60,13 +60,27 @@ class Swift_Preferences
   }
   
   /**
-   * Get the default charset used.
-   * @return string
+   * Set the directory where temporary files can be saved.
+   * @param string $dir
+   * @return Swift_Preferences
    */
-  public function getCharset()
+  public function setTempDir($dir)
   {
-    return Swift_DependencyContainer::getInstance()
-      ->lookup('properties.charset');
+    Swift_DependencyContainer::getInstance()
+      ->register('tempdir')->asValue($dir);
+    return $this;
+  }
+  
+  /**
+   * Set the type of cache to use (i.e. "disk" or "array").
+   * @param string $type
+   * @return Swift_Preferences
+   */
+  public function setCacheType($type)
+  {
+    Swift_DependencyContainer::getInstance()
+      ->register('cache')->asAliasOf(sprintf('cache.%s', $type));
+    return $this;
   }
   
 }
