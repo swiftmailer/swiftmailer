@@ -43,7 +43,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   
   public function getNestingLevel()
   {
-    return self::LEVEL_ATTACHMENT;
+    return self::LEVEL_MIXED;
   }
   
   public function getDisposition()

@@ -13,7 +13,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
       $this->_createEncoder(), $this->_createCache()
       );
     $this->assertEqual(
-      Swift_Mime_MimeEntity::LEVEL_SUBPART, $part->getNestingLevel()
+      Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE, $part->getNestingLevel()
       );
   }
   

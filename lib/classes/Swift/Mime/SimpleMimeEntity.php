@@ -37,11 +37,11 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   private $_encoder;
   private $_boundary;
   private $_compositeRanges = array(
-    'multipart/mixed' => array(self::LEVEL_TOP, self::LEVEL_ATTACHMENT),
-    'multipart/related' => array(self::LEVEL_ATTACHMENT, self::LEVEL_EMBEDDED),
-    'multipart/alternative' => array(self::LEVEL_EMBEDDED, self::LEVEL_SUBPART)
+    'multipart/mixed' => array(self::LEVEL_TOP, self::LEVEL_MIXED),
+    'multipart/related' => array(self::LEVEL_MIXED, self::LEVEL_RELATED),
+    'multipart/alternative' => array(self::LEVEL_RELATED, self::LEVEL_ALTERNATIVE)
     );
-  private $_nestingLevel = self::LEVEL_SUBPART;
+  private $_nestingLevel = self::LEVEL_ALTERNATIVE;
   private $_cache;
   private $_immediateChildren = array();
   private $_children = array();

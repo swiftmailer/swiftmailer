@@ -36,19 +36,19 @@ interface Swift_Mime_MimeEntity
   const LEVEL_TOP = 0;
   
   /** An entity which nests with the same precedence as an attachment */
-  const LEVEL_ATTACHMENT = 10;
+  const LEVEL_MIXED = 10;
   
   /** An entity which nests with the same precedence as embedded content */
-  const LEVEL_EMBEDDED = 20;
+  const LEVEL_RELATED = 20;
   
   /** An entity which nests with the same precedence as a mime part */
-  const LEVEL_SUBPART = 30;
+  const LEVEL_ALTERNATIVE = 30;
   
   /**
    * Get the level at which this entity shall be nested in final document.
    * The lower the value, the more outermost the entity will be nested.
    * @return int
-   * @see LEVEL_TOP, LEVEL_ATTACHMENT, LEVEL_EMBEDDED, LEVEL_SUBPART
+   * @see LEVEL_TOP, LEVEL_MIXED, LEVEL_RELATED, LEVEL_ALTERNATIVE
    */
   public function getNestingLevel();
   

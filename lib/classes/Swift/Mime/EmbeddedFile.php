@@ -48,7 +48,7 @@ class Swift_Mime_EmbeddedFile extends Swift_Mime_Attachment
   
   public function getNestingLevel()
   {
-    return self::LEVEL_EMBEDDED;
+    return self::LEVEL_RELATED;
   }
   
 }

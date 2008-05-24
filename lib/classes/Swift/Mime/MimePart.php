@@ -36,7 +36,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   protected $_userCharset;
   protected $_userDelSp;
   
-  private $_nestingLevel = self::LEVEL_SUBPART;
+  private $_nestingLevel = self::LEVEL_ALTERNATIVE;
   
   public function __construct(Swift_Mime_HeaderSet $headers,
     Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, $charset = null)

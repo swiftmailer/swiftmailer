@@ -375,7 +375,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   public function testChildrenOfLevelAttachmentAndLessCauseMultipartMixed()
   {
-    for ($level = Swift_Mime_MimeEntity::LEVEL_ATTACHMENT;
+    for ($level = Swift_Mime_MimeEntity::LEVEL_MIXED;
       $level > Swift_Mime_MimeEntity::LEVEL_TOP; $level--)
     {
       $child = $this->_createChild($level);
@@ -396,8 +396,8 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   public function testChildrenOfLevelEmbeddedAndLessCauseMultipartMixed()
   {
-    for ($level = Swift_Mime_MimeEntity::LEVEL_EMBEDDED;
-      $level > Swift_Mime_MimeEntity::LEVEL_ATTACHMENT; $level--)
+    for ($level = Swift_Mime_MimeEntity::LEVEL_RELATED;
+      $level > Swift_Mime_MimeEntity::LEVEL_MIXED; $level--)
     {
       $child = $this->_createChild($level);
       $cType = $this->_createHeader(
@@ -417,8 +417,8 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   public function testChildrenOfLevelSubpartAndLessCauseMultipartMixed()
   {
-    for ($level = Swift_Mime_MimeEntity::LEVEL_SUBPART;
-      $level > Swift_Mime_MimeEntity::LEVEL_EMBEDDED; $level--)
+    for ($level = Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE;
+      $level > Swift_Mime_MimeEntity::LEVEL_RELATED; $level--)
     {
       $child = $this->_createChild($level);
       $cType = $this->_createHeader(
@@ -439,24 +439,24 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testHighestLevelChildDeterminesContentType()
   {
     $combinations  = array(
-      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT,
-        Swift_Mime_MimeEntity::LEVEL_EMBEDDED,
-        Swift_Mime_MimeEntity::LEVEL_SUBPART
+      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_MIXED,
+        Swift_Mime_MimeEntity::LEVEL_RELATED,
+        Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE
         ),
         'type' => 'multipart/mixed'
         ),
-      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT,
-        Swift_Mime_MimeEntity::LEVEL_EMBEDDED
+      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_MIXED,
+        Swift_Mime_MimeEntity::LEVEL_RELATED
         ),
         'type' => 'multipart/mixed'
         ),
-      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT,
-        Swift_Mime_MimeEntity::LEVEL_SUBPART
+      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_MIXED,
+        Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE
         ),
         'type' => 'multipart/mixed'
         ),
-      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_EMBEDDED,
-        Swift_Mime_MimeEntity::LEVEL_SUBPART
+      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_RELATED,
+        Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE
         ),
         'type' => 'multipart/related'
         )
@@ -493,13 +493,13 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     
     $headers = $this->_createHeaderSet(array(), false);
     
-    $child1 = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+    $child1 = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "foobar"
       );
     
-    $child2 = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+    $child2 = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
       "Content-Type: text/html\r\n" .
       "\r\n" .
       "<b>foobar</b>"
@@ -539,13 +539,13 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $headers = $this->_createHeaderSet(array(), false);
     $newHeaders = $this->_createHeaderSet(array(), false);
     
-    $part = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+    $part = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "foobar"
       );
     
-    $attachment = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ATTACHMENT,
+    $attachment = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_MIXED,
       "Content-Type: application/octet-stream\r\n" .
       "\r\n" .
       "data"
@@ -655,13 +655,13 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   public function testOrderingHtmlBeforeText()
   {
-    $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+    $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
       "Content-Type: text/html\r\n" .
       "\r\n" .
       "HTML PART",
       false
       );
-    $textChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+    $textChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "TEXT PART",
@@ -705,13 +705,13 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   public function testOrderingTextBeforeHtml()
   {
-    $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+    $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
       "Content-Type: text/html\r\n" .
       "\r\n" .
       "HTML PART",
       false
       );
-    $textChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART,
+    $textChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "TEXT PART",
@@ -756,7 +756,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testUnsettingChildrenRestoresContentType()
   {
     $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
-    $child = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_SUBPART);
+    $child = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE);
     
     $s = $this->_mockery()->sequence('Type setting');
     $this->_mockery()->checking(Expectations::create()

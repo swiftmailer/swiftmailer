@@ -578,7 +578,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
   
   public function testEmbedReturnsValidCid()
   {
-    $child = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_EMBEDDED, '',
+    $child = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_RELATED, '',
       false
       );
     $this->_mockery()->checking(Expectations::create()
