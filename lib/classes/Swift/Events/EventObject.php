@@ -28,18 +28,10 @@
 class Swift_Events_EventObject
 {
   
-  /**
-   * The source of this Event.
-   * @var object
-   * @access private
-   */
+  /** The source of this Event */
   private $_source;
   
-  /**
-   * The state of this Event (should it bubble up the stack?).
-   * @var boolean
-   * @access private
-   */
+  /** The state of this Event (should it bubble up the stack?) */
   private $_bubbleCancelled = false;
   
   /**

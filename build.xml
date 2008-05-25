@@ -18,6 +18,7 @@
   <property name="src.testsuite" value="${path}/test-suite" />
   <property name="src.tests" value="${path}/tests" />
   <property name="builddir.package" value="${builddir}/${bundle.name}" />
+  <property name="runtests" value="" />
   <filelist id="src.licenses" dir="${path}">
     <file name="LICENSE.GPL" />
     <file name="LICENSE.LGPL" />
@@ -95,6 +96,7 @@
     <exec executable="php" failonerror="true">
       <env key="_" value="php" />
       <arg value="${builddir.package}/test-suite/run.php" />
+      <arg value="${runtests}" />
     </exec>
   </target>
   

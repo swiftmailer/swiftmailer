@@ -301,12 +301,12 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
       if (isset($this->_body))
       {
-        if ($this->_cache->hasKey($this->_cacheKey, 'body'))
-        {
-          $this->_cache->exportToByteStream($this->_cacheKey, 'body', $is);
-        }
-        else
-        {
+        //if ($this->_cache->hasKey($this->_cacheKey, 'body'))
+        //{
+        //  $this->_cache->exportToByteStream($this->_cacheKey, 'body', $is);
+        //}
+        //else
+        //{
           $is->write("\r\n",
             $this->_cache->getInputByteStream($this->_cacheKey, 'body')
             );
@@ -324,7 +324,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
               $this->_cache->getInputByteStream($this->_cacheKey, 'body')
               );
           }
-        }
+        //}
       }
     }
     
@@ -524,6 +524,16 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         : (max($this->_typeOrderPreference) + 1);
     }
     return ($typePrefs[0] >= $typePrefs[1]) ? 1 : -1;
+  }
+  
+  // -- Destructor
+  
+  /**
+   * Empties it's own contents from the cache.
+   */
+  public function __destruct()
+  {
+    $this->_cache->clearAll($this->_cacheKey);
   }
   
 }

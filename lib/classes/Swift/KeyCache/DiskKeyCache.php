@@ -149,12 +149,16 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    * @return Swift_InputByteStream
    */
   public function getInputByteStream($nsKey, $itemKey,
-    Swift_InputByteStream $is = null)
+    Swift_InputByteStream $writeThrough = null)
   {
     $is = clone $this->_stream;
     $is->setKeyCache($this);
     $is->setNsKey($nsKey);
     $is->setItemKey($itemKey);
+    if (isset($writeThrough))
+    {
+      $is->setWriteThroughStream($writeThrough);
+    }
     return $is;
   }
   

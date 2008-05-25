@@ -31,10 +31,10 @@ class Swift_MailTransport extends Swift_Transport_MailTransport
 {
   
   /**
-   * Create a new MailTransport with the $log.
-   * @param Swift_Transport_Log $log
+   * Create a new MailTransport, optionally specifying $extraParams.
+   * @param string $extraParams
    */
-  public function __construct($_extraParams = '-f%s')
+  public function __construct($extraParams = '-f%s')
   {
     call_user_func_array(
       array($this, 'parent::__construct'),

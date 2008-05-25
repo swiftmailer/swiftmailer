@@ -62,7 +62,7 @@ class Sweety_Runner_CliRunner extends Sweety_Runner_AbstractTestRunner
     
     global $argv;
     
-    if (isset($argv[1]))
+    if (!empty($argv[1]))
     {
       if (substr($argv[1], 0, 1) == '!')
       {

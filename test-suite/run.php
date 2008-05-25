@@ -31,7 +31,7 @@ $runner = new Sweety_Runner_CliRunner(
   $exe . ' ' . $argv[0]
   );
 
-$name = isset($argv[1]) ? $argv[1] : 'All Tests';
+$name = !empty($argv[1]) ? $argv[1] : 'All Tests';
 $runner->setReporter(new Sweety_Reporter_CliReporter(sprintf('%s - %s', SWEETY_SUITE_NAME, $name)));
 
 $runner->setIgnoredClassRegex(SWEETY_IGNORED_CLASSES);
@@ -42,10 +42,10 @@ foreach ($locators as $locator)
   $runner->registerTestLocator(new $locator());
 }
 
-if (isset($argv[1]) && !preg_match('~!?/.*?/~', $argv[1]))
+if (!empty($argv[1]) && !preg_match('~!?/.*?/~', $argv[1]))
 {
   $testName = $argv[1];
-  $format = isset($argv[2]) ? $argv[2] : Sweety_Runner::REPORT_TEXT;
+  $format = !empty($argv[2]) ? $argv[2] : Sweety_Runner::REPORT_TEXT;
   
   $runner->runTestCase($testName, $format);
 }
