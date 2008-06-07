@@ -85,7 +85,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
    * Flush the contents of the stream (empty it) and set the internal pointer
    * to the beginning.
    */
-  public function flushContents()
+  public function flushBuffers()
   {
     $this->_keyCache->clearKey($this->_nsKey, $this->_itemKey);
   }

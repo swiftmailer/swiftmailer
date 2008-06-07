@@ -126,7 +126,7 @@ class Swift_ByteStream_ArrayByteStream
    * Flush the contents of the stream (empty it) and set the internal pointer
    * to the beginning.
    */
-  public function flushContents()
+  public function flushBuffers()
   {
     $this->_offset = 0;
     $this->_array = array();

@@ -114,7 +114,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends UnitTestCase
     $input = array('a', 'b', 'c');
     $bs = new Swift_ByteStream_ArrayByteStream($input);
     
-    $bs->flushContents();
+    $bs->flushBuffers();
     
     $this->assertIdentical(false, $bs->read(1),
       '%s: Contents have been flushed so read() should return false'

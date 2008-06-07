@@ -20,6 +20,8 @@
 
 //@require 'Swift/InputByteStream.php';
 //@require 'Swift/FileStream.php';
+//@require 'Swift/Filterable.php';
+//@require 'Swift/StreamFilter.php';
 
 /**
  * Allows reading and writing of bytes to and from a file.
@@ -28,50 +30,35 @@
  * @author Chris Corbyn
  */
 class Swift_ByteStream_FileByteStream
-  implements Swift_InputByteStream, Swift_FileStream
+  implements Swift_InputByteStream, Swift_FileStream, Swift_Filterable
 {
   
-  /**
-   * The internal pointer offset.
-   * @var int
-   * @access private
-   */
+  /** The internal pointer offset */
   private $_offset = 0;
   
-  /**
-   * The path to the file.
-   * @var string
-   * @access private
-   */
+  /** The path to the file */
   private $_path;
   
-  /**
-   * The mode this file is opened in for writing.
-   * Reads will always use 'rb'.
-   * @var string
-   * @access private
-   */
+  /** The mode this file is opened in for writing */
   private $_mode;
   
-  /**
-   * A lazy-loaded resource handle for reading the file.
-   * @var resource
-   * @access private
-   */
+  /** A lazy-loaded resource handle for reading the file */
   private $_reader;
   
-  /**
-   * A lazy-loaded resource handle for writing the file.
-   * @access private
-   */
+  /** A lazy-loaded resource handle for writing the file */
   private $_writer;
   
-  /**
-   * If magic_quotes_runtime is on, this will be true.
-   * @var boolean
-   * @access private
-   */
+  /** If magic_quotes_runtime is on, this will be true */
   private $_quotes = false;
+  
+  /** StreamFilters */
+  private $_filters = array();
+  
+  /** A buffer for writing */
+  private $_writeBuffer = '';
+  
+  /** Write-through ByteStream */
+  private $_writeThrough = null;
   
   /**
    * Create a new FileByteStream for $path.
@@ -83,6 +70,25 @@ class Swift_ByteStream_FileByteStream
     $this->_path = $path;
     $this->_mode = $writable ? 'w+b' : 'rb';
     $this->_quotes = get_magic_quotes_runtime();
+  }
+  
+  /**
+   * Add a StreamFilter to this InputByteStream.
+   * @param Swift_StreamFilter $filter
+   * @param string $key
+   */
+  public function addFilter(Swift_StreamFilter $filter, $key)
+  {
+    $this->_filters[$key] = $filter;
+  }
+  
+  /**
+   * Remove an already present StreamFilter based on its $key.
+   * @param string $key
+   */
+  public function removeFilter($key)
+  {
+    unset($this->_filters[$key]);
   }
   
   /**
@@ -132,13 +138,17 @@ class Swift_ByteStream_FileByteStream
    */
   public function write($bytes, Swift_InputByteStream $is = null)
   {
-    $fp = $this->_getWriteHandle();
-    fwrite($fp, $bytes);
-    $this->_resetReadHandle();
-    if (isset($is))
+    $this->_writeBuffer .= $bytes;
+    $shouldBuffer = false;
+    foreach ($this->_filters as $filter)
     {
-      $is->write($bytes);
+      if ($filter->shouldBuffer($this->_writeBuffer))
+      {
+        $this->_writeThrough = $is;
+        return;
+      }
     }
+    $this->_doWrite($this->_writeBuffer, $is);
   }
   
   /**
@@ -159,21 +169,31 @@ class Swift_ByteStream_FileByteStream
    * Flush the contents of the stream (empty it) and set the internal pointer
    * to the beginning.
    */
-  public function flushContents()
+  public function flushBuffers()
   {
-    file_put_contents($this->_path, '');
-    $this->_resetWriteHandle();
-    $this->_resetReadHandle();
-    $this->_offset = 0;
+    $this->_doWrite($this->_writeBuffer, $this->_writeThrough);
   }
   
   // -- Private methods
   
-  /**
-   * Get the resource for reading.
-   * @return resource
-   * @access private
-   */
+  /** Just write the bytes to the file */
+  private function _doWrite($bytes, Swift_InputByteStream $is = null)
+  {
+    foreach ($this->_filters as $filter)
+    {
+      $bytes = $filter->filter($bytes);
+    }
+    fwrite($this->_getWriteHandle(), $bytes);
+    $this->_resetReadHandle();
+    if (isset($is))
+    {
+      $is->write($bytes);
+    }
+    $this->_writeBuffer = '';
+    $this->_writeThrough = null;
+  }
+  
+  /** Get the resource for reading */
   private function _getReadHandle()
   {
     if (!isset($this->_reader))
@@ -189,11 +209,7 @@ class Swift_ByteStream_FileByteStream
     return $this->_reader;
   }
   
-  /**
-   * Get the resource for writing.
-   * @return resource
-   * @access private
-   */
+  /** Get the resource for writing */
   private function _getWriteHandle()
   {
     if (!isset($this->_writer))
@@ -208,11 +224,7 @@ class Swift_ByteStream_FileByteStream
     return $this->_writer;
   }
   
-  /**
-   * Force a reload of the resource for writing.
-   * @return resource
-   * @access private
-   */
+  /** Force a reload of the resource for writing */
   private function _resetWriteHandle()
   {
     if (isset($this->_writer))
@@ -222,11 +234,7 @@ class Swift_ByteStream_FileByteStream
     }
   }
   
-  /**
-   * Force a reload of the resource for reading.
-   * @return resource
-   * @access private
-   */
+  /** Force a reload of the resource for reading */
   private function _resetReadHandle()
   {
     if (isset($this->_reader))

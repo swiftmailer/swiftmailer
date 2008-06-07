@@ -9,6 +9,7 @@ Swift Mailer SE TODO:
  * Add a Swift_Image::fromPath() method?
  * FileEmbedder (Mime API issues? Streams?)
  * Test with qMail
+ * Make sure no occurrences of "new Exception()" exist
  
 Poorly implemented:
 -------------------
@@ -19,6 +20,7 @@ After first beta:
 -----------------
 
 * Simplify the event system:
+   - EventFactory class used by EventDispatcher
    - Get rid of the ability to bind to a specific source
    - Benchmark difference creating "New" events instead of current convoluted setup
  * CharacterReaders

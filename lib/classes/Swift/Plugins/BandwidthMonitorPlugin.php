@@ -104,7 +104,7 @@ class Swift_Plugins_BandwidthMonitorPlugin
   /**
    * Not used.
    */
-  public function flushContents()
+  public function flushBuffers()
   {
   }
   

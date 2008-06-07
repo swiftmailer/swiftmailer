@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Swift/ByteStream/FileByteStream.php';
+require_once 'Swift/StreamFilters/StringReplacementFilter.php';
 
 class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
 {
@@ -73,14 +74,23 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
     $this->assertEqual('zipbutton', $file->read(8192));
   }
   
-  public function testFlushContents()
+  public function testWritingToFileWithCanonicalization()
   {
     $file = new Swift_ByteStream_FileByteStream(
       $this->_testFile, true
       );
-    $file->write('foobar');
-    $file->flushContents();
-    $this->assertFalse($file->read(8192));
+    $file->addFilter($this->_createFilter(array("\r\n", "\r"), "\n"), 'allToLF');
+    $file->write("foo\r\nbar\r");
+    $file->write("\nzip\r\ntest\r");
+    $file->flushBuffers();
+    $this->assertEqual("foo\nbar\nzip\ntest\n", file_get_contents($this->_testFile));
+  }
+  
+  // -- Creation methods
+  
+  private function _createFilter($search, $replace)
+  {
+    return new Swift_StreamFilters_StringReplacementFilter($search, $replace);
   }
   
 }

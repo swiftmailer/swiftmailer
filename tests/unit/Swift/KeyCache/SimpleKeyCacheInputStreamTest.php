@@ -44,7 +44,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends UnitTestCase
     $stream->setNsKey($this->_nsKey);
     $stream->setItemKey('foo');
     
-    $stream->flushContents();
+    $stream->flushBuffers();
   }
   
   public function testClonedStreamStillReferencesSameCache()
