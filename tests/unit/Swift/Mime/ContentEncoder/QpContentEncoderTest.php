@@ -22,7 +22,7 @@ class Swift_MockInputByteStream implements Swift_InputByteStream {
   public function write($chars, Swift_InputByteStream $is = null) {
     $this->content .= $chars;
   }
-  public function flushContents() {
+  public function flushBuffers() {
   }
 }
 

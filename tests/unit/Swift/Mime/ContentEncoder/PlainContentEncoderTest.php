@@ -10,7 +10,7 @@ class Swift_MockInputByteStream implements Swift_InputByteStream {
   public function write($string, Swift_InputByteStream $is = null) {
     $this->content .= $string;
   }
-  public function flushContents() {
+  public function flushBuffers() {
   }
 }
 
