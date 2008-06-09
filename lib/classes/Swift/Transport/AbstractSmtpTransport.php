@@ -301,10 +301,11 @@ abstract class Swift_Transport_AbstractSmtpTransport
   /** Stream the contents of the message over the buffer */
   protected function _streamMessage(Swift_Mime_Message $message)
   {
-    $this->_buffer->setWriteTranslations(array("\n." => "\n.."));
+    $this->_buffer->setWriteTranslations(array("\r\n." => "\r\n.."));
     try
     {
       $message->toByteStream($this->_buffer);
+      $this->_buffer->flushBuffers();
     }
     catch (Swift_Transport_TransportException $e)
     {

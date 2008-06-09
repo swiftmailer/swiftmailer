@@ -126,6 +126,11 @@ class Swift_ByteStream_FileByteStream
     $this->_resetReadHandle();
   }
   
+  /** Not used */
+  protected function _flush()
+  {
+  }
+  
   /** Get the resource for reading */
   private function _getReadHandle()
   {

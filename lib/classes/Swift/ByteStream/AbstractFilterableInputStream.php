@@ -49,6 +49,12 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   abstract protected function _commit($bytes);
   
   /**
+   * Flush any buffers/content with immediate effect.
+   * @access protected
+   */
+  abstract protected function _flush();
+  
+  /**
    * Add a StreamFilter to this InputByteStream.
    * @param Swift_StreamFilter $filter
    * @param string $key
@@ -97,6 +103,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
     {
       $this->_doWrite($this->_writeBuffer, $this->_writeThrough);
     }
+    $this->_flush();
   }
   
   // -- Private methods

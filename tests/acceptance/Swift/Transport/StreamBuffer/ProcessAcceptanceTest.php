@@ -2,6 +2,7 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/StreamBuffer.php';
+require_once 'Swift/ReplacementFilterFactory.php';
 
 class Swift_Transport_StreamBuffer_ProcessAcceptanceTest
   extends Swift_Tests_SwiftUnitTestCase
@@ -19,7 +20,9 @@ class Swift_Transport_StreamBuffer_ProcessAcceptanceTest
   
   public function setUp()
   {
-    $this->_buffer = new Swift_Transport_StreamBuffer();
+    $this->_buffer = new Swift_Transport_StreamBuffer(
+      $this->_stub('Swift_ReplacementFilterFactory')
+      );
   }
   
   public function testReadLine()

@@ -113,12 +113,20 @@ class Swift_Transport_SendmailTransport
         $command .= ' -f' . $this->_getReversePath($message);
       }
       $buffer->initialize(array_merge($this->_params, array('command' => $command)));
-      $buffer->setWriteTranslations(array("\r\n"=>"\n"));
+      if (false === strpos($command, ' -i') && false === strpos($command, ' -oi'))
+      {
+        $buffer->setWriteTranslations(array("\r\n" => "\n", "\n." => "\n.."));
+      }
+      else
+      {
+        $buffer->setWriteTranslations(array("\r\n"=>"\n"));
+      }
       $count = count((array) $message->getTo())
         + count((array) $message->getCc())
         + count((array) $message->getBcc())
         ;
       $message->toByteStream($buffer);
+      $buffer->flushBuffers();
       $buffer->setWriteTranslations(array());
       $buffer->terminate();
     }

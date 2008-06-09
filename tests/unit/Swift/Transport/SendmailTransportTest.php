@@ -46,7 +46,7 @@ class Swift_Transport_SendmailTransportTest
     $context->assertIsSatisfied();
   }
   
-  public function testSendingMessageInTModeUsesSimplePipe()
+  public function testSendingMessageIn_t_ModeUsesSimplePipe()
   {
     $context = new Mockery();
     $buf = $this->_getBuffer($context);
@@ -59,14 +59,57 @@ class Swift_Transport_SendmailTransportTest
       -> ignoring($message)
       -> one($buf)->initialize()
       -> one($buf)->terminate()
-      -> one($buf)->setWriteTranslations(array("\r\n"=>"\n"))
+      -> one($buf)->setWriteTranslations(array("\r\n"=>"\n", "\n." => "\n.."))
       -> one($buf)->setWriteTranslations(array())
+      -> ignoring($buf)
       );
     
     $sendmail->setCommand('/usr/sbin/sendmail -t');
     $this->assertEqual(2, $sendmail->send($message));
     
     $context->assertIsSatisfied();
+  }
+  
+  public function testSendingIn_t_ModeWith_i_FlagDoesntEscapeDot()
+  {
+    $buf = $this->_getBuffer($this->_mockery());
+    $sendmail = $this->_getSendmail($buf);
+    $message = $this->_createMessage();
+    
+    $this->_mockery()->checking(Expectations::create()
+      -> allowing($message)->getTo() -> returns(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'))
+      -> one($message)->toByteStream($buf)
+      -> ignoring($message)
+      -> one($buf)->initialize()
+      -> one($buf)->terminate()
+      -> one($buf)->setWriteTranslations(array("\r\n"=>"\n"))
+      -> one($buf)->setWriteTranslations(array())
+      -> ignoring($buf)
+      );
+    
+    $sendmail->setCommand('/usr/sbin/sendmail -i -t');
+    $this->assertEqual(2, $sendmail->send($message));
+  }
+  
+  public function testSendingInTModeWith_oi_FlagDoesntEscapeDot()
+  {
+    $buf = $this->_getBuffer($this->_mockery());
+    $sendmail = $this->_getSendmail($buf);
+    $message = $this->_createMessage();
+    
+    $this->_mockery()->checking(Expectations::create()
+      -> allowing($message)->getTo() -> returns(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'))
+      -> one($message)->toByteStream($buf)
+      -> ignoring($message)
+      -> one($buf)->initialize()
+      -> one($buf)->terminate()
+      -> one($buf)->setWriteTranslations(array("\r\n"=>"\n"))
+      -> one($buf)->setWriteTranslations(array())
+      -> ignoring($buf)
+      );
+    
+    $sendmail->setCommand('/usr/sbin/sendmail -oi -t');
+    $this->assertEqual(2, $sendmail->send($message));
   }
   
   public function testFluidInterface()
@@ -81,6 +124,13 @@ class Swift_Transport_SendmailTransportTest
     $this->assertReference($ref, $sendmail);
     
     $context->assertIsSatisfied();
+  }
+  
+  // -- Creation methods
+  
+  private function _createMessage()
+  {
+    return $this->_mockery()->mock('Swift_Mime_Message');
   }
 
 }

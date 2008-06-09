@@ -18,6 +18,8 @@
  
  */
 
+//@require 'Swift/ByteStream/AbstractFilterableInputStream.php';
+//@require 'Swift/ReplacementFilterFactory.php';
 //@require 'Swift/Transport/IoBuffer.php';
 //@require 'Swift/Transport/TransportException.php';
 
@@ -27,50 +29,41 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Transport_StreamBuffer implements Swift_Transport_IoBuffer
+class Swift_Transport_StreamBuffer
+  extends Swift_ByteStream_AbstractFilterableInputStream
+  implements Swift_Transport_IoBuffer
 {
   
-  /**
-   * A primary socket.
-   * @var resource
-   * @access private
-   */
+  /** A primary socket */
   private $_stream;
   
-  /**
-   * The input stream.
-   * @var resource
-   * @access private
-   */
+  /** The input stream */
   private $_in;
   
-  /**
-   * The output stream.
-   * @var resource
-   * @access private
-   */
+  /** The output stream */
   private $_out;
   
-  /**
-   * Buffer initialization parameters.
-   * @var array
-   * @access private
-   */
+  /** Buffer initialization parameters */
   private $_params = array();
   
-  /**
-   * Write sequence.
-   * @var int
-   * @access private
-   */
+  /** Write sequence */
   private $_sequence = 0;
   
-  /**
-   * Translations performed on data being streamed into the buffer.
-   * @var string[]
-   * @access private
-   */
+  /** The ReplacementFilterFactory */
+  private $_replacementFactory;
+  
+  /** Translations performed on data being streamed into the buffer */
   private $_translations = array();
+  
+  /**
+   * Create a new StreamBuffer using $replacementFactory for transformations.
+   * @param Swift_ReplacementFilterFactory $replacementFactory
+   */
+  public function __construct(
+    Swift_ReplacementFilterFactory $replacementFactory)
+  {
+    $this->_replacementFactory = $replacementFactory;
+  }
   
   /**
    * Perform any initialization needed, using the given $params.
@@ -152,7 +145,25 @@ class Swift_Transport_StreamBuffer implements Swift_Transport_IoBuffer
    */
   public function setWriteTranslations(array $replacements)
   {
-    $this->_translations = $replacements;
+    foreach ($this->_translations as $search => $replace)
+    {
+      if (!isset($replacements[$search]))
+      {
+        $this->removeFilter($search);
+        unset($this->_translations[$search]);
+      }
+    }
+    
+    foreach ($replacements as $search => $replace)
+    {
+      if (!isset($this->_translations[$search]))
+      {
+        $this->addFilter(
+          $this->_replacementFactory->createFilter($search, $replace), $search
+          );
+        $this->_translations[$search] = true;
+      }
+    }
   }
   
   /**
@@ -188,49 +199,29 @@ class Swift_Transport_StreamBuffer implements Swift_Transport_IoBuffer
     }
   }
   
-  /**
-   * Move the internal read pointer to $byteOffset in the stream.
-   * @param int $byteOffset
-   * @return boolean
-   */
+  /** Not implemented */
   public function setReadPointer($byteOffset)
-  { //ignored
-  }
-  
-  /**
-   * Writes $bytes to the end of the stream.
-   * This method returns the sequence ID of the write (i.e. 1 for first, 2 for
-   * second, etc etc).
-   * @param string $bytes
-   * @return int
-   */
-  public function write($bytes, Swift_InputByteStream $is = null)
   {
-    if (isset($is))
-    {
-      $is->write($bytes);
-    }
-    
-    if (isset($this->_in)
-      && fwrite($this->_in, str_replace(
-        array_keys($this->_translations),
-        array_values($this->_translations),
-        $bytes
-      )))
-    {
-      return ++$this->_sequence;
-    }
   }
   
-  /**
-   * Flush the contents of the stream (empty it) and set the internal pointer
-   * to the beginning.
-   */
-  public function flushBuffers()
+  // -- Protected methods
+  
+  /** Flush the stream contents */
+  protected function _flush()
   {
     if (isset($this->_in))
     {
       fflush($this->_in);
+    }
+  }
+  
+  /** Write this bytes to the stream */
+  protected function _commit($bytes)
+  {
+    if (isset($this->_in)
+      && fwrite($this->_in, $bytes))
+    {
+      return ++$this->_sequence;
     }
   }
   

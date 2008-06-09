@@ -28,6 +28,7 @@ Swift_DependencyContainer::getInstance()
   
   -> register('transport.buffer')
   -> asNewInstanceOf('Swift_Transport_StreamBuffer')
+  -> withDependencies(array('transport.replacementfactory'))
   
   -> register('transport.authhandler')
   -> asNewInstanceOf('Swift_Transport_Esmtp_AuthHandler')
@@ -71,5 +72,8 @@ Swift_DependencyContainer::getInstance()
         'listener' => 'Swift_Events_ResponseListener'
       )
   ))
+  
+  -> register('transport.replacementfactory')
+  -> asSharedInstanceOf('Swift_StreamFilters_StringReplacementFilterFactory')
   
   ;
