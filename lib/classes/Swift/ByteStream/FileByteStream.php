@@ -171,7 +171,10 @@ class Swift_ByteStream_FileByteStream
    */
   public function flushBuffers()
   {
-    $this->_doWrite($this->_writeBuffer, $this->_writeThrough);
+    if (isset($this->_writeThrough))
+    {
+      $this->_doWrite($this->_writeBuffer, $this->_writeThrough);
+    }
   }
   
   // -- Private methods
