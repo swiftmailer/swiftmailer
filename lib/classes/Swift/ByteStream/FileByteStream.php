@@ -18,10 +18,9 @@
  
  */
 
+//@require 'Swift/ByteStream/AbstractFilterableInputStream.php';
 //@require 'Swift/InputByteStream.php';
 //@require 'Swift/FileStream.php';
-//@require 'Swift/Filterable.php';
-//@require 'Swift/StreamFilter.php';
 
 /**
  * Allows reading and writing of bytes to and from a file.
@@ -30,7 +29,8 @@
  * @author Chris Corbyn
  */
 class Swift_ByteStream_FileByteStream
-  implements Swift_InputByteStream, Swift_FileStream, Swift_Filterable
+  extends Swift_ByteStream_AbstractFilterableInputStream
+  implements Swift_FileStream
 {
   
   /** The internal pointer offset */
@@ -51,15 +51,6 @@ class Swift_ByteStream_FileByteStream
   /** If magic_quotes_runtime is on, this will be true */
   private $_quotes = false;
   
-  /** StreamFilters */
-  private $_filters = array();
-  
-  /** A buffer for writing */
-  private $_writeBuffer = '';
-  
-  /** Write-through ByteStream */
-  private $_writeThrough = null;
-  
   /**
    * Create a new FileByteStream for $path.
    * @param string $path
@@ -70,25 +61,6 @@ class Swift_ByteStream_FileByteStream
     $this->_path = $path;
     $this->_mode = $writable ? 'w+b' : 'rb';
     $this->_quotes = get_magic_quotes_runtime();
-  }
-  
-  /**
-   * Add a StreamFilter to this InputByteStream.
-   * @param Swift_StreamFilter $filter
-   * @param string $key
-   */
-  public function addFilter(Swift_StreamFilter $filter, $key)
-  {
-    $this->_filters[$key] = $filter;
-  }
-  
-  /**
-   * Remove an already present StreamFilter based on its $key.
-   * @param string $key
-   */
-  public function removeFilter($key)
-  {
-    unset($this->_filters[$key]);
   }
   
   /**
@@ -132,26 +104,6 @@ class Swift_ByteStream_FileByteStream
   }
   
   /**
-   * Writes $bytes to the end of the stream.
-   * @param string $bytes
-   * @param Swift_InputByteStream $is, optional
-   */
-  public function write($bytes, Swift_InputByteStream $is = null)
-  {
-    $this->_writeBuffer .= $bytes;
-    $shouldBuffer = false;
-    foreach ($this->_filters as $filter)
-    {
-      if ($filter->shouldBuffer($this->_writeBuffer))
-      {
-        $this->_writeThrough = $is;
-        return;
-      }
-    }
-    $this->_doWrite($this->_writeBuffer, $is);
-  }
-  
-  /**
    * Move the internal read pointer to $byteOffset in the stream.
    * @param int $byteOffset
    * @return boolean
@@ -165,35 +117,13 @@ class Swift_ByteStream_FileByteStream
     $this->_offset = $byteOffset;
   }
   
-  /**
-   * Flush the contents of the stream (empty it) and set the internal pointer
-   * to the beginning.
-   */
-  public function flushBuffers()
-  {
-    if (isset($this->_writeThrough))
-    {
-      $this->_doWrite($this->_writeBuffer, $this->_writeThrough);
-    }
-  }
-  
   // -- Private methods
   
   /** Just write the bytes to the file */
-  private function _doWrite($bytes, Swift_InputByteStream $is = null)
+  protected function _commit($bytes)
   {
-    foreach ($this->_filters as $filter)
-    {
-      $bytes = $filter->filter($bytes);
-    }
     fwrite($this->_getWriteHandle(), $bytes);
     $this->_resetReadHandle();
-    if (isset($is))
-    {
-      $is->write($bytes);
-    }
-    $this->_writeBuffer = '';
-    $this->_writeThrough = null;
   }
   
   /** Get the resource for reading */
