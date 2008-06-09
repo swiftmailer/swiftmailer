@@ -2,7 +2,6 @@ Swift Mailer SE TODO:
 ---------------------
 
  * Think about the interface for loading plugins ($transport->getEventDispatcher())
- * Re-think how to avoid CRLF . CRLF* (Filters?) - Done, needs implementing
  * Failed recipients in MailTransport
  * Event dispatching in MailTransport
  * Add test coverage for cache write through

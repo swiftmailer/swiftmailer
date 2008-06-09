@@ -46,9 +46,6 @@ class Swift_Transport_StreamBuffer
   /** Buffer initialization parameters */
   private $_params = array();
   
-  /** Write sequence */
-  private $_sequence = 0;
-  
   /** The ReplacementFilterFactory */
   private $_replacementFactory;
   

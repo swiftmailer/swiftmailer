@@ -32,6 +32,9 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   implements Swift_InputByteStream, Swift_Filterable
 {
   
+  /** Write sequence */
+  private $_sequence = 0;
+  
   /** StreamFilters */
   private $_filters = array();
   
@@ -91,6 +94,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
       }
     }
     $this->_doWrite($this->_writeBuffer, $is);
+    return ++$this->_sequence;
   }
   
   /**
