@@ -19,6 +19,7 @@ Swift_DependencyContainer::getInstance()
   
   -> register('transport.mail')
   -> asNewInstanceOf('Swift_Transport_MailTransport')
+  -> withDependencies(array('transport.eventdispatcher'))
   
   -> register('transport.loadbalanced')
   -> asNewInstanceOf('Swift_Transport_LoadBalancedTransport')

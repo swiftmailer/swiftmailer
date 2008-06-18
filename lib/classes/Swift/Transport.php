@@ -19,6 +19,7 @@
  */
 
 //@require 'Swift/Mime/Message.php';
+//@require 'Swift/Events/EventListener.php';
 
 /**
  * Sends Messages via an abstract Transport subsystem.
@@ -34,6 +35,12 @@ interface Swift_Transport
    * @return boolean
    */
   public function isStarted();
+  
+  /**
+   * Bind an event listener to this Transport.
+   * @param Swift_Events_EventListener $listener
+   */
+  public function bindEventListener(Swift_Events_EventListener $listener);
   
   /**
    * Start this Transport mechanism.

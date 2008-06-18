@@ -3,10 +3,28 @@
 require_once 'Swift/Transport/AbstractSmtpTest.php';
 require_once 'Swift/Events/EventDispatcher.php';
 require_once 'Swift/Events/EventObject.php';
+require_once 'Swift/Events/EventListener.php';
 
 abstract class Swift_Transport_AbstractSmtpEventSupportTest
   extends Swift_Transport_AbstractSmtpTest
 {
+  
+  public function testBoundEventsAreBoundToDispatcher()
+  {
+    $context = new Mockery();
+    $buf = $this->_getBuffer($context);
+    $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+    $listener = $context->mock('Swift_Events_EventListener');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    
+    $context->checking(Expectations::create()
+      -> one($dispatcher)->bindEventListener($listener, $smtp)
+      -> ignoring($dispatcher)
+      );
+    
+    $smtp->bindEventListener($listener);
+    $context->assertIsSatisfied();
+  }
   
   public function testSendingDispatchesBeforeSendEvent()
   {

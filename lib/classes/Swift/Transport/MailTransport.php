@@ -30,19 +30,19 @@
 class Swift_Transport_MailTransport implements Swift_Transport
 {
 
-  /**
-   * Addtional parameters to pass to mail().
-   * @var string
-   * @access private
-   */
+  /** Addtional parameters to pass to mail() */
   private $_extraParams = '-f%s';
+  
+  /** The event dispatcher from the plugin API */
+  private $_eventDispatcher;
   
   /**
    * Create a new MailTransport with the $log.
    * @param Swift_Transport_Log $log
    */
-  public function __construct()
+  public function __construct(Swift_Events_EventDispatcher $eventDispatcher)
   {
+    $this->_eventDispatcher = $eventDispatcher;
   }
   
   /**
@@ -66,6 +66,15 @@ class Swift_Transport_MailTransport implements Swift_Transport
    */
   public function stop()
   {
+  }
+  
+  /**
+   * Bind an event listener to this Transport.
+   * @param Swift_Events_EventListener $listener
+   */
+  public function bindEventListener(Swift_Events_EventListener $listener)
+  {
+    $this->_eventDispatcher->bindEventListener($listener, $this);
   }
   
   /**
@@ -135,15 +144,13 @@ class Swift_Transport_MailTransport implements Swift_Transport
       $body = str_replace("\r\n.", "\r\n..", $body);
     }
     
-    if (mail($to, $subject, $body, $headers,
+    if (!mail($to, $subject, $body, $headers,
       sprintf($this->_extraParams, $reversePath)))
     {
-      return $count;
+      $count = 0;
     }
-    else
-    {
-      return 0;
-    }
+    
+    return $count;
   }
   
   // -- Private methods

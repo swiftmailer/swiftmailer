@@ -301,6 +301,41 @@ class Swift_Transport_FailoverTransportTest
     $context->assertIsSatisfied();
   }
   
+  public function testBindEventListenerIsDelegatedToEachTransport()
+  {
+    $listener = $this->_stub('Swift_Events_EventListener');
+    $t1 = $this->_createInnerTransport();
+    $t2 = $this->_createInnerTransport();
+    
+    $this->_mockery()->checking(Expectations::create()
+      -> one($t1)->bindEventListener($listener)
+      -> one($t2)->bindEventListener($listener)
+      -> never($t1)
+      -> never($t2)
+      );
+    
+    $transport = $this->_getTransport(array($t1, $t2));
+    $transport->bindEventListener($listener);
+  }
+  
+  public function testBindingEventListenersCanBeDelayed()
+  {
+    $listener = $this->_stub('Swift_Events_EventListener');
+    $t1 = $this->_createInnerTransport();
+    $t2 = $this->_createInnerTransport();
+    
+    $this->_mockery()->checking(Expectations::create()
+      -> one($t1)->bindEventListener($listener)
+      -> one($t2)->bindEventListener($listener)
+      -> never($t1)
+      -> never($t2)
+      );
+    
+    $transport = $this->_getTransport(array($t1));
+    $transport->bindEventListener($listener);
+    $transport->setTransports(array($t1, $t2));
+  }
+  
   // -- Private helpers
   
   private function _getTransport(array $transports)
@@ -308,6 +343,11 @@ class Swift_Transport_FailoverTransportTest
     $transport = new Swift_Transport_FailoverTransport();
     $transport->setTransports($transports);
     return $transport;
+  }
+  
+  private function _createInnerTransport()
+  {
+    return $this->_mockery()->mock('Swift_Transport');
   }
   
 }

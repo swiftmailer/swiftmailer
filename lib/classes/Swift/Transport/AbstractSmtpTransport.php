@@ -115,6 +115,15 @@ abstract class Swift_Transport_AbstractSmtpTransport
   }
   
   /**
+   * Bind an event listener to this Transport.
+   * @param Swift_Events_EventListener $listener
+   */
+  public function bindEventListener(Swift_Events_EventListener $listener)
+  {
+    $this->_eventDispatcher->bindEventListener($listener, $this);
+  }
+  
+  /**
    * Test if an SMTP connection has been established.
    * @return boolean
    */
