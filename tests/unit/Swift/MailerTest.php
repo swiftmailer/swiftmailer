@@ -5,6 +5,7 @@ require_once 'Swift/Mailer.php';
 require_once 'Swift/Transport.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Mailer/RecipientIterator.php';
+require_once 'Swift/Events/EventListener.php';
 
 Mock::generate('Swift_Transport', 'Swift_Mailer_MockTransport');
 Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
@@ -288,6 +289,32 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     $this->_transport->expectCallCount('send', 3);
     
     $this->_mailer->batchSend($message, $failures, $it);
+  }
+  
+  public function testAttachingPluginBindsToTransport()
+  {
+    $transport = $this->_createTransport();
+    $listener = $this->_stub('Swift_Events_EventListener');
+    $mailer = $this->_createMailer($transport);
+    
+    $this->_mockery()->checking(Expectations::create()
+      -> one($transport)->bindEventListener($listener)
+      -> ignoring($transport)
+      );
+    
+    $mailer->attachPlugin($listener);
+  }
+  
+  // -- Creation methods
+  
+  private function _createMailer($transport)
+  {
+    return new Swift_Mailer($transport);
+  }
+  
+  private function _createTransport()
+  {
+    return $this->_mockery()->mock('Swift_Transport');
   }
   
 }

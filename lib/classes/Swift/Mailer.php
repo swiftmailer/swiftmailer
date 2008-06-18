@@ -53,6 +53,7 @@ class Swift_Mailer
    */
   public function attachPlugin(Swift_Events_EventListener $plugin)
   {
+    $this->_transport->bindEventListener($plugin);
   }
   
   /**
