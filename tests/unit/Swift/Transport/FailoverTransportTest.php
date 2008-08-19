@@ -4,6 +4,7 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/FailoverTransport.php';
 require_once 'Swift/Transport/TransportException.php';
 require_once 'Swift/Transport.php';
+require_once 'Swift/Events/EventListener.php';
 
 class Swift_Transport_FailoverTransportTest
   extends Swift_Tests_SwiftUnitTestCase
@@ -301,39 +302,48 @@ class Swift_Transport_FailoverTransportTest
     $context->assertIsSatisfied();
   }
   
-  public function testBindEventListenerIsDelegatedToEachTransport()
+  public function testRegisterPluginDelegatesToLoadedTransports()
   {
-    $listener = $this->_stub('Swift_Events_EventListener');
-    $t1 = $this->_createInnerTransport();
-    $t2 = $this->_createInnerTransport();
+    $context = new Mockery();
     
-    $this->_mockery()->checking(Expectations::create()
-      -> one($t1)->bindEventListener($listener)
-      -> one($t2)->bindEventListener($listener)
-      -> never($t1)
-      -> never($t2)
+    $plugin = $this->_createPlugin($context);
+    
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $context->checking(Expectations::create()
+      -> one($t1)->registerPlugin($plugin, 'foo')
+      -> one($t2)->registerPlugin($plugin, 'foo')
+      -> ignoring($t1)
+      -> ignoring($t2)
       );
     
     $transport = $this->_getTransport(array($t1, $t2));
-    $transport->bindEventListener($listener);
+    $transport->registerPlugin($plugin, 'foo');
+    
+    $context->assertIsSatisfied();
   }
   
-  public function testBindingEventListenersCanBeDelayed()
+  public function testAddingTransportAlsoRegistersPlugins()
   {
-    $listener = $this->_stub('Swift_Events_EventListener');
-    $t1 = $this->_createInnerTransport();
-    $t2 = $this->_createInnerTransport();
+    $context = new Mockery();
     
-    $this->_mockery()->checking(Expectations::create()
-      -> one($t1)->bindEventListener($listener)
-      -> one($t2)->bindEventListener($listener)
-      -> never($t1)
-      -> never($t2)
+    $plugin = $this->_createPlugin($context);
+    
+    $t1 = $context->mock('Swift_Transport');
+    $t2 = $context->mock('Swift_Transport');
+    $context->checking(Expectations::create()
+      -> one($t1)->registerPlugin($plugin, 'foo')
+      -> one($t2)->registerPlugin($plugin, 'foo')
+      -> ignoring($t1)
+      -> ignoring($t2)
       );
     
     $transport = $this->_getTransport(array($t1));
-    $transport->bindEventListener($listener);
+    $transport->registerPlugin($plugin, 'foo');
+    
     $transport->setTransports(array($t1, $t2));
+    
+    $context->assertIsSatisfied();
   }
   
   // -- Private helpers
@@ -343,6 +353,11 @@ class Swift_Transport_FailoverTransportTest
     $transport = new Swift_Transport_FailoverTransport();
     $transport->setTransports($transports);
     return $transport;
+  }
+  
+  private function _createPlugin($context)
+  {
+    return $context->mock('Swift_Events_EventListener');
   }
   
   private function _createInnerTransport()

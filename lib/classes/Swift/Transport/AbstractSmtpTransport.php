@@ -27,6 +27,7 @@
 //@require 'Swift/Events/CommandEvent.php';
 //@require 'Swift/Events/ResponseEvent.php';
 //@require 'Swift/Events/SendEvent.php';
+//@require 'Swift/Events/EventListener.php';
 
 /**
  * Sends Messages over SMTP.
@@ -49,6 +50,9 @@ abstract class Swift_Transport_AbstractSmtpTransport
   
   /** The event dispatching layer */
   protected $_eventDispatcher;
+  
+  /** Loaded plugins */
+  protected $_plugins = array();
   
   /** Return an array of params for the Buffer */
   abstract protected function _getBufferParams();
@@ -112,15 +116,6 @@ abstract class Swift_Transport_AbstractSmtpTransport
       
       $this->_started = true;
     }
-  }
-  
-  /**
-   * Bind an event listener to this Transport.
-   * @param Swift_Events_EventListener $listener
-   */
-  public function bindEventListener(Swift_Events_EventListener $listener)
-  {
-    $this->_eventDispatcher->bindEventListener($listener, $this);
   }
   
   /**
@@ -225,6 +220,22 @@ abstract class Swift_Transport_AbstractSmtpTransport
       }
     }
     $this->_started = false;
+  }
+  
+  /**
+   * Register a plugin using a known unique key (e.g. myPlugin).
+   * @param Swift_Events_EventListener $plugin
+   * @param string $key
+   */
+  public function registerPlugin(Swift_Events_EventListener $plugin, $key)
+  {
+    if (isset($this->_plugins[$key]) && $this->_plugins[$key] === $plugin)
+    {
+      return; //already loaded
+    }
+    
+    $this->_eventDispatcher->bindEventListener($plugin, $this);
+    $this->_plugins[$key] = $plugin;
   }
   
   /**

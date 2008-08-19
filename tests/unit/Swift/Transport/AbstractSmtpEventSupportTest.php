@@ -2,6 +2,7 @@
 
 require_once 'Swift/Transport/AbstractSmtpTest.php';
 require_once 'Swift/Events/EventDispatcher.php';
+require_once 'Swift/Events/EventListener.php';
 require_once 'Swift/Events/EventObject.php';
 require_once 'Swift/Events/EventListener.php';
 
@@ -9,20 +10,71 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest
   extends Swift_Transport_AbstractSmtpTest
 {
   
-  public function testBoundEventsAreBoundToDispatcher()
+  public function testRegisterPluginLoadsPluginInEventDispatcher()
   {
     $context = new Mockery();
     $buf = $this->_getBuffer($context);
     $dispatcher = $context->mock('Swift_Events_EventDispatcher');
     $listener = $context->mock('Swift_Events_EventListener');
     $smtp = $this->_getTransport($buf, $dispatcher);
-    
     $context->checking(Expectations::create()
       -> one($dispatcher)->bindEventListener($listener, $smtp)
       -> ignoring($dispatcher)
       );
-    
-    $smtp->bindEventListener($listener);
+    $smtp->registerPlugin($listener, 'foo');
+    $context->assertIsSatisfied();
+  }
+  
+  public function testCallingRegisterPluginTwiceLoadsBothPluginsInEventDispatcher()
+  {
+    $context = new Mockery();
+    $buf = $this->_getBuffer($context);
+    $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+    $listener1 = $context->mock('Swift_Events_EventListener');
+    $listener2 = $context->mock('Swift_Events_EventListener');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $context->checking(Expectations::create()
+      -> one($dispatcher)->bindEventListener($listener1, $smtp)
+      -> one($dispatcher)->bindEventListener($listener2, $smtp)
+      -> ignoring($dispatcher)
+      );
+    $smtp->registerPlugin($listener1, 'foo');
+    $smtp->registerPlugin($listener2, 'bar');
+    $context->assertIsSatisfied();
+  }
+  
+  public function testCallingRegisterPluginTwiceWithSamePluginOnlyLoadsOnce()
+  {
+    $context = new Mockery();
+    $buf = $this->_getBuffer($context);
+    $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+    $listener = $context->mock('Swift_Events_EventListener');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $context->checking(Expectations::create()
+      -> one($dispatcher)->bindEventListener($listener, $smtp)
+      -> never($dispatcher)->bindEventListener($listener, $smtp)
+      -> ignoring($dispatcher)
+      );
+    $smtp->registerPlugin($listener, 'foo');
+    $smtp->registerPlugin($listener, 'foo');
+    $context->assertIsSatisfied();
+  }
+  
+  public function testCallingRegisterPluginTwiceWithSameKeyButDifferentPluginLoadsBoth()
+  {
+    $context = new Mockery();
+    $buf = $this->_getBuffer($context);
+    $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+    $listener1 = $context->mock('Swift_Events_EventListener');
+    $listener2 = $context->mock('Swift_Events_EventListener');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $context->checking(Expectations::create()
+      -> one($dispatcher)->bindEventListener($listener1, $smtp)
+      -> never($dispatcher)->bindEventListener($listener2, $smtp)
+      -> ignoring($dispatcher)
+      );
+    $smtp->registerPlugin($listener1, 'foo');
+    $smtp->registerPlugin($listener2, 'foo');
     $context->assertIsSatisfied();
   }
   

@@ -291,30 +291,33 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     $this->_mailer->batchSend($message, $failures, $it);
   }
   
-  public function testAttachingPluginBindsToTransport()
+  public function testRegisterPluginDelegatesToTransport()
   {
+    $plugin = $this->_createPlugin();
     $transport = $this->_createTransport();
-    $listener = $this->_stub('Swift_Events_EventListener');
     $mailer = $this->_createMailer($transport);
     
     $this->_mockery()->checking(Expectations::create()
-      -> one($transport)->bindEventListener($listener)
-      -> ignoring($transport)
+      -> one($transport)->registerPlugin($plugin, 'foo')
       );
-    
-    $mailer->attachPlugin($listener);
+    $mailer->registerPlugin($plugin, 'foo');
   }
   
   // -- Creation methods
   
-  private function _createMailer($transport)
+  private function _createPlugin()
   {
-    return new Swift_Mailer($transport);
+    return $this->_mockery()->mock('Swift_Events_EventListener');
   }
   
   private function _createTransport()
   {
     return $this->_mockery()->mock('Swift_Transport');
+  }
+  
+  private function _createMailer(Swift_Transport $transport)
+  {
+    return new Swift_Mailer($transport);
   }
   
 }

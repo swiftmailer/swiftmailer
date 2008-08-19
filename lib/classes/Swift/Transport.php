@@ -37,12 +37,6 @@ interface Swift_Transport
   public function isStarted();
   
   /**
-   * Bind an event listener to this Transport.
-   * @param Swift_Events_EventListener $listener
-   */
-  public function bindEventListener(Swift_Events_EventListener $listener);
-  
-  /**
    * Start this Transport mechanism.
    */
   public function start();
@@ -61,5 +55,12 @@ interface Swift_Transport
    * @return int
    */
   public function send(Swift_Mime_Message $message, &$failedRecipients = null);
+  
+  /**
+   * Register a plugin using a known unique key (e.g. myPlugin).
+   * @param Swift_Events_EventListener $plugin
+   * @param string $key
+   */
+  public function registerPlugin(Swift_Events_EventListener $plugin, $key);
   
 }

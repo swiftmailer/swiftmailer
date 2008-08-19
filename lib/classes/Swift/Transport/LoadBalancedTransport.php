@@ -20,6 +20,7 @@
 
 //@require 'Swift/Transport.php';
 //@require 'Swift/Mime/Message.php';
+//@require 'Swift/Events/EventListener.php';
 
 /**
  * Redudantly and rotationally uses several Transport implementations when sending.
@@ -30,12 +31,11 @@
 class Swift_Transport_LoadBalancedTransport implements Swift_Transport
 {
   
-  /**
-   * Transports which are deemed useless.
-   * @var Swift_Transport[]
-   * @access protected
-   */
+  /** Transports which are deemed useless */
   private $_deadTransports = array();
+  
+  /** Loaded plugins */
+  private $_plugins = array();
   
   /**
    * The Transports which are used in rotation.
@@ -43,9 +43,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
    * @access protected
    */
   protected $_transports = array();
-  
-  /** Event Listeners for plugin API */
-  private $_eventListeners = array();
   
   /**
    * Creates a new LoadBalancedTransport.
@@ -60,17 +57,14 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
    */
   public function setTransports(array $transports)
   {
+    $this->_transports = $transports;
     foreach ($transports as $transport)
     {
-      if (!in_array($transport, $this->_transports, true))
+      foreach ($this->_plugins as $key => $plugin)
       {
-        foreach ($this->_eventListeners as $listener)
-        {
-          $transport->bindEventListener($listener);
-        }
+        $transport->registerPlugin($plugin, $key);
       }
     }
-    $this->_transports = $transports;
     $this->_deadTransports = array();
   }
   
@@ -109,19 +103,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     {
       $transport->stop();
     }
-  }
-  
-  /**
-   * Bind an event listener to this Transport.
-   * @param Swift_Events_EventListener $listener
-   */
-  public function bindEventListener(Swift_Events_EventListener $listener)
-  {
-    foreach ($this->_transports as $transport)
-    {
-      $transport->bindEventListener($listener);
-    }
-    $this->_eventListeners[] = $listener;
   }
   
   /**
@@ -165,6 +146,20 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     }
     
     return $sent;
+  }
+  
+  /**
+   * Register a plugin using a known unique key (e.g. myPlugin).
+   * @param Swift_Events_EventListener $plugin
+   * @param string $key
+   */
+  public function registerPlugin(Swift_Events_EventListener $plugin, $key)
+  {
+    $this->_plugins[$key] = $plugin;
+    foreach ($this->_transports as $transport)
+    {
+      $transport->registerPlugin($plugin, $key);
+    }
   }
   
   // -- Protected methods

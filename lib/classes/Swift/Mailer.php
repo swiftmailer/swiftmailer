@@ -31,11 +31,7 @@
 class Swift_Mailer
 {
   
-  /**
-   * The Transport used to send messages.
-   * @var Swift_Transport
-   * @access private
-   */
+  /** The Transport used to send messages */
   private $_transport;
   
   /**
@@ -45,15 +41,6 @@ class Swift_Mailer
   public function __construct(Swift_Transport $transport)
   {
     $this->_transport = $transport;
-  }
-  
-  /**
-   * Add a plugin to respond to events during sending.
-   * @param Swift_Events_EventListener $plugin
-   */
-  public function attachPlugin(Swift_Events_EventListener $plugin)
-  {
-    $this->_transport->bindEventListener($plugin);
   }
   
   /**
@@ -138,6 +125,16 @@ class Swift_Mailer
       $message->setBcc($bcc);
     }
     return $sent;
+  }
+  
+  /**
+   * Register a plugin using a known unique key (e.g. myPlugin).
+   * @param Swift_Events_EventListener $plugin
+   * @param string $key
+   */
+  public function registerPlugin(Swift_Events_EventListener $plugin, $key)
+  {
+    $this->_transport->registerPlugin($plugin, $key);
   }
   
 }

@@ -20,6 +20,7 @@
 
 //@require 'Swift/Transport.php';
 //@require 'Swift/Mime/Message.php';
+//@require 'Swift/Events/EventListener.php';
 
 /**
  * Sends Messages using the mail() function.
@@ -66,15 +67,6 @@ class Swift_Transport_MailTransport implements Swift_Transport
    */
   public function stop()
   {
-  }
-  
-  /**
-   * Bind an event listener to this Transport.
-   * @param Swift_Events_EventListener $listener
-   */
-  public function bindEventListener(Swift_Events_EventListener $listener)
-  {
-    $this->_eventDispatcher->bindEventListener($listener, $this);
   }
   
   /**
@@ -151,6 +143,15 @@ class Swift_Transport_MailTransport implements Swift_Transport
     }
     
     return $count;
+  }
+  
+  /**
+   * Register a plugin using a known unique key (e.g. myPlugin).
+   * @param Swift_Events_EventListener $plugin
+   * @param string $key
+   */
+  public function registerPlugin(Swift_Events_EventListener $plugin, $key)
+  {
   }
   
   // -- Private methods

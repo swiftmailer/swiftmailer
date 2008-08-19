@@ -17,7 +17,7 @@ Poorly implemented:
 After first beta:
 -----------------
 
-* Simplify the event system:
+ * Simplify the event system:
    - EventFactory class used by EventDispatcher
    - Get rid of the ability to bind to a specific source
    - Benchmark difference creating "New" events instead of current convoluted setup
@@ -26,6 +26,7 @@ After first beta:
    - Shift-JIS
    - ISO-10646
    - CP950
+ * mb_*() Character reader
  * VerpPlugin
  * PopBeforeSmtpPlugin
  * V3 Wrapper classes
