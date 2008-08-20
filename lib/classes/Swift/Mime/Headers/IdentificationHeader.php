@@ -19,6 +19,7 @@
  */
 
 //@require 'Swift/Mime/Headers/AbstractHeader.php';
+//@require 'Swift/RfcComplianceException.php';
 
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.
@@ -52,6 +53,7 @@ class Swift_Mime_Headers_IdentificationHeader
    * Set the model for the field body.
    * This method takes a string ID, or an array of IDs
    * @param mixed $model
+   * @throws Swift_RfcComplianceException
    */
   public function setFieldBodyModel($model)
   {
@@ -71,6 +73,7 @@ class Swift_Mime_Headers_IdentificationHeader
   /**
    * Set the ID used in the value of this header.
    * @param string $id
+   * @throws Swift_RfcComplianceException
    */
   public function setId($id)
   {
@@ -93,6 +96,7 @@ class Swift_Mime_Headers_IdentificationHeader
   /**
    * Set a collection of IDs to use in the value of this Header.
    * @param string[] $ids
+   * @throws Swift_RfcComplianceException
    */
   public function setIds(array $ids)
   {
@@ -110,7 +114,9 @@ class Swift_Mime_Headers_IdentificationHeader
       }
       else
       {
-        throw new Exception('Invalid ID given <' . $id . '>');
+        throw new Swift_RfcComplianceException(
+          'Invalid ID given <' . $id . '>'
+          );
       }
     }
     
@@ -133,6 +139,7 @@ class Swift_Mime_Headers_IdentificationHeader
    * not be added at this stage (see {@link toString()} for that).
    * @return string
    * @see toString()
+   * @throws Swift_RfcComplianceException
    */
   public function getFieldBody()
   {

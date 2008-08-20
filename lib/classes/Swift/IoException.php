@@ -1,7 +1,7 @@
 <?php
 
 /*
- TransportException from Swift Mailer.
+ I/O Exception in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,20 +17,19 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
  */
-
-//@require 'Swift/IoException.php';
+ 
+//@require 'Swift/SwiftException.php';
 
 /**
- * TransportException thrown when an error occurs in the Transport subsystem.
+ * I/O Exception class.
  * @package Swift
- * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Transport_TransportException extends Swift_IoException
+class Swift_IoException extends Swift_SwiftException
 {
   
   /**
-   * Create a new TransportException with $message.
+   * Create a new IoException with $message.
    * @param string $message
    */
   public function __construct($message)

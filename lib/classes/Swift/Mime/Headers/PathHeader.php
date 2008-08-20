@@ -19,6 +19,7 @@
  */
 
 //@require 'Swift/Mime/Headers/AbstractHeader.php';
+//@require 'Swift/RfcComplianceException.php';
 
 /**
  * A Path Header in Swift Mailer, such a Return-Path.
@@ -50,6 +51,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
    * Set the model for the field body.
    * This method takes a string for an address.
    * @param string $model
+   * @throws Swift_RfcComplianceException
    */
   public function setFieldBodyModel($model)
   {
@@ -69,6 +71,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
   /**
    * Set the Address which should appear in this Header.
    * @param string $address
+   * @throws Swift_RfcComplianceException
    */
   public function setAddress($address)
   {
@@ -83,7 +86,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
     }
     else
     {
-      throw new Exception(
+      throw new Swift_RfcComplianceException(
         'Address set in PathHeader does not comply with addr-spec of RFC 2822.'
         );
     }

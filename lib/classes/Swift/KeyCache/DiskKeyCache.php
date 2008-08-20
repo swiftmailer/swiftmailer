@@ -22,6 +22,8 @@
 //@require 'Swift/KeyCacheInputStream.php';
 //@require 'Swift/InputByteStream.php';
 //@require 'Swift/OutputByteStrean.php';
+//@require 'Swift/SwiftException.php';
+//@require 'Swift/IoException.php';
 
 /**
  * A KeyCache which streams to and from disk.
@@ -85,6 +87,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    * @param string $itemKey
    * @param string $string
    * @param int $mode
+   * @throws Swift_IoException
    * @see MODE_WRITE, MODE_APPEND
    */
   public function setString($nsKey, $itemKey, $string, $mode)
@@ -99,7 +102,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
         $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_END);
         break;
       default:
-        throw new Exception(
+        throw new Swift_SwiftException(
           'Invalid mode [' . $mode . '] used to set nsKey='.
           $nsKey . ', itemKey=' . $itemKey
           );
@@ -115,6 +118,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    * @param Swift_OutputByteStream $os
    * @param int $mode
    * @see MODE_WRITE, MODE_APPEND
+   * @throws Swift_IoException
    */
   public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os,
     $mode)
@@ -129,7 +133,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
         $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_END);
         break;
       default:
-        throw new Exception(
+        throw new Swift_SwiftException(
           'Invalid mode [' . $mode . '] used to set nsKey='.
           $nsKey . ', itemKey=' . $itemKey
           );
@@ -167,6 +171,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    * @param string $nsKey
    * @param string $itemKey
    * @return string
+   * @throws Swift_IoException
    */
   public function getString($nsKey, $itemKey)
   {
@@ -275,7 +280,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     {
       if (!mkdir($cacheDir))
       {
-        throw new Exception('Failed to create cache directory ' . $cacheDir);
+        throw new Swift_IoException('Failed to create cache directory ' . $cacheDir);
       }
       $this->_keys[$nsKey] = array();
     }

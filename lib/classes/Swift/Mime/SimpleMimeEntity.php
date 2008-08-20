@@ -237,6 +237,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     return $this->_boundary;
   }
   
+  /**
+   * @throws Swift_RfcComplianceException
+   */
   public function setBoundary($boundary)
   {
     $this->_assertValidBoundary($boundary);
@@ -301,30 +304,23 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
       if (isset($this->_body))
       {
-        //if ($this->_cache->hasKey($this->_cacheKey, 'body'))
-        //{
-        //  $this->_cache->exportToByteStream($this->_cacheKey, 'body', $is);
-        //}
-        //else
-        //{
-          $is->write("\r\n",
+        $is->write("\r\n",
+          $this->_cache->getInputByteStream($this->_cacheKey, 'body')
+          );
+        if ($this->_body instanceof Swift_OutputByteStream)
+        {
+          $this->_encoder->encodeByteStream($this->_body,
+            $this->_cache->getInputByteStream($this->_cacheKey, 'body', $is),
+            0, $this->getMaxLineLength()
+            );
+        }
+        else
+        {
+          $is->write($this->_encoder->encodeString($this->getBody(), 0,
+            $this->getMaxLineLength()),
             $this->_cache->getInputByteStream($this->_cacheKey, 'body')
             );
-          if ($this->_body instanceof Swift_OutputByteStream)
-          {
-            $this->_encoder->encodeByteStream($this->_body,
-              $this->_cache->getInputByteStream($this->_cacheKey, 'body', $is),
-              0, $this->getMaxLineLength()
-              );
-          }
-          else
-          {
-            $is->write($this->_encoder->encodeString($this->getBody(), 0,
-              $this->getMaxLineLength()),
-              $this->_cache->getInputByteStream($this->_cacheKey, 'body')
-              );
-          }
-        //}
+        }
       }
     }
     

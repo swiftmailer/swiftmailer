@@ -53,6 +53,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    * Set the model for the field body.
    * This method takes a string, or an array of addresses.
    * @param mixed $model
+   * @throws Swift_RfcComplianceException
    */
   public function setFieldBodyModel($model)
   {
@@ -63,6 +64,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    * Get the model for the field body.
    * This method returns an associative array like {@link getNameAddresses()}
    * @return array
+   * @throws Swift_RfcComplianceException
    */
   public function getFieldBodyModel()
   {
@@ -84,6 +86,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    * ?>
    * </code>
    * @param string|string[] $mailboxes
+   * @throws Swift_RfcComplianceException
    * @see __construct()
    * @see setAddresses()
    * @see setValue()
@@ -111,6 +114,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    * ?>
    * </code>
    * @return string[]
+   * @throws Swift_RfcComplianceException
    * @see getNameAddresses()
    * @see toString()
    */
@@ -157,6 +161,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    * ?>
    * </code>
    * @param string[] $addresses
+   * @throws Swift_RfcComplianceException
    * @see setNameAddresses()
    * @see setValue()
    */
@@ -193,6 +198,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    * This is not necessarily RFC 2822 compliant since folding white space will
    * not be added at this stage (see {@link toString()} for that).
    * @return string
+   * @throws Swift_RfcComplianceException
    * @see toString()
    */
   public function getFieldBody()
@@ -254,6 +260,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    * Creates a string form of all the mailboxes in the passed array.
    * @param string[] $mailboxes
    * @return string
+   * @throws Swift_RfcComplianceException
    * @access protected
    */
   protected function createMailboxListString(array $mailboxes)
@@ -298,7 +305,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     if (!preg_match('/^' . $this->getGrammar('addr-spec') . '$/D',
       $address))
     {
-      throw new Exception(
+      throw new Swift_RfcComplianceException(
         'Address in mailbox given [' . $address .
         '] does not comply with RFC 2822, 3.6.2.'
         );

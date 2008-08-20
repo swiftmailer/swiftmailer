@@ -21,6 +21,7 @@
 //@require 'Swift/ByteStream/AbstractFilterableInputStream.php';
 //@require 'Swift/InputByteStream.php';
 //@require 'Swift/FileStream.php';
+//@require 'Swift/IoException.php';
 
 /**
  * Allows reading and writing of bytes to and from a file.
@@ -79,6 +80,7 @@ class Swift_ByteStream_FileByteStream
    * false is returned.
    * @param int $length
    * @return string
+   * @throws Swift_IoException
    */
   public function read($length)
   {
@@ -138,7 +140,7 @@ class Swift_ByteStream_FileByteStream
     {
       if (!$this->_reader = fopen($this->_path, 'rb'))
       {
-        throw new Exception(
+        throw new Swift_IoException(
           'Unable to open file for reading [' . $this->_path . ']'
           );
       }
@@ -154,7 +156,7 @@ class Swift_ByteStream_FileByteStream
     {
       if (!$this->_writer = fopen($this->_path, $this->_mode))
       {
-        throw new Exception(
+        throw new Swift_IoException(
           'Unable to open file for writing [' . $this->_path . ']'
           );
       }

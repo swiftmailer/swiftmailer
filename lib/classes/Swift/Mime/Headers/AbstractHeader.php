@@ -20,6 +20,7 @@
 
 //@require 'Swift/Mime/Header.php';
 //@require 'Swift/Mime/HeaderEncoder.php';
+//@require 'Swift/RfcComplianceException.php';
 
 /**
  * An abstract base MIME Header.
@@ -179,6 +180,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
   /**
    * Get this Header rendered as a RFC 2822 compliant string.
    * @return string
+   * @throws Swift_RfcComplianceException
    */
   public function toString()
   {
@@ -285,7 +287,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     }
     else
     {
-      throw new Exception("No such grammar '" . $name . "' defined.");
+      throw new Swift_RfcComplianceException(
+        "No such grammar '" . $name . "' defined."
+        );
     }
   }
   

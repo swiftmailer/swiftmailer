@@ -80,6 +80,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
    * Writes $bytes to the end of the stream.
    * @param string $bytes
    * @param Swift_InputByteStream $is, optional
+   * @throws Swift_IoException
    */
   public function write($bytes, Swift_InputByteStream $is = null)
   {
@@ -100,6 +101,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   /**
    * Flush the contents of the stream (empty it) and set the internal pointer
    * to the beginning.
+   * @throws Swift_IoException
    */
   public function flushBuffers()
   {
