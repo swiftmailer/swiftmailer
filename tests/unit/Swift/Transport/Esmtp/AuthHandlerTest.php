@@ -5,13 +5,6 @@ require_once 'Swift/Transport/Esmtp/AuthHandler.php';
 require_once 'Swift/Transport/Esmtp/Authenticator.php';
 require_once 'Swift/Transport/EsmtpBufferWrapper.php';
 
-Mock::generate('Swift_Transport_Esmtp_Authenticator',
-  'Swift_Transport_Esmtp_MockAuthenticator'
-  );
-Mock::generate('Swift_Transport_EsmtpBufferWrapper',
-  'Swift_Transport_MockEsmtpBufferWrapper'
-  );
-
 class Swift_Transport_Esmtp_AuthHandlerTest extends Swift_Tests_SwiftUnitTestCase
 {
   

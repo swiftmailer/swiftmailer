@@ -5,10 +5,6 @@ require_once 'Swift/Transport/EsmtpBufferWrapper.php';
 require_once 'Swift/Transport/Esmtp/Auth/PlainAuthenticator.php';
 require_once 'Swift/Transport/TransportException.php';
 
-Mock::generate('Swift_Transport_EsmtpBufferWrapper',
-  'Swift_Transport_MockEsmtpBufferWrapper'
-  );
-
 class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest
   extends Swift_Tests_SwiftUnitTestCase
 {
@@ -17,7 +13,7 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest
   
   public function setUp()
   {
-    $this->_buffer = new Swift_Transport_MockEsmtpBufferWrapper();
+    $this->_buffer = $this->_mock('Swift_Transport_EsmtpBufferWrapper');
   }
   
   public function testKeywordIsPlain()
@@ -40,8 +36,8 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest
     */
     
     $plain = $this->_getAuthenticator();
-    $this->_buffer->expectOnce(
-      'executeCommand', array("AUTH PLAIN " . base64_encode(
+    $this->_checking(Expectations::create()
+      -> one($this->_buffer)->executeCommand('AUTH PLAIN ' . base64_encode(
         'jack' . chr(0) . 'jack' . chr(0) . 'pass'
         ) . "\r\n", array(235))
       );
@@ -53,26 +49,17 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest
   
   public function testAuthenticationFailureSendRsetAndReturnFalse()
   {
-    $e = new Swift_Transport_TransportException("");
-    
-    $login = $this->_getAuthenticator();
-    $this->_buffer->expectAt(0,
-      'executeCommand', array("AUTH PLAIN " . base64_encode(
+    $plain = $this->_getAuthenticator();
+    $this->_checking(Expectations::create()
+      -> one($this->_buffer)->executeCommand('AUTH PLAIN ' . base64_encode(
         'jack' . chr(0) . 'jack' . chr(0) . 'pass'
-        ) . "\r\n", array(235))
+        ) . "\r\n", array(235)) -> throws(new Swift_Transport_TransportException(""))
+      
+      -> one($this->_buffer)->executeCommand("RSET\r\n", array(250))
       );
-    $this->_buffer->throwOn(
-      'executeCommand', $e, array("AUTH PLAIN " . base64_encode(
-        'jack' . chr(0) . 'jack' . chr(0) . 'pass'
-        ) . "\r\n", array(235))
-      );
-    $this->_buffer->expectAt(1,
-      'executeCommand', array("RSET\r\n", array(250))
-      );
-    $this->_buffer->expectMinimumCallCount('executeCommand', 2);
     
-    $this->assertFalse($login->authenticate($this->_buffer, 'jack', 'pass'),
-      '%s: The buffer accepted all commands authentication should succeed'
+    $this->assertFalse($plain->authenticate($this->_buffer, 'jack', 'pass'),
+      '%s: Authentication fails, so RSET should be sent'
       );
   }
   
