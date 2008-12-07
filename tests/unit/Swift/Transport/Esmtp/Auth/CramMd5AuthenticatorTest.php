@@ -5,10 +5,6 @@ require_once 'Swift/Transport/EsmtpBufferWrapper.php';
 require_once 'Swift/Transport/Esmtp/Auth/CramMd5Authenticator.php';
 require_once 'Swift/Transport/TransportException.php';
 
-Mock::generate('Swift_Transport_EsmtpBufferWrapper',
-  'Swift_Transport_MockEsmtpBufferWrapper'
-  );
-
 class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
   extends Swift_Tests_SwiftUnitTestCase
 {
@@ -17,7 +13,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
   
   public function setUp()
   {
-    $this->_buffer = new Swift_Transport_MockEsmtpBufferWrapper();
+    $this->_buffer = $this->_mock('Swift_Transport_EsmtpBufferWrapper');
   }
   
   public function testKeywordIsCramMd5()
@@ -33,16 +29,12 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
   public function testSuccessfulAuthentication()
   {
     $cram = $this->_getAuthenticator();
-    $this->_buffer->expectAt(0,
-      'executeCommand', array("AUTH CRAM-MD5\r\n", array(334))
+    $this->_checking(Expectations::create()
+      -> one($this->_buffer)->executeCommand("AUTH CRAM-MD5\r\n", array(334))
+        -> returns('334 ' . base64_encode('<foo@bar>') . "\r\n")
+      // The use of any() is controversial, but here to avoid crazy test logic
+      -> one($this->_buffer)->executeCommand(any(), array(235))
       );
-    $this->_buffer->setReturnValue('executeCommand',
-      '334 ' . base64_encode('<foo@bar>') . "\r\n", array("AUTH CRAM-MD5\r\n", array(334))
-      );
-    $this->_buffer->expectAt(1,
-      'executeCommand', array('*', array(235))
-      );
-    $this->_buffer->expectMinimumCallCount('executeCommand', 2);
     
     $this->assertTrue($cram->authenticate($this->_buffer, 'jack', 'pass'),
       '%s: The buffer accepted all commands authentication should succeed'
@@ -51,28 +43,19 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
   
   public function testAuthenticationFailureSendRsetAndReturnFalse()
   {
-    $e = new Swift_Transport_TransportException("");
-    
     $cram = $this->_getAuthenticator();
-    $this->_buffer->expectAt(0,
-      'executeCommand', array("AUTH CRAM-MD5\r\n", array(334))
+    $this->_checking(Expectations::create()
+      -> one($this->_buffer)->executeCommand("AUTH CRAM-MD5\r\n", array(334))
+        -> returns('334 ' . base64_encode('<foo@bar>') . "\r\n")
+      // The use of any() is controversial, but here to avoid crazy test logic
+      -> one($this->_buffer)->executeCommand(any(), array(235))
+       -> throws(new Swift_Transport_TransportException(""))
+      
+      -> one($this->_buffer)->executeCommand("RSET\r\n", array(250))
       );
-    $this->_buffer->setReturnValue('executeCommand',
-      '334 ' . base64_encode('<foo@bar>') . "\r\n", array("AUTH CRAM-MD5\r\n", array(334))
-      );
-    $this->_buffer->expectAt(1,
-      'executeCommand', array('*', array(235))
-      );
-    $this->_buffer->throwOn(
-      'executeCommand', $e, array('*', array(235))
-      );
-    $this->_buffer->expectAt(2,
-      'executeCommand', array("RSET\r\n", array(250))
-      );
-    $this->_buffer->expectMinimumCallCount('executeCommand', 3);
     
     $this->assertFalse($cram->authenticate($this->_buffer, 'jack', 'pass'),
-      '%s: The buffer accepted all commands authentication should succeed'
+      '%s: Authentication fails, so RSET should be sent'
       );
   }
   
