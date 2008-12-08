@@ -35,7 +35,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   {
     $ctype = $this->_createHeader('Content-Type', 'text/plain', array(), false);
     $headers = $this->_createHeaderSet(array('Content-Type' => $ctype));
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($ctype)->setFieldBodyModel('image/jpeg')
       -> ignoring($ctype)
       );
@@ -48,7 +48,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testContentTypeHeaderIsAddedIfNoneSet()
   {
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($headers)->addParameterizedHeader('Content-Type', 'image/jpeg')
       -> ignoring($headers)
       );
@@ -87,7 +87,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $headers = $this->_createHeaderSet(array(
       'Content-Transfer-Encoding' => $encoding
       ));
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($encoding)->setFieldBodyModel('base64')
       -> ignoring($encoding)
       );
@@ -100,7 +100,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testSettingEncoderAddsEncodingHeaderIfNonePresent()
   {
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($headers)->addTextHeader('Content-Transfer-Encoding', 'something')
       -> ignoring($headers)
       );
@@ -131,7 +131,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   {
     $cid = $this->_createHeader('Content-ID', 'zip@button', array(), false);
     $headers = $this->_createHeaderSet(array('Content-ID' => $cid));
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cid)->setFieldBodyModel('foo@bar')
       -> ignoring($cid)
       );
@@ -171,7 +171,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   {
     $desc = $this->_createHeader('Content-Description', '', array(), false);
     $headers = $this->_createHeaderSet(array('Content-Description' => $desc));
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($desc)->setFieldBodyModel('whatever')
       -> ignoring($desc)
       );
@@ -184,7 +184,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testDescriptionHeaderIsAddedIfNotPresent()
   {
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($headers)->addTextHeader('Content-Description', 'whatever')
       -> ignoring($headers)
       );
@@ -206,7 +206,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testEncoderIsUsedForStringGeneration()
   {
     $encoder = $this->_createEncoder('base64', false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($encoder)->encodeString('blah', optional())
       -> ignoring($encoder)
       );
@@ -220,7 +220,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testMaxLineLengthIsProvidedWhenEncoding()
   {
     $encoder = $this->_createEncoder('base64', false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($encoder)->encodeString('blah', 0, 65)
       -> ignoring($encoder)
       );
@@ -235,7 +235,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testHeadersAppearInString()
   {
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($headers)->toString() -> returns(
         "Content-Type: text/plain; charset=utf-8\r\n" .
         "X-MyHeader: foobar\r\n"
@@ -264,7 +264,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testBodyIsAppended()
   {
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($headers)->toString() -> returns(
         "Content-Type: text/plain; charset=utf-8\r\n"
         )
@@ -296,7 +296,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   {
     $headers = $this->_createHeaderSet(array(), false);
     $os = $this->_createOutputStream("streamed");
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($headers)->toString() -> returns(
         "Content-Type: text/plain; charset=utf-8\r\n"
         )
@@ -360,7 +360,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   {
     $child = $this->_createChild();
     $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cType)->setParameter('boundary', any())
       -> ignoring($cType)
       );
@@ -382,7 +382,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       $cType = $this->_createHeader(
         'Content-Type', 'text/plain', array(), false
         );
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> one($cType)->setFieldBodyModel('multipart/mixed')
         -> ignoring($cType)
         );
@@ -403,7 +403,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       $cType = $this->_createHeader(
         'Content-Type', 'text/plain', array(), false
         );
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> one($cType)->setFieldBodyModel('multipart/related')
         -> ignoring($cType)
         );
@@ -424,7 +424,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       $cType = $this->_createHeader(
         'Content-Type', 'text/plain', array(), false
         );
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> one($cType)->setFieldBodyModel('multipart/alternative')
         -> ignoring($cType)
         );
@@ -473,7 +473,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       $cType = $this->_createHeader(
         'Content-Type', 'text/plain', array(), false
         );
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> one($cType)->setFieldBodyModel($combination['type'])
         -> ignoring($cType)
         );
@@ -505,7 +505,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       "<b>foobar</b>"
       );
       
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($headers)->toString() -> returns(
         "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n"
         )
@@ -551,7 +551,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       "data"
       );
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($headers)->toString() -> returns(
         "Content-Type: multipart/mixed; boundary=\"xxx\"\r\n"
         )
@@ -594,7 +594,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $child = $this->_createChild(0, '', false);
     $encoder = $this->_createEncoder('base64');
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($child)->encoderChanged($encoder)
       -> ignoring($child)
       );
@@ -611,7 +611,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $child = $this->_createChild(0, '', false);
     $encoder = $this->_createEncoder('base64');
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($child)->encoderChanged($encoder)
       -> ignoring($child)
       );
@@ -627,7 +627,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   {
     $child = $this->_createChild(0, '', false);
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($child)->charsetChanged('windows-874')
       -> ignoring($child)
       );
@@ -645,7 +645,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       $this->_createEncoder(), $this->_createCache()
       );
     $is = $this->_createInputStream(false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> atLeast(1)->of($is)->write(any())
       -> ignoring($is)
       );
@@ -668,7 +668,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       false
       );
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($headers)->toString() -> returns(
         "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n"
         )
@@ -718,7 +718,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       false
       );
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($headers)->toString() -> returns(
         "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n"
         )
@@ -759,7 +759,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $child = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE);
     
     $s = $this->_mockery()->sequence('Type setting');
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cType)->setFieldBodyModel('image/jpeg') -> inSequence($s)
       -> one($cType)->setFieldBodyModel('multipart/alternative') -> inSequence($s)
       -> one($cType)->setFieldBodyModel('image/jpeg') -> inSequence($s)
@@ -807,19 +807,19 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   protected function _createChild($level = null, $string = '', $stub = true)
   {
-    $child = $this->_mockery()->mock('Swift_Mime_MimeEntity');
+    $child = $this->_mock('Swift_Mime_MimeEntity');
     if (isset($level))
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($child)->getNestingLevel() -> returns($level)
         );
     }
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($child)->toString() -> returns($string)
       );
     if ($stub)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($child)
         );
     }
@@ -828,14 +828,14 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   protected function _createEncoder($name = 'quoted-printable', $stub = true)
   {
-    $encoder = $this->_mockery()->mock('Swift_Mime_ContentEncoder');
-    $this->_mockery()->checking(Expectations::create()
+    $encoder = $this->_mock('Swift_Mime_ContentEncoder');
+    $this->_checking(Expectations::create()
       -> ignoring($encoder)->getName() -> returns($name)
       );
       
     if ($stub)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($encoder)->encodeString(any(), optional())
           -> calls(array($this, 'returnStringFromEncoder'))
         -> ignoring($encoder)
@@ -846,11 +846,11 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   protected function _createCache($stub = true)
   {
-    $cache = $this->_mockery()->mock('Swift_KeyCache');
+    $cache = $this->_mock('Swift_KeyCache');
       
     if ($stub)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($cache)
         );
     }
@@ -859,17 +859,17 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   protected function _createHeaderSet($headers = array(), $stub = true)
   {
-    $set = $this->_mockery()->mock('Swift_Mime_HeaderSet');
+    $set = $this->_mock('Swift_Mime_HeaderSet');
     foreach ($headers as $key => $header)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($set)->has($key) -> returns(true)
         -> ignoring($set)->get($key) -> returns($header)
         );
     }
     if ($stub)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($set)->newInstance() -> returns($set)
         -> ignoring($set)
         );
@@ -879,20 +879,20 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   protected function _createHeader($name, $model = null, $params = array(), $stub = true)
   {
-    $header = $this->_mockery()->mock('Swift_Mime_ParameterizedHeader');
-    $this->_mockery()->checking(Expectations::create()
+    $header = $this->_mock('Swift_Mime_ParameterizedHeader');
+    $this->_checking(Expectations::create()
       -> ignoring($header)->getFieldName() -> returns($name)
       -> ignoring($header)->getFieldBodyModel() -> returns($model)
       );
     foreach ($params as $key => $value)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($header)->getParameter($key) -> returns($value)
         );
     }
     if ($stub)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($header)
         );
     }
@@ -901,11 +901,11 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   protected function _createOutputStream($data = null, $stub = true)
   {
-    $os = $this->_mockery()->mock('Swift_OutputByteStream');
+    $os = $this->_mock('Swift_OutputByteStream');
     if (isset($data))
     {
       $pos = $this->_mockery()->states('position')->startsAs('at beginning');
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($os)->read(optional()) -> returns($data)
           -> when($pos->isNot('at end')) -> then($pos->is('at end'))
 
@@ -913,7 +913,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
         );
       if ($stub)
       {
-        $this->_mockery()->checking(Expectations::create()
+        $this->_checking(Expectations::create()
           -> ignoring($os)
           );
       }
@@ -923,10 +923,10 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   
   protected function _createInputStream($stub = true)
   {
-    $is = $this->_mockery()->mock('Swift_InputByteStream');
+    $is = $this->_mock('Swift_InputByteStream');
     if ($stub)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($is)
         );
     }

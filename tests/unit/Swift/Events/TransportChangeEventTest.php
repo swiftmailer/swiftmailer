@@ -9,8 +9,7 @@ class Swift_Events_TransportChangeEventTest extends Swift_Tests_SwiftUnitTestCas
 
   public function testCleanCloneIsGenerated()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
+    $transport = $this->_mock('Swift_Transport');
     
     $evt = new Swift_Events_TransportChangeEvent();
     

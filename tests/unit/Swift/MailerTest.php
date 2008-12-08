@@ -25,11 +25,10 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testTransportIsStartedWhenSending()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $con = $context->states('Connection')->startsAs('off');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $con = $this->_states('Connection')->startsAs('off');
+    $this->_checking(Expectations::create()
       -> allowing($transport)->isStarted() -> returns(false) -> when($con->is('off'))
       -> allowing($transport)->isStarted() -> returns(false) -> when($con->is('on'))
       -> one($transport)->start() -> when($con->is('off')) -> then($con->is('on'))
@@ -39,17 +38,14 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
       
     $mailer = new Swift_Mailer($transport);
     $mailer->send($message);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testTransportIsOnlyStartedOnce()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $con = $context->states('Connection')->startsAs('off');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $con = $this->_states('Connection')->startsAs('off');
+    $this->_checking(Expectations::create()
       -> allowing($transport)->isStarted() -> returns(false) -> when($con->is('off'))
       -> allowing($transport)->isStarted() -> returns(false) -> when($con->is('on'))
       -> one($transport)->start() -> when($con->is('off')) -> then($con->is('on'))
@@ -61,15 +57,13 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     {
       $mailer->send($message);
     }
-    $context->assertIsSatisfied();
   }
   
   public function testMessageIsPassedToTransport()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $this->_checking(Expectations::create()
       -> one($transport)->send($message, optional())
       -> ignoring($transport)
       -> ignoring($message)
@@ -77,16 +71,13 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
       
     $mailer = new Swift_Mailer($transport);
     $mailer->send($message);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testBatchSendSendsOneMessagePerRecipient()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array(
         'one@domain.com' => 'One',
         'two@domain.com' => 'Two',
@@ -99,16 +90,13 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
       
     $mailer = new Swift_Mailer($transport);
     $mailer->batchSend($message);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testBatchSendChangesToFieldForEachRecipientBeforeRestoring()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array(
         'one@domain.com' => 'One',
         'two@domain.com' => 'Two',
@@ -129,16 +117,13 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
       
     $mailer = new Swift_Mailer($transport);
     $mailer->batchSend($message);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testBatchSendClearsAndRestoresCc()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array('one@domain.com' => 'One'))
       -> allowing($message)->getCc() -> returns(array('four@domain.com' => 'Four'))
       -> one($message)->setCc(array())
@@ -151,16 +136,13 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
       
     $mailer = new Swift_Mailer($transport);
     $mailer->batchSend($message);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testBatchSendClearsAndRestoresBcc()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array('one@domain.com' => 'One'))
       -> allowing($message)->getBcc() -> returns(array('four@domain.com' => 'Four'))
       -> one($message)->setBcc(array())
@@ -173,16 +155,13 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
       
     $mailer = new Swift_Mailer($transport);
     $mailer->batchSend($message);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testSendReturnsCountFromTransport()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $this->_checking(Expectations::create()
       -> one($transport)->send($message, optional()) -> returns(57)
       -> ignoring($transport)
       -> ignoring($message)
@@ -190,16 +169,13 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
       
     $mailer = new Swift_Mailer($transport);
     $this->assertEqual(57, $mailer->send($message));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testBatchSendReturnCummulativeSendCount()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $transport = $this->_mock('Swift_Transport');
+    $message = $this->_mock('Swift_Mime_Message');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array(
         'one@domain.com' => 'One',
         'two@domain.com' => 'Two',
@@ -222,18 +198,15 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
       
     $mailer = new Swift_Mailer($transport);
     $this->assertEqual(2, $mailer->batchSend($message));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testFailedRecipientReferenceIsPassedToTransport()
   {
     $failures = array();
     
-    $context = new Mockery();
-    $message = $context->mock('Swift_Mime_Message');
-    $transport = $context->mock('Swift_Transport');
-    $context->checking(Expectations::create()
+    $message = $this->_mock('Swift_Mime_Message');
+    $transport = $this->_mock('Swift_Transport');
+    $this->_checking(Expectations::create()
       -> one($transport)->send($message, reference($failures))
       -> ignoring($transport)
       -> ignoring($message)
@@ -241,18 +214,15 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     
     $mailer = new Swift_Mailer($transport);
     $mailer->send($message, $failures);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testFailedRecipientReferenceIsPassedToTransportInBatch()
   {
     $failures = array();
     
-    $context = new Mockery();
-    $message = $context->mock('Swift_Mime_Message');
-    $transport = $context->mock('Swift_Transport');
-    $context->checking(Expectations::create()
+    $message = $this->_mock('Swift_Mime_Message');
+    $transport = $this->_mock('Swift_Transport');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array('foo@bar' => 'Foo'))
       -> one($transport)->send($message, reference($failures))
       -> ignoring($transport)
@@ -261,8 +231,6 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     
     $mailer = new Swift_Mailer($transport);
     $mailer->batchSend($message, $failures);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testBatchSendCanReadFromIterator()
@@ -297,7 +265,7 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     $transport = $this->_createTransport();
     $mailer = $this->_createMailer($transport);
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($transport)->registerPlugin($plugin, 'foo')
       );
     $mailer->registerPlugin($plugin, 'foo');
@@ -307,12 +275,12 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
   
   private function _createPlugin()
   {
-    return $this->_mockery()->mock('Swift_Events_EventListener');
+    return $this->_mock('Swift_Events_EventListener');
   }
   
   private function _createTransport()
   {
-    return $this->_mockery()->mock('Swift_Transport');
+    return $this->_mock('Swift_Transport');
   }
   
   private function _createMailer(Swift_Transport $transport)

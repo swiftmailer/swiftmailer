@@ -28,8 +28,7 @@ class Swift_Events_ResponseEventTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testCleanCloneIsCreated()
   {
-    $context = new Mockery();
-    $buf = $context->mock('Swift_Transport_EsmtpBufferWrapper');
+    $buf = $this->_mock('Swift_Transport_EsmtpBufferWrapper');
     
     $evt = new Swift_Events_ResponseEvent();
     $evt->response = "250 Ok\r\n";

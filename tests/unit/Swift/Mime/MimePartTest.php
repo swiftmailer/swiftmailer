@@ -46,7 +46,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
     $cType = $this->_createHeader('Content-Type', 'text/plain',
       array('charset' => 'iso-8859-1'), false
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cType)->setParameter('charset', 'utf-8')
       -> ignoring($cType)
       );
@@ -60,7 +60,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
   public function testSettingCharsetNotifiesEncoder()
   {
     $encoder = $this->_createEncoder('quoted-printable', false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($encoder)->charsetChanged('utf-8')
       -> ignoring($encoder)
       );
@@ -73,7 +73,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
   public function testSettingCharsetNotifiesHeaders()
   {
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($headers)->charsetChanged('utf-8')
       -> ignoring($headers)
       );
@@ -87,7 +87,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
   {
     $child = $this->_createChild(0, '', false);
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($child)->charsetChanged('windows-874')
       -> ignoring($child)
       );
@@ -104,7 +104,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
     $cType = $this->_createHeader('Content-Type', 'text/plain',
       array('charset' => 'iso-8859-1'), false
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cType)->setParameter('charset', 'utf-8')
       -> ignoring($cType)
       );
@@ -133,7 +133,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
   public function testFormatIsSetInHeader()
   {
     $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cType)->setParameter('format', 'fixed')
       -> ignoring($cType)
       );
@@ -162,7 +162,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
   public function testDelSpIsSetInHeader()
   { 
     $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cType)->setParameter('delsp', 'yes')
       -> ignoring($cType)
       );

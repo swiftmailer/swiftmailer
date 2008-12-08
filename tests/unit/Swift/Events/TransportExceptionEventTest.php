@@ -21,8 +21,7 @@ class Swift_Events_TransportExceptionEventTest extends Swift_Tests_SwiftUnitTest
   
   public function testCleanCloneIsGenerated()
   {
-    $context = new Mockery();
-    $transport = $context->mock('Swift_Transport');
+    $transport = $this->_mock('Swift_Transport');
     
     $evt = new Swift_Events_TransportExceptionEvent();
     $evt->exception = new Swift_Transport_TransportException('foo');

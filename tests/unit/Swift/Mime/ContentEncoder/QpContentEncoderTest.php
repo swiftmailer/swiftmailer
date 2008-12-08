@@ -440,15 +440,14 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
   
   public function testObserverInterfaceCanChangeCharset()
   {
-    $context = new Mockery();
-    $stream = $context->mock('Swift_CharacterStream');
-    $context->checking(Expectations::create()
+    $stream = $this->_mock('Swift_CharacterStream');
+    $this->_checking(Expectations::create()
       -> one($stream)->setCharacterSet('windows-1252')
       -> ignoring($stream)
       );
     $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($stream);
     $encoder->charsetChanged('windows-1252');
-    $context->assertIsSatisfied();
+
   }
   
 }

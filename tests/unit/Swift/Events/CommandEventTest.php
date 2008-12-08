@@ -23,8 +23,7 @@ class Swift_Events_CommandEventTest extends Swift_Tests_SwiftUnitTestCase
   
   public function testCleanCloneIsGenerated()
   {
-    $context = new Mockery();
-    $buf = $context->mock('Swift_Transport_EsmtpBufferWrapper');
+    $buf = $this->_mock('Swift_Transport_EsmtpBufferWrapper');
     
     $evt = new Swift_Events_CommandEvent();
     $evt->command = "HELO foobar.net\r\n";

@@ -140,7 +140,7 @@ class Swift_Mime_SimpleHeaderFactoryTest extends Swift_Tests_SwiftUnitTestCase
     
     $factory = $this->_createFactory($encoder, $paramEncoder);
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($encoder)->charsetChanged('utf-8')
       -> one($paramEncoder)->charsetChanged('utf-8')
       -> ignoring($encoder)
@@ -166,14 +166,14 @@ class Swift_Mime_SimpleHeaderFactoryTest extends Swift_Tests_SwiftUnitTestCase
   {
     return $stub
       ? $this->_stub('Swift_Mime_HeaderEncoder')
-      : $this->_mockery()->mock('Swift_Mime_HeaderEncoder');
+      : $this->_mock('Swift_Mime_HeaderEncoder');
   }
   
   private function _createParamEncoder($stub = true)
   {
     return $stub
       ? $this->_stub('Swift_Encoder')
-      : $this->_mockery()->mock('Swift_Encoder');
+      : $this->_mock('Swift_Encoder');
   }
   
 }

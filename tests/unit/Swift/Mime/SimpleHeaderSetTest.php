@@ -11,7 +11,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddMailboxHeaderDelegatesToFactory()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createMailboxHeader('From', array('person@domain'=>'Person'))
         -> returns($this->_createHeader('From'))
       );
@@ -22,7 +22,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddDateHeaderDelegatesToFactory()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createDateHeader('Date', 1234)
         -> returns($this->_createHeader('Date'))
       );
@@ -33,7 +33,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddTextHeaderDelegatesToFactory()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createTextHeader('Subject', 'some text')
         -> returns($this->_createHeader('Subject'))
       );
@@ -44,7 +44,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddParameterizedHeaderDelegatesToFactory()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createParameterizedHeader(
         'Content-Type', 'text/plain', array('charset'=>'utf-8')
         ) -> returns($this->_createHeader('Content-Type'))
@@ -58,7 +58,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddIdHeaderDelegatesToFactory()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($this->_createHeader('Message-ID'))
       );
@@ -69,7 +69,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddPathHeaderDelegatesToFactory()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createPathHeader('Return-Path', 'some@path')
         -> returns($this->_createHeader('Return-Path'))
       );
@@ -86,7 +86,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddedMailboxHeaderIsSeenByHas()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createMailboxHeader('From', array('person@domain'=>'Person'))
         -> returns($this->_createHeader('From'))
       );
@@ -98,7 +98,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddedDateHeaderIsSeenByHas()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createDateHeader('Date', 1234)
         -> returns($this->_createHeader('Date'))
       );
@@ -110,7 +110,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddedTextHeaderIsSeenByHas()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createTextHeader('Subject', 'some text')
         -> returns($this->_createHeader('Subject'))
       );
@@ -122,7 +122,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddedParameterizedHeaderIsSeenByHas()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createParameterizedHeader(
         'Content-Type', 'text/plain', array('charset'=>'utf-8')
         ) -> returns($this->_createHeader('Content-Type'))
@@ -137,7 +137,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddedIdHeaderIsSeenByHas()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($this->_createHeader('Message-ID'))
       );
@@ -149,7 +149,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testAddedPathHeaderIsSeenByHas()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createPathHeader('Return-Path', 'some@path')
         -> returns($this->_createHeader('Return-Path'))
       );
@@ -161,7 +161,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testHasCanAcceptOffset()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($this->_createHeader('Message-ID'))
       );
@@ -173,7 +173,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testHasWithIllegalOffsetReturnsFalse()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($this->_createHeader('Message-ID'))
       );
@@ -185,7 +185,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testHasCanDistinguishMultipleHeaders()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($this->_createHeader('Message-ID'))
       -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
@@ -201,7 +201,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   {
     $header = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header)
       );
@@ -216,7 +216,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     $header1 = $this->_createHeader('Message-ID');
     $header2 = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header0)
       -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
@@ -243,7 +243,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     $header1 = $this->_createHeader('Message-ID');
     $header2 = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header0)
       -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
@@ -271,7 +271,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   {
     $header = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header)
       );
@@ -286,7 +286,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     $header0 = $this->_createHeader('Message-ID');
     $header1 = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header0)
       -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
@@ -304,7 +304,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     $header0 = $this->_createHeader('Message-ID');
     $header1 = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header0)
       -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
@@ -321,7 +321,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   {
     $header = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header)
       );
@@ -336,7 +336,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     $header0 = $this->_createHeader('Message-ID');
     $header1 = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header0)
       -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
@@ -354,7 +354,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   {
     $header = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header)
       );
@@ -367,7 +367,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   {
     $header = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header)
       );
@@ -380,7 +380,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   {
     $header = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header)
       );
@@ -393,7 +393,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   {
     $header = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header)
       );
@@ -407,7 +407,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   {
     $header = $this->_createHeader('Message-ID');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
         -> returns($header)
       );
@@ -427,7 +427,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testToStringJoinsHeadersTogether()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createTextHeader('Foo', 'bar')
         -> returns($this->_createHeader('Foo', 'bar'))
       -> one($factory)->createTextHeader('Zip', 'buttons')
@@ -446,7 +446,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testHeadersWithoutBodiesAreNotDisplayed()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createTextHeader('Foo', 'bar')
         -> returns($this->_createHeader('Foo', 'bar'))
       -> one($factory)->createTextHeader('Zip', '')
@@ -464,7 +464,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testHeadersWithoutBodiesCanBeForcedToDisplay()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createTextHeader('Foo', '')
         -> returns($this->_createHeader('Foo', ''))
       -> one($factory)->createTextHeader('Zip', '')
@@ -484,7 +484,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testHeaderSequencesCanBeSpecified()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createTextHeader('First', 'one')
         -> returns($this->_createHeader('First', 'one'))
       -> one($factory)->createTextHeader('Second', 'two')
@@ -510,7 +510,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testUnsortedHeadersAppearAtEnd()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createTextHeader('First', 'one')
         -> returns($this->_createHeader('First', 'one'))
       -> one($factory)->createTextHeader('Second', 'two')
@@ -546,7 +546,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     $subject = $this->_createHeader('Subject', 'some text');
     $xHeader = $this->_createHeader('X-Header', 'some text');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createTextHeader('Subject', 'some text')
         -> returns($subject)
       -> ignoring($factory)->createTextHeader('X-Header', 'some text')
@@ -567,7 +567,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     $subject = $this->_createHeader('Subject', 'some text');
     $xHeader = $this->_createHeader('X-Header', 'some text');
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($factory)->createTextHeader('Subject', 'some text')
         -> returns($subject)
       -> ignoring($factory)->createTextHeader('X-Header', 'some text')
@@ -586,7 +586,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   public function testCharsetChangeNotifiesFactory()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->charsetChanged('utf-8')
       -> ignoring($factory)
       );
@@ -604,13 +604,13 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
   
   private function _createFactory()
   {
-    return $this->_mockery()->mock('Swift_Mime_HeaderFactory');
+    return $this->_mock('Swift_Mime_HeaderFactory');
   }
   
   private function _createHeader($name, $body = '')
   {
-    $header = $this->_mockery()->mock('Swift_Mime_Header');
-    $this->_mockery()->checking(Expectations::create()
+    $header = $this->_mock('Swift_Mime_Header');
+    $this->_checking(Expectations::create()
       -> ignoring($header)->getFieldName() -> returns($name)
       -> ignoring($header)->toString() -> returns(sprintf("%s: %s\r\n", $name, $body))
       -> ignoring($header)->getFieldBody() -> returns($body)

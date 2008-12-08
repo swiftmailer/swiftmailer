@@ -39,7 +39,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
       $char = chr($ordinal);
       
       $charStream = $this->_createCharStream();
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> one($charStream)->flushContents()
         -> one($charStream)->importString($char)
         -> one($charStream)->readBytes(optional()) -> returns(array($ordinal))
@@ -85,7 +85,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     
     $seq = $this->_mockery()->sequence('byte-sequence');
     $charStream = $this->_createCharStream();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($charStream)->flushContents()
       -> one($charStream)->importString($string)
       -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')))
@@ -108,7 +108,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     
     $seq = $this->_mockery()->sequence('byte-sequence');
     $charStream = $this->_createCharStream();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($charStream)->flushContents()
       -> one($charStream)->importString($string)
       -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')))
@@ -160,7 +160,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     
     $seq = $this->_mockery()->sequence('byte-sequence');
     $charStream = $this->_createCharStream();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($charStream)->flushContents()
       -> one($charStream)->importString($string)
       -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(array(ord('a')))
@@ -216,7 +216,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     
     $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false);
     
-    $this->_mockery()->checking($exps);
+    $this->_checking($exps);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input));
@@ -248,7 +248,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     }
     $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false);
     
-    $this->_mockery()->checking($exps);
+    $this->_checking($exps);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input, 0, 54));
@@ -265,7 +265,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
       $char = chr($ordinal);
       
       $charStream = $this->_createCharStream();
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> one($charStream)->flushContents()
         -> one($charStream)->importString($char)
         -> one($charStream)->readBytes(optional()) -> returns(array($ordinal))
@@ -289,7 +289,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     $char = '=';
     
     $charStream = $this->_createCharStream();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($charStream)->flushContents()
       -> one($charStream)->importString($char)
       -> one($charStream)->readBytes(optional()) -> returns(array(61))
@@ -312,7 +312,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
       $char = chr($ordinal);
       
       $charStream = $this->_createCharStream();
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> one($charStream)->flushContents()
         -> one($charStream)->importString($char)
         -> one($charStream)->readBytes(optional()) -> returns(array($ordinal))
@@ -353,7 +353,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
     
     $exps -> one($charStream)->readBytes(optional()) -> inSequence($seq) -> returns(false);
     
-    $this->_mockery()->checking($exps);
+    $this->_checking($exps);
     
     $encoder = new Swift_Encoder_QpEncoder($charStream);
     $this->assertEqual(
@@ -366,7 +366,7 @@ class Swift_Encoder_QpEncoderTest extends Swift_Tests_SwiftUnitTestCase
   
   private function _createCharStream()
   {
-    return $this->_mockery()->mock('Swift_CharacterStream');
+    return $this->_mock('Swift_CharacterStream');
   }
   
 }

@@ -90,4 +90,14 @@ class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
     return $stub;
   }
   
+  protected function _states($machineName)
+  {
+    return $this->_mockery()->states($machineName);
+  }
+  
+  protected function _sequence($sequenceName)
+  {
+    return $this->_mockery()->sequence($sequenceName);
+  }
+  
 }

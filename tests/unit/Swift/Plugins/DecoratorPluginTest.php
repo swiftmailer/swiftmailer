@@ -17,7 +17,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
       'Subject',
       'Hello {name}, you are customer #{id}'
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($message)->setBody('Hello Zip, you are customer #456')
       -> ignoring($message)
       );
@@ -40,7 +40,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
       'Subject',
       'Hello {name}, you are customer #{id}'
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($message)->setBody('Hello Zip, you are customer #456')
       -> one($message)->setBody('Hello {name}, you are customer #{id}')
       -> one($message)->setBody('Hello Foo, you are customer #123')
@@ -70,7 +70,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
       'A message for {name}!',
       'Hello {name}, you are customer #{id}'
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($message)->setBody('Hello Zip, you are customer #456')
       -> one($message)->setSubject('A message for Zip!')
       -> ignoring($message)
@@ -96,7 +96,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
       'A message for {name}!',
       'Subject'
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($message)->getChildren() -> returns(array($part1, $part2))
       -> one($part1)->setBody('Your name is Zip?')
       -> one($part2)->setBody('Your <em>name</em> is Zip?')
@@ -120,14 +120,14 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   private function _createMessage($to = array(), $from = null, $subject = null,
     $body = null)
   {
-    $message = $this->_mockery()->mock('Swift_Mime_Message');
+    $message = $this->_mock('Swift_Mime_Message');
     foreach ($to as $addr => $name)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> one($message)->getTo() -> returns(array($addr => $name))
         );
     }
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($message)->getFrom() -> returns($from)
       -> ignoring($message)->getSubject() -> returns($subject)
       -> ignoring($message)->getBody() -> returns($body)
@@ -142,8 +142,8 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   
   private function _createSendEvent(Swift_Mime_Message $message)
   {
-    $evt = $this->_mockery()->mock('Swift_Events_SendEvent');
-    $this->_mockery()->checking(Expectations::create()
+    $evt = $this->_mock('Swift_Events_SendEvent');
+    $this->_checking(Expectations::create()
       -> ignoring($evt)->getMessage() -> returns($message)
       -> ignoring($evt)
       );
@@ -152,8 +152,8 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   
   private function _createPart($type, $body, $id)
   {
-    $part = $this->_mockery()->mock('Swift_Mime_MimeEntity');
-    $this->_mockery()->checking(Expectations::create()
+    $part = $this->_mock('Swift_Mime_MimeEntity');
+    $this->_checking(Expectations::create()
       -> ignoring($part)->getContentType() -> returns($type)
       -> ignoring($part)->getBody() -> returns($body)
       -> ignoring($part)->getId() -> returns($id)

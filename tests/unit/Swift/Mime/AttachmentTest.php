@@ -36,7 +36,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
     $disposition = $this->_createHeader('Content-Disposition', 'attachment',
       array(), false
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($disposition)->setFieldBodyModel('inline')
       -> ignoring($disposition)
       );
@@ -50,7 +50,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
   public function testDispositionIsAddedIfNonePresent()
   {
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($headers)->addParameterizedHeader('Content-Disposition', 'inline')
       -> ignoring($headers)
       );
@@ -63,7 +63,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
   public function testDispositionIsAutoDefaultedToAttachment()
   {
     $headers = $this->_createHeaderSet(array(), false);
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($headers)->addParameterizedHeader('Content-Disposition', 'attachment')
       -> ignoring($headers)
       );
@@ -77,7 +77,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
     $cType = $this->_createHeader('Content-Type', '',
       array(), false
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cType)->setFieldBodyModel('application/octet-stream')
       -> ignoring($cType)
       );
@@ -107,7 +107,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
     $disposition = $this->_createHeader('Content-Disposition', 'attachment',
       array('filename'=>'foo.txt'), false
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($disposition)->setParameter('filename', 'bar.txt')
       -> ignoring($disposition)
       );
@@ -127,7 +127,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
     $cType = $this->_createHeader('Content-Type', 'text/plain',
       array(), false
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($cType)->setParameter('name', 'bar.txt')
       -> ignoring($cType)
       );
@@ -158,7 +158,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
     $disposition = $this->_createHeader('Content-Disposition', 'attachment',
       array(), false
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($disposition)->setParameter('size', 12345)
       -> ignoring($disposition)
       );
@@ -175,7 +175,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
     $disposition = $this->_createHeader('Content-Disposition', 'attachment',
       array('filename'=>'foo.txt'), false
       );
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($disposition)->setParameter('filename', 'file.ext')
       -> ignoring($disposition)
       );
@@ -232,9 +232,9 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
   
   protected function _createFileStream($path, $data, $stub = true)
   {
-    $file = $this->_mockery()->mock('Swift_FileStream');
+    $file = $this->_mock('Swift_FileStream');
     $pos = $this->_mockery()->states('position')->startsAs('at start');
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> ignoring($file)->getPath() -> returns($path)
       -> ignoring($file)->read(optional()) -> returns($data)
         -> when($pos->isNot('at end')) -> then($pos->is('at end'))
@@ -242,7 +242,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
       );
     if ($stub)
     {
-      $this->_mockery()->checking(Expectations::create()
+      $this->_checking(Expectations::create()
         -> ignoring($file)
         );
     }
