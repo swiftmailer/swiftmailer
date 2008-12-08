@@ -10,113 +10,101 @@ require_once 'Swift/Events/TransportExceptionEvent.php';
 require_once 'Swift/Transport.php';
 require_once 'Swift/Transport/TransportException.php';
 
-Mock::generate('Swift_Transport', 'Swift_MockTransport');
-Mock::generate('Swift_Plugins_Logger', 'Swift_Plugins_MockLogger');
-Mock::generate('Swift_Events_CommandEvent', 'Swift_Events_MockCommandEvent');
-Mock::generate('Swift_Events_ResponseEvent', 'Swift_Events_MockResponseEvent');
-Mock::generate('Swift_Events_TransportChangeEvent',
-  'Swift_Events_MockTransportChangeEvent'
-  );
-Mock::generate('Swift_Events_TransportExceptionEvent',
-  'Swift_Events_MockTransportExceptionEvent'
-  );
-
 class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
 {
 
   public function testLoggerDelegatesAddingEntries()
   {
-    $logger = new Swift_Plugins_MockLogger();
-    $logger->expectOnce('add', array('foo'));
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->add('foo')
+      );
     
-    $plugin = new Swift_Plugins_LoggerPlugin($logger);
+    $plugin = $this->_createPlugin($logger);
     $plugin->add('foo');
   }
   
   public function testLoggerDelegatesDumpingEntries()
   {
-    $logger = new Swift_Plugins_MockLogger();
-    $logger->expectOnce('dump');
-    $logger->setReturnValue('dump', 'foobar');
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->dump() -> returns('foobar')
+      );
     
-    $plugin = new Swift_Plugins_LoggerPlugin($logger);
-    $dump = $plugin->dump();
-    $this->assertEqual('foobar', $dump);
+    $plugin = $this->_createPlugin($logger);
+    $this->assertEqual('foobar', $plugin->dump());
   }
   
   public function testLoggerDelegatesClearingEntries()
   {
-    $logger = new Swift_Plugins_MockLogger();
-    $logger->expectOnce('clear');
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->clear()
+      );
     
-    $plugin = new Swift_Plugins_LoggerPlugin($logger);
+    $plugin = $this->_createPlugin($logger);
     $plugin->clear();
   }
   
   public function testCommandIsSentToLogger()
   {
-    $evt = new Swift_Events_MockCommandEvent();
-    $evt->setReturnValue('getCommand', "foo\r\n");
+    $evt = $this->_createCommandEvent("foo\r\n");
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->add(pattern('~foo\r\n~'))
+      );
     
-    $logger = new Swift_Plugins_MockLogger();
-    $logger->expectOnce('add', array(new PatternExpectation('~foo\r\n~')));
-    
-    $plugin = new Swift_Plugins_LoggerPlugin($logger);
+    $plugin = $this->_createPlugin($logger);
     $plugin->commandSent($evt);
   }
   
   public function testResponseIsSentToLogger()
   {
-    $evt = new Swift_Events_MockResponseEvent();
-    $evt->setReturnValue('getResponse', "354 Go ahead\r\n");
+    $evt = $this->_createResponseEvent("354 Go ahead\r\n");
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->add(pattern('~354 Go ahead\r\n~'))
+      );
     
-    $logger = new Swift_Plugins_MockLogger();
-    $logger->expectOnce('add', array(new PatternExpectation('~354 Go ahead\r\n~')));
-    
-    $plugin = new Swift_Plugins_LoggerPlugin($logger);
+    $plugin = $this->_createPlugin($logger);
     $plugin->responseReceived($evt);
   }
   
   public function testTransportStartChangeIsSentToLogger()
   {
-    $transport = new Swift_MockTransport();
+    $evt = $this->_createTransportChangeEvent();
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->add(any())
+      );
     
-    $evt = new Swift_Events_MockTransportChangeEvent();
-    $evt->setReturnValue('getSource', $transport);
-    
-    $logger = new Swift_Plugins_MockLogger();
-    $logger->expectOnce('add');
-    
-    $plugin = new Swift_Plugins_LoggerPlugin($logger);
+    $plugin = $this->_createPlugin($logger);
     $plugin->transportStarted($evt);
   }
   
   public function testTransportStopChangeIsSentToLogger()
   {
-    $transport = new Swift_MockTransport();
+    $evt = $this->_createTransportChangeEvent();
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->add(any())
+      );
     
-    $evt = new Swift_Events_MockTransportChangeEvent();
-    $evt->setReturnValue('getSource', $transport);
-    
-    $logger = new Swift_Plugins_MockLogger();
-    $logger->expectOnce('add');
-    
-    $plugin = new Swift_Plugins_LoggerPlugin($logger);
+    $plugin = $this->_createPlugin($logger);
     $plugin->transportStopped($evt);
   }
   
   public function testExceptionsArePassedToDelegateAndLeftToBubbleUp()
   {
-    $e = new Swift_Transport_TransportException('foo');
-    $transport = new Swift_MockTransport();
+    $transport = $this->_createTransport();
+    $evt = $this->_createTransportExceptionEvent();
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->add(any())
+      -> allowing($logger)
+      );
     
-    $evt = new Swift_Events_MockTransportExceptionEvent();
-    $evt->setReturnValue('getException', $e);
-    
-    $logger = new Swift_Plugins_MockLogger();
-    $logger->expectOnce('add');
-    
-    $plugin = new Swift_Plugins_LoggerPlugin($logger);
+    $plugin = $this->_createPlugin($logger);
     try
     {
       $plugin->exceptionThrown($evt);
@@ -124,8 +112,64 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
     }
     catch (Swift_Transport_TransportException $ex)
     {
-      $this->pass();
     }
+  }
+  
+  // -- Creation Methods
+  
+  private function _createLogger()
+  {
+    return $this->_mock('Swift_Plugins_Logger');
+  }
+  
+  private function _createPlugin($logger)
+  {
+    return new Swift_Plugins_LoggerPlugin($logger);
+  }
+  
+  private function _createCommandEvent($command)
+  {
+    $evt = $this->_mock('Swift_Events_CommandEvent');
+    $this->_checking(Expectations::create()
+      -> ignoring($evt)->getCommand() -> returns($command)
+      -> ignoring($evt)
+      );
+    return $evt;
+  }
+  
+  private function _createResponseEvent($response)
+  {
+    $evt = $this->_mock('Swift_Events_ResponseEvent');
+    $this->_checking(Expectations::create()
+      -> ignoring($evt)->getResponse() -> returns($response)
+      -> ignoring($evt)
+      );
+    return $evt;
+  }
+  
+  private function _createTransport()
+  {
+    return $this->_mock('Swift_Transport');
+  }
+  
+  private function _createTransportChangeEvent()
+  {
+    $evt = $this->_mock('Swift_Events_TransportChangeEvent');
+    $this->_checking(Expectations::create()
+      -> ignoring($evt)->getSource() -> returns($this->_createTransport())
+      -> ignoring($evt)
+      );
+    return $evt;
+  }
+  
+  private function _createTransportExceptionEvent()
+  {
+    $evt = $this->_mock('Swift_Events_TransportExceptionEvent');
+    $this->_checking(Expectations::create()
+      -> ignoring($evt)->getException() -> returns(new Swift_Transport_TransportException(''))
+      -> ignoring($evt)
+      );
+    return $evt;
   }
   
 }

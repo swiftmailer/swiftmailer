@@ -6,10 +6,6 @@ require_once 'Swift/Plugins/Reporter.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Events/SendEvent.php';
 
-Mock::generate('Swift_Mime_Message', 'Swift_Mime_MockMessage');
-Mock::generate('Swift_Events_SendEvent', 'Swift_Events_MockSendEvent');
-Mock::generate('Swift_Plugins_Reporter', 'Swift_Plugins_MockReporter');
-
 class Swift_Plugins_ReporterPluginTest extends Swift_Tests_SwiftUnitTestCase
 {
 
