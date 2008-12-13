@@ -13,7 +13,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
   
   public function testNameIsQ()
   {
-    $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
+    $encoder = $this->_createEncoder(
       $this->_createCharacterStream(true)
       );
     $this->assertEqual('Q', $encoder->getName());
@@ -38,7 +38,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
       -> ignoring($charStream)
       );
     
-    $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+    $encoder = $this->_createEncoder($charStream);
     $this->assertNoPattern('~[ \t]~', $encoder->encodeString("a \t b"),
       '%s: encoded-words in headers cannot contain LWSP as per RFC 2047.'
       );
@@ -64,7 +64,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
       -> ignoring($charStream)
       );
     
-    $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+    $encoder = $this->_createEncoder($charStream);
     $this->assertEqual('a_b', $encoder->encodeString('a b'),
       '%s: Spaces can be represented by more readable underscores as per RFC 2047.'
       );
@@ -88,7 +88,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
       -> ignoring($charStream)
       );
     
-    $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+    $encoder = $this->_createEncoder($charStream);
     $this->assertEqual('=3D=3F=5F', $encoder->encodeString('=?_'),
       '%s: Chars =, ? and _ (underscore) may not appear as per RFC 2047.'
       );
@@ -110,7 +110,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
       -> ignoring($charStream)
       );
       
-    $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+    $encoder = $this->_createEncoder($charStream);
     $this->assertEqual('=28=22=29', $encoder->encodeString('(")'),
       '%s: Chars (, " (DQUOTE) and ) may not appear as per RFC 2047.'
       );
@@ -150,7 +150,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
         -> ignoring($charStream)
         );
       
-      $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+      $encoder = $this->_createEncoder($charStream);
       $encodedChar = $encoder->encodeString($char);
       
       if (in_array($byte, $allowedBytes))
@@ -209,11 +209,16 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
       -> ignoring($charStream)
       );
     
-    $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+    $encoder = $this->_createEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input));
   }
   
   // -- Creation Methods
+  
+  private function _createEncoder($charStream)
+  {
+    return new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+  }
   
   private function _createCharacterStream($stub = false)
   {
