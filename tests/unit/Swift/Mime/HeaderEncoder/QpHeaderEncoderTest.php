@@ -1,11 +1,11 @@
 <?php
 
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
 require_once 'Swift/CharacterStream.php';
 
-Mock::generate('Swift_CharacterStream', 'Swift_MockCharacterStream');
-
-class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
+class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   //Most tests are already covered in QpEncoderTest since this subclass only
@@ -14,7 +14,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
   public function testNameIsQ()
   {
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
-      new Swift_MockCharacterStream()
+      $this->_createCharacterStream(true)
       );
     $this->assertEqual('Q', $encoder->getName());
   }
@@ -27,13 +27,16 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
      the beginning and end of an 'encoded-word' are obvious.
      */
     
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
-    $charStream->setReturnValueAt(1, 'readBytes', array(0x20));
-    $charStream->setReturnValueAt(2, 'readBytes', array(0x09));
-    $charStream->setReturnValueAt(3, 'readBytes', array(0x20));
-    $charStream->setReturnValueAt(4, 'readBytes', array(ord('b')));
-    $charStream->setReturnValueAt(5, 'readBytes', false);
+    $charStream = $this->_createCharacterStream();
+    $this->_checking(Expectations::create()
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('a')))
+      -> one($charStream)->readBytes(any()) -> returns(array(0x20))
+      -> one($charStream)->readBytes(any()) -> returns(array(0x09))
+      -> one($charStream)->readBytes(any()) -> returns(array(0x20))
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('b')))
+      -> allowing($charStream)->readBytes(any()) -> returns(false)
+      -> ignoring($charStream)
+      );
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertNoPattern('~[ \t]~', $encoder->encodeString("a \t b"),
@@ -52,11 +55,14 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
        always represents hexadecimal 20, even if the SPACE character
        occupies a different code position in the character set in use.
        */
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'readBytes', array(ord('a')));
-    $charStream->setReturnValueAt(1, 'readBytes', array(0x20));
-    $charStream->setReturnValueAt(2, 'readBytes', array(ord('b')));
-    $charStream->setReturnValueAt(3, 'readBytes', false);
+    $charStream = $this->_createCharacterStream();
+    $this->_checking(Expectations::create()
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('a')))
+      -> one($charStream)->readBytes(any()) -> returns(array(0x20))
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('b')))
+      -> allowing($charStream)->readBytes(any()) -> returns(false)
+      -> ignoring($charStream)
+      );
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertEqual('a_b', $encoder->encodeString('a b'),
@@ -73,12 +79,14 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
        particular, SPACE and TAB MUST NOT be represented as themselves
        within encoded words.
        */
-    
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'readBytes', array(ord('=')));
-    $charStream->setReturnValueAt(1, 'readBytes', array(ord('?')));
-    $charStream->setReturnValueAt(2, 'readBytes', array(ord('_')));
-    $charStream->setReturnValueAt(3, 'readBytes', false);
+    $charStream = $this->_createCharacterStream();
+    $this->_checking(Expectations::create()
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('=')))
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('?')))
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('_')))
+      -> allowing($charStream)->readBytes(any()) -> returns(false)
+      -> ignoring($charStream)
+      );
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertEqual('=3D=3F=5F', $encoder->encodeString('=?_'),
@@ -93,12 +101,15 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
      contain the characters "(", ")" or "
      */
     
-    $charStream = new Swift_MockCharacterStream();
-    $charStream->setReturnValueAt(0, 'readBytes', array(ord('(')));
-    $charStream->setReturnValueAt(1, 'readBytes', array(ord('"')));
-    $charStream->setReturnValueAt(2, 'readBytes', array(ord(')')));
-    $charStream->setReturnValueAt(3, 'readBytes', false);
-    
+    $charStream = $this->_createCharacterStream();
+    $this->_checking(Expectations::create()
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('(')))
+      -> one($charStream)->readBytes(any()) -> returns(array(ord('"')))
+      -> one($charStream)->readBytes(any()) -> returns(array(ord(')')))
+      -> allowing($charStream)->readBytes(any()) -> returns(false)
+      -> ignoring($charStream)
+      );
+      
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertEqual('=28=22=29', $encoder->encodeString('(")'),
       '%s: Chars (, " (DQUOTE) and ) may not appear as per RFC 2047.'
@@ -132,10 +143,13 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
     {
       $char = pack('C', $byte);
       
-      $charStream = new Swift_MockCharacterStream();
-      $charStream->setReturnValueAt(0, 'readBytes', array($byte));
-      $charStream->setReturnValueAt(1, 'readBytes', false);
-        
+      $charStream = $this->_createCharacterStream();
+      $this->_checking(Expectations::create()
+        -> one($charStream)->readBytes(any()) -> returns(array($byte))
+        -> allowing($charStream)->readBytes(any()) -> returns(false)
+        -> ignoring($charStream)
+        );
+      
       $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
       $encodedChar = $encoder->encodeString($char);
       
@@ -173,13 +187,15 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
     
     $input = str_repeat('a', 140);
     
-    $charStream = new Swift_MockCharacterStream();
+    $charStream = $this->_createCharacterStream();
     
     $output = '';
     $seq = 0;
     for (; $seq < 140; ++$seq)
     {
-      $charStream->setReturnValueAt($seq, 'readBytes', array(ord('a')));
+      $this->_checking(Expectations::create()
+        -> one($charStream)->readBytes(any()) -> returns(array(ord('a')))
+        );
       
       if (75 == $seq)
       {
@@ -188,10 +204,23 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends UnitTestCase
       $output .= 'a';
     }
     
-    $charStream->setReturnValueAt($seq, 'readBytes', false);
+    $this->_checking(Expectations::create()
+      -> allowing($charStream)->readBytes(any()) -> returns(false)
+      -> ignoring($charStream)
+      );
     
     $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
     $this->assertEqual($output, $encoder->encodeString($input));
+  }
+  
+  // -- Creation Methods
+  
+  private function _createCharacterStream($stub = false)
+  {
+    return $stub
+      ? $this->_stub('Swift_CharacterStream')
+      : $this->_mock('Swift_CharacterStream')
+      ;
   }
   
 }
