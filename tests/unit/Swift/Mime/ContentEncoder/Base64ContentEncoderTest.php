@@ -1,21 +1,23 @@
 <?php
 
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
 require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/InputByteStream.php';
 
-class Swift_MockInputByteStream implements Swift_InputByteStream {
+class Swift_StreamCollector implements Yay_Action {
   public $content = '';
-  public function write($string, Swift_InputByteStream $is = null) {
-    $this->content .= $string;
+  public function &invoke(Yay_Invocation $inv) {
+    $args = $inv->getArguments();
+    $this->content .= current($args);
   }
-  public function flushBuffers() {
+  public function describeTo(Yay_Description $description) {
+    $description->appendText(' gathers input;');
   }
 }
 
-Mock::generate('Swift_OutputByteStream', 'Swift_MockOutputByteStream');
-
-class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
+class Swift_Mime_ContentEncoder_Base64ContentEncoderTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_encoder;
@@ -48,14 +50,22 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
          of which is translated into a single digit in the base64 alphabet.
          */
     
-    $os = new Swift_MockOutputByteStream();
-    $os->setReturnValueAt(0, 'read', '123');
-    $os->setReturnValueAt(1, 'read', false);
-    
-    $is = new Swift_MockInputByteStream();
+    $os = $this->_createOutputByteStream();
+    $is = $this->_createInputByteStream();
+    $collection = new Swift_StreamCollector();
+
+    $this->_checking(Expectations::create()
+      -> allowing($is)->write(any(), optional()) -> will($collection)
+      -> ignoring($is)
+      
+      -> one($os)->read(optional()) -> returns('123')
+      -> allowing($os)->read(optional()) -> returns(false)
+      
+      -> ignoring($os)
+      );
     
     $this->_encoder->encodeByteStream($os, $is);
-    $this->assertEqual('MTIz', $is->content);
+    $this->assertEqual('MTIz', $collection->content);
   }
   
   public function testPadLength()
@@ -82,44 +92,63 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
     
     for ($i = 0; $i < 30; ++$i)
     {
-      $os = new Swift_MockOutputByteStream();
-      $os->setReturnValueAt(0, 'read', pack('C', rand(0, 255)));
-      $os->setReturnValueAt(1, 'read', false);
-      
-      $is = new Swift_MockInputByteStream();
+      $os = $this->_createOutputByteStream();
+      $is = $this->_createInputByteStream();
+      $collection = new Swift_StreamCollector();
+
+      $this->_checking(Expectations::create()
+        -> allowing($is)->write(any(), optional()) -> will($collection)
+        -> ignoring($is)
+
+        -> one($os)->read(optional()) -> returns(pack('C', rand(0, 255)))
+        -> allowing($os)->read(optional()) -> returns(false)
+        -> ignoring($os)
+        );
       
       $this->_encoder->encodeByteStream($os, $is);
-      $this->assertPattern('~^[a-zA-Z0-9/\+]{2}==$~', $is->content,
+      $this->assertPattern('~^[a-zA-Z0-9/\+]{2}==$~', $collection->content,
         '%s: A single byte should have 2 bytes of padding'
         );
     }
     
     for ($i = 0; $i < 30; ++$i)
     {
-      $os = new Swift_MockOutputByteStream();
-      $os->setReturnValueAt(
-        0, 'read', pack('C*', rand(0, 255), rand(0, 255)));
-      $os->setReturnValueAt(1, 'read', false);
-      
-      $is = new Swift_MockInputByteStream();
+      $os = $this->_createOutputByteStream();
+      $is = $this->_createInputByteStream();
+      $collection = new Swift_StreamCollector();
+
+      $this->_checking(Expectations::create()
+        -> allowing($is)->write(any(), optional()) -> will($collection)
+        -> ignoring($is)
+
+        -> one($os)->read(optional()) -> returns(pack('C*', rand(0, 255), rand(0, 255)))
+        -> allowing($os)->read(optional()) -> returns(false)
+        -> ignoring($os)
+        );
       
       $this->_encoder->encodeByteStream($os, $is);
-      $this->assertPattern('~^[a-zA-Z0-9/\+]{3}=$~', $is->content,
+      $this->assertPattern('~^[a-zA-Z0-9/\+]{3}=$~', $collection->content,
         '%s: Two bytes should have 1 byte of padding'
         );
     }
     
     for ($i = 0; $i < 30; ++$i)
     {
-      $os = new Swift_MockOutputByteStream();
-      $os->setReturnValueAt(
-        0, 'read', pack('C*', rand(0, 255), rand(0, 255), rand(0, 255)));
-      $os->setReturnValueAt(1, 'read', false);
-      
-      $is = new Swift_MockInputByteStream();
+      $os = $this->_createOutputByteStream();
+      $is = $this->_createInputByteStream();
+      $collection = new Swift_StreamCollector();
+
+      $this->_checking(Expectations::create()
+        -> allowing($is)->write(any(), optional()) -> will($collection)
+        -> ignoring($is)
+
+        -> one($os)->read(optional()) -> returns(pack('C*', rand(0, 255), rand(0, 255), rand(0, 255)))
+        -> allowing($os)->read(optional()) -> returns(false)
+        -> ignoring($os)
+        );
       
       $this->_encoder->encodeByteStream($os, $is);
-      $this->assertPattern('~^[a-zA-Z0-9/\+]{4}$~', $is->content,
+      $this->assertPattern('~^[a-zA-Z0-9/\+]{4}$~', $collection->content,
         '%s: Three bytes should have no padding'
         );
     }
@@ -133,71 +162,107 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends UnitTestCase
          found in Table 1 must be ignored by decoding software.
          */
          
-    $os = new Swift_MockOutputByteStream();
-    $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
-    $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
-    $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
-    $os->setReturnValueAt(3, 'read', '890ABCDEFGHI'); //48
-    $os->setReturnValueAt(4, 'read', 'JKLMNOPQRSTU'); //60
-    $os->setReturnValueAt(5, 'read', 'VWXYZ1234567'); //72
-    $os->setReturnValueAt(6, 'read', 'abcdefghijkl'); //84
-    
-    $os->setReturnValueAt(7, 'read', false);
-    
-    $is = new Swift_MockInputByteStream();
+    $os = $this->_createOutputByteStream();
+    $is = $this->_createInputByteStream();
+    $collection = new Swift_StreamCollector();
+
+    $this->_checking(Expectations::create()
+      -> allowing($is)->write(any(), optional()) -> will($collection)
+      -> ignoring($is)
+
+      -> one($os)->read(optional()) -> returns('abcdefghijkl') //12
+      -> one($os)->read(optional()) -> returns('mnopqrstuvwx') //24
+      -> one($os)->read(optional()) -> returns('yzabc1234567') //36
+      -> one($os)->read(optional()) -> returns('890ABCDEFGHI') //48
+      -> one($os)->read(optional()) -> returns('JKLMNOPQRSTU') //60
+      -> one($os)->read(optional()) -> returns('VWXYZ1234567') //72
+      -> one($os)->read(optional()) -> returns('abcdefghijkl') //84
+      -> allowing($os)->read(optional()) -> returns(false)
+      -> ignoring($os)
+      );
     
     $this->_encoder->encodeByteStream($os, $is);
     $this->assertEqual(
       "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDREVGR0hJSktMTU5PUFFS\r\n" .
       "U1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts",
-      $is->content
+      $collection->content
       );
   }
   
   public function testMaximumLineLengthCanBeDifferent()
   {      
-    $os = new Swift_MockOutputByteStream();
-    $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
-    $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
-    $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
-    $os->setReturnValueAt(3, 'read', '890ABCDEFGHI'); //48
-    $os->setReturnValueAt(4, 'read', 'JKLMNOPQRSTU'); //60
-    $os->setReturnValueAt(5, 'read', 'VWXYZ1234567'); //72
-    $os->setReturnValueAt(6, 'read', 'abcdefghijkl'); //84
-    
-    $os->setReturnValueAt(7, 'read', false);
-    
-    $is = new Swift_MockInputByteStream();
+    $os = $this->_createOutputByteStream();
+    $is = $this->_createInputByteStream();
+    $collection = new Swift_StreamCollector();
+
+    $this->_checking(Expectations::create()
+      -> allowing($is)->write(any(), optional()) -> will($collection)
+      -> ignoring($is)
+
+      -> one($os)->read(optional()) -> returns('abcdefghijkl') //12
+      -> one($os)->read(optional()) -> returns('mnopqrstuvwx') //24
+      -> one($os)->read(optional()) -> returns('yzabc1234567') //36
+      -> one($os)->read(optional()) -> returns('890ABCDEFGHI') //48
+      -> one($os)->read(optional()) -> returns('JKLMNOPQRSTU') //60
+      -> one($os)->read(optional()) -> returns('VWXYZ1234567') //72
+      -> one($os)->read(optional()) -> returns('abcdefghijkl') //84
+      -> allowing($os)->read(optional()) -> returns(false)
+      -> ignoring($os)
+      );
     
     $this->_encoder->encodeByteStream($os, $is, 0, 80);
     $this->assertEqual(
       "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDREVGR0hJSktMTU5PUFFSU1RV\r\n" .
       "VldYWVoxMjM0NTY3YWJjZGVmZ2hpamts",
-      $is->content
+      $collection->content
       );
   }
   
   public function testFirstLineLengthCanBeDifferent()
   {
-    $os = new Swift_MockOutputByteStream();
-    $os->setReturnValueAt(0, 'read', 'abcdefghijkl'); //12
-    $os->setReturnValueAt(1, 'read', 'mnopqrstuvwx'); //24
-    $os->setReturnValueAt(2, 'read', 'yzabc1234567'); //36
-    $os->setReturnValueAt(3, 'read', '890ABCDEFGHI'); //48
-    $os->setReturnValueAt(4, 'read', 'JKLMNOPQRSTU'); //60
-    $os->setReturnValueAt(5, 'read', 'VWXYZ1234567'); //72
-    $os->setReturnValueAt(6, 'read', 'abcdefghijkl'); //84
-    
-    $os->setReturnValueAt(7, 'read', false);
-    
-    $is = new Swift_MockInputByteStream();
+    $os = $this->_createOutputByteStream();
+    $is = $this->_createInputByteStream();
+    $collection = new Swift_StreamCollector();
+
+    $this->_checking(Expectations::create()
+      -> allowing($is)->write(any(), optional()) -> will($collection)
+      -> ignoring($is)
+
+      -> one($os)->read(optional()) -> returns('abcdefghijkl') //12
+      -> one($os)->read(optional()) -> returns('mnopqrstuvwx') //24
+      -> one($os)->read(optional()) -> returns('yzabc1234567') //36
+      -> one($os)->read(optional()) -> returns('890ABCDEFGHI') //48
+      -> one($os)->read(optional()) -> returns('JKLMNOPQRSTU') //60
+      -> one($os)->read(optional()) -> returns('VWXYZ1234567') //72
+      -> one($os)->read(optional()) -> returns('abcdefghijkl') //84
+      -> allowing($os)->read(optional()) -> returns(false)
+      -> ignoring($os)
+      );
     
     $this->_encoder->encodeByteStream($os, $is, 19);
     $this->assertEqual(
       "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDR\r\n" .
       "EVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts",
-      $is->content
+      $collection->content
       );
+  }
+  
+  // -- Private Methods
+  
+  private function _createOutputByteStream($stub = false)
+  {
+    return $stub
+      ? $this->_stub('Swift_OutputByteStream')
+      : $this->_mock('Swift_OutputByteStream')
+      ;
+  }
+  
+  private function _createInputByteStream($stub = false)
+  {
+    return $stub
+      ? $this->_stub('Swift_InputByteStream')
+      : $this->_mock('Swift_InputByteStream')
+      ;
   }
   
 }
