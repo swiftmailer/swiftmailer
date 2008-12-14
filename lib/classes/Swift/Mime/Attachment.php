@@ -33,6 +33,12 @@
 class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
 {
   
+  /**
+   * Create a new Attachment with $headers, $encoder and $cache.
+   * @param Swift_Mime_HeaderSet $headers
+   * @param Swift_Mime_ContentEncoder $encoder
+   * @param Swift_KeyCache $cache
+   */
   public function __construct(Swift_Mime_HeaderSet $headers,
     Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
@@ -41,16 +47,30 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     $this->setContentType('application/octet-stream');
   }
   
+  /**
+   * Get the nesting level used for this attachment.
+   * Always returns {@link LEVEL_MIXED}.
+   * @return int
+   */
   public function getNestingLevel()
   {
     return self::LEVEL_MIXED;
   }
   
+  /**
+   * Get the Content-Disposition of this attachment.
+   * By default attachments have a disposition of "attachment".
+   * @return string
+   */
   public function getDisposition()
   {
     return $this->_getHeaderFieldModel('Content-Disposition');
   }
   
+  /**
+   * Set the Content-Disposition of this attachment.
+   * @param string $disposition
+   */
   public function setDisposition($disposition)
   {
     if (!$this->_setHeaderFieldModel('Content-Disposition', $disposition))
@@ -62,11 +82,19 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     return $this;
   }
   
+  /**
+   * Get the filename of this attachment when downloaded.
+   * @return string
+   */
   public function getFilename()
   {
     return $this->_getHeaderParameter('Content-Disposition', 'filename');
   }
   
+  /**
+   * Set the filename of this attachment.
+   * @param string $filename
+   */
   public function setFilename($filename)
   {
     $this->_setHeaderParameter('Content-Disposition', 'filename', $filename);
@@ -74,17 +102,29 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     return $this;
   }
   
+  /**
+   * Get the file size of this attachment.
+   * @return int
+   */
   public function getSize()
   {
     return $this->_getHeaderParameter('Content-Disposition', 'size');
   }
   
+  /**
+   * Set the file size of this attachment.
+   * @param int $size
+   */
   public function setSize($size)
   {
     $this->_setHeaderParameter('Content-Disposition', 'size', $size);
     return $this;
   }
   
+  /**
+   * Set the file that this attachment is for.
+   * @param Swift_FileStream $file
+   */
   public function setFile(Swift_FileStream $file)
   {
     $this->setFilename(basename($file->getPath()));
