@@ -24,7 +24,7 @@ define('SWEETY_INCLUDE_PATH',
 //The path to the main test suite
 define('SWEETY_LIB_PATH', SWEETY_HOME . '/lib');
 //The path to simpletest
-define('SWEETY_SIMPLETEST_PATH', SWEETY_LIB_PATH . '/simpletest-svn');
+define('SWEETY_SIMPLETEST_PATH', SWEETY_LIB_PATH . '/simpletest');
 //The path to any testing directories
 define('SWEETY_TEST_PATH',
   SWEETY_HOME . '/../tests/unit' .
@@ -55,5 +55,5 @@ require_once 'swift_required.php';
 //Load in some swift specific testig config
 require_once SWEETY_HOME . '/../tests/acceptance.conf.php';
 require_once SWEETY_HOME . '/../tests/smoke.conf.php';
-require_once SWEETY_HOME . '/lib/yaymock-svn/yay_mock.php';
-require_once SWEETY_HOME . '/lib/yaymock-svn/yay_convenience.php';
+require_once SWEETY_HOME . '/lib/yaymock/yay_mock.php';
+require_once SWEETY_HOME . '/lib/yaymock/yay_convenience.php';
