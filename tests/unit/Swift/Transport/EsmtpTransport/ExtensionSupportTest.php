@@ -16,12 +16,11 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
   
   public function testExtensionHandlersAreSortedAsNeeded()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $this->_checking(Expectations::create()
       -> allowing($ext1)->getHandledKeyword() -> returns('AUTH')
       -> allowing($ext1)->getPriorityOver('STARTTLS') -> returns(0)
       -> allowing($ext2)->getHandledKeyword() -> returns('STARTTLS')
@@ -29,21 +28,19 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext1)
       -> ignoring($ext2)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2));
     $this->assertEqual(array($ext2, $ext1), $smtp->getExtensionHandlers());
-    $context->assertIsSatisfied();
   }
   
   public function testHandlersAreNotifiedOfParams()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $s = $context->sequence('Initiation-sequence');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $s = $this->_sequence('Initiation-sequence');
+    $this->_checking(Expectations::create()
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 server.com foo\r\n")
       -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns("250-ServerName.tld\r\n")
@@ -57,22 +54,20 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext1)
       -> ignoring($ext2)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2));
     $smtp->start();
-    $context->assertIsSatisfied();
   }
   
   public function testSupportedExtensionHandlersAreRunAfterEhlo()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext3 = $context->mock('Swift_Transport_EsmtpHandler');
-    $s = $context->sequence('Initiation-sequence');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext3 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $s = $this->_sequence('Initiation-sequence');
+    $this->_checking(Expectations::create()
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 server.com foo\r\n")
       -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns("250-ServerName.tld\r\n")
@@ -89,23 +84,21 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext2)
       -> ignoring($ext3)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
     $smtp->start();
-    $context->assertIsSatisfied();
   }
   
   public function testExtensionsCanModifyMailFromParams()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext3 = $context->mock('Swift_Transport_EsmtpHandler');
-    $message = $context->mock('Swift_Mime_Message');
-    $s = $context->sequence('Initiation-sequence');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext3 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $message = $this->_createMessage();
+    $s = $this->_sequence('Initiation-sequence');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>null))
       -> ignoring($message)
@@ -132,24 +125,22 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext2)
       -> ignoring($ext3)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
     $smtp->start();
     $smtp->send($message);
-    $context->assertIsSatisfied();
   }
   
   public function testExtensionsCanModifyRcptParams()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext3 = $context->mock('Swift_Transport_EsmtpHandler');
-    $message = $context->mock('Swift_Mime_Message');
-    $s = $context->sequence('Initiation-sequence');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext3 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $message = $this->_createMessage();
+    $s = $this->_sequence('Initiation-sequence');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>null))
       -> ignoring($message)
@@ -176,23 +167,21 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext2)
       -> ignoring($ext3)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
     $smtp->start();
     $smtp->send($message);
-    $context->assertIsSatisfied();
   }
   
   public function testExtensionsAreNotifiedOnCommand()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext3 = $context->mock('Swift_Transport_EsmtpHandler');
-    $s = $context->sequence('Initiation-sequence');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext3 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $s = $this->_sequence('Initiation-sequence');
+    $this->_checking(Expectations::create()
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 server.com foo\r\n")
       -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns("250-ServerName.tld\r\n")
@@ -211,23 +200,21 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext2)
       -> ignoring($ext3)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
     $smtp->start();
     $smtp->executeCommand("FOO\r\n", array(250, 251));
-    $context->assertIsSatisfied();
   }
   
   public function testChainOfCommandAlgorithmWhenNotifyingExtensions()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $ext3 = $context->mock('Swift_Transport_EsmtpHandler');
-    $s = $context->sequence('Initiation-sequence');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $ext3 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $s = $this->_sequence('Initiation-sequence');
+    $this->_checking(Expectations::create()
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 server.com foo\r\n")
       -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns("250-ServerName.tld\r\n")
@@ -245,11 +232,10 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext2)
       -> ignoring($ext3)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
     $smtp->start();
     $smtp->executeCommand("FOO\r\n", array(250, 251));
-    $context->assertIsSatisfied();
   }
   
   public function cbStopCommand(Yay_Invocation $invocation)
@@ -262,12 +248,11 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
   
   public function testExtensionsCanExposeMixinMethods()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandlerMixin');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandlerMixin');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $this->_checking(Expectations::create()
       -> allowing($ext1)->getHandledKeyword() -> returns('AUTH')
       -> allowing($ext1)->exposeMixinMethods() -> returns(array('setUsername', 'setPassword'))
       -> one($ext1)->setUsername('mick')
@@ -276,21 +261,19 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext1)
       -> ignoring($ext2)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2));
     $smtp->setUsername('mick');
     $smtp->setPassword('pass');
-    $context->assertIsSatisfied();
   }
   
   public function testMixinMethodsBeginningWithSetAndNullReturnAreFluid()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandlerMixin');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandlerMixin');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $this->_checking(Expectations::create()
       -> allowing($ext1)->getHandledKeyword() -> returns('AUTH')
       -> allowing($ext1)->exposeMixinMethods() -> returns(array('setUsername', 'setPassword'))
       -> one($ext1)->setUsername('mick') -> returns(NULL)
@@ -299,23 +282,21 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext1)
       -> ignoring($ext2)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2));
     $ret = $smtp->setUsername('mick');
     $this->assertReference($smtp, $ret);
     $ret = $smtp->setPassword('pass');
     $this->assertReference($smtp, $ret);
-    $context->assertIsSatisfied();
   }
   
   public function testMixinSetterWhichReturnValuesAreNotFluid()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $ext1 = $context->mock('Swift_Transport_EsmtpHandlerMixin');
-    $ext2 = $context->mock('Swift_Transport_EsmtpHandler');
-    $context->checking(Expectations::create()
+    $ext1 = $this->_mock('Swift_Transport_EsmtpHandlerMixin');
+    $ext2 = $this->_mock('Swift_Transport_EsmtpHandler');
+    $this->_checking(Expectations::create()
       -> allowing($ext1)->getHandledKeyword() -> returns('AUTH')
       -> allowing($ext1)->exposeMixinMethods() -> returns(array('setUsername', 'setPassword'))
       -> one($ext1)->setUsername('mick') -> returns('x')
@@ -324,11 +305,10 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
       -> ignoring($ext1)
       -> ignoring($ext2)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setExtensionHandlers(array($ext1, $ext2));
     $this->assertEqual('x', $smtp->setUsername('mick'));
     $this->assertEqual('x', $smtp->setPassword('pass'));
-    $context->assertIsSatisfied();
   }
   
 }

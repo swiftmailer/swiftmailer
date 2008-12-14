@@ -12,50 +12,41 @@ class Swift_Transport_EsmtpTransportTest
   {
     if (!$dispatcher)
     {
-      $context = new Mockery();
-      $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+      $dispatcher = $this->_createEventDispatcher();
     }
     return new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher);
   }
   
   public function testHostCanBeSetAndFetched()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
     $smtp->setHost('foo');
     $this->assertEqual('foo', $smtp->getHost(), '%s: Host should be returned');
-    $context->assertIsSatisfied();
   }
   
   public function testPortCanBeSetAndFetched()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
     $smtp->setPort(25);
     $this->assertEqual(25, $smtp->getPort(), '%s: Port should be returned');
-    $context->assertIsSatisfied();
   }
   
   public function testTimeoutCanBeSetAndFetched()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
     $smtp->setTimeout(10);
     $this->assertEqual(10, $smtp->getTimeout(), '%s: Timeout should be returned');
-    $context->assertIsSatisfied();
   }
   
   public function testEncryptionCanBeSetAndFetched()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
     $smtp->setEncryption('tls');
     $this->assertEqual('tls', $smtp->getEncryption(), '%s: Crypto should be returned');
-    $context->assertIsSatisfied();
   }
   
   public function testStartSendsHeloToInitiate()
@@ -98,17 +89,16 @@ class Swift_Transport_EsmtpTransportTest
        
      */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -117,7 +107,6 @@ class Swift_Transport_EsmtpTransportTest
     {
       $this->fail('Starting Esmtp should send EHLO and accept 250 response');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testHeloIsUsedAsFallback()
@@ -130,11 +119,10 @@ class Swift_Transport_EsmtpTransportTest
        that it was in before the EHLO was received.
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
@@ -142,7 +130,7 @@ class Swift_Transport_EsmtpTransportTest
       -> one($buf)->write(pattern('~^HELO .*?\r\n$~D')) -> inSequence($s) -> returns(2)
       -> one($buf)->readLine(2) -> inSequence($s) -> returns('250 HELO' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -153,16 +141,14 @@ class Swift_Transport_EsmtpTransportTest
         'Starting Esmtp should fallback to HELO if needed and accept 250 response'
         );
     }
-    $context->assertIsSatisfied();
   }
   
   public function testInvalidHeloResponseCausesException()
   {//Overridden to first try EHLO
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
@@ -170,7 +156,7 @@ class Swift_Transport_EsmtpTransportTest
       -> one($buf)->write(pattern('~^HELO .*?\r\n$~D')) -> inSequence($s) -> returns(2)
       -> one($buf)->readLine(2) -> inSequence($s) -> returns('504 WTF' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $this->assertFalse($smtp->isStarted(), '%s: SMTP should begin non-started');
@@ -181,7 +167,6 @@ class Swift_Transport_EsmtpTransportTest
     {
       $this->assertFalse($smtp->isStarted(), '%s: SMTP start() should have failed');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testDomainNameIsPlacedInEhlo()
@@ -197,20 +182,18 @@ class Swift_Transport_EsmtpTransportTest
        identifying the client.
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       -> one($buf)->write("EHLO mydomain.com\r\n") -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setLocalDomain('mydomain.com');
     $smtp->start();
-    $context->assertIsSatisfied();
   }
   
   public function testDomainNameIsPlacedInHelo()
@@ -226,11 +209,10 @@ class Swift_Transport_EsmtpTransportTest
        identifying the client.
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
@@ -238,16 +220,14 @@ class Swift_Transport_EsmtpTransportTest
       -> one($buf)->write("HELO mydomain.com\r\n") -> inSequence($s) -> returns(2)
       -> one($buf)->readLine(2) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setLocalDomain('mydomain.com');
     $smtp->start();
-    $context->assertIsSatisfied();
   }
   
   public function testFluidInterface()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
     
     $ref = $smtp
@@ -257,8 +237,6 @@ class Swift_Transport_EsmtpTransportTest
       ->setTimeout(30)
       ;
     $this->assertReference($ref, $smtp);
-    
-    $context->assertIsSatisfied();
   }
   
 }

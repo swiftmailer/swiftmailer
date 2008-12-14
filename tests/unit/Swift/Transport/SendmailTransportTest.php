@@ -13,8 +13,7 @@ class Swift_Transport_SendmailTransportTest
   {
     if (!$dispatcher)
     {
-      $context = new Mockery();
-      $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+      $dispatcher = $this->_createEventDispatcher();
     }
     $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher);
     $transport->setCommand($command);
@@ -25,8 +24,7 @@ class Swift_Transport_SendmailTransportTest
   {
     if (!$dispatcher)
     {
-      $context = new Mockery();
-      $dispatcher = $context->mock('Swift_Events_EventDispatcher');
+      $dispatcher = $this->_createEventDispatcher();
     }
     $sendmail = new Swift_Transport_SendmailTransport($buf, $dispatcher);
     return $sendmail;
@@ -34,26 +32,22 @@ class Swift_Transport_SendmailTransportTest
   
   public function testCommandCanBeSetAndFetched()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $sendmail = $this->_getSendmail($buf);
     
     $sendmail->setCommand('/usr/sbin/sendmail -bs');
     $this->assertEqual('/usr/sbin/sendmail -bs', $sendmail->getCommand());
     $sendmail->setCommand('/usr/sbin/sendmail -oi -t');
     $this->assertEqual('/usr/sbin/sendmail -oi -t', $sendmail->getCommand());
-    
-    $context->assertIsSatisfied();
   }
   
   public function testSendingMessageIn_t_ModeUsesSimplePipe()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $sendmail = $this->_getSendmail($buf);
-    $message = $context->mock('Swift_Mime_Message');
+    $message = $this->_createMessage();
     
-    $context->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'))
       -> one($message)->toByteStream($buf)
       -> ignoring($message)
@@ -66,17 +60,15 @@ class Swift_Transport_SendmailTransportTest
     
     $sendmail->setCommand('/usr/sbin/sendmail -t');
     $this->assertEqual(2, $sendmail->send($message));
-    
-    $context->assertIsSatisfied();
   }
   
   public function testSendingIn_t_ModeWith_i_FlagDoesntEscapeDot()
   {
-    $buf = $this->_getBuffer($this->_mockery());
+    $buf = $this->_getBuffer();
     $sendmail = $this->_getSendmail($buf);
     $message = $this->_createMessage();
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'))
       -> one($message)->toByteStream($buf)
       -> ignoring($message)
@@ -93,11 +85,11 @@ class Swift_Transport_SendmailTransportTest
   
   public function testSendingInTModeWith_oi_FlagDoesntEscapeDot()
   {
-    $buf = $this->_getBuffer($this->_mockery());
+    $buf = $this->_getBuffer();
     $sendmail = $this->_getSendmail($buf);
     $message = $this->_createMessage();
     
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'))
       -> one($message)->toByteStream($buf)
       -> ignoring($message)
@@ -114,23 +106,11 @@ class Swift_Transport_SendmailTransportTest
   
   public function testFluidInterface()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $sendmail = $this->_getTransport($buf);
     
-    $ref = $sendmail
-      ->setCommand('/foo')
-      ;
+    $ref = $sendmail->setCommand('/foo');
     $this->assertReference($ref, $sendmail);
-    
-    $context->assertIsSatisfied();
-  }
-  
-  // -- Creation methods
-  
-  private function _createMessage()
-  {
-    return $this->_mockery()->mock('Swift_Mime_Message');
   }
 
 }

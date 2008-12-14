@@ -11,7 +11,7 @@ class Swift_Transport_StreamBufferTest extends Swift_Tests_SwiftUnitTestCase
   public function testSettingWriteTranslationsCreatesFilters()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createFilter('a', 'b') -> returns($this->_createFilter())
       -> never($factory)
       );
@@ -22,7 +22,7 @@ class Swift_Transport_StreamBufferTest extends Swift_Tests_SwiftUnitTestCase
   public function testOverridingTranslationsOnlyAddsNeededFilters()
   {
     $factory = $this->_createFactory();
-    $this->_mockery()->checking(Expectations::create()
+    $this->_checking(Expectations::create()
       -> one($factory)->createFilter('a', 'b') -> returns($this->_createFilter())
       -> one($factory)->createFilter('x', 'y') -> returns($this->_createFilter())
       -> never($factory)
@@ -41,7 +41,7 @@ class Swift_Transport_StreamBufferTest extends Swift_Tests_SwiftUnitTestCase
   
   private function _createFactory()
   {
-    return $this->_mockery()->mock('Swift_ReplacementFilterFactory');
+    return $this->_mock('Swift_ReplacementFilterFactory');
   }
   
   private function _createFilter()

@@ -25,15 +25,14 @@ abstract class Swift_Transport_AbstractSmtpTest
          E: 554
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $this->assertFalse($smtp->isStarted(), '%s: SMTP should begin non-started');
@@ -44,20 +43,18 @@ abstract class Swift_Transport_AbstractSmtpTest
     {
       $this->fail('220 is a valid SMTP greeting and should be accepted');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testBadGreetingCausesException()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("554 I'm busy\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $this->assertFalse($smtp->isStarted(), '%s: SMTP should begin non-started');
@@ -68,7 +65,6 @@ abstract class Swift_Transport_AbstractSmtpTest
     {
       $this->assertFalse($smtp->isStarted(), '%s: start() should have failed');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testStartSendsHeloToInitiate()
@@ -107,17 +103,16 @@ abstract class Swift_Transport_AbstractSmtpTest
        
      */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       -> one($buf)->write(pattern('~^HELO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -126,22 +121,20 @@ abstract class Swift_Transport_AbstractSmtpTest
     {
       $this->fail('Starting SMTP should send HELO and accept 250 response');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testInvalidHeloResponseCausesException()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       -> one($buf)->write(pattern('~^HELO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns('504 WTF' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $this->assertFalse($smtp->isStarted(), '%s: SMTP should begin non-started');
@@ -152,7 +145,6 @@ abstract class Swift_Transport_AbstractSmtpTest
     {
       $this->assertFalse($smtp->isStarted(), '%s: SMTP start() should have failed');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testDomainNameIsPlacedInHelo()
@@ -168,20 +160,18 @@ abstract class Swift_Transport_AbstractSmtpTest
        identifying the client.
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $s = $context->sequence('SMTP-convo');
-    $context->checking(Expectations::create()
+    $s = $this->_sequence('SMTP-convo');
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
       -> one($buf)->write("HELO mydomain.com\r\n") -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->setLocalDomain('mydomain.com');
     $smtp->start();
-    $context->assertIsSatisfied();
   }
   
   public function testSuccessfulMailCommand()
@@ -221,11 +211,10 @@ abstract class Swift_Transport_AbstractSmtpTest
       E: 552, 451, 452, 550, 553, 503
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>null))
       -> allowing($message)
@@ -233,7 +222,7 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("MAIL FROM: <me@domain.com>\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns('250 OK' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -243,16 +232,14 @@ abstract class Swift_Transport_AbstractSmtpTest
     {
      $this->fail('MAIL FROM should accept a 250 response');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testInvalidResponseCodeFromMailCausesException()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>null))
       -> allowing($message)
@@ -260,7 +247,7 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("MAIL FROM: <me@domain.com>\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns('553 Bad' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -270,16 +257,14 @@ abstract class Swift_Transport_AbstractSmtpTest
     catch (Exception $e)
     {
     }
-    $context->assertIsSatisfied();
   }
   
   public function testSenderIsPreferredOverFrom()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getSender() -> returns(array('another@domain.com'=>'Someone'))
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>null))
@@ -288,19 +273,17 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("MAIL FROM: <another@domain.com>\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns('250 OK' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $smtp->send($message);
-    $context->assertIsSatisfied();
   }
   
   public function testReturnPathIsPreferredOverSender()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getSender() -> returns(array('another@domain.com'=>'Someone'))
       -> allowing($message)->getReturnPath() -> returns('more@domain.com')
@@ -310,10 +293,9 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("MAIL FROM: <more@domain.com>\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns('250 OK' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $smtp->send($message);
-    $context->assertIsSatisfied();
   }
   
   public function testSuccessfulRcptCommandWith250Response()
@@ -366,12 +348,11 @@ abstract class Swift_Transport_AbstractSmtpTest
     
     //We'll treat 252 as accepted since it isn't really a failure
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $s = $context->sequence('SMTP-envelope');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $s = $this->_sequence('SMTP-envelope');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar'=>null))
       -> allowing($message)
@@ -381,7 +362,7 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("RCPT TO: <foo@bar>\r\n") -> inSequence($s) -> returns(2)
       -> one($buf)->readLine(2) -> returns('250 OK' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -391,16 +372,14 @@ abstract class Swift_Transport_AbstractSmtpTest
     {
       $this->fail('RCPT TO should accept a 250 response');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testMultipleRecipientsSendsMultipleRcpt()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array(
         'foo@bar' => null,
@@ -416,19 +395,17 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("RCPT TO: <test@domain>\r\n") -> returns(3)
       -> one($buf)->readLine(3) -> returns('250 OK' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $smtp->send($message);
-    $context->assertIsSatisfied();
   }
   
   public function testCcRecipientsSendsMultipleRcpt()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)->getCc() -> returns(array(
@@ -444,19 +421,17 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("RCPT TO: <test@domain>\r\n") -> returns(3)
       -> one($buf)->readLine(3) -> returns('250 OK' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $smtp->send($message);
-    $context->assertIsSatisfied();
   }
   
   public function testSendReturnsNumberOfSuccessfulRecipients()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)->getCc() -> returns(array(
@@ -472,12 +447,11 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("RCPT TO: <test@domain>\r\n") -> returns(3)
       -> one($buf)->readLine(3) -> returns('250 OK' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $this->assertEqual(2, $smtp->send($message),
       '%s: 1 of 3 recipients failed so 2 should be returned'
       );
-    $context->assertIsSatisfied();
   }
   
   public function testRsetIsSentIfNoSuccessfulRecipients()
@@ -496,11 +470,10 @@ abstract class Swift_Transport_AbstractSmtpTest
       S: 250
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)
@@ -510,12 +483,11 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("RSET\r\n") -> returns(2)
       -> one($buf)->readLine(2) -> returns('250 OK' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $this->assertEqual(0, $smtp->send($message),
       '%s: 1 of 1 recipients failed so 0 should be returned'
       );
-    $context->assertIsSatisfied();
   }
   
   public function testSuccessfulDataCommand()
@@ -550,11 +522,10 @@ abstract class Swift_Transport_AbstractSmtpTest
       E: 451, 554, 503
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)
@@ -562,7 +533,7 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("DATA\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns('354 Go ahead' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -572,16 +543,14 @@ abstract class Swift_Transport_AbstractSmtpTest
     {
       $this->fail('354 is the expected response to DATA');
     }
-    $context->assertIsSatisfied();
   }
   
   public function testBadDataResponseCausesException()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)
@@ -589,7 +558,7 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("DATA\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns('451 Bad' . "\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -599,17 +568,15 @@ abstract class Swift_Transport_AbstractSmtpTest
     catch (Exception $e)
     {
     }
-    $context->assertIsSatisfied();
   }
   
   public function testMessageIsStreamedToBufferForData()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $s = $context->sequence('DATA Streaming');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $s = $this->_sequence('DATA Streaming');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       
@@ -621,20 +588,18 @@ abstract class Swift_Transport_AbstractSmtpTest
       
       -> allowing($message)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $smtp->send($message);
-    $context->assertIsSatisfied();
   }
   
   public function testBadResponseAfterDataTransmissionCausesException()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $s = $context->sequence('DATA Streaming');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $s = $this->_sequence('DATA Streaming');
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       
@@ -646,7 +611,7 @@ abstract class Swift_Transport_AbstractSmtpTest
       
       -> allowing($message)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     try
     {
       $smtp->start();
@@ -656,7 +621,6 @@ abstract class Swift_Transport_AbstractSmtpTest
     catch (Exception $e)
     {
     }
-    $context->assertIsSatisfied();
   }
   
   public function testBccRecipientsAreRemovedFromHeaders()
@@ -678,11 +642,10 @@ abstract class Swift_Transport_AbstractSmtpTest
      transaction containing only a single RCPT command.
      */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)->getBcc() -> returns(array(
@@ -692,19 +655,17 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> atLeast(1)->of($message)->setBcc(array())
       -> allowing($message)
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $smtp->send($message);
-    $context->assertIsSatisfied();
   }
   
   public function testEachBccRecipientIsSentASeparateMessage()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)->getBcc() -> returns(array(
@@ -747,19 +708,17 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("\r\n.\r\n") -> returns(12)
       -> one($buf)->readLine(12) -> returns("250 OK\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $this->assertEqual(3, $smtp->send($message));
-    $context->assertIsSatisfied();
   }
   
   public function testMessageStateIsRestoredOnFailure()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)->getBcc() -> returns(array(
@@ -779,7 +738,7 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("DATA\r\n") -> returns(3)
       -> one($buf)->readLine(3) -> returns("451 No\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     
     $smtp->start();
     try
@@ -790,8 +749,6 @@ abstract class Swift_Transport_AbstractSmtpTest
     catch (Exception $e)
     {
     }
-    
-    $context->assertIsSatisfied();
   }
   
   public function testStopSendsQuitCommand()
@@ -818,45 +775,38 @@ abstract class Swift_Transport_AbstractSmtpTest
       "QUIT" CRLF
     */
     
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> one($buf)->initialize()
       -> one($buf)->write("QUIT\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns("221 Bye\r\n")
       -> one($buf)->terminate()
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     
     $this->assertFalse($smtp->isStarted());
     $smtp->start();
     $this->assertTrue($smtp->isStarted());
     $smtp->stop();
     $this->assertFalse($smtp->isStarted());
-    
-    $context->assertIsSatisfied();
   }
   
   public function testBufferCanBeFetched()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
     $ref = $smtp->getBuffer();
     $this->assertReference($buf, $ref);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testBufferCanBeWrittenToUsingExecuteCommand()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> one($buf)->write("FOO\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns("250 OK\r\n")
       -> ignoring($buf)
@@ -864,17 +814,14 @@ abstract class Swift_Transport_AbstractSmtpTest
     
     $res = $smtp->executeCommand("FOO\r\n");
     $this->assertEqual("250 OK\r\n", $res);
-    
-    $context->assertIsSatisfied();
   }
   
   public function testResponseCodesAreValidated()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> one($buf)->write("FOO\r\n") -> returns(1)
       -> one($buf)->readLine(1) -> returns("551 Not ok\r\n")
       -> ignoring($buf)
@@ -888,17 +835,14 @@ abstract class Swift_Transport_AbstractSmtpTest
     catch (Exception $e)
     {
     }
-    
-    $context->assertIsSatisfied();
   }
   
   public function testFailedRecipientsCanBeCollectedByReference()
   {
-    $context = new Mockery();
-    $buf = $this->_getBuffer($context);
+    $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
-    $message = $context->mock('Swift_Mime_Message');
-    $context->checking(Expectations::create()
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
       -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
       -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
       -> allowing($message)->getBcc() -> returns(array(
@@ -937,25 +881,29 @@ abstract class Swift_Transport_AbstractSmtpTest
       -> one($buf)->write("RSET\r\n") -> returns(10)
       -> one($buf)->readLine(10) -> returns("250 OK\r\n")
       );
-    $this->_finishBuffer($context, $buf);
+    $this->_finishBuffer($buf);
     $smtp->start();
     $this->assertEqual(1, $smtp->send($message, $failures));
     $this->assertEqual(array('zip@button', 'test@domain'), $failures,
       '%s: Failures should be caught in an array'
       );
-    $context->assertIsSatisfied();
   }
   
   // -- Protected methods
   
-  protected function _getBuffer($context)
+  protected function _getBuffer()
   {
-    return $context->mock('Swift_Transport_IoBuffer');
+    return $this->_mock('Swift_Transport_IoBuffer');
   }
   
-  protected function _finishBuffer($context, $buf)
+  protected function _createMessage()
   {
-    $context->checking(Expectations::create()
+    return $this->_mock('Swift_Mime_Message');
+  }
+  
+  protected function _finishBuffer($buf)
+  {
+    $this->_checking(Expectations::create()
       -> ignoring($buf)->readLine(0) -> returns('220 server.com foo' . "\r\n")
       -> ignoring($buf)->write(pattern('~^(EH|HE)LO .*?\r\n$~D')) -> returns($x = uniqid())
       -> ignoring($buf)->readLine($x) -> returns('250 ServerName' . "\r\n")
