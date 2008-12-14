@@ -16,10 +16,6 @@ Poorly implemented:
 After first beta:
 -----------------
 
- * Simplify the event system:
-   - EventFactory class used by EventDispatcher
-   - Get rid of the ability to bind to a specific source
-   - Benchmark difference creating "New" events instead of current convoluted setup
  * CharacterReaders
    - Big5
    - Shift-JIS
