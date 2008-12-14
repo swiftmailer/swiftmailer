@@ -2,43 +2,45 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Events/ResponseEvent.php';
-require_once 'Swift/Transport/EsmtpBufferWrapper.php';
+require_once 'Swift/Transport.php';
 
 class Swift_Events_ResponseEventTest extends Swift_Tests_SwiftUnitTestCase
 {
   
-  public function testResponseCanBeInjected()
+  public function testResponseCanBeFetchViaGetter()
   {
-    $evt = new Swift_Events_ResponseEvent();
-    $evt->response = "250 Ok\r\n";
+    $evt = $this->_createEvent($this->_createTransport(), "250 Ok\r\n", true);
     $this->assertEqual("250 Ok\r\n", $evt->getResponse(),
-      '%s: Response should be injectable'
+      '%s: Response should be available via getResponse()'
       );
   }
   
-  public function testResultCanBeInjected()
+  public function testResultCanBeFetchedViaGetter()
   {
-    $evt = new Swift_Events_ResponseEvent();
-    $evt->result = Swift_Events_ResponseEvent::RESULT_INVALID;
-    $this->assertEqual(
-      Swift_Events_ResponseEvent::RESULT_INVALID, $evt->getResult(),
-      '%s: Result should be injectable'
+    $evt = $this->_createEvent($this->_createTransport(), "250 Ok\r\n", false);
+    $this->assertFalse($evt->isValid(),
+      '%s: Result should be checkable via isValid()'
       );
   }
   
-  public function testCleanCloneIsCreated()
+  public function testSourceIsBuffer()
   {
-    $buf = $this->_mock('Swift_Transport_EsmtpBufferWrapper');
-    
-    $evt = new Swift_Events_ResponseEvent();
-    $evt->response = "250 Ok\r\n";
-    $evt->result = Swift_Events_ResponseEvent::RESULT_INVALID;
-    
-    $clone = $evt->cloneFor($buf);
-    $source = $clone->getSource();
-    $this->assertReference($buf, $source);
-    $this->assertEqual('', $clone->getResponse());
-    $this->assertEqual(Swift_Events_ResponseEvent::RESULT_VALID, $clone->getResult());
+    $transport = $this->_createTransport();
+    $evt = $this->_createEvent($transport, "250 Ok\r\n", true);
+    $ref = $evt->getSource();
+    $this->assertReference($transport, $ref);
+  }
+  
+  // -- Creation Methods
+  
+  private function _createEvent(Swift_Transport $source, $response, $result)
+  {
+    return new Swift_Events_ResponseEvent($source, $response, $result);
+  }
+  
+  private function _createTransport()
+  {
+    return $this->_stub('Swift_Transport');
   }
   
 }

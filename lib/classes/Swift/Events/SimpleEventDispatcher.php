@@ -21,6 +21,11 @@
 //@require 'Swift/Events/EventDispatcher.php';
 //@require 'Swift/Events/EventListener.php';
 //@require 'Swift/Events/EventObject.php';
+//@require 'Swift/Events/CommandEvent.php';
+//@require 'Swift/Events/ResponseEvent.php';
+//@require 'Swift/Events/SendEvent.php';
+//@require 'Swift/Events/TransportChangeEvent.php';
+//@require 'Swift/Events/TransportExceptionEvent.php';
 
 /**
  * The EventDispatcher which handles the event dispatching layer.
@@ -32,25 +37,11 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
 {
   
   /**
-   * A map of event aliases to concrete class names.
+   * A map of event types to their associated listener types.
    * @var string[]
    * @access private
    */
   private $_eventMap = array();
-  
-  /**
-   * A map of event class names to listener interface names.
-   * @var string[]
-   * @access private
-   */
-  private $_listenerMap = array();
-  
-  /**
-   * A lazy-loaded map of event objects.
-   * @var Swift_Events_EventObject[]
-   * @access private
-   */
-  private $_prototypes = array();
   
   /**
    * Event listeners bound to this dispatcher.
@@ -67,70 +58,86 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
   private $_bubbleQueue = array();
   
   /**
-   * Create a new SimpleEventDispatcher using $descriptorMap.
-   * The descriptor map is a complex array mapping event alias names to
-   * concrete class names and listener interfaces:
-   * array (
-   *  'foo' => array('event' => 'FooEvent', 'listener' => 'FooListener')
-   * )
-   * @param array $descriptorMap
+   * Create a new EventDispatcher.
    */
-  public function __construct(array $descriptorMap)
+  public function __construct()
   {
-    foreach ($descriptorMap as $eventType => $spec)
-    {
-      if (is_object($spec['event']))
-      {
-        $this->_prototypes[$eventType] = $spec['event'];
-        $eventClass = get_class($spec['event']);
-      }
-      else
-      {
-        $eventClass = $spec['event'];
-      }
-      $this->_eventMap[$eventType] = $eventClass;
-      $this->_listenerMap[$eventClass] = $spec['listener'];
-    }
+    $this->_eventMap = array(
+      'Swift_Events_CommandEvent' => 'Swift_Events_CommandListener',
+      'Swift_Events_ResponseEvent' => 'Swift_Events_ResponseListener',
+      'Swift_Events_SendEvent' => 'Swift_Events_SendListener',
+      'Swift_Events_TransportChangeEvent' => 'Swift_Events_TransportChangeListener',
+      'Swift_Events_TransportExceptionEvent' => 'Swift_Events_TransportExceptionListener'
+      );
   }
   
   /**
-   * Create the event for the given event type.
-   * @param string $eventType
-   * @param object $source
-   * @param string[] $properties the event will contain
+   * Create a new SendEvent for $source and $message.
+   * @param Swift_Transport $source
+   * @param Swift_Mime_Message
+   * @return Swift_Events_SendEvent
    */
-  public function createEvent($eventType, $source, $properties = array())
+  public function createSendEvent(Swift_Transport $source,
+    Swift_Mime_Message $message)
   {
-    if (!array_key_exists($eventType, $this->_eventMap))
-    {
-      $evt = null;
-    }
-    else
-    {
-      if (!array_key_exists($eventType, $this->_prototypes))
-      {
-        $class = $this->_eventMap[$eventType];
-        $this->_prototypes[$eventType] = new $class();
-      }
-      $evt = $this->_prototypes[$eventType]->cloneFor($source);
-      foreach ($properties as $key => $value)
-      {
-        $evt->$key = $value;
-      }
-    }
-    return $evt;
+    return new Swift_Events_SendEvent($source, $message);
+  }
+  
+  /**
+   * Create a new CommandEvent for $source and $command.
+   * @param Swift_Transport $source
+   * @param string $command That will be executed
+   * @param array $successCodes That are needed
+   * @return Swift_Events_CommandEvent
+   */
+  public function createCommandEvent(Swift_Transport $source,
+    $command, $successCodes = array())
+  {
+    return new Swift_Events_CommandEvent($source, $command, $successCodes);
+  }
+  
+  /**
+   * Create a new ResponseEvent for $source and $response.
+   * @param Swift_Transport $source
+   * @param string $response
+   * @param boolean $valid If the response is valid
+   * @return Swift_Events_ResponseEvent
+   */
+  public function createResponseEvent(Swift_Transport $source,
+    $response, $valid)
+  {
+    return new Swift_Events_ResponseEvent($source, $response, $valid);
+  }
+  
+  /**
+   * Create a new TransportChangeEvent for $source.
+   * @param Swift_Transport $source
+   * @return Swift_Events_TransportChangeEvent
+   */
+  public function createTransportChangeEvent(Swift_Transport $source)
+  {
+    return new Swift_Events_TransportChangeEvent($source);
+  }
+  
+  /**
+   * Create a new TransportExceptionEvent for $source.
+   * @param Swift_Transport $source
+   * @param Swift_Transport_TransportException $ex
+   * @return Swift_Events_TransportExceptionEvent
+   */
+  public function createTransportExceptionEvent(Swift_Transport $source,
+    Swift_Transport_TransportException $ex)
+  {
+    return new Swift_Events_TransportExceptionEvent($source, $ex);
   }
   
   /**
    * Bind an event listener to this dispatcher.
-   * The listener can optionally be bound only to the given event source.
    * @param Swift_Events_EventListener $listener
-   * @param object $source, optional
    */
-  public function bindEventListener(Swift_Events_EventListener $listener,
-    $source = null)
+  public function bindEventListener(Swift_Events_EventListener $listener)
   {
-    $this->_listeners[] = array('listener' => $listener, 'source' => $source);
+    $this->_listeners[] = $listener;
   }
   
   /**
@@ -155,12 +162,10 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
   {
     $this->_bubbleQueue = array();
     $evtClass = get_class($evt);
-    foreach ($this->_listeners as $bindPair)
+    foreach ($this->_listeners as $listener)
     {
-      $listener = $bindPair['listener'];
-      if (array_key_exists($evtClass, $this->_listenerMap)
-        && ($listener instanceof $this->_listenerMap[$evtClass])
-        && (!$bindPair['source'] || $bindPair['source'] === $evt->getSource()))
+      if (array_key_exists($evtClass, $this->_eventMap)
+        && ($listener instanceof $this->_eventMap[$evtClass]))
       {
         $this->_bubbleQueue[] = $listener;
       }

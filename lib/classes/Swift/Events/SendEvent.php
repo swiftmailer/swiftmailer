@@ -45,25 +45,38 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
    * The Message being sent.
    * @var Swift_Mime_Message
    */
-  public $message;
+  private $_message;
   
   /**
    * The Transport used in sending.
    * @var Swift_Transport
    */
-  public $transport;
+  private $_transport;
   
   /**
    * Any recipients which failed after sending.
    * @var string[]
    */
-  public $failedRecipients = array();
+  private $failedRecipients = array();
   
   /**
    * The overall result as a bitmask from the class constants.
    * @var int
    */
-  public $result = self::RESULT_PENDING;
+  private $result;
+  
+  /**
+   * Create a new SendEvent for $source and $message.
+   * @param Swift_Transport $source
+   * @param Swift_Mime_Message $message
+   */
+  public function __construct(Swift_Transport $source,
+    Swift_Mime_Message $message)
+  {
+    parent::__construct($source);
+    $this->_message = $message;
+    $this->_result = self::RESULT_PENDING;
+  }
   
   /**
    * Get the Transport used to send the Message.
@@ -71,7 +84,7 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
    */
   public function getTransport()
   {
-    return $this->transport;
+    return $this->getSource();
   }
   
   /**
@@ -80,7 +93,16 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
    */
   public function getMessage()
   {
-    return $this->message;
+    return $this->_message;
+  }
+  
+  /**
+   * Set the array of addresses that failed in sending.
+   * @param array $recipients
+   */
+  public function setFailedRecipients($recipients)
+  {
+    $this->_failedRecipients = $recipients;
   }
   
   /**
@@ -89,7 +111,16 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
    */
   public function getFailedRecipients()
   {
-    return $this->failedRecipients;
+    return $this->_failedRecipients;
+  }
+  
+  /**
+   * Set the result of sending.
+   * @return int
+   */
+  public function setResult($result)
+  {
+    $this->_result = $result;
   }
   
   /**
@@ -100,19 +131,7 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
    */
   public function getResult()
   {
-    return $this->result;
-  }
-  
-  /**
-   * Create a clean clone.
-   */
-  public function __clone()
-  {
-    parent::__clone();
-    $this->message = null;
-    $this->transport = null;
-    $this->failedRecipients = array();
-    $this->result = self::RESULT_PENDING;
+    return $this->_result;
   }
   
 }

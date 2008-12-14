@@ -52,27 +52,6 @@ Swift_DependencyContainer::getInstance()
   
   -> register('transport.eventdispatcher')
   -> asSharedInstanceOf('Swift_Events_SimpleEventDispatcher')
-  -> addConstructorLookup('transport.eventtypes')
-  
-  -> register('transport.eventtypes')
-  -> asValue(array(
-      'send' => array(
-        'event' => 'Swift_Events_SendEvent',
-        'listener' => 'Swift_Events_SendListener'
-      ),
-      'transportchange' => array(
-        'event' => 'Swift_Events_TransportChangeEvent',
-        'listener' => 'Swift_Events_TransportChangeListener'
-      ),
-      'command' => array(
-        'event' => 'Swift_Events_CommandEvent',
-        'listener' => 'Swift_Events_CommandListener'
-      ),
-      'response' => array(
-        'event' => 'Swift_Events_ResponseEvent',
-        'listener' => 'Swift_Events_ResponseListener'
-      )
-  ))
   
   -> register('transport.replacementfactory')
   -> asSharedInstanceOf('Swift_StreamFilters_StringReplacementFilterFactory')

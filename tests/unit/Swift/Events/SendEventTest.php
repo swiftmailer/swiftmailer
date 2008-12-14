@@ -8,23 +8,53 @@ require_once 'Swift/Transport.php';
 class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
 {
   
-  public function testMessageCanBeInjected()
+  public function testMessageCanBeFetchedViaGetter()
   {
-    $message = $this->_mock('Swift_Mime_Message');
+    $message = $this->_createMessage();
+    $transport = $this->_createTransport();
     
-    $evt = new Swift_Events_SendEvent();
-    $evt->message = $message;
+    $evt = $this->_createEvent($transport, $message);
     
     $ref = $evt->getMessage();
     $this->assertReference($message, $ref,
-      '%s: Message should be injectable'
+      '%s: Message should be returned from getMessage()'
       );
   }
   
-  public function testResultCanBeInjected()
+  public function testTransportCanBeFetchViaGetter()
   {
-    $evt = new Swift_Events_SendEvent();
-    $evt->result = (
+    $message = $this->_createMessage();
+    $transport = $this->_createTransport();
+    
+    $evt = $this->_createEvent($transport, $message);
+    
+    $ref = $evt->getTransport();
+    $this->assertReference($transport, $ref,
+      '%s: Transport should be returned from getTransport()'
+      );
+  }
+  
+  public function testTransportCanBeFetchViaGetSource()
+  {
+    $message = $this->_createMessage();
+    $transport = $this->_createTransport();
+    
+    $evt = $this->_createEvent($transport, $message);
+    
+    $ref = $evt->getSource();
+    $this->assertReference($transport, $ref,
+      '%s: Transport should be returned from getSource()'
+      );
+  }
+  
+  public function testResultCanBeSetAndGet()
+  {
+    $message = $this->_createMessage();
+    $transport = $this->_createTransport();
+    
+    $evt = $this->_createEvent($transport, $message);
+    
+    $evt->setResult(
       Swift_Events_SendEvent::RESULT_SUCCESS | Swift_Events_SendEvent::RESULT_TENTATIVE
       );
     
@@ -32,50 +62,36 @@ class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertTrue($evt->getResult() & Swift_Events_SendEvent::RESULT_TENTATIVE);
   }
   
-  public function testFailedRecipientsCanBeInjected()
+  public function testFailedRecipientsCanBeSetAndGet()
   {
-    $evt = new Swift_Events_SendEvent();
-    $evt->failedRecipients = array('foo@bar', 'zip@button');
+    $message = $this->_createMessage();
+    $transport = $this->_createTransport();
+    
+    $evt = $this->_createEvent($transport, $message);
+    
+    $evt->setFailedRecipients(array('foo@bar', 'zip@button'));
     
     $this->assertEqual(array('foo@bar', 'zip@button'), $evt->getFailedRecipients(),
-      '%s: FailedRecipients should be injectable'
+      '%s: FailedRecipients should be returned from getter'
       );
   }
   
-  public function testTransportCanBeInjected()
+  // -- Creation Methods
+  
+  private function _createEvent(Swift_Transport $source,
+    Swift_Mime_Message $message)
   {
-    $transport = $this->_mock('Swift_Transport');
-    
-    $evt = new Swift_Events_SendEvent();
-    $evt->transport = $transport;
-    
-    $ref = $evt->getTransport();
-    $this->assertReference($transport, $ref,
-      '%s: Transport should be injectable'
-      );
+    return new Swift_Events_SendEvent($source, $message);
   }
   
-  public function testCloneIsGeneratedWithCleanDefaults()
+  private function _createTransport()
   {
-    $transport = $this->_mock('Swift_Transport');
-    $message = $this->_mock('Swift_Mime_Message');
-    
-    $evt = new Swift_Events_SendEvent();
-    $evt->message = $message;
-    $evt->transport = $transport;
-    $evt->failedRecipients = array('foo@bar', 'zip@button');
-    $evt->result = Swift_Events_SendEvent::RESULT_FAILED;
-    
-    $obj = new stdClass();
-    
-    $cloned = $evt->cloneFor($obj);
-    
-    $source = $cloned->getSource();
-    $this->assertReference($obj, $source);
-    $this->assertEqual(Swift_Events_SendEvent::RESULT_PENDING, $cloned->getResult());
-    $this->assertEqual(array(), $cloned->getFailedRecipients());
-    $this->assertNull($cloned->getMessage());
-    $this->assertNull($cloned->getTransport());
+    return $this->_stub('Swift_Transport');
+  }
+  
+  private function _createMessage()
+  {
+    return $this->_stub('Swift_Mime_Message');
   }
   
 }

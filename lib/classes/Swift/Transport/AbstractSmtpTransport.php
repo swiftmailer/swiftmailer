@@ -24,9 +24,6 @@
 //@require 'Swift/Transport/TransportException.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventDispatcher.php';
-//@require 'Swift/Events/CommandEvent.php';
-//@require 'Swift/Events/ResponseEvent.php';
-//@require 'Swift/Events/SendEvent.php';
 //@require 'Swift/Events/EventListener.php';
 
 /**
@@ -109,7 +106,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       $this->_readGreeting();
       $this->_doHeloCommand();
       
-      if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
+      if ($evt = $this->_eventDispatcher->createTransportChangeEvent($this))
       {
         $this->_eventDispatcher->dispatchEvent($evt, 'transportStarted');
       }
@@ -147,12 +144,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
         );
     }
     
-    if ($evt = $this->_eventDispatcher->createEvent('send', $this, array(
-      'message' => $message,
-      'transport' => $this,
-      'failedRecipients' => array(),
-      'result' => Swift_Events_SendEvent::RESULT_PENDING
-      )))
+    if ($evt = $this->_eventDispatcher->createSendEvent($this, $message))
     {
       $this->_eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
       if ($evt->bubbleCancelled())
@@ -160,7 +152,6 @@ abstract class Swift_Transport_AbstractSmtpTransport
         return 0;
       }
     }
-    
     
     $to = (array) $message->getTo();
     $cc = (array) $message->getCc();
@@ -184,8 +175,8 @@ abstract class Swift_Transport_AbstractSmtpTransport
     
     if ($evt)
     {
-      $evt->result = Swift_Events_SendEvent::RESULT_SUCCESS;
-      $evt->failedRecipients = $failedRecipients;
+      $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
+      $evt->setFailedRecipients($failedRecipients);
       $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
     }
     
@@ -209,7 +200,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       {
         $this->_buffer->terminate();
       
-        if ($evt = $this->_eventDispatcher->createEvent('transportchange', $this))
+        if ($evt = $this->_eventDispatcher->createTransportChangeEvent($this))
         {
           $this->_eventDispatcher->dispatchEvent($evt, 'transportStopped');
         }
@@ -234,7 +225,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       return; //already loaded
     }
     
-    $this->_eventDispatcher->bindEventListener($plugin, $this);
+    $this->_eventDispatcher->bindEventListener($plugin);
     $this->_plugins[$key] = $plugin;
   }
   
@@ -269,10 +260,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
     $failures = (array) $failures;
     $seq = $this->_buffer->write($command);
     $response = $this->_getFullResponse($seq);
-    if ($evt = $this->_eventDispatcher->createEvent('command', $this, array(
-      'command' => $command,
-      'successCodes' => $codes
-      )))
+    if ($evt = $this->_eventDispatcher->createCommandEvent($this, $command, $codes))
     {
       $this->_eventDispatcher->dispatchEvent($evt, 'commandSent');
     }
@@ -362,9 +350,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
   /** Throw a TransportException, first sending it to any listeners */
   protected function _throwException(Swift_Transport_TransportException $e)
   {
-    if ($evt = $this->_eventDispatcher->createEvent('exception', $this, array(
-      'exception' => $e
-      )))
+    if ($evt = $this->_eventDispatcher->createTransportExceptionEvent($this, $e))
     {
       $this->_eventDispatcher->dispatchEvent($evt, 'exceptionThrown');
       if (!$evt->bubbleCancelled())
@@ -384,12 +370,8 @@ abstract class Swift_Transport_AbstractSmtpTransport
     list($code, $separator, $text) = sscanf($response, '%3d%[ -]%s');
     $valid = (empty($wanted) || in_array($code, $wanted));
     
-    if ($evt = $this->_eventDispatcher->createEvent('response', $this, array(
-      'result' => ($valid
-        ? Swift_Events_ResponseEvent::RESULT_VALID
-        : Swift_Events_ResponseEvent::RESULT_INVALID),
-      'response' => $response
-      )))
+    if ($evt = $this->_eventDispatcher->createResponseEvent($this, $response,
+      $valid))
     {
       $this->_eventDispatcher->dispatchEvent($evt, 'responseReceived');
     }

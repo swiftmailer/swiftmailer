@@ -19,6 +19,7 @@
  */
 
 //@require 'Swift/Events/EventObject.php';
+//@require 'Swift/Transport.php';
 
 /**
  * Generated when a command is sent over an SMTP connection.
@@ -33,13 +34,27 @@ class Swift_Events_CommandEvent extends Swift_Events_EventObject
    * The command sent to the server.
    * @var string
    */
-  public $command;
+  private $_command;
   
   /**
    * An array of codes which a successful response will contain.
    * @var int[]
    */
-  public $successCodes = array();
+  private $_successCodes = array();
+  
+  /**
+   * Create a new CommandEvent for $source with $command.
+   * @param Swift_Transport $source
+   * @param string $command
+   * @param array $successCodes
+   */
+  public function __construct(Swift_Transport $source,
+    $command, $successCodes = array())
+  {
+    parent::__construct($source);
+    $this->_command = $command;
+    $this->_successCodes = $successCodes;
+  }
   
   /**
    * Get the command which was sent to the server.
@@ -47,7 +62,7 @@ class Swift_Events_CommandEvent extends Swift_Events_EventObject
    */
   public function getCommand()
   {
-    return $this->command;
+    return $this->_command;
   }
   
   /**
@@ -56,17 +71,7 @@ class Swift_Events_CommandEvent extends Swift_Events_EventObject
    */
   public function getSuccessCodes()
   {
-    return $this->successCodes;
-  }
-  
-  /**
-   * Create a clean clone.
-   */
-  public function __clone()
-  {
-    parent::__clone();
-    $this->command = '';
-    $this->successCodes = array();
+    return $this->_successCodes;
   }
   
 }

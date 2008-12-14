@@ -2,39 +2,42 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Events/CommandEvent.php';
-require_once 'Swift/Transport/EsmtpBufferWrapper.php';
+require_once 'Swift/Transport.php';
 
 class Swift_Events_CommandEventTest extends Swift_Tests_SwiftUnitTestCase
 {
   
-  public function testCommandCanBeInjected()
+  public function testCommandCanBeFetchedByGetter()
   {
-    $evt = new Swift_Events_CommandEvent();
-    $evt->command = "HELO foobar.net\r\n";
-    $this->assertEqual("HELO foobar.net\r\n", $evt->getCommand());
+    $evt = $this->_createEvent($this->_createTransport(), "FOO\r\n");
+    $this->assertEqual("FOO\r\n", $evt->getCommand());
   }
   
-  public function testSuccessCodesCanBeInjected()
+  public function testSuccessCodesCanBeFetchedViaGetter()
   {
-    $evt = new Swift_Events_CommandEvent();
-    $evt->successCodes = array(250, 251);
-    $this->assertEqual(array(250, 251), $evt->getSuccessCodes());
+    $evt = $this->_createEvent($this->_createTransport(), "FOO\r\n", array(250));
+    $this->assertEqual(array(250), $evt->getSuccessCodes());
   }
   
-  public function testCleanCloneIsGenerated()
+  public function testSourceIsBuffer()
   {
-    $buf = $this->_mock('Swift_Transport_EsmtpBufferWrapper');
-    
-    $evt = new Swift_Events_CommandEvent();
-    $evt->command = "HELO foobar.net\r\n";
-    $evt->successCodes = array(250);
-    
-    $clone = $evt->cloneFor($buf);
-    
-    $this->assertEqual('', $clone->getCommand());
-    $this->assertEqual(array(), $clone->getSuccessCodes());
-    $source = $clone->getSource();
-    $this->assertReference($buf, $source);
+    $transport = $this->_createTransport();
+    $evt = $this->_createEvent($transport, "FOO\r\n");
+    $ref = $evt->getSource();
+    $this->assertReference($transport, $ref);
+  }
+  
+  // -- Creation Methods
+  
+  private function _createEvent(Swift_Transport $source, $command,
+    $successCodes = array())
+  {
+    return new Swift_Events_CommandEvent($source, $command, $successCodes);
+  }
+  
+  private function _createTransport()
+  {
+    return $this->_stub('Swift_Transport');
   }
   
 }

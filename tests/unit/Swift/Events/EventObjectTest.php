@@ -6,40 +6,34 @@ require_once 'Swift/Events/EventObject.php';
 class Swift_Events_EventObjectTest extends Swift_Tests_SwiftUnitTestCase
 {
   
-  private $_event;
-  
-  public function setUp()
-  {
-    $this->_event = new Swift_Events_EventObject();
-  }
-  
-  public function testEventCanBeCreatedByPrototype()
+  public function testEventSourceCanBeReturnedViaGetter()
   {
     $source = new stdClass();
-    $evt = $this->_event->cloneFor($source);
-    $this->assertIsA($evt, 'Swift_Events_EventObject');
+    $evt = $this->_createEvent($source);
     $ref = $evt->getSource();
     $this->assertReference($source, $ref);
   }
   
-  public function testEventDoesNotHaveCancelledBubbleAfterClone()
+  public function testEventDoesNotHaveCancelledBubbleWhenNew()
   {
     $source = new stdClass();
-    $evt = $this->_event->cloneFor($source);
-    $this->assertFalse($evt->bubbleCancelled());
-    
-    $this->_event->cancelBubble(true);
-    $evt = $this->_event->cloneFor($source);
+    $evt = $this->_createEvent($source);
     $this->assertFalse($evt->bubbleCancelled());
   }
   
   public function testBubbleCanBeCancelledInEvent()
   {
     $source = new stdClass();
-    $evt = $this->_event->cloneFor($source);
-    $this->assertFalse($evt->bubbleCancelled());
+    $evt = $this->_createEvent($source);
     $evt->cancelBubble();
     $this->assertTrue($evt->bubbleCancelled());
+  }
+  
+  // -- Creation Methods
+  
+  private function _createEvent($source)
+  {
+    return new Swift_Events_EventObject($source);
   }
   
 }

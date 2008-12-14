@@ -5,7 +5,8 @@ require_once 'Swift/Transport/EsmtpHandler.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Transport/IoBuffer.php';
 
-abstract class Swift_Transport_AbstractSmtpTest extends Swift_Tests_SwiftUnitTestCase
+abstract class Swift_Transport_AbstractSmtpTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   /** Abstract test method */

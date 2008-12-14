@@ -29,23 +29,30 @@
 class Swift_Events_ResponseEvent extends Swift_Events_EventObject
 {
   
-  /** The response is correct */
-  const RESULT_VALID = 0x01;
-  
-  /** The response is incorrect */
-  const RESULT_INVALID = 0x10;
-  
   /**
-   * The overall result as a bitmask from the class constants.
-   * @var int
+   * The overall result.
+   * @var boolean
    */
-  public $result = self::RESULT_VALID;
+  private $_valid;
   
   /**
    * The response received from the server.
    * @var string
    */
-  public $response;
+  private $_response;
+  
+  /**
+   * Create a new ResponseEvent for $source and $response.
+   * @param Swift_Transport $source
+   * @param string $response
+   * @param boolean $valid
+   */
+  public function __construct(Swift_Transport $source, $response, $valid = false)
+  {
+    parent::__construct($source);
+    $this->_response = $response;
+    $this->_valid = $valid;
+  }
   
   /**
    * Get the response which was received from the server.
@@ -53,27 +60,16 @@ class Swift_Events_ResponseEvent extends Swift_Events_EventObject
    */
   public function getResponse()
   {
-    return $this->response;
+    return $this->_response;
   }
   
   /**
-   * Get the result of this Event.
-   * The return value is a bitmask from {@link RESULT_VALID, RESULT_INVALID}
-   * @return int
+   * Get the success status of this Event.
+   * @return boolean
    */
-  public function getResult()
+  public function isValid()
   {
-    return $this->result;
-  }
-  
-  /**
-   * Create a clean clone.
-   */
-  public function __clone()
-  {
-    parent::__clone();
-    $this->response = '';
-    $this->result = self::RESULT_VALID;
+    return $this->_valid;
   }
   
 }

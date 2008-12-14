@@ -31,22 +31,55 @@ interface Swift_Events_EventDispatcher
 {
   
   /**
-   * Create the event for the given event type.
-   * @param string $eventType
-   * @param object $source
-   * @param string[] $properties the event will contain
-   * @return Swift_Events_EventObject
+   * Create a new SendEvent for $source and $message.
+   * @param Swift_Transport $source
+   * @param Swift_Mime_Message
+   * @return Swift_Events_SendEvent
    */
-  public function createEvent($eventType, $source, $properties = array());
+  public function createSendEvent(Swift_Transport $source,
+    Swift_Mime_Message $message);
+  
+  /**
+   * Create a new CommandEvent for $source and $command.
+   * @param Swift_Transport $source
+   * @param string $command That will be executed
+   * @param array $successCodes That are needed
+   * @return Swift_Events_CommandEvent
+   */
+  public function createCommandEvent(Swift_Transport $source,
+    $command, $successCodes = array());
+  
+  /**
+   * Create a new ResponseEvent for $source and $response.
+   * @param Swift_Transport $source
+   * @param string $response
+   * @param boolean $valid If the response is valid
+   * @return Swift_Events_ResponseEvent
+   */
+  public function createResponseEvent(Swift_Transport $source,
+    $response, $valid);
+  
+  /**
+   * Create a new TransportChangeEvent for $source.
+   * @param Swift_Transport $source
+   * @return Swift_Events_TransportChangeEvent
+   */
+  public function createTransportChangeEvent(Swift_Transport $source);
+  
+  /**
+   * Create a new TransportExceptionEvent for $source.
+   * @param Swift_Transport $source
+   * @param Swift_Transport_TransportException $ex
+   * @return Swift_Events_TransportExceptionEvent
+   */
+  public function createTransportExceptionEvent(Swift_Transport $source,
+    Swift_Transport_TransportException $ex);
   
   /**
    * Bind an event listener to this dispatcher.
-   * The listener can optionally be bound only to the given event source.
    * @param Swift_Events_EventListener $listener
-   * @param object $source, optional
    */
-  public function bindEventListener(Swift_Events_EventListener $listener,
-    $source = null);
+  public function bindEventListener(Swift_Events_EventListener $listener);
   
   /**
    * Dispatch the given Event to all suitable listeners.
