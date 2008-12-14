@@ -46,6 +46,11 @@ class Swift_Mime_EmbeddedFile extends Swift_Mime_Attachment
     $this->setId($this->getId());
   }
   
+  /**
+   * Get the nesting level of this EmbeddedFile.
+   * Returns {@link LEVEL_RELATED}.
+   * @return int
+   */
   public function getNestingLevel()
   {
     return self::LEVEL_RELATED;
