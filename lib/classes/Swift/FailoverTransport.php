@@ -45,4 +45,14 @@ class Swift_FailoverTransport extends Swift_Transport_FailoverTransport
     $this->setTransports($transports);
   }
   
+  /**
+   * Create a new FailoverTransport instance.
+   * @param string $transports
+   * @return Swift_FailoverTransport
+   */
+  public static function newInstance($transports = array())
+  {
+    return new self($transports);
+  }
+  
 }

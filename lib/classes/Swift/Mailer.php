@@ -42,6 +42,16 @@ class Swift_Mailer
   {
     $this->_transport = $transport;
   }
+
+  /**
+   * Create a new Mailer instance.
+   * @param Swift_Transport $transport
+   * @return Swift_Mailer
+   */
+  public static function newInstance(Swift_Transport $transport)
+  {
+    return new self($transport);
+  }
   
   /**
    * Send the given Message.
