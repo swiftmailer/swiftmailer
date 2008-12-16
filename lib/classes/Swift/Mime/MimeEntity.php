@@ -101,6 +101,7 @@ interface Swift_Mime_MimeEntity
    * @param string $body
    */
   public function setBody($body);
+  //TODO: Add $contentType param to setBody()
   
   /**
    * Get this entire entity in its string form.
