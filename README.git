@@ -1,0 +1,99 @@
+This README applies to anyone who checks out the source from git.
+
+If you're reading this page on githib.com, and you don't have git
+installed or know about git, you can download this repository by
+using the "download" button on githib.com, right above the file
+list.
+
+PREAMBLE:
+---------
+
+The git repository is structured in the expected way where "master" is the
+main branch you should use if you want to have bleeding-edge updates.  Any
+other branch should be ignored since it will likely contain unstable
+and/or experimental developments.
+
+Generally speaking you should feel safe using the "master" branch in
+production code.  Anything likely to break will be committed to another
+branch.  Only bugfixes and clean non-breaking feature additions will be
+performed in master.
+
+All releases (post version 4.0.0) are tagged using the version number of
+that release.  Earlier versions exist in a subversion repository at the
+old sourceforge project page.
+
+FOR THE IMPATIENT, WAITING FOR VERSION 4.0.0:
+---------------------------------------------
+
+At the time of writing (16th December 2008), the code is not yet ready for a
+full-release.   However, it is extremely close to becoming version 4.0.0.
+
+You can probably use the code now if you are developing an application you
+do not expect to release until early 2009, or if you simply wish to play
+around.  However, there is no documentation as yet so you'll have to use your
+intuition and read the doc comments in the code.  To give you a head start
+here's a complex example showing how to send an email to three recipients,
+with an alternative body, two attachments and an embedded image, over SMTP
+with a username and password.
+
+<?php
+
+require_once 'swift/lib/swift_required.php';
+
+$smtp = Swift_SmtpTransport::newInstance('smtp.host.tld', 25)
+  ->setUsername(' ... ')
+  ->setPassword(' ... ');
+
+$mailer = Swift_Mailer::newInstance($smtp);
+
+$message = Swift_Message::newInstance('Your subject');
+$message
+  ->setTo(array(
+    'user1@example.org',
+    'user2@example.org' => 'User Two',
+    'user3@exmaple.org' => 'Another User Name'
+  ))
+  ->setFrom(array('your@address.com' => 'Your Name'))
+  ->attach(Swift_Attachment::fromPath('/path/to/doc1.pdf'))
+  ->attach(Swift_Attachment::fromPath('/path/to/doc2.pdf'))
+  ->setBody(
+    'Here is an image <img src="' . $message->embed(Swift_Image::fromPath('/path/to/image.jpg')) . '" />',
+    'text/html'
+  )
+  ->addPart('This is the alternative part', 'text/plain')
+  ;
+
+if ($mailer->send($message))
+{
+  echo "Message sent!";
+}
+else
+{
+  echo "Message could not be sent.";
+}
+
+
+WHY SO MUCH CLUTTER?
+--------------------
+As you can probably see, there are a lot more files in here than you find in
+the pre-packaged versions.  That's because I store notes (UML, RFCs etc) in
+the repository along with utils like PhpDocumentor.
+
+The main library files live in /lib and the tests live in /tests.  You can run
+the tests by pointing your web browser at /test-suite, or by running the
+command "php test-suite/run.php".  Some tests will be "skipped" if
+tests/smoke.conf.php and tests/acceptance.conf.php are not editted.  This is
+harmless and normal.
+
+If you want to create a bundled-up package from subversion you can do so if
+you have Ant (http://ant.apache.org/) installed.  Simply run "ant package"
+from this directory and the tar.gz file will be created in the /build
+directory.
+
+Running the command "ant" with no arguments will bundle up the package without
+compressing it into a tar.gz file.
+
+Tests can also be run using "ant test" provided php is on your PATH
+environment variable.
+
+EoM
