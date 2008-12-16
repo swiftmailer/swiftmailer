@@ -24,7 +24,7 @@
     <file name="LICENSE.LGPL" />
   </filelist>
   <fileset id="build.simpletest.unneeded"
-    dir="${builddir.package}/test-suite/lib/simpletest-svn">
+    dir="${builddir.package}/test-suite/lib/simpletest">
     <include name="docs/" />
     <include name="tutorials/" />
     <include name="extensions/" />
