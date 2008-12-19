@@ -1,10 +1,12 @@
 <?php
 
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Encoder/QpEncoder.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
 
-class Swift_Encoder_QpEncoderAcceptanceTest extends UnitTestCase
+class Swift_Encoder_QpEncoderAcceptanceTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_samplesDir;

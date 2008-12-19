@@ -1,12 +1,13 @@
 <?php
 
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
 require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
 require_once 'Swift/ByteStream/ArrayByteStream.php';
 
 class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest
-  extends UnitTestCase
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_samplesDir;
@@ -71,6 +72,92 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest
       
     }
     closedir($sampleFp);
+  }
+  
+  public function testEncodingAndDecodingSamplesFromDiConfiguredInstance()
+  {
+    $sampleFp = opendir($this->_samplesDir);
+    while (false !== $encodingDir = readdir($sampleFp))
+    {
+      if (substr($encodingDir, 0, 1) == '.')
+      {
+        continue;
+      }
+      
+      $encoding = $encodingDir;
+      $encoder = $this->_createEncoderFromContainer();
+      
+      $sampleDir = $this->_samplesDir . '/' . $encodingDir;
+      
+      if (is_dir($sampleDir))
+      {
+        
+        $fileFp = opendir($sampleDir);
+        while (false !== $sampleFile = readdir($fileFp))
+        {
+          if (substr($sampleFile, 0, 1) == '.')
+          {
+            continue;
+          }
+          
+          $text = file_get_contents($sampleDir . '/' . $sampleFile);
+          
+          $os = new Swift_ByteStream_ArrayByteStream();
+          $os->write($text);
+          
+          $is = new Swift_ByteStream_ArrayByteStream();
+          $encoder->encodeByteStream($os, $is);
+          
+          $encoded = '';
+          while (false !== $bytes = $is->read(8192))
+          {
+            $encoded .= $bytes;
+          }
+          
+          $this->assertEqual(
+            str_replace("\r\n", "\n", quoted_printable_decode($encoded)), str_replace("\r\n", "\n", $text),
+            '%s: Encoded string should decode back to original string for sample ' .
+            $sampleDir . '/' . $sampleFile
+            );
+        }
+        closedir($fileFp); 
+      }
+      
+    }
+    closedir($sampleFp);
+  }
+  
+  public function testEncodingLFTextWithDiConfiguredInstance()
+  {
+    $encoder = $this->_createEncoderFromContainer();
+    $this->assertEqual("a\r\nb\r\nc", $encoder->encodeString("a\nb\nc"));
+  }
+  
+  public function testEncodingCRTextWithDiConfiguredInstance()
+  {
+    $encoder = $this->_createEncoderFromContainer();
+    $this->assertEqual("a\r\nb\r\nc", $encoder->encodeString("a\rb\rc"));
+  }
+  
+  public function testEncodingLFCRTextWithDiConfiguredInstance()
+  {
+    $encoder = $this->_createEncoderFromContainer();
+    $this->assertEqual("a\r\n\r\nb\r\n\r\nc", $encoder->encodeString("a\n\rb\n\rc"));
+  }
+  
+  public function testEncodingCRLFTextWithDiConfiguredInstance()
+  {
+    $encoder = $this->_createEncoderFromContainer();
+    $this->assertEqual("a\r\nb\r\nc", $encoder->encodeString("a\r\nb\r\nc"));
+  }
+  
+  // -- Private Methods
+  
+  private function _createEncoderFromContainer()
+  {
+    return Swift_DependencyContainer::getInstance()
+      ->lookup('mime.qpcontentencoder')
+      ;
   }
   
 }

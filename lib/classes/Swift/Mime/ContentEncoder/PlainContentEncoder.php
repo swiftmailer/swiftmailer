@@ -175,8 +175,11 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
    */
   private function _canonicalize($string)
   {
-    $string = str_replace(array("\r\n", "\r"), "\n", $string);
-    return str_replace("\n", "\r\n", $string);
+    return str_replace(
+      array("\r\n", "\r", "\n"),
+      array("\n", "\n", "\r\n"),
+      $string
+      );
   }
   
 }

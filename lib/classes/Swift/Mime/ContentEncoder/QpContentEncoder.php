@@ -37,11 +37,12 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   /**
    * Creates a new QpContentEncoder for the given CharacterStream.
    * @param Swift_CharacterStream $charStream to use for reading characters
-   * @param boolean $canonical true if canonicalization should occur
+   * @param Swift_StreamFilter $filter if canonicalization should occur
    */
-  public function __construct(Swift_CharacterStream $charStream, $canonical = false)
+  public function __construct(Swift_CharacterStream $charStream,
+    Swift_StreamFilter $filter = null)
   {
-    parent::__construct($charStream, $canonical);
+    parent::__construct($charStream, $filter);
   }
   
   /**
@@ -73,10 +74,27 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
     
     while (false !== $bytes = $this->_nextSequence())
     {
-      if ($this->_canonical)
+      //If we're filtering the input
+      if (isset($this->_filter))
       {
-        $bytes = $this->_canonicalize($bytes);
+        //If we can't filter because we need more bytes
+        while ($this->_filter->shouldBuffer($bytes))
+        {
+          //Then collect bytes into the buffer
+          if (false === $moreBytes = $this->_nextSequence(1))
+          {
+            break;
+          }
+          
+          foreach ($moreBytes as $b)
+          {
+            $bytes[] = $b;
+          }
+        }
+        //And filter them
+        $bytes = $this->_filter->filter($bytes);
       }
+      
       $enc = $this->_encodeByteSequence($bytes);
       if ($currentLine && strlen($currentLine . $enc) >= $thisLineLength)
       {

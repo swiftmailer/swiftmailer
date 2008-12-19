@@ -39,11 +39,11 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   protected $_charStream;
   
   /**
-   * True if input should be canonicalized.
-   * @var boolean
+   * A filter used if input should be canonicalized.
+   * @var Swift_StreamFilter
    * @access protected
    */
-  protected $_canonical;
+  protected $_filter;
   
   /**
    * Pre-computed QP for HUGE optmization.
@@ -115,9 +115,10 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   /**
    * Creates a new QpEncoder for the given CharacterStream.
    * @param Swift_CharacterStream $charStream to use for reading characters
-   * @param boolean $canonical true if input should be canonicalized
+   * @param Swift_StreamFilter $filter if input should be canonicalized
    */
-  public function __construct(Swift_CharacterStream $charStream, $canonical = false)
+  public function __construct(Swift_CharacterStream $charStream,
+    Swift_StreamFilter $filter = null)
   {
     $this->_charStream = $charStream;
     if (empty(self::$_safeMap))
@@ -128,7 +129,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         self::$_safeMap[$byte] = chr($byte);
       }
     }
-    $this->_canonical = $canonical;
+    $this->_filter = $filter;
   }
   
   /**
@@ -164,9 +165,25 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     // bytes per char and (6 * 4 * 3 = 72 chars per line) * =NN is 3 bytes
     while (false !== $bytes = $this->_nextSequence())
     {
-      if ($this->_canonical)
+      //If we're filtering the input
+      if (isset($this->_filter))
       {
-        $bytes = $this->_canonicalize($bytes);
+        //If we can't filter because we need more bytes
+        while ($this->_filter->shouldBuffer($bytes))
+        {
+          //Then collect bytes into the buffer
+          if (false === $moreBytes = $this->_nextSequence(1))
+          {
+            break;
+          }
+          
+          foreach ($moreBytes as $b)
+          {
+            $bytes[] = $b;
+          }
+        }
+        //And filter them
+        $bytes = $this->_filter->filter($bytes);
       }
       
       $enc = $this->_encodeByteSequence($bytes);
@@ -218,12 +235,13 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
   
   /**
    * Get the next sequence of bytes to read from the char stream.
+   * @param int $size number of bytes to read
    * @return int[]
    * @access protected
    */
-  protected function _nextSequence()
+  protected function _nextSequence($size = 4)
   {
-    return $this->_charStream->readBytes(4);
+    return $this->_charStream->readBytes($size);
   }
   
   /**

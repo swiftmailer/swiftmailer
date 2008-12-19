@@ -59,13 +59,17 @@ Swift_DependencyContainer::getInstance()
   -> asNewInstanceOf('Swift_CharacterStream_ArrayCharacterStream')
   -> withDependencies(array('mime.characterreaderfactory', 'properties.charset'))
   
+  -> register('mime.bytecanonicalizer')
+  -> asSharedInstanceOf('Swift_StreamFilters_ByteArrayReplacementFilter')
+  -> addConstructorValue(array(array(0x0D, 0x0A), array(0x0D), array(0x0A)))
+  -> addConstructorValue(array(array(0x0A), array(0x0A), array(0x0D, 0x0A)))
+  
   -> register('mime.characterreaderfactory')
   -> asSharedInstanceOf('Swift_CharacterReaderFactory_SimpleCharacterReaderFactory')
   
   -> register('mime.qpcontentencoder')
   -> asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
-  -> addConstructorLookup('mime.charstream')
-  -> addConstructorValue(true)
+  -> withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
   
   -> register('mime.7bitcontentencoder')
   -> asNewInstanceOf('Swift_Mime_ContentEncoder_PlainContentEncoder')

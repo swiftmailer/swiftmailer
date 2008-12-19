@@ -27,7 +27,11 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
       );
     $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     $this->_contentEncoder = new Swift_Mime_ContentEncoder_QpContentEncoder(
-      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'), true
+      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'),
+      new Swift_StreamFilters_ByteArrayReplacementFilter(
+        array(array(0x0D, 0x0A), array(0x0D), array(0x0A)),
+        array(array(0x0A), array(0x0A), array(0x0D, 0x0A))
+        )
       );
     
     $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
