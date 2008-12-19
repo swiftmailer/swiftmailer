@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Transport/EsmtpBufferWrapper.php';
+//@require 'Swift/Transport/SmtpAgent.php';
 
 /**
  * An Authentication mechanism.
@@ -37,12 +37,12 @@ interface Swift_Transport_Esmtp_Authenticator
   
   /**
    * Try to authenticate the user with $username and $password.
-   * @param Swift_Transport_EsmtpBufferWrapper $buf
+   * @param Swift_Transport_SmtpAgent $agent
    * @param string $username
    * @param string $password
    * @return boolean
    */
-  public function authenticate(Swift_Transport_EsmtpBufferWrapper $buf,
+  public function authenticate(Swift_Transport_SmtpAgent $agent,
     $username, $password);
   
 }

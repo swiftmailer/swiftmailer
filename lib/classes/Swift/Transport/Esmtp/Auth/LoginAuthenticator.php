@@ -19,7 +19,7 @@
  */
 
 //@require 'Swift/Transport/Esmtp/Authenticator.php';
-//@require 'Swift/Transport/EsmtpBufferWrapper.php';
+//@require 'Swift/Transport/SmtpAgent.php';
 //@require 'Swift/Transport/TransportException.php';
 
 /**
@@ -43,24 +43,24 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticator
   
   /**
    * Try to authenticate the user with $username and $password.
-   * @param Swift_Transport_EsmtpBufferWrapper $buf
+   * @param Swift_Transport_SmtpAgent $agent
    * @param string $username
    * @param string $password
    * @return boolean
    */
-  public function authenticate(Swift_Transport_EsmtpBufferWrapper $buf,
+  public function authenticate(Swift_Transport_SmtpAgent $agent,
     $username, $password)
   {
     try
     {
-      $buf->executeCommand("AUTH LOGIN\r\n", array(334));
-      $buf->executeCommand(sprintf("%s\r\n", base64_encode($username)), array(334));
-      $buf->executeCommand(sprintf("%s\r\n", base64_encode($password)), array(235));
+      $agent->executeCommand("AUTH LOGIN\r\n", array(334));
+      $agent->executeCommand(sprintf("%s\r\n", base64_encode($username)), array(334));
+      $agent->executeCommand(sprintf("%s\r\n", base64_encode($password)), array(235));
       return true;
     }
     catch (Swift_Transport_TransportException $e)
     {
-      $buf->executeCommand("RSET\r\n", array(250));
+      $agent->executeCommand("RSET\r\n", array(250));
       return false;
     }
   }

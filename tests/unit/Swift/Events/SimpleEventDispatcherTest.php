@@ -4,7 +4,6 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Events/SimpleEventDispatcher.php';
 require_once 'Swift/Events/EventListener.php';
 require_once 'Swift/Transport.php';
-require_once 'Swift/Transport/EsmtpBufferWrapper.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Transport/TransportException.php';
 

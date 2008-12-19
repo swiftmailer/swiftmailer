@@ -21,7 +21,7 @@
 //@require 'Swift/Transport/AbstractSmtpTransport.php';
 //@require 'Swift/Transport/EsmtpHandler.php';
 //@require 'Swift/Transport/IoBuffer.php';
-//@require 'Swift/Transport/EsmtpBufferWrapper.php';
+//@require 'Swift/Transport/SmtpAgent.php';
 //@require 'Swift/Transport/TransportException.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventDispatcher.php';
@@ -34,7 +34,7 @@
  */
 class Swift_Transport_EsmtpTransport
   extends Swift_Transport_AbstractSmtpTransport
-  implements Swift_Transport_EsmtpBufferWrapper
+  implements Swift_Transport_SmtpAgent
 {
   
   /**
