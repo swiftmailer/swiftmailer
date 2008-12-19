@@ -118,7 +118,8 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
         array_splice($newBuffer, $i, count($needle), $replace);
         
         // Now move the pointer to the index after the replaced section
-        $i += count($replace);
+        // allowing for the ++$i in the loop
+        $i += count($replace) - 1;
       }
     }
     return $newBuffer;
