@@ -168,6 +168,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
       {
         $bytes = $this->_canonicalize($bytes);
       }
+      
       $enc = $this->_encodeByteSequence($bytes);
       if ($currentLine && strlen($currentLine . $enc) >= $thisLineLength)
       {

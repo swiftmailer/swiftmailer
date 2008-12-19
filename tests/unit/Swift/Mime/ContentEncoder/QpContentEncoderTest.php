@@ -481,8 +481,8 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest
     
     $this->_checking(Expectations::create()
       -> one($charStream)->readBytes(any()) -> returns(array(ord('a')))
-      -> one($charStream)->readBytes(any()) -> returns(array(0x0D))
       -> one($charStream)->readBytes(any()) -> returns(array(0x0A))
+      -> one($charStream)->readBytes(any()) -> returns(array(0x0D))
       -> one($charStream)->readBytes(any()) -> returns(array(ord('b')))
       -> allowing($charStream)->readBytes(any()) -> returns(false)
       -> ignoring($charStream)
