@@ -2,7 +2,8 @@
 
 require_once 'Swift/Tests/SwiftSmokeTestCase.php';
 
-class Swift_Smoke_AttachmentSmokeTest extends Swift_Tests_SwiftSmokeTestCase
+class Swift_Smoke_HtmlWithAttachmentSmokeTest
+  extends Swift_Tests_SwiftSmokeTestCase
 {
   
   public function setUp()
@@ -13,17 +14,16 @@ class Swift_Smoke_AttachmentSmokeTest extends Swift_Tests_SwiftSmokeTestCase
   public function testAttachmentSending()
   {
     $mailer = $this->_getMailer();
-    $message = Swift_Message::newInstance()
-      ->setSubject('[Swift Mailer] AttachmentSmokeTest')
+    $message = Swift_Message::newInstance('[Swift Mailer] HtmlWithAttachmentSmokeTest')
       ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Swift Mailer'))
       ->setTo(SWIFT_SMOKE_EMAIL_ADDRESS)
-      ->setBody('This message should contain an attached ZIP file (named "textfile.zip").' . PHP_EOL .
-        'When unzipped, the archive should produce a text file which reads:' . PHP_EOL .
-        '"This is part of a Swift Mailer v4 smoke test."'
-        )
       ->attach(Swift_Attachment::fromPath($this->_attFile)
         ->setContentType('application/zip')
-        )
+      )
+      ->setBody('<p>This HTML-formatted message should contain an attached ZIP file (named "textfile.zip").' . PHP_EOL .
+        'When unzipped, the archive should produce a text file which reads:</p>' . PHP_EOL .
+        '<p><q>This is part of a Swift Mailer v4 smoke test.</q></p>', 'text/html'
+      )
       ;
     $this->assertEqual(1, $mailer->send($message),
       '%s: The smoke test should send a single message'

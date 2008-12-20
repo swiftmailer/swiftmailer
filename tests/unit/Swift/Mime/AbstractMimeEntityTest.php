@@ -58,6 +58,19 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $entity->setContentType('image/jpeg');
   }
   
+  public function testContentTypeCanBeSetViaSetBody()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> one($headers)->addParameterizedHeader('Content-Type', 'text/html')
+      -> ignoring($headers)
+      );
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $entity->setBody('<b>foo</b>', 'text/html');
+  }
+  
   public function testGetEncoderFromConstructor()
   {
     $encoder = $this->_createEncoder('base64');

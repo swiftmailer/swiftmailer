@@ -124,12 +124,13 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
   /**
    * Set the file that this attachment is for.
    * @param Swift_FileStream $file
+   * @param string $contentType optional
    */
-  public function setFile(Swift_FileStream $file)
+  public function setFile(Swift_FileStream $file, $contentType = null)
   {
     //TODO: Detect mime-type based on file extension
     $this->setFilename(basename($file->getPath()));
-    $this->setBody($file);
+    $this->setBody($file, $contentType);
     return $this;
   }
   

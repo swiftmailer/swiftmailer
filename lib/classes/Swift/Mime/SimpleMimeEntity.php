@@ -303,10 +303,15 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * Set the body of this entity, either as a string, or as an instance of
    * {@link Swift_OutputByteStream}.
    * @param mixed $body
+   * @param string $contentType optional
    */
-  public function setBody($body)
+  public function setBody($body, $contentType = null)
   {
     $this->_body = $body;
+    if (isset($contentType))
+    {
+      $this->setContentType($contentType);
+    }
     return $this;
   }
   

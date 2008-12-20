@@ -71,12 +71,14 @@ class Swift_Attachment extends Swift_Mime_Attachment
   /**
    * Create a new Attachment from a filesystem path.
    * @param string $path
+   * @param string $contentType optional
    * @return Swift_Mime_Attachment
    */
-  public static function fromPath($path)
+  public static function fromPath($path, $contentType = null)
   {
     return self::newInstance()->setFile(
-      new Swift_ByteStream_FileByteStream($path)
+      new Swift_ByteStream_FileByteStream($path),
+      $contentType
       );
   }
   
