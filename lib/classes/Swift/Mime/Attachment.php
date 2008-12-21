@@ -33,18 +33,24 @@
 class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
 {
   
+  /** Recognized MIME types */
+  private $_mimeTypes = array();
+  
   /**
    * Create a new Attachment with $headers, $encoder and $cache.
    * @param Swift_Mime_HeaderSet $headers
    * @param Swift_Mime_ContentEncoder $encoder
    * @param Swift_KeyCache $cache
+   * @param array $mimeTypes optional
    */
   public function __construct(Swift_Mime_HeaderSet $headers,
-    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
+    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache,
+    $mimeTypes = array())
   {
     parent::__construct($headers, $encoder, $cache);
     $this->setDisposition('attachment');
     $this->setContentType('application/octet-stream');
+    $this->_mimeTypes = $mimeTypes;
   }
   
   /**
@@ -128,9 +134,19 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
    */
   public function setFile(Swift_FileStream $file, $contentType = null)
   {
-    //TODO: Detect mime-type based on file extension
     $this->setFilename(basename($file->getPath()));
     $this->setBody($file, $contentType);
+    if (!isset($contentType))
+    {
+      $extension = strtolower(substr(
+        $file->getPath(), strrpos($file->getPath(), '.') + 1
+        ));
+      
+      if (array_key_exists($extension, $this->_mimeTypes))
+      {
+        $this->setContentType($this->_mimeTypes[$extension]);
+      }
+    }
     return $this;
   }
   

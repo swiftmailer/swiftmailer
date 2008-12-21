@@ -21,9 +21,7 @@ class Swift_Smoke_AttachmentSmokeTest extends Swift_Tests_SwiftSmokeTestCase
         'When unzipped, the archive should produce a text file which reads:' . PHP_EOL .
         '"This is part of a Swift Mailer v4 smoke test."'
         )
-      ->attach(Swift_Attachment::fromPath($this->_attFile)
-        ->setContentType('application/zip')
-        )
+      ->attach(Swift_Attachment::fromPath($this->_attFile))
       ;
     $this->assertEqual(1, $mailer->send($message),
       '%s: The smoke test should send a single message'

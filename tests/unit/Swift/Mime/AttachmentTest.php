@@ -186,6 +186,52 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
     $attachment->setFile($file);
   }
   
+  public function testContentTypeCanBeSetViaSetFile()
+  {
+    $file = $this->_createFileStream('/bar/file.ext', '');
+    $disposition = $this->_createHeader('Content-Disposition', 'attachment',
+      array('filename'=>'foo.txt'), false
+      );
+    $ctype = $this->_createHeader('Content-Type', 'text/plain', array(), false);
+    $headers = $this->_createHeaderSet(array(
+      'Content-Disposition' => $disposition,
+      'Content-Type' => $ctype
+      ));
+    $this->_checking(Expectations::create()
+      -> one($disposition)->setParameter('filename', 'file.ext')
+      -> one($ctype)->setFieldBodyModel('text/html')
+      -> ignoring($disposition)
+      -> ignoring($ctype)
+      );
+    $attachment = $this->_createAttachment($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $attachment->setFile($file, 'text/html');
+  }
+  
+  public function XtestContentTypeCanBeLookedUpFromCommonListIfNotProvided()
+  {
+    $file = $this->_createFileStream('/bar/file.zip', '');
+    $disposition = $this->_createHeader('Content-Disposition', 'attachment',
+      array('filename'=>'foo.zip'), false
+      );
+    $ctype = $this->_createHeader('Content-Type', 'text/plain', array(), false);
+    $headers = $this->_createHeaderSet(array(
+      'Content-Disposition' => $disposition,
+      'Content-Type' => $ctype
+      ));
+    $this->_checking(Expectations::create()
+      -> one($disposition)->setParameter('filename', 'file.zip')
+      -> one($ctype)->setFieldBodyModel('application/zip')
+      -> ignoring($disposition)
+      -> ignoring($ctype)
+      );
+    $attachment = $this->_createAttachment($headers, $this->_createEncoder(),
+      $this->_createCache(), array('zip'=>'application/zip', 'txt'=>'text/plain')
+      );
+    $attachment->setFile($file);
+  }
+  
   public function testDataCanBeReadFromFile()
   {
     $file = $this->_createFileStream('/foo/file.ext', '<some data>');
@@ -225,9 +271,10 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
     return $this->_createAttachment($headers, $encoder, $cache);
   }
   
-  protected function _createAttachment($headers, $encoder, $cache)
+  protected function _createAttachment($headers, $encoder, $cache,
+    $mimeTypes = array())
   {
-    return new Swift_Mime_Attachment($headers, $encoder, $cache);
+    return new Swift_Mime_Attachment($headers, $encoder, $cache, $mimeTypes);
   }
   
   protected function _createFileStream($path, $data, $stub = true)

@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/../mime_types.php';
+
 Swift_DependencyContainer::getInstance()
     
   -> register('properties.charset')
@@ -30,6 +32,7 @@ Swift_DependencyContainer::getInstance()
     'mime.base64contentencoder',
     'cache'
   ))
+  -> addConstructorValue($swift_mime_types)
   
   -> register('mime.embeddedfile')
   -> asNewInstanceOf('Swift_Mime_EmbeddedFile')
@@ -38,6 +41,7 @@ Swift_DependencyContainer::getInstance()
     'mime.base64contentencoder',
     'cache'
   ))
+  -> addConstructorValue($swift_mime_types)
   
   -> register('mime.headerfactory')
   -> asNewInstanceOf('Swift_Mime_SimpleHeaderFactory')
@@ -45,7 +49,7 @@ Swift_DependencyContainer::getInstance()
       'mime.qpheaderencoder',
       'mime.rfc2231encoder',
       'properties.charset'
-      ))
+    ))
   
   -> register('mime.headerset')
   -> asNewInstanceOf('Swift_Mime_SimpleHeaderSet')
@@ -89,3 +93,5 @@ Swift_DependencyContainer::getInstance()
   -> withDependencies(array('mime.charstream'))
   
   ;
+  
+unset($swift_mime_types);
