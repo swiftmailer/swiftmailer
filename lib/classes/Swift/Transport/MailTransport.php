@@ -29,6 +29,10 @@
  * since a number of plugin features cannot be used in conjunction with this
  * transport due to the internal interface in PHP itself.
  * 
+ * The level of error reporting with this transport is incredibly weak, again
+ * due to limitations of PHP's internal mail() function.  You'll get an
+ * all-or-nothing result from sending.
+ * 
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
@@ -107,6 +111,8 @@ class Swift_Transport_MailTransport implements Swift_Transport
    */
   public function send(Swift_Mime_Message $message, &$failedRecipients = null)
   {
+    $failedRecipients = (array) $failedRecipients;
+    
     if ($evt = $this->_eventDispatcher->createSendEvent($this, $message))
     {
       $this->_eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
@@ -166,6 +172,12 @@ class Swift_Transport_MailTransport implements Swift_Transport
     }
     else
     {
+      $failedRecipients = array_merge(
+        array_keys($message->getTo()),
+        array_keys($message->getCc()),
+        array_keys($message->getBcc())
+        );
+      
       if ($evt)
       {
         $evt->setResult(Swift_Events_SendEvent::RESULT_FAILED);
