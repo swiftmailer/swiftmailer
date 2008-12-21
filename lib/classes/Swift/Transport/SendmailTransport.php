@@ -25,6 +25,11 @@
 
 /**
  * SendmailTransport for sending mail through a sendmail/postfix (etc..) binary.
+ * 
+ * Supported modes are -bs and -t, with any additional flags desired.
+ * It is advised to use -bs mode since error reporting with -t mode is not
+ * possible.
+ * 
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
@@ -106,13 +111,25 @@ class Swift_Transport_SendmailTransport
     $failedRecipients = (array) $failedRecipients;
     $command = $this->getCommand();
     $buffer = $this->getBuffer();
+    
     if (false !== strpos($command, ' -t'))
     {
+      if ($evt = $this->_eventDispatcher->createSendEvent($this, $message))
+      {
+        $this->_eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+        if ($evt->bubbleCancelled())
+        {
+          return 0;
+        }
+      }
+      
       if (false === strpos($command, ' -f'))
       {
         $command .= ' -f' . $this->_getReversePath($message);
       }
+      
       $buffer->initialize(array_merge($this->_params, array('command' => $command)));
+      
       if (false === strpos($command, ' -i') && false === strpos($command, ' -oi'))
       {
         $buffer->setWriteTranslations(array("\r\n" => "\n", "\n." => "\n.."));
@@ -121,6 +138,7 @@ class Swift_Transport_SendmailTransport
       {
         $buffer->setWriteTranslations(array("\r\n"=>"\n"));
       }
+      
       $count = count((array) $message->getTo())
         + count((array) $message->getCc())
         + count((array) $message->getBcc())
@@ -129,6 +147,13 @@ class Swift_Transport_SendmailTransport
       $buffer->flushBuffers();
       $buffer->setWriteTranslations(array());
       $buffer->terminate();
+      
+      if ($evt)
+      {
+        $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
+        $evt->setFailedRecipients($failedRecipients);
+        $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
+      }
     }
     elseif (false !== strpos($command, ' -bs'))
     {
