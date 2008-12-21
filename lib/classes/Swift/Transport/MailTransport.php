@@ -24,6 +24,11 @@
 
 /**
  * Sends Messages using the mail() function.
+ * 
+ * It is advised that users do not use this transport if at all possible
+ * since a number of plugin features cannot be used in conjunction with this
+ * transport due to the internal interface in PHP itself.
+ * 
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
@@ -37,6 +42,9 @@ class Swift_Transport_MailTransport implements Swift_Transport
   /** The event dispatcher from the plugin API */
   private $_eventDispatcher;
   
+  /** Loaded plugins */
+  private $_plugins = array();
+  
   /**
    * Create a new MailTransport with the $log.
    * @param Swift_Transport_Log $log
@@ -47,8 +55,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
   }
   
   /**
-   * Test if this Transport mechanism has started.
-   * @return boolean
+   * Not used.
    */
   public function isStarted()
   {
@@ -56,14 +63,14 @@ class Swift_Transport_MailTransport implements Swift_Transport
   }
   
   /**
-   * Start this Transport mechanism.
+   * Not used.
    */
   public function start()
   {
   }
   
   /**
-   * Stop this Transport mechanism.
+   * Not used.
    */
   public function stop()
   {
@@ -99,7 +106,16 @@ class Swift_Transport_MailTransport implements Swift_Transport
    * @return int
    */
   public function send(Swift_Mime_Message $message, &$failedRecipients = null)
-  { 
+  {
+    if ($evt = $this->_eventDispatcher->createSendEvent($this, $message))
+    {
+      $this->_eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+      if ($evt->bubbleCancelled())
+      {
+        return 0;
+      }
+    }
+    
     $count = (
       count($message->getTo())
       + count($message->getCc())
@@ -136,13 +152,29 @@ class Swift_Transport_MailTransport implements Swift_Transport
       $body = str_replace("\r\n.", "\r\n..", $body);
     }
     
-    if (!mail($to, $subject, $body, $headers,
+    if (mail($to, $subject, $body, $headers,
       sprintf($this->_extraParams, $reversePath)))
     {
-      $count = 0;
+      if ($evt)
+      {
+        $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
+        $evt->setFailedRecipients($failedRecipients);
+        $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
+      }
+      
+      return $count;
     }
-    
-    return $count;
+    else
+    {
+      if ($evt)
+      {
+        $evt->setResult(Swift_Events_SendEvent::RESULT_FAILED);
+        $evt->setFailedRecipients($failedRecipients);
+        $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
+      }
+      
+      return 0;
+    }
   }
   
   /**
@@ -152,6 +184,13 @@ class Swift_Transport_MailTransport implements Swift_Transport
    */
   public function registerPlugin(Swift_Events_EventListener $plugin, $key)
   {
+    if (isset($this->_plugins[$key]) && $this->_plugins[$key] === $plugin)
+    {
+      return; //already loaded
+    }
+    
+    $this->_eventDispatcher->bindEventListener($plugin);
+    $this->_plugins[$key] = $plugin;
   }
   
   // -- Private methods
