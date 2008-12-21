@@ -117,6 +117,81 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest
     $this->assertEqual(0, $smtp->send($message));
   }
   
+  public function testSendEventHasResultFailedIfAllFailures()
+  {
+    $buf = $this->_getBuffer();
+    $dispatcher = $this->_createEventDispatcher(false);
+    $evt = $this->_mock('Swift_Events_SendEvent');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
+      -> allowing($message)->getFrom() -> returns(array('chris@swiftmailer.org'=>null))
+      -> allowing($message)->getTo() -> returns(array('mark@swiftmailer.org'=>'Mark'))
+      -> ignoring($message)
+      -> one($buf)->write("MAIL FROM: <chris@swiftmailer.org>\r\n") -> returns(1)
+      -> one($buf)->readLine(1) -> returns("250 OK\r\n")
+      -> one($buf)->write("RCPT TO: <mark@swiftmailer.org>\r\n") -> returns(2)
+      -> one($buf)->readLine(2) -> returns("500 Not now\r\n")
+      -> allowing($dispatcher)->createSendEvent($smtp, optional()) -> returns($evt)
+      -> one($evt)->setResult(Swift_Events_SendEvent::RESULT_FAILED)
+      -> ignoring($dispatcher)
+      -> ignoring($evt)
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+    $this->assertEqual(0, $smtp->send($message));
+  }
+  
+  public function testSendEventHasResultTentativeIfSomeFailures()
+  {
+    $buf = $this->_getBuffer();
+    $dispatcher = $this->_createEventDispatcher(false);
+    $evt = $this->_mock('Swift_Events_SendEvent');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
+      -> allowing($message)->getFrom() -> returns(array('chris@swiftmailer.org'=>null))
+      -> allowing($message)->getTo() -> returns(array(
+        'mark@swiftmailer.org'=>'Mark', 'chris@site.tld'=>'Chris'
+        ))
+      -> ignoring($message)
+      -> one($buf)->write("MAIL FROM: <chris@swiftmailer.org>\r\n") -> returns(1)
+      -> one($buf)->readLine(1) -> returns("250 OK\r\n")
+      -> one($buf)->write("RCPT TO: <mark@swiftmailer.org>\r\n") -> returns(2)
+      -> one($buf)->readLine(2) -> returns("500 Not now\r\n")
+      -> allowing($dispatcher)->createSendEvent($smtp, optional()) -> returns($evt)
+      -> one($evt)->setResult(Swift_Events_SendEvent::RESULT_TENTATIVE)
+      -> ignoring($dispatcher)
+      -> ignoring($evt)
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+    $this->assertEqual(1, $smtp->send($message));
+  }
+  
+  public function testSendEventHasResultSuccessIfNoFailures()
+  {
+    $buf = $this->_getBuffer();
+    $dispatcher = $this->_createEventDispatcher(false);
+    $evt = $this->_mock('Swift_Events_SendEvent');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
+      -> allowing($message)->getFrom() -> returns(array('chris@swiftmailer.org'=>null))
+      -> allowing($message)->getTo() -> returns(array(
+        'mark@swiftmailer.org'=>'Mark', 'chris@site.tld'=>'Chris'
+        ))
+      -> ignoring($message)
+      -> allowing($dispatcher)->createSendEvent($smtp, optional()) -> returns($evt)
+      -> one($evt)->setResult(Swift_Events_SendEvent::RESULT_SUCCESS)
+      -> ignoring($dispatcher)
+      -> ignoring($evt)
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+    $this->assertEqual(2, $smtp->send($message));
+  }
+  
   public function testCancellingEventBubbleBeforeSendStopsEvent()
   {
     $buf = $this->_getBuffer();

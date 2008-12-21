@@ -175,7 +175,18 @@ abstract class Swift_Transport_AbstractSmtpTransport
     
     if ($evt)
     {
-      $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
+      if ($sent == count($to) + count($cc) + count($bcc))
+      {
+        $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
+      }
+      elseif ($sent > 0)
+      {
+        $evt->setResult(Swift_Events_SendEvent::RESULT_TENTATIVE);
+      }
+      else
+      {
+        $evt->setResult(Swift_Events_SendEvent::RESULT_FAILED);
+      }
       $evt->setFailedRecipients($failedRecipients);
       $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
     }
