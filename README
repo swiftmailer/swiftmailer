@@ -3,9 +3,16 @@ Swift Mailer, by Chris Corbyn
 
 Swift Mailer is a component based mailing solution for PHP 5.
 
+Documentation: http://swifmailer.org/betas/docs/v4-working-draft/
+Mailing List:  http://groups.google.com/group/swiftmailer
+Bugs:          http://swiftmailer.lighthouseapp.com/
+Repository:    http://github.com/swiftmailer/swiftmailer
+
 
 FOR THE IMPATIENT, WAITING FOR VERSION 4.0.0:
 ---------------------------------------------
+
+ADDENDUM: Working Draft Docs @ http://swifmailer.org/betas/docs/v4-working-draft/
 
 At the time of writing (16th December 2008), the code is not yet ready for a
 full-release.   However, it is extremely close to becoming version 4.0.0.
