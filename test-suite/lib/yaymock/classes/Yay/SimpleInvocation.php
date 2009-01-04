@@ -57,6 +57,13 @@ class Yay_SimpleInvocation implements Yay_Invocation
   public function __construct($object, $method, array &$arguments)
   {
     $this->_object = $object;
+    //Massage __call() overloading so the interface is tested correctly
+    if ($method == '__call')
+    {
+      $method = array_shift($arguments);
+      $args =& array_shift($arguments);
+      $arguments =& $args;
+    }
     $this->_method = $method;
     $this->_arguments =& $arguments;
   }

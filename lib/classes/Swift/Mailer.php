@@ -25,6 +25,7 @@
 
 /**
  * Swift Mailer class.
+ * 
  * @package Swift
  * @author Chris Corbyn
  */
@@ -36,6 +37,7 @@ class Swift_Mailer
   
   /**
    * Create a new Mailer using $transport for delivery.
+   * 
    * @param Swift_Transport $transport
    */
   public function __construct(Swift_Transport $transport)
@@ -45,6 +47,7 @@ class Swift_Mailer
 
   /**
    * Create a new Mailer instance.
+   * 
    * @param Swift_Transport $transport
    * @return Swift_Mailer
    */
@@ -54,13 +57,19 @@ class Swift_Mailer
   }
   
   /**
-   * Send the given Message.
+   * Send the given Message like it would be sent in a mail client.
+   * 
    * All recipients (with the exception of Bcc) will be able to see the other
    * recipients this message was sent to.
-   * If you need to send to each recipient without diverging details about the
+   * 
+   * If you need to send to each recipient without disclosing details about the
    * other recipients see {@link batchSend()}.
-   * Recipient/sender data will be retreived from the Message API.
-   * The return value is the number of recipients who were accepted for delivery.
+   * 
+   * Recipient/sender data will be retreived from the Message object.
+   * 
+   * The return value is the number of recipients who were accepted for
+   * delivery.
+   * 
    * @param Swift_Mime_Message $message
    * @param array &$failedRecipients, optional
    * @return int
@@ -69,22 +78,31 @@ class Swift_Mailer
   public function send(Swift_Mime_Message $message, &$failedRecipients = null)
   {
     $failedRecipients = (array) $failedRecipients;
+    
     if (!$this->_transport->isStarted())
     {
       $this->_transport->start();
     }
+    
     return $this->_transport->send($message, $failedRecipients);
   }
   
   /**
    * Send the given Message to all recipients individually.
+   * 
    * This differs from {@link send()} in the way headers are presented to the
    * recipient.  The only recipient in the "To:" field will be the individual
    * recipient it was sent to.
+   * 
    * If an iterator is provided, recipients will be read from the iterator
-   * on-the-fly, otherwise recipient data will be retreived from the Message API.
-   * Sender information is always read from the Message API.
-   * The return value is the number of recipients who were accepted for delivery.
+   * one-by-one, otherwise recipient data will be retreived from the Message
+   * object.
+   * 
+   * Sender information is always read from the Message object.
+   * 
+   * The return value is the number of recipients who were accepted for
+   * delivery.
+   * 
    * @param Swift_Mime_Message $message
    * @param array &$failedRecipients, optional
    * @param Swift_Mailer_RecipientIterator $it, optional
@@ -96,10 +114,12 @@ class Swift_Mailer
     Swift_Mailer_RecipientIterator $it = null)
   {
     $failedRecipients = (array) $failedRecipients;
+    
     $sent = 0;
     $to = $message->getTo();
     $cc = $message->getCc();
     $bcc = $message->getBcc();
+    
     if (!empty($cc))
     {
       $message->setCc(array());
@@ -108,6 +128,7 @@ class Swift_Mailer
     {
       $message->setBcc(array());
     }
+    
     //Use an iterator if set
     if (isset($it))
     {
@@ -125,7 +146,9 @@ class Swift_Mailer
         $sent += $this->send($message, $failedRecipients);
       }
     }
+    
     $message->setTo($to);
+    
     if (!empty($cc))
     {
       $message->setCc($cc);
@@ -134,6 +157,7 @@ class Swift_Mailer
     {
       $message->setBcc($bcc);
     }
+    
     return $sent;
   }
   
