@@ -22,9 +22,9 @@
  
  */
 
-$attachment_path = '../files/BeefStifado.pdf';
+$attachment_path = '.files/BeefStifado.pdf';
 
-require_once '../../lib/swift_required.php';
+require_once '../lib/swift_required.php';
 
 $mailer = new Swift_Mailer(new Swift_SmtpTransport('smtp.isp.tld'));
 
@@ -33,7 +33,7 @@ $message = Swift_Message::newInstance()
   ->setTo(array('chris@w3style.co.uk' => 'Chris Corbyn'))
   ->setFrom(array('chris@w3style.co.uk' => 'Chris Corbyn'))
   ->setBody("Here's a recipe for beef stifado")
-  ->attach(Swift_Attachment::fromPath($attachment_path, 'application/pdf'))
+  ->attach(Swift_Attachment::fromPath($attachment_path'))
   ;
 
 if ($mailer->send($message))
