@@ -57,6 +57,22 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
     $part->setCharset('utf-8');
   }
   
+  public function testCharsetIsSetInHeaderIfPassedToSetBody()
+  {
+    $cType = $this->_createHeader('Content-Type', 'text/plain',
+      array('charset' => 'iso-8859-1'), false
+      );
+    $this->_checking(Expectations::create()
+      -> one($cType)->setParameter('charset', 'utf-8')
+      -> ignoring($cType)
+      );
+    $part = $this->_createMimePart($this->_createHeaderSet(array(
+      'Content-Type' => $cType)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $part->setBody('', 'text/plian', 'utf-8');
+  }
+  
   public function testSettingCharsetNotifiesEncoder()
   {
     $encoder = $this->_createEncoder('quoted-printable', false);
