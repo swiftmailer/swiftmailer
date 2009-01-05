@@ -23,7 +23,8 @@
 //@require 'Swift/Events/EventListener.php';
 
 /**
- * Redudantly and rotationally uses several Transport implementations when sending.
+ * Redudantly and rotationally uses several Transports when sending.
+ * 
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
@@ -34,12 +35,10 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   /** Transports which are deemed useless */
   private $_deadTransports = array();
   
-  /** Loaded plugins */
-  private $_plugins = array();
-  
   /**
    * The Transports which are used in rotation.
-   * @var Swift_Transport[]
+   * 
+   * @var array Swift_Transport
    * @access protected
    */
   protected $_transports = array();
@@ -53,24 +52,19 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   
   /**
    * Set $transports to delegate to.
-   * @param Swift_Transport[] $transports
+   * 
+   * @param array $transports Swift_Transport
    */
   public function setTransports(array $transports)
   {
     $this->_transports = $transports;
-    foreach ($transports as $transport)
-    {
-      foreach ($this->_plugins as $key => $plugin)
-      {
-        $transport->registerPlugin($plugin, $key);
-      }
-    }
     $this->_deadTransports = array();
   }
   
   /**
    * Get $transports to delegate to.
-   * @return Swift_Transport[]
+   * 
+   * @return array Swift_Transport
    */
   public function getTransports(array $transports)
   {
@@ -79,6 +73,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   
   /**
    * Test if this Transport mechanism has started.
+   * 
    * @return boolean
    */
   public function isStarted()
@@ -107,8 +102,10 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   
   /**
    * Send the given Message.
+   * 
    * Recipient/sender data will be retreived from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
+   * 
    * @param Swift_Mime_Message $message
    * @param string[] &$failedRecipients to collect failures by-reference
    * @return int
@@ -149,16 +146,15 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   }
   
   /**
-   * Register a plugin using a known unique key (e.g. myPlugin).
+   * Register a plugin.
+   * 
    * @param Swift_Events_EventListener $plugin
-   * @param string $key
    */
-  public function registerPlugin(Swift_Events_EventListener $plugin, $key)
+  public function registerPlugin(Swift_Events_EventListener $plugin)
   {
-    $this->_plugins[$key] = $plugin;
     foreach ($this->_transports as $transport)
     {
-      $transport->registerPlugin($plugin, $key);
+      $transport->registerPlugin($plugin);
     }
   }
   
@@ -166,8 +162,9 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   
   /**
    * Rotates the transport list around and returns the first instance.
+   * 
    * @return Swift_Transport
-   * @access private
+   * @access protected
    */
   protected function _getNextTransport()
   {
@@ -180,7 +177,8 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   
   /**
    * Tag the currently used (top of stack) transport as dead/useless.
-   * @access private
+   * 
+   * @access protected
    */
   protected function _killCurrentTransport()
   {

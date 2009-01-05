@@ -28,6 +28,7 @@
 
 /**
  * Sends Messages over SMTP.
+ * 
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
@@ -48,14 +49,12 @@ abstract class Swift_Transport_AbstractSmtpTransport
   /** The event dispatching layer */
   protected $_eventDispatcher;
   
-  /** Loaded plugins */
-  protected $_plugins = array();
-  
   /** Return an array of params for the Buffer */
   abstract protected function _getBufferParams();
   
   /**
    * Creates a new EsmtpTransport using the given I/O buffer.
+   * 
    * @param Swift_Transport_IoBuffer $buf
    * @param Swift_Events_EventDispatcher $dispatcher
    */
@@ -71,6 +70,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
    * This should be a fully-qualified domain name and should be truly the domain
    * you're using.  If your server doesn't have a domain name, use the IP in square
    * brackets (i.e. [127.0.0.1]).
+   * 
    * @param string $domain
    */
   public function setLocalDomain($domain)
@@ -81,6 +81,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
   
   /**
    * Get the name of the domain Swift will identify as.
+   * 
    * @return string
    */
   public function getLocalDomain()
@@ -117,6 +118,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
   
   /**
    * Test if an SMTP connection has been established.
+   * 
    * @return boolean
    */
   public function isStarted()
@@ -126,8 +128,10 @@ abstract class Swift_Transport_AbstractSmtpTransport
   
   /**
    * Send the given Message.
+   * 
    * Recipient/sender data will be retreived from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
+   * 
    * @param Swift_Mime_Message $message
    * @param string[] &$failedRecipients to collect failures by-reference
    * @return int
@@ -225,19 +229,13 @@ abstract class Swift_Transport_AbstractSmtpTransport
   }
   
   /**
-   * Register a plugin using a known unique key (e.g. myPlugin).
+   * Register a plugin.
+   * 
    * @param Swift_Events_EventListener $plugin
-   * @param string $key
    */
-  public function registerPlugin(Swift_Events_EventListener $plugin, $key)
+  public function registerPlugin(Swift_Events_EventListener $plugin)
   {
-    if (isset($this->_plugins[$key]) && $this->_plugins[$key] === $plugin)
-    {
-      return; //already loaded
-    }
-    
     $this->_eventDispatcher->bindEventListener($plugin);
-    $this->_plugins[$key] = $plugin;
   }
   
   /**
@@ -250,6 +248,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
   
   /**
    * Get the IoBuffer where read/writes are occurring.
+   * 
    * @return Swift_Transport_IoBuffer
    */
   public function getBuffer()
@@ -259,8 +258,10 @@ abstract class Swift_Transport_AbstractSmtpTransport
   
   /**
    * Run a command against the buffer, expecting the given response codes.
+   * 
    * If no response codes are given, the response will not be validated.
    * If codes are given, an exception will be thrown on an invalid response.
+   * 
    * @param string $command
    * @param int[] $codes
    * @param string[] &$failures

@@ -394,37 +394,14 @@ class Swift_Transport_LoadBalancedTransportTest
     $t1 = $context->mock('Swift_Transport');
     $t2 = $context->mock('Swift_Transport');
     $context->checking(Expectations::create()
-      -> one($t1)->registerPlugin($plugin, 'foo')
-      -> one($t2)->registerPlugin($plugin, 'foo')
+      -> one($t1)->registerPlugin($plugin)
+      -> one($t2)->registerPlugin($plugin)
       -> ignoring($t1)
       -> ignoring($t2)
       );
     
     $transport = $this->_getTransport(array($t1, $t2));
-    $transport->registerPlugin($plugin, 'foo');
-    
-    $context->assertIsSatisfied();
-  }
-  
-  public function testAddingTransportAlsoRegistersPlugins()
-  {
-    $context = new Mockery();
-    
-    $plugin = $this->_createPlugin($context);
-    
-    $t1 = $context->mock('Swift_Transport');
-    $t2 = $context->mock('Swift_Transport');
-    $context->checking(Expectations::create()
-      -> one($t1)->registerPlugin($plugin, 'foo')
-      -> one($t2)->registerPlugin($plugin, 'foo')
-      -> ignoring($t1)
-      -> ignoring($t2)
-      );
-    
-    $transport = $this->_getTransport(array($t1));
-    $transport->registerPlugin($plugin, 'foo');
-    
-    $transport->setTransports(array($t1, $t2));
+    $transport->registerPlugin($plugin);
     
     $context->assertIsSatisfied();
   }

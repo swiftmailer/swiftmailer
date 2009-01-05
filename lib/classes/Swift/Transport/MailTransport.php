@@ -46,9 +46,6 @@ class Swift_Transport_MailTransport implements Swift_Transport
   /** The event dispatcher from the plugin API */
   private $_eventDispatcher;
   
-  /** Loaded plugins */
-  private $_plugins = array();
-  
   /**
    * Create a new MailTransport with the $log.
    * @param Swift_Transport_Log $log
@@ -82,7 +79,9 @@ class Swift_Transport_MailTransport implements Swift_Transport
   
   /**
    * Set the additional parameters used on the mail() function.
+   * 
    * This string is formatted for sprintf() where %s is the sender address.
+   * 
    * @param string $params
    */
   public function setExtraParams($params)
@@ -93,7 +92,9 @@ class Swift_Transport_MailTransport implements Swift_Transport
   
   /**
    * Get the additional parameters used on the mail() function.
+   * 
    * This string is formatted for sprintf() where %s is the sender address.
+   * 
    * @return string
    */
   public function getExtraParams()
@@ -103,8 +104,10 @@ class Swift_Transport_MailTransport implements Swift_Transport
   
   /**
    * Send the given Message.
+   * 
    * Recipient/sender data will be retreived from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
+   * 
    * @param Swift_Mime_Message $message
    * @param string[] &$failedRecipients to collect failures by-reference
    * @return int
@@ -190,30 +193,18 @@ class Swift_Transport_MailTransport implements Swift_Transport
   }
   
   /**
-   * Register a plugin using a known unique key (e.g. myPlugin).
+   * Register a plugin.
+   * 
    * @param Swift_Events_EventListener $plugin
-   * @param string $key
    */
-  public function registerPlugin(Swift_Events_EventListener $plugin, $key)
+  public function registerPlugin(Swift_Events_EventListener $plugin)
   {
-    if (isset($this->_plugins[$key]) && $this->_plugins[$key] === $plugin)
-    {
-      return; //already loaded
-    }
-    
     $this->_eventDispatcher->bindEventListener($plugin);
-    $this->_plugins[$key] = $plugin;
   }
   
   // -- Private methods
   
-  /**
-   * Determine the best-use reverse path for this message.
-   * The preferred order is: return-path, sender, from.
-   * @param Swift_Mime_Message $message
-   * @return string
-   * @access private
-   */
+  /** Determine the best-use reverse path for this message */
   private function _getReversePath(Swift_Mime_Message $message)
   {
     $return = $message->getReturnPath();

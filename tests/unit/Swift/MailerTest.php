@@ -258,9 +258,9 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     $mailer = $this->_createMailer($transport);
     
     $this->_checking(Expectations::create()
-      -> one($transport)->registerPlugin($plugin, 'foo')
+      -> one($transport)->registerPlugin($plugin)
       );
-    $mailer->registerPlugin($plugin, 'foo');
+    $mailer->registerPlugin($plugin);
   }
   
   // -- Creation methods

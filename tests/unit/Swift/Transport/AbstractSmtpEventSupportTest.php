@@ -19,35 +19,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest
     $this->_checking(Expectations::create()
       -> one($dispatcher)->bindEventListener($listener)
       );
-    $smtp->registerPlugin($listener, 'foo');
-  }
-  
-  public function testCallingRegisterPluginTwiceLoadsBothPluginsInEventDispatcher()
-  {
-    $buf = $this->_getBuffer();
-    $dispatcher = $this->_createEventDispatcher(false);
-    $listenerA = $this->_mock('Swift_Events_EventListener');
-    $listenerB = $this->_mock('Swift_Events_EventListener');
-    $smtp = $this->_getTransport($buf, $dispatcher);
-    $this->_checking(Expectations::create()
-      -> one($dispatcher)->bindEventListener($listenerA)
-      -> one($dispatcher)->bindEventListener($listenerB)
-      );
-    $smtp->registerPlugin($listenerA, 'foo');
-    $smtp->registerPlugin($listenerB, 'bar');
-  }
-  
-  public function testCallingRegisterPluginTwiceWithSamePluginOnlyLoadsOnce()
-  {
-    $buf = $this->_getBuffer();
-    $dispatcher = $this->_createEventDispatcher(false);
-    $listener = $this->_mock('Swift_Events_EventListener');
-    $smtp = $this->_getTransport($buf, $dispatcher);
-    $this->_checking(Expectations::create()
-      -> one($dispatcher)->bindEventListener($listener)
-      );
-    $smtp->registerPlugin($listener, 'foo');
-    $smtp->registerPlugin($listener, 'foo');
+    $smtp->registerPlugin($listener);
   }
   
   public function testSendingDispatchesBeforeSendEvent()

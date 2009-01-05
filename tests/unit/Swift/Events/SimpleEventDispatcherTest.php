@@ -130,6 +130,25 @@ class Swift_Events_SimpleEventDispatcherTest
     $this->assertTrue($evt->bubbleCancelled());
   }
   
+  public function testAddingListenerTwiceDoesNotReceiveEventTwice()
+  {
+    $transport = $this->_stub('Swift_Transport');
+    
+    $evt = $this->_dispatcher->createTransportChangeEvent($transport);
+    
+    $listener = $this->_mock('Swift_Events_TransportChangeListener');
+    
+    $this->_dispatcher->bindEventListener($listener);
+    $this->_dispatcher->bindEventListener($listener);
+    
+    $this->_checking(Expectations::create()
+      -> one($listener)->transportStarted($evt)
+      -> never($listener)->transportStarted($evt)
+      );
+    
+    $this->_dispatcher->dispatchEvent($evt, 'transportStarted');
+  }
+  
   // -- Mock callbacks
   
   public function _cancelBubble(Yay_Invocation $inv)

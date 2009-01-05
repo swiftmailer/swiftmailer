@@ -23,6 +23,7 @@
 
 /**
  * Sends Messages via an abstract Transport subsystem.
+ * 
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
@@ -32,6 +33,7 @@ interface Swift_Transport
 
   /**
    * Test if this Transport mechanism has started.
+   * 
    * @return boolean
    */
   public function isStarted();
@@ -48,8 +50,10 @@ interface Swift_Transport
   
   /**
    * Send the given Message.
+   * 
    * Recipient/sender data will be retreived from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
+   * 
    * @param Swift_Mime_Message $message
    * @param string[] &$failedRecipients to collect failures by-reference
    * @return int
@@ -57,10 +61,10 @@ interface Swift_Transport
   public function send(Swift_Mime_Message $message, &$failedRecipients = null);
   
   /**
-   * Register a plugin using a known unique key (e.g. myPlugin).
+   * Register a plugin in the Transport.
+   * 
    * @param Swift_Events_EventListener $plugin
-   * @param string $key
    */
-  public function registerPlugin(Swift_Events_EventListener $plugin, $key);
+  public function registerPlugin(Swift_Events_EventListener $plugin);
   
 }
