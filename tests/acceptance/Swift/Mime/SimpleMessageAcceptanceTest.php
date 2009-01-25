@@ -1,54 +1,14 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/SimpleMessage.php';
-require_once 'Swift/Mime/MimePart.php';
-require_once 'Swift/Mime/Attachment.php';
-require_once 'Swift/Mime/EmbeddedFile.php';
-require_once 'Swift/Encoder/Rfc2231Encoder.php';
-require_once 'Swift/Mime/ContentEncoder/QpContentEncoder.php';
-require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
-require_once 'Swift/Mime/ContentEncoder/PlainContentEncoder.php';
-require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
-require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
-require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
-require_once 'Swift/KeyCache/ArrayKeyCache.php';
-require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
-require_once 'Swift/Mime/SimpleHeaderFactory.php';
-require_once 'Swift/Mime/SimpleHeaderSet.php';
-require_once 'Swift/StreamFilters/ByteArrayReplacementFilter.php';
 
 class Swift_Mime_SimpleMessageAcceptanceTest
   extends Swift_Tests_SwiftUnitTestCase
 {
 
-  private $_headerEncoder;
-  private $_paramEncoder;
-  private $_contentEncoder;
-  private $_attachmentEncoder;
-  private $_cache;
-  
   public function setUp()
   {
-    $this->_cache = new Swift_KeyCache_ArrayKeyCache(
-      new Swift_KeyCache_SimpleKeyCacheInputStream()
-      );
-    $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
-    
-    $this->_contentEncoder = new Swift_Mime_ContentEncoder_QpContentEncoder(
-      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'),
-      new Swift_StreamFilters_ByteArrayReplacementFilter(
-        array(array(0x0D, 0x0A), array(0x0D), array(0x0A)),
-        array(array(0x0A), array(0x0A), array(0x0D, 0x0A))
-        )
-      );
-    $this->_headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
-      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
-      );
-    $this->_paramEncoder = new Swift_Encoder_Rfc2231Encoder(
-      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
-      );
-    $this->_attachmentEncoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
+    Swift_Preferences::getInstance()->setCharset(null); //TODO: Test with the charset defined
   }
   
   public function testBasicHeaders()
@@ -1280,50 +1240,22 @@ class Swift_Mime_SimpleMessageAcceptanceTest
   
   protected function _createMessage()
   {
-    $message = new Swift_Mime_SimpleMessage(
-      $this->_createHeaders(),
-      $this->_contentEncoder,
-      $this->_cache
-      );
-    return $message;
+    return new Swift_Message();
   }
   
   protected function _createMimePart()
   {
-    $entity = new Swift_Mime_MimePart(
-      $this->_createHeaders(),
-      $this->_contentEncoder,
-      $this->_cache
-      );
-    return $entity;
+    return new Swift_MimePart();
   }
   
   protected function _createAttachment()
   {
-    $entity = new Swift_Mime_Attachment(
-      $this->_createHeaders(),
-      $this->_attachmentEncoder,
-      $this->_cache
-      );
-    return $entity;
+    return new Swift_Attachment();
   }
   
   protected function _createEmbeddedFile()
   {
-    $entity = new Swift_Mime_EmbeddedFile(
-      $this->_createHeaders(),
-      $this->_attachmentEncoder,
-      $this->_cache
-      );
-    return $entity;
-  }
-  
-  private function _createHeaders()
-  {
-    return new Swift_Mime_SimpleHeaderSet(
-      new Swift_Mime_SimpleHeaderFactory($this->_headerEncoder,
-        $this->_paramEncoder)
-      );
+    return new Swift_EmbeddedFile();
   }
   
 }

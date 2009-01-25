@@ -66,8 +66,11 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /** The maximum line length of the body of this entity */
   private $_maxLineLength = 78;
   
-  /** The order in which nested mime types should appear */
-  private $_typeOrderPreference = array();
+  /** The order in which alternative mime types should appear */
+  private $_alternativePartOrder = array(
+    'text/plain' => 1,
+    'text/html' => 2
+    );
   
   /** The CID of this entity */
   private $_id;
@@ -220,8 +223,17 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * Set all children of this entity.
    * @param array $children Swiift_Mime_Entity instances
    */
-  public function setChildren(array $children) //TODO: Try to refactor this logic
+  public function setChildren(array $children, $compoundType = null) //TODO: Try to refactor this logic
   {
+    //TODO: This $compoundType param feels like a bit of a hack,
+    //      refactor at some point?
+    
+    //Note to self:
+    // $compoundType will be calculated as the sum of all types if not passed
+    // It will then be cascade through all children
+    // The rules for treating any given type as a different type can then be
+    // used.
+    
     $immediateChildren = array();
     $grandchildren = array();
     $newContentType = $this->_userContentType;
@@ -379,18 +391,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   public function encoderChanged(Swift_Mime_ContentEncoder $encoder)
   {
     $this->_notifyEncoderChanged($encoder);
-  }
-  
-  /**
-   * Define the order in which the mime types specified in this array should
-   * appear if nested in this entity.
-   * @param array $order
-   */
-  public function setTypeOrderPreference(array $order)
-  {
-    $this->_typeOrderPreference = $order;
-    // Re-order existing children
-    $this->setChildren($this->_children);
   }
   
   /**
@@ -652,14 +652,16 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     $shouldSort = true;
     foreach ($this->_immediateChildren as $child)
     {
-      if (!array_key_exists(
+      if ($child->getNestingLevel() != self::LEVEL_ALTERNATIVE
+        || !array_key_exists(
         strtolower($child->getContentType()),
-        $this->_typeOrderPreference))
+        $this->_alternativePartOrder))
       {
         $shouldSort = false;
         break;
       }
     }
+    
     //Sort in order of preference, if there is one
     if ($shouldSort)
     {
@@ -676,9 +678,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
       );
     foreach ($types as $type)
     {
-      $typePrefs[] = (array_key_exists($type, $this->_typeOrderPreference))
-        ? $this->_typeOrderPreference[$type]
-        : (max($this->_typeOrderPreference) + 1);
+      $typePrefs[] = (array_key_exists($type, $this->_alternativePartOrder))
+        ? $this->_alternativePartOrder[$type]
+        : (max($this->_alternativePartOrder) + 1);
     }
     return ($typePrefs[0] >= $typePrefs[1]) ? 1 : -1;
   }

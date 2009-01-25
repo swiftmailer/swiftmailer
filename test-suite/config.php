@@ -29,7 +29,8 @@ define('SWEETY_SIMPLETEST_PATH', SWEETY_LIB_PATH . '/simpletest');
 define('SWEETY_TEST_PATH',
   SWEETY_HOME . '/../tests/unit' .
   PATH_SEPARATOR . SWEETY_HOME . '/../tests/acceptance' .
-  PATH_SEPARATOR . SWEETY_HOME . '/../tests/smoke'
+  PATH_SEPARATOR . SWEETY_HOME . '/../tests/smoke' .
+  PATH_SEPARATOR . SWEETY_HOME . '/../tests/bug'
   );
 //Test locator strategies, separated by commas
 define('SWEETY_TEST_LOCATOR', 'Sweety_TestLocator_PearStyleLocator');

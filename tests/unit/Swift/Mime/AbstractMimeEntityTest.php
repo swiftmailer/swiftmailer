@@ -666,56 +666,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $entity->toByteStream($is);
   }
   
-  public function testOrderingHtmlBeforeText()
-  {
-    $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
-      "Content-Type: text/html\r\n" .
-      "\r\n" .
-      "HTML PART",
-      false
-      );
-    $textChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
-      "Content-Type: text/plain\r\n" .
-      "\r\n" .
-      "TEXT PART",
-      false
-      );
-    $headers = $this->_createHeaderSet(array(), false);
-    $this->_checking(Expectations::create()
-      -> ignoring($headers)->toString() -> returns(
-        "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n"
-        )
-      -> ignoring($headers)
-      -> ignoring($htmlChild)->getContentType() -> returns('text/html')
-      -> ignoring($htmlChild)
-      -> ignoring($textChild)->getContentType() -> returns('text/plain')
-      -> ignoring($textChild)
-      );
-    $entity = $this->_createEntity($headers, $this->_createEncoder(),
-      $this->_createCache()
-      );
-    $entity->setBoundary('xxx');
-    $entity->setChildren(array($htmlChild, $textChild));
-    $entity->setTypeOrderPreference(array(
-      'text/html' => 1,
-      'text/plain' => 2
-      ));
-    
-    $this->assertEqual(
-      "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
-      "\r\n--xxx\r\n" .
-      "Content-Type: text/html\r\n" .
-      "\r\n" .
-      "HTML PART" .
-      "\r\n--xxx\r\n" .
-      "Content-Type: text/plain\r\n" .
-      "\r\n" .
-      "TEXT PART" .
-      "\r\n--xxx--\r\n",
-      $entity->toString()
-      );
-  }
-  
   public function testOrderingTextBeforeHtml()
   {
     $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
@@ -746,10 +696,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest
       );
     $entity->setBoundary('xxx');
     $entity->setChildren(array($htmlChild, $textChild));
-    $entity->setTypeOrderPreference(array(
-      'text/plain' => 1,
-      'text/html' => 2
-      ));
     
     $this->assertEqual(
       "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
