@@ -47,9 +47,12 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /** Mime types to be used based on the nesting level */
   private $_compositeRanges = array(
     'multipart/mixed' => array(self::LEVEL_TOP, self::LEVEL_MIXED),
-    'multipart/related' => array(self::LEVEL_MIXED, self::LEVEL_RELATED),
-    'multipart/alternative' => array(self::LEVEL_RELATED, self::LEVEL_ALTERNATIVE)
+    'multipart/alternative' => array(self::LEVEL_MIXED, self::LEVEL_ALTERNATIVE),
+    'multipart/related' => array(self::LEVEL_ALTERNATIVE, self::LEVEL_RELATED)
     );
+  
+  /** A set of filter rules to define what level an entity should be nested at */
+  private $_compoundLevelFilters = array();
     
   /** The nesting level of this entity */
   private $_nestingLevel = self::LEVEL_ALTERNATIVE;
@@ -69,7 +72,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /** The order in which alternative mime types should appear */
   private $_alternativePartOrder = array(
     'text/plain' => 1,
-    'text/html' => 2
+    'text/html' => 2,
+    'multipart/related' => 3
     );
   
   /** The CID of this entity */
@@ -95,6 +99,28 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     $this->_cache = $cache;
     $this->_headers->defineOrdering(
       array('Content-Type', 'Content-Transfer-Encoding')
+      );
+    
+    // This array specifies that, when the entire MIME document contains
+    // $compoundLevel, then for each child within $level, if its Content-Type
+    // is $contentType then it should be treated as if it's level is
+    // $neededLevel instead.  I tried to write that unambiguously! :-\
+    // Data Structure:
+    // array (
+    //   $compoundLevel => array(
+    //     $level => array(
+    //       $contentType => $neededLevel
+    //     )
+    //   )
+    // )
+    
+    $this->_compoundLevelFilters = array(
+      (self::LEVEL_ALTERNATIVE + self::LEVEL_RELATED) => array(
+        self::LEVEL_ALTERNATIVE => array(
+          'text/plain' => self::LEVEL_ALTERNATIVE,
+          'text/html' => self::LEVEL_RELATED
+          )
+        )
       );
     $this->_generateId();
   }
@@ -222,17 +248,16 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /**
    * Set all children of this entity.
    * @param array $children Swiift_Mime_Entity instances
+   * @param int $compoundLevel For internal use only
    */
-  public function setChildren(array $children, $compoundType = null) //TODO: Try to refactor this logic
+  public function setChildren(array $children, $compoundLevel = null)
   {
-    //TODO: This $compoundType param feels like a bit of a hack,
-    //      refactor at some point?
+    //TODO: Try to refactor this logic
     
-    //Note to self:
-    // $compoundType will be calculated as the sum of all types if not passed
-    // It will then be cascade through all children
-    // The rules for treating any given type as a different type can then be
-    // used.
+    $compoundLevel = isset($compoundLevel)
+      ? $compoundLevel
+      : $this->_getCompoundLevel($children)
+      ;
     
     $immediateChildren = array();
     $grandchildren = array();
@@ -240,14 +265,14 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     
     foreach ($children as $child)
     {
-      $level = $child->getNestingLevel();
+      $level = $this->_getNeededChildLevel($child, $compoundLevel);
       if (empty($immediateChildren)) //first iteration
       {
         $immediateChildren = array($child);
       }
       else
       {
-        $nextLevel = $immediateChildren[0]->getNestingLevel();
+        $nextLevel = $this->_getNeededChildLevel($immediateChildren[0], $compoundLevel);
         if ($nextLevel == $level)
         {
           $immediateChildren[] = $child;
@@ -268,7 +293,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     
     if (!empty($immediateChildren))
     {
-      $lowestLevel = $immediateChildren[0]->getNestingLevel();
+      $lowestLevel = $this->_getNeededChildLevel($immediateChildren[0], $compoundLevel);
+      
       //Determine which composite media type is needed to accomodate the
       // immediate children
       foreach ($this->_compositeRanges as $mediaType => $range)
@@ -286,7 +312,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
       {
         $subentity = $this->_createChild();
         $subentity->_setNestingLevel($lowestLevel);
-        $subentity->setChildren($grandchildren);
+        $subentity->setChildren($grandchildren, $compoundLevel);
         array_unshift($immediateChildren, $subentity);
       }
     }
@@ -623,6 +649,41 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     $this->_nestingLevel = $level;
   }
   
+  private function _getCompoundLevel($children)
+  {
+    $level = 0;
+    foreach ($children as $child)
+    {
+      $level |= $child->getNestingLevel();
+    }
+    return $level;
+  }
+  
+  private function _getNeededChildLevel($child, $compoundLevel)
+  {
+    $filter = array();
+    foreach ($this->_compoundLevelFilters as $bitmask => $rules)
+    {
+      if (($compoundLevel & $bitmask) === $bitmask)
+      {
+        $filter = $rules + $filter;
+      }
+    }
+    
+    $realLevel = $child->getNestingLevel();
+    $lowercaseType = strtolower($child->getContentType());
+    
+    if (isset($filter[$realLevel])
+      && isset($filter[$realLevel][$lowercaseType]))
+    {
+      return $filter[$realLevel][$lowercaseType];
+    }
+    else
+    {
+      return $realLevel;
+    }
+  }
+  
   private function _createChild()
   {
     return new self($this->_headers->newInstance(),
@@ -649,15 +710,13 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   
   private function _sortChildren()
   {
-    $shouldSort = true;
+    $shouldSort = false;
     foreach ($this->_immediateChildren as $child)
     {
-      if ($child->getNestingLevel() != self::LEVEL_ALTERNATIVE
-        || !array_key_exists(
-        strtolower($child->getContentType()),
-        $this->_alternativePartOrder))
+      //NOTE: This include alternative parts moved into a related part
+      if ($child->getNestingLevel() == self::LEVEL_ALTERNATIVE)
       {
-        $shouldSort = false;
+        $shouldSort = true;
         break;
       }
     }

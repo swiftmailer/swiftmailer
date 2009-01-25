@@ -389,7 +389,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
   public function testChildrenOfLevelAttachmentAndLessCauseMultipartMixed()
   {
     for ($level = Swift_Mime_MimeEntity::LEVEL_MIXED;
-      $level > Swift_Mime_MimeEntity::LEVEL_TOP; $level--)
+      $level > Swift_Mime_MimeEntity::LEVEL_TOP; $level /= 2)
     {
       $child = $this->_createChild($level);
       $cType = $this->_createHeader(
@@ -407,31 +407,10 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     }
   }
   
-  public function testChildrenOfLevelEmbeddedAndLessCauseMultipartMixed()
-  {
-    for ($level = Swift_Mime_MimeEntity::LEVEL_RELATED;
-      $level > Swift_Mime_MimeEntity::LEVEL_MIXED; $level--)
-    {
-      $child = $this->_createChild($level);
-      $cType = $this->_createHeader(
-        'Content-Type', 'text/plain', array(), false
-        );
-      $this->_checking(Expectations::create()
-        -> one($cType)->setFieldBodyModel('multipart/related')
-        -> ignoring($cType)
-        );
-      $entity = $this->_createEntity($this->_createHeaderSet(array(
-        'Content-Type' => $cType)),
-        $this->_createEncoder(), $this->_createCache()
-        );
-      $entity->setChildren(array($child));
-    }
-  }
-  
-  public function testChildrenOfLevelSubpartAndLessCauseMultipartMixed()
+  public function testChildrenOfLevelAlternativeAndLessCauseMultipartAlternative()
   {
     for ($level = Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE;
-      $level > Swift_Mime_MimeEntity::LEVEL_RELATED; $level--)
+      $level > Swift_Mime_MimeEntity::LEVEL_MIXED; $level /= 2)
     {
       $child = $this->_createChild($level);
       $cType = $this->_createHeader(
@@ -449,12 +428,33 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     }
   }
   
+  public function testChildrenOfLevelRelatedAndLessCauseMultipartRelated()
+  {
+    for ($level = Swift_Mime_MimeEntity::LEVEL_RELATED;
+      $level > Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE; $level /= 2)
+    {
+      $child = $this->_createChild($level);
+      $cType = $this->_createHeader(
+        'Content-Type', 'text/plain', array(), false
+        );
+      $this->_checking(Expectations::create()
+        -> one($cType)->setFieldBodyModel('multipart/related')
+        -> ignoring($cType)
+        );
+      $entity = $this->_createEntity($this->_createHeaderSet(array(
+        'Content-Type' => $cType)),
+        $this->_createEncoder(), $this->_createCache()
+        );
+      $entity->setChildren(array($child));
+    }
+  }
+  
   public function testHighestLevelChildDeterminesContentType()
   {
     $combinations  = array(
       array('levels' => array(Swift_Mime_MimeEntity::LEVEL_MIXED,
-        Swift_Mime_MimeEntity::LEVEL_RELATED,
-        Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE
+        Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
+        Swift_Mime_MimeEntity::LEVEL_RELATED
         ),
         'type' => 'multipart/mixed'
         ),
@@ -468,10 +468,10 @@ abstract class Swift_Mime_AbstractMimeEntityTest
         ),
         'type' => 'multipart/mixed'
         ),
-      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_RELATED,
-        Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE
+      array('levels' => array(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
+        Swift_Mime_MimeEntity::LEVEL_RELATED
         ),
-        'type' => 'multipart/related'
+        'type' => 'multipart/alternative'
         )
       );
     

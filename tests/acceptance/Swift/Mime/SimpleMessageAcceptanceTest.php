@@ -765,28 +765,29 @@ class Swift_Mime_SimpleMessageAcceptanceTest
       ' boundary="' . $boundary . '"' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
-      'Content-Type: multipart/related;' . "\r\n" .
-      ' boundary="(.*?)"' . "\r\n" .
-      "\r\n" .
-      '--\\1' . "\r\n" .
       'Content-Type: multipart/alternative;' . "\r\n" .
       ' boundary="(.*?)"' . "\r\n" .
       "\r\n" .
-      '--\\2' . "\r\n" .
+      '--\\1' . "\r\n" .
       'Content-Type: text/plain; charset=iso-8859-1' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       'foo' .
-      "\r\n" .
-      '--\\2--' . "\r\n" .
+      
       "\r\n" .
       '--\\1' . "\r\n" .
+      'Content-Type: multipart/related;' . "\r\n" .
+      ' boundary="(.*?)"' . "\r\n" .
+      "\r\n" .
+      '--\\2' . "\r\n" .
       'Content-Type: image/jpeg; name=myimage.jpg' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: inline; filename=myimage.jpg' . "\r\n" .
       'Content-ID: <' . $cid . '>' . "\r\n" .
       "\r\n" .
       preg_quote(base64_encode('<image data>'), '~') .
+      "\r\n" .
+      '--\\2--' . "\r\n" .
       "\r\n" .
       '--\\1--' . "\r\n" .
       "\r\n" .
@@ -852,16 +853,10 @@ class Swift_Mime_SimpleMessageAcceptanceTest
       ' boundary="(.*?)"' . "\r\n" .
       "\r\n" .
       '--\\1' . "\r\n" .
-      'Content-Type: multipart/alternative;' . "\r\n" .
-      ' boundary="(.*?)"' . "\r\n" .
-      "\r\n" .
-      '--\\2' . "\r\n" .
       'Content-Type: text/html; charset=iso-8859-1' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       'foo <img src=3D"cid:' . $cid . '" />' . //=3D is just = in QP
-      "\r\n" .
-      '--\\2--' . "\r\n" .
       "\r\n" .
       '--\\1' . "\r\n" .
       'Content-Type: image/jpeg; name=myimage.jpg' . "\r\n" .
@@ -931,28 +926,28 @@ class Swift_Mime_SimpleMessageAcceptanceTest
       'Subject: just a test subject' . "\r\n" .
       'From: Chris Corbyn <chris.corbyn@swiftmailer.org>' . "\r\n" .
       'MIME-Version: 1.0' . "\r\n" .
-      'Content-Type: multipart/related;' . "\r\n" .
+      'Content-Type: multipart/alternative;' . "\r\n" .
       ' boundary="' . $boundary . '"' . "\r\n" .
       "\r\n" .
       '--' . $boundary . "\r\n" .
-      'Content-Type: multipart/alternative;' . "\r\n" .
-      ' boundary="(.*?)"' . "\r\n" .
-      "\r\n" .
-      '--\\1' . "\r\n" .
       'Content-Type: text/plain; charset=iso-8859-1' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       'foo' .
       "\r\n" .
-      '--\\1--' . "\r\n" .
-      "\r\n" .
       '--' . $boundary . "\r\n" .
+      'Content-Type: multipart/related;' . "\r\n" .
+      ' boundary="(.*?)"' . "\r\n" .
+      "\r\n" .
+      '--\\1' . "\r\n" .
       'Content-Type: image/jpeg; name=myimage.jpg' . "\r\n" .
       'Content-Transfer-Encoding: base64' . "\r\n" .
       'Content-Disposition: inline; filename=myimage.jpg' . "\r\n" .
       'Content-ID: <' . $cid . '>' . "\r\n" .
       "\r\n" .
       preg_quote(base64_encode('<image data>'), '~') .
+      "\r\n" .
+      '--\\1--' . "\r\n" .
       "\r\n" .
       '--' . $boundary . '--' . "\r\n" .
       '$~D',
