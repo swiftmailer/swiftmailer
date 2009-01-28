@@ -210,7 +210,7 @@ class Swift_Transport_EsmtpTransport
   // -- Mixin invocation code
   
   /** Mixin handling method for ESMTP handlers */
-  public function __call($method, $args)
+  private function __call($method, $args)
   {
     foreach ($this->_handlers as $handler)
     {

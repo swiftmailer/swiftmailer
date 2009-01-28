@@ -376,7 +376,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
       {
         //Don't encode starting WSP
         $firstChar = substr($token, 0, 1);
-        switch($firstChar){
+        switch($firstChar)
+        {
           case ' ':
           case "\t":
             $value .= $firstChar;

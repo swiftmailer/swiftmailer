@@ -48,18 +48,18 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
   {
     $this->_search = $search;
     $this->_index = array ();
-    foreach ( $search as $search_element )
+    foreach ($search as $search_element)
     {
-      if (is_array ( $search_element ))
+      if (is_array($search_element))
       {
-        foreach ( $search_element as $char )
+        foreach ($search_element as $char)
         {
-          $this->_index [$char] = true;
+          $this->_index[$char] = true;
         }
       }
       else
       {
-        $this->_index [$search_element] = true;
+        $this->_index[$search_element] = true;
       }
     }
     $this->_replace = $replace;
@@ -72,18 +72,19 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
    */
   public function shouldBuffer($buffer)
   {
-    $endOfBuffer = end ( $buffer );
-    return isset ( $this->_index [$endOfBuffer] );
+    $endOfBuffer = end($buffer);
+    return isset ($this->_index[$endOfBuffer]);
   }
   
   /**
    * Perform the actual replacements on $buffer and return the result.
    * @param array $buffer
    * @return array
-   * @todo optimize, use one pass tree based search
    */
   public function filter($buffer)
   {
+    //TODO: optimize, use one pass tree based search
+    
     $newBuffer = $buffer;
     
     foreach ($this->_search as $i => $search)
@@ -111,32 +112,32 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
 
   private function _filterByNeedle($buffer, $needle, $replace)
   {
-    $newBuffer = array ();
+    $newBuffer = array();
     // Init
-    $needle_size = count ( $needle );
+    $needle_size = count($needle);
     $found = $needle_size - 1;
-    $count = count ( $buffer );
+    $count = count ($buffer);
     $max_pos = $count - $found;
-    for($i = 0; $i < $max_pos; ++ $i)
+    for ($i = 0; $i < $max_pos; ++$i)
     {
-      for($j = 0; $j < $needle_size; ++ $j)
+      for ($j = 0; $j < $needle_size; ++$j)
       {
-        if ($buffer [$i + $j] != $needle [$j])
+        if ($buffer[$i + $j] != $needle[$j])
         {
           break;
         }
         if ($j == $found)
         {
-          $newBuffer = array_merge ( $newBuffer, $replace );
+          $newBuffer = array_merge($newBuffer, $replace);
           $i += $j;
           continue 2;
         }
       }
-      $newBuffer [] = $buffer [$i];
+      $newBuffer[] = $buffer[$i];
     }
-    for(; $i < $count; ++ $i)
+    for(; $i < $count; ++$i)
     {
-      $newBuffer [] = $buffer [$i];
+      $newBuffer[] = $buffer[$i];
     }
     return $newBuffer;
   }

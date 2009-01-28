@@ -148,12 +148,15 @@ class Swift_CharacterStream_ArrayCharacterStream
     }
     
     // Don't use array slice
-    $arrays=array();
-    $end=$length+$this->_offset;
-    for ($i=$this->_offset; $i<$end; ++$i){
-    	if (!array_key_exists($i, $this->_array))
-    		break;
-    	$arrays[]=$this->_array[$i];
+    $arrays = array();
+    $end = $length + $this->_offset;
+    for ($i = $this->_offset; $i < $end; ++$i)
+    {
+      if (!array_key_exists($i, $this->_array))
+      {
+        break;
+      }
+      $arrays[]=$this->_array[$i];
     }
     $this->_offset += $i-$this->_offset; // Limit function calls
     $chars = '';
@@ -179,12 +182,15 @@ class Swift_CharacterStream_ArrayCharacterStream
     
     $arrays=array();
     $end=$length+$this->_offset;
-    for ($i=$this->_offset; $i<$end; ++$i){
-    	if (!array_key_exists($i, $this->_array))
-    		break;
-    	$arrays[]=$this->_array[$i];
+    for ($i=$this->_offset; $i<$end; ++$i)
+    {
+      if (!array_key_exists($i, $this->_array))
+      {
+        break;
+      }
+      $arrays[]=$this->_array[$i];
     }
-    $this->_offset += $i-$this->_offset; // Limit function calls
+    $this->_offset += ($i - $this->_offset); // Limit function calls
     $bytes = array();
     foreach ($arrays as $array)
     {
