@@ -2,12 +2,12 @@
 
 /*
  CharacterStream implementation using an array in Swift Mailer.
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,11 +15,12 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
 
 //@require 'Swift/CharacterStream.php';
 //@require 'Swift/OutputByteStream.php';
+
 
 /**
  * A CharacterStream implementation which stores characters in an internal array.
@@ -37,46 +38,47 @@ class Swift_CharacterStream_ArrayCharacterStream
    * @access private
    */
   private $_charReader;
-  
+
   /**
    * A factory for creatiing CharacterReader instances.
    * @var Swift_CharacterReaderFactory
    * @access private
    */
   private $_charReaderFactory;
-  
+
   /**
    * The character set this stream is using.
    * @var string
    * @access private
    */
   private $_charset;
-  
+
   /**
    * Array of characters.
    * @var string[]
    * @access private
    */
   private $_array = array();
-  
+
   /**
    * The current character offset in the stream.
    * @var int
    * @access private
    */
   private $_offset = 0;
-  
+
   /**
    * Create a new CharacterStream with the given $chars, if set.
    * @param Swift_CharacterReaderFactory $factory for loading validators
    * @param string $charset used in the stream
    */
-  public function __construct(Swift_CharacterReaderFactory $factory, $charset)
+  public function __construct(Swift_CharacterReaderFactory $factory,
+    $charset)
   {
     $this->setCharacterReaderFactory($factory);
     $this->setCharacterSet($charset);
   }
-  
+
   /**
    * Set the character set used in this CharacterStream.
    * @param string $charset
@@ -86,7 +88,7 @@ class Swift_CharacterStream_ArrayCharacterStream
     $this->_charset = $charset;
     $this->_charReader = null;
   }
-  
+
   /**
    * Set the CharacterReaderFactory for multi charset support.
    * @param Swift_CharacterReaderFactory $factory
@@ -96,7 +98,7 @@ class Swift_CharacterStream_ArrayCharacterStream
   {
     $this->_charReaderFactory = $factory;
   }
-  
+
   /**
    * Overwrite this character stream using the byte sequence in the byte stream.
    * @param Swift_OutputByteStream $os output stream to read from
@@ -108,21 +110,24 @@ class Swift_CharacterStream_ArrayCharacterStream
       $this->_charReader = $this->_charReaderFactory
         ->getReaderFor($this->_charset);
     }
-    
+
     $startLength = $this->_charReader->getInitialByteSize();
     while (false !== $bytes = $os->read($startLength))
     {
       $c = array_values(unpack('C*', $bytes));
-      $need = $this->_charReader->validateByteSequence($c);
-      if ($need > 0 && false !== $bytes = $os->read($need))
+      $need = $this->_charReader
+        ->validateByteSequence($c);
+      if ($need > 0 &&
+        false !== $bytes = $os->read($need))
       {
-      	// try another optimisation (array_values call unneeded)
-        $c = array_merge($c, unpack('C*', $bytes));
+        // try another optimisation (array_values call unneeded)
+        $c = array_merge(
+          $c, unpack('C*', $bytes));
       }
       $this->_array[] = $c;
     }
   }
-  
+
   /**
    * Import a string a bytes into this CharacterStream, overwriting any existing
    * data in the stream.
@@ -133,7 +138,7 @@ class Swift_CharacterStream_ArrayCharacterStream
     $this->flushContents();
     $this->write($string);
   }
-  
+
   /**
    * Read $length characters from the stream and move the internal pointer
    * $length further into the stream.
@@ -146,27 +151,27 @@ class Swift_CharacterStream_ArrayCharacterStream
     {
       return false;
     }
-    
+
     // Don't use array slice
     $arrays = array();
     $end = $length + $this->_offset;
-    for ($i = $this->_offset; $i < $end; ++$i)
+    for($i = $this->_offset; $i < $end; ++ $i)
     {
       if (!array_key_exists($i, $this->_array))
       {
         break;
       }
-      $arrays[]=$this->_array[$i];
+      $arrays[] = $this->_array[$i];
     }
-    $this->_offset += $i-$this->_offset; // Limit function calls
+    $this->_offset += $i - $this->_offset; // Limit function calls
     $chars = '';
-    foreach ($arrays as $array)
+    foreach ( $arrays as $array )
     {
       $chars .= implode('', array_map('chr', $array));
     }
     return $chars;
   }
-  
+
   /**
    * Read $length characters from the stream and return a 1-dimensional array
    * containing there octet values.
@@ -179,26 +184,26 @@ class Swift_CharacterStream_ArrayCharacterStream
     {
       return false;
     }
-    
-    $arrays=array();
-    $end=$length+$this->_offset;
-    for ($i=$this->_offset; $i<$end; ++$i)
+
+    $arrays = array();
+    $end = $length + $this->_offset;
+    for($i = $this->_offset; $i < $end; ++ $i)
     {
       if (!array_key_exists($i, $this->_array))
       {
         break;
       }
-      $arrays[]=$this->_array[$i];
+      $arrays[] = $this->_array[$i];
     }
     $this->_offset += ($i - $this->_offset); // Limit function calls
     $bytes = array();
-    foreach ($arrays as $array)
+    foreach ( $arrays as $array )
     {
       $bytes = array_merge($bytes, $array);
     }
     return $bytes;
   }
-  
+
   /**
    * Write $chars to the end of the stream.
    * @param string $chars
@@ -207,32 +212,80 @@ class Swift_CharacterStream_ArrayCharacterStream
   {
     if (!isset($this->_charReader))
     {
-      $this->_charReader = $this->_charReaderFactory
-        ->getReaderFor($this->_charset);
+      $this->_charReader = $this->_charReaderFactory->getReaderFor(
+        $this->_charset);
     }
-    
+
     $startLength = $this->_charReader->getInitialByteSize();
-    
+
     $fp = fopen('php://memory', 'w+b');
     fwrite($fp, $chars);
     unset($chars);
     fseek($fp, 0, SEEK_SET);
-    
-    while (!feof($fp) && false !== $bytes = fread($fp, $startLength))
+
+    $buffer = array(0);
+    $buf_pos = 1;
+    $buf_len = 1;
+    $has_datas = true;
+    do
     {
-      $c = array_values(unpack('C*', $bytes));
-      $need = $this->_charReader->validateByteSequence($c);
-      if ($need > 0 && !feof($fp) && false !== $bytes = fread($fp, $need))
-      {
-      	// array_values is not needed
-        $c = array_merge($c, unpack('C*', $bytes));
+      $bytes = array();
+      // Buffer Filing
+      if ($buf_len - $buf_pos <
+         $startLength)
+        {
+          $buf = array(0);
+        $buf = array_splice($buffer, $buf_pos);
+        $new = $this->_reloadBuffer($fp, 100);
+        if ($new)
+        {
+          $buffer = array_merge($buf,
+            $new);
+          $buf_len = sizeof($buffer);
+          $buf_pos = 0;
+        }
+        else
+        {
+          $has_datas = false;
+        }
       }
-      $this->_array[] = $c;
-    }
-    
+      if ($buf_len - $buf_pos > 0)
+      {
+        for($i = 0; $i < $startLength && isset(
+          $buffer[$buf_pos]); ++ $i)
+        {
+          $bytes[] = $buffer[$buf_pos ++];
+        }
+        $need = $this->_charReader->validateByteSequence(
+          $bytes);
+        if ($need > 0)
+        {
+          if ($buf_len - $buf_pos < $need)
+          {
+            $new = $this->_reloadBuffer(
+              $fp,
+              $need);
+            if ($new)
+            {
+              $buffer = array_merge(
+                $buffer,
+                $new);
+              $buf_len = sizeof(
+                $buffer);
+            }
+          }
+          for($i = 0; $i < $need && isset(
+            $buffer[$buf_pos]); ++ $i)
+          {
+            $bytes[] = $buffer[$buf_pos ++];
+          }
+        }
+        $this->_array[] = $bytes;
+      }
+    } while ($has_datas);
     fclose($fp);
   }
-  
+
   /**
    * Move the internal pointer to $charOffset in the stream.
    * @param int $charOffset
@@ -249,7 +302,7 @@ class Swift_CharacterStream_ArrayCharacterStream
     }
     $this->_offset = $charOffset;
   }
-  
+
   /**
    * Empty the stream and reset the internal pointer.
    */
@@ -258,5 +311,20 @@ class Swift_CharacterStream_ArrayCharacterStream
     $this->_offset = 0;
     $this->_array = array();
   }
-  
+
+  /**
+   * Helper to load datas in the buffer
+   *
+   * @param ressource $fp
+   * @param int $len
+   * @return array [int]
+   */
+  private function _reloadBuffer($fp, $len)
+  {
+    if (! feof ( $fp ) && ($bytes = fread ( $fp, $len )) !== false)
+    {
+      return unpack ( 'C*', $bytes );
+    }
+    return false;
+  }
 }
