@@ -41,7 +41,8 @@ class Swift_CharacterReader_UsAsciiReader
    */
   public function validateByteSequence($bytes)
   {
-    if (1 == count($bytes) && $bytes[0] >= 0x00 && $bytes[0] <= 0x7F)
+  	$byte=reset($bytes);
+    if (1 == count($bytes) && $byte >= 0x00 && $byte <= 0x7F)
     {
       return 0;
     }

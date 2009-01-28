@@ -29,7 +29,26 @@
 class Swift_CharacterReader_Utf8Reader
   implements Swift_CharacterReader
 {
-  
+  private static $length_map=array(
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+    4,4,4,4,4,4,4,4,5,5,5,5,6,6,0,0
+ );
+	
+	
   /**
    * Returns an integer which specifies how many more bytes to read.
    * A positive integer indicates the number of more bytes to fetch before invoking
@@ -41,38 +60,7 @@ class Swift_CharacterReader_Utf8Reader
    */
   public function validateByteSequence($bytes)
   {
-    $b = $bytes[0];
-    
-    if ($b >= 0x00 && $b <= 0x7F)
-    {
-      $expected = 1;
-    }
-    elseif ($b >= 0xC0 && $b <= 0xDF)
-    {
-      $expected = 2;
-    }
-    elseif ($b >= 0xE0 && $b <= 0xEF)
-    {
-      $expected = 3;
-    }
-    elseif ($b >= 0xF0 && $b <= 0xF7)
-    {
-      $expected = 4;
-    }
-    elseif ($b >= 0xF8 && $b <= 0xFB)
-    {
-      $expected = 5;
-    }
-    elseif ($b >= 0xFC && $b <= 0xFD)
-    {
-      $expected = 6;
-    }
-    else
-    {
-      $expected = 0;
-    }
-    
-    return max(-1, $expected - count($bytes));
+    return max(-1, self::$length_map[reset($bytes)] - sizeof($bytes));
   }
   
   /**
