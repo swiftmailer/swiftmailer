@@ -294,13 +294,14 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
       4 => 'Low',
       5 => 'Lowest'
       );
-    if ($priority > max(array_keys($priorityMap)))
+    $pMapKeys=array_keys($priorityMap);
+    if ($priority > max($pMapKeys))
     {
-      $priority = max(array_keys($priorityMap));
+      $priority = max($pMapKeys);
     }
-    elseif ($priority < min(array_keys($priorityMap)))
+    elseif ($priority < min($pMapKeys))
     {
-      $priority = min(array_keys($priorityMap));
+      $priority = min($pMapKeys);
     }
     if (!$this->_setHeaderFieldModel('X-Priority',
       sprintf('%d (%s)', $priority, $priorityMap[$priority])))

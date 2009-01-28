@@ -232,7 +232,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
    */
   public function setAlwaysDisplayed(array $names)
   {
-    $this->_required = array_map('strtolower', $names);
+    $this->_required = array_flip(array_map('strtolower', $names));
   }
 
   /**
@@ -314,7 +314,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   /** Test if the given Header is always displayed */
   private function _isDisplayed(Swift_Mime_Header $header)
   {
-    return in_array(strtolower($header->getFieldName()), $this->_required);
+    return array_key_exists(strtolower($header->getFieldName()), $this->_required);
   }
   
   /** Notify all Headers of the new charset */

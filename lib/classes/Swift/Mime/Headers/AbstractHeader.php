@@ -302,9 +302,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
    */
   protected function escapeSpecials($token, $include = array(), $exclude = array())
   {
+    $exclude=array_flip($exclude);
     foreach (array_merge($this->_specials, $include) as $char)
     {
-      if (in_array($char, $exclude))
+      if (array_key_exists($char, $exclude))
       {
         continue;
       }
@@ -375,10 +376,11 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
       {
         //Don't encode starting WSP
         $firstChar = substr($token, 0, 1);
-        if (in_array($firstChar, array(' ', "\t")))
-        {
-          $value .= $firstChar;
-          $token = substr($token, 1);
+        switch($firstChar){
+          case ' ':
+          case "\t":
+            $value .= $firstChar;
+            $token = substr($token, 1);
         }
         
         if (-1 == $usedLength)

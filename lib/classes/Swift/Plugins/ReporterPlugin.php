@@ -62,27 +62,27 @@ class Swift_Plugins_ReporterPlugin
   public function sendPerformed(Swift_Events_SendEvent $evt)
   {
     $message = $evt->getMessage();
-    $failures = $evt->getFailedRecipients();
-    foreach (array_keys((array) $message->getTo()) as $address)
+    $failures = array_flip($evt->getFailedRecipients());
+    foreach ((array) $message->getTo() as $address=>$null)
     {
       $this->_reporter->notify(
-        $message, $address, (in_array($address, $failures)
+        $message, $address, (array_key_exists($address, $failures)
         ? Swift_Plugins_Reporter::RESULT_FAIL
         : Swift_Plugins_Reporter::RESULT_PASS)
         );
     }
-    foreach (array_keys((array) $message->getCc()) as $address)
+    foreach ((array) $message->getCc() as $address=>$null)
     {
       $this->_reporter->notify(
-        $message, $address, (in_array($address, $failures)
+        $message, $address, (array_key_exists($address, $failures)
         ? Swift_Plugins_Reporter::RESULT_FAIL
         : Swift_Plugins_Reporter::RESULT_PASS)
         );
     }
-    foreach (array_keys((array) $message->getBcc()) as $address)
+    foreach ((array) $message->getBcc() as $address=>$null)
     {
       $this->_reporter->notify(
-        $message, $address, (in_array($address, $failures)
+        $message, $address, (array_key_exists($address, $failures)
         ? Swift_Plugins_Reporter::RESULT_FAIL
         : Swift_Plugins_Reporter::RESULT_PASS)
         );

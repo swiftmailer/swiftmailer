@@ -116,7 +116,8 @@ class Swift_CharacterStream_ArrayCharacterStream
       $need = $this->_charReader->validateByteSequence($c);
       if ($need > 0 && false !== $bytes = $os->read($need))
       {
-        $c = array_merge($c, array_values(unpack('C*', $bytes)));
+      	// try another optimisation (array_values call unneeded)
+        $c = array_merge($c, unpack('C*', $bytes));
       }
       $this->_array[] = $c;
     }
@@ -146,9 +147,15 @@ class Swift_CharacterStream_ArrayCharacterStream
       return false;
     }
     
-    $arrays = array_slice($this->_array, $this->_offset, $length);
-    $size = count($arrays);
-    $this->_offset += $size;
+    // Don't use array slice
+    $arrays=array();
+    $end=$length+$this->_offset;
+    for ($i=$this->_offset; $i<$end; ++$i){
+    	if (!array_key_exists($i, $this->_array))
+    		break;
+    	$arrays[]=$this->_array[$i];
+    }
+    $this->_offset += $i-$this->_offset; // Limit function calls
     $chars = '';
     foreach ($arrays as $array)
     {
@@ -170,9 +177,14 @@ class Swift_CharacterStream_ArrayCharacterStream
       return false;
     }
     
-    $arrays = array_slice($this->_array, $this->_offset, $length);
-    $size = count($arrays);
-    $this->_offset += $size;
+    $arrays=array();
+    $end=$length+$this->_offset;
+    for ($i=$this->_offset; $i<$end; ++$i){
+    	if (!array_key_exists($i, $this->_array))
+    		break;
+    	$arrays[]=$this->_array[$i];
+    }
+    $this->_offset += $i-$this->_offset; // Limit function calls
     $bytes = array();
     foreach ($arrays as $array)
     {
@@ -206,7 +218,8 @@ class Swift_CharacterStream_ArrayCharacterStream
       $need = $this->_charReader->validateByteSequence($c);
       if ($need > 0 && !feof($fp) && false !== $bytes = fread($fp, $need))
       {
-        $c = array_merge($c, array_values(unpack('C*', $bytes)));
+      	// array_values is not needed
+        $c = array_merge($c, unpack('C*', $bytes));
       }
       $this->_array[] = $c;
     }

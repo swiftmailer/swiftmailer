@@ -36,6 +36,9 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
   /** The replacement(s) to make */
   private $_replace;
   
+  /** The Index for searching */
+  private $_index;
+  
   /**
    * Create a new ByteArrayReplacementFilter with $search and $replace.
    * @param array $search
@@ -44,6 +47,21 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
   public function __construct($search, $replace)
   {
     $this->_search = $search;
+    $this->_index = array ();
+    foreach ( $search as $search_element )
+    {
+      if (is_array ( $search_element ))
+      {
+        foreach ( $search_element as $char )
+        {
+          $this->_index [$char] = true;
+        }
+      }
+      else
+      {
+        $this->_index [$search_element] = true;
+      }
+    }
     $this->_replace = $replace;
   }
   
@@ -54,29 +72,15 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
    */
   public function shouldBuffer($buffer)
   {
-    $endOfBuffer = end($buffer);
-    foreach ($this->_search as $search)
-    {
-      if (is_array($search))
-      {
-        if (in_array($endOfBuffer, $search))
-        {
-          return true;
-        }
-      }
-      else
-      {
-        return in_array($endOfBuffer, $this->_search);
-      }
-    }
-    
-    return false;
+    $endOfBuffer = end ( $buffer );
+    return isset ( $this->_index [$endOfBuffer] );
   }
   
   /**
    * Perform the actual replacements on $buffer and return the result.
    * @param array $buffer
    * @return array
+   * @todo optimize, use one pass tree based search
    */
   public function filter($buffer)
   {
@@ -104,25 +108,37 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
   
   // -- Private Methods
   
+
   private function _filterByNeedle($buffer, $needle, $replace)
   {
-    //TODO: Find a way to optimize this
-    $newBuffer = $buffer;
-    
-    for ($i = 0; $i < count($newBuffer); ++$i)
+    $newBuffer = array ();
+    // Init
+    $needle_size = count ( $needle );
+    $found = $needle_size - 1;
+    $count = count ( $buffer );
+    $max_pos = $count - $found;
+    for($i = 0; $i < $max_pos; ++ $i)
     {
-      // If the elements from this point, for as far as the search match
-      // the search itself, then splice the replacement into its position
-      if (array_slice($newBuffer, $i, count($needle)) == $needle)
+      for($j = 0; $j < $needle_size; ++ $j)
       {
-        array_splice($newBuffer, $i, count($needle), $replace);
-        
-        // Now move the pointer to the index after the replaced section
-        // allowing for the ++$i in the loop
-        $i += count($replace) - 1;
+        if ($buffer [$i + $j] != $needle [$j])
+        {
+          break;
+        }
+        if ($j == $found)
+        {
+          $newBuffer = array_merge ( $newBuffer, $replace );
+          $i += $j;
+          continue 2;
+        }
       }
+      $newBuffer [] = $buffer [$i];
+    }
+    for(; $i < $count; ++ $i)
+    {
+      $newBuffer [] = $buffer [$i];
     }
     return $newBuffer;
   }
-  
+
 }

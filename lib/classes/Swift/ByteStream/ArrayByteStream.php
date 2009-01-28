@@ -81,8 +81,15 @@ class Swift_ByteStream_ArrayByteStream
       return false;
     }
     
-    $ret = array_slice($this->_array, $this->_offset, $length);
-    $this->_offset += count($ret);
+    // Don't use array slice
+    $end=$length+$this->_offset;
+    $ret=array();
+    for ($i=$this->_offset; $i<$end; ++$i){
+    	if (!array_key_exists($i, $this->_array))
+    		break;
+    	$ret[]=$this->_array[$i];
+    }
+    $this->_offset += $i-$this->_offset; // Limit function calls
     return implode('', $ret);
   }
   
