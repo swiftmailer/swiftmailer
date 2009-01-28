@@ -60,7 +60,10 @@ class Swift_CharacterReader_Utf8Reader
    */
   public function validateByteSequence($bytes)
   {
-    return max(-1, self::$length_map[$bytes[0]] - sizeof($bytes));
+    $needed=self::$length_map[$bytes[0]] - sizeof($bytes);
+    return $needed>-1
+          ?$needed
+          :-1;
   }
 
   /**
