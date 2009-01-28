@@ -173,7 +173,7 @@ class Swift_CharacterStream_ArrayCharacterStream
       $arrays[] = $this->_array[$i];
     }
     $this->_offset += $i - $this->_offset; // Limit function calls
-    $chars = '';
+    $chars = false;
     foreach ( $arrays as $array )
     {
       $chars .= implode('', array_map('chr', $array));
@@ -193,7 +193,6 @@ class Swift_CharacterStream_ArrayCharacterStream
     {
       return false;
     }
-
     $arrays = array();
     $end = $length + $this->_offset;
     for($i = $this->_offset; $i < $end; ++ $i)
