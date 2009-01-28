@@ -72,6 +72,7 @@ class Swift_Tests_IdenticalBinaryExpectation extends SimpleExpectation
     }
     else
     {
+      $this->_dumper=new SimpleDumper();
       return 'Identical binary expectation fails ' .
         $this->_dumper->describeDifference(
           $this->asHexString($this->_left),
