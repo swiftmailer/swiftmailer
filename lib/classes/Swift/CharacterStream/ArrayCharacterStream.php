@@ -61,6 +61,13 @@ class Swift_CharacterStream_ArrayCharacterStream
   private $_array = array();
 
   /**
+   * Size of the array of character
+   * @var int
+   * @access private
+   */
+  private $_array_size = array();
+
+  /**
    * The current character offset in the stream.
    * @var int
    * @access private
@@ -115,8 +122,9 @@ class Swift_CharacterStream_ArrayCharacterStream
     while (false !== $bytes = $os->read($startLength))
     {
       $c = array_values(unpack('C*', $bytes));
+      $size = count($c);
       $need = $this->_charReader
-        ->validateByteSequence($c);
+        ->validateByteSequence($c, $size);
       if ($need > 0 &&
         false !== $bytes = $os->read($need))
       {
@@ -125,6 +133,7 @@ class Swift_CharacterStream_ArrayCharacterStream
           $c, unpack('C*', $bytes));
       }
       $this->_array[] = $c;
+      ++$this->_array_size;
     }
   }
 
@@ -147,7 +156,7 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function read($length)
   {
-    if ($this->_offset == count($this->_array))
+    if ($this->_offset == $this->_array_size)
     {
       return false;
     }
@@ -157,7 +166,7 @@ class Swift_CharacterStream_ArrayCharacterStream
     $end = $length + $this->_offset;
     for($i = $this->_offset; $i < $end; ++ $i)
     {
-      if (!array_key_exists($i, $this->_array))
+      if (!isset($this->_array[$i]))
       {
         break;
       }
@@ -180,7 +189,7 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function readBytes($length)
   {
-    if ($this->_offset == count($this->_array))
+    if ($this->_offset == $this->_array_size)
     {
       return false;
     }
@@ -189,19 +198,14 @@ class Swift_CharacterStream_ArrayCharacterStream
     $end = $length + $this->_offset;
     for($i = $this->_offset; $i < $end; ++ $i)
     {
-      if (!array_key_exists($i, $this->_array))
+      if (!isset($this->_array[$i]))
       {
         break;
       }
       $arrays[] = $this->_array[$i];
     }
     $this->_offset += ($i - $this->_offset); // Limit function calls
-    $bytes = array();
-    foreach ( $arrays as $array )
-    {
-      $bytes = array_merge($bytes, $array);
-    }
-    return $bytes;
+    return call_user_func_array('array_merge', $arrays);
   }
 
   /**
@@ -233,15 +237,14 @@ class Swift_CharacterStream_ArrayCharacterStream
       // Buffer Filing
       if ($buf_len - $buf_pos <
          $startLength)
-        {
-          $buf = array(0);
+      {
         $buf = array_splice($buffer, $buf_pos);
         $new = $this->_reloadBuffer($fp, 100);
         if ($new)
         {
           $buffer = array_merge($buf,
             $new);
-          $buf_len = sizeof($buffer);
+          $buf_len = count($buffer);
           $buf_pos = 0;
         }
         else
@@ -251,13 +254,15 @@ class Swift_CharacterStream_ArrayCharacterStream
       }
       if ($buf_len - $buf_pos > 0)
       {
+      	$size=0;
         for($i = 0; $i < $startLength && isset(
           $buffer[$buf_pos]); ++ $i)
         {
+          ++$size;
           $bytes[] = $buffer[$buf_pos ++];
         }
         $need = $this->_charReader->validateByteSequence(
-          $bytes);
+          $bytes, $size);
         if ($need > 0)
         {
           if ($buf_len - $buf_pos < $need)
@@ -270,8 +275,7 @@ class Swift_CharacterStream_ArrayCharacterStream
               $buffer = array_merge(
                 $buffer,
                 $new);
-              $buf_len = sizeof(
-                $buffer);
+              $buf_len = count($buffer);
             }
           }
           for($i = 0; $i < $need && isset(
@@ -281,6 +285,7 @@ class Swift_CharacterStream_ArrayCharacterStream
           }
         }
         $this->_array[] = $bytes;
+        ++$this->_array_size;
       }
     } while ($has_datas);
     fclose($fp);
@@ -292,9 +297,9 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   public function setPointer($charOffset)
   {
-    if ($charOffset > count($this->_array))
+    if ($charOffset > $this->_array_size)
     {
-      $charOffset = count($this->_array);
+      $charOffset = $this->_array_size;
     }
     elseif ($charOffset < 0)
     {
@@ -310,6 +315,7 @@ class Swift_CharacterStream_ArrayCharacterStream
   {
     $this->_offset = 0;
     $this->_array = array();
+    $this->_array_size = 0;
   }
 
   /**

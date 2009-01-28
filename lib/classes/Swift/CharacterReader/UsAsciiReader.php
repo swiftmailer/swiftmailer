@@ -2,12 +2,12 @@
 
 /*
  Analyzes US-ASCII characters.
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
 
 //@require 'Swift/CharacterReader.php';
@@ -39,7 +39,7 @@ class Swift_CharacterReader_UsAsciiReader
    * @param string $bytes
    * @return int
    */
-  public function validateByteSequence($bytes)
+  public function validateByteSequence($bytes, $size)
   {
   	$byte=reset($bytes);
     if (1 == count($bytes) && $byte >= 0x00 && $byte <= 0x7F)
@@ -51,7 +51,7 @@ class Swift_CharacterReader_UsAsciiReader
       return -1;
     }
   }
-  
+
   /**
    * Returns the number of bytes which should be read to start each character.
    * @return int
@@ -60,5 +60,5 @@ class Swift_CharacterReader_UsAsciiReader
   {
     return 1;
   }
-  
+
 }
