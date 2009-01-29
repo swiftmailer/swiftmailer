@@ -64,20 +64,20 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
     {
       if ($tree !== null)
       {
-        $tree [- 1] = min ( sizeof ( $replace ) - 1, $i - 1 );
+        $tree [- 1] = min ( count ( $replace ) - 1, $i - 1 );
         $tree [- 2] = $last_size;
       }
-      $last_size = sizeof ( $search_element );
       $tree = &$this->_tree;
       if (is_array ( $search_element ))
       {
-        foreach ( $search_element as $char )
+        foreach ( $search_element as $k=>$char )
         {
           $this->_index [$char] = true;
           if (! isset ( $tree [$char] ))
             $tree [$char] = array ();
           $tree = &$tree [$char];
         }
+        $last_size=$k+1;
         $size = max ( $size, $last_size );
       }
       else
@@ -92,7 +92,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
     }
     if ($i !== null)
     {
-      $tree [- 1] = min ( sizeof ( $replace ) - 1, $i );
+      $tree [- 1] = min ( count ( $replace ) - 1, $i );
       $tree [- 2] = $last_size;
       $this->_tree_max_len = $size;
     }
@@ -107,7 +107,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
     for($i = count ( $this->_replace ) - 1; $i >= 0; -- $i)
     {
       $this->_replace [$i] = $rep = $this->filter ( $this->_replace [$i], $i );
-      $this->_rep_size [$i] = sizeof ( $rep );
+      $this->_rep_size [$i] = count ( $rep );
     }
   }
 
@@ -134,7 +134,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
       return $buffer;
     }
     $newBuffer = array ();
-    $buf_size = sizeof ( $buffer );
+    $buf_size = count ( $buffer );
     for($i = 0; $i < $buf_size; ++ $i)
     {
       $search_pos = $this->_tree;

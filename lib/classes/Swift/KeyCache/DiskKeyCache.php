@@ -2,12 +2,12 @@
 
 /*
  Disk based KeyCache in Swift Mailer.
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
 
 //@require 'Swift/KeyCache.php';
@@ -33,41 +33,41 @@
  */
 class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
 {
-  
+
   /** Signal to place pointer at start of file */
   const POSITION_START = 0;
-  
+
   /** Signal to place pointer at end of file */
   const POSITION_END = 1;
-  
+
   /**
    * An InputStream for cloning.
    * @var Swift_KeyCache_KeyCacheInputStream
    * @access private
    */
   private $_stream;
-  
+
   /**
    * A path to write to.
    * @var string
    * @access private
    */
   private $_path;
-  
+
   /**
    * Stored keys.
    * @var array
    * @access private
    */
   private $_keys = array();
-  
+
   /**
    * Will be true if magic_quotes_runtime is turned on.
    * @var boolean
    * @access private
    */
   private $_quotes = false;
-  
+
   /**
    * Create a new DiskKeyCache with the given $stream for cloning to make
    * InputByteStreams, and the given $path to save to.
@@ -80,7 +80,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     $this->_path = $path;
     $this->_quotes = get_magic_quotes_runtime();
   }
-  
+
   /**
    * Set a string into the cache under $itemKey for the namespace $nsKey.
    * @param string $nsKey
@@ -110,7 +110,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     }
     fwrite($fp, $string);
   }
-  
+
   /**
    * Set a ByteStream into the cache under $itemKey for the namespace $nsKey.
    * @param string $nsKey
@@ -144,7 +144,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       fwrite($fp, $bytes);
     }
   }
-  
+
   /**
    * Provides a ByteStream which when written to, writes data to $itemKey.
    * NOTE: The stream will always write in append mode.
@@ -165,7 +165,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     }
     return $is;
   }
-  
+
   /**
    * Get data back out of the cache as a string.
    * @param string $nsKey
@@ -195,7 +195,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       return $str;
     }
   }
-  
+
   /**
    * Get data back out of the cache as a ByteStream.
    * @param string $nsKey
@@ -221,7 +221,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       }
     }
   }
-  
+
   /**
    * Check if the given $itemKey exists in the namespace $nsKey.
    * @param string $nsKey
@@ -232,7 +232,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
   {
     return is_file($this->_path . '/' . $nsKey . '/' . $itemKey);
   }
-  
+
   /**
    * Clear data for $itemKey in the namespace $nsKey if it exists.
    * @param string $nsKey
@@ -248,7 +248,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     }
     unset($this->_keys[$nsKey][$itemKey]);
   }
-  
+
   /**
    * Clear all data in the namespace $nsKey if it exists.
    * @param string $nsKey
@@ -265,9 +265,9 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       unset($this->_keys[$nsKey]);
     }
   }
-  
+
   // -- Private methods
-  
+
   /**
    * Initialize the namespace of $nsKey if needed.
    * @param string $nsKey
@@ -285,7 +285,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       $this->_keys[$nsKey] = array();
     }
   }
-  
+
   /**
    * Get a file handle on the cache item.
    * @param string $nsKey
@@ -296,7 +296,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    */
   private function _getHandle($nsKey, $itemKey, $position)
   {
-    if (!array_key_exists($itemKey, $this->_keys[$nsKey]))
+    if (!isset($this->_keys[$nsKey]) || !array_key_exists($itemKey, $this->_keys[$nsKey]))
     {
       $fp = fopen($this->_path . '/' . $nsKey . '/' . $itemKey, 'w+b');
       $this->_keys[$nsKey][$itemKey] = $fp;
@@ -311,7 +311,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     }
     return $this->_keys[$nsKey][$itemKey];
   }
-  
+
   /**
    * Destructor.
    */
@@ -322,5 +322,5 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       $this->clearAll($nsKey);
     }
   }
-  
+
 }
