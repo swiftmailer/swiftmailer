@@ -129,8 +129,7 @@ class Swift_CharacterStream_ArrayCharacterStream
         false !== $bytes = $os->read($need))
       {
         // try another optimisation (array_values call unneeded)
-        $c = array_merge(
-          $c, unpack('C*', $bytes));
+        $c = array_merge($c, unpack('C*', $bytes));
       }
       $this->_array[] = $c;
       ++$this->_array_size;
@@ -164,7 +163,7 @@ class Swift_CharacterStream_ArrayCharacterStream
     // Don't use array slice
     $arrays = array();
     $end = $length + $this->_offset;
-    for($i = $this->_offset; $i < $end; ++ $i)
+    for ($i = $this->_offset; $i < $end; ++$i)
     {
       if (!isset($this->_array[$i]))
       {
@@ -174,7 +173,7 @@ class Swift_CharacterStream_ArrayCharacterStream
     }
     $this->_offset += $i - $this->_offset; // Limit function calls
     $chars = false;
-    foreach ( $arrays as $array )
+    foreach ($arrays as $array)
     {
       $chars .= implode('', array_map('chr', $array));
     }
@@ -195,7 +194,7 @@ class Swift_CharacterStream_ArrayCharacterStream
     }
     $arrays = array();
     $end = $length + $this->_offset;
-    for($i = $this->_offset; $i < $end; ++ $i)
+    for ($i = $this->_offset; $i < $end; ++$i)
     {
       if (!isset($this->_array[$i]))
       {
@@ -234,15 +233,13 @@ class Swift_CharacterStream_ArrayCharacterStream
     {
       $bytes = array();
       // Buffer Filing
-      if ($buf_len - $buf_pos <
-         $startLength)
+      if ($buf_len - $buf_pos < $startLength)
       {
         $buf = array_splice($buffer, $buf_pos);
         $new = $this->_reloadBuffer($fp, 100);
         if ($new)
         {
-          $buffer = array_merge($buf,
-            $new);
+          $buffer = array_merge($buf, $new);
           $buf_len = count($buffer);
           $buf_pos = 0;
         }
@@ -253,12 +250,11 @@ class Swift_CharacterStream_ArrayCharacterStream
       }
       if ($buf_len - $buf_pos > 0)
       {
-      	$size=0;
-        for($i = 0; $i < $startLength && isset(
-          $buffer[$buf_pos]); ++ $i)
+        $size = 0;
+        for ($i = 0; $i < $startLength && isset($buffer[$buf_pos]); ++$i)
         {
           ++$size;
-          $bytes[] = $buffer[$buf_pos ++];
+          $bytes[] = $buffer[$buf_pos++];
         }
         $need = $this->_charReader->validateByteSequence(
           $bytes, $size);
@@ -266,27 +262,25 @@ class Swift_CharacterStream_ArrayCharacterStream
         {
           if ($buf_len - $buf_pos < $need)
           {
-            $new = $this->_reloadBuffer(
-              $fp,
-              $need);
+            $new = $this->_reloadBuffer($fp, $need);
+            
             if ($new)
             {
-              $buffer = array_merge(
-                $buffer,
-                $new);
+              $buffer = array_merge($buffer, $new);
               $buf_len = count($buffer);
             }
           }
-          for($i = 0; $i < $need && isset(
-            $buffer[$buf_pos]); ++ $i)
+          for ($i = 0; $i < $need && isset($buffer[$buf_pos]); ++$i)
           {
-            $bytes[] = $buffer[$buf_pos ++];
+            $bytes[] = $buffer[$buf_pos++];
           }
         }
         $this->_array[] = $bytes;
         ++$this->_array_size;
       }
-    } while ($has_datas);
+    }
+    while ($has_datas);
+    
     fclose($fp);
   }
 
@@ -326,9 +320,9 @@ class Swift_CharacterStream_ArrayCharacterStream
    */
   private function _reloadBuffer($fp, $len)
   {
-    if (! feof ( $fp ) && ($bytes = fread ( $fp, $len )) !== false)
+    if (!feof($fp) && ($bytes = fread($fp, $len)) !== false)
     {
-      return unpack ( 'C*', $bytes );
+      return unpack ('C*', $bytes);
     }
     return false;
   }

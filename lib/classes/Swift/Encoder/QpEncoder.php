@@ -264,33 +264,4 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     return $string;
   }
   
-  /**
-   * Canonicalize the byte sequence.
-   * @param string $string
-   * @return string
-   * @access private
-   */
-  protected function _canonicalize(array $bytes)
-  {
-    $ret = array();
-    foreach ($bytes as $k => $b)
-    {
-      if (0x0D == $b && (!isset($bytes[$k + 1]) || 0x0A != $bytes[$k + 1]))
-      {
-        $ret[] = $b;
-        $ret[] = 0x0A;
-      }
-      elseif (0x0A == $b && (!isset($bytes[$k - 1]) || 0x0D != $bytes[$k - 1]))
-      {
-        $ret[] = 0x0D;
-        $ret[] = $b;
-      }
-      else
-      {
-        $ret[] = $b;
-      }
-    }
-    return $ret;
-  }
-  
 }

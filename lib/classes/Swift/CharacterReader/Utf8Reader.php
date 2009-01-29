@@ -29,6 +29,8 @@
 class Swift_CharacterReader_Utf8Reader
   implements Swift_CharacterReader
 {
+  
+  /** Pre-computed for optimization */
   private static $length_map=array(
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -60,10 +62,11 @@ class Swift_CharacterReader_Utf8Reader
    */
   public function validateByteSequence($bytes, $size)
   {
-    $needed=self::$length_map[$bytes[0]] - $size;
-    return $needed>-1
-          ?$needed
-          :-1;
+    $needed = self::$length_map[$bytes[0]] - $size;
+    return ($needed > -1)
+      ? $needed
+      : -1
+      ;
   }
 
   /**

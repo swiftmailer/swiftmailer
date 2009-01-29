@@ -625,6 +625,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     }
   }
   
+  //TOOD: Look at making this public so users can regenerate IDs
   private function _generateId()
   {
     $idLeft = time() . '.' . uniqid();
