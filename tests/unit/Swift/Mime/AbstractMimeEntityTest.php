@@ -736,9 +736,100 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $entity->setChildren(array());
   }
   
-  public function TODO_testCachingIsUsed()
+  public function testBodyIsReadFromCacheWhenUsingToStringIfPresent()
   {
-    $this->fail('TODO');
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> one($cache)->hasKey(any(), 'body') -> returns(true)
+      -> one($cache)->getString(any(), 'body') -> returns("\r\ncache\r\ncache!")
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $this->assertEqual(
+      "Content-Type: text/plain; charset=utf-8\r\n" .
+      "\r\n" .
+      "cache\r\ncache!",
+      $entity->toString()
+      );
+  }
+  
+  public function testBodyIsAddedToCacheWhenUsingToString()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> one($cache)->hasKey(any(), 'body') -> returns(false)
+      -> one($cache)->setString(any(), 'body', "\r\nblah\r\nblah!", Swift_KeyCache::MODE_WRITE)
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $entity->toString();
+  }
+  
+  public function testBodyIsReadFromCacheWhenUsingToByteStreamIfPresent()
+  {
+    $is = $this->_createInputStream();
+    $cache = $this->_createCache(false);
+    
+    $this->_checking(Expectations::create()
+      -> one($cache)->hasKey(any(), 'body') -> returns(true)
+      -> one($cache)->exportToByteStream(any(), 'body', $is)
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $cache
+      );
+    $entity->setBody('foo');
+    
+    $entity->toByteStream($is);
+  }
+  
+  public function testBodyIsAddedToCacheWhenUsingToByteStream()
+  {
+    $is = $this->_createInputStream();
+    $cache = $this->_createCache(false);
+    
+    $this->_checking(Expectations::create()
+      -> one($cache)->hasKey(any(), 'body') -> returns(false)
+      //The input stream should be fetched for writing
+      // Proving that it's actually written to is possible, but extremely
+      // fragile.  Best let the acceptance tests cover this aspect
+      -> one($cache)->getInputByteStream(any(), 'body')
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $cache
+      );
+    $entity->setBody('foo');
+    
+    $entity->toByteStream($is);
   }
   
   public function testFluidInterface()

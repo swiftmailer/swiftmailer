@@ -85,9 +85,11 @@ class Swift_ByteStream_ArrayByteStream
     $end=$length+$this->_offset;
     $ret=array();
     for ($i=$this->_offset; $i<$end; ++$i){
-    	if (!array_key_exists($i, $this->_array))
-    		break;
-    	$ret[]=$this->_array[$i];
+      if (!array_key_exists($i, $this->_array))
+      {
+        break;
+      }
+      $ret[]=$this->_array[$i];
     }
     $this->_offset += $i-$this->_offset; // Limit function calls
     return implode('', $ret);
