@@ -736,7 +736,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     }
   }
   
-  public function _childSortAlgorithm($a, $b)
+  private function _childSortAlgorithm($a, $b)
   {
     $typePrefs = array();
     $types = array(

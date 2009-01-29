@@ -348,14 +348,14 @@ abstract class Swift_Transport_AbstractSmtpTransport
     }
     elseif (!empty($sender))
     {
-      // Don't use array_key
+      // Don't use array_keys
       reset($sender); // Reset Pointer to first pos
-      $path=key($sender); // Get key
+      $path = key($sender); // Get key
     }
     elseif (!empty($from))
     {
       reset($from); // Reset Pointer to first pos
-      $path=key($from); // Get key
+      $path = key($from); // Get key
     }
     return $path;
   }

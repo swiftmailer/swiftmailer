@@ -82,16 +82,17 @@ class Swift_ByteStream_ArrayByteStream
     }
     
     // Don't use array slice
-    $end=$length+$this->_offset;
-    $ret=array();
-    for ($i=$this->_offset; $i<$end; ++$i){
+    $end = $length + $this->_offset;
+    $ret = array();
+    for ($i = $this->_offset; $i < $end; ++$i)
+    {
       if (!array_key_exists($i, $this->_array))
       {
         break;
       }
-      $ret[]=$this->_array[$i];
+      $ret[] = $this->_array[$i];
     }
-    $this->_offset += $i-$this->_offset; // Limit function calls
+    $this->_offset += ($i - $this->_offset); // Limit function calls
     return implode('', $ret);
   }
   

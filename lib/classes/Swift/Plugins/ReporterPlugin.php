@@ -63,7 +63,7 @@ class Swift_Plugins_ReporterPlugin
   {
     $message = $evt->getMessage();
     $failures = array_flip($evt->getFailedRecipients());
-    foreach ((array) $message->getTo() as $address=>$null)
+    foreach ((array) $message->getTo() as $address => $null)
     {
       $this->_reporter->notify(
         $message, $address, (array_key_exists($address, $failures)
@@ -71,7 +71,7 @@ class Swift_Plugins_ReporterPlugin
         : Swift_Plugins_Reporter::RESULT_PASS)
         );
     }
-    foreach ((array) $message->getCc() as $address=>$null)
+    foreach ((array) $message->getCc() as $address => $null)
     {
       $this->_reporter->notify(
         $message, $address, (array_key_exists($address, $failures)
@@ -79,7 +79,7 @@ class Swift_Plugins_ReporterPlugin
         : Swift_Plugins_Reporter::RESULT_PASS)
         );
     }
-    foreach ((array) $message->getBcc() as $address=>$null)
+    foreach ((array) $message->getBcc() as $address => $null)
     {
       $this->_reporter->notify(
         $message, $address, (array_key_exists($address, $failures)

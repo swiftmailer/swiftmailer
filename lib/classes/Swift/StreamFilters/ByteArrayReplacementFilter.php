@@ -2,12 +2,12 @@
 
 /*
  ByteArrayReplacementFilter from Swift Mailer.
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
 
 //@require 'Swift/StreamFilter.php';
@@ -29,16 +29,22 @@
 class Swift_StreamFilters_ByteArrayReplacementFilter
   implements Swift_StreamFilter
 {
-  
+
   /** The needle(s) to search for */
   private $_search;
-  
+
   /** The replacement(s) to make */
   private $_replace;
-  
+
   /** The Index for searching */
   private $_index;
-  
+
+  /** The Search Tree */
+  private $_tree = array ();
+
+  /**  Gives the size of the largest search */
+  private $_tree_max_len = 0;
+
   /**
    * Create a new ByteArrayReplacementFilter with $search and $replace.
    * @param array $search
@@ -48,23 +54,63 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
   {
     $this->_search = $search;
     $this->_index = array ();
-    foreach ( $search as $search_element )
+    $this->_tree = array ();
+    $this->_replace = array ();
+    $this->_rep_size = array ();
+    $tree = null;
+    $i = null;
+    $last_size = $size = 0;
+    foreach ( $search as $i => $search_element )
     {
+      if ($tree !== null)
+      {
+        $tree [- 1] = min ( count ( $replace ) - 1, $i - 1 );
+        $tree [- 2] = $last_size;
+      }
+      $tree = &$this->_tree;
       if (is_array ( $search_element ))
       {
-        foreach ( $search_element as $char )
+        foreach ( $search_element as $k=>$char )
         {
           $this->_index [$char] = true;
+          if (! isset ( $tree [$char] ))
+            $tree [$char] = array ();
+          $tree = &$tree [$char];
         }
+        $last_size=$k+1;
+        $size = max ( $size, $last_size );
       }
       else
       {
+        $last_size = 1;
+        if (! isset ( $tree [$search_element] ))
+          $tree [$search_element] = array ();
+        $tree = &$tree [$search_element];
+        $size = max ( $last_size, $size );
         $this->_index [$search_element] = true;
       }
     }
-    $this->_replace = $replace;
+    if ($i !== null)
+    {
+      $tree [- 1] = min ( count ( $replace ) - 1, $i );
+      $tree [- 2] = $last_size;
+      $this->_tree_max_len = $size;
+    }
+    foreach ( $replace as $rep )
+    {
+      if (! is_array ( $rep ))
+      {
+        $rep = array ($rep );
+      }
+      $this->_replace [] = $rep;
+    }
+    for($i = count ( $this->_replace ) - 1; $i >= 0; -- $i)
+    {
+      $this->_replace [$i] = $rep = $this->filter ( $this->_replace [$i], $i );
+      $this->_rep_size [$i] = count ( $rep );
+    }
   }
-  
+
   /**
    * Returns true if based on the buffer passed more bytes should be buffered.
    * @param array $buffer
@@ -72,70 +118,67 @@ class Swift_StreamFilters_ByteArrayReplacementFilter
    */
   public function shouldBuffer($buffer)
   {
-    $endOfBuffer = end ( $buffer );
-    return isset ( $this->_index [$endOfBuffer] );
+    $endOfBuffer = end($buffer);
+    return isset ($this->_index[$endOfBuffer]);
   }
-  
+
   /**
    * Perform the actual replacements on $buffer and return the result.
    * @param array $buffer
    * @return array
-   * @todo optimize, use one pass tree based search
    */
-  public function filter($buffer)
+  public function filter($buffer, $_min_replaces = -1)
   {
-    $newBuffer = $buffer;
-    
-    foreach ($this->_search as $i => $search)
+    if ($this->_tree_max_len == 0)
     {
-      if (is_array($search))
-      {
-        //TODO: Can this be optimized?
-        $replace = (isset($this->_replace[$i]) && is_array($this->_replace[$i]))
-          ? $this->_replace[$i]
-          : $this->_replace
-          ;
-        $newBuffer = $this->_filterByNeedle($newBuffer, $search, $replace);
-      }
-      else
-      {
-        return $this->_filterByNeedle($buffer, $this->_search, $this->_replace);
-      }
+      return $buffer;
     }
-    
-    return $newBuffer;
-  }
-  
-  // -- Private Methods
-  
-
-  private function _filterByNeedle($buffer, $needle, $replace)
-  {
     $newBuffer = array ();
-    // Init
-    $needle_size = count ( $needle );
-    $found = $needle_size - 1;
-    $count = count ( $buffer );
-    $max_pos = $count - $found;
-    for($i = 0; $i < $max_pos; ++ $i)
+    $buf_size = count ( $buffer );
+    for($i = 0; $i < $buf_size; ++ $i)
     {
-      for($j = 0; $j < $needle_size; ++ $j)
+      $search_pos = $this->_tree;
+      $last_found = PHP_INT_MAX;
+      // We try to find if the next byte is part of a search pattern
+      for($j = 0; $j <= $this->_tree_max_len; ++ $j)
       {
-        if ($buffer [$i + $j] != $needle [$j])
+        // We have a new byte for a search pattern
+        if (isset ( $buffer [$p = $i + $j] ) && isset ( $search_pos [$buffer [$p]] ))
         {
-          break;
+          $search_pos = $search_pos [$buffer [$p]];
+          // We have a complete pattern, save, in case we don't find a better match later
+          if (isset ( $search_pos [- 1] ) && $search_pos [- 1] < $last_found && $search_pos [- 1] > $_min_replaces)
+          {
+            $last_found = $search_pos [- 1];
+            $last_size = $search_pos [- 2];
+          }
         }
-        if ($j == $found)
+        // We got a complete pattern
+        elseif ($last_found !== PHP_INT_MAX)
         {
-          $newBuffer = array_merge ( $newBuffer, $replace );
-          $i += $j;
+          // Adding replacement datas to output buffer
+          $rep_size = $this->_rep_size [$last_found];
+          for($j = 0; $j < $rep_size; ++ $j)
+          {
+            $newBuffer [] = $this->_replace [$last_found] [$j];
+          }
+          // We Move cursor forward
+          $i += $last_size - 1;
+          // Edge Case, last position in buffer
+          if ($i >= $buf_size)
+          {
+            $newBuffer [] = $buffer [$i];
+          }
+          // We start the next loop
           continue 2;
         }
+        else
+        {
+          // this byte is not in a pattern and we haven't found another pattern
+          break;
+        }
       }
-      $newBuffer [] = $buffer [$i];
-    }
-    for(; $i < $count; ++ $i)
-    {
+      // Normal byte, move it to output buffer
       $newBuffer [] = $buffer [$i];
     }
     return $newBuffer;

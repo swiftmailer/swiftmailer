@@ -2,12 +2,12 @@
 
 /*
  Analyzes UTF-8 characters.
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
 
 //@require 'Swift/CharacterReader.php';
@@ -29,7 +29,26 @@
 class Swift_CharacterReader_Utf8Reader
   implements Swift_CharacterReader
 {
-  
+  private static $length_map=array(
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+    4,4,4,4,4,4,4,4,5,5,5,5,6,6,0,0
+ );
+
+
   /**
    * Returns an integer which specifies how many more bytes to read.
    * A positive integer indicates the number of more bytes to fetch before invoking
@@ -39,42 +58,14 @@ class Swift_CharacterReader_Utf8Reader
    * @param string $bytes
    * @return int
    */
-  public function validateByteSequence($bytes)
+  public function validateByteSequence($bytes, $size)
   {
-    $b = $bytes[0];
-    
-    if ($b >= 0x00 && $b <= 0x7F)
-    {
-      $expected = 1;
-    }
-    elseif ($b >= 0xC0 && $b <= 0xDF)
-    {
-      $expected = 2;
-    }
-    elseif ($b >= 0xE0 && $b <= 0xEF)
-    {
-      $expected = 3;
-    }
-    elseif ($b >= 0xF0 && $b <= 0xF7)
-    {
-      $expected = 4;
-    }
-    elseif ($b >= 0xF8 && $b <= 0xFB)
-    {
-      $expected = 5;
-    }
-    elseif ($b >= 0xFC && $b <= 0xFD)
-    {
-      $expected = 6;
-    }
-    else
-    {
-      $expected = 0;
-    }
-    
-    return max(-1, $expected - count($bytes));
+    $needed=self::$length_map[$bytes[0]] - $size;
+    return $needed>-1
+          ?$needed
+          :-1;
   }
-  
+
   /**
    * Returns the number of bytes which should be read to start each character.
    * @return int
@@ -83,5 +74,5 @@ class Swift_CharacterReader_Utf8Reader
   {
     return 1;
   }
-  
+
 }

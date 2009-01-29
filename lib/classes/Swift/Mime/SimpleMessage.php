@@ -294,7 +294,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
       4 => 'Low',
       5 => 'Lowest'
       );
-    $pMapKeys=array_keys($priorityMap);
+    $pMapKeys = array_keys($priorityMap);
     if ($priority > max($pMapKeys))
     {
       $priority = max($pMapKeys);

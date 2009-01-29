@@ -255,7 +255,8 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     $string = str_replace(array("\t=0D=0A", " =0D=0A", "=0D=0A"),
       array("=09\r\n", "=20\r\n", "\r\n"), $string
       );
-    switch ($end = ord(substr($string, -1))){
+    switch ($end = ord(substr($string, -1)))
+    {
       case 0x09:
       case 0x20:
         $string = substr_replace($string, self::$_qpMap[$end], -1);
