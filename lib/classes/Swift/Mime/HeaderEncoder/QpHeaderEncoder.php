@@ -2,12 +2,12 @@
 
 /*
  The Quoted Printable header encoder in Swift Mailer.
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,7 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
 
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
@@ -31,9 +31,9 @@ require_once dirname(__FILE__) . '/../../CharacterStream.php';
 class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
   implements Swift_Mime_HeaderEncoder
 {
-  
+
   private static $_headerSafeMap = array();
-  
+
   /**
    * Creates a new QpHeaderEncoder for the given CharacterStream.
    * @param Swift_CharacterStream $charStream to use for reading characters
@@ -52,7 +52,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
       }
     }
   }
-  
+
   /**
    * Get the name of this encoding scheme.
    * Returns the string 'Q'.
@@ -62,7 +62,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
   {
     return 'Q';
   }
-  
+
   /**
    * Takes an unencoded string and produces a Q encoded string from it.
    * @param string $string to encode
@@ -77,30 +77,33 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
       parent::encodeString($string, $firstLineOffset, $maxLineLength)
       );
   }
-  
+
   // -- Overridden points of extension
-  
+
   /**
    * Encode the given byte array into a verbatim QP form.
    * @param int[] $bytes
    * @return string
    * @access protected
    */
-  protected function _encodeByteSequence(array $bytes)
+  protected function _encodeByteSequence(array $bytes, &$size)
   {
     $ret = '';
+    $size=0;
     foreach ($bytes as $b)
     {
       if (isset(self::$_headerSafeMap[$b]))
       {
         $ret .= self::$_headerSafeMap[$b];
+        ++$size;
       }
       else
       {
         $ret .= self::$_qpMap[$b];
+        $size+=3;
       }
     }
     return $ret;
   }
-  
+
 }
