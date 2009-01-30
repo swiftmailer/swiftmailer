@@ -1,14 +1,10 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Transport/StreamBuffer.php';
-require_once 'Swift/ReplacementFilterFactory.php';
+require_once 'Swift/Transport/StreamBuffer/AbstractStreamBufferAcceptanceTest.php';
 
 class Swift_Transport_StreamBuffer_ProcessAcceptanceTest
-  extends Swift_Tests_SwiftUnitTestCase
+  extends Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
 {
-
-  private $_buffer;
   
   public function skip()
   {
@@ -18,49 +14,12 @@ class Swift_Transport_StreamBuffer_ProcessAcceptanceTest
       );
   }
   
-  public function setUp()
-  {
-    $this->_buffer = new Swift_Transport_StreamBuffer(
-      $this->_stub('Swift_ReplacementFilterFactory')
-      );
-  }
-  
-  public function testReadLine()
+  protected function _initializeBuffer()
   {
     $this->_buffer->initialize(array(
       'type' => Swift_Transport_IoBuffer::TYPE_PROCESS,
       'command' => SWIFT_SENDMAIL_PATH . ' -bs'
       ));
-    
-    $line = $this->_buffer->readLine(0);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    $seq = $this->_buffer->write("QUIT\r\n");
-    $this->assertTrue($seq);
-    $line = $this->_buffer->readLine($seq);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    $this->_buffer->terminate();
-  }
-  
-  public function testWrite()
-  {
-    $this->_buffer->initialize(array(
-      'type' => Swift_Transport_IoBuffer::TYPE_PROCESS,
-      'command' => SWIFT_SENDMAIL_PATH . ' -bs'
-      ));
-    
-    $line = $this->_buffer->readLine(0);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    
-    $seq = $this->_buffer->write("HELO foo\r\n");
-    $this->assertTrue($seq);
-    $line = $this->_buffer->readLine($seq);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    
-    $seq = $this->_buffer->write("QUIT\r\n");
-    $this->assertTrue($seq);
-    $line = $this->_buffer->readLine($seq);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    $this->_buffer->terminate();
   }
   
 }

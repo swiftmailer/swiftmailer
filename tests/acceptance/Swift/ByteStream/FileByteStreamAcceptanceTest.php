@@ -1,9 +1,12 @@
 <?php
 
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
+require_once 'Swift/InputByteStream.php';
 require_once 'Swift/ByteStream/FileByteStream.php';
 require_once 'Swift/StreamFilters/StringReplacementFilter.php';
 
-class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
+class Swift_ByteStream_FileByteStreamAcceptanceTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_tmpDir;
@@ -31,7 +34,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
   
   public function testFileDataCanBeRead()
   {
-    $file = new Swift_ByteStream_FileByteStream($this->_testFile);
+    $file = $this->_createFileStream($this->_testFile);
     $str = '';
     while (false !== $bytes = $file->read(8192))
     {
@@ -42,7 +45,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
   
   public function testFileDataCanBeReadSequentially()
   {
-    $file = new Swift_ByteStream_FileByteStream($this->_testFile);
+    $file = $this->_createFileStream($this->_testFile);
     $this->assertEqual('abcde', $file->read(5));
     $this->assertEqual('fghijklm', $file->read(8));
     $this->assertFalse($file->read(1));
@@ -50,13 +53,13 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
   
   public function testFilenameIsReturned()
   {
-    $file = new Swift_ByteStream_FileByteStream($this->_testFile);
+    $file = $this->_createFileStream($this->_testFile);
     $this->assertEqual($this->_testFile, $file->getPath());
   }
   
   public function testFileCanBeWrittenTo()
   {
-    $file = new Swift_ByteStream_FileByteStream(
+    $file = $this->_createFileStream(
       $this->_testFile, true
       );
     $file->write('foobar');
@@ -65,7 +68,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
   
   public function testReadingFromThenWritingToFile()
   {
-    $file = new Swift_ByteStream_FileByteStream(
+    $file = $this->_createFileStream(
       $this->_testFile, true
       );
     $file->write('foobar');
@@ -76,7 +79,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
   
   public function testWritingToFileWithCanonicalization()
   {
-    $file = new Swift_ByteStream_FileByteStream(
+    $file = $this->_createFileStream(
       $this->_testFile, true
       );
     $file->addFilter($this->_createFilter(array("\r\n", "\r"), "\n"), 'allToLF');
@@ -86,11 +89,86 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends UnitTestCase
     $this->assertEqual("foo\nbar\nzip\ntest\n", file_get_contents($this->_testFile));
   }
   
+  public function testBindingOtherStreamsMirrorsWriteOperations()
+  {
+    $file = $this->_createFileStream(
+      $this->_testFile, true
+      );
+    $is1 = $this->_createMockInputStream();
+    $is2 = $this->_createMockInputStream();
+    
+    $this->_checking(Expectations::create()
+      -> one($is1)->write('x')
+      -> one($is2)->write('x')
+      -> one($is1)->write('y')
+      -> one($is2)->write('y')
+    );
+    
+    $file->bind($is1);
+    $file->bind($is2);
+    
+    $file->write('x');
+    $file->write('y');
+  }
+  
+  public function testBindingOtherStreamsMirrorsFlushOperations()
+  {
+    $file = $this->_createFileStream(
+      $this->_testFile, true
+      );
+    $is1 = $this->_createMockInputStream();
+    $is2 = $this->_createMockInputStream();
+    
+    $this->_checking(Expectations::create()
+      -> one($is1)->flushBuffers()
+      -> one($is2)->flushBuffers()
+    );
+    
+    $file->bind($is1);
+    $file->bind($is2);
+    
+    $file->flushBuffers();
+  }
+  
+  public function testUnbindingStreamPreventsFurtherWrites()
+  {
+    $file = $this->_createFileStream(
+      $this->_testFile, true
+      );
+    $is1 = $this->_createMockInputStream();
+    $is2 = $this->_createMockInputStream();
+    
+    $this->_checking(Expectations::create()
+      -> one($is1)->write('x')
+      -> one($is2)->write('x')
+      -> one($is1)->write('y')
+    );
+    
+    $file->bind($is1);
+    $file->bind($is2);
+    
+    $file->write('x');
+    
+    $file->unbind($is2);
+    
+    $file->write('y');
+  }
+  
   // -- Creation methods
   
   private function _createFilter($search, $replace)
   {
     return new Swift_StreamFilters_StringReplacementFilter($search, $replace);
+  }
+  
+  private function _createMockInputStream()
+  {
+    return $this->_mock('Swift_InputByteStream');
+  }
+  
+  private function _createFileStream($file, $writable = false)
+  {
+    return new Swift_ByteStream_FileByteStream($file, $writable);
   }
   
 }
