@@ -51,7 +51,10 @@ class Swift_ByteStream_ArrayByteStream
    * @access private
    */
   private $_offset = 0;
-
+  
+  /** Bound streams */
+  private $_mirrors = array();
+  
   /**
    * Create a new ArrayByteStream.
    * If $stack is given the stream will be populated with the bytes it contains.
@@ -105,16 +108,47 @@ class Swift_ByteStream_ArrayByteStream
   /**
    * Writes $bytes to the end of the stream.
    * @param string $bytes
-   * @param Swift_InputByteStream $is, optional
    */
-  public function write($bytes, Swift_InputByteStream $is = null)
+  public function write($bytes)
   {
     $to_add = str_split($bytes);
     array_unshift($to_add, &$this->_array);
     $this->_arraySize = call_user_func_array('array_push', $to_add);
-    if (isset($is))
+    
+    foreach ($this->_mirrors as $stream)
     {
-      $is->write($bytes);
+      $stream->write($bytes);
+    }
+  }
+  
+  /**
+   * Attach $is to this stream.
+   * The stream acts as an observer, receiving all data that is written.
+   * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
+   *
+   * @param Swift_InputByteStream $is
+   */
+  public function bind(Swift_InputByteStream $is)
+  {
+    $this->_mirrors[] = $is;
+  }
+  
+  /**
+   * Remove an already bound stream.
+   * If $is is not bound, no errors will be raised.
+   * If the stream currently has any buffered data it will be written to $is
+   * before unbinding occurs.
+   *
+   * @param Swift_InputByteStream $is
+   */
+  public function unbind(Swift_InputByteStream $is)
+  {
+    foreach ($this->_mirrors as $k => $stream)
+    {
+      if ($is === $stream)
+      {
+        unset($this->_mirrors[$k]);
+      }
     }
   }
 
@@ -146,6 +180,11 @@ class Swift_ByteStream_ArrayByteStream
     $this->_offset = 0;
     $this->_array = array();
     $this->_arraySize = 0;
+    
+    foreach ($this->_mirrors as $stream)
+    {
+      $stream->flushBuffers();
+    }
   }
 
 }

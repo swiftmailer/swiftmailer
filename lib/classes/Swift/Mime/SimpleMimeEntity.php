@@ -474,23 +474,32 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         }
         else
         {
-          $is->write("\r\n",
-            $this->_cache->getInputByteStream($this->_cacheKey, 'body')
-            );
+          $cacheIs = $this->_cache->getInputByteStream($this->_cacheKey, 'body');
+          if ($cacheIs)
+          {
+            $is->bind($cacheIs);
+          }
+          
+          $is->write("\r\n");
+          
           if ($this->_body instanceof Swift_OutputByteStream)
           {
             $this->_body->setReadPointer(0);
-            $this->_encoder->encodeByteStream($this->_body,
-              $this->_cache->getInputByteStream($this->_cacheKey, 'body', $is),
-              0, $this->getMaxLineLength()
+            
+            $this->_encoder->encodeByteStream($this->_body, $is, 0,
+              $this->getMaxLineLength()
               );
           }
           else
           {
-            $is->write($this->_encoder->encodeString($this->getBody(), 0,
-              $this->getMaxLineLength()),
-              $this->_cache->getInputByteStream($this->_cacheKey, 'body')
-              );
+            $is->write($this->_encoder->encodeString(
+              $this->getBody(), 0, $this->getMaxLineLength()
+              ));
+          }
+          
+          if ($cacheIs)
+          {
+            $is->unbind($cacheIs);
           }
         }
       }

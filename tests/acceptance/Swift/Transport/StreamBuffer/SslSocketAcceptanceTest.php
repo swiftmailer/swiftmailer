@@ -1,15 +1,11 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Transport/StreamBuffer.php';
-require_once 'Swift/ReplacementFilterFactory.php';
+require_once 'Swift/Transport/StreamBuffer/AbstractStreamBufferAcceptanceTest.php';
 
 class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest
-  extends Swift_Tests_SwiftUnitTestCase
+  extends Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
 {
 
-  private $_buffer;
-  
   public function skip()
   {
     $streams = stream_get_transports();
@@ -22,14 +18,7 @@ class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest
       );
   }
   
-  public function setUp()
-  {
-    $this->_buffer = new Swift_Transport_StreamBuffer(
-      $this->_stub('Swift_ReplacementFilterFactory')
-      );
-  }
-  
-  public function testReadLine()
+  protected function _initializeBuffer()
   {
     $parts = explode(':', SWIFT_SSL_HOST);
     $host = $parts[0];
@@ -43,44 +32,6 @@ class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest
       'blocking' => 1,
       'timeout' => 15
       ));
-    
-    $line = $this->_buffer->readLine(0);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    $seq = $this->_buffer->write("QUIT\r\n");
-    $this->assertTrue($seq);
-    $line = $this->_buffer->readLine($seq);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    $this->_buffer->terminate();
-  }
-  
-  public function testWrite()
-  {
-    $parts = explode(':', SWIFT_SSL_HOST);
-    $host = $parts[0];
-    $port = isset($parts[1]) ? $parts[1] : 25;
-    
-    $this->_buffer->initialize(array(
-      'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
-      'host' => $host,
-      'port' => $port,
-      'protocol' => 'ssl',
-      'blocking' => 1,
-      'timeout' => 15
-      ));
-    
-    $line = $this->_buffer->readLine(0);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    
-    $seq = $this->_buffer->write("HELO foo\r\n");
-    $this->assertTrue($seq);
-    $line = $this->_buffer->readLine($seq);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    
-    $seq = $this->_buffer->write("QUIT\r\n");
-    $this->assertTrue($seq);
-    $line = $this->_buffer->readLine($seq);
-    $this->assertPattern('/^[0-9]{3}.*?\r\n$/D', $line);
-    $this->_buffer->terminate();
   }
   
 }

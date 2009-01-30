@@ -51,6 +51,9 @@ class Swift_Plugins_BandwidthMonitorPlugin
    */
   private $_in = 0;
   
+  /** Bound byte streams */
+  private $_mirrors = array();
+  
   /**
    * Not used.
    */
@@ -92,12 +95,43 @@ class Swift_Plugins_BandwidthMonitorPlugin
    * Called when a message is sent so that the outgoing counter can be increased.
    * @param string $bytes
    */
-  public function write($bytes, Swift_InputByteStream $is = null)
+  public function write($bytes)
   {
     $this->_out += strlen($bytes);
-    if (isset($is))
+    foreach ($this->_mirrors as $stream)
     {
-      $is->write($bytes);
+      $stream->write($bytes);
+    }
+  }
+  
+  /**
+   * Attach $is to this stream.
+   * The stream acts as an observer, receiving all data that is written.
+   * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
+   * 
+   * @param Swift_InputByteStream $is
+   */
+  public function bind(Swift_InputByteStream $is)
+  {
+    $this->_mirrors[] = $is;
+  }
+  
+  /**
+   * Remove an already bound stream.
+   * If $is is not bound, no errors will be raised.
+   * If the stream currently has any buffered data it will be written to $is
+   * before unbinding occurs.
+   * 
+   * @param Swift_InputByteStream $is
+   */
+  public function unbind(Swift_InputByteStream $is)
+  {
+    foreach ($this->_mirrors as $k => $stream)
+    {
+      if ($is === $stream)
+      {
+        unset($this->_mirrors[$k]);
+      }
     }
   }
   
@@ -106,6 +140,10 @@ class Swift_Plugins_BandwidthMonitorPlugin
    */
   public function flushBuffers()
   {
+    foreach ($this->_mirrors as $stream)
+    {
+      $stream->flushBuffers();
+    }
   }
   
   /**

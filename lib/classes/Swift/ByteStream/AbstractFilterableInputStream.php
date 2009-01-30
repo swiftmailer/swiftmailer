@@ -41,8 +41,8 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   /** A buffer for writing */
   private $_writeBuffer = '';
   
-  /** Write-through ByteStream */
-  private $_writeThrough = null;
+  /** Bound streams */
+  private $_mirrors = array();
   
   /**
    * Commit the given bytes to the storage medium immediately.
@@ -79,23 +79,55 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   /**
    * Writes $bytes to the end of the stream.
    * @param string $bytes
-   * @param Swift_InputByteStream $is, optional
    * @throws Swift_IoException
    */
-  public function write($bytes, Swift_InputByteStream $is = null)
+  public function write($bytes)
   {
     $this->_writeBuffer .= $bytes;
-    $shouldBuffer = false;
     foreach ($this->_filters as $filter)
     {
       if ($filter->shouldBuffer($this->_writeBuffer))
       {
-        $this->_writeThrough = $is;
         return;
       }
     }
-    $this->_doWrite($this->_writeBuffer, $is);
+    $this->_doWrite($this->_writeBuffer);
     return ++$this->_sequence;
+  }
+  
+  /**
+   * Attach $is to this stream.
+   * The stream acts as an observer, receiving all data that is written.
+   * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
+   * 
+   * @param Swift_InputByteStream $is
+   */
+  public function bind(Swift_InputByteStream $is)
+  {
+    $this->_mirrors[] = $is;
+  }
+  
+  /**
+   * Remove an already bound stream.
+   * If $is is not bound, no errors will be raised.
+   * If the stream currently has any buffered data it will be written to $is
+   * before unbinding occurs.
+   * 
+   * @param Swift_InputByteStream $is
+   */
+  public function unbind(Swift_InputByteStream $is)
+  {
+    foreach ($this->_mirrors as $k => $stream)
+    {
+      if ($is === $stream)
+      {
+        if ($this->_writeBuffer !== '')
+        {
+          $stream->write($this->_filter($this->_writeBuffer));
+        }
+        unset($this->_mirrors[$k]);
+      }
+    }
   }
   
   /**
@@ -105,31 +137,43 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
    */
   public function flushBuffers()
   {
-    if (isset($this->_writeBuffer))
+    if ($this->_writeBuffer !== '')
     {
-      $this->_doWrite($this->_writeBuffer, $this->_writeThrough);
+      $this->_doWrite($this->_writeBuffer);
     }
     $this->_flush();
+    
+    foreach ($this->_mirrors as $stream)
+    {
+      $stream->flushBuffers();
+    }
   }
   
   // -- Private methods
   
-  /** Just write the bytes to the stream */
-  private function _doWrite($bytes, Swift_InputByteStream $is = null)
+  /** Run $bytes through all filters */
+  private function _filter($bytes)
   {
     foreach ($this->_filters as $filter)
     {
       $bytes = $filter->filter($bytes);
     }
+    return $bytes;
+  }
+  
+  /** Just write the bytes to the stream */
+  private function _doWrite($bytes)
+  {
+    $bytes = $this->_filter($bytes);
     
     $this->_commit($bytes);
     
-    if (isset($is))
+    foreach ($this->_mirrors as $stream)
     {
-      $is->write($bytes);
+      $stream->write($bytes);
     }
+    
     $this->_writeBuffer = '';
-    $this->_writeThrough = null;
   }
   
 }
