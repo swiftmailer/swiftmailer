@@ -59,3 +59,16 @@ ABNF definitions
 RFC 3676:
 ---------
 Flowed formatting/delsp parameters
+
+RFC 2015:
+---------
+Mime Security with PGP
+
+RFC 2440:
+---------
+Original OpenPGP message format
+
+RFC 4880:
+---------
+OpenPGP Message format revision (fun, it's exactly original *2 --sorry)
+
