@@ -57,7 +57,11 @@ class Swift_CharacterReader_GenericFixedWidthReader
    */
   public function validateByteSequence($bytes, $size)
   {
-    return max(-1, $this->_width - count($bytes));
+    $needed = $this->_width - $size;
+    return ($needed > -1)
+      ? $needed
+      : -1
+      ;
   }
 
   /**
