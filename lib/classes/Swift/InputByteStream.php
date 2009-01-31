@@ -31,6 +31,11 @@ interface Swift_InputByteStream
   
   /**
    * Writes $bytes to the end of the stream.
+   * 
+   * Writing may not happen immediately if the stream chooses to buffer.  If
+   * you want to write these bytes with immediate effect, call {@link commit()}
+   * after calling write().
+   * 
    * This method returns the sequence ID of the write (i.e. 1 for first, 2 for
    * second, etc etc).
    *
@@ -39,6 +44,14 @@ interface Swift_InputByteStream
    * @throws Swift_IoException
    */
   public function write($bytes);
+  
+  /**
+   * For any bytes that are currently buffered inside the stream, force them
+   * off the buffer.
+   * 
+   * @throws Swift_IoException
+   */
+  public function commit();
   
   /**
    * Attach $is to this stream.

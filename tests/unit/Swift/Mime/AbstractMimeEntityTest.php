@@ -666,6 +666,21 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $entity->toByteStream($is);
   }
   
+  public function testEntityHeadersAreComittedToByteStream()
+  {
+    $entity = $this->_createEntity($this->_createHeaderSet(),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $is = $this->_createInputStream(false);
+    $this->_checking(Expectations::create()
+      -> atLeast(1)->of($is)->commit()
+      -> atLeast(1)->of($is)->write(any())
+      -> ignoring($is)
+      );
+    
+    $entity->toByteStream($is);
+  }
+  
   public function testOrderingTextBeforeHtml()
   {
     $htmlChild = $this->_createChild(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,

@@ -96,6 +96,17 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   }
   
   /**
+   * For any bytes that are currently buffered inside the stream, force them
+   * off the buffer.
+   * 
+   * @throws Swift_IoException
+   */
+  public function commit()
+  {
+    $this->_doWrite($this->_writeBuffer);
+  }
+  
+  /**
    * Attach $is to this stream.
    * The stream acts as an observer, receiving all data that is written.
    * All {@link write()} and {@link flushBuffers()} operations will be mirrored.

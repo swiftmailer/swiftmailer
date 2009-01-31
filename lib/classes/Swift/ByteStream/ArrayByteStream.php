@@ -117,6 +117,13 @@ class Swift_ByteStream_ArrayByteStream
   }
   
   /**
+   * Not used.
+   */
+  public function commit()
+  {
+  }
+  
+  /**
    * Attach $is to this stream.
    * The stream acts as an observer, receiving all data that is written.
    * All {@link write()} and {@link flushBuffers()} operations will be mirrored.

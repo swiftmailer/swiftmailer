@@ -82,23 +82,21 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
   }
   
   /**
-   * Attach $is to this stream.
-   * The stream acts as an observer, receiving all data that is written.
-   * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
-   * 
-   * @param Swift_InputByteStream $is
+   * Not used.
+   */
+  public function commit()
+  {
+  }
+  
+  /**
+   * Not used.
    */
   public function bind(Swift_InputByteStream $is)
   {
   }
   
   /**
-   * Remove an already bound stream.
-   * If $is is not bound, no errors will be raised.
-   * If the stream currently has any buffered data it will be written to $is
-   * before unbinding occurs.
-   * 
-   * @param Swift_InputByteStream $is
+   * Not used.
    */
   public function unbind(Swift_InputByteStream $is)
   {

@@ -464,6 +464,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   public function toByteStream(Swift_InputByteStream $is)
   {
     $is->write($this->_headers->toString());
+    $is->commit();
+    
     if (empty($this->_immediateChildren))
     {
       if (isset($this->_body))
