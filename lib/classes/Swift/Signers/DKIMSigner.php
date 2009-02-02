@@ -163,6 +163,85 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     $this->_selector=$selector;
   }
   
+  public function reset()
+  {
+    $this->_headerHash=null;
+    $this->_headerHashHandler=null;
+    $this->_bodyHash=null;
+    $this->_bodyHashHandler=null;
+    $this->_bodyCanonEmptyCounter=0;
+    $this->_bodyCanonLastChar=NULL;
+    $this->_bodyCanonSpace=false;
+  }
+  
+  /**
+   * Writes $bytes to the end of the stream.
+   *
+   * Writing may not happen immediately if the stream chooses to buffer.  If
+   * you want to write these bytes with immediate effect, call {@link commit()}
+   * after calling write().
+   *
+   * This method returns the sequence ID of the write (i.e. 1 for first, 2 for
+   * second, etc etc).
+   *
+   * @param string $bytes
+   * @return int
+   * @throws Swift_IoException
+   */
+  public function write($bytes)
+  {
+    $this->_canonicalizeBody($bytes);
+  }
+  
+  /**
+   * For any bytes that are currently buffered inside the stream, force them
+   * off the buffer.
+   *
+   * @throws Swift_IoException
+   */
+  public function commit()
+  {
+    // Nothing to do
+    return;
+  }
+  
+  /**
+   * Attach $is to this stream.
+   * The stream acts as an observer, receiving all data that is written.
+   * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
+   *
+   * @param Swift_InputByteStream $is
+   */
+  public function bind(Swift_InputByteStream $is)
+  {
+    // Don't have to mirror anything
+    return;
+  }
+  
+  /**
+   * Remove an already bound stream.
+   * If $is is not bound, no errors will be raised.
+   * If the stream currently has any buffered data it will be written to $is
+   * before unbinding occurs.
+   *
+   * @param Swift_InputByteStream $is
+   */
+  public function unbind(Swift_InputByteStream $is)
+  {
+    // Don't have to mirror anything
+    return;
+  }
+  
+  /**
+   * Flush the contents of the stream (empty it) and set the internal pointer
+   * to the beginning.
+   * @throws Swift_IoException
+   */
+  public function flushBuffers()
+  {
+    $this->reset();
+  }
+  
   /**
    * Set hash_algorithm, must be one of rsa-sha256 | rsa-sha1 defaults to rsa-sha256
    * @param string $hash
@@ -275,6 +354,22 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
   }
   
   /**
+   * Start Body
+   *
+   */
+  public function startBody(){
+    $this->_bodyHashHandler=hash_init($this->_hashAlgorithm);
+  }
+  
+  /**
+   * End Body
+   *
+   */
+  public function endBody(){
+    $this->_endOfBody();
+  }
+  
+  /**
    * Adds an ignored Header
    *
    * @param string $header_name
@@ -285,6 +380,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     $this->_ignoredHeaders[strtolower($header_name)]=true;
     return $this;
   }
+  
   
   /**
    * Set the body to sign
@@ -336,6 +432,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
    */
   public function addSignature(Swift_Mime_HeaderSet $headers)
   {
+    $this->_endOfBody();
     // Prepare the DKIM-Signature
     $params=array(
       'v'=>'1',
@@ -386,6 +483,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     $tmp=$headers->getAll('DKIM-Signature');
     $this->_dkimHeader=end($tmp);
     $this->_addHeader($this->_dkimHeader->toString());
+    $this->_endOfHeaders();
     $this->_dkimHeader->setParameter('b', base64_encode($this->_getEncryptedHash()));
     return $this;
   }

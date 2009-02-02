@@ -18,20 +18,14 @@
  
  */
 
-class Swift_Signer
+/**
+ * Base Class of Signer Infrastructure
+ * @author Xavier De Cock <xdecock@gmail.com>
+ * @package Swift
+ * @subpackage Signatures
+ */
+Interface Swift_Signer
 {
-  /**
-   * Signs a message using all the signature elements attached
-   * to the Signer
-   *
-   * @param Swift_Message $message
-   * @return Swift_Message
-   */
-  public function signMessage(Swift_Message $message){
-    
-  }
-  public function attachSigner(Swift_Signers_ContentSigner $signer){
-    $this->_signers[]=$signer;
-  }
+  public function reset();
 }
 ?>

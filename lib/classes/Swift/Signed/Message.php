@@ -36,7 +36,13 @@ Class Swift_Signed_Message extends Swift_Message
     {
       if ($signer instanceof Swift_Signers_HeaderSigner)
       {
-        // TODO Implement
+        /* @var $signer Swift_Signers_HeaderSigner */
+        $signer->reset();
+        $signer->startBody();
+        parent::toByteStream($signer);
+        $signer->endBody();
+        $signer->setHeaders($this->getHeaders());
+        $signer->addSignature($this->getHeaders());
       }
     }
     return parent::toString();
