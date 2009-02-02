@@ -218,6 +218,15 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   }
   
   /**
+   * Return the name of all Headers
+   * @return array
+   */
+  public function listAll()
+  {
+    return array_keys($this->_headers);
+  }
+  
+  /**
    * Remove the header with the given $name if it's set.
    * 
    * If multiple headers match, the actual one may be specified by $index.
@@ -301,7 +310,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     }
     foreach ($headers as $collection)
     {
-      foreach ($collection as $header)
+      foreach (array_reverse($collection) as $header)
       {
         if ($this->_isDisplayed($header) || $header->getFieldBody() != '')
         {
