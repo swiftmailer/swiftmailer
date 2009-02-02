@@ -40,9 +40,7 @@ Class Swift_Signed_Message extends Swift_Message
         /* @var $signer Swift_Signers_HeaderSigner */
         $signer->reset();
         $signer->startBody();
-        // Todo Find a way to get only the body without relying on cache (and we must have childs body in fact, this isn't right either
-        parent::toByteStream($cache->getInputByteStream($this->_cacheKey, 'dummy'));
-        $cache->exportToByteStream($this->_cacheKey, 'body', $signer);
+        $this->_bodyToByteStream($signer);
         $signer->endBody();
         $signer->setHeaders($this->getHeaders());
         $signer->addSignature($this->getHeaders());
