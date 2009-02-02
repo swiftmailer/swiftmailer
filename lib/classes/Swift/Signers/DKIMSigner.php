@@ -148,6 +148,8 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
   private $_bodyCanonSpace=false;
   private $_bodyCanonLastChar=null;
   
+  private $_bound=array();
+  
   /**
    * Constructor
    *
@@ -191,6 +193,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
   public function write($bytes)
   {
     $this->_canonicalizeBody($bytes);
+    foreach($this->_bound as $is){
+      $is->write($bytes);
+    }
   }
   
   /**
@@ -215,6 +220,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
   public function bind(Swift_InputByteStream $is)
   {
     // Don't have to mirror anything
+    $this->_bound[]=$is;
     return;
   }
   
@@ -229,6 +235,12 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
   public function unbind(Swift_InputByteStream $is)
   {
     // Don't have to mirror anything
+    foreach($this->_bound as $k=>$el){
+      if ($el==$is){
+        unset($this->_bound[$k]);
+        return;
+      }
+    }
     return;
   }
   
