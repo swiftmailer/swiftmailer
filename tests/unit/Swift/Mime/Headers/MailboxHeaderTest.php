@@ -45,14 +45,26 @@ class Swift_Mime_Headers_MailboxHeaderTest
     $this->assertEqual(array('chris@swiftmailer.org'), $header->getAddresses());
   }
   
-  public function testSpecialCharsInNameAreQuoted()
+  public function testQuotesInNameAreQuoted()
   {
     $header = $this->_getHeader('From', $this->_getEncoder('Q', true));
     $header->setNameAddresses(array(
-      'chris@swiftmailer.org' => 'Chris Corbyn, DHE'
+      'chris@swiftmailer.org' => 'Chris Corbyn, "DHE"'
       ));
     $this->assertEqual(
-      array('"Chris Corbyn\, DHE" <chris@swiftmailer.org>'),
+      array('"Chris Corbyn, \"DHE\"" <chris@swiftmailer.org>'),
+      $header->getNameAddressStrings()
+      );
+  }
+  
+  public function testEscapeCharsInNameAreQuoted()
+  {
+    $header = $this->_getHeader('From', $this->_getEncoder('Q', true));
+    $header->setNameAddresses(array(
+      'chris@swiftmailer.org' => 'Chris Corbyn, \\escaped\\'
+      ));
+    $this->assertEqual(
+      array('"Chris Corbyn, \\\\escaped\\\\" <chris@swiftmailer.org>'),
       $header->getNameAddressStrings()
       );
   }

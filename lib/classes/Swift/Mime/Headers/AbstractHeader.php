@@ -206,7 +206,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
   protected function initializeGrammar()
   {
     $this->_specials = array(
-      '\\', '(', ')', '<', '>', '[', ']',
+      '(', ')', '<', '>', '[', ']',
       ':', ';', '@', ',', '.', '"'
       );
     
@@ -300,15 +300,12 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
    * @param string[] $exclude chars from escaping
    * @return string
    */
-  protected function escapeSpecials($token, $include = array(), $exclude = array())
+  protected function escapeSpecials($token, $include = array(),
+    $exclude = array())
   {
-    $exclude=array_flip($exclude);
-    foreach (array_merge($this->_specials, $include) as $char)
+    foreach (
+      array_merge(array('\\'), array_diff($this->_specials, $exclude), $include) as $char)
     {
-      if (array_key_exists($char, $exclude))
-      {
-        continue;
-      }
       $token = str_replace($char, '\\' . $char, $token);
     }
     return $token;
@@ -335,7 +332,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
       // and make it a quoted-string
       if (preg_match('/^' . $this->_grammar['text'] . '*$/D', $phraseStr))
       {
-        $phraseStr = $this->escapeSpecials($phraseStr);
+        $phraseStr = $this->escapeSpecials(
+          $phraseStr, array('"'), $this->_specials
+          );
         $phraseStr = '"' . $phraseStr . '"';
       }
       else // ... otherwise it needs encoding
