@@ -458,6 +458,10 @@ abstract class Swift_Transport_AbstractSmtpTransport
   private function _sendTo(Swift_Mime_Message $message, $reversePath,
     array $to, array &$failedRecipients)
   {
+    if (empty($to))
+    {
+      return 0;
+    }
     return $this->_doMailTransaction($message, $reversePath, array_keys($to),
       $failedRecipients);
   }
@@ -466,6 +470,10 @@ abstract class Swift_Transport_AbstractSmtpTransport
   private function _sendCc(Swift_Mime_Message $message, $reversePath,
     array $cc, array &$failedRecipients)
   {
+    if (empty($cc))
+    {
+      return 0;
+    }
     return $this->_doMailTransaction($message, $reversePath, array_keys($cc),
       $failedRecipients);
   }

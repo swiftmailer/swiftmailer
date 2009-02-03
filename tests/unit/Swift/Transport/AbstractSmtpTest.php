@@ -374,6 +374,28 @@ abstract class Swift_Transport_AbstractSmtpTest
     }
   }
   
+  public function testMailFromCommandIsOnlySentOncePerMessage()
+  {
+    $buf = $this->_getBuffer();
+    $smtp = $this->_getTransport($buf);
+    $message = $this->_createMessage();
+    $s = $this->_sequence('SMTP-envelope');
+    $this->_checking(Expectations::create()
+      -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
+      -> allowing($message)->getTo() -> returns(array('foo@bar'=>null))
+      -> allowing($message)
+      
+      -> one($buf)->write("MAIL FROM: <me@domain.com>\r\n") -> inSequence($s) -> returns(1)
+      -> one($buf)->readLine(1) -> returns('250 OK' . "\r\n")
+      -> one($buf)->write("RCPT TO: <foo@bar>\r\n") -> inSequence($s) -> returns(2)
+      -> one($buf)->readLine(2) -> returns('250 OK' . "\r\n")
+      -> never($buf)->write("MAIL FROM: <me@domain.com>\r\n")
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+    $smtp->send($message);
+  }
+  
   public function testMultipleRecipientsSendsMultipleRcpt()
   {
     $buf = $this->_getBuffer();

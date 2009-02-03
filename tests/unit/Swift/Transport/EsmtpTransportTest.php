@@ -95,7 +95,7 @@ class Swift_Transport_EsmtpTransportTest
     $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
-      -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
+      -> one($buf)->write(pattern('~^EHLO .+?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
       );
     $this->_finishBuffer($buf);
@@ -125,9 +125,9 @@ class Swift_Transport_EsmtpTransportTest
     $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
-      -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
+      -> one($buf)->write(pattern('~^EHLO .+?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns('501 WTF' . "\r\n")
-      -> one($buf)->write(pattern('~^HELO .*?\r\n$~D')) -> inSequence($s) -> returns(2)
+      -> one($buf)->write(pattern('~^HELO .+?\r\n$~D')) -> inSequence($s) -> returns(2)
       -> one($buf)->readLine(2) -> inSequence($s) -> returns('250 HELO' . "\r\n")
       );
     $this->_finishBuffer($buf);
@@ -215,7 +215,7 @@ class Swift_Transport_EsmtpTransportTest
     $this->_checking(Expectations::create()
       -> one($buf)->initialize() -> inSequence($s)
       -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
-      -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
+      -> one($buf)->write(pattern('~^EHLO .+?\r\n$~D')) -> inSequence($s) -> returns(1)
       -> one($buf)->readLine(1) -> inSequence($s) -> returns('501 WTF' . "\r\n")
       -> one($buf)->write("HELO mydomain.com\r\n") -> inSequence($s) -> returns(2)
       -> one($buf)->readLine(2) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
