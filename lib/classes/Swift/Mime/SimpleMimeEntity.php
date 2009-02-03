@@ -449,6 +449,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   protected function _bodyToString()
   {
+    $string='';
     if (isset($this->_body) && empty($this->_immediateChildren))
     {
       if ($this->_cache->hasKey($this->_cacheKey, 'body'))

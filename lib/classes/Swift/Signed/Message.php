@@ -39,10 +39,10 @@ Class Swift_Signed_Message extends Swift_Message
       {
         /* @var $signer Swift_Signers_HeaderSigner */
         $signer->reset();
+        $signer->setHeaders($this->getHeaders());
         $signer->startBody();
         $this->_bodyToByteStream($signer);
         $signer->endBody();
-        $signer->setHeaders($this->getHeaders());
         $signer->addSignature($this->getHeaders());
       }
     }
@@ -55,6 +55,28 @@ Class Swift_Signed_Message extends Swift_Message
    */
   public function toByteStream(Swift_InputByteStream $is)
   {
+    $cache=$this->_getCache();
+    // BodySigners
+    foreach($this->_signers as $signer)
+    {
+      if ($signer instanceof Swift_Signers_BodySigner)
+      {
+        // Do body Signer Specific stuff here
+      }
+    }
+    foreach($this->_signers as $signer)
+    {
+      if ($signer instanceof Swift_Signers_HeaderSigner)
+      {
+        /* @var $signer Swift_Signers_HeaderSigner */
+        $signer->reset();
+        $signer->startBody();
+        $this->_bodyToByteStream($signer);
+        $signer->endBody();
+        $signer->setHeaders($this->getHeaders());
+        $signer->addSignature($this->getHeaders());
+      }
+    }
     return parent::toByteStream($is);
   }
 }
