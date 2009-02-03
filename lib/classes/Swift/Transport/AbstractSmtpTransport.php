@@ -44,7 +44,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
   protected $_started = false;
   
   /** The domain name to use in HELO command */
-  protected $_domain = 'localhost';
+  protected $_domain = '[127.0.0.1]';
   
   /** The event dispatching layer */
   protected $_eventDispatcher;
@@ -63,6 +63,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
   {
     $this->_eventDispatcher = $dispatcher;
     $this->_buffer = $buf;
+    $this->_lookupHostname();
   }
   
   /**
@@ -491,6 +492,34 @@ abstract class Swift_Transport_AbstractSmtpTransport
         );
     }
     return $sent;
+  }
+  
+  /** Try to determine the hostname of the server this is run on */
+  private function _lookupHostname()
+  {
+    if (!empty($_SERVER['SERVER_NAME'])
+      && $this->_isFqdn($_SERVER['SERVER_NAME']))
+    {
+      $this->_domain = $_SERVER['SERVER_NAME'];
+    }
+    elseif (!empty($_SERVER['SERVER_ADDR']))
+    {
+      $this->_domain = sprintf('[%s]', $_SERVER['SERVER_ADDR']);
+    }
+  }
+  
+  /** Determine is the $hostname is a fully-qualified name */
+  private function _isFqdn($hostname)
+  {
+    //We could do a really thorough check, but there's really no point
+    if (false !== $dotPos = strpos($hostname, '.'))
+    {
+      return ($dotPos > 0) && ($dotPos != strlen($hotname) - 1);
+    }
+    else
+    {
+      return false;
+    }
   }
   
   /**
