@@ -188,6 +188,8 @@ class Swift_Transport_MailTransport implements Swift_Transport
         $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
       }
       
+      $message->generateId();
+      
       return 0;
     }
   }

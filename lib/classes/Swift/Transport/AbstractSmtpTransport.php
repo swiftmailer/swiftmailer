@@ -196,6 +196,8 @@ abstract class Swift_Transport_AbstractSmtpTransport
       $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
     }
     
+    $message->generateId(); //Make sure a new Message ID is used
+    
     return $sent;
   }
   

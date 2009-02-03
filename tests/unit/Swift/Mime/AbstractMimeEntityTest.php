@@ -162,6 +162,27 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $this->assertPattern('/^.*?@.*?$/D', $entity->getId());
   }
   
+  public function testGenerateIdCreatesNewId()
+  {
+    $headers = $this->_createHeaderSet();
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $id1 = $entity->generateId();
+    $id2 = $entity->generateId();
+    $this->assertNotEqual($id1, $id2);
+  }
+  
+  public function testGenerateIdSetsNewId()
+  {
+    $headers = $this->_createHeaderSet();
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $id = $entity->generateId();
+    $this->assertEqual($id, $entity->getId());
+  }
+  
   public function testDescriptionIsReadFromHeader()
   {
     /* -- RFC 2045, 8.

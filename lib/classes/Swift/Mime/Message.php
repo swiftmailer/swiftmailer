@@ -30,6 +30,12 @@ interface Swift_Mime_Message extends Swift_Mime_MimeEntity
 {
   
   /**
+   * Generates a valid Message-ID and switches to it.
+   * @return string
+   */
+  public function generateId();
+  
+  /**
    * Set the subject of the message.
    * @param string $subject
    */

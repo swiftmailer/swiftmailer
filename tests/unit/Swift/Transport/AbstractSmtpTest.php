@@ -911,6 +911,22 @@ abstract class Swift_Transport_AbstractSmtpTest
       );
   }
   
+  public function testSendingRegeneratesMessageId()
+  {
+    $buf = $this->_getBuffer();
+    $smtp = $this->_getTransport($buf);
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
+      -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
+      -> allowing($message)->getTo() -> returns(array('foo@bar'=>null))
+      -> one($message)->generateId()
+      -> allowing($message)
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+    $smtp->send($message);
+  }
+  
   // -- Protected methods
   
   protected function _getBuffer()

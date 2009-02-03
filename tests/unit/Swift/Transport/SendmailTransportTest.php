@@ -104,6 +104,27 @@ class Swift_Transport_SendmailTransportTest
     $this->assertEqual(2, $sendmail->send($message));
   }
   
+  public function testSendingMessageRegeneratesId()
+  {
+    $buf = $this->_getBuffer();
+    $sendmail = $this->_getSendmail($buf);
+    $message = $this->_createMessage();
+    
+    $this->_checking(Expectations::create()
+      -> allowing($message)->getTo() -> returns(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'))
+      -> one($message)->generateId()
+      -> ignoring($message)
+      -> one($buf)->initialize()
+      -> one($buf)->terminate()
+      -> one($buf)->setWriteTranslations(array("\r\n"=>"\n", "\n." => "\n.."))
+      -> one($buf)->setWriteTranslations(array())
+      -> ignoring($buf)
+      );
+    
+    $sendmail->setCommand('/usr/sbin/sendmail -t');
+    $this->assertEqual(2, $sendmail->send($message));
+  }
+  
   public function testFluidInterface()
   {
     $buf = $this->_getBuffer();

@@ -122,7 +122,21 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
           )
         )
       );
-    $this->_generateId();
+    $this->generateId();
+  }
+  
+  /**
+   * Generate a new Content-ID or Message-ID for this MIME entity.
+   * @return string
+   */
+  public function generateId()
+  {
+    $idLeft = time() . '.' . uniqid();
+    $idRight = !empty($_SERVER['SERVER_NAME'])
+      ? $_SERVER['SERVER_NAME']
+      : 'swift.generated';
+    $this->_id = $idLeft . '@' . $idRight;
+    return $this->getId();
   }
   
   /**
@@ -634,16 +648,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
       $this->_headers->addTextHeader('Content-Transfer-Encoding', $encoding);
     }
-  }
-  
-  //TOOD: Look at making this public so users can regenerate IDs
-  private function _generateId()
-  {
-    $idLeft = time() . '.' . uniqid();
-    $idRight = !empty($_SERVER['SERVER_NAME'])
-      ? $_SERVER['SERVER_NAME']
-      : 'swift.generated';
-    $this->_id = $idLeft . '@' . $idRight;
   }
   
   private function _assertValidBoundary($boundary)

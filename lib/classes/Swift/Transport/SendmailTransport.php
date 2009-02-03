@@ -154,6 +154,8 @@ class Swift_Transport_SendmailTransport
         $evt->setFailedRecipients($failedRecipients);
         $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
       }
+      
+      $message->generateId();
     }
     elseif (false !== strpos($command, ' -bs'))
     {
