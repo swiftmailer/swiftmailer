@@ -1,7 +1,7 @@
 <?php
 
 /*
- Body Signature Interface for SwiftMailer
+ DKIM Signature Handler for SwiftMailer
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,24 +19,12 @@
  */
 
 /**
- * Body Signer Interface used to apply Body-Based Signature to a message
+ * DKIM Signer used to apply DKIM Signature to a message
  * @package Swift
  * @subpackage Signatures
  * @author Xavier De Cock <xdecock@gmail.com>
  */
-Interface Swift_Signers_MessageSigner extends Swift_Signer
+class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 {
-  /**
-   * Add the header(s) to the headerSet
-   *
-   * @param Swift_Mime_HeaderSet $headers
-   * @return Swift_Signers_HeaderSigner
-   */
-  public function SignMessage (Swift_Message $message);
   
-  /**
-   * Return the list of header a signer might tamper
-   * @return array
-   */
-  public function getAlteredHeaders();
 }

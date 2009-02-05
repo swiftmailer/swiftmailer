@@ -58,4 +58,10 @@ interface Swift_Signers_HeaderSigner extends Swift_Signer, Swift_InputByteStream
    * @return Swift_Signers_HeaderSigner
    */
   public function addSignature (Swift_Mime_HeaderSet $headers);
+  
+  /**
+   * Return the list of header a signer might tamper
+   * @return array
+   */
+  public function getAlteredHeaders();
 }

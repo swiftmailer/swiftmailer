@@ -33,6 +33,8 @@ class Swift_Signed_Message extends Swift_Mime_SimpleMessage
    */
   private $_signers;
   
+  private $_savedMessage=array();
+  
   /**
    * Create a new Message.
    * Details may be optionally passed into the constructor.
@@ -105,31 +107,12 @@ class Swift_Signed_Message extends Swift_Mime_SimpleMessage
    */
   public function toString()
   {
-    $cache = $this->_getCache();
-    // BodySigners
-    foreach ($this->_signers as $signer)
-    {
-      if ($signer instanceof Swift_Signers_BodySigner)
-      {
-        // Do body Signer Specific stuff here
-      }
-    }
-    foreach ($this->_signers as $signer)
-    {
-      if ($signer instanceof Swift_Signers_HeaderSigner)
-      {
-        /* @var $signer Swift_Signers_HeaderSigner */
-        $signer->reset();
-        $signer->setHeaders(
-          $this->getHeaders());
-        $signer->startBody();
-        $this->_bodyToByteStream($signer);
-        $signer->endBody();
-        $signer->addSignature(
-          $this->getHeaders());
-      }
-    }
-    return parent::toString();
+    $this->_saveMessage();
+    
+    $this->_doSign();
+    $string=parent::toString();
+    $this->_restoreMessage();
+    return $string;
   }
   
   /**
@@ -138,29 +121,87 @@ class Swift_Signed_Message extends Swift_Mime_SimpleMessage
    */
   public function toByteStream(Swift_InputByteStream $is)
   {
+    $this->_saveMessage();
+    
+    $this->_doSign();
+    
+    parent::toByteStream($is);
+    $this->_restoreMessage();
+    return;
+  }
+  
+  protected function _doSign(){
     // BodySigners
     foreach ($this->_signers as $signer)
     {
       if ($signer instanceof Swift_Signers_BodySigner)
       {
         // Do body Signer Specific stuff here
+        $altered=$signer->getAlteredHeaders();
+        $this->_saveHeaders($altered);
+        $signer->SignMessage($this);
       }
     }
+    // Header Signers
     foreach ($this->_signers as $signer)
     {
       if ($signer instanceof Swift_Signers_HeaderSigner)
       {
         /* @var $signer Swift_Signers_HeaderSigner */
+        $altered=$signer->getAlteredHeaders();
+        $this->_saveHeaders($altered);
         $signer->reset();
+        // Headers
+        $signer->setHeaders(
+          $this->getHeaders());
+        // Body
         $signer->startBody();
         $this->_bodyToByteStream($signer);
         $signer->endBody();
-        $signer->setHeaders(
-          $this->getHeaders());
+        // Signing
         $signer->addSignature(
           $this->getHeaders());
       }
     }
-    return parent::toByteStream($is);
+  }
+  
+  protected function _saveMessage()
+  {
+    $this->_savedMessage=array('headers'=>array());
+    $this->_savedMessage['body']=$this->getBody();
+    $this->_savedMessage['children']=$this->getChildren();
+  }
+  
+  protected function _saveHeaders(array $altered)
+  {
+    foreach ($altered as $head)
+    {
+      $lc=strtolower($head);
+      if (!isset($this->_savedMessage['headers'][$lc]))
+      {
+        $this->_savedMessage['headers'][$lc]=$this->getHeaders()->getAll($head);
+      }
+    }
+  }
+  
+  protected function _restoreHeaders()
+  {
+    foreach ($this->_savedMessage['headers'] as $k=>$v)
+    {
+      $headers=$this->getHeaders()->getAll($k);
+      foreach ($headers as $key=>$value){
+        if (!isset($v[$key])){
+          $this->getHeaders()->remove($k, $key);
+        }
+      }
+    }
+  }
+  
+  protected function _restoreMessage()
+  {
+    $this->setBody($this->_savedMessage['body']);
+    $this->setChildren($this->_savedMessage['children']);
+    $this->_restoreHeaders();
+    $this->_savedMessage=array();
   }
 }
