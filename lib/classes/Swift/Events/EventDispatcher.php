@@ -69,11 +69,11 @@ interface Swift_Events_EventDispatcher
   /**
    * Create a new TransportExceptionEvent for $source.
    * @param Swift_Transport $source
-   * @param Swift_Transport_TransportException $ex
+   * @param Swift_TransportException $ex
    * @return Swift_Events_TransportExceptionEvent
    */
   public function createTransportExceptionEvent(Swift_Transport $source,
-    Swift_Transport_TransportException $ex);
+    Swift_TransportException $ex);
   
   /**
    * Bind an event listener to this dispatcher.

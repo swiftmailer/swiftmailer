@@ -20,7 +20,7 @@
 
 //@require 'Swift/Transport/Esmtp/Authenticator.php';
 //@require 'Swift/Transport/SmtpAgent.php';
-//@require 'Swift/Transport/TransportException.php';
+//@require 'Swift/TransportException.php';
 
 /**
  * Handles PLAIN authentication.
@@ -57,7 +57,7 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticator
       $agent->executeCommand(sprintf("AUTH PLAIN %s\r\n", $message), array(235));
       return true;
     }
-    catch (Swift_Transport_TransportException $e)
+    catch (Swift_TransportException $e)
     {
       $agent->executeCommand("RSET\r\n", array(250));
       return false;

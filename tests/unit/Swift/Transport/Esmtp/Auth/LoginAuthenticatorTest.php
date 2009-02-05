@@ -3,7 +3,7 @@
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/SmtpAgent.php';
 require_once 'Swift/Transport/Esmtp/Auth/LoginAuthenticator.php';
-require_once 'Swift/Transport/TransportException.php';
+require_once 'Swift/TransportException.php';
 
 class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest
   extends Swift_Tests_SwiftUnitTestCase
@@ -43,7 +43,7 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest
       -> one($this->_agent)->executeCommand("AUTH LOGIN\r\n", array(334))
       -> one($this->_agent)->executeCommand(base64_encode('jack') . "\r\n", array(334))
       -> one($this->_agent)->executeCommand(base64_encode('pass') . "\r\n", array(235))
-        -> throws(new Swift_Transport_TransportException(""))
+        -> throws(new Swift_TransportException(""))
       -> one($this->_agent)->executeCommand("RSET\r\n", array(250))
       );
     

@@ -20,7 +20,7 @@
 
 //@require 'Swift/Transport/Esmtp/Authenticator.php';
 //@require 'Swift/Transport/SmtpAgent.php';
-//@require 'Swift/Transport/TransportException.php';
+//@require 'Swift/TransportException.php';
 
 /**
  * Handles LOGIN authentication.
@@ -58,7 +58,7 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticator
       $agent->executeCommand(sprintf("%s\r\n", base64_encode($password)), array(235));
       return true;
     }
-    catch (Swift_Transport_TransportException $e)
+    catch (Swift_TransportException $e)
     {
       $agent->executeCommand("RSET\r\n", array(250));
       return false;

@@ -136,7 +136,7 @@ class Swift_Plugins_LoggerPlugin
     $message .= 'Log data:' . PHP_EOL;
     $message .= $this->_logger->dump();
     $evt->cancelBubble();
-    throw new Swift_Transport_TransportException($message);
+    throw new Swift_TransportException($message);
   }
   
 }

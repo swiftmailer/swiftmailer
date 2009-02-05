@@ -21,7 +21,7 @@
 //@require 'Swift/Transport.php';
 //@require 'Swift/Transport/IoBuffer.php';
 //@require 'Swift/Transport/CommandSentException.php';
-//@require 'Swift/Transport/TransportException.php';
+//@require 'Swift/TransportException.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventDispatcher.php';
 //@require 'Swift/Events/EventListener.php';
@@ -101,7 +101,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       {
         $this->_buffer->initialize($this->_getBufferParams());
       }
-      catch (Swift_Transport_TransportException $e)
+      catch (Swift_TransportException $e)
       {
         $this->_throwException($e);
       }
@@ -144,7 +144,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
     
     if (!$reversePath = $this->_getReversePath($message))
     {
-      throw new Swift_Transport_TransportException(
+      throw new Swift_TransportException(
         'Cannot send message without a sender address'
         );
     }
@@ -212,7 +212,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       {
         $this->executeCommand("QUIT\r\n", array(221));
       }
-      catch (Swift_Transport_TransportException $e) {}
+      catch (Swift_TransportException $e) {}
       
       try
       {
@@ -223,7 +223,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
           $this->_eventDispatcher->dispatchEvent($evt, 'transportStopped');
         }
       }
-      catch (Swift_Transport_TransportException $e)
+      catch (Swift_TransportException $e)
       {
         $this->_throwException($e);
       }
@@ -330,7 +330,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       $message->toByteStream($this->_buffer);
       $this->_buffer->flushBuffers();
     }
-    catch (Swift_Transport_TransportException $e)
+    catch (Swift_TransportException $e)
     {
       $this->_throwException($e);
     }
@@ -364,7 +364,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
   }
   
   /** Throw a TransportException, first sending it to any listeners */
-  protected function _throwException(Swift_Transport_TransportException $e)
+  protected function _throwException(Swift_TransportException $e)
   {
     if ($evt = $this->_eventDispatcher->createTransportExceptionEvent($this, $e))
     {
@@ -395,7 +395,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
     if (!$valid)
     {
       $this->_throwException(
-        new Swift_Transport_TransportException(
+        new Swift_TransportException(
           'Expected response code ' . implode('/', $wanted) . ' but got code ' .
           '"' . $code . '", with message "' . $response . '"'
           )
@@ -416,7 +416,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       }
       while (null !== $line && false !== $line && ' ' != $line{3});
     }
-    catch (Swift_Transport_TransportException $e)
+    catch (Swift_TransportException $e)
     {
       $this->_throwException($e);
     }
@@ -438,7 +438,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
         $this->_doRcptToCommand($forwardPath);
         $sent++;
       }
-      catch (Swift_Transport_TransportException $e)
+      catch (Swift_TransportException $e)
       {
         $failedRecipients[] = $forwardPath;
       }

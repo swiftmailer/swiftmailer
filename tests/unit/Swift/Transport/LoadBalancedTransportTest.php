@@ -2,7 +2,7 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/LoadBalancedTransport.php';
-require_once 'Swift/Transport/TransportException.php';
+require_once 'Swift/TransportException.php';
 require_once 'Swift/Transport.php';
 require_once 'Swift/Events/EventListener.php';
 
@@ -89,7 +89,7 @@ class Swift_Transport_LoadBalancedTransportTest
   
   public function testMessageCanBeTriedOnNextTransportIfExceptionThrown()
   {
-    $e = new Swift_Transport_TransportException('b0rken');
+    $e = new Swift_TransportException('b0rken');
     
     $context = new Mockery();
     $message = $context->mock('Swift_Mime_Message');
@@ -175,7 +175,7 @@ class Swift_Transport_LoadBalancedTransportTest
   
   public function testTransportsWhichThrowExceptionsAreNotRetried()
   {
-    $e = new Swift_Transport_TransportException('maur b0rken');
+    $e = new Swift_TransportException('maur b0rken');
     
     $context = new Mockery();
     $message1 = $context->mock('Swift_Mime_Message');
@@ -219,7 +219,7 @@ class Swift_Transport_LoadBalancedTransportTest
   
   public function testExceptionIsThrownIfAllTransportsDie()
   {
-    $e = new Swift_Transport_TransportException('b0rken');
+    $e = new Swift_TransportException('b0rken');
     
     $context = new Mockery();
     $message = $context->mock('Swift_Mime_Message');
@@ -278,7 +278,7 @@ class Swift_Transport_LoadBalancedTransportTest
   
   public function testTransportShowsAsNotStartedIfAllDelegatesDead()
   {
-    $e = new Swift_Transport_TransportException('b0rken');
+    $e = new Swift_TransportException('b0rken');
     
     $context = new Mockery();
     $message = $context->mock('Swift_Mime_Message');
@@ -317,7 +317,7 @@ class Swift_Transport_LoadBalancedTransportTest
   
   public function testRestartingTransportRestartsDeadDelegates()
   {
-    $e = new Swift_Transport_TransportException('b0rken');
+    $e = new Swift_TransportException('b0rken');
     
     $context = new Mockery();
     $message1 = $context->mock('Swift_Mime_Message');

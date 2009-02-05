@@ -18,7 +18,7 @@
  
  */
 
-//@require 'Swift/Transport/TransportException.php';
+//@require 'Swift/TransportException.php';
 //@require 'Swift/Transport/EsmtpHandler.php';
 //@require 'Swift/Transport/SmtpAgent.php';
 
@@ -161,7 +161,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
           }
         }
       }
-      throw new Swift_Transport_TransportException(
+      throw new Swift_TransportException(
         'Failed to authenticate on SMTP server with username "' .
         $this->_username . '" using ' . $count . ' possible authenticators'
         );

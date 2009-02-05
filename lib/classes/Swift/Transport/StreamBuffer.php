@@ -21,7 +21,7 @@
 //@require 'Swift/ByteStream/AbstractFilterableInputStream.php';
 //@require 'Swift/ReplacementFilterFactory.php';
 //@require 'Swift/Transport/IoBuffer.php';
-//@require 'Swift/Transport/TransportException.php';
+//@require 'Swift/TransportException.php';
 
 /**
  * A generic IoBuffer implementation supporting remote sockets and local processes.
@@ -242,7 +242,7 @@ class Swift_Transport_StreamBuffer
     }
     if (!$this->_stream = fsockopen($host, $this->_params['port'], $errno, $errstr, $timeout))
     {
-      throw new Swift_Transport_TransportException(
+      throw new Swift_TransportException(
         'Connection could not be established with host ' . $this->_params['host'] .
         ' [' . $errstr . ' #' . $errno . ']'
         );
@@ -275,7 +275,7 @@ class Swift_Transport_StreamBuffer
     stream_set_blocking($pipes[2], 0);
     if ($err = stream_get_contents($pipes[2]))
     {
-      throw new Swift_Transport_TransportException(
+      throw new Swift_TransportException(
         'Process could not be started [' . $err . ']'
         );
     }

@@ -129,7 +129,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
           break;
         }
       }
-      catch (Swift_Transport_TransportException $e)
+      catch (Swift_TransportException $e)
       {
         $this->_killCurrentTransport();
       }
@@ -137,7 +137,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     
     if (count($this->_transports) == 0)
     {
-      throw new Swift_Transport_TransportException(
+      throw new Swift_TransportException(
         'All Transports in LoadBalancedTransport failed, or no Transports available'
         );
     }

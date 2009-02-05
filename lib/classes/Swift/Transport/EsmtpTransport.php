@@ -22,7 +22,7 @@
 //@require 'Swift/Transport/EsmtpHandler.php';
 //@require 'Swift/Transport/IoBuffer.php';
 //@require 'Swift/Transport/SmtpAgent.php';
-//@require 'Swift/Transport/TransportException.php';
+//@require 'Swift/TransportException.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventDispatcher.php';
 
@@ -256,7 +256,7 @@ class Swift_Transport_EsmtpTransport
         $handler->afterEhlo($this);
       }
     }
-    catch (Swift_Transport_TransportException $e)
+    catch (Swift_TransportException $e)
     {
       parent::_doHeloCommand();
     }

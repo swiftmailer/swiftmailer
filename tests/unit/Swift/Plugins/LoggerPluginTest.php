@@ -8,7 +8,7 @@ require_once 'Swift/Events/ResponseEvent.php';
 require_once 'Swift/Events/TransportChangeEvent.php';
 require_once 'Swift/Events/TransportExceptionEvent.php';
 require_once 'Swift/Transport.php';
-require_once 'Swift/Transport/TransportException.php';
+require_once 'Swift/TransportException.php';
 
 class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
 {
@@ -110,7 +110,7 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
       $plugin->exceptionThrown($evt);
       $this->fail('Exception should bubble up.');
     }
-    catch (Swift_Transport_TransportException $ex)
+    catch (Swift_TransportException $ex)
     {
     }
   }
@@ -166,7 +166,7 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
   {
     $evt = $this->_mock('Swift_Events_TransportExceptionEvent');
     $this->_checking(Expectations::create()
-      -> ignoring($evt)->getException() -> returns(new Swift_Transport_TransportException(''))
+      -> ignoring($evt)->getException() -> returns(new Swift_TransportException(''))
       -> ignoring($evt)
       );
     return $evt;

@@ -5,7 +5,7 @@ require_once 'Swift/Events/SimpleEventDispatcher.php';
 require_once 'Swift/Events/EventListener.php';
 require_once 'Swift/Transport.php';
 require_once 'Swift/Mime/Message.php';
-require_once 'Swift/Transport/TransportException.php';
+require_once 'Swift/TransportException.php';
 
 class Swift_Events_SimpleEventDispatcherTest
   extends Swift_Tests_SwiftUnitTestCase
@@ -59,7 +59,7 @@ class Swift_Events_SimpleEventDispatcherTest
   public function testTransportExceptionEventCanBeCreated()
   {
     $transport = $this->_stub('Swift_Transport');
-    $ex = new Swift_Transport_TransportException('');
+    $ex = new Swift_TransportException('');
     $evt = $this->_dispatcher->createTransportExceptionEvent($transport, $ex);
     $this->assertIsA($evt, 'Swift_Events_TransportExceptionEvent');
     $this->assertSame($transport, $evt->getSource());

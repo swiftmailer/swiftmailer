@@ -71,7 +71,7 @@ class Swift_Transport_FailoverTransport
         
         return $transport->send($message, $failedRecipients);
       }
-      catch (Swift_Transport_TransportException $e)
+      catch (Swift_TransportException $e)
       {
         $this->_killCurrentTransport();
       }
@@ -79,7 +79,7 @@ class Swift_Transport_FailoverTransport
     
     if (count($this->_transports) == 0)
     {
-      throw new Swift_Transport_TransportException(
+      throw new Swift_TransportException(
         'All Transports in FailoverTransport failed, or no Transports available'
         );
     }

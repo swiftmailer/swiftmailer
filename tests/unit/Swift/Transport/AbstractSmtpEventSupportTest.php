@@ -270,7 +270,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest
       $smtp->start();
       $this->fail('TransportException should be thrown on invalid response');
     }
-    catch (Swift_Transport_TransportException $e)
+    catch (Swift_TransportException $e)
     {
     }
   }

@@ -2,7 +2,7 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/FailoverTransport.php';
-require_once 'Swift/Transport/TransportException.php';
+require_once 'Swift/TransportException.php';
 require_once 'Swift/Transport.php';
 require_once 'Swift/Events/EventListener.php';
 
@@ -41,7 +41,7 @@ class Swift_Transport_FailoverTransportTest
   
   public function testMessageCanBeTriedOnNextTransportIfExceptionThrown()
   {
-    $e = new Swift_Transport_TransportException('b0rken');
+    $e = new Swift_TransportException('b0rken');
     
     $context = new Mockery();
     $message = $context->mock('Swift_Mime_Message');
@@ -92,7 +92,7 @@ class Swift_Transport_FailoverTransportTest
   
   public function testTransportsWhichThrowExceptionsAreNotRetried()
   {
-    $e = new Swift_Transport_TransportException('maur b0rken');
+    $e = new Swift_TransportException('maur b0rken');
     
     $context = new Mockery();
     $message1 = $context->mock('Swift_Mime_Message');
@@ -136,7 +136,7 @@ class Swift_Transport_FailoverTransportTest
   
   public function testExceptionIsThrownIfAllTransportsDie()
   {
-    $e = new Swift_Transport_TransportException('b0rken');
+    $e = new Swift_TransportException('b0rken');
     
     $context = new Mockery();
     $message = $context->mock('Swift_Mime_Message');
@@ -195,7 +195,7 @@ class Swift_Transport_FailoverTransportTest
   
   public function testTransportShowsAsNotStartedIfAllDelegatesDead()
   {
-    $e = new Swift_Transport_TransportException('b0rken');
+    $e = new Swift_TransportException('b0rken');
     
     $context = new Mockery();
     $message = $context->mock('Swift_Mime_Message');
@@ -234,7 +234,7 @@ class Swift_Transport_FailoverTransportTest
   
   public function testRestartingTransportRestartsDeadDelegates()
   {
-    $e = new Swift_Transport_TransportException('b0rken');
+    $e = new Swift_TransportException('b0rken');
     
     $context = new Mockery();
     $message1 = $context->mock('Swift_Mime_Message');

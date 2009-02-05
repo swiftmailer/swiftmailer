@@ -26,7 +26,7 @@
  * @subpackage Transport
  * @author Chris Corbyn
  */
-class Swift_Transport_TransportException extends Swift_IoException
+class Swift_TransportException extends Swift_IoException
 {
   
   /**

@@ -3,7 +3,7 @@
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Transport/SmtpAgent.php';
 require_once 'Swift/Transport/Esmtp/Auth/CramMd5Authenticator.php';
-require_once 'Swift/Transport/TransportException.php';
+require_once 'Swift/TransportException.php';
 
 class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
   extends Swift_Tests_SwiftUnitTestCase
@@ -49,7 +49,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
         -> returns('334 ' . base64_encode('<foo@bar>') . "\r\n")
       // The use of any() is controversial, but here to avoid crazy test logic
       -> one($this->_agent)->executeCommand(any(), array(235))
-       -> throws(new Swift_Transport_TransportException(""))
+       -> throws(new Swift_TransportException(""))
       
       -> one($this->_agent)->executeCommand("RSET\r\n", array(250))
       );
