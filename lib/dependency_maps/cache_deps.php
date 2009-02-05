@@ -8,6 +8,9 @@ Swift_DependencyContainer::getInstance()
   -> register('tempdir')
   -> asValue('/tmp')
   
+  -> register('cache.null')
+  -> asSharedInstanceOf('Swift_KeyCache_NullKeyCache')
+  
   -> register('cache.array')
   -> asSharedInstanceOf('Swift_KeyCache_ArrayKeyCache')
   -> withDependencies(array('cache.inputstream'))
