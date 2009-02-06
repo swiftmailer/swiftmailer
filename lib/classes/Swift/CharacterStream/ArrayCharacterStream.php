@@ -27,6 +27,7 @@
  * @package Swift
  * @subpackage CharacterStream
  * @author Chris Corbyn
+ * @author Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_CharacterStream_ArrayCharacterStream
   implements Swift_CharacterStream
@@ -73,6 +74,26 @@ class Swift_CharacterStream_ArrayCharacterStream
    * @access private
    */
   private $_offset = 0;
+  
+  /**
+   * Mixed Datas to enqueue
+   * @var mixed
+   */
+  private $_toAppend = null;
+  
+  /**
+   * May Be used if it's a string
+   *
+   * @var int
+   */
+  private $_toAppendSize = 0;
+  
+  /**
+   * May Be used if it's a string
+   *
+   * @var int
+   */
+  private $_toAppendPos = 0;
 
   /**
    * Create a new CharacterStream with the given $chars, if set.
@@ -85,6 +106,8 @@ class Swift_CharacterStream_ArrayCharacterStream
     $this->setCharacterReaderFactory($factory);
     $this->setCharacterSet($charset);
   }
+
+  /* -- Changing parameters of the stream -- */
 
   /**
    * Set the character set used in this CharacterStream.
@@ -106,47 +129,8 @@ class Swift_CharacterStream_ArrayCharacterStream
     $this->_charReaderFactory = $factory;
   }
 
-  /**
-   * Overwrite this character stream using the byte sequence in the byte stream.
-   * @param Swift_OutputByteStream $os output stream to read from
-   */
-  public function importByteStream(Swift_OutputByteStream $os)
-  {
-    if (!isset($this->_charReader))
-    {
-      $this->_charReader = $this->_charReaderFactory
-        ->getReaderFor($this->_charset);
-    }
-
-    $startLength = $this->_charReader->getInitialByteSize();
-    while (false !== $bytes = $os->read($startLength))
-    {
-      $c = array_values(unpack('C*', $bytes));
-      $size = count($c);
-      $need = $this->_charReader
-        ->validateByteSequence($c, $size);
-      if ($need > 0 &&
-        false !== $bytes = $os->read($need))
-      {
-        // try another optimisation (array_values call unneeded)
-        $c = array_merge($c, unpack('C*', $bytes));
-      }
-      $this->_array[] = $c;
-      ++$this->_array_size;
-    }
-  }
-
-  /**
-   * Import a string a bytes into this CharacterStream, overwriting any existing
-   * data in the stream.
-   * @param string $string
-   */
-  public function importString($string)
-  {
-    $this->flushContents();
-    $this->write($string);
-  }
-
+  /* -- Pull datas from the stream -- */
+  
   /**
    * Read $length characters from the stream and move the internal pointer
    * $length further into the stream.
@@ -206,82 +190,36 @@ class Swift_CharacterStream_ArrayCharacterStream
     return call_user_func_array('array_merge', $arrays);
   }
 
+  /* -- Alters Stream Datas -- */
+  
+  /**
+   * Overwrite this character stream using the byte sequence in the byte stream.
+   * @param Swift_OutputByteStream $os output stream to read from
+   */
+  public function importByteStream(Swift_OutputByteStream $os)
+  {
+    $this->flushContents();
+    $this->_appendByteStream($os);
+  }
+
+  /**
+   * Import a string a bytes into this CharacterStream, overwriting any existing
+   * data in the stream.
+   * @param string $string
+   */
+  public function importString($string)
+  {
+    $this->flushContents();
+    $this->write($string);
+  }
+  
   /**
    * Write $chars to the end of the stream.
    * @param string $chars
    */
   public function write($chars)
   {
-    if (!isset($this->_charReader))
-    {
-      $this->_charReader = $this->_charReaderFactory->getReaderFor(
-        $this->_charset);
-    }
-
-    $startLength = $this->_charReader->getInitialByteSize();
-
-    $fp = fopen('php://memory', 'w+b');
-    fwrite($fp, $chars);
-    unset($chars);
-    fseek($fp, 0, SEEK_SET);
-
-    $buffer = array(0);
-    $buf_pos = 1;
-    $buf_len = 1;
-    $has_datas = true;
-    do
-    {
-      $bytes = array();
-      // Buffer Filing
-      if ($buf_len - $buf_pos < $startLength)
-      {
-        $buf = array_splice($buffer, $buf_pos);
-        $new = $this->_reloadBuffer($fp, 100);
-        if ($new)
-        {
-          $buffer = array_merge($buf, $new);
-          $buf_len = count($buffer);
-          $buf_pos = 0;
-        }
-        else
-        {
-          $has_datas = false;
-        }
-      }
-      if ($buf_len - $buf_pos > 0)
-      {
-        $size = 0;
-        for ($i = 0; $i < $startLength && isset($buffer[$buf_pos]); ++$i)
-        {
-          ++$size;
-          $bytes[] = $buffer[$buf_pos++];
-        }
-        $need = $this->_charReader->validateByteSequence(
-          $bytes, $size);
-        if ($need > 0)
-        {
-          if ($buf_len - $buf_pos < $need)
-          {
-            $new = $this->_reloadBuffer($fp, $need);
-            
-            if ($new)
-            {
-              $buffer = array_merge($buffer, $new);
-              $buf_len = count($buffer);
-            }
-          }
-          for ($i = 0; $i < $need && isset($buffer[$buf_pos]); ++$i)
-          {
-            $bytes[] = $buffer[$buf_pos++];
-          }
-        }
-        $this->_array[] = $bytes;
-        ++$this->_array_size;
-      }
-    }
-    while ($has_datas);
-    
-    fclose($fp);
+    $this->_appendString($chars);
   }
 
   /**
@@ -311,6 +249,116 @@ class Swift_CharacterStream_ArrayCharacterStream
     $this->_array_size = 0;
   }
 
+  /* -- Helpers Function -- */
+  /**
+   * Enqueue a string to be appended
+   *
+   * @param string $string
+   */
+  private function _appendString($string)
+  {
+  	$this->_toAppend = $string;
+  	$this->_toAppendSize = strlen($string);
+  	$this->_toAppendPos = 0;
+  	$this->_doAppend();
+  }
+  
+  /**
+   * Enqueue an outputByteStream to be appended
+   *
+   * @param Swift_OutputByteStream $os
+   */
+  private function _appendByteStream(Swift_OutputByteStream $os)
+  {
+  	$this->_toAppend = $os;
+  	$os->setReadPointer(0);
+  	$this->_doAppend();
+  }
+  
+  /**
+   * Append the queued datas to the content
+   *
+   */
+  private function _doAppend()
+  {
+  	if (!isset($this->_charReader))
+    {
+      $this->_charReader = $this->_charReaderFactory->getReaderFor(
+        $this->_charset);
+    }
+    /* Init work */
+  	$workWithString = is_string($this->_toAppend);
+  	$startLength = $this->_charReader->getInitialByteSize();
+  	
+  	/* Buffer Work */
+  	$buffer = array(0);
+  	$bufferPos = 1;
+  	$bufferLen = 1;
+  	$bufferRemLen = 0;
+  	$hasDatas = 1;
+    do
+    {
+      $bytes = array();
+      // Buffer Filing
+      if ($bufferRemLen < $startLength)
+      {
+        $new = $this->_reloadBuffer(512, $workWithString);
+        if ($new)
+        {
+          $oldBuf = $buffer;
+          $buffer = array();
+          for ($i = $bufferPos; $i < $bufferLen; ++$i)
+          {
+          	$buffer[] = $oldBuf[$i];
+          }
+          foreach ($new as $b)
+          {
+          	$buffer[] = $b;
+          }
+          $bufferPos=0;
+          $bufferRemLen=$bufferLen=count($buffer);
+        }
+        else
+        {
+          $hasDatas = false;
+        }
+      }
+      if ($bufferRemLen > 0)
+      {
+        $size = 0;
+        for ($i = 0; $i < $startLength && isset($buffer[$bufferPos]); ++$i)
+        {
+          ++$size;
+          --$bufferRemLen;
+          $bytes[] = $buffer[$bufferPos++];
+        }
+        $need = $this->_charReader->validateByteSequence(
+          $bytes, $size);
+        if ($need > 0)
+        {
+          if ($bufferRemLen < $need)
+          {
+            $new = $this->_reloadBuffer($need, $workWithString);
+            if ($new)
+            {
+              $buffer = array_merge($buffer, $new);
+              $bufferLen = count($buffer);
+              $bufferRemLen =  $bufferLen - $bufferPos;
+            }
+          }
+          for ($i = 0; $i < $need && isset($buffer[$bufferPos]); ++$i)
+          {
+          	--$bufferRemLen;
+            $bytes[] = $buffer[$bufferPos++];
+          }
+        }
+        $this->_array[] = $bytes;
+        ++$this->_array_size;
+      }
+    }
+    while ($hasDatas);
+  }
+  
   /**
    * Helper to load datas in the buffer
    *
@@ -318,12 +366,22 @@ class Swift_CharacterStream_ArrayCharacterStream
    * @param int $len
    * @return array [int]
    */
-  private function _reloadBuffer($fp, $len)
+  private function _reloadBuffer($len, $isString)
   {
-    if (!feof($fp) && ($bytes = fread($fp, $len)) !== false)
-    {
-      return unpack ('C*', $bytes);
-    }
+  	if ($isString)
+  	{ /* string code */
+      if ($this->_toAppendSize > $this->_toAppendPos)
+      {
+      	$sub=substr($this->_toAppend, $this->_toAppendPos, $len);
+      	$this->_toAppendPos+=$len;
+      	return unpack('C*',$sub);
+      }
+      return false;
+  	}
+  	else
+  	{ /* OutputByteStream Code */
+  	  return unpack('C*',$this->_toAppend->read($len));
+  	}
     return false;
   }
 }
