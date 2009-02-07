@@ -39,6 +39,7 @@ class Swift_CharacterReader_UsAsciiReader
   public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
   {
   	$strlen=strlen($string);
+  	$ignoredChars='';
   	for( $i = 0; $i < $strlen; ++$i)
   	{
   	  if ($string[$i]>"\x07F")
@@ -46,6 +47,7 @@ class Swift_CharacterReader_UsAsciiReader
   	  	$currentMap[$i+$startOffset]=$string[$i];
   	  }
   	}
+  	return $strlen;
   }
   
   /**

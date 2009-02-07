@@ -30,7 +30,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest
       }
       
       $encoding = $encodingDir;
-      $charStream = new Swift_CharacterStream_ArrayCharacterStream(
+      $charStream = new Swift_CharacterStream_NgCharacterStream(
         $this->_factory, $encoding);
       $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
       
@@ -67,7 +67,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest
             $sampleDir . '/' . $sampleFile
             );
         }
-        closedir($fileFp); 
+        closedir($fileFp);
       }
       
     }
@@ -120,7 +120,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest
             $sampleDir . '/' . $sampleFile
             );
         }
-        closedir($fileFp); 
+        closedir($fileFp);
       }
       
     }

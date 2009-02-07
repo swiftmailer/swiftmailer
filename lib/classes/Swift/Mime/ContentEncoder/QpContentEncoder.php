@@ -68,7 +68,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
 
     $this->_charStream->flushContents();
     $this->_charStream->importByteStream($os);
-
+    
     $currentLine = '';
     $prepend = '';
     $size=$lineLen=0;

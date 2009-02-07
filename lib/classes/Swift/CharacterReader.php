@@ -23,6 +23,7 @@
  * @package Swift
  * @subpackage Encoder
  * @author Chris Corbyn
+ * @author Xavier De Cock <xdecock@gmail.com>
  */
 interface Swift_CharacterReader
 {
@@ -37,6 +38,7 @@ interface Swift_CharacterReader
    * @param int $startOffset
    * @param array $currentMap
    * @param mixed $ignoredChars
+   * @return int
    */
   public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars);
   

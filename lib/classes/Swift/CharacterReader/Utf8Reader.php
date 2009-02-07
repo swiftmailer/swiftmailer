@@ -25,6 +25,7 @@
  * @package Swift
  * @subpackage Encoder
  * @author Chris Corbyn
+ * @author Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_CharacterReader_Utf8Reader
   implements Swift_CharacterReader
@@ -66,7 +67,8 @@ class Swift_CharacterReader_Utf8Reader
   	  $currentMap['p'] = $currentMap['i'] = array();
    	}
   	$strlen=strlen($string);
-  	$foundChars=count($currentMap['p']);
+  	$charPos=count($currentMap['p']);
+  	$foundChars=0;
   	$invalid=false;
   	for ($i=0; $i<$strlen; ++$i)
   	{
@@ -83,19 +85,19 @@ class Swift_CharacterReader_Utf8Reader
    	  	if ($invalid==true)
    	  	{
    	  	  /* We mark the chars as invalid and start a new char */
-   	  	  $currentMap['p'][$foundChars]=$startOffset+$i;
-   	      $currentMap['i'][$foundChars]=true;
+   	  	  $currentMap['p'][$charPos+$foundChars]=$startOffset+$i;
+   	      $currentMap['i'][$charPos+$foundChars]=true;
    	      ++$foundChars;
    	      $invalid=false;
    	  	}
-   	  	if ($i+$size<$strlen){
-   	  		$ignoredChars=substr($string, $i-$strlen);
+   	  	if (($i+$size) > $strlen){
+   	  		$ignoredChars=substr($string, $i);
    	  		break;
    	  	}
    	  	for ($j=1; $j<$size; ++$j)
    	  	{
           $char=$string[$i+$j];
-          if ($char>"\x80" && $char<"\xB0")
+          if ($char>"\x7F" && $char<"\xC0")
           {
             // Valid - continue parsing
           }
@@ -107,10 +109,12 @@ class Swift_CharacterReader_Utf8Reader
           }
    	  	}
    	  	/* Ok we got a complete char here */
-   	  	$currentMap['p'][$foundChars]=$startOffset+$i+$size;
+   	  	$lastChar=$currentMap['p'][$charPos+$foundChars]=$startOffset+$i+$size;
+   	  	$i+=$j-1;
    	    ++$foundChars;
    	  }
   	}
+  	return $foundChars;
   }
   
   /**
