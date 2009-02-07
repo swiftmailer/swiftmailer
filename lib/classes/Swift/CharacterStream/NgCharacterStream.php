@@ -226,16 +226,17 @@ Class Swift_CharacterStream_NgCharacterStream
         {
           $start = $this->_map['p'][$this->_currentPos-1];
         }
+        $to = $start;
         for (; $this->_currentPos < $end; ++$this->_currentPos)
         {
           if (isset($this->_map['i'][$this->_currentPos])) {
-          	$ret .= '?';
+          	$ret .= substr($this->_datas, $start, $to - $start).'?';
+          	$start = $this->_map['p'][$this->_currentPos];
           } else {
-          	$next = $this->_map['p'][$this->_currentPos];
-          	$ret .= substr($this->_datas, $start, $next - $start);
-          	$start = $next;
+          	$to = $this->_map['p'][$this->_currentPos];
           }
         }
+        $ret .= substr($this->_datas, $start, $to - $start);
         break;
   	}
   	return $ret;
