@@ -32,6 +32,7 @@ class Swift_CharacterReader_Utf8Reader
 
   /** Pre-computed for optimization */
   private static $length_map=array(
+//N=0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //0x0N
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //0x1N
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //0x2N
@@ -50,7 +51,77 @@ class Swift_CharacterReader_Utf8Reader
     4,4,4,4,4,4,4,4,5,5,5,5,6,6,0,0  //0xFN
  );
 
-
+  /**
+   * Returns the complete charactermap
+   *
+   * @param string $string
+   * @param int $startOffset
+   * @param array $currentMap
+   * @param mixed $ignoredChars
+   */
+  public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
+  {
+  	if (!isset($currentMap['i']) || !isset($currentMap['p']))
+  	{
+  	  $currentMap['p'] = $currentMap['i'] = array();
+   	}
+  	$strlen=strlen($string);
+  	$foundChars=count($currentMap['p']);
+  	$invalid=false;
+  	for ($i=0; $i<$strlen; ++$i)
+  	{
+  	  $char=ord($string[$i]);
+  	  $size=self::$length_map[$char];
+  	  if ($size==0)
+  	  {
+  	    /* char is invalid, we must wait for a resync */
+  	  	$invalid=true;
+  	  	continue;
+   	  }
+   	  else
+   	  {
+   	  	if ($invalid==true)
+   	  	{
+   	  	  /* We mark the chars as invalid and start a new char */
+   	  	  $currentMap['p'][$foundChars]=$startOffset+$i;
+   	      $currentMap['i'][$foundChars]=true;
+   	      ++$foundChars;
+   	      $invalid=false;
+   	  	}
+   	  	if ($i+$size<$strlen){
+   	  		$ignoredChars=substr($string, $i-$strlen);
+   	  		break;
+   	  	}
+   	  	for ($j=1; $j<$size; ++$j)
+   	  	{
+          $char=$string[$i+$j];
+          if ($char>"\x80" && $char<"\xB0")
+          {
+            // Valid - continue parsing
+          }
+          else
+          {
+            /* char is invalid, we must wait for a resync */
+            $invalid=true;
+            continue 2;
+          }
+   	  	}
+   	  	/* Ok we got a complete char here */
+   	  	$currentMap['p'][$foundChars]=$startOffset+$i+$size;
+   	    ++$foundChars;
+   	  }
+  	}
+  }
+  
+  /**
+   * Returns mapType
+   * @int mapType
+   */
+  public function getMapType()
+  {
+  	return self::MAP_TYPE_POSITIONS;
+  }
+ 
   /**
    * Returns an integer which specifies how many more bytes to read.
    * A positive integer indicates the number of more bytes to fetch before invoking
