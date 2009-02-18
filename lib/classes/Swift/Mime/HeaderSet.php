@@ -97,7 +97,7 @@ interface Swift_Mime_HeaderSet extends Swift_Mime_CharsetObserver
    * @param string $name
    * @return array
    */
-  public function getAll($name);
+  public function getAll($name = null);
   
   /**
    * Remove the header with the given $name if it's set.

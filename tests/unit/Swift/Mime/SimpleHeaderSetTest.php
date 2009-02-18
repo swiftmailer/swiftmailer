@@ -261,6 +261,30 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
       );
   }
   
+  public function testGetAllReturnsAllHeadersIfNoArguments()
+  {
+    $header0 = $this->_createHeader('Message-ID');
+    $header1 = $this->_createHeader('Subject');
+    $header2 = $this->_createHeader('To');
+    $factory = $this->_createFactory();
+    $this->_checking(Expectations::create()
+      -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
+        -> returns($header0)
+      -> ignoring($factory)->createIdHeader('Subject', 'thing')
+        -> returns($header1)
+      -> ignoring($factory)->createIdHeader('To', 'person@example.org')
+        -> returns($header2)
+      );
+    $set = $this->_createSet($factory);
+    $set->addIdHeader('Message-ID', 'some@id');
+    $set->addIdHeader('Subject', 'thing');
+    $set->addIdHeader('To', 'person@example.org');
+    
+    $this->assertEqual(array($header0, $header1, $header2),
+      $set->getAll()
+      );
+  }
+  
   public function testGetAllReturnsEmptyArrayIfNoneSet()
   {
     $set = $this->_createSet($this->_createFactory());

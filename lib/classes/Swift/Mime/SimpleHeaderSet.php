@@ -174,8 +174,18 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
    * @param string $name
    * @return array
    */
-  public function getAll($name)
+  public function getAll($name = null)
   {
+    if (!isset($name))
+    {
+      $headers = array();
+      foreach ($this->_headers as $collection)
+      {
+        $headers = array_merge($headers, $collection);
+      }
+      return $headers;
+    }
+    
     $lowerName = strtolower($name);
     if (!array_key_exists($lowerName, $this->_headers))
     {
