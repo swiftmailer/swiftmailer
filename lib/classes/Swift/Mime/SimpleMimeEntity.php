@@ -462,10 +462,10 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
       foreach ($this->_immediateChildren as $child)
       {
-        $string .= "\r\n--" . $this->getBoundary() . "\r\n";
+        $string .= "\r\n\r\n--" . $this->getBoundary() . "\r\n";
         $string .= $child->toString();
       }
-      $string .= "\r\n--" . $this->getBoundary() . "--\r\n";
+      $string .= "\r\n\r\n--" . $this->getBoundary() . "--\r\n";
     }
     
     return $string;
@@ -525,10 +525,10 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
       foreach ($this->_immediateChildren as $child)
       {
-        $is->write("\r\n--" . $this->getBoundary() . "\r\n");
+        $is->write("\r\n\r\n--" . $this->getBoundary() . "\r\n");
         $child->toByteStream($is);
       }
-      $is->write("\r\n--" . $this->getBoundary() . "--\r\n");
+      $is->write("\r\n\r\n--" . $this->getBoundary() . "--\r\n");
     }
   }
   

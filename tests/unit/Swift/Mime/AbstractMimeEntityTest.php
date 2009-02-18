@@ -555,15 +555,15 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $this->assertEqual(
       "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
       "\r\n" .
-      "--xxx\r\n" .
+      "\r\n--xxx\r\n" .
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "foobar\r\n" .
-      "--xxx\r\n" .
+      "\r\n--xxx\r\n" .
       "Content-Type: text/html\r\n" .
       "\r\n" .
       "<b>foobar</b>\r\n" .
-      "--xxx--\r\n",
+      "\r\n--xxx--\r\n",
       $entity->toString()
       );
   }
@@ -606,18 +606,18 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $this->assertPattern(
       "~^" .
       "Content-Type: multipart/mixed; boundary=\"xxx\"\r\n" .
-      "\r\n--xxx\r\n" .
+      "\r\n\r\n--xxx\r\n" .
       "Content-Type: multipart/alternative; boundary=\"yyy\"\r\n" .
-      "\r\n--(.*?)\r\n" .
+      "\r\n\r\n--(.*?)\r\n" .
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "foobar" .
-      "\r\n--\\1--\r\n" .
-      "\r\n--xxx\r\n" .
+      "\r\n\r\n--\\1--\r\n" .
+      "\r\n\r\n--xxx\r\n" .
       "Content-Type: application/octet-stream\r\n" .
       "\r\n" .
       "data" .
-      "\r\n--xxx--\r\n" .
+      "\r\n\r\n--xxx--\r\n" .
       "\$~",
       $entity->toString()
       );
@@ -735,15 +735,15 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     
     $this->assertEqual(
       "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
-      "\r\n--xxx\r\n" .
+      "\r\n\r\n--xxx\r\n" .
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "TEXT PART" .
-      "\r\n--xxx\r\n" .
+      "\r\n\r\n--xxx\r\n" .
       "Content-Type: text/html\r\n" .
       "\r\n" .
       "HTML PART" .
-      "\r\n--xxx--\r\n",
+      "\r\n\r\n--xxx--\r\n",
       $entity->toString()
       );
   }
