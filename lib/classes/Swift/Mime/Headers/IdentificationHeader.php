@@ -50,6 +50,17 @@ class Swift_Mime_Headers_IdentificationHeader
   }
   
   /**
+   * Get the type of Header that this instance represents.
+   * @return int
+   * @see TYPE_TEXT, TYPE_PARAMETERIZED, TYPE_MAILBOX
+   * @see TYPE_DATE, TYPE_ID, TYPE_PATH
+   */
+  public function getFieldType()
+  {
+    return self::TYPE_ID;
+  }
+  
+  /**
    * Set the model for the field body.
    * This method takes a string ID, or an array of IDs
    * @param mixed $model

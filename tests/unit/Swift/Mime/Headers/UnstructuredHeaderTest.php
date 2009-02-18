@@ -4,10 +4,17 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Headers/UnstructuredHeader.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 
-class Swift_Mime_Headers_UnstructuredHeaderTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_Mime_Headers_UnstructuredHeaderTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
   
   private $_charset = 'utf-8';
+  
+  public function testTypeIsTextHeader()
+  {
+    $header = $this->_getHeader('Subject', $this->_getEncoder('Q', true));
+    $this->assertEqual(Swift_Mime_Header::TYPE_TEXT, $header->getFieldType());
+  }
   
   public function testGetNameReturnsNameVerbatim()
   {

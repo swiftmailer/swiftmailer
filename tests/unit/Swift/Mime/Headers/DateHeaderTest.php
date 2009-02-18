@@ -11,6 +11,12 @@ class Swift_Mime_Headers_DateHeaderTest
   The following tests refer to RFC 2822, section 3.6.1 and 3.3.
   */
   
+  public function testTypeIsDateHeader()
+  {
+    $header = $this->_getHeader('Date');
+    $this->assertEqual(Swift_Mime_Header::TYPE_DATE, $header->getFieldType());
+  }
+  
   public function testGetTimestamp()
   {
     $timestamp = time();

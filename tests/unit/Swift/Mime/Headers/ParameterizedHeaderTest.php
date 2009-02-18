@@ -12,6 +12,14 @@ class Swift_Mime_Headers_ParameterizedHeaderTest
   private $_charset = 'utf-8';
   private $_lang = 'en-us';
   
+  public function testTypeIsParameterizedHeader()
+  {
+    $header = $this->_getHeader('Content-Type',
+      $this->_getHeaderEncoder('Q', true), $this->_getParameterEncoder(true)
+      );
+    $this->assertEqual(Swift_Mime_Header::TYPE_PARAMETERIZED, $header->getFieldType());
+  }
+  
   public function testValueIsReturnedVerbatim()
   {
     $header = $this->_getHeader('Content-Type',
