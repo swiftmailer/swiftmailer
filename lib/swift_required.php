@@ -44,7 +44,29 @@ function swift_autoload($class)
   }
 }
 
-spl_autoload_register('swift_autoload');
+/**
+ * Put Swift's autoloader at the start of the autoload stack.
+ * This is needed in Zend Framework due to their poor autoloader.
+ * Swift's autoloader won't process non-swift classes.
+ */
+function swift_autoload_register()
+{
+  if (!$callbacks = spl_autoload_functions())
+  {
+    $callbacks = array();
+  }
+  foreach ($callbacks as $callback)
+  {
+    spl_autoload_unregister($callback);
+  }
+  spl_autoload_register('swift_autoload');
+  foreach ($callbacks as $callback)
+  {
+    spl_autoload_register($callback);
+  }
+}
+
+swift_autoload_register();
 
 //Load in dependency maps
 require_once SWIFT_MAP_DIRECTORY . '/cache_deps.php';
