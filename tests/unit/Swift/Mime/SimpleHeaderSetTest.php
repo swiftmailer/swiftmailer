@@ -158,6 +158,15 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertTrue($set->has('Return-Path'));
   }
   
+  public function testNewlySetHeaderIsSeenByHas()
+  {
+    $factory = $this->_createFactory();
+    $header = $this->_createHeader('X-Foo', 'bar');
+    $set = $this->_createSet($factory);
+    $set->set($header);
+    $this->assertTrue($set->has('X-Foo'));
+  }
+  
   public function testHasCanAcceptOffset()
   {
     $factory = $this->_createFactory();

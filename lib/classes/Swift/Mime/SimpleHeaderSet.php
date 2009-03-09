@@ -153,6 +153,23 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   }
   
   /**
+   * Set a header in the HeaderSet.
+   * 
+   * The header may be a previously fetched header via {@link get()} or it may
+   * be one that has been created separately.
+   * 
+   * If $index is specified, the header will be inserted into the set at this
+   * offset.
+   * 
+   * @param Swift_Mime_Header $header
+   * @param int $index
+   */
+  public function set(Swift_Mime_Header $header, $index = 0)
+  {
+    $this->_storeHeader($header->getFieldName(), $header, $index);
+  }
+  
+  /**
    * Get the header with the given $name.
    * If multiple headers match, the actual one may be specified by $index.
    * Returns NULL if none present.
@@ -282,13 +299,20 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   // -- Private methods
   
   /** Save a Header to the internal collection */
-  private function _storeHeader($name, Swift_Mime_Header $header)
+  private function _storeHeader($name, Swift_Mime_Header $header, $offset = null)
   {
     if (!isset($this->_headers[strtolower($name)]))
     {
       $this->_headers[strtolower($name)] = array();
     }
-    $this->_headers[strtolower($name)][] = $header;
+    if (!isset($offset))
+    {
+      $this->_headers[strtolower($name)][] = $header;
+    }
+    else
+    {
+      $this->_headers[strtolower($name)][$offset] = $header;
+    }
   }
   
   /** Test if the headers can be sorted */
