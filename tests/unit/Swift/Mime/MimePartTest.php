@@ -131,6 +131,32 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
     $part->charsetChanged('utf-8');
   }
   
+  public function testSettingCharsetClearsCache()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> one($cache)->clearKey(any(), 'body')
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $entity->toString();
+    
+    $entity->setCharset('iso-2022');
+  }
+  
   public function testFormatIsReturnedFromHeader()
   {
     /* -- RFC 3676.

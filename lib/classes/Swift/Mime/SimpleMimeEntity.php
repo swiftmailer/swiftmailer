@@ -94,9 +94,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache)
   {
     $this->_cacheKey = uniqid();
+    $this->_cache = $cache;
     $this->_headers = $headers;
     $this->setEncoder($encoder);
-    $this->_cache = $cache;
     $this->_headers->defineOrdering(
       array('Content-Type', 'Content-Transfer-Encoding')
       );
@@ -359,6 +359,11 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function setBody($body, $contentType = null)
   {
+    if ($body !== $this->_body)
+    {
+      $this->_clearCache();
+    }
+    
     $this->_body = $body;
     if (isset($contentType))
     {
@@ -382,6 +387,11 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
+    if ($encoder !== $this->_encoder)
+    {
+      $this->_clearCache();
+    }
+    
     $this->_encoder = $encoder;
     $this->_setEncoding($encoder->getName());
     $this->_notifyEncoderChanged($encoder);

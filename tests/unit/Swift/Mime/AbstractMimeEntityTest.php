@@ -827,6 +827,86 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $entity->toString();
   }
   
+  public function testBodyIsClearedFromCacheIfNewBodySet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> one($cache)->clearKey(any(), 'body')
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $entity->toString();
+    
+    $entity->setBody("new\r\nnew!");
+  }
+  
+  public function testBodyIsNotClearedFromCacheIfSameBodySet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> never($cache)->clearKey(any(), 'body')
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $entity->toString();
+    
+    $entity->setBody("blah\r\nblah!");
+  }
+  
+  public function testBodyIsClearedFromCacheIfNewEncoderSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> one($cache)->clearKey(any(), 'body')
+      -> ignoring($cache)
+      );
+    
+    $otherEncoder = $this->_createEncoder();
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $entity->toString();
+    
+    $entity->setEncoder($otherEncoder);
+  }
+  
   public function testBodyIsReadFromCacheWhenUsingToByteStreamIfPresent()
   {
     $is = $this->_createInputStream();
