@@ -88,8 +88,8 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener
     {
       $replacements = $this->_replacements[$address];
       $body = $message->getBody();
-      $search=array_keys($replacements);
-      $replace=array_values($replacements);
+      $search = array_keys($replacements);
+      $replace = array_values($replacements);
       $bodyReplaced = str_replace(
         $search, $replace, $body
         );
