@@ -11,6 +11,15 @@
       <striplinebreaks />
     </filterchain>
   </loadfile>
+  <!-- Generate version number -->
+  <loadfile property="bundle.version" srcFile="${src.versionfile}">
+    <filterchain>
+      <striplinebreaks />
+      <tokenfilter>
+        <replacestring from="Swift-" to=""/>
+      </tokenfilter>
+    </filterchain>
+  </loadfile>
   <property name="src.readmefile" value="${path}/README" />
   <property name="src.libdir" value="${path}/lib" />
   <property name="src.testsuite" value="${path}/test-suite" />
@@ -63,6 +72,11 @@
   <target name="copy-classes">
     <copy todir="${builddir.package}/lib">
       <fileset dir="${src.libdir}" />
+      <filterchain>
+        <replacetokens>
+          <token key="SWIFT_VERSION_NUMBER" value="${bundle.version}"/>
+        </replacetokens>
+      </filterchain>
     </copy>
     <copy todir="${builddir.package}/test-suite">
       <fileset dir="${src.testsuite}" />

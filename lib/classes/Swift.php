@@ -29,7 +29,7 @@ abstract class Swift
 {
   
   /** Swift Mailer Version number generated during dist release process */
-  const VERSION = '{{__SWIFT_VERSION_PLACEHOLDER__}}';
+  const VERSION = '@SWIFT_VERSION_NUMBER@';
   
   /**
    * Internal autoloader for spl_autoload_register().
