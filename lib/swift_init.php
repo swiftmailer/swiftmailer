@@ -1,7 +1,7 @@
 <?php
 
 /*
- Autoloader and dependency injection initialization for Swift Mailer.
+ Dependency injection initialization for Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,18 +18,17 @@
  
  */
 
-//Indicate where Swift Mailer lib is found
+//Define where the root of Swift Mailer is found
 defined('SWIFT_LIB_DIRECTORY')
   or define('SWIFT_LIB_DIRECTORY', dirname(__FILE__));
 
-//Path to classes inside lib
-define('SWIFT_CLASS_DIRECTORY', SWIFT_LIB_DIRECTORY . '/classes');
+//Define where dependency maps can be found
+define('SWIFT_MAP_DIRECTORY', SWIFT_LIB_DIRECTORY . '/dependency_maps');
 
-//Load Swift utility class
-require_once SWIFT_CLASS_DIRECTORY . '/Swift.php';
+//Load in dependency maps
+require_once SWIFT_MAP_DIRECTORY . '/cache_deps.php';
+require_once SWIFT_MAP_DIRECTORY . '/mime_deps.php';
+require_once SWIFT_MAP_DIRECTORY . '/transport_deps.php';
 
-//Start the autoloader
-Swift::registerAutoload();
-
-//Load the init script to set up dependency injection
-require_once SWIFT_LIB_DIRECTORY . '/swift_init.php';
+//Load in global library preferences
+require_once SWIFT_LIB_DIRECTORY . '/preferences.php';
