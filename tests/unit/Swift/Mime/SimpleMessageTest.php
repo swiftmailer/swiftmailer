@@ -237,6 +237,19 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     $message->setSender('sender@domain');
   }
   
+  public function testNameCanBeUsedInSenderHeader()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('Sender', array('sender@domain'=>'Name'))
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setSender('sender@domain', 'Name');
+  }
+  
   public function testFromIsReturnedFromHeader()
   {
     /* -- RFC 2822, 3.6.2.
@@ -266,6 +279,22 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     $message->setFrom(array('other@domain'=>'Other'));
   }
   
+  public function testFromIsAddedToHeadersDuringAddFrom()
+  {
+    $from = $this->_createHeader('From', array('from@domain'=>'Name'),
+      array(), false
+      );
+    $this->_checking(Expectations::create()
+      -> one($from)->setFieldBodyModel(array('from@domain'=>'Name', 'other@domain'=>'Other'))
+      -> ignoring($from)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('From' => $from)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->addFrom('other@domain', 'Other');
+  }
+  
   public function testFromHeaderIsAddedIfNoneSet()
   {
     $headers = $this->_createHeaderSet(array(), false);
@@ -277,6 +306,19 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
       $this->_createCache()
       );
     $message->setFrom('from@domain');
+  }
+  
+  public function testPersonalNameCanBeUsedInFromAddress()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('From', array('from@domain'=>'Name'))
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setFrom('from@domain', 'Name');
   }
   
   public function testReplyToIsReturnedFromHeader()
@@ -308,6 +350,22 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     $message->setReplyTo(array('other@domain'=>'Other'));
   }
   
+  public function testReplyToIsAddedToHeadersDuringAddReplyTo()
+  {
+    $replyTo = $this->_createHeader('Reply-To', array('from@domain'=>'Name'),
+      array(), false
+      );
+    $this->_checking(Expectations::create()
+      -> one($replyTo)->setFieldBodyModel(array('from@domain'=>'Name', 'other@domain'=>'Other'))
+      -> ignoring($replyTo)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Reply-To' => $replyTo)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->addReplyTo('other@domain', 'Other');
+  }
+  
   public function testReplyToHeaderIsAddedIfNoneSet()
   {
     $headers = $this->_createHeaderSet(array(), false);
@@ -319,6 +377,19 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
       $this->_createCache()
       );
     $message->setReplyTo('reply@domain');
+  }
+  
+  public function testNameCanBeUsedInReplyTo()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('Reply-To', array('reply@domain'=>'Name'))
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setReplyTo('reply@domain', 'Name');
   }
   
   public function testToIsReturnedFromHeader()
@@ -350,6 +421,22 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     $message->setTo(array('other@domain'=>'Other'));
   }
   
+  public function testToIsAddedToHeadersDuringAddTo()
+  {
+    $to = $this->_createHeader('To', array('from@domain'=>'Name'),
+      array(), false
+      );
+    $this->_checking(Expectations::create()
+      -> one($to)->setFieldBodyModel(array('from@domain'=>'Name', 'other@domain'=>'Other'))
+      -> ignoring($to)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('To' => $to)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->addTo('other@domain', 'Other');
+  }
+  
   public function testToHeaderIsAddedIfNoneSet()
   {
     $headers = $this->_createHeaderSet(array(), false);
@@ -361,6 +448,19 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
       $this->_createCache()
       );
     $message->setTo('to@domain');
+  }
+  
+  public function testNameCanBeUsedInToHeader()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('To', array('to@domain'=>'Name'))
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setTo('to@domain', 'Name');
   }
   
   
@@ -393,6 +493,22 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     $message->setCc(array('other@domain'=>'Other'));
   }
   
+  public function testCcIsAddedToHeadersDuringAddCc()
+  {
+    $cc = $this->_createHeader('Cc', array('from@domain'=>'Name'),
+      array(), false
+      );
+    $this->_checking(Expectations::create()
+      -> one($cc)->setFieldBodyModel(array('from@domain'=>'Name', 'other@domain'=>'Other'))
+      -> ignoring($cc)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Cc' => $cc)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->addCc('other@domain', 'Other');
+  }
+  
   public function testCcHeaderIsAddedIfNoneSet()
   {
     $headers = $this->_createHeaderSet(array(), false);
@@ -406,7 +522,18 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     $message->setCc('cc@domain');
   }
   
-  
+  public function testNameCanBeUsedInCcHeader()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('Cc', array('cc@domain'=>'Name'))
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setCc('cc@domain', 'Name');
+  }
   
   
   public function testBccIsReturnedFromHeader()
@@ -438,6 +565,22 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     $message->setBcc(array('other@domain'=>'Other'));
   }
   
+  public function testBccIsAddedToHeadersDuringAddBcc()
+  {
+    $bcc = $this->_createHeader('Bcc', array('from@domain'=>'Name'),
+      array(), false
+      );
+    $this->_checking(Expectations::create()
+      -> one($bcc)->setFieldBodyModel(array('from@domain'=>'Name', 'other@domain'=>'Other'))
+      -> ignoring($bcc)
+      );
+    $message = $this->_createMessage(
+      $this->_createHeaderSet(array('Bcc' => $bcc)),
+      $this->_createEncoder(), $this->_createCache()
+      );
+    $message->addBcc('other@domain', 'Other');
+  }
+  
   public function testBccHeaderIsAddedIfNoneSet()
   {
     $headers = $this->_createHeaderSet(array(), false);
@@ -449,6 +592,19 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
       $this->_createCache()
       );
     $message->setBcc('bcc@domain');
+  }
+  
+  public function testNameCanBeUsedInBcc()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> one($headers)->addMailboxHeader('Bcc', array('bcc@domain'=>'Name'))
+      -> ignoring($headers)
+      );
+    $message = $this->_createMessage($headers, $this->_createEncoder(),
+      $this->_createCache()
+      );
+    $message->setBcc('bcc@domain', 'Name');
   }
   
   public function testPriorityIsReadFromHeader()
