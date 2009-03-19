@@ -54,7 +54,7 @@ Swift_DependencyContainer::getInstance()
   -> asNewInstanceOf('Swift_Transport_Esmtp_Auth_PlainAuthenticator')
   
   -> register('transport.eventdispatcher')
-  -> asSharedInstanceOf('Swift_Events_SimpleEventDispatcher')
+  -> asNewInstanceOf('Swift_Events_SimpleEventDispatcher')
   
   -> register('transport.replacementfactory')
   -> asSharedInstanceOf('Swift_StreamFilters_StringReplacementFilterFactory')

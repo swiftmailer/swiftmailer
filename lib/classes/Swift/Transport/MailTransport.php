@@ -151,6 +151,9 @@ class Swift_Transport_MailTransport implements Swift_Transport
     
     $messageStr = $message->toString();
     
+    $message->getHeaders()->set($toHeader);
+    $message->getHeaders()->set($subjectHeader);
+    
     //Separate headers from body
     if (false !== $endHeaders = strpos($messageStr, "\r\n\r\n"))
     {
@@ -189,6 +192,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
     else
     {
       $failedRecipients = array_merge(
+        $failedRecipients,
         array_keys((array) $message->getTo()),
         array_keys((array) $message->getCc()),
         array_keys((array) $message->getBcc())
@@ -205,9 +209,6 @@ class Swift_Transport_MailTransport implements Swift_Transport
       
       $count = 0;
     }
-    
-    $message->getHeaders()->set($toHeader);
-    $message->getHeaders()->set($subjectHeader);
     
     return $count;
   }
