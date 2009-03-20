@@ -28,8 +28,8 @@ class Swift_Bug51Test extends Swift_Tests_SwiftUnitTestCase
   
   public function tearDown()
   {
-    @unlink($this->_attachmentFile);
-    @unlink($this->_outputFile);
+    unlink($this->_attachmentFile);
+    unlink($this->_outputFile);
   }
   
   public function testAttachmentsDoNotGetTruncatedUsingToByteStream()

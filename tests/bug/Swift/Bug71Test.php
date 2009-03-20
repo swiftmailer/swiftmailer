@@ -10,9 +10,6 @@ class Swift_Bug71Test extends Swift_Tests_SwiftUnitTestCase
   public function setUp()
   {
     $this->_message = new Swift_Message('test');
-    //  ->setTo('a@b')
-    //  ->setFrom('c@d')
-    //  ;
   }
   
   public function testCallingToStringAfterSettingNewBodyReflectsChanges()
