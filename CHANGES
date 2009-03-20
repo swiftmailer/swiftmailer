@@ -26,3 +26,11 @@ Changelog for Swift Mailer, since Version 4.x
   * Patched a bug in MailTransport where failed recipients were not being merged.
   * Added Swift::VERSION constant
   * Allowed custom autoloaders to be used
+
+20 March 2009: 4.0.3
+--------------------
+
+  * Fixed Bug where base64 encoded content could exceed 76 chars per line
+  * Allowed Decorator plugin to accept a custom Replacements object
+
+-- End of Changes --
