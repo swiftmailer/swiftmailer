@@ -1,10 +1,6 @@
 <?php
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Plugins/DecoratorPlugin.php';
-require_once 'Swift/Events/SendEvent.php';
-require_once 'Swift/Mime/Message.php';
-require_once 'Swift/Mime/MimeEntity.php';
 
 class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
 {
@@ -115,6 +111,35 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
     $plugin->sendPerformed($evt);
   }
   
+  public function testReplacementsCanBeTakenFromCustomReplacementsObject()
+  {
+    $message = $this->_createMessage(
+      array('foo@bar' => 'Foobar', 'zip@zap' => 'Zip zap'),
+      array('chris.corbyn@swiftmailer.org' => 'Chris'),
+      'Subject',
+      'Something {a}'
+      );
+      
+    $replacements = $this->_createReplacements();
+    
+    $this->_checking(Expectations::create()
+      -> one($message)->setBody('Something b')
+      -> one($message)->setBody('Something c')
+      -> one($replacements)->getReplacementsFor('foo@bar') -> returns(array('{a}'=>'b'))
+      -> one($replacements)->getReplacementsFor('zip@zap') -> returns(array('{a}'=>'c'))
+      -> ignoring($message)
+      );
+    
+    $plugin = $this->_createPlugin($replacements);
+    
+    $evt = $this->_createSendEvent($message);
+    
+    $plugin->beforeSendPerformed($evt);
+    $plugin->sendPerformed($evt);
+    $plugin->beforeSendPerformed($evt);
+    $plugin->sendPerformed($evt);
+  }
+  
   // -- Creation methods
   
   private function _createMessage($to = array(), $from = null, $subject = null,
@@ -138,6 +163,11 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   private function _createPlugin($replacements)
   {
     return new Swift_Plugins_DecoratorPlugin($replacements);
+  }
+  
+  private function _createReplacements()
+  {
+    return $this->_mock('Swift_Plugins_Decorator_Replacements');
   }
   
   private function _createSendEvent(Swift_Mime_Message $message)
