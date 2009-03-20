@@ -1,0 +1,28 @@
+Changelog for Swift Mailer, since Version 4.x
+---------------------------------------------
+
+09 March 2009: 4.0.0
+--------------------
+
+ * Complete rewrite of Version 3.x with lots of breaking changes at the interface
+   level, but for the best in the long run.
+ * Changed Connections to Transports
+ * Made sending more robust (less error prone)
+ * Simplified Swift_Message interface (removed need for separate RecipientList)
+ * Improved Plugin API (better event management)
+ * Changed all MIME generated content to be full RFC 2822 (and friends) compliant
+
+11 March 2009: 4.0.1
+--------------------
+
+  * Fixed regression with cache clearing logic in setBody(), setEncoder() and
+    setCharset()
+
+13 March 2009: 4.0.2
+--------------------
+
+  * Added addTo(), addCc() etc methods.
+  * Allowed setTo(), setCc() etc to accept a $name parameters.
+  * Patched a bug in MailTransport where failed recipients were not being merged.
+  * Added Swift::VERSION constant
+  * Allowed custom autoloaders to be used
