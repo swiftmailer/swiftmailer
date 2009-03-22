@@ -1,0 +1,172 @@
+This is my summary of the way Java does it...
+---------------------------------------------
+
+//Developer works with this class, which read from a ByteStream provided by Developer
+InputStreamReader {
+  StreamDecoder sd; //Delegates *all* calls to this class internally
+
+  InputStreamReader(InputStream in);
+  
+  read(); //int (char)
+  
+  //Read bytes into the buffer as characters
+  read(char buf[], offset, length);
+}
+
+InputStream { //Bytes....
+  int read();
+  //This return the number of bytes (chars if we're thinking basic) read
+  int read(byte b[]); //Read into buffer b
+  int read(byte b[], int offset, int length); //offset being the offset in b to start at
+  int available(); //Number of bytes available to read (approx only)
+}
+
+//According to Sun, the most optimization you can get is by wrapping InputStreamReader with BufferedStreamReader:
+BufferedStreamReader r = new BufferedStreamReader(new InputStreamReader(bs));
+
+So what does BufferedStreamReader do that's so magical?
+
+BufferedReader extends Reader {
+  char cb[];
+  
+  BufferedReader(Reader reader);
+  
+  private fill() //Fills the buffer up to the maximum defined size (8192)
+  
+  int someReadMethod() //Example of how fill() is invoked()
+  {
+    if (nextCharOffset >= numberOfCharsInBuffer) {
+      fill();
+    }
+    if (nextCharOffset >= numberOfCharsInBuffer) {
+      return -1;
+    }
+    //Go ahead and read (e.g return cb[nextCharOffset++];)
+  }
+  
+  int read(); //0 - 65535 (0x00 - 0xFFFF) to represent a character
+  
+  //Keeps reading the underlying stream until either
+  // -1 is returned
+  // len chars have been read
+  // stream indicates it's blocked (non-PHP focused)
+  // It reads from the buffer, filling the buffer as required
+  int read(char buf[], int off, int len);
+  
+  String readLine(boolean ignoreLF); //Not used for our scenario... that I'm aware of
+}
+
+//Reader simply has some more basic read() methods that aren't charset aware
+StreamDecoder extends Reader {
+  Charset cs;
+  CharsetDecoder decoder;
+  
+  StreamDecoder(InputStream in, CharsetDecoder decoder); //cs = decoder.charset();
+  int read();
+  read(char buf[], offset, length);
+  mark(); //Returns the position... we'll call it, errr, position()
+}
+
+//A character set (coded character set) is a mapping between an abstract set of characters
+// and a set of integers (US-ASCII, ISO-8859-1, Unicode...)
+
+//A character encoding scheme (CES) is a mapping between one or more character sets and
+// as set of 8-bit byte sequences (UTF-8, UTF-16, ISO-2022)
+
+//Character encoding schemes typically deal with specific character sets (e.g. UTF-8 deals with Unicode)
+// It is possible for a character encoding scheme to deal with several character sets however
+
+//Sun seems to cache anything in the ascii range for optimization, but generally nothing outside it
+// (I guess there are 65536 - 128 characters in that range!)
+
+//Defines a CharacterSet (the important bit I'm stuck on)
+// Character set names can have [A-Za-z0-9][A-Za-z0-9_.:-]*
+// Character set names are case insensitive
+Charset {
+  getName(); //Can be used in message headers I guess
+  getAliases(); //String[] aliases for charset
+  displayName(); //Human readable version
+  //Test if the characters in c can be represented by this Character set too
+  // This doesn't mean they have the same byte sequences
+  contains(Charset c);
+  
+  CharsetDecoder newDecoder(); //Does the decoding from bytes to chars
+  CharsetEncoder newEncoder(); //Does the actual encoding from chars to byte
+  
+  canEncode(); //boolean
+}
+
+CharsetProvider {
+  //Basically this whole thing is a factory
+  static charsetForName(String charsetName);
+  
+  //This caches Charsets when first looked up
+  Charset lookup(String charsetName);
+
+  Charset[] charsets(); //Lists all charsets  
+
+  //Register a new charset
+  // Puts an entry mapping charsetName => className
+  // Also maps aliases to charsetName
+  void charset(String charsetName, String className, String aliases[])
+  
+  String[] aliases(String charsetName);
+}
+
+The CharsetEncoder/Decoder classes must play a significant role, since there
+are no other methods in this Charset class for this (other then convenience
+methods encode() and decode()).
+
+CharsetDecoder {
+  //Note, "replacement" is used for invalid chars (e.g. "?", but in the appropriate charset)
+  // averageCharsPerByte will no doubt always be < 0 for multibyte charsets
+  CharsetDecoder(Charset cs, float averageCharsPerByte, float maxCharsPerByte, String replacement)
+  CharsetDecoder(Charset cs, float averageCharsPerByte, float maxCharsPerByte) //Same as above but using U+FFFD as replacement
+  
+  float avergaeCharsPerByte();
+  float maxCharPerByte();
+  Charset charset();
+  String replacement();
+  
+  CharBuffer decode(ByteBuffer in); //delegates to decode(ByteBuffer in, CharBuffer out)
+  
+  abstract CodeResult decodeLoop(ByteBuffer in, CharBuffer out); //I assume this is where each Charset differs
+  
+  CharsetDecoder onMalformedInput(CodingErrorAction action); //Fluid so just returns "this". action is a callback
+  CharsetDecoder onUnmappableCharacter(CodingErrorAction action); //Fluid, callback
+  
+  CharsetDecoder reset(); //Fluid
+}
+
+CharsetEncoder {
+  //The replacement defaults to the byte value of "?"
+  CharsetEncoder(Charset cs, float averageBytesPerChar, float maxBytesPerChar, byte[] replacement)
+  CharsetEncoder(Charset cs, float averageBytesPerChar, float maxBytesPerChar)
+  
+  float averageBytesPerChar();
+  float maxBytesPerChar();
+  Charset charset();
+  byte[] replacement();
+  
+  boolean canEncode(CharBuffer cb); //The other methods must just be wrappers
+  
+  ByteBuffer encode(CharBuffer in); //Delegates to encode(CharBuffer in, ByteBuffer out);
+  
+  abstract CoderResult encodeLoop(CharBuffer in, ByteBuffer out); //Implementation specific
+  
+  CharsetEncoder onMalformedInput(CodingErrorAction action);
+  CharsetEncoder onUnmappableCharacter(CodingErrorAction action);
+  
+  boolean isLegalReplacement(byte[] replacement); //Sanity check?
+  
+  CharsetEncoder reset();
+}
+
+
+//// SIDE NOTE ////
+ord() and chr() and pack() and unpack() may be faster replaced with this:
+
+$chr = array(0x00 => "\x00", 0x01 => "\0x01", ... 0xFF => "\xFF");
+$ord = array_flip($chr);
+
+echo $ord['?']; //0x3f

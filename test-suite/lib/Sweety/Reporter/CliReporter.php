@@ -32,6 +32,12 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
   private $_aggregates = array();
   
   /**
+   * The time at which this test run started.
+   * @var float
+   */
+  private $_startTime = 0;
+  
+  /**
    * Creates a new CliReporter.
    */
   public function __construct($name)
@@ -83,6 +89,7 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
   public function start()
   {
     $this->_started = true;
+    $this->_startTime = microtime(true);
     echo $this->_name . PHP_EOL;
   }
   
@@ -193,11 +200,19 @@ class Sweety_Reporter_CliReporter implements Sweety_Reporter
     
     echo 'Test cases run: ';
     echo $this->_aggregates['run'] . '/' . $this->_aggregates['cases'] . ', ';
-    echo 'Passes: ' . $this->_aggregates['passes'] . ', ';
+    //echo 'Passes: ' . $this->_aggregates['passes'] . ', ';
     echo 'Failures: ' . $this->_aggregates['fails'] . ', ';
-    echo 'Exceptions: '. $this->_aggregates['exceptions'] . PHP_EOL;
+    echo 'Exceptions: '. $this->_aggregates['exceptions'] . ' ';
+    printf("(t = %.2fms) %s", $this->_calcDuration(), PHP_EOL);
     
     exit((int) !$success);
+  }
+  
+  // -- Private Methods
+  
+  private function _calcDuration()
+  {
+    return (microtime(true) - $this->_startTime) * 1000;
   }
   
 }

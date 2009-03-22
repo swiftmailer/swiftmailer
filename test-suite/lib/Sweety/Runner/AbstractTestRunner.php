@@ -3,6 +3,7 @@
 require_once 'Sweety/Runner.php';
 require_once 'Sweety/TestLocator.php';
 require_once 'Sweety/Reporter.php';
+require_once 'Sweety/SimpleTest/QuietXmlReporter.php';
 
 /**
  * Base functionality for the Sweety_Runner.
@@ -115,7 +116,7 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
           {
             header("Content-Type: text/xml"); //Sigh! SimpleTest (skip() issues).
           }
-          $reporter = new XmlReporter();
+          $reporter = new Sweety_SimpleTest_QuietXmlReporter();
           break;
         case Sweety_Runner::REPORT_TEXT:
         default:

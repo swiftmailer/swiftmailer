@@ -59,3 +59,7 @@ ABNF definitions
 RFC 3676:
 ---------
 Flowed formatting/delsp parameters
+
+RFC 2279:
+---------
+The UTF-8 specification

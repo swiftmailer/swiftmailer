@@ -1,0 +1,105 @@
+So, UTF-8 is a variation of a character encoding that uses the Unicode Character Set.
+
+Unicode has two character sets:  UCS-2 and UCS-4.  They only differ in that UCS-2 uses
+two bytes whereas UCS-4 uses 4.  UCS-2 can handle up to 64K characters, whereas UCS-4
+can handle over 4 billion (if my math is correct).
+
+UCS-2 character codes range from 00 00 to FF FF (?) and UCS-4 go from 00 00 00 00 to FF FF FF FF (?)
+that's the theory anyway... in practice the ranges are probably more restricted.
+
+A UCS-2 code, as UCS-4 simply left-pads with zeroes.
+
+OK, so in UTF-8, characters vary in the number of bytes they have.  And it's quite clever!
+
+-----------------------------------------------
+0000 0000-0000 007F   0xxxxxxx
+0000 0080-0000 07FF   110xxxxx 10xxxxxx
+0000 0800-0000 FFFF   1110xxxx 10xxxxxx 10xxxxxx
+
+0001 0000-001F FFFF   11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+0020 0000-03FF FFFF   111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+0400 0000-7FFF FFFF   1111110x 10xxxxxx ... 10xxxxxx
+---------------------------------------------------
+
+The table above shows the character-code ranges along with the bits that are set in each octet.
+
+So, for US-ASCII (0000 0000 - 0000 007F), there's just one octet and only 7 of it's 8 bits are set, leaving
+the high order bit as zero.  In other words, a US-ASCII char looks like the same as US-ASCII char in the standard
+US-ASCII encoding scheme.
+
+Characters that use more than one octet (n octets) (anything higher than US-ASCII), the first octet has the high order
+bit set to 1, followed by n-1 bits set to 1, followed by a bit set to zero, and then bits containing the character data.
+
+Each subsequent octet in the multibyte character has it's first bit set to 1, followed by a zero-bit, and then uses
+the remaining bits to encode the character.  So, with the exception of the first octet (which indicates length and contains
+some of the bits from the code), each octet in a multibyte sequence can have up 6 bits of data that actually encode the
+character.
+
+Let's take the character code 0000 00E8 (è) Let's find out what bytes encode it:
+
+0    0    0    0    0    0    E    8     : HEX
+----------------------------------------------
+0000 0000 0000 0000 0000 0000 1110 1000  : BIN
+
+We're in the 0000 0080 - 0000 07FF range, which is 1 bytes
+
+So something that resembles this, but we don't yet know what the x values are:
+
+
+110x xxxx  10xx xxxx
+
+Filling in the bits from the character value, starting with the lower order bits, putting them first in the last octet
+and then moving left, we get this:
+
+C    3     A    8
+1100 0011  1010 1000
+
+Testing this theory in PHP:
+
+echo chr(0xC3) . chr(0xA8);
+
+We get the correct character! è.
+
+Woop woop!
+
+So how about our E7 AD character?
+
+0    0    0    0    E    7    A    D     : HEX
+----------------------------------------------
+0000 0000 0000 0000 1110 0111 1010 1101  : BIN
+
+It's in the 0000 0800 - 0000 FFFF range, so 3 octets:
+
+
+1110 xxxx 10xx xxxx 10xx xxxx
+
+Fill in the bits...
+
+E    E    9    E    A    D
+1110 1110 1001 1110 1010 1101
+
+-------------------------------------------------------------
+
+In writing the implementation, I have noticed that in the 2 octet (and possibly higher) range,
+all of ascii is also covered.  I'm not sure if this is correct, so I'm just doing a quick calculation here...
+
+           C    0
+Lowest b1: 1100 0000
+           8    0
+Lowest b2: 1000 0000
+
+Bytes: C0 80 (according to my implementation this is unicode 0x00):
+
+1. Initialize the 4 octets of UCS4 with all bits to zero
+
+00000000 00000000 00000000 00000000
+
+2. Determine the bits that encode the character
+
+110xxxxx 10xxxxxx
+
+3. Take the x values and fill them in from right to left until no x left
+
+00000000 00000000 00000000 00000000
+
+My algorithm is correct!  All the zeroes fill in the gaps, and thus produce such values.
