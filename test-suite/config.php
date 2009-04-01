@@ -3,6 +3,11 @@
 //Error reporting settings
 error_reporting(E_ALL | E_STRICT); ini_set('display_errors', true);
 
+if (defined('E_DEPRECATED'))
+{
+  error_reporting(error_reporting() | E_DEPRECATED);
+}
+
 //E_STRICT compliance -- If you change this timezone some tests may fail -
 // This only affects the tests, you need to ensure PHP is correctly set up in
 // your own code
