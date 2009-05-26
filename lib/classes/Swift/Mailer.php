@@ -172,4 +172,12 @@ class Swift_Mailer
     $this->_transport->registerPlugin($plugin);
   }
   
+  /**
+   * The Transport used to send messages.
+   * @return Swift_Transport
+   */
+  public function getTransport()
+  {
+    return $this->_transport;
+  }
 }
