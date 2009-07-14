@@ -48,6 +48,17 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
   }
   
   /**
+   * Get the type of Header that this instance represents.
+   * @return int
+   * @see TYPE_TEXT, TYPE_PARAMETERIZED, TYPE_MAILBOX
+   * @see TYPE_DATE, TYPE_ID, TYPE_PATH
+   */
+  public function getFieldType()
+  {
+    return self::TYPE_PATH;
+  }
+  
+  /**
    * Set the model for the field body.
    * This method takes a string for an address.
    * @param string $model

@@ -96,7 +96,16 @@ abstract class Swift_Transport_AbstractSmtpTransport
   public function start()
   {
     if (!$this->_started)
-    {      
+    {
+      if ($evt = $this->_eventDispatcher->createTransportChangeEvent($this))
+      {
+        $this->_eventDispatcher->dispatchEvent($evt, 'beforeTransportStarted');
+        if ($evt->bubbleCancelled())
+        {
+          return;
+        }
+      }
+      
       try
       {
         $this->_buffer->initialize($this->_getBufferParams());
@@ -108,7 +117,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       $this->_readGreeting();
       $this->_doHeloCommand();
       
-      if ($evt = $this->_eventDispatcher->createTransportChangeEvent($this))
+      if ($evt)
       {
         $this->_eventDispatcher->dispatchEvent($evt, 'transportStarted');
       }
@@ -208,6 +217,15 @@ abstract class Swift_Transport_AbstractSmtpTransport
   {
     if ($this->_started)
     {
+      if ($evt = $this->_eventDispatcher->createTransportChangeEvent($this))
+      {
+        $this->_eventDispatcher->dispatchEvent($evt, 'beforeTransportStopped');
+        if ($evt->bubbleCancelled())
+        {
+          return;
+        }
+      }
+      
       try
       {
         $this->executeCommand("QUIT\r\n", array(221));
@@ -218,7 +236,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
       {
         $this->_buffer->terminate();
       
-        if ($evt = $this->_eventDispatcher->createTransportChangeEvent($this))
+        if ($evt)
         {
           $this->_eventDispatcher->dispatchEvent($evt, 'transportStopped');
         }
@@ -516,7 +534,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
     //We could do a really thorough check, but there's really no point
     if (false !== $dotPos = strpos($hostname, '.'))
     {
-      return ($dotPos > 0) && ($dotPos != strlen($hotname) - 1);
+      return ($dotPos > 0) && ($dotPos != strlen($hostname) - 1);
     }
     else
     {

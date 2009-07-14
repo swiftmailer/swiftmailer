@@ -202,6 +202,43 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest
     $smtp->start();
   }
   
+  public function testStartingTransportDispatchesBeforeTransportChangeEvent()
+  {
+    $buf = $this->_getBuffer();
+    $dispatcher = $this->_createEventDispatcher(false);
+    $evt = $this->_mock('Swift_Events_TransportChangeEvent');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $this->_checking(Expectations::create()
+      -> allowing($dispatcher)->createTransportChangeEvent($smtp, optional()) -> returns($evt)
+      -> one($dispatcher)->dispatchEvent($evt, 'beforeTransportStarted')
+      -> ignoring($dispatcher)
+      -> ignoring($evt)
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+  }
+  
+  public function testCancellingBubbleBeforeTransportStartStopsEvent()
+  {
+    $buf = $this->_getBuffer();
+    $dispatcher = $this->_createEventDispatcher(false);
+    $evt = $this->_mock('Swift_Events_TransportChangeEvent');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $this->_checking(Expectations::create()
+      -> allowing($dispatcher)->createTransportChangeEvent($smtp, optional()) -> returns($evt)
+      -> one($dispatcher)->dispatchEvent($evt, 'beforeTransportStarted')
+      -> allowing($evt)->bubbleCancelled() -> returns(true)
+      -> ignoring($dispatcher)
+      -> ignoring($evt)
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+    
+    $this->assertFalse($smtp->isStarted(),
+      '%s: Transport should not be started since event bubble was cancelled'
+    );
+  }
+  
   public function testStoppingTransportDispatchesTransportChangeEvent()
   {
     $buf = $this->_getBuffer();
@@ -217,6 +254,46 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest
     $this->_finishBuffer($buf);
     $smtp->start();
     $smtp->stop();
+  }
+  
+  public function testStoppingTransportDispatchesBeforeTransportChangeEvent()
+  {
+    $buf = $this->_getBuffer();
+    $dispatcher = $this->_createEventDispatcher(false);
+    $evt = $this->_mock('Swift_Events_TransportChangeEvent');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $this->_checking(Expectations::create()
+      -> allowing($dispatcher)->createTransportChangeEvent($smtp, optional()) -> returns($evt)
+      -> one($dispatcher)->dispatchEvent($evt, 'beforeTransportStopped')
+      -> ignoring($dispatcher)
+      -> ignoring($evt)
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+    $smtp->stop();
+  }
+  
+  public function testCancellingBubbleBeforeTransportStoppedStopsEvent()
+  {
+    $buf = $this->_getBuffer();
+    $dispatcher = $this->_createEventDispatcher(false);
+    $evt = $this->_mock('Swift_Events_TransportChangeEvent');
+    $smtp = $this->_getTransport($buf, $dispatcher);
+    $seq = $this->_sequence('stopping transport');
+    $this->_checking(Expectations::create()
+      -> allowing($dispatcher)->createTransportChangeEvent($smtp, optional()) -> returns($evt)
+      -> one($dispatcher)->dispatchEvent($evt, 'beforeTransportStopped') -> inSequence($seq)
+      -> allowing($evt)->bubbleCancelled() -> inSequence($seq) -> returns(true)
+      -> ignoring($dispatcher)
+      -> ignoring($evt)
+      );
+    $this->_finishBuffer($buf);
+    $smtp->start();
+    $smtp->stop();
+    
+    $this->assertTrue($smtp->isStarted(),
+      '%s: Transport should not be stopped since event bubble was cancelled'
+    );
   }
   
   public function testResponseEventsAreGenerated()

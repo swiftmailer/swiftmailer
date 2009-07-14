@@ -210,10 +210,40 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest
       -> ignoring($os)
       );
     
-    $this->_encoder->encodeByteStream($os, $is, 0, 80);
+    $this->_encoder->encodeByteStream($os, $is, 0, 50);
     $this->assertEqual(
-      "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDREVGR0hJSktMTU5PUFFSU1RV\r\n" .
-      "VldYWVoxMjM0NTY3YWJjZGVmZ2hpamts",
+      "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3OD\r\n" .
+      "kwQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY3YWJj\r\n" .
+      "ZGVmZ2hpamts",
+      $collection->content
+      );
+  }
+  
+  public function testMaximumLineLengthIsNeverMoreThan76Chars()
+  {      
+    $os = $this->_createOutputByteStream();
+    $is = $this->_createInputByteStream();
+    $collection = new Swift_StreamCollector();
+
+    $this->_checking(Expectations::create()
+      -> allowing($is)->write(any(), optional()) -> will($collection)
+      -> ignoring($is)
+
+      -> one($os)->read(optional()) -> returns('abcdefghijkl') //12
+      -> one($os)->read(optional()) -> returns('mnopqrstuvwx') //24
+      -> one($os)->read(optional()) -> returns('yzabc1234567') //36
+      -> one($os)->read(optional()) -> returns('890ABCDEFGHI') //48
+      -> one($os)->read(optional()) -> returns('JKLMNOPQRSTU') //60
+      -> one($os)->read(optional()) -> returns('VWXYZ1234567') //72
+      -> one($os)->read(optional()) -> returns('abcdefghijkl') //84
+      -> allowing($os)->read(optional()) -> returns(false)
+      -> ignoring($os)
+      );
+    
+    $this->_encoder->encodeByteStream($os, $is, 0, 100);
+    $this->assertEqual(
+      "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDREVGR0hJSktMTU5PUFFS\r\n" .
+      "U1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts",
       $collection->content
       );
   }

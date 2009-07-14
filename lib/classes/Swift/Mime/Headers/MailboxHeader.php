@@ -50,6 +50,17 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
   }
   
   /**
+   * Get the type of Header that this instance represents.
+   * @return int
+   * @see TYPE_TEXT, TYPE_PARAMETERIZED, TYPE_MAILBOX
+   * @see TYPE_DATE, TYPE_ID, TYPE_PATH
+   */
+  public function getFieldType()
+  {
+    return self::TYPE_MAILBOX;
+  }
+  
+  /**
    * Set the model for the field body.
    * This method takes a string, or an array of addresses.
    * @param mixed $model

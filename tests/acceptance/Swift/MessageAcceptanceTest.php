@@ -29,19 +29,19 @@ class Swift_MessageAcceptanceTest
       'MIME-Version: 1.0' . "\r\n" .
       'Content-Type: multipart/alternative;' . "\r\n" .
       ' boundary="' . $boundary . '"' . "\r\n" .
-      "\r\n" .
+      "\r\n\r\n" .
       '--' . $boundary . "\r\n" .
       'Content-Type: text/plain; charset=iso-8859-1' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       'foo' .
-      "\r\n" .
+      "\r\n\r\n" .
       '--' . $boundary . "\r\n" .
       'Content-Type: text/html; charset=iso-8859-1' . "\r\n" .
       'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
       "\r\n" .
       'test <b>foo</b>' .
-      "\r\n" .
+      "\r\n\r\n" .
       '--' . $boundary . '--' . "\r\n",
       $message->toString()
       );

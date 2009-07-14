@@ -19,6 +19,7 @@
  */
 
 //@require 'Swift/Transport.php';
+//@require 'Swift/Transport/MailInvoker.php';
 //@require 'Swift/Mime/Message.php';
 //@require 'Swift/Events/EventListener.php';
 
@@ -46,12 +47,17 @@ class Swift_Transport_MailTransport implements Swift_Transport
   /** The event dispatcher from the plugin API */
   private $_eventDispatcher;
   
+  /** An invoker that calls the mail() function */
+  private $_invoker;
+  
   /**
    * Create a new MailTransport with the $log.
    * @param Swift_Transport_Log $log
    */
-  public function __construct(Swift_Events_EventDispatcher $eventDispatcher)
+  public function __construct(Swift_Transport_MailInvoker $invoker,
+    Swift_Events_EventDispatcher $eventDispatcher)
   {
+    $this->_invoker = $invoker;
     $this->_eventDispatcher = $eventDispatcher;
   }
   
@@ -126,20 +132,32 @@ class Swift_Transport_MailTransport implements Swift_Transport
     }
     
     $count = (
-      count($message->getTo())
-      + count($message->getCc())
-      + count($message->getBcc())
+      count((array) $message->getTo())
+      + count((array) $message->getCc())
+      + count((array) $message->getBcc())
       );
     
-    $to = $message->getHeaders()->get('To')->getFieldBody();
-    $subject = $message->getHeaders()->get('Subject')->getFieldBody();
+    $toHeader = $message->getHeaders()->get('To');
+    $subjectHeader = $message->getHeaders()->get('Subject');
+    
+    $to = $toHeader->getFieldBody();
+    $subject = $subjectHeader->getFieldBody();
+    
     $reversePath = $this->_getReversePath($message);
+    
+    //Remove headers that would otherwise be duplicated
+    $message->getHeaders()->remove('To');
+    $message->getHeaders()->remove('Subject');
+    
     $messageStr = $message->toString();
+    
+    $message->getHeaders()->set($toHeader);
+    $message->getHeaders()->set($subjectHeader);
     
     //Separate headers from body
     if (false !== $endHeaders = strpos($messageStr, "\r\n\r\n"))
     {
-      $headers = substr($messageStr, 0, $endHeaders . "\r\n"); //Keep last EOL
+      $headers = substr($messageStr, 0, $endHeaders) . "\r\n"; //Keep last EOL
       $body = substr($messageStr, $endHeaders + 4);
     }
     else
@@ -161,7 +179,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
       $body = str_replace("\r\n.", "\r\n..", $body);
     }
     
-    if (mail($to, $subject, $body, $headers,
+    if ($this->_invoker->mail($to, $subject, $body, $headers,
       sprintf($this->_extraParams, $reversePath)))
     {
       if ($evt)
@@ -170,15 +188,14 @@ class Swift_Transport_MailTransport implements Swift_Transport
         $evt->setFailedRecipients($failedRecipients);
         $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
       }
-      
-      return $count;
     }
     else
     {
       $failedRecipients = array_merge(
-        array_keys($message->getTo()),
-        array_keys($message->getCc()),
-        array_keys($message->getBcc())
+        $failedRecipients,
+        array_keys((array) $message->getTo()),
+        array_keys((array) $message->getCc()),
+        array_keys((array) $message->getBcc())
         );
       
       if ($evt)
@@ -190,8 +207,10 @@ class Swift_Transport_MailTransport implements Swift_Transport
       
       $message->generateId();
       
-      return 0;
+      $count = 0;
     }
+    
+    return $count;
   }
   
   /**

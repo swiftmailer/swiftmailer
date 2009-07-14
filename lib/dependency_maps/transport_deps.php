@@ -19,13 +19,16 @@ Swift_DependencyContainer::getInstance()
   
   -> register('transport.mail')
   -> asNewInstanceOf('Swift_Transport_MailTransport')
-  -> withDependencies(array('transport.eventdispatcher'))
+  -> withDependencies(array('transport.mailinvoker', 'transport.eventdispatcher'))
   
   -> register('transport.loadbalanced')
   -> asNewInstanceOf('Swift_Transport_LoadBalancedTransport')
   
   -> register('transport.failover')
   -> asNewInstanceOf('Swift_Transport_FailoverTransport')
+  
+  -> register('transport.mailinvoker')
+  -> asSharedInstanceOf('Swift_Transport_SimpleMailInvoker')
   
   -> register('transport.buffer')
   -> asNewInstanceOf('Swift_Transport_StreamBuffer')
@@ -51,7 +54,7 @@ Swift_DependencyContainer::getInstance()
   -> asNewInstanceOf('Swift_Transport_Esmtp_Auth_PlainAuthenticator')
   
   -> register('transport.eventdispatcher')
-  -> asSharedInstanceOf('Swift_Events_SimpleEventDispatcher')
+  -> asNewInstanceOf('Swift_Events_SimpleEventDispatcher')
   
   -> register('transport.replacementfactory')
   -> asSharedInstanceOf('Swift_StreamFilters_StringReplacementFilterFactory')

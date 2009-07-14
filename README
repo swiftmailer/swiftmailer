@@ -3,60 +3,27 @@ Swift Mailer, by Chris Corbyn
 
 Swift Mailer is a component based mailing solution for PHP 5.
 
-Documentation: http://swifmailer.org/betas/docs/v4-working-draft/
+Homepage:      http://swiftmailer.org
+Documentation: http://swiftmailer.org/docs
 Mailing List:  http://groups.google.com/group/swiftmailer
 Bugs:          http://swiftmailer.lighthouseapp.com/
 Repository:    http://github.com/swiftmailer/swiftmailer
 
+Swift Mailer is highly object-oriented by design and lends itself
+to use in complex web application with a great deal of flexibility.
 
-FOR THE IMPATIENT, WAITING FOR VERSION 4.0.0:
----------------------------------------------
+For full details on usage, see the documentation.
 
-ADDENDUM: Working Draft Docs @ http://swifmailer.org/betas/docs/v4-working-draft/
+IMPORTANT: Users upgrading from version 3.x or earlier absolutely
+           MUST read the documentation.  In short, the API is considerably
+           different so your old code won't "just work".
 
-At the time of writing (16th December 2008), the code is not yet ready for a
-full-release.   However, it is extremely close to becoming version 4.0.0.
+If you'd like to make a donation, we are working on a system where
+donations are taken on a per-feature-request basis via the website
+with target amounts for each feature. In the meantime however you
+may donate directly to the author via PayPal:
 
-You can probably use the code now if you are developing an application you
-do not expect to release until early 2009, or if you simply wish to play
-around.  However, there is no documentation as yet so you'll have to use your
-intuition and read the doc comments in the code.  To give you a head start
-here's a complex example showing how to send an email to three recipients,
-with an alternative body, two attachments and an embedded image, over SMTP
-with a username and password.
+  PayPal: chris@w3style.co.uk
 
-<?php
-
-require_once 'swift/lib/swift_required.php';
-
-$smtp = Swift_SmtpTransport::newInstance('smtp.host.tld', 25)
-  ->setUsername(' ... ')
-  ->setPassword(' ... ');
-
-$mailer = Swift_Mailer::newInstance($smtp);
-
-$message = Swift_Message::newInstance('Your subject');
-$message
-  ->setTo(array(
-    'user1@example.org',
-    'user2@example.org' => 'User Two',
-    'user3@exmaple.org' => 'Another User Name'
-  ))
-  ->setFrom(array('your@address.com' => 'Your Name'))
-  ->attach(Swift_Attachment::fromPath('/path/to/doc1.pdf'))
-  ->attach(Swift_Attachment::fromPath('/path/to/doc2.pdf'))
-  ->setBody(
-    'Here is an image <img src="' . $message->embed(Swift_Image::fromPath('/path/to/image.jpg')) . '" />',
-    'text/html'
-  )
-  ->addPart('This is the alternative part', 'text/plain')
-  ;
-
-if ($mailer->send($message))
-{
-  echo "Message sent!";
-}
-else
-{
-  echo "Message could not be sent.";
-}
+Donations are certainly voluntary, but seriously, you donors are
+complete legends and drive this project! :)

@@ -70,6 +70,18 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
     $plugin->responseReceived($evt);
   }
   
+  public function testTransportBeforeStartChangeIsSentToLogger()
+  {
+    $evt = $this->_createTransportChangeEvent();
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->add(any())
+      );
+    
+    $plugin = $this->_createPlugin($logger);
+    $plugin->beforeTransportStarted($evt);
+  }
+  
   public function testTransportStartChangeIsSentToLogger()
   {
     $evt = $this->_createTransportChangeEvent();
@@ -92,6 +104,18 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
     
     $plugin = $this->_createPlugin($logger);
     $plugin->transportStopped($evt);
+  }
+  
+  public function testTransportBeforeStopChangeIsSentToLogger()
+  {
+    $evt = $this->_createTransportChangeEvent();
+    $logger = $this->_createLogger();
+    $this->_checking(Expectations::create()
+      -> one($logger)->add(any())
+      );
+    
+    $plugin = $this->_createPlugin($logger);
+    $plugin->beforeTransportStopped($evt);
   }
   
   public function testExceptionsArePassedToDelegateAndLeftToBubbleUp()

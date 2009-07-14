@@ -1,9 +1,16 @@
 <?php
 
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Headers/PathHeader.php';
 
-class Swift_Mime_Headers_PathHeaderTest extends UnitTestCase
+class Swift_Mime_Headers_PathHeaderTest extends Swift_Tests_SwiftUnitTestCase
 {
+  
+  public function testTypeIsPathHeader()
+  {
+    $header = $this->_getHeader('Return-Path');
+    $this->assertEqual(Swift_Mime_Header::TYPE_PATH, $header->getFieldType());
+  }
   
   public function testSingleAddressCanBeSetAndFetched()
   {

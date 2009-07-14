@@ -1,7 +1,7 @@
 <?php
 
 /*
- Autoloader and dependency injection initialization for Swift Mailer.
+ Invokes the mail() function in Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,18 +18,29 @@
  
  */
 
-//Indicate where Swift Mailer lib is found
-defined('SWIFT_LIB_DIRECTORY')
-  or define('SWIFT_LIB_DIRECTORY', dirname(__FILE__));
-
-//Path to classes inside lib
-define('SWIFT_CLASS_DIRECTORY', SWIFT_LIB_DIRECTORY . '/classes');
-
-//Load Swift utility class
-require_once SWIFT_CLASS_DIRECTORY . '/Swift.php';
-
-//Start the autoloader
-Swift::registerAutoload();
-
-//Load the init script to set up dependency injection
-require_once SWIFT_LIB_DIRECTORY . '/swift_init.php';
+/**
+ * This interface intercepts calls to the mail() function.
+ * 
+ * @package Swift
+ * @subpackage Transport
+ * @author Chris Corbyn
+ */
+interface Swift_Transport_MailInvoker
+{
+  
+  /**
+   * Send mail via the mail() function.
+   * 
+   * This method takes the same arguments as PHP mail().
+   * 
+   * @param string $to
+   * @param string $subject
+   * @param string $body
+   * @param string $headers
+   * @param string $extraParams
+   * 
+   * @return boolean
+   */
+  public function mail($to, $subject, $body, $headers = null, $extraParams = null);
+  
+}

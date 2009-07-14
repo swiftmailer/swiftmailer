@@ -1,9 +1,17 @@
 <?php
 
+require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Headers/IdentificationHeader.php';
 
-class Swift_Mime_Headers_IdentificationHeaderTest extends UnitTestCase
+class Swift_Mime_Headers_IdentificationHeaderTest
+  extends Swift_Tests_SwiftUnitTestCase
 {
+  
+  public function testTypeIsIdHeader()
+  {
+    $header = $this->_getHeader('Message-ID');
+    $this->assertEqual(Swift_Mime_Header::TYPE_ID, $header->getFieldType());
+  }
   
   public function testValueMatchesMsgIdSpec()
   {

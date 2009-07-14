@@ -13,6 +13,12 @@ class Swift_Mime_Headers_MailboxHeaderTest
   
   private $_charset = 'utf-8';
   
+  public function testTypeIsMailboxHeader()
+  {
+    $header = $this->_getHeader('To', $this->_getEncoder('Q', true));
+    $this->assertEqual(Swift_Mime_Header::TYPE_MAILBOX, $header->getFieldType());
+  }
+  
   public function testMailboxIsSetForAddress()
   {
     $header = $this->_getHeader('From', $this->_getEncoder('Q', true));

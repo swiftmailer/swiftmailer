@@ -43,7 +43,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     $contentType = null, $charset = null)
   {
     call_user_func_array(
-      array($this, 'parent::__construct'),
+      array($this, 'Swift_Mime_SimpleMessage::__construct'),
       Swift_DependencyContainer::getInstance()
         ->createDependenciesFor('mime.message')
       );

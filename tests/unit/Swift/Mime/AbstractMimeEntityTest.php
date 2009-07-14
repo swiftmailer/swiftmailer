@@ -555,15 +555,15 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $this->assertEqual(
       "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
       "\r\n" .
-      "--xxx\r\n" .
+      "\r\n--xxx\r\n" .
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "foobar\r\n" .
-      "--xxx\r\n" .
+      "\r\n--xxx\r\n" .
       "Content-Type: text/html\r\n" .
       "\r\n" .
       "<b>foobar</b>\r\n" .
-      "--xxx--\r\n",
+      "\r\n--xxx--\r\n",
       $entity->toString()
       );
   }
@@ -606,18 +606,18 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     $this->assertPattern(
       "~^" .
       "Content-Type: multipart/mixed; boundary=\"xxx\"\r\n" .
-      "\r\n--xxx\r\n" .
+      "\r\n\r\n--xxx\r\n" .
       "Content-Type: multipart/alternative; boundary=\"yyy\"\r\n" .
-      "\r\n--(.*?)\r\n" .
+      "\r\n\r\n--(.*?)\r\n" .
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "foobar" .
-      "\r\n--\\1--\r\n" .
-      "\r\n--xxx\r\n" .
+      "\r\n\r\n--\\1--\r\n" .
+      "\r\n\r\n--xxx\r\n" .
       "Content-Type: application/octet-stream\r\n" .
       "\r\n" .
       "data" .
-      "\r\n--xxx--\r\n" .
+      "\r\n\r\n--xxx--\r\n" .
       "\$~",
       $entity->toString()
       );
@@ -735,15 +735,15 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     
     $this->assertEqual(
       "Content-Type: multipart/alternative; boundary=\"xxx\"\r\n" .
-      "\r\n--xxx\r\n" .
+      "\r\n\r\n--xxx\r\n" .
       "Content-Type: text/plain\r\n" .
       "\r\n" .
       "TEXT PART" .
-      "\r\n--xxx\r\n" .
+      "\r\n\r\n--xxx\r\n" .
       "Content-Type: text/html\r\n" .
       "\r\n" .
       "HTML PART" .
-      "\r\n--xxx--\r\n",
+      "\r\n\r\n--xxx--\r\n",
       $entity->toString()
       );
   }
@@ -825,6 +825,86 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     
     $entity->setBody("blah\r\nblah!");
     $entity->toString();
+  }
+  
+  public function testBodyIsClearedFromCacheIfNewBodySet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> one($cache)->clearKey(any(), 'body')
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $entity->toString();
+    
+    $entity->setBody("new\r\nnew!");
+  }
+  
+  public function testBodyIsNotClearedFromCacheIfSameBodySet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> never($cache)->clearKey(any(), 'body')
+      -> ignoring($cache)
+      );
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $entity->toString();
+    
+    $entity->setBody("blah\r\nblah!");
+  }
+  
+  public function testBodyIsClearedFromCacheIfNewEncoderSet()
+  {
+    $headers = $this->_createHeaderSet(array(), false);
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->toString() -> returns(
+        "Content-Type: text/plain; charset=utf-8\r\n"
+        )
+      -> ignoring($headers)
+      );
+    
+    $cache = $this->_createCache(false);
+    $this->_checking(Expectations::create()
+      -> one($cache)->clearKey(any(), 'body')
+      -> ignoring($cache)
+      );
+    
+    $otherEncoder = $this->_createEncoder();
+    
+    $entity = $this->_createEntity($headers, $this->_createEncoder(),
+      $cache
+      );
+    
+    $entity->setBody("blah\r\nblah!");
+    $entity->toString();
+    
+    $entity->setEncoder($otherEncoder);
   }
   
   public function testBodyIsReadFromCacheWhenUsingToByteStreamIfPresent()

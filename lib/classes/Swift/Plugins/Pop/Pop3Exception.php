@@ -1,7 +1,7 @@
 <?php
 
 /*
- Autoloader and dependency injection initialization for Swift Mailer.
+ Pop3Exception from Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,18 +18,27 @@
  
  */
 
-//Indicate where Swift Mailer lib is found
-defined('SWIFT_LIB_DIRECTORY')
-  or define('SWIFT_LIB_DIRECTORY', dirname(__FILE__));
+//@require 'Swift/IoException.php';
 
-//Path to classes inside lib
-define('SWIFT_CLASS_DIRECTORY', SWIFT_LIB_DIRECTORY . '/classes');
-
-//Load Swift utility class
-require_once SWIFT_CLASS_DIRECTORY . '/Swift.php';
-
-//Start the autoloader
-Swift::registerAutoload();
-
-//Load the init script to set up dependency injection
-require_once SWIFT_LIB_DIRECTORY . '/swift_init.php';
+/**
+ * Pop3Exception thrown when an error occurs connecting to a POP3 host.
+ * 
+ * @package Swift
+ * @subpackage Transport
+ * 
+ * @author Chris Corbyn
+ */
+class Swift_Plugins_Pop_Pop3Exception extends Swift_IoException
+{
+  
+  /**
+   * Create a new Pop3Exception with $message.
+   * 
+   * @param string $message
+   */
+  public function __construct($message)
+  {
+    parent::__construct($message);
+  }
+  
+}

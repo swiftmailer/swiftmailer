@@ -1,7 +1,7 @@
 <?php
 
 /*
- Autoloader and dependency injection initialization for Swift Mailer.
+ POP3 Connection class from Swift Mailer.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,18 +18,30 @@
  
  */
 
-//Indicate where Swift Mailer lib is found
-defined('SWIFT_LIB_DIRECTORY')
-  or define('SWIFT_LIB_DIRECTORY', dirname(__FILE__));
 
-//Path to classes inside lib
-define('SWIFT_CLASS_DIRECTORY', SWIFT_LIB_DIRECTORY . '/classes');
-
-//Load Swift utility class
-require_once SWIFT_CLASS_DIRECTORY . '/Swift.php';
-
-//Start the autoloader
-Swift::registerAutoload();
-
-//Load the init script to set up dependency injection
-require_once SWIFT_LIB_DIRECTORY . '/swift_init.php';
+/**
+ * Pop3Connection interface for connecting and disconnecting to a POP3 host.
+ * 
+ * @package Swift
+ * @subpackage Plugins
+ * 
+ * @author Chris Corbyn
+ */
+interface Swift_Plugins_Pop_Pop3Connection
+{
+  
+  /**
+   * Connect to the POP3 host and throw an Exception if it fails.
+   * 
+   * @throws Swift_Plugins_Pop_Pop3Exception
+   */
+  public function connect();
+  
+  /**
+   * Disconnect from the POP3 host and throw an Exception if it fails.
+   * 
+   * @throws Swift_Plugins_Pop_Pop3Exception
+   */
+  public function disconnect();
+  
+}

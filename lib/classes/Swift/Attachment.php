@@ -42,7 +42,7 @@ class Swift_Attachment extends Swift_Mime_Attachment
     $contentType = null)
   {
     call_user_func_array(
-      array($this, 'parent::__construct'),
+      array($this, 'Swift_Mime_Attachment::__construct'),
       Swift_DependencyContainer::getInstance()
         ->createDependenciesFor('mime.attachment')
       );
