@@ -175,9 +175,9 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   /** Just write the bytes to the stream */
   private function _doWrite($bytes)
   {
-    $bytes = $this->_filter($bytes);
+    $bytes_f = $this->_filter($bytes);
     
-    $this->_commit($bytes);
+    $this->_commit($bytes_f);
     
     foreach ($this->_mirrors as $stream)
     {
