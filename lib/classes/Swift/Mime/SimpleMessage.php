@@ -183,9 +183,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    */
   public function addFrom($address, $name = null)
   {
-    return $this->setFrom(array_merge(
-      (array) $this->getFrom(), array($address => $name)
-    ));
+    $current = $this->getFrom();
+    $current[$address] = $name;
+    return $this->setFrom($current);
   }
   
   /**
@@ -233,9 +233,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    */
   public function addReplyTo($address, $name = null)
   {
-    return $this->setReplyTo(array_merge(
-      (array) $this->getReplyTo(), array($address => $name)
-    ));
+    $current = $this->getReplyTo();
+    $current[$address] = $name;
+    return $this->setReplyTo($current);
   }
   
   /**
@@ -283,9 +283,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    */
   public function addTo($address, $name = null)
   {
-    return $this->setTo(array_merge(
-      (array) $this->getTo(), array($address => $name)
-    ));
+    $current = $this->getTo();
+    $current[$address] = $name;
+    return $this->setTo($current);
   }
   
   /**
@@ -333,9 +333,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    */
   public function addCc($address, $name = null)
   {
-    return $this->setCc(array_merge(
-      (array) $this->getCc(), array($address => $name)
-    ));
+    $current = $this->getCc();
+    $current[$address] = $name;
+    return $this->setCc($current);
   }
   
   /**
@@ -381,9 +381,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    */
   public function addBcc($address, $name = null)
   {
-    return $this->setBcc(array_merge(
-      (array) $this->getBcc(), array($address => $name)
-    ));
+    $current = $this->getBcc();
+    $current[$address] = $name;
+    return $this->setBcc($current);
   }
   
   /**
