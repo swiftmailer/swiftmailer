@@ -33,4 +33,12 @@ Changelog for Swift Mailer, since Version 4.x
   * Fixed Bug where base64 encoded content could exceed 76 chars per line
   * Allowed Decorator plugin to accept a custom Replacements object
 
+12 August 2009: 4.0.4
+--------------------
+
+  * Bugfixes for operating under safe mode and using the MailTransport
+  * Compatibility for PHP 5.3
+  * Optimizations for addTo(), addCc() etc operations
+  * Bugfix for double-escaping issue in batch sending
+
 -- End of Changes --
