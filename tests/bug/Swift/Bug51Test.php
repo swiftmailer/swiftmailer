@@ -91,7 +91,7 @@ class Swift_Bug51Test extends Swift_Tests_SwiftUnitTestCase
     {
       $attachmentBase64 = trim(substr(
         $source, $attachmentDataStart,
-        $attachmentDataStart + $attachmentDataEnd
+        $attachmentDataEnd - $attachmentDataStart
       ));
     }
     
