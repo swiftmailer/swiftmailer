@@ -102,7 +102,10 @@ class Swift_ByteStream_ArrayByteStream
   public function write($bytes)
   {
     $to_add = str_split($bytes);
-    $this->_array = array_merge($this->_array, $to_add);
+    foreach ($to_add as $value)
+    {
+      $this->_array[] = $value;
+    }
     $this->_arraySize = count($this->_array);
     
     foreach ($this->_mirrors as $stream)
