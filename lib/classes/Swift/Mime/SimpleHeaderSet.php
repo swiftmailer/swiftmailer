@@ -314,6 +314,18 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     return $string;
   }
   
+  /**
+   * Returns a string representation of this object.
+   *
+   * @return string
+   *
+   * @see toString()
+   */
+  public function __toString()
+  {
+    return $this->toString();
+  }
+  
   // -- Private methods
   
   /** Save a Header to the internal collection */

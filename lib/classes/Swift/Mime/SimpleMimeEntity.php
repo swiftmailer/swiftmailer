@@ -472,6 +472,18 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   }
   
   /**
+   * Returns a string representation of this object.
+   *
+   * @return string
+   *
+   * @see toString()
+   */
+  public function __toString()
+  {
+    return $this->toString();
+  }
+  
+  /**
    * Write this entire entity to a {@link Swift_InputByteStream}.
    * @param Swift_InputByteStream
    */
