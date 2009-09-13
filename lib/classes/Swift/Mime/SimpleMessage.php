@@ -538,6 +538,18 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
   }
   
   /**
+   * Returns a string representation of this object.
+   *
+   * @return string
+   *
+   * @see toString()
+   */
+  public function __toString()
+  {
+    return $this->toString();
+  }
+  
+  /**
    * Write this message to a {@link Swift_InputByteStream}.
    * @param Swift_InputByteStream $is
    */

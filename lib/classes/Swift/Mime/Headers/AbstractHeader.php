@@ -177,6 +177,18 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     return $this->_tokensToString($this->toTokens());
   }
   
+  /**
+   * Returns a string representation of this object.
+   *
+   * @return string
+   *
+   * @see toString()
+   */
+  public function __toString()
+  {
+    return $this->toString();
+  }
+  
   // -- Points of extension
   
   /**
