@@ -29,17 +29,19 @@ abstract class Swift
   public static function autoload($class)
   {
     //Don't interfere with other autoloaders
-    if (substr($class, 0, strlen(__CLASS__)) != __CLASS__)
+    if (0 !== strpos($class, 'Swift'))
     {
-      return;
+      return false;
     }
-    
-    $path = SWIFT_CLASS_DIRECTORY . '/' . str_replace('_', '/', $class) . '.php';
-    
-    if (file_exists($path))
+
+    $path = dirname(__FILE__).'/'.str_replace('_', '/', $class).'.php';
+
+    if (!file_exists($path))
     {
-      require_once $path;                                                        
+      return false;
     }
+
+    require_once $path;
   }
   
   /**
@@ -49,19 +51,7 @@ abstract class Swift
    */
   public static function registerAutoload()
   {
-    if (!$callbacks = spl_autoload_functions())
-    {
-      $callbacks = array();
-    }
-    foreach ($callbacks as $callback)
-    {
-      spl_autoload_unregister($callback);
-    }
     spl_autoload_register(array('Swift', 'autoload'));
-    foreach ($callbacks as $callback)
-    {
-      spl_autoload_register($callback);
-    }
   }
   
 }
