@@ -269,6 +269,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
 
     $seq = $this->_mockery()->sequence('read-stream');
     $this->_checking(Expectations::create()
+      -> between(0,1)->of($os)->setReadPointer(0)
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0xD0))
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0x94))
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0xD0))
@@ -299,6 +300,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
 
     $seq = $this->_mockery()->sequence('read-stream');
     $this->_checking(Expectations::create()
+      -> between(0,1)->of($os)->setReadPointer(0)
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0xD0))
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0x94))
       -> one($os)->read(any()) -> inSequence($seq) -> returns(pack('C*', 0xD0))

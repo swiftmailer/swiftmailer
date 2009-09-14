@@ -19,7 +19,36 @@
 class Swift_CharacterReader_UsAsciiReader
   implements Swift_CharacterReader
 {
-
+  /**
+   * Returns the complete charactermap
+   *
+   * @param string $string
+   * @param int $startOffset
+   * @param string $ignoredChars
+   */
+  public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
+  {
+  	$strlen=strlen($string);
+  	$ignoredChars='';
+  	for( $i = 0; $i < $strlen; ++$i)
+  	{
+  	  if ($string[$i]>"\x07F")
+  	  { // Invalid char
+  	  	$currentMap[$i+$startOffset]=$string[$i];
+  	  }
+  	}
+  	return $strlen;
+  }
+  
+  /**
+   * Returns mapType
+   * @int mapType
+   */
+  public function getMapType()
+  {
+  	return self::MAP_TYPE_INVALID;
+  }
+ 
   /**
    * Returns an integer which specifies how many more bytes to read.
    * A positive integer indicates the number of more bytes to fetch before invoking
