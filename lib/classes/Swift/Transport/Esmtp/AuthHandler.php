@@ -43,6 +43,13 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   private $_password;
   
   /**
+   * The auth mode for authentication.
+   * @var string
+   * @access private
+   */
+  private $_auth_mode;
+  
+  /**
    * The ESMTP AUTH parameters available.
    * @var string[]
    * @access private
@@ -113,6 +120,24 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   }
   
   /**
+   * Set the auth mode to use to authenticate.
+   * @param string $mode
+   */
+  public function setAuthMode($mode)
+  {
+    $this->_auth_mode = $mode;
+  }
+  
+  /**
+   * Get the auth mode to use to authenticate.
+   * @return string
+   */
+  public function getAuthMode()
+  {
+    return $this->_auth_mode;
+  }
+  
+  /**
    * Get the name of the ESMTP extension this handles.
    * @return boolean
    */
@@ -139,7 +164,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     if ($this->_username)
     {
       $count = 0;
-      foreach ($this->_authenticators as $authenticator)
+      foreach ($this->_getAuthenticatorsForAgent() as $authenticator)
       {
         if (in_array(strtolower($authenticator->getAuthKeyword()),
           array_map('strtolower', $this->_esmtpParams)))
@@ -199,7 +224,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
    */
   public function exposeMixinMethods()
   {
-    return array('setUsername', 'getUsername', 'setPassword', 'getPassword');
+    return array('setUsername', 'getUsername', 'setPassword', 'getPassword', 'setAuthMode', 'getAuthMode');
   }
   
   /**
@@ -209,4 +234,29 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
   {
   }
   
+  // -- Protected methods
+  
+  /**
+   * Returns the authenticator list for the given agent.
+   * @param  Swift_Transport_SmtpAgent $agent
+   * @return array
+   * @access protected
+   */
+  protected function _getAuthenticatorsForAgent()
+  {
+    if (!$mode = strtolower($this->_auth_mode))
+    {
+      return $this->_authenticators;
+    }
+
+    foreach ($this->_authenticators as $authenticator)
+    {
+      if (strtolower($authenticator->getAuthKeyword()) == $mode)
+      {
+        return array($authenticator);
+      }
+    }
+
+    throw new Swift_TransportException('Auth mode '.$mode.' is invalid');
+  }
 }
