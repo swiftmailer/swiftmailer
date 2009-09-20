@@ -79,4 +79,9 @@ class Swift_Message extends Swift_Mime_SimpleMessage
       ));
   }
   
+  public function __wakeup()
+  {
+    Swift_DependencyContainer::getInstance()->createDependenciesFor('mime.message');
+  }
+  
 }
