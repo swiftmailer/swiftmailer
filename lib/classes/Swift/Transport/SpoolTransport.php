@@ -24,10 +24,29 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
   /**
    * Constructor.
    */
-  public function __construct(Swift_Spool $spool, Swift_Events_EventDispatcher $eventDispatcher)
+  public function __construct(Swift_Events_EventDispatcher $eventDispatcher, Swift_Spool $spool = null)
+  {
+    $this->_eventDispatcher = $eventDispatcher;
+    $this->_spool = $spool;
+  }
+  
+  /**
+   * Sets the spool object.
+   * @param Swift_Spool $spool
+   */
+  public function setCommand(Swift_Spool $spool)
   {
     $this->_spool = $spool;
-    $this->_eventDispatcher = $eventDispatcher;
+    return $this;
+  }
+  
+  /**
+   * Get the spool object.
+   * @return Swift_Spool
+   */
+  public function getSpool()
+  {
+    return $this->_spool;
   }
   
   /**
