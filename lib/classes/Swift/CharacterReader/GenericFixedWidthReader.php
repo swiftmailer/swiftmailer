@@ -15,18 +15,19 @@
  * @package Swift
  * @subpackage Encoder
  * @author Chris Corbyn
+ * @author Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_CharacterReader_GenericFixedWidthReader
   implements Swift_CharacterReader
 {
-
+   
   /**
    * The number of bytes in a single character.
    * @var int
    * @access private
    */
   private $_width;
-
+	
   /**
    * Creates a new GenericFixedWidthReader using $width bytes per character.
    * @param int $width
@@ -34,6 +35,35 @@ class Swift_CharacterReader_GenericFixedWidthReader
   public function __construct($width)
   {
     $this->_width = $width;
+  }
+
+  /**
+   * Returns the complete charactermap
+   *
+   * @param string $string
+   * @param int $startOffset
+   * @param array $currentMap
+   * @param mixed $ignoredChars
+   * @return $int
+   */
+  public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
+  {
+  	$strlen = strlen($string);
+  	// % and / are CPU intensive, so, maybe find a better way
+  	$ignored = $strlen%$this->_width;
+  	$ignoredChars = substr($string, - $ignored);
+  	$currentMap = $this->_width;
+  	return ($strlen - $ignored)/$this->_width;
+  	
+  }
+  
+  /**
+   * Returns mapType
+   * @int mapType
+   */
+  public function getMapType()
+  {
+  	return self::MAP_TYPE_FIXED_LEN;
   }
 
   /**

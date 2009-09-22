@@ -36,6 +36,13 @@ class Swift_Transport_Esmtp_AuthHandlerTest
     $this->assertEqual('pass', $auth->getPassword());
   }
   
+  public function testAuthModeCanBeSetAndFetched()
+  {
+    $auth = $this->_createHandler(array());
+    $auth->setAuthMode('PLAIN');
+    $this->assertEqual('PLAIN', $auth->getAuthMode());
+  }
+  
   public function testMixinMethods()
   {
     $auth = $this->_createHandler(array());
@@ -51,6 +58,12 @@ class Swift_Transport_Esmtp_AuthHandlerTest
       );
     $this->assertTrue(in_array('setPassword', $mixins),
       '%s: setPassword() should be accessible via mixin'
+      );
+    $this->assertTrue(in_array('setAuthMode', $mixins),
+      '%s: setAuthMode() should be accessible via mixin'
+      );
+    $this->assertTrue(in_array('getAuthMode', $mixins),
+      '%s: getAuthMode() should be accessible via mixin'
       );
   }
   
