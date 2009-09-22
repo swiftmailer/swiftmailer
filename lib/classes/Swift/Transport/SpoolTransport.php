@@ -34,7 +34,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
    * Sets the spool object.
    * @param Swift_Spool $spool
    */
-  public function setCommand(Swift_Spool $spool)
+  public function setSpool(Swift_Spool $spool)
   {
     $this->_spool = $spool;
     return $this;
