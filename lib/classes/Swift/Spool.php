@@ -15,9 +15,36 @@
  */
 interface Swift_Spool
 {
+  /**
+   * Starts this Transport mechanism.
+   */
   public function start();
+
+  /**
+   * Stops this Transport mechanism.
+   */
   public function stop();
+
+  /**
+   * Tests if this Transport mechanism has started.
+   *
+   * @return boolean
+   */
   public function isStarted();
+
+  /**
+   * Queues a message.
+   * @param Swift_Mime_Message $message The message to store
+   */
   public function queueMessage(Swift_Mime_Message $message);
-  public function flushQueue(Swift_Transport $transport);
+
+  /**
+   * Sends messages using the given transport instance.
+   *
+   * @param Swift_Transport $transport         A transport instance
+   * @param string[]        &$failedRecipients An array of failures by-reference
+   *
+   * @return int The number of sent emails
+   */
+  public function flushQueue(Swift_Transport $transport, &$failedRecipients = null);
 }
