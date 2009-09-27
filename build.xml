@@ -28,8 +28,7 @@
   <property name="builddir.package" value="${builddir}/${bundle.name}" />
   <property name="runtests" value="" />
   <filelist id="src.licenses" dir="${path}">
-    <file name="LICENSE.GPL" />
-    <file name="LICENSE.LGPL" />
+    <file name="LICENSE" />
   </filelist>
   <fileset id="build.simpletest.unneeded"
     dir="${builddir.package}/test-suite/lib/simpletest">
