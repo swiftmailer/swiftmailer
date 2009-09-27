@@ -41,4 +41,14 @@ Changelog for Swift Mailer, since Version 4.x
   * Optimizations for addTo(), addCc() etc operations
   * Bugfix for double-escaping issue in batch sending
 
+27 September 2009: 4.0.5
+------------------------
+
+  * Fixed a warning (#78)
+  * Clarified license and updated the file headers accordingly
+  * Added __toString() methods where toString() methods already exists
+  * Removed constants (SWIFT_LIB_DIRECTORY, SWIFT_MAP_DIRECTORY, SWIFT_CLASS_DIRECTORY)
+  * Simplified autoloading
+  * Added a setAuthMode() method to AuthHandler (#54)
+
 -- End of Changes --
