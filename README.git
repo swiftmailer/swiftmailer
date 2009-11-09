@@ -63,7 +63,7 @@ WHY SO MUCH CLUTTER?
 --------------------
 As you can probably see, there are a lot more files in here than you find in
 the pre-packaged versions.  That's because I store notes (UML, RFCs etc) in
-the repository along with utils like PhpDocumentor.
+the repository.
 
 The main library files live in /lib and the tests live in /tests.  You can run
 the tests by pointing your web browser at /test-suite, or by running the
