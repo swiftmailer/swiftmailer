@@ -13,7 +13,7 @@
  * @package Swift
  * @author  Fabien Potencier
  */
-class Swift_FileSpool implements Swift_Spool
+class Swift_FileSpool extends Swift_ConfigurableSpool
 {
   /** The spool directory */
   private $_path;
@@ -84,6 +84,7 @@ class Swift_FileSpool implements Swift_Spool
 
     $failedRecipients = (array) $failedRecipients;
     $count = 0;
+    $time = time();
     foreach (new DirectoryIterator($this->_path) as $file)
     {
       $file = $file->getRealPath();
@@ -98,6 +99,16 @@ class Swift_FileSpool implements Swift_Spool
       $count += $transport->send($message, $failedRecipients);
 
       unlink($file);
+
+      if (isset($this->_message_limit) && $count >= $this->_message_limit)
+      {
+        break;
+      }
+
+      if (isset($this->_time_limit) && (time() - $time) >= $this->_time_limit)
+      {
+        break;
+      }
     }
 
     return $count;
