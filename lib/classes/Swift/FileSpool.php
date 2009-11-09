@@ -100,12 +100,12 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
 
       unlink($file);
 
-      if (isset($this->_message_limit) && $count >= $this->_message_limit)
+      if ($this->getMessageLimit() && $count >= $this->getMessageLimit())
       {
         break;
       }
 
-      if (isset($this->_time_limit) && (time() - $time) >= $this->_time_limit)
+      if ($this->getTimeLimit() && (time() - $time) >= $this->getTimeLimit())
       {
         break;
       }

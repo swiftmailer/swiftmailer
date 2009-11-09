@@ -31,11 +31,29 @@ abstract class Swift_ConfigurableSpool implements Swift_Spool
   }
   
   /**
+   * Gets the maximum number of messages to send per flush.
+   * @return int The limit
+   */
+  public function getMessageLimit()
+  {
+    return $this->_message_limit;
+  }
+  
+  /**
    * Sets the time limit (in seconds) per flush.
    * @param int $limit The limit
    */
   public function setTimeLimit($limit)
   {
     $this->_time_limit = (int) $limit;
+  }
+  
+  /**
+   * Gets the time limit (in seconds) per flush.
+   * @return int The limit
+   */
+  public function getTimeLimit()
+  {
+    return $this->_time_limit;
   }
 }
