@@ -33,7 +33,7 @@ class Swift_FileSpool implements Swift_Spool
   }
   
   /**
-   * Tests if this Transport mechanism has started.
+   * Tests if this Spool mechanism has started.
    *
    * @return boolean
    */
@@ -43,14 +43,14 @@ class Swift_FileSpool implements Swift_Spool
   }
   
   /**
-   * Starts this Transport mechanism.
+   * Starts this Spool mechanism.
    */
   public function start()
   {
   }
   
   /**
-   * Stops this Transport mechanism.
+   * Stops this Spool mechanism.
    */
   public function stop()
   {

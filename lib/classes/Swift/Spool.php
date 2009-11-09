@@ -16,17 +16,17 @@
 interface Swift_Spool
 {
   /**
-   * Starts this Transport mechanism.
+   * Starts this Spool mechanism.
    */
   public function start();
 
   /**
-   * Stops this Transport mechanism.
+   * Stops this Spool mechanism.
    */
   public function stop();
 
   /**
-   * Tests if this Transport mechanism has started.
+   * Tests if this Spool mechanism has started.
    *
    * @return boolean
    */
