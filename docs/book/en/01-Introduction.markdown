@@ -1,11 +1,11 @@
 Introduction
 ============
 
-Swift Mailer is a component-based library for sending e-mails from PHP 5
+Swift Mailer is a component-based library for sending e-mails from PHP
 applications.
 
 >**NOTE**
->This book refers to version 4 of the Swift Mailer library. If you are looking
+>This book refers to version 4.0 of the Swift Mailer library. If you are looking
 >for information about (the now deprecated) version 3, you should refer to the
 >old wiki found [online][1].
 
@@ -28,15 +28,15 @@ wish to learn about.
 
 Throughout this book you will be presented with code samples, which most
 people should find ample to implement Swift Mailer appropriately in their own
-projects. I will also use diagrams where appropriate, and where I believe
-readers may find it helpful I will discuss some related theory, including
+projects. We will also use diagrams where appropriate, and where we believe
+readers may find it helpful we will discuss some related theory, including
 reference to certain documents you are able to find online.
 
 ### Code Samples
 
 Code samples presented in this book will be displayed on a different colored
-background in a monospaced font. Samples are not to be taken as copy &amp;
-paste code snippets.
+background in a monospaced font. Samples are not to be taken as copy & paste
+code snippets.
 
 Code examples are used through the book to clarify what is written in text.
 They will sometimes be usable as-is, but they should always be taken as
@@ -58,12 +58,11 @@ A code sample will look like this:
 
     */
 
-The presence of 3 dots `...` in a code sample indicates that I
-have left out a chunk of the code for brevity, they are not actually part of
-the code.
+The presence of 3 dots `...` in a code sample indicates that we have left out
+a chunk of the code for brevity, they are not actually part of the code.
 
-I will often place multi-line comments `/* ... */` in the code
-so that I can show alternative ways of achieving the same result.
+We will often place multi-line comments `/* ... */` in the code so that we can
+show alternative ways of achieving the same result.
 
 You should read the code examples given and try to understand them. They are
 kept concise so that you are not overwhelmed with information.
@@ -75,30 +74,30 @@ Swift Mailer began back in 2005 as a one-class project for sending mail over
 SMTP. It has since grown into the flexible component-based library that is in
 development today.
 
-I first posted Swift Mailer on a web [forum][2] asking for comments from other
-developers. It was never intended as a fully supported open source project,
-but members of the forum began to adopt it and make use of it.
+Chris Corbyn first posted Swift Mailer on a web [forum][2] asking for comments
+from other developers. It was never intended as a fully supported open source
+project, but members of the forum began to adopt it and make use of it.
 
-Very quickly feature requests were coming to me for the ability to add
-attachments and use SMTP authentication, along with a number of other
-"obvious" missing features. Considering the only alternative was PHPMailer it
-seemed like a good time to bring some fresh tools to the table. I began
-working towards a more component based, PHP5-like approach unlike the existing
-single-class, legacy PHP4 approach taken by PHPMailer.
+Very quickly feature requests were coming for the ability to add attachments
+and use SMTP authentication, along with a number of other "obvious" missing
+features. Considering the only alternative was PHPMailer it seemed like a good
+time to bring some fresh tools to the table. Chris began working towards a
+more component based, PHP5-like approach unlike the existing single-class,
+legacy PHP4 approach taken by PHPMailer.
 
-Members of the forum offered a lot of advice and critique on my code as I
+Members of the forum offered a lot of advice and critique on the code as he
 worked through this project and released versions 2 and 3 of the library in
 2005 and 2006, which by then had been broken down into smaller classes
-offering more flexibility and supporting plugins. To this day I still receive
-a lot of feature requests from users both on the forum and in my inbox.
+offering more flexibility and supporting plugins. To this day the Swift Mailer
+team still receive a lot of feature requests from users both on the forum and
+in by email.
 
-I have learned a lot over the years whilst working on Swift Mailer and I
-believe that I have matured a lot as a developer, improving the underlying
-code in the library as I have done so.
-
-Until 2008 I was the sole developer of Swift Mailer, but entering 2009 I
-gained the support of two experienced developers well-known to me: Paul
+Until 2008 Chris was the sole developer of Swift Mailer, but entering 2009 he
+gained the support of two experienced developers well-known to him: Paul
 Annesley and Christopher Thompson. This has been an extremely welcome change.
+
+As of September 2009, Chris handed over the maintenance of Swift Mailer to
+Fabien Potencier.
 
 Now 2009 and in its fourth major version Swift Mailer is more object-oriented
 and flexible than ever, both from a usability standpoint and from a
@@ -111,10 +110,10 @@ that happens behind the scenes.
 It's a Library!
 ---------------
 
-Swift Mailer is not an application &#8211; it's a library.
+Swift Mailer is not an application - it's a library.
 
 To most experienced developers this is probably an obvious point to make, but
-it's certainly worth mentioning. Many people often contact me having gotten
+it's certainly worth mentioning. Many people often contact us having gotten
 the completely wrong end of the stick in terms of what Swift Mailer is
 actually for.
 
