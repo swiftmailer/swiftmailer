@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/MimePart.php';
-//@require 'Swift/DependencyContainer.php';
 
 /**
  * A MIME part, in a multipart message.

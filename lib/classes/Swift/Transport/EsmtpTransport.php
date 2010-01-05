@@ -8,13 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport/AbstractSmtpTransport.php';
-//@require 'Swift/Transport/EsmtpHandler.php';
-//@require 'Swift/Transport/IoBuffer.php';
-//@require 'Swift/Transport/SmtpAgent.php';
-//@require 'Swift/TransportException.php';
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Events/EventDispatcher.php';
 
 /**
  * Sends Messages over SMTP with ESMTP support.

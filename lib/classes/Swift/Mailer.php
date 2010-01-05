@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport.php';
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Mailer/RecipientIterator.php';
-//@require 'Swift/Events/EventListener.php';
 
 /**
  * Swift Mailer class.

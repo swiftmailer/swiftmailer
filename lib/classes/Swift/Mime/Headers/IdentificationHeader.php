@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Headers/AbstractHeader.php';
-//@require 'Swift/RfcComplianceException.php';
 
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.
@@ -32,11 +30,12 @@ class Swift_Mime_Headers_IdentificationHeader
   /**
    * Creates a new IdentificationHeader with the given $name and $id.
    * @param string $name
+   * @param Swift_Mime_Grammar $grammar
    */
-  public function __construct($name)
+  public function __construct($name, Swift_Mime_Grammar $grammar)
   {
     $this->setFieldName($name);
-    $this->initializeGrammar();
+    parent::__construct($grammar);
   }
   
   /**
@@ -106,8 +105,8 @@ class Swift_Mime_Headers_IdentificationHeader
     foreach ($ids as $k => $id)
     {
       if (preg_match(
-        '/^' . $this->getGrammar('id-left') . '@' .
-        $this->getGrammar('id-right') . '$/D',
+        '/^' . $this->getGrammar()->getDefinition('id-left') . '@' .
+        $this->getGrammar()->getDefinition('id-right') . '$/D',
         $id
         ))
       {

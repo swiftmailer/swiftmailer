@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/EventListener.php';
-//@require 'Swift/Events/ResponseEvent.php';
 
 /**
  * Listens for responses from a remote SMTP server.

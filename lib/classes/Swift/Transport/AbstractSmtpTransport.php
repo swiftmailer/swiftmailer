@@ -8,13 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport.php';
-//@require 'Swift/Transport/IoBuffer.php';
-//@require 'Swift/Transport/CommandSentException.php';
-//@require 'Swift/TransportException.php';
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Events/EventDispatcher.php';
-//@require 'Swift/Events/EventListener.php';
 
 /**
  * Sends Messages over SMTP.

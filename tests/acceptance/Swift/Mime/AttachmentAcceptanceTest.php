@@ -10,6 +10,7 @@ require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
 require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
 require_once 'Swift/KeyCache/ArrayKeyCache.php';
 require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
 {
@@ -32,8 +33,9 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
     $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
       );
+    $grammar = new Swift_Mime_Grammar();
     $this->_headers = new Swift_Mime_SimpleHeaderSet(
-      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder)
+      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, null, $grammar)
       );
   }
   

@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Headers/AbstractHeader.php';
-//@require 'Swift/Mime/HeaderEncoder.php';
 
 /**
  * A Simple MIME Header.
@@ -32,12 +30,15 @@ class Swift_Mime_Headers_UnstructuredHeader
    * Creates a new SimpleHeader with $name.
    * @param string $name
    * @param Swift_Mime_HeaderEncoder $encoder
+   * @param Swift_Mime_Grammar $grammar
    */
-  public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
+  public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Mime_Grammar $grammar)
   {
     $this->setFieldName($name);
     $this->setEncoder($encoder);
+    parent::__construct($grammar);
   }
+  
   /**
    * Get the type of Header that this instance represents.
    * @return int

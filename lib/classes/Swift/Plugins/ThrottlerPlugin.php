@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/SendEvent.php';
-//@require 'Swift/Plugins/BandwidthMonitorPlugin.php';
-//@require 'Swift/Plugins/Sleeper.php';
-//@require 'Swift/Plugins/Timer.php';
 
 /**
  * Throttles the rate at which emails are sent.

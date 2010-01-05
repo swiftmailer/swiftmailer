@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport/MailTransport.php';
-//@require 'Swift/DependencyContainer.php';
 
 /**
  * Sends Messages using the mail() function.

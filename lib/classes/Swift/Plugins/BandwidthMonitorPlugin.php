@@ -8,13 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/SendListener.php';
-//@require 'Swift/Events/SendEvent.php';
-//@require 'Swift/Events/CommandListener.php';
-//@require 'Swift/Events/CommandEvent.php';
-//@require 'Swift/Events/ResponseListener.php';
-//@require 'Swift/Events/ResponseEvent.php';
-//@require 'Swift/InputByteStream.php';
 
 /**
  * Reduces network flooding when sending large amounts of mail.

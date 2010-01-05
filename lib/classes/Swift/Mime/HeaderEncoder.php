@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Encoder.php';
 
 /**
  * Interface for all Header Encoding schemes.

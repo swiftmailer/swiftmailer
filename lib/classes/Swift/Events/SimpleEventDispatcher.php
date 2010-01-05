@@ -8,14 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/EventDispatcher.php';
-//@require 'Swift/Events/EventListener.php';
-//@require 'Swift/Events/EventObject.php';
-//@require 'Swift/Events/CommandEvent.php';
-//@require 'Swift/Events/ResponseEvent.php';
-//@require 'Swift/Events/SendEvent.php';
-//@require 'Swift/Events/TransportChangeEvent.php';
-//@require 'Swift/Events/TransportExceptionEvent.php';
 
 /**
  * The EventDispatcher which handles the event dispatching layer.

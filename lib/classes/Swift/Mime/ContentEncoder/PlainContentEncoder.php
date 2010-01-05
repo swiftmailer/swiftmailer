@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/ContentEncoder.php';
-//@require 'Swift/InputByteStream.php';
-//@require 'Swift/OutputByteStream.php';
 
 /**
  * Handles binary/7/8-bit Transfer Encoding in Swift Mailer.

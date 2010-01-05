@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/DependencyContainer.php';
 
 /**
  * Provides quick access to each encoding type.

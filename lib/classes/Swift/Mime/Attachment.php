@@ -8,11 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/SimpleMimeEntity.php';
-//@require 'Swift/Mime/ContentEncoder.php';
-//@require 'Swift/Mime/HeaderSet.php';
-//@require 'Swift/FileStream.php';
-//@require 'Swift/KeyCache.php';
 
 /**
  * An attachment, in a multipart message.

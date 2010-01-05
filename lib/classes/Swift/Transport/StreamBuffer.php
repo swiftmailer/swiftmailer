@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/ByteStream/AbstractFilterableInputStream.php';
-//@require 'Swift/ReplacementFilterFactory.php';
-//@require 'Swift/Transport/IoBuffer.php';
-//@require 'Swift/TransportException.php';
 
 /**
  * A generic IoBuffer implementation supporting remote sockets and local processes.

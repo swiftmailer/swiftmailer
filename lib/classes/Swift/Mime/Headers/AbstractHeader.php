@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Header.php';
-//@require 'Swift/Mime/HeaderEncoder.php';
-//@require 'Swift/RfcComplianceException.php';
-
 /**
  * An abstract base MIME Header.
  * @package Swift
@@ -22,25 +18,18 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 {
   
   /**
-   * Special characters used in the syntax which need to be escaped.
-   * @var string[]
-   * @access private
-   */
-  private $_specials = array();
-  
-  /**
-   * Tokens defined in RFC 2822 (and some related RFCs).
-   * @var string[]
-   * @access private
-   */
-  private $_grammar = array();
-  
-  /**
    * The name of this Header.
    * @var string
    * @access private
    */
   private $_name;
+  
+  /**
+   * The Grammar used for this Header.
+   * @var Swift_Mime_Grammar
+   * @access private
+   */
+  private $_grammar;
   
   /**
    * The Encoder used to encode this Header.
@@ -75,6 +64,15 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
    * @access private
    */
   private $_cachedValue = null;
+  
+  /**
+   * Creates a new Header.
+   * @param Swift_Mime_Grammar $grammar
+   */ 
+  public function __construct(Swift_Mime_Grammar $grammar)
+  {
+    $this->setGrammar($grammar);
+  }
   
   /**
    * Set the character set used in this Header.
@@ -140,6 +138,25 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
   }
   
   /**
+   * Set the grammar used for the header.
+   * @param Swift_Mime_Grammar $grammar
+   */
+  public function setGrammar(Swift_Mime_Grammar $grammar)
+  {
+    $this->_grammar = $grammar;
+    $this->setCachedValue(null);
+  }
+  
+  /**
+   * Get the grammar used for this Header.
+   * @return Swift_Mime_Grammar
+   */
+  public function getGrammar()
+  {
+    return $this->_grammar;
+  }
+  
+  /**
    * Get the name of this header (e.g. charset).
    * @return string
    */
@@ -202,118 +219,6 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
   }
   
   /**
-   * Initialize some RFC 2822 (and friends) ABNF grammar definitions.
-   * @access protected
-   */
-  protected function initializeGrammar()
-  {
-    $this->_specials = array(
-      '(', ')', '<', '>', '[', ']',
-      ':', ';', '@', ',', '.', '"'
-      );
-    
-    /*** Refer to RFC 2822 for ABNF grammar ***/
-    
-    //All basic building blocks
-    $this->_grammar['NO-WS-CTL'] = '[\x01-\x08\x0B\x0C\x0E-\x19\x7F]';
-    $this->_grammar['WSP'] = '[ \t]';
-    $this->_grammar['CRLF'] = '(?:\r\n)';
-    $this->_grammar['FWS'] = '(?:(?:' . $this->_grammar['WSP'] . '*' .
-        $this->_grammar['CRLF'] . ')?' . $this->_grammar['WSP'] . ')';
-    $this->_grammar['text'] = '[\x00-\x08\x0B\x0C\x0E-\x7F]';
-    $this->_grammar['quoted-pair'] = '(?:\\\\' . $this->_grammar['text'] . ')';
-    $this->_grammar['ctext'] = '(?:' . $this->_grammar['NO-WS-CTL'] .
-        '|[\x21-\x27\x2A-\x5B\x5D-\x7E])';
-    //Uses recursive PCRE (?1) -- could be a weak point??
-    $this->_grammar['ccontent'] = '(?:' . $this->_grammar['ctext'] . '|' .
-        $this->_grammar['quoted-pair'] . '|(?1))';
-    $this->_grammar['comment'] = '(\((?:' . $this->_grammar['FWS'] . '|' .
-        $this->_grammar['ccontent']. ')*' . $this->_grammar['FWS'] . '?\))';
-    $this->_grammar['CFWS'] = '(?:(?:' . $this->_grammar['FWS'] . '?' .
-        $this->_grammar['comment'] . ')*(?:(?:' . $this->_grammar['FWS'] . '?' .
-        $this->_grammar['comment'] . ')|' . $this->_grammar['FWS'] . '))';
-    $this->_grammar['qtext'] = '(?:' . $this->_grammar['NO-WS-CTL'] .
-        '|[\x21\x23-\x5B\x5D-\x7E])';
-    $this->_grammar['qcontent'] = '(?:' . $this->_grammar['qtext'] . '|' .
-        $this->_grammar['quoted-pair'] . ')';
-    $this->_grammar['quoted-string'] = '(?:' . $this->_grammar['CFWS'] . '?"' .
-        '(' . $this->_grammar['FWS'] . '?' . $this->_grammar['qcontent'] . ')*' .
-        $this->_grammar['FWS'] . '?"' . $this->_grammar['CFWS'] . '?)';
-    $this->_grammar['atext'] = '[a-zA-Z0-9!#\$%&\'\*\+\-\/=\?\^_`\{\}\|~]';
-    $this->_grammar['atom'] = '(?:' . $this->_grammar['CFWS'] . '?' .
-        $this->_grammar['atext'] . '+' . $this->_grammar['CFWS'] . '?)';
-    $this->_grammar['dot-atom-text'] = '(?:' . $this->_grammar['atext'] . '+' .
-        '(\.' . $this->_grammar['atext'] . '+)*)';
-    $this->_grammar['dot-atom'] = '(?:' . $this->_grammar['CFWS'] . '?' .
-        $this->_grammar['dot-atom-text'] . '+' . $this->_grammar['CFWS'] . '?)';
-    $this->_grammar['word'] = '(?:' . $this->_grammar['atom'] . '|' .
-        $this->_grammar['quoted-string'] . ')';
-    $this->_grammar['phrase'] = '(?:' . $this->_grammar['word'] . '+?)';
-    $this->_grammar['no-fold-quote'] = '(?:"(?:' . $this->_grammar['qtext'] .
-        '|' . $this->_grammar['quoted-pair'] . ')*")';
-    $this->_grammar['dtext'] = '(?:' . $this->_grammar['NO-WS-CTL'] .
-        '|[\x21-\x5A\x5E-\x7E])';
-    $this->_grammar['no-fold-literal'] = '(?:\[(?:' . $this->_grammar['dtext'] .
-        '|' . $this->_grammar['quoted-pair'] . ')*\])';
-    
-    //Message IDs
-    $this->_grammar['id-left'] = '(?:' . $this->_grammar['dot-atom-text'] . '|' .
-        $this->_grammar['no-fold-quote'] . ')';
-    $this->_grammar['id-right'] = '(?:' . $this->_grammar['dot-atom-text'] . '|' .
-        $this->_grammar['no-fold-literal'] . ')';
-    
-    //Addresses, mailboxes and paths
-    $this->_grammar['local-part'] = '(?:' . $this->_grammar['dot-atom'] . '|' .
-        $this->_grammar['quoted-string'] . ')';
-    $this->_grammar['dcontent'] = '(?:' . $this->_grammar['dtext'] . '|' .
-        $this->_grammar['quoted-pair'] . ')';
-    $this->_grammar['domain-literal'] = '(?:' . $this->_grammar['CFWS'] . '?\[(' .
-        $this->_grammar['FWS'] . '?' . $this->_grammar['dcontent'] . ')*?' .
-        $this->_grammar['FWS'] . '?\]' . $this->_grammar['CFWS'] . '?)';
-    $this->_grammar['domain'] = '(?:' . $this->_grammar['dot-atom'] . '|' .
-        $this->_grammar['domain-literal'] . ')';
-    $this->_grammar['addr-spec'] = '(?:' . $this->_grammar['local-part'] . '@' .
-        $this->_grammar['domain'] . ')';
-  }
-  
-  /**
-   * Get the grammar defined for $name token.
-   * @param string $name execatly as written in the RFC
-   * @return string
-   */
-  protected function getGrammar($name)
-  {
-    if (array_key_exists($name, $this->_grammar))
-    {
-      return $this->_grammar[$name];
-    }
-    else
-    {
-      throw new Swift_RfcComplianceException(
-        "No such grammar '" . $name . "' defined."
-        );
-    }
-  }
-  
-  /**
-   * Escape special characters in a string (convert to quoted-pairs).
-   * @param string $token
-   * @param string[] $include additonal chars to escape
-   * @param string[] $exclude chars from escaping
-   * @return string
-   */
-  protected function escapeSpecials($token, $include = array(),
-    $exclude = array())
-  {
-    foreach (
-      array_merge(array('\\'), array_diff($this->_specials, $exclude), $include) as $char)
-    {
-      $token = str_replace($char, '\\' . $char, $token);
-    }
-    return $token;
-  }
-  
-  /**
    * Produces a compliant, formatted RFC 2822 'phrase' based on the string given.
    * @param Swift_Mime_Header $header
    * @param string $string as displayed
@@ -328,14 +233,14 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     //Treat token as exactly what was given
     $phraseStr = $string;
     //If it's not valid
-    if (!preg_match('/^' . $this->_grammar['phrase'] . '$/D', $phraseStr))
+    if (!preg_match('/^' . $this->getGrammar()->getDefinition('phrase') . '$/D', $phraseStr))
     {
       // .. but it is just ascii text, try escaping some characters
       // and make it a quoted-string
-      if (preg_match('/^' . $this->_grammar['text'] . '*$/D', $phraseStr))
+      if (preg_match('/^' . $this->getGrammar()->getDefinition('text') . '*$/D', $phraseStr))
       {
-        $phraseStr = $this->escapeSpecials(
-          $phraseStr, array('"'), $this->_specials
+        $phraseStr = $this->getGrammar()->escapeSpecials(
+          $phraseStr, array('"'), $this->getGrammar()->getSpecials()
           );
         $phraseStr = '"' . $phraseStr . '"';
       }

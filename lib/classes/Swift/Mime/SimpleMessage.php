@@ -8,11 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Mime/MimePart.php';
-//@require 'Swift/Mime/MimeEntity.php';
-//@require 'Swift/Mime/HeaderSet.php';
-//@require 'Swift/Mime/ContentEncoder.php';
 
 /**
  * The default email message class.

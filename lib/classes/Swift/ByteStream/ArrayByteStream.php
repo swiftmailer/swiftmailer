@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/InputByteStream.php';
-//@require 'Swift/OutputByteStream.php';
 
 /**
  * Allows reading and writing of bytes to and from an array.

@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/OutputByteStream.php';
 
 /**
  * An OutputByteStream which specifically reads from a file.
