@@ -239,16 +239,17 @@ class Swift_Transport_EsmtpTransport
       $response = $this->executeCommand(
         sprintf("EHLO %s\r\n", $this->_domain), array(250)
         );
-      $this->_capabilities = $this->_getCapabilities($response);
-      $this->_setHandlerParams();
-      foreach ($this->_getActiveHandlers() as $handler)
-      {
-        $handler->afterEhlo($this);
-      }
     }
     catch (Swift_TransportException $e)
     {
-      parent::_doHeloCommand();
+      return parent::_doHeloCommand();
+    }
+
+    $this->_capabilities = $this->_getCapabilities($response);
+    $this->_setHandlerParams();
+    foreach ($this->_getActiveHandlers() as $handler)
+    {
+      $handler->afterEhlo($this);
     }
   }
   
