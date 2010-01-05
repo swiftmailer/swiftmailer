@@ -4,6 +4,7 @@ require_once 'Swift/Mime/MimeEntity.php';
 require_once 'Swift/Mime/Attachment.php';
 require_once 'Swift/Mime/AbstractMimeEntityTest.php';
 require_once 'Swift/FileStream.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
 {
@@ -274,7 +275,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
   protected function _createAttachment($headers, $encoder, $cache,
     $mimeTypes = array())
   {
-    return new Swift_Mime_Attachment($headers, $encoder, $cache, $mimeTypes);
+    return new Swift_Mime_Attachment($headers, $encoder, $cache, new Swift_Mime_Grammar(), $mimeTypes);
   }
   
   protected function _createFileStream($path, $data, $stub = true)

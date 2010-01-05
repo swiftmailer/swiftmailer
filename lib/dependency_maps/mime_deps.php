@@ -16,6 +16,7 @@ Swift_DependencyContainer::getInstance()
     'mime.headerset',
     'mime.qpcontentencoder',
     'cache',
+    'mime.grammar',
     'properties.charset'
   ))
   
@@ -25,6 +26,7 @@ Swift_DependencyContainer::getInstance()
     'mime.headerset',
     'mime.qpcontentencoder',
     'cache',
+    'mime.grammar',
     'properties.charset'
   ))
   
@@ -33,7 +35,8 @@ Swift_DependencyContainer::getInstance()
   -> withDependencies(array(
     'mime.headerset',
     'mime.base64contentencoder',
-    'cache'
+    'cache',
+    'mime.grammar'
   ))
   -> addConstructorValue($swift_mime_types)
   
@@ -42,7 +45,8 @@ Swift_DependencyContainer::getInstance()
   -> withDependencies(array(
     'mime.headerset',
     'mime.base64contentencoder',
-    'cache'
+    'cache',
+    'mime.grammar'
   ))
   -> addConstructorValue($swift_mime_types)
   
@@ -51,8 +55,8 @@ Swift_DependencyContainer::getInstance()
   -> withDependencies(array(
       'mime.qpheaderencoder',
       'mime.rfc2231encoder',
-      'properties.charset',
-      'mime.grammar'
+      'mime.grammar',
+      'properties.charset'
     ))
   
   -> register('mime.headerset')

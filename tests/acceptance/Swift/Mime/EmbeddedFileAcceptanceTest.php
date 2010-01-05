@@ -18,6 +18,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
 
   private $_contentEncoder;
   private $_cache;
+  private $_grammar;
   private $_headers;
   
   public function setUp()
@@ -34,9 +35,9 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
     $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
       );
-    $grammar = new Swift_Mime_Grammar();
+    $this->_grammar = new Swift_Mime_Grammar();
     $this->_headers = new Swift_Mime_SimpleHeaderSet(
-      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, null, $grammar)
+      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $this->_grammar)
       );
   }
   
@@ -141,7 +142,8 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
     $entity = new Swift_Mime_EmbeddedFile(
       $this->_headers,
       $this->_contentEncoder,
-      $this->_cache
+      $this->_cache,
+      $this->_grammar
       );
     return $entity;
   }

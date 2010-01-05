@@ -37,12 +37,13 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * @param Swift_Mime_HeaderSet $headers
    * @param Swift_Mime_ContentEncoder $encoder
    * @param Swift_KeyCache $cache
+   * @param Swift_Mime_Grammar $grammar
    * @param string $charset
    */
   public function __construct(Swift_Mime_HeaderSet $headers,
-    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, $charset = null)
+    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, $charset = null)
   {
-    parent::__construct($headers, $encoder, $cache);
+    parent::__construct($headers, $encoder, $cache, $grammar);
     $this->setContentType('text/plain');
     if (!is_null($charset))
     {

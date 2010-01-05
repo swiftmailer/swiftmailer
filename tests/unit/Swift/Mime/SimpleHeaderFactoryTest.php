@@ -160,7 +160,6 @@ class Swift_Mime_SimpleHeaderFactoryTest extends Swift_Tests_SwiftUnitTestCase
         ? $encoder : $this->_createHeaderEncoder(),
       $paramEncoder
         ? $paramEncoder : $this->_createParamEncoder(),
-      null,
       new Swift_Mime_Grammar()
       );
   }
