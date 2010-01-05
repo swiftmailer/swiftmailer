@@ -79,16 +79,14 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
     {
       $this->_address = null;
     }
-    elseif ('' == $address
-      || preg_match('/^' . $this->getGrammar()->getDefinition('addr-spec') . '$/D', $address))
+    elseif ('' == $address)
     {
-      $this->_address = $address;
+      $this->_address = '';
     }
     else
     {
-      throw new Swift_RfcComplianceException(
-        'Address set in PathHeader does not comply with addr-spec of RFC 2822.'
-        );
+      $this->_assertValidAddress($address);
+      $this->_address = $address;
     }
     $this->setCachedValue(null);
   }
@@ -120,6 +118,23 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
       }
     }
     return $this->getCachedValue();
+  }
+  
+  /**
+   * Throws an Exception if the address passed does not comply with RFC 2822.
+   * @param string $address
+   * @throws Swift_RfcComplianceException If invalid.
+   * @access private
+   */
+  private function _assertValidAddress($address)
+  {
+    if (!preg_match('/^' . $this->getGrammar()->getDefinition('addr-spec') . '$/D',
+      $address))
+    {
+      throw new Swift_RfcComplianceException(
+        'Address set in PathHeader does not comply with addr-spec of RFC 2822.'
+        );
+    }
   }
   
 }

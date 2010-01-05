@@ -297,8 +297,8 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
   /**
    * Throws an Exception if the address passed does not comply with RFC 2822.
    * @param string $address
-   * @throws Exception If invalid.
-   * @access protected
+   * @throws Swift_RfcComplianceException If invalid.
+   * @access private
    */
   private function _assertValidAddress($address)
   {
