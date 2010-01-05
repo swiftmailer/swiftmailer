@@ -46,14 +46,13 @@ class Swift_Mime_Headers_ParameterizedHeader
    * @param string $name
    * @param Swift_Mime_HeaderEncoder $encoder
    * @param Swift_Encoder $paramEncoder, optional
+   * @param Swift_Mime_Grammar $grammar
    */ 
   public function __construct($name, Swift_Mime_HeaderEncoder $encoder,
-    Swift_Encoder $paramEncoder = null)
+    Swift_Encoder $paramEncoder = null, Swift_Mime_Grammar $grammar)
   {
-    $this->setFieldName($name);
-    $this->setEncoder($encoder);
+    parent::__construct($name, $encoder, $grammar);
     $this->_paramEncoder = $paramEncoder;
-    $this->initializeGrammar();
     $this->_tokenRe = '(?:[\x21\x23-\x27\x2A\x2B\x2D\x2E\x30-\x39\x41-\x5A\x5E-\x7E]+)';
   }
   
@@ -192,7 +191,7 @@ class Swift_Mime_Headers_ParameterizedHeader
     {
       //TODO: text, or something else??
       //... and it's not ascii
-      if (!preg_match('/^' . $this->getGrammar('text') . '*$/D', $value))
+      if (!preg_match('/^' . $this->getGrammar()->getDefinition('text') . '*$/D', $value))
       {
         $encoded = true;
         //Allow space for the indices, charset and language

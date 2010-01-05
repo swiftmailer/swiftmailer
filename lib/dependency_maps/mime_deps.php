@@ -7,6 +7,9 @@ Swift_DependencyContainer::getInstance()
   -> register('properties.charset')
   -> asValue('utf-8')
   
+  -> register('mime.grammar')
+  -> asNewInstanceOf('Swift_Mime_Grammar')
+  
   -> register('mime.message')
   -> asNewInstanceOf('Swift_Mime_SimpleMessage')
   -> withDependencies(array(
@@ -48,7 +51,8 @@ Swift_DependencyContainer::getInstance()
   -> withDependencies(array(
       'mime.qpheaderencoder',
       'mime.rfc2231encoder',
-      'properties.charset'
+      'properties.charset',
+      'mime.grammar'
     ))
   
   -> register('mime.headerset')

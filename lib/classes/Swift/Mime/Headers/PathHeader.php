@@ -28,11 +28,12 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
   /**
    * Creates a new PathHeader with the given $name.
    * @param string $name
+   * @param Swift_Mime_Grammar $grammar
    */
-  public function __construct($name)
+  public function __construct($name, Swift_Mime_Grammar $grammar)
   {
     $this->setFieldName($name);
-    $this->initializeGrammar();
+    parent::__construct($grammar);
   }
   
   /**
@@ -79,7 +80,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
       $this->_address = null;
     }
     elseif ('' == $address
-      || preg_match('/^' . $this->getGrammar('addr-spec') . '$/D', $address))
+      || preg_match('/^' . $this->getGrammar()->getDefinition('addr-spec') . '$/D', $address))
     {
       $this->_address = $address;
     }
