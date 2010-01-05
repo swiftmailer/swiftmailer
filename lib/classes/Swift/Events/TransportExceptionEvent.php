@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/EventObject.php';
-//@require 'Swift/TransportException.php';
 
 /**
  * Generated when a TransportException is thrown from the Transport system.

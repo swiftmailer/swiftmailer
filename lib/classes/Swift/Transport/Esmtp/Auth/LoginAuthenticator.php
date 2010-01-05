@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport/Esmtp/Authenticator.php';
-//@require 'Swift/Transport/SmtpAgent.php';
-//@require 'Swift/TransportException.php';
 
 /**
  * Handles LOGIN authentication.

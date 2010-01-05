@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport.php';
-//@require 'Swift/Transport/MailInvoker.php';
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Events/EventListener.php';
 
 /**
  * Sends Messages using the mail() function.

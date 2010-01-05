@@ -8,11 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/ContentEncoder.php';
-//@require 'Swift/Encoder/QpEncoder.php';
-//@require 'Swift/InputByteStrean.php';
-//@require 'Swift/OutputByteStream.php';
-//@require 'Swift/CharacterStream.php';
 
 /**
  * Handles Quoted Printable (QP) Transfer Encoding in Swift Mailer.

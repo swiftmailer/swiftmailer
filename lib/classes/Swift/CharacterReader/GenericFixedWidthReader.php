@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/CharacterReader.php';
 
 /**
  * Provides fixed-width byte sizes for reading fixed-width character sets.

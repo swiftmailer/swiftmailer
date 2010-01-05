@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/ByteStream/AbstractFilterableInputStream.php';
-//@require 'Swift/InputByteStream.php';
-//@require 'Swift/FileStream.php';
-//@require 'Swift/IoException.php';
 
 /**
  * Allows reading and writing of bytes to and from a file.

@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Headers/AbstractHeader.php';
-//@require 'Swift/Mime/HeaderEncoder.php';
 
 /**
  * A Simple MIME Header.

@@ -8,16 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/CommandListener.php';
-//@require 'Swift/Events/CommandEvent.php';
-//@require 'Swift/Events/ResponseListener.php';
-//@require 'Swift/Events/ResponseEvent.php';
-//@require 'Swift/Events/TransportChangeListener.php';
-//@require 'Swift/Events/TransportChangeEvent.php';
-//@require 'Swift/Events/TransportExceptionEvent.php';
-//@require 'Swift/Events/TransportExceptionListener.php';
-//@require 'Swift/Events/TransportException.php';
-//@require 'Swift/Plugins/Logger.php';
 
 /**
  * Does real time logging of Transport level information.

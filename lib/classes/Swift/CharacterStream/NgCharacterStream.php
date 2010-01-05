@@ -18,8 +18,6 @@
 
  */
 
-//@require 'Swift/CharacterStream.php';
-//@require 'Swift/OutputByteStream.php';
 
 
 /**

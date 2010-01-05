@@ -8,12 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/KeyCache.php';
-//@require 'Swift/KeyCacheInputStream.php';
-//@require 'Swift/InputByteStream.php';
-//@require 'Swift/OutputByteStrean.php';
-//@require 'Swift/SwiftException.php';
-//@require 'Swift/IoException.php';
 
 /**
  * A KeyCache which streams to and from disk.

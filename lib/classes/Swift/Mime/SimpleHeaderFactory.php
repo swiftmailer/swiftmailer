@@ -8,15 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/HeaderFactory.php';
-//@require 'Swift/Mime/HeaderEncoder.php';
-//@require 'Swift/Encoder.php';
-//@require 'Swift/Mime/Headers/MailboxHeader.php';
-//@require 'Swift/Mime/Headers/DateHeader.php';
-//@require 'Swift/Mime/Headers/UnstructuredHeader.php';
-//@require 'Swift/Mime/Headers/ParameterizedHeader.php';
-//@require 'Swift/Mime/Headers/IdentificationHeader.php';
-//@require 'Swift/Mime/Headers/PathHeader.php';
 
 /**
  * Creates MIME headers.

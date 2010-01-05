@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/SimpleMessage.php';
-//@require 'Swift/MimePart.php';
-//@require 'Swift/DependencyContainer.php';
 
 /**
  * The Message class for building emails.

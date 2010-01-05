@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Headers/AbstractHeader.php';
-//@require 'Swift/RfcComplianceException.php';
 
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.

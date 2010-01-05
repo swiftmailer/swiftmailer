@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/InputByteStream.php';
-//@require 'Swift/OutputByteStream.php';
 
 /**
  * Provides a mechanism for storing data using two keys.

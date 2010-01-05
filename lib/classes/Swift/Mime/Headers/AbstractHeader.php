@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Header.php';
-//@require 'Swift/Mime/HeaderEncoder.php';
-//@require 'Swift/RfcComplianceException.php';
-
 /**
  * An abstract base MIME Header.
  * @package Swift

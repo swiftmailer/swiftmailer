@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Headers/AbstractHeader.php';
-//@require 'Swift/RfcComplianceException.php';
 
 /**
  * A Path Header in Swift Mailer, such a Return-Path.

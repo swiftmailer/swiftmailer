@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/Event.php';
 
 /**
  * A base Event which all Event classes inherit from.

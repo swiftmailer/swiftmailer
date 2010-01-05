@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/KeyCache.php';
-//@require 'Swift/InputByteStream.php';
 
 /**
  * Writes data to a KeyCache using a stream.

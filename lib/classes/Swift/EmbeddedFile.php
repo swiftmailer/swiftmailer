@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Attachment.php';
-//@require 'Swift/DependencyContainer.php';
-//@require 'Swift/ByteStream/FileByteStream.php';
 
 /**
  * An embedded file, in a multipart message.
