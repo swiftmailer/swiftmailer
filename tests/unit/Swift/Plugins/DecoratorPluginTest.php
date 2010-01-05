@@ -4,10 +4,10 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 
 class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
 {
-
   public function testMessageBodyReceivesReplacements()
   {
     $message = $this->_createMessage(
+      $this->_createHeaders(),
       array('zip@button.tld' => 'Zipathon'),
       array('chris.corbyn@swiftmailer.org' => 'Chris'),
       'Subject',
@@ -31,6 +31,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   public function testReplacementsCanBeAppliedToSameMessageMultipleTimes()
   {
     $message = $this->_createMessage(
+      $this->_createHeaders(),
       array('zip@button.tld' => 'Zipathon', 'foo@bar.tld' => 'Foo'),
       array('chris.corbyn@swiftmailer.org' => 'Chris'),
       'Subject',
@@ -58,9 +59,15 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
     $plugin->sendPerformed($evt);
   }
   
-  public function testReplacementsCanBeMadeInSubject()
+  public function testReplacementsCanBeMadeInHeaders()
   {
+    $headers = $this->_createHeaders(array(
+      $returnPathHeader = $this->_createHeader('Return-Path', 'foo-{id}@swiftmailer.org'),
+      $toHeader = $this->_createHeader('Subject', 'A message for {name}!')
+    ));
+
     $message = $this->_createMessage(
+      $headers,
       array('zip@button.tld' => 'Zipathon'),
       array('chris.corbyn@swiftmailer.org' => 'Chris'),
       'A message for {name}!',
@@ -68,8 +75,11 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
       );
     $this->_checking(Expectations::create()
       -> one($message)->setBody('Hello Zip, you are customer #456')
-      -> one($message)->setSubject('A message for Zip!')
+      -> one($toHeader)->setFieldBodyModel('A message for Zip!')
+      -> one($returnPathHeader)->setFieldBodyModel('foo-456@swiftmailer.org')
       -> ignoring($message)
+      -> ignoring($toHeader)
+      -> ignoring($returnPathHeader)
       );
     
     $plugin = $this->_createPlugin(
@@ -87,6 +97,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
     $part1 = $this->_createPart('text/plain', 'Your name is {name}?', '1@x');
     $part2 = $this->_createPart('text/html', 'Your <em>name</em> is {name}?', '2@x');
     $message = $this->_createMessage(
+      $this->_createHeaders(),
       array('zip@button.tld' => 'Zipathon'),
       array('chris.corbyn@swiftmailer.org' => 'Chris'),
       'A message for {name}!',
@@ -114,6 +125,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   public function testReplacementsCanBeTakenFromCustomReplacementsObject()
   {
     $message = $this->_createMessage(
+      $this->_createHeaders(),
       array('foo@bar' => 'Foobar', 'zip@zap' => 'Zip zap'),
       array('chris.corbyn@swiftmailer.org' => 'Chris'),
       'Subject',
@@ -142,7 +154,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
   
   // -- Creation methods
   
-  private function _createMessage($to = array(), $from = null, $subject = null,
+  private function _createMessage($headers, $to = array(), $from = null, $subject = null,
     $body = null)
   {
     $message = $this->_mock('Swift_Mime_Message');
@@ -153,6 +165,7 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
         );
     }
     $this->_checking(Expectations::create()
+      -> allowing($message)->getHeaders() -> returns($headers)
       -> ignoring($message)->getFrom() -> returns($from)
       -> ignoring($message)->getSubject() -> returns($subject)
       -> ignoring($message)->getBody() -> returns($body)
@@ -189,6 +202,33 @@ class Swift_Plugins_DecoratorPluginTest extends Swift_Tests_SwiftUnitTestCase
       -> ignoring($part)->getId() -> returns($id)
       );
     return $part;
+  }
+  
+  private function _createHeaders($headers = array())
+  {
+    $set = $this->_mock('Swift_Mime_HeaderSet');
+    
+    $this->_checking(Expectations::create()
+      -> allowing($set)->getAll() -> returns($headers)
+      -> ignoring($set)
+      );
+    
+    foreach ($headers as $header)
+    {
+      $set->set($header);
+    }
+    
+    return $set;
+  }
+  
+  private function _createHeader($name, $body = '')
+  {
+    $header = $this->_mock('Swift_Mime_Header');
+    $this->_checking(Expectations::create()
+      -> ignoring($header)->getFieldName() -> returns($name)
+      -> ignoring($header)->getFieldBodyModel() -> returns($body)
+      );
+    return $header;
   }
   
 }
