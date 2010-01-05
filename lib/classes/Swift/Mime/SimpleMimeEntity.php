@@ -668,7 +668,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
       '/^[a-z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-z0-9\'\(\)\+_\-,\.\/:=\?]$/Di',
       $boundary))
     {
-      throw new Exception('Mime boundary set is not RFC 2046 compliant.');
+      throw new Swift_RfcComplianceException('Mime boundary set is not RFC 2046 compliant.');
     }
   }
   
