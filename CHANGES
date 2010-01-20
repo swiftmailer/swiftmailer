@@ -51,4 +51,11 @@ Changelog for Swift Mailer, since Version 4.x
   * Simplified autoloading
   * Added a setAuthMode() method to AuthHandler (#54)
 
+20 January 2010: 4.0.6
+----------------------
+
+  * added a PEAR package and a script to generate PEAR packages
+  * fixed Swift_Transport_TransportException for SMTP connection not thrown (#109)
+  * fixed Message-IDs are not updated properly (#118)
+
 -- End of Changes --
