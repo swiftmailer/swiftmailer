@@ -114,7 +114,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
           )
         )
       );
-    $this->generateId();
+
+    $this->_id = $this->getRandomId();
   }
   
   /**
@@ -123,22 +124,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    */
   public function generateId()
   {
-    $idLeft = time() . '.' . uniqid();
-    $idRight = !empty($_SERVER['SERVER_NAME'])
-      ? $_SERVER['SERVER_NAME']
-      : 'swift.generated';
-    $this->_id = $idLeft . '@' . $idRight;
-
-    try
-    {
-      $this->_assertValidId($this->_id);
-    }
-    catch (Swift_RfcComplianceException $e)
-    {
-      $this->_id = $idLeft . '@swift.generated';
-    }
-
-    return $this->getId();
+    $this->setId($this->getRandomId());
+    return $this->_id;
   }
   
   /**
@@ -661,6 +648,30 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   protected function _clearCache()
   {
     $this->_cache->clearKey($this->_cacheKey, 'body');
+  }
+  
+  /**
+   * Returns a random Content-ID or Message-ID.
+   * @return string
+   */
+  protected function getRandomId()
+  {
+    $idLeft = time() . '.' . uniqid();
+    $idRight = !empty($_SERVER['SERVER_NAME'])
+      ? $_SERVER['SERVER_NAME']
+      : 'swift.generated';
+    $id = $idLeft . '@' . $idRight;
+
+    try
+    {
+      $this->_assertValidId($id);
+    }
+    catch (Swift_RfcComplianceException $e)
+    {
+      $id = $idLeft . '@swift.generated';
+    }
+
+    return $id;
   }
   
   // -- Private methods
