@@ -154,16 +154,6 @@ class Swift_ByteStream_FileByteStream
     return $this->_writer;
   }
   
-  /** Force a reload of the resource for writing */
-  private function _resetWriteHandle()
-  {
-    if (isset($this->_writer))
-    {
-      fclose($this->_writer);
-      $this->_writer = null;
-    }
-  }
-  
   /** Force a reload of the resource for reading */
   private function _resetReadHandle()
   {
