@@ -68,7 +68,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
   {
     $this->_stream = $stream;
     $this->_path = $path;
-    $this->_quotes = get_magic_quotes_runtime();
+    $this->_quotes = ini_get('magic_quotes_runtime');
   }
 
   /**
@@ -171,7 +171,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_START);
       if ($this->_quotes)
       {
-        set_magic_quotes_runtime(0);
+        ini_set('magic_quotes_runtime', 0);
       }
       $str = '';
       while (!feof($fp) && false !== $bytes = fread($fp, 8192))
@@ -180,7 +180,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       }
       if ($this->_quotes)
       {
-        set_magic_quotes_runtime(1);
+        ini_set('magic_quotes_runtime', 1);
       }
       return $str;
     }
@@ -199,7 +199,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_START);
       if ($this->_quotes)
       {
-        set_magic_quotes_runtime(0);
+        ini_set('magic_quotes_runtime', 0);
       }
       while (!feof($fp) && false !== $bytes = fread($fp, 8192))
       {
@@ -207,7 +207,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       }
       if ($this->_quotes)
       {
-        set_magic_quotes_runtime(1);
+        ini_set('magic_quotes_runtime', 1);
       }
     }
   }
