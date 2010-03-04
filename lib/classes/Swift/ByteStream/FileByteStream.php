@@ -47,7 +47,7 @@ class Swift_ByteStream_FileByteStream
   {
     $this->_path = $path;
     $this->_mode = $writable ? 'w+b' : 'rb';
-    $this->_quotes = get_magic_quotes_runtime();
+    $this->_quotes = ini_get('magic_quotes_runtime');
   }
   
   /**
@@ -75,12 +75,12 @@ class Swift_ByteStream_FileByteStream
     {
       if ($this->_quotes)
       {
-        set_magic_quotes_runtime(0);
+        ini_set('magic_quotes_runtime', 0);
       }
       $bytes = fread($fp, $length);
       if ($this->_quotes)
       {
-        set_magic_quotes_runtime(1);
+        ini_set('magic_quotes_runtime', 1);
       }
       $this->_offset = ftell($fp);
       return $bytes;
