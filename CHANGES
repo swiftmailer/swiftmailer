@@ -58,4 +58,10 @@ Changelog for Swift Mailer, since Version 4.x
   * fixed Swift_Transport_TransportException for SMTP connection not thrown (#109)
   * fixed Message-IDs are not updated properly (#118)
 
+XX August 2010: 4.0.7
+---------------------
+
+  * changed usage of set_magic_quotes_runtime() to init_set to avoid deprecation warning in PHP 5.3
+  * refactored DiskKeyCache so that files are not left open during long running scripts
+
 -- End of Changes --
