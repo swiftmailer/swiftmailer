@@ -23,6 +23,9 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
 
   /** Signal to place pointer at end of file */
   const POSITION_END = 1;
+  
+  /** Signal to leave pointer in whatever position it currently is */
+  const POSITION_CURRENT = 2;
 
   /**
    * An InputStream for cloning.
@@ -93,6 +96,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
         break;
     }
     fwrite($fp, $string);
+    $this->_freeHandle($nsKey, $itemKey);
   }
 
   /**
@@ -127,6 +131,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     {
       fwrite($fp, $bytes);
     }
+    $this->_freeHandle($nsKey, $itemKey);
   }
 
   /**
@@ -176,6 +181,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       {
         ini_set('magic_quotes_runtime', 1);
       }
+      $this->_freeHandle($nsKey, $itemKey);
       return $str;
     }
   }
@@ -203,6 +209,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
       {
         ini_set('magic_quotes_runtime', 1);
       }
+      $this->_freeHandle($nsKey, $itemKey);
     }
   }
 
@@ -226,11 +233,9 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
   {
     if ($this->hasKey($nsKey, $itemKey))
     {
-      $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_END);
-      fclose($fp);
+      $this->_freeHandle($nsKey, $itemKey);
       unlink($this->_path . '/' . $nsKey . '/' . $itemKey);
     }
-    unset($this->_keys[$nsKey][$itemKey]);
   }
 
   /**
@@ -280,20 +285,31 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    */
   private function _getHandle($nsKey, $itemKey, $position)
   {
-    if (!isset($this->_keys[$nsKey]) || !array_key_exists($itemKey, $this->_keys[$nsKey]))
+    if (!isset($this->_keys[$nsKey][$itemKey]))
     {
-      $fp = fopen($this->_path . '/' . $nsKey . '/' . $itemKey, 'w+b');
+      $openMode = $this->hasKey($nsKey, $itemKey)
+        ? 'r+b'
+        : 'w+b'
+        ;
+      $fp = fopen($this->_path . '/' . $nsKey . '/' . $itemKey, $openMode);
       $this->_keys[$nsKey][$itemKey] = $fp;
     }
     if (self::POSITION_START == $position)
     {
       fseek($this->_keys[$nsKey][$itemKey], 0, SEEK_SET);
     }
-    else
+    elseif (self::POSITION_END == $position)
     {
       fseek($this->_keys[$nsKey][$itemKey], 0, SEEK_END);
     }
     return $this->_keys[$nsKey][$itemKey];
+  }
+  
+  private function _freeHandle($nsKey, $itemKey)
+  {
+    $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_CURRENT);
+    fclose($fp);
+    $this->_keys[$nsKey][$itemKey] = null;
   }
 
   /**
