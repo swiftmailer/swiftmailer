@@ -41,7 +41,20 @@ class Swift_Mailer
   {
     return new self($transport);
   }
-  
+
+  /**
+   * Create a new class instance of one if the message services
+   * For example 'mimepart' would create a 'message.mimepart' instance
+   *
+   * @param string $service
+   * @return object
+   */
+  public function newMessageServiceInstance($service = 'message')
+  {
+    return Swift_DependencyContainer::getInstance()
+      ->lookup('message.'.$service);
+  }
+
   /**
    * Send the given Message like it would be sent in a mail client.
    * 

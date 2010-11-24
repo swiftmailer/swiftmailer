@@ -15,6 +15,7 @@
 //Load in dependency maps
 require_once dirname(__FILE__) . '/dependency_maps/cache_deps.php';
 require_once dirname(__FILE__) . '/dependency_maps/mime_deps.php';
+require_once dirname(__FILE__) . '/dependency_maps/message_deps.php';
 require_once dirname(__FILE__) . '/dependency_maps/transport_deps.php';
 
 //Load in global library preferences
