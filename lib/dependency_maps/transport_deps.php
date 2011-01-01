@@ -34,6 +34,10 @@ Swift_DependencyContainer::getInstance()
   -> register('transport.null')
   -> asNewInstanceOf('Swift_Transport_NullTransport')
   -> withDependencies(array('transport.eventdispatcher'))
+
+  -> register('transport.postmark')
+  -> asNewInstanceOf('Swift_Transport_PostmarkTransport')
+  -> withDependencies(array('transport.eventdispatcher'))
   
   -> register('transport.mailinvoker')
   -> asSharedInstanceOf('Swift_Transport_SimpleMailInvoker')
