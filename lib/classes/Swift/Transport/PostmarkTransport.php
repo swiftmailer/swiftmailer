@@ -259,6 +259,12 @@ class Swift_Transport_PostmarkTransport implements Swift_Transport
     $postmarkMessage['Subject'] = $headers->get('Subject')->getFieldBody();
     $headers->remove('Subject');
 
+    if('text/plain' == $message->getContentType() && $message->getBody() != '') {
+      $postmarkMessage['TextBody'] = $message->getBody();
+    } elseif('text/html' == $message->getContentType() && $message->getBody() != '') {
+      $postmarkMessage['HtmlBody'] = $message->getBody();
+    }
+
     $textPart = $this->getMIMEPart($message, 'text/plain');
     if (!is_null($textPart)) {
       $postmarkMessage['TextBody'] = $textPart->getBody();
@@ -284,7 +290,27 @@ class Swift_Transport_PostmarkTransport implements Swift_Transport
       $postmarkMessage['Headers'] = $extra_headers;
     }
 
+    // Add the attachments, if they exist
+    $postmarkMessage['Attachments'] = $this->buildPostmarkAttachments($message);
+
     return $postmarkMessage;
+  }
+
+  protected function buildPostmarkAttachments(Swift_Mime_Message $message)
+  {
+    $attachments = array();
+
+    foreach ($message->getChildren() as $c) {
+      if ('Swift_Attachment' == get_class($c) || 'Swift_Image' == get_class($c)) {
+        $attachments[] = array(
+          'Name' => $c->getFilename(),
+          'Content' => base64_encode($c->getBody()),
+          'ContentType' => $c->getContentType(),
+        );
+      }
+    }
+
+    return $attachments;
   }
 
   /**
@@ -298,7 +324,8 @@ class Swift_Transport_PostmarkTransport implements Swift_Transport
   {
     $part = null;
     foreach ($message->getChildren() as $c) {
-      if (false !== strpos($c->getContentType(), $mime_type)) {
+      if ('Swift_MimePart' == get_class($c) &&
+          false !== strpos($c->getContentType(), $mime_type)) {
         $part = $c;
         break;
       }
