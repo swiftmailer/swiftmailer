@@ -235,7 +235,7 @@ class Swift_Transport_PostmarkTransport implements Swift_Transport
    * @param Swift_Mime_Message $message
    * @return array
    */
-  protected function buildPostmarkMessage(Swift_Mime_Message $message)
+  public function buildPostmarkMessage(Swift_Mime_Message $message)
   {
     $headers = $message->getHeaders();
     $extra_headers = array();
@@ -279,11 +279,20 @@ class Swift_Transport_PostmarkTransport implements Swift_Transport
       $postmarkMessage['Tag'] = $this->_tag;
     }
 
-    foreach ($headers as $header) {
-      $extra_headers[] = array(
-        'Name' => $header->getFieldName(),
-        'Value' => $header->getFieldBody(),
-      );
+    // Remove disallowed or duplicate header(s) before adding the extra headers
+    $headers->remove('Content-Type');
+    $headers->remove('Date');
+    $headers->remove('MIME-Version');
+    $headers->remove('Content-Transfer-Encoding');
+
+    $extra = $headers->getAll();
+    if($extra) {
+      foreach ($extra as $header) {
+        $extra_headers[] = array(
+          'Name'  => $header->getFieldName(),
+          'Value' => $header->getFieldBody(),
+        );
+      }
     }
 
     if (!empty($extra_headers)) {
