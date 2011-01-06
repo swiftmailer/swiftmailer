@@ -12,6 +12,11 @@
  * Dependency injection initialization for Swift Mailer.
  */
 
+if (defined('SWIFT_INIT_LOADED'))
+	return;
+
+define('SWIFT_INIT_LOADED');
+
 //Load in dependency maps
 require dirname(__FILE__) . '/dependency_maps/cache_deps.php';
 require dirname(__FILE__) . '/dependency_maps/mime_deps.php';
