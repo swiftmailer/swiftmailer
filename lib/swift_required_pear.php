@@ -12,6 +12,11 @@
  * Autoloader and dependency injection initialization for Swift Mailer.
  */
 
+if (defined('SWIFT_REQUIRED_LOADED'))
+	return;
+
+define('SWIFT_REQUIRED_LOADED');
+
 //Load Swift utility class
 require dirname(__FILE__) . '/Swift.php';
 
