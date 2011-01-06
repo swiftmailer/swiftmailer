@@ -13,10 +13,10 @@
  */
 
 //Load Swift utility class
-require_once dirname(__FILE__) . '/Swift.php';
+require dirname(__FILE__) . '/Swift.php';
 
 //Start the autoloader
 Swift::registerAutoload();
 
 //Load the init script to set up dependency injection
-require_once dirname(__FILE__) . '/swift_init.php';
+require dirname(__FILE__) . '/swift_init.php';

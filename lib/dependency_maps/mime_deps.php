@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../mime_types.php';
+require dirname(__FILE__) . '/../mime_types.php';
 
 Swift_DependencyContainer::getInstance()
     
