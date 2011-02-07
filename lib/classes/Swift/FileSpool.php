@@ -16,7 +16,7 @@
 class Swift_FileSpool extends Swift_ConfigurableSpool
 {
   /** The spool directory */
-  private $_path;
+  protected $_path;
   
   /**
    * Create a new FileSpool.
