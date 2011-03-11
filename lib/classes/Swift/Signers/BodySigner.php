@@ -24,7 +24,7 @@
  * @subpackage Signatures
  * @author Xavier De Cock <xdecock@gmail.com>
  */
-Interface Swift_Signers_MessageSigner extends Swift_Signer
+Interface Swift_Signers_BodySigner extends Swift_Signer
 {
   /**
    * Add the header(s) to the headerSet

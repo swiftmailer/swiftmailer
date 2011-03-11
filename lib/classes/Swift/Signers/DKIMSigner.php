@@ -268,8 +268,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
    */
   public function setHashAlgorithm($hash)
   {
-    $this->_hashAlgorithm = 'rsa-sha1';
-    return $this;
     // Unable to sign with rsa-sha256
     if ($hash == 'rsa-sha1')
     {
@@ -425,7 +423,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
    * @return array
    */
   public function getAlteredHeaders(){
-    return array('DKIM-Signature');
+    if ($this->_debugHeaders) {
+      return array('DKIM-Signature', 'X-DebugHash');
+    } else {
+      return array('DKIM-Signature');
+    }
   }
   
   /**
@@ -458,9 +460,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $this->_ignoredHeaders[strtolower(
           $hName)]))
       {
-        $tmp = $headers->getAll($hName);
         if ($headers->has($hName))
         {
+          $tmp = $headers->getAll($hName);
           foreach ($tmp as $header)
           {
             if ($header->getFieldBody() !=
@@ -545,8 +547,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
       trim($this->_dkimHeader->toString()) . "\r\n b=",
       true);
     $this->_endOfHeaders();
-    $headers->addTextHeader('X-DebugHash',
-      base64_encode($this->_headerHash));
+    if ($this->_debugHeaders) {
+      $headers->addTextHeader('X-DebugHash',
+        base64_encode($this->_headerHash));
+    }
     $this->_dkimHeader->setValue(
       $string . " b=" . chunk_split(base64_encode(
         $this->_getEncryptedHash()),73, " "));

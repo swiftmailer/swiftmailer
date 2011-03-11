@@ -8,50 +8,198 @@ require_once 'Swift/Signers/DKIMSignerTest.php';
 class Swift_Signers_DKIMSignerTest extends Swift_Tests_SwiftUnitTestCase
 {
   
-  public function testBasicSigning()
+  public function testBasicSigningHeaderManipulation()
   {
     $headers=$this->_createHeaders();
-    $message=$this->_createMessageWithByteCount($bytes);
-    $signer=new Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
+    $messageContent="Hello World";
+    $signer=new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
+    /* @var $signer Swift_Signers_HeaderSigner */
+    $altered=$signer->getAlteredHeaders();
+    $signer->reset();
+    // Headers
+    $signer->setHeaders($headers);
+    // Body
+    $signer->startBody();
+    $signer->write($messageContent);
+    $signer->endBody();
+    // Signing
+    $signer->addSignature($headers);
+  }
+  
+  // Default Signing
+  public function testSigningDefaults()
+  {
+    $headerSet=$this->_createHeaderSet();
+    $messageContent="Hello World";
+    $signer=new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
+    $signer->setSignatureTimestamp('1299879181');
+    $altered=$signer->getAlteredHeaders();
+    $this->assertEqual(array('DKIM-Signature'), $altered);
+    $signer->reset();
+    $signer->setHeaders($headerSet);
+    $this->assertFalse($headerSet->has('DKIM-Signature'));
+    $signer->startBody();
+    $signer->write($messageContent);
+    $signer->endBody();
+    $signer->addSignature($headerSet);
+    $this->assertTrue($headerSet->has('DKIM-Signature'));
+    $dkim=$headerSet->getAll('DKIM-Signature');
+    $sig=reset($dkim);
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha1; bh=wlbYcY9O9OPInGJ4D0E/rGsvMLE=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; t=1299879181; b=RMSNelzM2O5MAAnMjT3G3/VF36S3DGJXoPCXR001F1WDReu0prGphWjuzK/m6V1pwqQL8cCNg Hi74mTx2bvyAvmkjvQtJf1VMUOCc9WHGcm1Yec66I3ZWoNMGSWZ1EKAm2CtTzyG0IFw4ml9DI wSkyAFxlgicckDD6FibhqwX4w= ');
+  }
+  
+  // SHA256 Signing
+  public function testSigning256()
+  {
+    $headerSet=$this->_createHeaderSet();
+    $messageContent="Hello World";
+    $signer=new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
+    $signer->setHashAlgorithm('rsa-sha256');
+    $signer->setSignatureTimestamp('1299879181');
+    $altered=$signer->getAlteredHeaders();
+    $this->assertEqual(array('DKIM-Signature'), $altered);
+    $signer->reset();
+    $signer->setHeaders($headerSet);
+    $this->assertFalse($headerSet->has('DKIM-Signature'));
+    $signer->startBody();
+    $signer->write($messageContent);
+    $signer->endBody();
+    $signer->addSignature($headerSet);
+    $this->assertTrue($headerSet->has('DKIM-Signature'));
+    $dkim=$headerSet->getAll('DKIM-Signature');
+    $sig=reset($dkim);
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; t=1299879181; b=IX/zZgj//eg3jz1jPmMuKyRsT4+Nezzb0jQYoyIZuU2+UokpP6w3c3X2oWNEmxjvNKYQC5bSE BLq/ZrjA4SxF5mtKQhAWspsL6ws6GKgu3n3XQo8nxvAMJ23nznQcdm0PKTHsGlsKw8rSnuWju 6VX5o+u2hrWseeKQN4j0eV2dk= ');
+  }
+  
+  // Relaxed/Relaxed Hash Signing
+  public function testSigningRelaxedRelaxed256()
+  {
+    $headerSet=$this->_createHeaderSet();
+    $messageContent="Hello World";
+    $signer=new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
+    $signer->setHashAlgorithm('rsa-sha256');
+    $signer->setSignatureTimestamp('1299879181');
+    $signer->setBodyCanon('relaxed');
+    $signer->setHeaderCanon('relaxed');
+    $altered=$signer->getAlteredHeaders();
+    $this->assertEqual(array('DKIM-Signature'), $altered);
+    $signer->reset();
+    $signer->setHeaders($headerSet);
+    $this->assertFalse($headerSet->has('DKIM-Signature'));
+    $signer->startBody();
+    $signer->write($messageContent);
+    $signer->endBody();
+    $signer->addSignature($headerSet);
+    $this->assertTrue($headerSet->has('DKIM-Signature'));
+    $dkim=$headerSet->getAll('DKIM-Signature');
+    $sig=reset($dkim);
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=relaxed/relaxed; t=1299879181; b=eQ8cxHq36x45qtYIfDgQS5osG/JtO7ke/lMKSNao/8qihnu0D6Sur6vrPyvy1HiTmu06+7MqX gx+4MDjmauBsjBH8QFlzGe/Ox2Xh9Sie1GdBJV6TyOCm6bY9T3VxGFemFUoCuT/dKvGazlCdw qbyylxbtjfPCXVK7VOzHZRTMw= ');
+  }
+
+  
+  // Relaxed/Simple Hash Signing
+  public function testSigningRelaxedSimple256()
+  {
+    $headerSet=$this->_createHeaderSet();
+    $messageContent="Hello World";
+    $signer=new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
+    $signer->setHashAlgorithm('rsa-sha256');
+    $signer->setSignatureTimestamp('1299879181');
+    $signer->setHeaderCanon('relaxed');
+    $altered=$signer->getAlteredHeaders();
+    $this->assertEqual(array('DKIM-Signature'), $altered);
+    $signer->reset();
+    $signer->setHeaders($headerSet);
+    $this->assertFalse($headerSet->has('DKIM-Signature'));
+    $signer->startBody();
+    $signer->write($messageContent);
+    $signer->endBody();
+    $signer->addSignature($headerSet);
+    $this->assertTrue($headerSet->has('DKIM-Signature'));
+    $dkim=$headerSet->getAll('DKIM-Signature');
+    $sig=reset($dkim);
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=relaxed; t=1299879181; b=AEgO27FO0eblywhzkVhgZfcjKAT7Y4qu1Ta9Ry+/l3orKT2o5Vj9YUpezuZuUYTygPRGNQQbe pugDthha/rH1ivhtVPX5z8dEIY09VfY3jQJnbrzusC3hqzxkNwcTzf6T9c/qjs1PfNShdMnM2 FENdZlrYMN4yvREjaJjhgUzHE= ');
+  }
+
+  // Simple/Relaxed Hash Signing
+  public function testSigningSimpleRelaxed256()
+  {
+    $headerSet=$this->_createHeaderSet();
+    $messageContent="Hello World";
+    $signer=new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
+    $signer->setHashAlgorithm('rsa-sha256');
+    $signer->setSignatureTimestamp('1299879181');
+    $signer->setBodyCanon('relaxed');
+    $altered=$signer->getAlteredHeaders();
+    $this->assertEqual(array('DKIM-Signature'), $altered);
+    $signer->reset();
+    $signer->setHeaders($headerSet);
+    $this->assertFalse($headerSet->has('DKIM-Signature'));
+    $signer->startBody();
+    $signer->write($messageContent);
+    $signer->endBody();
+    $signer->addSignature($headerSet);
+    $this->assertTrue($headerSet->has('DKIM-Signature'));
+    $dkim=$headerSet->getAll('DKIM-Signature');
+    $sig=reset($dkim);
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=simple/relaxed; t=1299879181; b=P/bVIWhOo6UYm/0SVz0VcscgI9o7h3zaUNIO9n1vGh6RG12CuerlNg6DSwrTSD2cfMSQjLNzI ArKxqQZBI/tY2E8pZGc8wpz1wbY34USWQCLHWCQ5LzoIjgLvgOIHzooDtxdAWMW0OOrMXBvFo W4F4xQDJFVGcczVNt09kna96w= ');
   }
   
   // -- Creation Methods
+  private function _createHeaderSet()
+  {
+    $cache = new Swift_KeyCache_ArrayKeyCache(
+      new Swift_KeyCache_SimpleKeyCacheInputStream()
+      );
+    $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
+    $contentEncoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
+    
+    $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
+      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+      );
+    $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
+      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+      );
+    $grammar = new Swift_Mime_Grammar();
+    $headers = new Swift_Mime_SimpleHeaderSet(
+      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $grammar)
+      );
+    return $headers;
+  }
+  
   /**
-   * @return Swift_Mime_HeaderSet
+   * @return Swift_Mime_Headers
    */
   private function _createHeaders()
   {
-    return $this->_mock('Swift_Mime_HeaderSet');
-  }
-  
-  private function _createMessageWithByteCount($bytes)
-  {
-    $this->_bytes = $bytes;
-    $msg = $this->_mock('Swift_Mime_Message');
-    $this->_checking(Expectations::create()
-      -> ignoring($msg)->toByteStream(any()) -> calls(array($this, '_write'))
-    );
-    return $msg;
-  }
-  
-  private function _createSendEvent($message)
-  {
-    $evt = $this->_mock('Swift_Events_SendEvent');
-    $this->_checking(Expectations::create()
-      -> ignoring($evt)->getMessage() -> returns($message)
+    $x=0;
+    $cache = new Swift_KeyCache_ArrayKeyCache(
+      new Swift_KeyCache_SimpleKeyCacheInputStream()
       );
-    return $evt;
+    $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
+    $contentEncoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
+    
+    $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
+      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+      );
+    $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
+      new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+      );
+    $grammar = new Swift_Mime_Grammar();
+    $headerFactory = new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $grammar);
+    $headers=$this->_mock('Swift_Mime_HeaderSet');
+    $this->_checking(Expectations::create()
+      -> ignoring($headers)->listAll() -> returns(array('From', 'To', 'Date', 'Subject'))
+      -> ignoring($headers)->has('From') -> returns(True)
+      -> ignoring($headers)->getAll('From') -> returns(array($headerFactory->createMailboxHeader('From', 'test@test.test')))
+      -> ignoring($headers)->has('To') -> returns(True)
+      -> ignoring($headers)->getAll('To') -> returns(array($headerFactory->createMailboxHeader('To', 'test@test.test')))
+      -> ignoring($headers)->has('Date') -> returns(True)
+      -> ignoring($headers)->getAll('Date') -> returns(array($headerFactory->createTextHeader('Date', 'Fri, 11 Mar 2011 20:56:12 +0000 (GMT)')))
+      -> ignoring($headers)->has('Subject') -> returns(True)
+      -> ignoring($headers)->getAll('Subject') -> returns(array($headerFactory->createTextHeader('Subject', 'Foo Bar Text Message')))
+      -> ignoring($headers)->addTextHeader('DKIM-Signature', any()) -> returns (true)
+      -> ignoring($headers)->getAll('DKIM-Signature') -> returns(array($headerFactory->createTextHeader('DKIM-Signature', 'Foo Bar Text Message'))));
+    return $headers;
   }
-  
-  private $_bytes = 0;
-  public function _write($invocation)
-  {
-    $args = $invocation->getArguments();
-    $is = $args[0];
-    for ($i = 0; $i < $this->_bytes; ++$i)
-    {
-      $is->write('x');
-    }
-  }
-  
 }
