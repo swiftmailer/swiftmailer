@@ -28,6 +28,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   /**
    * Create a new FileSpool.
    * @param string $path
+   * @throws Swift_IoException
    */
   public function __construct($path)
   {
@@ -37,7 +38,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     {
       if (!mkdir($this->_path, 0777, true))
       {
-        throw new Swift_SwiftException('Unable to create Path ['.$this->_path.']');
+        throw new Swift_IoException('Unable to create Path ['.$this->_path.']');
       }
     }
   }
