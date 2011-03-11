@@ -68,9 +68,21 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   }
   
   /**
+   * Allow to manage the enqueuing retry limit.
+   * Default, is ten and allows over 64^20 different fileNames 
+   * 
+   * @param integer $limit
+   */
+  public function setRetryLimit($limit)
+  {
+    $this->_retryLimit=$limit;
+  }
+  
+  /**
    * Queues a message.
    * @param Swift_Mime_Message $message The message to store
    * @return boolean
+   * @throws Swift_IoException
    */
   public function queueMessage(Swift_Mime_Message $message)
   {
@@ -86,7 +98,8 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
       {
         $fp=fwrite($ser);
         fclose($fp);
-        return true;
+        
+        return;
       } 
       else 
       {
@@ -95,7 +108,8 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         $fileName.=$this->getRandomString(1);
       }
     }
-    return false;
+    
+    throw new Swift_IoException('Unable to create a file for enqueuing Message');
   }
   
   /**
