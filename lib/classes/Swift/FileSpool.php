@@ -12,6 +12,7 @@
  * Stores Messages on the filesystem.
  * @package Swift
  * @author  Fabien Potencier
+ * @author Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_FileSpool extends Swift_ConfigurableSpool
 {
@@ -19,8 +20,15 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   private $_path;
   
   /**
+   * File WriteRetry Limit
+   * @var int
+   */
+  private $_retryLimit=10;
+  
+  /**
    * Create a new FileSpool.
    * @param string $path
+   * @throws Swift_IoException
    */
   public function __construct($path)
   {
@@ -28,7 +36,10 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     
     if (!file_exists($this->_path))
     {
-      mkdir($this->_path, 0777, true);
+      if (!mkdir($this->_path, 0777, true))
+      {
+        throw new Swift_IoException('Unable to create Path ['.$this->_path.']');
+      }
     }
   }
   
@@ -57,14 +68,70 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   }
   
   /**
+   * Allow to manage the enqueuing retry limit.
+   * Default, is ten and allows over 64^20 different fileNames 
+   * 
+   * @param integer $limit
+   */
+  public function setRetryLimit($limit)
+  {
+    $this->_retryLimit=$limit;
+  }
+  
+  /**
    * Queues a message.
    * @param Swift_Mime_Message $message The message to store
+   * @return boolean
+   * @throws Swift_IoException
    */
   public function queueMessage(Swift_Mime_Message $message)
   {
     $ser = serialize($message);
+    $fileName=$this->_path.'/'.$this->getRandomString(10);
+    for ($i = 0; $i < $this->_retryLimit; ++$i) 
+    {
+      /* We try an exclusive creation of the file
+       * This is an atomic operation, it avoid locking mechanism
+       */
+      $fp=fopen($fileName.'.message', 'x');
+      if ($fp) 
+      {
+        $fp=fwrite($ser);
+        fclose($fp);
+        
+        return;
+      } 
+      else 
+      {
+        /* The file allready exists, we try a longer fileName
+         */
+        $fileName.=$this->getRandomString(1);
+      }
+    }
     
-    file_put_contents($this->_path.'/'.md5($ser.uniqid()).'.message', $ser);
+    throw new Swift_IoException('Unable to create a file for enqueuing Message');
+  }
+  
+  /**
+   * Execute a recovery if for anyreason a process is sending for too long
+   * 
+   * @param int $timeout in second Defaults is for very slow smtp responses
+   */
+  public function recover($timeout=900)
+  {
+    foreach (new DirectoryIterator($this->_path) as $file)
+    {
+      $file = $file->getRealPath();
+
+      if (substr($file, -16)=='.message.sending')
+      {
+        $lockedtime=filectime($file);
+        if ((time()-$lockedtime)>$timeout) 
+        {
+          rename($file, substr($file, 0, -8));
+        }
+      }
+    }    
   }
   
   /**
@@ -89,16 +156,25 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     {
       $file = $file->getRealPath();
 
-      if (!strpos($file, '.message'))
+      if (substr($file, -8)=='.message')
       {
         continue;
       }
 
-      $message = unserialize(file_get_contents($file));
+      /* We try a rename, it's an atomic operation, and avoid locking the file */
+      if (rename($file, $file.'.sending')) 
+      {
+        $message = unserialize(file_get_contents($file.'.sending'));
 
-      $count += $transport->send($message, $failedRecipients);
+        $count += $transport->send($message, $failedRecipients);
 
-      unlink($file);
+        unlink($file.'.sending');
+      }
+      else 
+      {
+        /* This message has just been catched by another process */
+        continue;
+      }
 
       if ($this->getMessageLimit() && $count >= $this->getMessageLimit())
       {
@@ -112,5 +188,21 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     }
 
     return $count;
+  }
+  
+  /**
+   * Returns a random string needed to generate a fileName for the queue.
+   * @param int $count
+   */
+  protected function getRandomString($count) {
+    // This string MUST stay FS safe, avoid special chars
+    $base="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.";
+    $ret='';
+    $strlen=strlen($base);
+    for ($i=0; $i<$count; ++$i) 
+    {
+      $ret.=$base[((int)rand(0,$base-1))];
+    }
+    return $ret;
   }
 }
