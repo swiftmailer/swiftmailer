@@ -15,7 +15,7 @@
 if (defined('SWIFT_INIT_LOADED'))
 	return;
 
-define('SWIFT_INIT_LOADED');
+define('SWIFT_INIT_LOADED', true);
 
 //Load in dependency maps
 require dirname(__FILE__) . '/dependency_maps/cache_deps.php';
