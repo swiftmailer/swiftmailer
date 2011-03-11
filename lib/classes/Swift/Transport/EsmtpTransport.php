@@ -138,6 +138,25 @@ class Swift_Transport_EsmtpTransport
   }
   
   /**
+   * Sets the sourceIp
+   * @param string $source
+   */
+  public function setSourceIp($source)
+  {
+    $this->_params['sourceIp']=$source;
+    return $this;
+  }
+
+  /**
+   * Returns the ip used to connect to the destination
+   * @return string
+   */
+  public function getSourceIp()
+  {
+    return $this->_params['sourceIp'];
+  }
+  
+  /**
    * Set ESMTP extension handlers.
    * @param Swift_Transport_EsmtpHandler[] $handlers
    */

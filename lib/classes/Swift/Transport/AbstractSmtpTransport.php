@@ -32,6 +32,9 @@ abstract class Swift_Transport_AbstractSmtpTransport
   /** The event dispatching layer */
   protected $_eventDispatcher;
   
+  /** Source Ip */
+  protected $_sourceIp;
+  
   /** Return an array of params for the Buffer */
   abstract protected function _getBufferParams();
   
@@ -73,6 +76,25 @@ abstract class Swift_Transport_AbstractSmtpTransport
     return $this->_domain;
   }
   
+
+  /**
+   * Sets the sourceIp
+   * @param string $source
+   */
+  public function setSourceIp($source) 
+  {
+    $this->_sourceIp=$source;
+  }
+
+  /**
+   * Returns the ip used to connect to the destination
+   * @return string
+   */
+  public function getSourceIp()
+  {
+    return $this->_sourceIp;
+  }
+
   /**
    * Start the SMTP connection.
    */

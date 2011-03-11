@@ -226,7 +226,12 @@ class Swift_Transport_StreamBuffer
     {
       $timeout = $this->_params['timeout'];
     }
-    if (!$this->_stream = fsockopen($host, $this->_params['port'], $errno, $errstr, $timeout))
+    $options = array();
+    if (!empty($this->_params['sourceIp']))
+    {
+    	$options['socket']['bindto']=$this->_params['sourceIp'].':0';
+    }
+    if (!$this->_stream = stream_socket_client($host.':'.$this->_params['port'], $errno, $errstr, $timeout, STREAM_CLIENT_ASYNC_CONNECT|STREAM_CLIENT_CONNECT, stream_context_create($options)))
     {
       throw new Swift_TransportException(
         'Connection could not be established with host ' . $this->_params['host'] .
