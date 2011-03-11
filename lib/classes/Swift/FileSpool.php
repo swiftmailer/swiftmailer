@@ -75,7 +75,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   {
     $ser = serialize($message);
     $fileName=$this->_path.'/'.$this->getRandomString(10);
-    for ($i = O; $i < $this->_retryLimit; ++$i) 
+    for ($i = 0; $i < $this->_retryLimit; ++$i) 
     {
       /* We try an exclusive creation of the file
        * This is an atomic operation, it avoid locking mechanism
