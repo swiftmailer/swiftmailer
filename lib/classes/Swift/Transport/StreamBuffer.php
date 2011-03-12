@@ -97,6 +97,23 @@ class Swift_Transport_StreamBuffer
   }
   
   /**
+   * Start TLS encryption on the buffer.
+   */
+  public function startTLS()
+  {
+    if (isset($this->_stream))
+    {
+      return stream_socket_enable_crypto(
+        $this->_stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT
+        );
+    }
+    else
+    {
+      return false;
+    }
+  }
+  
+  /**
    * Perform any shutdown logic needed.
    */
   public function terminate()
