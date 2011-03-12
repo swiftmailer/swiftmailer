@@ -260,7 +260,7 @@
   /**
    * Set the signer identity
    * @param string $identity
-   * @return Swift_Signers_DKIMSigner
+   * @return Swift_Signers_DomainKeySigner
    */
   public function setSignerIdentity($identity)
   {
@@ -272,7 +272,7 @@
    * Enable / disable the DebugHeaders
    *
    * @param boolean $debug
-   * @return Swift_Signers_DKIMSigner
+   * @return Swift_Signers_DomainKeySigner
    */
   public function setDebugHeaders($debug)
   {
@@ -314,7 +314,7 @@
    * Adds an ignored Header
    *
    * @param string $header_name
-   * @return Swift_Signers_DKIMSigner
+   * @return Swift_Signers_DomainKeySigner
    */
   public function ignoreHeader($header_name)
   {
@@ -326,7 +326,7 @@
    * Set the headers to sign
    *
    * @param Swift_Mime_HeaderSet $headers
-   * @return Swift_Signers_DKIMSigner
+   * @return Swift_Signers_DomainKeySigner
    */
   public function setHeaders(Swift_Mime_HeaderSet $headers)
   {
@@ -363,11 +363,11 @@
    * Add the signature to the given Headers
    *
    * @param Swift_Mime_HeaderSet $headers
-   * @return Swift_Signers_DKIMSigner
+   * @return Swift_Signers_DomainKeySigner
    */
   public function addSignature(Swift_Mime_HeaderSet $headers)
   {
-    // Prepare the DKIM-Signature
+    // Prepare the DomainKey-Signature Header
     $params = array(
         'a' => $this->_hashAlgorithm,
         'b' => chunk_split(base64_encode(
