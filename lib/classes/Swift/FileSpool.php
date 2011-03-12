@@ -201,7 +201,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     $strlen=strlen($base);
     for ($i=0; $i<$count; ++$i) 
     {
-      $ret.=$base[((int)rand(0,$base-1))];
+      $ret.=$base[((int)rand(0,$strlen-1))];
     }
     return $ret;
   }
