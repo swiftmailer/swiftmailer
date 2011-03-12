@@ -96,7 +96,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
       $fp=fopen($fileName.'.message', 'x');
       if ($fp) 
       {
-        $fp=fwrite($ser);
+        fwrite($fp, $ser);
         fclose($fp);
         
         return;
