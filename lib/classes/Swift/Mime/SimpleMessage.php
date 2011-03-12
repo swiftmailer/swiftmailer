@@ -35,7 +35,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
       'Return-Path',
       'Received',
       'DKIM-Signature',
-      'DomainKey',
+      'DomainKey-Signature',
       'Sender',
       'Message-ID',
       'Date',
