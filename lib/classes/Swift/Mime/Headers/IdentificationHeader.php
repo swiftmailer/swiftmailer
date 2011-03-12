@@ -77,7 +77,7 @@ class Swift_Mime_Headers_IdentificationHeader
    */
   public function setId($id)
   {
-    return $this->setIds(array($id));
+    $this->setIds(array($id));
   }
   
   /**

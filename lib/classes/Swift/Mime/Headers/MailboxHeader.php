@@ -167,7 +167,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    */
   public function setAddresses($addresses)
   {
-    return $this->setNameAddresses(array_values((array) $addresses));
+    $this->setNameAddresses(array_values((array) $addresses));
   }
   
   /**
