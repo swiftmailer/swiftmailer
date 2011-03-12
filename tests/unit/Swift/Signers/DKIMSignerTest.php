@@ -68,7 +68,7 @@ class Swift_Signers_DKIMSignerTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertTrue($headerSet->has('DKIM-Signature'));
     $dkim=$headerSet->getAll('DKIM-Signature');
     $sig=reset($dkim);
-    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; t=1299879181; b=IX/zZgj//eg3jz1jPmMuKyRsT4+Nezzb0jQYoyIZuU2+UokpP6w3c3X2oWNEmxjvNKYQC5bSE BLq/ZrjA4SxF5mtKQhAWspsL6ws6GKgu3n3XQo8nxvAMJ23nznQcdm0PKTHsGlsKw8rSnuWju 6VX5o+u2hrWseeKQN4j0eV2dk= ');
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; t=1299879181; b=jqPmieHzF5vR9F4mXCAkowuphpO4iJ8IAVuioh1BFZ3VITXZj5jlOFxULJMBiiApm2keJirnh u4mzogj444QkpT3lJg8/TBGAYQPdcvkG3KC0jdyN6QpSgpITBJG2BwWa+keXsv2bkQgLRAzNx qRhP45vpHCKun0Tg9LrwW/KCg= ');
   }
   
   // Relaxed/Relaxed Hash Signing
@@ -93,7 +93,7 @@ class Swift_Signers_DKIMSignerTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertTrue($headerSet->has('DKIM-Signature'));
     $dkim=$headerSet->getAll('DKIM-Signature');
     $sig=reset($dkim);
-    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=relaxed/relaxed; t=1299879181; b=eQ8cxHq36x45qtYIfDgQS5osG/JtO7ke/lMKSNao/8qihnu0D6Sur6vrPyvy1HiTmu06+7MqX gx+4MDjmauBsjBH8QFlzGe/Ox2Xh9Sie1GdBJV6TyOCm6bY9T3VxGFemFUoCuT/dKvGazlCdw qbyylxbtjfPCXVK7VOzHZRTMw= ');
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=relaxed/relaxed; t=1299879181; b=gzOI+PX6HpZKQFzwwmxzcVJsyirdLXOS+4pgfCpVHQIdqYusKLrhlLeFBTNoz75HrhNvGH6T0 Rt3w5aTqkrWfUuAEYt0Ns14GowLM7JojaFN+pZ4eYnRB3CBBgW6fee4NEMD5WPca3uS09tr1E 10RYh9ILlRtl+84sovhx5id3Y= ');
   }
 
   
@@ -118,7 +118,7 @@ class Swift_Signers_DKIMSignerTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertTrue($headerSet->has('DKIM-Signature'));
     $dkim=$headerSet->getAll('DKIM-Signature');
     $sig=reset($dkim);
-    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=relaxed; t=1299879181; b=AEgO27FO0eblywhzkVhgZfcjKAT7Y4qu1Ta9Ry+/l3orKT2o5Vj9YUpezuZuUYTygPRGNQQbe pugDthha/rH1ivhtVPX5z8dEIY09VfY3jQJnbrzusC3hqzxkNwcTzf6T9c/qjs1PfNShdMnM2 FENdZlrYMN4yvREjaJjhgUzHE= ');
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=relaxed; t=1299879181; b=dLPJNec5v81oelyzGOY0qPqTlGnQeNfUNBOrV/JKbStr3NqWGI9jH4JAe2YvO2V32lfPNoby1 4MMzZ6EPkaZkZDDSPa+53YbCPQAlqiD9QZZIUe2UNM33HN8yAMgiWEF5aP7MbQnxeVZMfVLEl 9S8qOImu+K5JZqhQQTL0dgLwA= ');
   }
 
   // Simple/Relaxed Hash Signing
@@ -142,7 +142,7 @@ class Swift_Signers_DKIMSignerTest extends Swift_Tests_SwiftUnitTestCase
     $this->assertTrue($headerSet->has('DKIM-Signature'));
     $dkim=$headerSet->getAll('DKIM-Signature');
     $sig=reset($dkim);
-    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=simple/relaxed; t=1299879181; b=P/bVIWhOo6UYm/0SVz0VcscgI9o7h3zaUNIO9n1vGh6RG12CuerlNg6DSwrTSD2cfMSQjLNzI ArKxqQZBI/tY2E8pZGc8wpz1wbY34USWQCLHWCQ5LzoIjgLvgOIHzooDtxdAWMW0OOrMXBvFo W4F4xQDJFVGcczVNt09kna96w= ');
+    $this->assertEqual($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=simple/relaxed; t=1299879181; b=M5eomH/zamyzix9kOes+6YLzQZxuJdBP4x3nP9zF2N26eMLG2/cBKbnNyqiOTDhJdYfWPbLIa 1CWnjST0j5p4CpeOkGYuiE+M4TWEZwhRmRWootlPO3Ii6XpbBJKFk1o9zviS7OmXblUUE4aqb yRSIMDhtLdCK5GlaCneFLN7RQ= ');
   }
   
   // -- Creation Methods

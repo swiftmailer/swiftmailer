@@ -687,8 +687,16 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
   private function _getEncryptedHash()
   {
     $signature = '';
+    switch ($this->_hashAlgorithm) {
+      case 'rsa-sha1':
+        $algorithm='sha1';
+        break;
+      case 'rsa-sha256':
+        $algorithm='sha256';
+        break;
+    }
     if (openssl_sign($this->_headerCanonData, $signature,
-      $this->_privateKey))
+      $this->_privateKey, $algorithm))
     {
       return $signature;
     }
