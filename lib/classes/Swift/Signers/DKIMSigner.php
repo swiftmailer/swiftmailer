@@ -171,6 +171,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
   public function reset()
   {
     $this->_headerHash = null;
+    $this->_signedHeaders = array();
     $this->_headerHashHandler = null;
     $this->_bodyHash = null;
     $this->_bodyHashHandler = null;
@@ -552,8 +553,8 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         base64_encode($this->_headerHash));
     }
     $this->_dkimHeader->setValue(
-      $string . " b=" . chunk_split(base64_encode(
-        $this->_getEncryptedHash()),73, " "));
+      $string . " b=" . trim(chunk_split(base64_encode(
+        $this->_getEncryptedHash()),73, " ")));
     return $this;
   }
   
@@ -681,7 +682,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
       $this->_debugHeadersData[] = trim($header);
     }
     $this->_headerCanonData .= $header;
-    //hash_update($this->_headerHashHandler, $header);
   }
   
   private function _getEncryptedHash()

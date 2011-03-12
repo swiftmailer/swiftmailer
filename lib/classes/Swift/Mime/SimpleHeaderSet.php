@@ -223,7 +223,12 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
    */
   public function listAll()
   {
-    return array_keys($this->_headers);
+    $headers = $this->_headers;
+    if ($this->_canSort())
+    {
+      uksort($headers, array($this, '_sortHeaders'));
+    }
+    return array_keys($headers);
   }
   
   /**
