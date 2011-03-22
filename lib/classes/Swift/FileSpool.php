@@ -156,7 +156,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     {
       $file = $file->getRealPath();
 
-      if (substr($file, -8)=='.message')
+      if (substr($file, -8) != '.message')
       {
         continue;
       }
