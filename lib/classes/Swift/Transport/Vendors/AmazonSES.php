@@ -6,8 +6,15 @@
  * file that was distributed with this source code.
  */
 
+/*
+ * This is A vendor Specific Transport
+ * If you want to send email through this vendor API, you'll need
+ * to download the Amazon SDK [http://aws.amazon.com/sdkforphp/]
+ * And subscribe there : http://aws.amazon.com/ses/
+ */
+
 /**
- * This Transport Implements SES Interface
+ * This Transport Implements Amazon SES Interface
  * @package Swift
  * @subpackage Transport
  * @author Xavier De Cock <xdecock@gmail.com>
