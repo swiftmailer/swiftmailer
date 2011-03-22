@@ -22,8 +22,6 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
   implements Swift_Mime_HeaderEncoder
 {
 
-  private static $_headerSafeMap = array();
-
   /**
    * Creates a new QpHeaderEncoder for the given CharacterStream.
    * @param Swift_CharacterStream $charStream to use for reading characters
@@ -31,15 +29,14 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
   public function __construct(Swift_CharacterStream $charStream)
   {
     parent::__construct($charStream);
-    if (empty(self::$_headerSafeMap))
+    // Reset the safeMap
+    $this->_safeMap=array();
+    foreach (array_merge(
+      range(0x61, 0x7A), range(0x41, 0x5A),
+      range(0x30, 0x39), array(0x20, 0x21, 0x2A, 0x2B, 0x2D, 0x2F)
+      ) as $byte)
     {
-      foreach (array_merge(
-        range(0x61, 0x7A), range(0x41, 0x5A),
-        range(0x30, 0x39), array(0x20, 0x21, 0x2A, 0x2B, 0x2D, 0x2F)
-        ) as $byte)
-      {
-        self::$_headerSafeMap[$byte] = chr($byte);
-      }
+      $this->_safeMap[$byte] = chr($byte);
     }
   }
 
@@ -66,34 +63,6 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder
     return str_replace(array(' ', '=20', "=\r\n"), array('_', '_', "\r\n"),
       parent::encodeString($string, $firstLineOffset, $maxLineLength)
       );
-  }
-
-  // -- Overridden points of extension
-
-  /**
-   * Encode the given byte array into a verbatim QP form.
-   * @param int[] $bytes
-   * @return string
-   * @access protected
-   */
-  protected function _encodeByteSequence(array $bytes, &$size)
-  {
-    $ret = '';
-    $size=0;
-    foreach ($bytes as $b)
-    {
-      if (isset(self::$_headerSafeMap[$b]))
-      {
-        $ret .= self::$_headerSafeMap[$b];
-        ++$size;
-      }
-      else
-      {
-        $ret .= self::$_qpMap[$b];
-        $size+=3;
-      }
-    }
-    return $ret;
   }
 
 }

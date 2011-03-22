@@ -25,9 +25,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
    * @param Swift_StreamFilter $filter if canonicalization should occur
    */
   public function __construct(Swift_CharacterStream $charStream,
-    Swift_StreamFilter $filter = null)
+    Swift_StreamFilter $filter = null, $dotStuffing=false)
   {
     parent::__construct($charStream, $filter);
+    if ($dotStuffing) {
+      /* Encode . as =2e for buggy remote servers */
+      unset($this->_safeMap[0x2e]);
+    }
   }
 
   /**

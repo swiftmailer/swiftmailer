@@ -72,4 +72,19 @@ class Swift_Preferences
     return $this;
   }
   
+  /**
+   * Add the
+   * @param boolean $dotStuffing
+   */
+  public function setDotStuffing($dotStuffing)
+  {
+    $dotStuffing=!empty($dotStuffing);
+    Swift_DependencyContainer::getInstance()
+      -> register('mime.qpcontentencoder')
+      -> asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
+      -> withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
+      -> addConstructorValue($dotStuffing);
+    return $this;
+  }
+  
 }
