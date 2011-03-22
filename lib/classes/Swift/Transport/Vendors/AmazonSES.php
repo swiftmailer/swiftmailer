@@ -40,6 +40,10 @@ class Swift_Transport_Vendors_AmazonSES implements Swift_Transport
     $this->_sendRaw = $sendRaw;
   }
   
+  public static function newInstance($region=null, $raw=false) {
+    return new self($region, $raw);
+  }
+  
   public function send(Swift_Mime_Message $message, &$failedRecipients = null)
   {
     try {
