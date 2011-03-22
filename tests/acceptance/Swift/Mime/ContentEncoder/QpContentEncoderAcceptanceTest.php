@@ -153,23 +153,23 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest
   
   public function testEncodingDotStuffingWithDiConfiguredInstance()
   {
-    // Enable DotStuffing
-    Swift_Preferences::getInstance()->setDotStuffing(true);
+    // Enable DotEscaping
+    Swift_Preferences::getInstance()->setQPDotEscape(true);
     $encoder = $this->_createEncoderFromContainer();
     $this->assertEqual("a=2E\r\n=2E\r\n=2Eb\r\nc", $encoder->encodeString("a.\r\n.\r\n.b\r\nc"));
     // Return to default
-    Swift_Preferences::getInstance()->setDotStuffing(false);
+    Swift_Preferences::getInstance()->setQPDotEscape(false);
     $encoder = $this->_createEncoderFromContainer();
     $this->assertEqual("a.\r\n.\r\n.b\r\nc", $encoder->encodeString("a.\r\n.\r\n.b\r\nc"));
   }
   
   public function testDotStuffingEncodingAndDecodingSamplesFromDiConfiguredInstance() 
   {
-    // Enable DotStuffing
-    Swift_Preferences::getInstance()->setDotStuffing(true);
+    // Enable DotEscaping
+    Swift_Preferences::getInstance()->setQPDotEscape(true);
     $this->testEncodingAndDecodingSamplesFromDiConfiguredInstance();
     // Disable DotStuffing to continue
-    Swift_Preferences::getInstance()->setDotStuffing(false);
+    Swift_Preferences::getInstance()->setQPDotEscape(false);
   }
   
   // -- Private Methods
