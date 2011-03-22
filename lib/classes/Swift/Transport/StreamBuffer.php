@@ -161,6 +161,13 @@ class Swift_Transport_StreamBuffer
     if (isset($this->_out) && !feof($this->_out))
     {
       $line = fgets($this->_out);
+      if (strlen($line)==0) 
+      {
+        $metas = stream_get_meta_data($this->_out);
+        if ($metas['timed_out']) {
+          throw new Swift_IoException('Connection to '.$this->_getReadConnectionDescription().' Timed Out');
+        }
+      }
       return $line;
     }
   }
@@ -178,6 +185,14 @@ class Swift_Transport_StreamBuffer
     if (isset($this->_out) && !feof($this->_out))
     {
       $ret = fread($this->_out, $length);
+      if (strlen($ret)==0) 
+      {
+        $metas = stream_get_meta_data($this->_out);
+        if ($metas['timed_out']) 
+        {
+          throw new Swift_IoException('Connection to '.$this->_getReadConnectionDescription().' Timed Out');
+        }
+      }
       return $ret;
     }
   }
@@ -246,6 +261,7 @@ class Swift_Transport_StreamBuffer
     {
       stream_set_blocking($this->_stream, 0);
     }
+    stream_set_timeout($this->_stream, $timeout);
     $this->_in =& $this->_stream;
     $this->_out =& $this->_stream;
   }
@@ -274,4 +290,25 @@ class Swift_Transport_StreamBuffer
     $this->_out =& $pipes[1];
   }
   
+  
+  private function _getReadConnectionDescription()
+  {
+    switch ($this->_params['type'])
+    {
+      case self::TYPE_PROCESS:
+        return 'Process '.$this->_params['command'];
+        break;
+        
+      case self::TYPE_SOCKET:
+      default:
+        $host = $this->_params['host'];
+        if (!empty($this->_params['protocol']))
+        {
+          $host = $this->_params['protocol'] . '://' . $host;
+        }
+        $host.=':'.$this->_params['port'];
+        return $host;
+        break;
+    }
+  }
 }
