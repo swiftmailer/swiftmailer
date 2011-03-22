@@ -61,8 +61,15 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest
       $line = $this->_buffer->readLine(0);
     } catch (Exception $e) {
     }
-    var_dump($e->getMessage());
     $this->assertIsA($e, 'Swift_IoException', 'IO Exception Not Thrown On Connection Timeout');
     $this->assertPattern('/Connection to .* Timed Out/', $e->getMessage());
+  }
+
+  public function tearDown()
+  {
+    if ($this->_server)
+    {
+      stream_socket_shutdown($this->_server, STREAM_SHUT_RDWR);
+    }
   }
 }
