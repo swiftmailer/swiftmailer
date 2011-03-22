@@ -314,6 +314,77 @@ class Swift_Mime_Headers_MailboxHeaderTest
       );
   }
   
+  // Those are UTF-8 domains if you can't see text, you probably miss fonts
+  // For the domain used, see: http://idn.icann.org/
+  public function testIdn()
+  {
+    $header = $this->_getHeader('From', $this->_getEncoder('Q', true));
+    $header->setNameAddresses(array('test@مثال.إختبار')); //Arabic
+    $this->assertEqual( 'From: test@xn--mgbh0fb.xn--kgbechtv' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@例子.测试')); //Simplified Chinese
+    $this->assertEqual( 'From: test@xn--fsqu00a.xn--0zwm56d' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@例子.測試')); //Traditional Chinese
+    $this->assertEqual( 'From: test@xn--fsqu00a.xn--g6w251d' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@παράδειγμα.δοκιμή')); //Greek
+    $this->assertEqual( 'From: test@xn--hxajbheg2az3al.xn--jxalpdlp' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@उदाहरण.परीक्षा')); //Hindi
+    $this->assertEqual( 'From: test@xn--p1b6ci4b4b3a.xn--11b5bs3a9aj6g' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@例え.テスト')); //Japanese
+    $this->assertEqual( 'From: test@xn--r8jz45g.xn--zckzah' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@실례.테스트')); //Korean
+    $this->assertEqual( 'From: test@xn--9n2bp8q.xn--9t4b11yi5a' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@مثال.آزمایشی')); //Persian
+    $this->assertEqual( 'From: test@xn--mgbh0fb.xn--hgbk6aj7f53bba' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@пример.испытание')); //Russian
+    $this->assertEqual( 'From: test@xn--e1afmkfd.xn--80akhbyknj4f' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@உதாரணம்.பரிட்சை')); //Tamil
+    $this->assertEqual( 'From: test@xn--zkc6cc5bi7f6e.xn--hlcj6aya9esc7a' . "\r\n",
+      $header->toString()
+      );
+    $header->setNameAddresses(array('test@בײַשפּיל.טעסט')); //Yiddish
+    $this->assertEqual( 'From: test@xn--fdbk5d8ap9b8a8d.xn--deba0ad' . "\r\n",
+      $header->toString()
+      );
+/* Skipped Test, PHP Fallback encode without validation
+    try
+    {  
+      $header->setNameAddresses(array('test@--בײַשפּיל.טעסט')); //Yiddish
+      $this->assertTrue(false, 'No exception Sent on invalid domain');
+    }
+    catch (Exception $e)
+    {
+      $this->assertIsA($e, 'Swift_RfcComplianceException');
+    }
+*/
+    try
+    {  
+      $header->setNameAddresses(array('test@--בײַשפּיל..טעסט')); //Yiddish
+      $this->assertTrue(false, 'No exception Sent on invalid domain');
+    }
+    catch (Exception $e)
+    {
+      $this->assertIsA($e, 'Swift_RfcComplianceException');
+    }
+  }
+  
   // -- Private methods
   
   private function _getHeader($name, $encoder)

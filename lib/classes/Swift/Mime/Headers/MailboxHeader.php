@@ -26,6 +26,15 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
   private $_mailboxes = array();
   
   /**
+   * Cache for mailboxGrammar,
+   * will avoid calling grammar in loops.
+   * 
+   * Will be resetted once per header
+   * @var string
+   */
+  private $_mailboxGrammar;
+  
+  /**
    * Creates a new MailboxHeader with $name.
    * @param string $name of Header
    * @param Swift_Mime_HeaderEncoder $encoder
@@ -222,6 +231,8 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
   protected function normalizeMailboxes(array $mailboxes)
   {
     $actualMailboxes = array();
+    $domainPreg = $this->getGrammar()->getDefinition('domain');
+    $this->_mailboxGrammar = $this->getGrammar()->getDefinition('addr-spec');
     
     foreach ($mailboxes as $key => $value)
     {
@@ -234,6 +245,27 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
       {
         $address = $value;
         $name = null;
+      }
+      $exploded = explode('@', $address, 2);
+      if (!isset($address[1]))
+      {
+        throw new Swift_RfcComplianceException(
+          'Address in mailbox given [' . $address .
+          '] does not comply with RFC 2822, 3.6.2.'
+          );
+      }
+      if (!preg_match('/^'.$domainPreg.'$/D', $exploded[1]))
+      {
+        $exploded[1]=$this->_idnToPunnyCode($exploded[1]);
+        if ($exploded[1]===false)
+        {
+          // Invalid Domain
+          throw new Swift_RfcComplianceException(
+            'Address in mailbox given [' . $address .
+            '] does not comply with RFC 2822, 3.6.2.'
+            );
+        }
+        $address=implode('@', $exploded);
       }
       $this->_assertValidAddress($address);
       $actualMailboxes[$address] = $name;
@@ -312,4 +344,133 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     }
   }
   
+  /**
+   * Encodes the domain as idn
+   * @param string $domainName
+   * @return string
+   * @author Maciej Lisiewski
+   */
+  private function _idnToPunnyCode($domainName)
+  {
+    /* Use C Version if possible */
+    if (function_exists('idn_to_ascii'))
+    {
+      return idn_to_ascii($domainName);       
+    }
+    /* Use PHP Version given by Maciej Lisiewski */
+    $punycodePrefix = 'xn--';
+		$initialBias = 72;
+    $initialN = 0x80;
+    $base = 36;
+    $tmin = 1;
+    $tmax = 26;
+    $skew = 38;
+   	$damp = 700;
+  
+    $domainParts = explode ('.',$domainName);
+    $encodedStrings = array();
+    
+    foreach ($domainParts as $idnString)
+    {
+    
+      $offset = 0;
+      $stringLength = strlen ($idnString);
+      $charArray = array();
+      $outputString = '';      
+      $encodedCount = 0;      
+    
+      while ($offset < $stringLength)
+      {
+        $char = ord($idnString{$offset});
+        if ($char <= 0x7F) // 1 byte char (ASCII char)
+        {          
+          $outputString .= $idnString{$offset};
+          $offset++; 
+          $encodedCount++;
+        }     
+        elseif ($char <= 0xDF) // 2 byte char 
+        {      
+          $char = ($char & 0x1F) << 6 | (ord($idnString{$offset + 1}) & 0x3F);
+          $offset += 2; 
+        } 
+        elseif ($char <= 0xEF) // 3 byte char
+        {        
+          $char = ($char & 0x0F) << 12 | (ord($idnString{$offset + 1}) & 0x3F) << 6 | (ord($idnString{$offset + 2}) & 0x3F);
+          $offset += 3;
+        } 
+        elseif ($char <= 0xF4) // 4 byte char
+        {
+            $char = ($char & 0x0F) << 18 | (ord($idnString{$offset + 1}) & 0x3F) << 12 | (ord($idnString{$offset + 2}) & 0x3F) << 6 | (ord($idnString{$offset + 3}) & 0x3F);
+            $offset += 4;
+        }
+        $charArray[]=$char;
+      }     
+                
+      //check if this part consists only of ASCII chars and does not need encoding      
+      if ($encodedCount == $stringLength)
+      {
+        $encodedStrings[] = $idnString;
+      }
+      else //if everything else fails actually do something
+      { 
+        if($outputString !== '') $outputString .= '-';         
+ 
+        $first = true;
+        $currentCode = $initialN;
+        $bias = $initialBias;
+        $delta = 0;
+        $charCount = count($charArray);
+        
+        while ($encodedCount < $charCount) 
+        {
+                        
+          for ($c = 0, $nextCode = 0x10FFFF; $c < $charCount; $c++) 
+          {
+            if ($charArray[$c] >= $currentCode && $charArray[$c] <= $nextCode) 
+            {
+              $nextCode = $charArray[$c];
+            }
+          }
+          $delta += ($nextCode - $currentCode) * ($encodedCount + 1);
+          $currentCode = $nextCode;
+            
+          for ($c = 0; $c < $charCount; $c++) 
+          {
+            if ($charArray[$c] < $currentCode) 
+            {
+              $delta++;
+            } 
+            elseif ($charArray[$c] == $currentCode) 
+            {
+              for ($q = $delta, $k = $base; 1; $k += $base) 
+              {
+                $t = ($k <= $bias) ? $tmin : (($k >= $bias + $tmax) ? $tmax : $k - $bias);
+                if ($q < $t) break;
+                $tmp = intval($t + (($q - $t) % ($base - $t)));
+                $outputString .= chr($tmp + 22 + 75 * ($tmp < 26)); 
+                $q = (int) (($q - $t) / ($base - $t));
+              }
+              $outputString .= chr($q + 22 + 75 * ($q < 26)); 
+              $encodedCount++; 
+             
+              $delta = intval($first ? ($delta / $damp) : ($delta / 2));
+              $delta += intval($delta / $encodedCount);
+              for ($k = 0; $delta > (($base - $tmin) * $tmax) / 2; $k += $base) 
+              {
+                $delta = intval($delta / ($base - $tmin));
+              }
+              $bias = intval($k + ($base - $tmin + 1) * $delta / ($delta + $skew));
+  
+              $delta = 0;
+              $first = false;
+            } 
+          }   
+          $delta++;
+          $currentCode++;
+        }   
+        $encodedStrings[] = $punycodePrefix.$outputString;
+      }            
+    }
+    return implode('.',$encodedStrings);
+  }
 }
