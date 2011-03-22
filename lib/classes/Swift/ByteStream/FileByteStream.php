@@ -131,9 +131,10 @@ class Swift_ByteStream_FileByteStream
       {
         throw new Swift_IoException(
           'Unable to open file for reading [' . $this->_path . ']'
-          );
+        );
       }
-      if ($this->_offset <> 0) {
+      if ($this->_offset <> 0)
+      {
         $this->_getReadStreamSeekableStatus();
         $this->_seekReadStreamToPosition($this->_offset);
       }
@@ -150,7 +151,7 @@ class Swift_ByteStream_FileByteStream
       {
         throw new Swift_IoException(
           'Unable to open file for writing [' . $this->_path . ']'
-          );
+        );
       }
     }
     return $this->_writer;
@@ -167,19 +168,24 @@ class Swift_ByteStream_FileByteStream
   }
   
   /** Check if ReadOnly Stream is seekable */
-  private function _getReadStreamSeekableStatus() {
+  private function _getReadStreamSeekableStatus()
+  {
     $metas = stream_get_meta_data($this->_reader);
     $this->_seekable = $metas['seekable'];
   }
   
   /** Streams in a readOnly stream ensuring copy if needed */
-  private function _seekReadStreamToPosition($offset) {
-    if ($this->_seekable===null) {
+  private function _seekReadStreamToPosition($offset)
+  {
+    if ($this->_seekable===null)
+    {
       $this->_getReadStreamSeekableStatus();
     }
-    if ($this->_seekable === false) {
+    if ($this->_seekable === false)
+    {
       $currentPos = ftell($this->_reader);
-      if ($currentPos<$offset) {
+      if ($currentPos<$offset)
+      {
         $toDiscard = $offset-$currentPos;
         fread($this->_reader, $toDiscard);
         return;
@@ -190,7 +196,8 @@ class Swift_ByteStream_FileByteStream
   }
   
   /** Copy a readOnly Stream to ensure seekability */
-  private function _copyReadStream() {
+  private function _copyReadStream()
+  {
     if ($tmpFile = fopen('php://temp/maxmemory:4096', 'w+b'))
     {
       /* We have opened a php:// Stream Should work without problem */
