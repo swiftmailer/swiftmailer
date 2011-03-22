@@ -165,7 +165,11 @@ class Swift_Transport_StreamBuffer
       {
         $metas = stream_get_meta_data($this->_out);
         if ($metas['timed_out']) {
-          throw new Swift_IoException('Connection to '.$this->_getReadConnectionDescription().' Timed Out');
+          throw new Swift_IoException(
+            'Connection to ' . 
+              $this->_getReadConnectionDescription() . 
+            ' Timed Out'
+          );
         }
       }
       return $line;
@@ -190,7 +194,11 @@ class Swift_Transport_StreamBuffer
         $metas = stream_get_meta_data($this->_out);
         if ($metas['timed_out']) 
         {
-          throw new Swift_IoException('Connection to '.$this->_getReadConnectionDescription().' Timed Out');
+          throw new Swift_IoException(
+            'Connection to ' . 
+              $this->_getReadConnectionDescription() . 
+            ' Timed Out'
+          );
         }
       }
       return $ret;
