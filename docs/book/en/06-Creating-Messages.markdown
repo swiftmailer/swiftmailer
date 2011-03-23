@@ -927,3 +927,44 @@ To set the message priority:
     //Indicate "High" priority
     $message->setPriority(2);
 
+### Sending Signed Message
+--------------------------
+
+Swift Implements DKIM and DomainKeys signature headers, to make use of this, you should
+first, generate an rsa key pair, by using openssl for example. Once this done, you must setup
+your dns server to respond to key requests.
+
+Sending the message by itself is basically the same as the non signed version, you must just
+use a specific Object to attach signatures to.
+
+    [php]
+    $privateKey = file_get_contents('path/to/private.key');
+    $dkimDomain = $dkDomain = 'test.com';
+    $dkimSelector = $dkSelector = 'test';
+    
+    // Use a Signed Message
+    $message = Swift_Signed_Message::newInstance();
+    
+    // Create a DomainKey Signer
+    $signer = new Swift_Signers_DomainKeySigner($privateKey, $dkDomain, $dkSelector);
+    // $signer->setDebugHeaders(true);
+    $signer->setCanon('nofws'); // Other canonization method is simple
+    // Attach the signer
+    $message->attachSigner($signer);
+    
+    // Create a DKIM Signer
+	$signer = new Swift_Signers_DKIMSigner($privateKey, $dkimDomain, $dkimSelector);
+	// Use relaxed header canonization, other value is simple
+	$signer->setHeaderCanon('relaxed');
+	// Use relaxed body canonization, other value is simple
+	$signer->setBodyCanon('relaxed');
+	// Use rsa-sha256 hash signature algorithm, can be rsa-sha1
+	$signer->setHashAlgorithm('rsa-sha256');
+	//$signer->setDebugHeaders(true);
+	
+	$sender->setSubject('Signed Hello World');
+	// Setup the mail the way you want...
+    
+    // Send the signed message to the end user
+    $result = $mailer->send($message);
+	
