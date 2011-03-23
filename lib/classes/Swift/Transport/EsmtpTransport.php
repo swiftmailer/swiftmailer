@@ -106,6 +106,7 @@ class Swift_Transport_EsmtpTransport
   public function setTimeout($timeout)
   {
     $this->_params['timeout'] = (int) $timeout;
+    $this->_buffer->setParam('timeout', (int) $timeout);
     return $this;
   }
   
