@@ -384,6 +384,65 @@ class Swift_Mime_Headers_MailboxHeaderTest
       $this->assertIsA($e, 'Swift_RfcComplianceException');
     }
   }
+
+  public function testInvalidMailBoxesQuoted()
+  {
+    $header = $this->_getHeader('From', $this->_getEncoder('Q', true));
+    $invalidEmails = array(
+      "NotAnEmail", 
+      "@NotAnEmail", 
+   	  "\"test\rblah\"@example.com",
+      '"test"blah"@example.com',
+      'Ima Fool@example.com',
+    // Errata 246 from RFC 3696 mails - incorrect mails
+      'Abc\\@def@example.com',
+      'Fred\\ Bloggs@example.com',
+      'Joe.\\\\Blow@example.com',
+    // IDN test
+      'Abc\\@def@בײַשפּיל.טעסט',
+    );
+    foreach ($invalidEmails as $invalid)
+    {
+      try
+      {
+        $header->setAddresses($invalid);
+        $this->assertTrue(false, 'No exception Sent on invalid email ['.$invalid.']');
+      }
+      catch (Exception $e)
+      {
+        $this->assertIsA($e, 'Swift_RfcComplianceException');
+      }
+    }
+  }
+  
+  public function testValidMailBoxesQuoted()
+  {
+    $header = $this->_getHeader('From', $this->_getEncoder('Q', true));
+    $validEmails = array(
+    // RFC 3696 mails - with Errata 246 applied
+      '!def!xyz%abc@example.com',
+      'customer/department=shipping@example.com',
+      "c@(Chris's host.)public.example",
+      '"Abc\\@def"@example.com',
+      '"Fred\\ Bloggs"@example.com',
+      '"Joe.\\Blow"@example.com',
+      '$A12345@example.com',
+      '_somename@example.com',
+      '"Abc\\@def"@בײַשפּיל.טעסט',
+    );
+    foreach ($validEmails  as $valid)
+    {
+      try
+      {
+        $header->setAddresses($valid);
+        $this->assertTrue(true);
+      }
+      catch (Exception $e)
+      {
+        $this->assertFalse(true, 'Exception Thrown on valid email address ['.$valid.'] : '.$e->getMessage());
+      }
+    }
+  }
   
   // -- Private methods
   

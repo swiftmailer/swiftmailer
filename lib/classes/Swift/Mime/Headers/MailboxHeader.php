@@ -246,7 +246,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         $address = $value;
         $name = null;
       }
-      $exploded = explode('@', $address, 2);
+      $exploded = explode('@', $address);
       if (!isset($address[1]))
       {
         throw new Swift_RfcComplianceException(
@@ -254,10 +254,11 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
           '] does not comply with RFC 2822, 3.6.2.'
           );
       }
-      if (!preg_match('/^'.$domainPreg.'$/D', $exploded[1]))
+      $domainAtom = array_pop($exploded);
+      if (!preg_match('/^'.$domainPreg.'$/D', $domainAtom))
       {
-        $exploded[1]=$this->_idnToPunnyCode($exploded[1]);
-        if ($exploded[1]===false)
+        $domainAtom=$this->_idnToPunnyCode($domainAtom);
+        if ($domainAtom===false)
         {
           // Invalid Domain
           throw new Swift_RfcComplianceException(
@@ -265,7 +266,8 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
             '] does not comply with RFC 2822, 3.6.2.'
             );
         }
-        $address=implode('@', $exploded);
+        array_push($exploded, $domainAtom);
+        $address = implode('@', $exploded);
       }
       $this->_assertValidAddress($address);
       $actualMailboxes[$address] = $name;
