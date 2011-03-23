@@ -91,6 +91,20 @@ class Swift_Transport_StreamBuffer
             }
           }
           break;
+          
+        case 'timeout':
+          if ($this->_stream)
+          {
+            stream_set_timeout($this->_stream, $value);
+          }
+          break;
+          
+        case 'blocking':
+          if ($this->_stream)
+          {
+            stream_set_blocking($this->_stream, 1);
+          }
+          
       }
     }
     $this->_params[$param] = $value;
