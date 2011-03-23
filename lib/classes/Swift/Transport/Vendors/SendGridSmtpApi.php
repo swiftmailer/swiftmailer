@@ -221,23 +221,32 @@ Class Swift_Transport_Vendors_SendgridSmtpApi extends Swift_Transport_EsmtpTrans
    */
   protected function _getApiHeaderValue($to = array(), $cc = array(), $bcc = array())
   {
-    $data = array();
+    $datas = array();
     // Prepare Recipients
     $recipients = array();
     // Merge To
-    foreach ($to as $email => $name)
+    if (is_array($to))
     {
-      $recipients[$email] = empty($name)?$email:$name;
+      foreach ($to as $email => $name)
+      {
+        $recipients[$email] = empty($name)?$email:$name;
+      }
     }
     // Merge Cc
-    foreach ($cc as $email => $name)
+    if (is_array($cc))
     {
-      $recipients[$email] = empty($name)?$email:$name;
+      foreach ($cc as $email => $name)
+      {
+        $recipients[$email] = empty($name)?$email:$name;
+      }
     }
     // Merge Bcc
-    foreach ($bcc as $email => $name)
+    if (is_array($bcc))
     {
-      $recipients[$email] = empty($name)?$email:$name;
+      foreach ($bcc as $email => $name)
+      {
+        $recipients[$email] = empty($name)?$email:$name;
+      }
     }
     if (!empty($recipients))
     {
@@ -246,13 +255,13 @@ Class Swift_Transport_Vendors_SendgridSmtpApi extends Swift_Transport_EsmtpTrans
       unset ($recipients);
       // Merge replacements
       if (count($this->_replacements)) {
-        $data['sub'] = array();
+        $datas['sub'] = array();
       }
       // Sets the <name> Not sure if it's handled, need to ask
       // $datas['sub']['<name>']=array_values($recipients);
       foreach ($this->_replacements as $replacementKey => $replacementValues)
       {
-        $data['sub'][$replacementKey] = array();
+        $datas['sub'][$replacementKey] = array();
         foreach ($datas['to'] as $email)
         {
           $value=$this->_defaults[$replacementKey];
@@ -260,7 +269,7 @@ Class Swift_Transport_Vendors_SendgridSmtpApi extends Swift_Transport_EsmtpTrans
           {
             $value=$replacementValues[$email];
           }
-          $data['sub'][$replacementKey][]=$value;
+          $datas['sub'][$replacementKey][]=$value;
         }
       }
     }
@@ -269,10 +278,10 @@ Class Swift_Transport_Vendors_SendgridSmtpApi extends Swift_Transport_EsmtpTrans
     {
       $datas['filters'] = $this->_filters;
     }
-    $data['category'] = $this->_category;
+    $datas['category'] = $this->_category;
     // Encode as json
-    $json = json_encode($data);
-    // Add spaces so that the field can be foldd
+    $json = json_encode($datas);
+    // Add spaces so that the field can be folded
     return preg_replace('/(["\]}])([,:])(["\[{])/', '$1$2 $3', $json);
   }
 }
