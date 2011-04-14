@@ -72,4 +72,19 @@ class Swift_Preferences
     return $this;
   }
   
+  /**
+   * Add the
+   * @param boolean $dotEscape
+   */
+  public function setQPDotEscape($dotEscape)
+  {
+    $dotEscape=!empty($dotEscape);
+    Swift_DependencyContainer::getInstance()
+      -> register('mime.qpcontentencoder')
+      -> asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
+      -> withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
+      -> addConstructorValue($dotEscape);
+    return $this;
+  }
+  
 }
