@@ -20,6 +20,7 @@ define('SWIFT_INIT_LOADED', true);
 //Load in dependency maps
 require dirname(__FILE__) . '/dependency_maps/cache_deps.php';
 require dirname(__FILE__) . '/dependency_maps/mime_deps.php';
+require dirname(__FILE__) . '/dependency_maps/message_deps.php';
 require dirname(__FILE__) . '/dependency_maps/transport_deps.php';
 
 //Load in global library preferences
