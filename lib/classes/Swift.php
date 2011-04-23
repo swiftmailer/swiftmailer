@@ -41,7 +41,7 @@ abstract class Swift
       return false;
     }
 
-    require_once $path;
+    require $path;
   }
   
   /**
