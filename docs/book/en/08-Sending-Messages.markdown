@@ -19,8 +19,7 @@ To send a Message:
 
  * Create a Message.
 
- * Send the message via the `send()` or the
-   `batchSend()` methods on the Mailer object.
+ * Send the message via the `send()` method on the Mailer object.
 
 When using `send()` the message will be sent just like it would
 be sent if you used your mail client. An integer is returned which includes
@@ -29,12 +28,6 @@ to then zero will be returned, which equates to a boolean
 `false`. If you set two `To:` recipients and
 three `Bcc:` recipients in the message and all of the
 recipients are delivered to successfully then the value 5 will be returned.
-
-`batchSend()` returns a number just like
-`send()`, except that it does not include all of the
-`To:` recipients in the Headers. Each recipient is sent a
-unique copy of the message with only their address in the headers. This is
-advised for newsletter systems.
 
     [php]
     require_once 'lib/swift_required.php';
@@ -67,12 +60,6 @@ advised for newsletter systems.
   
     //Send the message
     $result = $mailer->send($message);
-
-    /*
-    You can alternatively use batchSend() to send the message
-
-    $result = $mailer->batchSend($message);
-    */
 
 ### Transport Types
 
@@ -134,7 +121,7 @@ To use the SMTP Transport:
  * Use the returned object to create the Mailer.
 
 A connection to the SMTP server will be established upon the first call to
-`send()` or `batchSend()`.
+`send()`.
 
     [php]
     require_once 'lib/swift_required.php';
@@ -167,8 +154,8 @@ To use encryption with the SMTP Transport:
  * Call the `setEncryption()` method on the Transport.
 
 A connection to the SMTP server will be established upon the first call to
-`send()` or `batchSend()`. The connection will
-be initiated with the correct encryption settings.
+`send()`. The connection will be initiated with the correct encryption
+settings.
 
 >**NOTE**
 >For SSL or TLS encryption to work your PHP installation must have appropriate
@@ -209,8 +196,7 @@ To use a username and password with the SMTP Transport:
    methods on the Transport.
 
 Your username and password will be used to authenticate upon first connect
-when `send()` or `batchSend()` are first used on
-the Mailer.
+when `send()` are first used on the Mailer.
 
 If authentication fails, an Exception of type
 `Swift_Transport_TransportException` will be thrown.
@@ -307,9 +293,8 @@ To use the Sendmail Transport:
 
  * Use the returned object to create the Mailer.
 
-A sendmail process will be started upon the first call to
-`send()` or `batchSend()`. If the process cannot
-be started successfully an Exception of type
+A sendmail process will be started upon the first call to `send()`. If the
+process cannot be started successfully an Exception of type
 `Swift_Transport_TransportException` will be thrown.
 
     [php]
@@ -386,9 +371,8 @@ Messages will be sent using the `mail()` function.
 
 ### Available Methods for Sending Messages
 
-The Mailer class offers two methods for sending Messages &#8211;
-`send()` and `batchSend()`. Each behaves in a
-slightly different way.
+The Mailer class offers two methods for sending Messages &#8211; `send()`.
+Each behaves in a slightly different way.
 
 When a message is sent in Swift Mailer, the Mailer class communicates with
 whichever Transport class you have chosen to use.
@@ -396,9 +380,8 @@ whichever Transport class you have chosen to use.
 Each recipient in the message should either be accepted or rejected by the
 Transport. For example, if the domain name on the email address is not
 reachable the SMTP Transport may reject the address because it cannot process
-it. Whichever method you use &#8211; `send()` or
-`batchSend()` &#8211; Swift Mailer will return an integer
-indicating the number of accepted recipients.
+it. Whichever method you use &#8211; `send()` &#8211; Swift Mailer will return
+an integer indicating the number of accepted recipients.
 
 >**NOTE**
 >It's possible to find out which recipients were rejected &#8211; we'll cover
@@ -432,14 +415,6 @@ returned, which equates to a boolean `false`. If you set two
 `To:` recipients and three `Bcc:` recipients in
 the message and all of the recipients are delivered to successfully then the
 value 5 will be returned.
-
->**NOTE**
->In the following example, one is email is sent to both
->`receiver@domain.org` and `other@domain.org`.
->Both addresses will be visible in the `To:` header. If you
->don't want `receiver@domain.org` and
->`other@domain.org` to know about each other you should use
->`batchSend()` instead.
 
     [php]
     require_once 'lib/swift_required.php';
@@ -476,14 +451,10 @@ value 5 will be returned.
 
     */
 
-#### Using the `batchSend()` Method
+#### Sending Emails in Batch
 
-The `batchSend()` method of the `Swift_Mailer`
-class sends a separate message to each recipient in the `To:`
-field. Each recipient receives a message containing only their own address in
-the `To:` field.
-
-To send a Message with `batchSend()`:
+If you want to send a separate message to each recipient so that only their
+own address shows up in the `To:` field, follow the following recipe:
 
  * Create a Transport from one of the provided Transports &#8211;
    `Swift_SmtpTransport`,
@@ -495,16 +466,11 @@ To send a Message with `batchSend()`:
 
  * Create a Message.
 
- * Send the message via the `batchSend()` method on the Mailer
-   object.
+ * Iterate over the recipients and send message via the `send()` method on the
+   Mailer object.
 
-Each recipient of the messages receives a different copy with only their own email address
-on the `To:` field.  An integer is returned which includes the
-number of successful recipients.  If none of the recipients could be sent to then
-zero will be returned, which equates to a boolean `false`.  If you
-set two `To:` recipients and three `Bcc:` recipients in
-the message and all of the recipients are delivered to successfully then the value
-5 will be returned.
+Each recipient of the messages receives a different copy with only their own
+email address on the `To:` field.
 
 >**NOTE**
 >In the following example, two emails are sent. One to each of
@@ -523,34 +489,26 @@ the message and all of the recipients are delivered to successfully then the val
     //Create a message
     $message = Swift_Message::newInstance('Wonderful Subject')
       ->setFrom(array('john@doe.com' => 'John Doe'))
-      ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
       ->setBody('Here is the message itself')
       ;
 
     //Send the message
-    $numSent = $mailer->batchSend($message);
+    $failedRecipients = array();
+    $numSent = 0;
+    $to = array('receiver@domain.org', 'other@domain.org' => 'A name');
+
+    foreach ($to as $address => $name)
+    {
+      $message->setTo(array($address => $name));
+      $numSent += $this->send($message, $failedRecipients);
+    }
 
     printf("Sent %d messages\n", $numSent);
-
-    /* Note that often that only the boolean equivalent of the
-       return value is of concern (zero indicates FALSE)
-
-    if ($mailer->batchSend($message))
-    {
-      echo "Sent\n";
-    }
-    else
-    {
-      echo "Failed\n";
-    }
-
-    */
 
 ### Finding out Rejected Addresses
 
 It's possible to get a list of addresses that were rejected by the Transport
-by using a by-reference parameter to `send()` or
-`batchSend()`.
+by using a by-reference parameter to `send()`.
 
 As Swift Mailer attempts to send the message to each address given to it, if a
 recipient is rejected it will be added to the array. You can pass an existing
@@ -562,14 +520,13 @@ addresses cannot be delivered to.
 
 #### Getting Failures By-reference
 
-Collecting delivery failures by-reference with the `send()` or
-`batchSend()` methods is as simple as passing a variable name
-to the method call.
+Collecting delivery failures by-reference with the `send()` method is as
+simple as passing a variable name to the method call.
 
 To get failed recipients by-reference:
 
- * Pass a by-reference variable name to the `send()` or
-   `batchSend()` methods of the Mailer class.
+ * Pass a by-reference variable name to the `send()` method of the Mailer
+   class.
 
 If the Transport rejects any of the recipients, the culprit addresses will be
 added to the array provided by-reference.

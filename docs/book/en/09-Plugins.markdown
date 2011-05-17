@@ -55,9 +55,6 @@ have been sent since the last re-connect. Once the number hits your specified
 threshold it will disconnect and re-connect, optionally pausing for a
 specified amount of time.
 
-Both `batchSend()` and `send()` methods will
-work with this plugin.
-
     [php]
     require_once 'lib/swift_required.php';
 
@@ -118,9 +115,6 @@ When Swift Mailer sends messages it will keep track of the rate at which
 sending messages is occuring. If it realises that sending is happening too
 fast, it will cause your program to `sleep()` for enough time
 to average out the rate.
-
-Both `batchSend()` and `send()` methods will
-work with this plugin.
 
     [php]
     require_once 'lib/swift_required.php';

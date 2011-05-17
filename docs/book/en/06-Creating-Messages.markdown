@@ -595,15 +595,6 @@ of the recipient.
 seen by the other recipients.
 
 >**NOTE**
->You should also use the `setTo()` method when you want to
->perform a `batchSend()` to deliver the message to each
->recipient separately without exposing all of the addresses. In this scenario
->Swift Mailer performs some internal transformations on the message during the
->sending process.
-
--
-
->**NOTE**
 >Multiple calls to `setTo()` will not add new recipients &#8211;
 >each call overrides the previous calls. If you want to iteratively add
 >recipients, use the `addTo()` method.
@@ -680,13 +671,6 @@ of the recipient.
 Only the individual `Bcc:` recipient will see their address in
 the message headers. Other recipients (including other `Bcc:`
 recipients) will not see the address.
-
->**NOTE**
->You should not use `Bcc:` recipients as a mechanism for sending
->bulk email with undisclosed recipients. You should perform a
->`batchSend()` instead.
-
--
 
 >**NOTE**
 >Multiple calls to `setBcc()` will not add new recipients

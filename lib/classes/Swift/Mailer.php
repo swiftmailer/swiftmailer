@@ -61,9 +61,6 @@ class Swift_Mailer
    * All recipients (with the exception of Bcc) will be able to see the other
    * recipients this message was sent to.
    * 
-   * If you need to send to each recipient without disclosing details about the
-   * other recipients see {@link batchSend()}.
-   * 
    * Recipient/sender data will be retreived from the Message object.
    * 
    * The return value is the number of recipients who were accepted for
@@ -72,7 +69,6 @@ class Swift_Mailer
    * @param Swift_Mime_Message $message
    * @param array &$failedRecipients, optional
    * @return int
-   * @see batchSend()
    */
   public function send(Swift_Mime_Message $message, &$failedRecipients = null)
   {
@@ -95,80 +91,6 @@ class Swift_Mailer
       {
         $failedRecipients[] = $address;
       }
-    }
-    
-    return $sent;
-  }
-  
-  /**
-   * Send the given Message to all recipients individually.
-   * 
-   * This differs from {@link send()} in the way headers are presented to the
-   * recipient.  The only recipient in the "To:" field will be the individual
-   * recipient it was sent to.
-   * 
-   * If an iterator is provided, recipients will be read from the iterator
-   * one-by-one, otherwise recipient data will be retreived from the Message
-   * object.
-   * 
-   * Sender information is always read from the Message object.
-   * 
-   * The return value is the number of recipients who were accepted for
-   * delivery.
-   * 
-   * @param Swift_Mime_Message $message
-   * @param array &$failedRecipients, optional
-   * @param Swift_Mailer_RecipientIterator $it, optional
-   * @return int
-   * @see send()
-   */
-  public function batchSend(Swift_Mime_Message $message,
-    &$failedRecipients = null,
-    Swift_Mailer_RecipientIterator $it = null)
-  {
-    $failedRecipients = (array) $failedRecipients;
-    
-    $sent = 0;
-    $to = $message->getTo();
-    $cc = $message->getCc();
-    $bcc = $message->getBcc();
-    
-    if (!empty($cc))
-    {
-      $message->setCc(array());
-    }
-    if (!empty($bcc))
-    {
-      $message->setBcc(array());
-    }
-    
-    //Use an iterator if set
-    if (isset($it))
-    {
-      while ($it->hasNext())
-      {
-        $message->setTo($it->nextRecipient());
-        $sent += $this->send($message, $failedRecipients);
-      }
-    }
-    else
-    {
-      foreach ($to as $address => $name)
-      {
-        $message->setTo(array($address => $name));
-        $sent += $this->send($message, $failedRecipients);
-      }
-    }
-    
-    $message->setTo($to);
-    
-    if (!empty($cc))
-    {
-      $message->setCc($cc);
-    }
-    if (!empty($bcc))
-    {
-      $message->setBcc($bcc);
     }
     
     return $sent;
