@@ -83,7 +83,21 @@ class Swift_Mailer
       $this->_transport->start();
     }
     
-    return $this->_transport->send($message, $failedRecipients);
+    $sent = 0;
+    
+    try
+    {
+      $sent = $this->_transport->send($message, $failedRecipients);
+    }
+    catch (Swift_RfcComplianceException $e)
+    {
+      foreach ($message->getTo() as $address => $name)
+      {
+        $failedRecipients[] = $address;
+      }
+    }
+    
+    return $sent;
   }
   
   /**

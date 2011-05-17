@@ -2,6 +2,7 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mailer.php';
+require_once 'Swift/RfcComplianceException.php';
 require_once 'Swift/Transport.php';
 require_once 'Swift/Mime/Message.php';
 require_once 'Swift/Mailer/RecipientIterator.php';
@@ -249,6 +250,48 @@ class Swift_MailerTest extends Swift_Tests_SwiftUnitTestCase
     
     $mailer = $this->_createMailer($transport);
     $mailer->batchSend($message, $failures, $it);
+  }
+  
+  public function testSendRecordsRfcComplianceExceptionAsEntireSendFailure()
+  {
+    $failures = array();
+    
+    $rfcException = new Swift_RfcComplianceException('test');
+    $transport = $this->_createTransport();
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
+      -> allowing($message)->getTo() -> returns(array('foo&invalid' => 'Foo', 'bar@valid.tld' => 'Bar'))
+      -> one($transport)->send($message, reference($failures)) -> throws($rfcException)
+      -> ignoring($transport)
+      -> ignoring($message)
+      );
+    
+    $mailer = $this->_createMailer($transport);
+    $this->assertEqual(0, $mailer->send($message, $failures), '%s: Should return 0');
+    $this->assertEqual(array('foo&invalid', 'bar@valid.tld'), $failures, '%s: Failures should contain all addresses since the entire message failed to compile');
+  }
+  
+  public function testBatchSendRecordsRfcComplianceExceptionAsIndividualRecipientFailure()
+  {
+    $failures = array();
+    
+    $rfcException = new Swift_RfcComplianceException('test');
+    $transport = $this->_createTransport();
+    $message = $this->_createMessage();
+    $this->_checking(Expectations::create()
+      -> one($message)->getTo() -> returns(array('foo&invalid' => 'Foo', 'bar@valid.tld' => 'Bar'))
+      -> one($message)->setTo(array('foo&invalid' => 'Foo'))
+      -> one($message)->getTo() -> returns(array('foo&invalid' => 'Foo'))
+      -> one($message)->setTo(array('bar@valid.tld' => 'Bar'))
+      -> one($transport)->send($message, reference($failures)) -> throws($rfcException)
+      -> one($transport)->send($message, reference($failures)) -> returns(1)
+      -> ignoring($transport)
+      -> ignoring($message)
+      );
+    
+    $mailer = $this->_createMailer($transport);
+    $this->assertEqual(1, $mailer->batchSend($message, $failures), '%s: Should return just 1');
+    $this->assertEqual(array('foo&invalid'), $failures, '%s: Failures should contain the non-compliant address');
   }
   
   public function testRegisterPluginDelegatesToTransport()
