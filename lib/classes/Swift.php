@@ -44,9 +44,9 @@ abstract class Swift
       return;
     }
 
-    if (self::$initPath && !$initialized)
+    if (self::$initPath && !self::$initialized)
     {
-      $initialized = true;
+      self::$initialized = true;
       require self::$initPath;
     }
 
