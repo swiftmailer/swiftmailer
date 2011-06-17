@@ -1,10 +1,15 @@
-Changelog for Swift Mailer, since Version 4.1.x
------------------------------------------------
+Changelog since Version 4.1.x
+=============================
 
-4.1.0
------
+4.1.0 RC1 (2011-06-17)
+----------------------
 
+New features:
+
+ * changed the Decorator Plugin to allow replacements in all headers
+ * added Swift_Mime_Grammar and Swift_Validate to validate an email address
+ * modified the autoloader to lazy-initialize Swiftmailer
  * removed Swift_Mailer::batchSend()
  * added NullTransport
- * added BlackholePlugin and RedirectingPlugin
+ * added new plugins: RedirectingPlugin and ImpersonatePlugin
  * added a way to send messages asynchronously (Spool)
