@@ -18,3 +18,5 @@ if (function_exists('sys_get_temp_dir') && is_writable(sys_get_temp_dir()))
     -> setTempDir(sys_get_temp_dir())
     -> setCacheType('disk');
 }
+
+Swift_Preferences::getInstance()->setQPDotEscape(false);

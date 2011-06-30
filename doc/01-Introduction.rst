@@ -4,11 +4,6 @@ Introduction
 Swift Mailer is a component-based library for sending e-mails from PHP
 applications.
 
->**NOTE**
->This book refers to version 4.0 of the Swift Mailer library. If you are looking
->for information about (the now deprecated) version 3, you should refer to the
->old wiki found [online][1].
-
 Organization of this Book
 -------------------------
 
@@ -32,7 +27,8 @@ projects. We will also use diagrams where appropriate, and where we believe
 readers may find it helpful we will discuss some related theory, including
 reference to certain documents you are able to find online.
 
-### Code Samples
+Code Samples
+------------
 
 Code samples presented in this book will be displayed on a different colored
 background in a monospaced font. Samples are not to be taken as copy & paste
@@ -42,9 +38,8 @@ Code examples are used through the book to clarify what is written in text.
 They will sometimes be usable as-is, but they should always be taken as
 outline/pseudo code only.
 
-A code sample will look like this:
+A code sample will look like this::
 
-    [php]
     class AClass
     {
       ...
@@ -58,11 +53,11 @@ A code sample will look like this:
 
     */
 
-The presence of 3 dots `...` in a code sample indicates that we have left out
-a chunk of the code for brevity, they are not actually part of the code.
+The presence of 3 dots ``...`` in a code sample indicates that we have left
+out a chunk of the code for brevity, they are not actually part of the code.
 
-We will often place multi-line comments `/* ... */` in the code so that we can
-show alternative ways of achieving the same result.
+We will often place multi-line comments ``/* ... */`` in the code so that we
+can show alternative ways of achieving the same result.
 
 You should read the code examples given and try to understand them. They are
 kept concise so that you are not overwhelmed with information.
@@ -74,8 +69,8 @@ Swift Mailer began back in 2005 as a one-class project for sending mail over
 SMTP. It has since grown into the flexible component-based library that is in
 development today.
 
-Chris Corbyn first posted Swift Mailer on a web [forum][2] asking for comments
-from other developers. It was never intended as a fully supported open source
+Chris Corbyn first posted Swift Mailer on a web forum asking for comments from
+other developers. It was never intended as a fully supported open source
 project, but members of the forum began to adopt it and make use of it.
 
 Very quickly feature requests were coming for the ability to add attachments
@@ -138,6 +133,3 @@ Embrace the structure of the library and use the components it offers to your
 advantage. Learning what the components do, rather than blindly copying and
 pasting existing code will put you in a great position to build a powerful
 application!
-
-[1]: http://swiftmailer.org/wikidocs/
-[2]: http://forums.devnetwork.net/

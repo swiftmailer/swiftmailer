@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Headers/AbstractHeader.php';
-//@require 'Swift/Mime/HeaderEncoder.php';
 
 /**
  * A Mailbox Address MIME Header for something like From or Sender.
@@ -31,12 +29,13 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    * Creates a new MailboxHeader with $name.
    * @param string $name of Header
    * @param Swift_Mime_HeaderEncoder $encoder
+   * @param Swift_Mime_Grammar $grammar
    */
-  public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
+  public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Mime_Grammar $grammar)
   {
     $this->setFieldName($name);
     $this->setEncoder($encoder);
-    $this->initializeGrammar();
+    parent::__construct($grammar);
   }
   
   /**
@@ -168,7 +167,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
    */
   public function setAddresses($addresses)
   {
-    return $this->setNameAddresses(array_values((array) $addresses));
+    $this->setNameAddresses(array_values((array) $addresses));
   }
   
   /**
@@ -298,12 +297,12 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
   /**
    * Throws an Exception if the address passed does not comply with RFC 2822.
    * @param string $address
-   * @throws Exception If invalid.
-   * @access protected
+   * @throws Swift_RfcComplianceException If invalid.
+   * @access private
    */
   private function _assertValidAddress($address)
   {
-    if (!preg_match('/^' . $this->getGrammar('addr-spec') . '$/D',
+    if (!preg_match('/^' . $this->getGrammar()->getDefinition('addr-spec') . '$/D',
       $address))
     {
       throw new Swift_RfcComplianceException(

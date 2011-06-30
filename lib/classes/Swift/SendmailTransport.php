@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport/SendmailTransport.php';
-//@require 'Swift/DependencyContainer.php';
 
 /**
  * SendmailTransport for sending mail through a sendmail/postfix (etc..) binary.

@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/InputByteStream.php';
-//@require 'Swift/OutputByteStream.php';
 
 /**
  * Buffers input and output to a resource.

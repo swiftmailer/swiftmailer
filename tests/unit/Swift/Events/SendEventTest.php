@@ -75,6 +75,14 @@ class Swift_Events_SendEventTest extends Swift_Tests_SwiftUnitTestCase
       '%s: FailedRecipients should be returned from getter'
       );
   }
+
+  public function testFailedRecipientsGetsPickedUpCorrectly() {
+    $message = $this->_createMessage();
+    $transport = $this->_createTransport();
+ 
+    $evt = $this->_createEvent($transport, $message);
+    $this->assertEqual(array(), $evt->getFailedRecipients());
+  }
   
   // -- Creation Methods
   

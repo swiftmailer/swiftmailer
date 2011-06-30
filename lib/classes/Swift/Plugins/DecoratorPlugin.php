@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/SendListener.php';
-//@require 'Swift/Events/SendEvent.php';
-//@require 'Swift/Plugins/Decorator/Replacements.php';
 
 /**
  * Allows customization of Messages on-the-fly.
@@ -19,6 +16,7 @@
  * @subpackage Plugins
  * 
  * @author Chris Corbyn
+ * @author Fabien Potencier
  */
 class Swift_Plugins_DecoratorPlugin
   implements Swift_Events_SendListener, Swift_Plugins_Decorator_Replacements
@@ -30,8 +28,8 @@ class Swift_Plugins_DecoratorPlugin
   /** The body as it was before replacements */
   private $_orginalBody;
 
-  /** The original subject of the message, before replacements */
-  private $_originalSubject;
+  /** The original headers of the message, before replacements */
+  private $_originalHeaders = array();
 
   /** Bodies of children before they are replaced */
   private $_originalChildBodies = array();
@@ -95,15 +93,40 @@ class Swift_Plugins_DecoratorPlugin
         $this->_originalBody = $body;
         $message->setBody($bodyReplaced);
       }
-      $subject = $message->getSubject();
-      $subjectReplaced = str_replace(
-        $search, $replace, $subject
-        );
-      if ($subject != $subjectReplaced)
+
+      foreach ($message->getHeaders()->getAll() as $header)
       {
-        $this->_originalSubject = $subject;
-        $message->setSubject($subjectReplaced);
+        $body = $header->getFieldBodyModel();
+        $count = 0;
+        if (is_array($body))
+        {
+          $bodyReplaced = array();
+          foreach ($body as $key => $value)
+          {
+            $count1 = 0;
+            $count2 = 0;
+            $key = is_string($key) ? str_replace($search, $replace, $key, $count1) : $key;
+            $value = is_string($value) ? str_replace($search, $replace, $value, $count2) : $value;
+            $bodyReplaced[$key] = $value;
+
+            if (!$count && ($count1 || $count2))
+            {
+              $count = 1;
+            }
+          }
+        }
+        else
+        {
+          $bodyReplaced = str_replace($search, $replace, $body, $count);
+        }
+
+        if ($count)
+        {
+          $this->_originalHeaders[$header->getFieldName()] = $body;
+          $header->setFieldBodyModel($bodyReplaced);
+        }
       }
+
       $children = (array) $message->getChildren();
       foreach ($children as $child)
       {
@@ -176,10 +199,17 @@ class Swift_Plugins_DecoratorPlugin
         $message->setBody($this->_originalBody);
         $this->_originalBody = null;
       }
-      if (isset($this->_originalSubject))
+      if (!empty($this->_originalHeaders))
       {
-        $message->setSubject($this->_originalSubject);
-        $this->_originalSubject = null;
+        foreach ($message->getHeaders()->getAll() as $header)
+        {
+          $body = $header->getFieldBodyModel();
+          if (array_key_exists($header->getFieldName(), $this->_originalHeaders))
+          {
+            $header->setFieldBodyModel($this->_originalHeaders[$header->getFieldName()]);
+          }
+        }
+        $this->_originalHeaders = array();
       }
       if (!empty($this->_originalChildBodies))
       {

@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/InputByteStream.php';
-//@require 'Swift/Mime/EncodingObserver.php';
-//@require 'Swift/Mime/CharsetObserver.php';
 
 /**
  * A MIME entity, such as an attachment.

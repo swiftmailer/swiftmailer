@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport/LoadBalancedTransport.php';
-//@require 'Swift/Mime/Message.php';
 
 /**
  * Contains a list of redundant Transports so when one fails, the next is used.

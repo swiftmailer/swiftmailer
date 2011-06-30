@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/ContentEncoder.php';
-//@require 'Swift/Encoder/Base64Encoder.php';
-//@require 'Swift/InputByteStream.php';
-//@require 'Swift/OutputByteStream.php';
 
 /**
  * Handles Base 64 Transfer Encoding in Swift Mailer.

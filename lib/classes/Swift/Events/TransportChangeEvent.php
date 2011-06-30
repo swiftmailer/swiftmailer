@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/EventObject.php';
 
 /**
  * Generated when the state of a Transport is changed (i.e. stopped/started).

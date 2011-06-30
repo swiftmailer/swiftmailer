@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/TransportChangeListener.php';
-//@require 'Swift/Events/TransportChangeEvent.php';
 
 /**
  * Makes sure a connection to a POP3 host has been established prior to connecting to SMTP.

@@ -5,6 +5,7 @@ require_once 'Swift/Mime/SimpleMessage.php';
 require_once 'Swift/Mime/MimePartTest.php';
 require_once 'Swift/Mime/Header.php';
 require_once 'Swift/Mime/ParameterizedHeader.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 {
@@ -798,7 +799,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
   
   private function _createMessage($headers, $encoder, $cache)
   {
-    return new Swift_Mime_SimpleMessage($headers, $encoder, $cache);
+    return new Swift_Mime_SimpleMessage($headers, $encoder, $cache, new Swift_Mime_Grammar());
   }
   
 }

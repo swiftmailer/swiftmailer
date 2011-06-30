@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/TransportException.php';
-//@require 'Swift/Transport/EsmtpHandler.php';
-//@require 'Swift/Transport/SmtpAgent.php';
 
 /**
  * An ESMTP handler for AUTH support.

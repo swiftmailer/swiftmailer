@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/EventObject.php';
-//@require 'Swift/Transport.php';
 
 /**
  * Generated when a command is sent over an SMTP connection.

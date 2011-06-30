@@ -4,6 +4,7 @@ require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/SimpleHeaderFactory.php';
 require_once 'Swift/Mime/HeaderEncoder.php';
 require_once 'Swift/Encoder.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_SimpleHeaderFactoryTest extends Swift_Tests_SwiftUnitTestCase
 {
@@ -158,7 +159,8 @@ class Swift_Mime_SimpleHeaderFactoryTest extends Swift_Tests_SwiftUnitTestCase
       $encoder
         ? $encoder : $this->_createHeaderEncoder(),
       $paramEncoder
-        ? $paramEncoder : $this->_createParamEncoder()
+        ? $paramEncoder : $this->_createParamEncoder(),
+      new Swift_Mime_Grammar()
       );
   }
   

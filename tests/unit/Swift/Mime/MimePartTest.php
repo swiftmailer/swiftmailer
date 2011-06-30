@@ -3,6 +3,7 @@
 require_once 'Swift/Mime/MimeEntity.php';
 require_once 'Swift/Mime/MimePart.php';
 require_once 'Swift/Mime/AbstractMimeEntityTest.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 {
@@ -247,7 +248,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
   
   protected function _createMimePart($headers, $encoder, $cache)
   {
-    return new Swift_Mime_MimePart($headers, $encoder, $cache);
+    return new Swift_Mime_MimePart($headers, $encoder, $cache, new Swift_Mime_Grammar());
   }
   
 }

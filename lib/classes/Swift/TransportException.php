@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/IoException.php';
 
 /**
  * TransportException thrown when an error occurs in the Transport subsystem.

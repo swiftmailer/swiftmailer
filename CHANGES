@@ -1,68 +1,15 @@
-Changelog for Swift Mailer, since Version 4.x
----------------------------------------------
+Changelog since Version 4.1.x
+=============================
 
-09 March 2009: 4.0.0
---------------------
-
- * Complete rewrite of Version 3.x with lots of breaking changes at the interface
-   level, but for the best in the long run.
- * Changed Connections to Transports
- * Made sending more robust (less error prone)
- * Simplified Swift_Message interface (removed need for separate RecipientList)
- * Improved Plugin API (better event management)
- * Changed all MIME generated content to be full RFC 2822 (and friends) compliant
-
-11 March 2009: 4.0.1
---------------------
-
-  * Fixed regression with cache clearing logic in setBody(), setEncoder() and
-    setCharset()
-
-13 March 2009: 4.0.2
---------------------
-
-  * Added addTo(), addCc() etc methods.
-  * Allowed setTo(), setCc() etc to accept a $name parameters.
-  * Patched a bug in MailTransport where failed recipients were not being merged.
-  * Added Swift::VERSION constant
-  * Allowed custom autoloaders to be used
-
-20 March 2009: 4.0.3
---------------------
-
-  * Fixed Bug where base64 encoded content could exceed 76 chars per line
-  * Allowed Decorator plugin to accept a custom Replacements object
-
-12 August 2009: 4.0.4
---------------------
-
-  * Bugfixes for operating under safe mode and using the MailTransport
-  * Compatibility for PHP 5.3
-  * Optimizations for addTo(), addCc() etc operations
-  * Bugfix for double-escaping issue in batch sending
-
-27 September 2009: 4.0.5
-------------------------
-
-  * Fixed a warning (#78)
-  * Clarified license and updated the file headers accordingly
-  * Added __toString() methods where toString() methods already exists
-  * Removed constants (SWIFT_LIB_DIRECTORY, SWIFT_MAP_DIRECTORY, SWIFT_CLASS_DIRECTORY)
-  * Simplified autoloading
-  * Added a setAuthMode() method to AuthHandler (#54)
-
-20 January 2010: 4.0.6
+4.1.0 RC1 (2011-06-17)
 ----------------------
 
-  * added a PEAR package and a script to generate PEAR packages
-  * fixed Swift_Transport_TransportException for SMTP connection not thrown (#109)
-  * fixed Message-IDs are not updated properly (#118)
+New features:
 
-17 June 2011: 4.0.7
--------------------
-
-  * changed usage of set_magic_quotes_runtime() to init_set to avoid deprecation warning in PHP 5.3
-  * refactored DiskKeyCache so that files are not left open during long running scripts
-  * report RFC exceptions as send failures (if sending a message) rather than letting the bubble up
-
--- End of Changes --
+ * changed the Decorator Plugin to allow replacements in all headers
+ * added Swift_Mime_Grammar and Swift_Validate to validate an email address
+ * modified the autoloader to lazy-initialize Swiftmailer
+ * removed Swift_Mailer::batchSend()
+ * added NullTransport
+ * added new plugins: RedirectingPlugin and ImpersonatePlugin
+ * added a way to send messages asynchronously (Spool)

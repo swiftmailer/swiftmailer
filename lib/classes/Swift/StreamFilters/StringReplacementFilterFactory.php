@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/StreamFilters/StringReplacementFilter.php';
-//@require 'Swift/StreamFilterFactory.php';
 
 /**
  * Creates filters for replacing needles in a string buffer.

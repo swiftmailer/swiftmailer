@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Events/EventListener.php';
-//@require 'Swift/Events/TransportExceptionEvent.php';
 
 /**
  * Listens for Exceptions thrown from within the Transport system.

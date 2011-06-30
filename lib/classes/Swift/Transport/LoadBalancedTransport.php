@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport.php';
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Events/EventListener.php';
 
 /**
  * Redudantly and rotationally uses several Transports when sending.

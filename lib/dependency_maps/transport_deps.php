@@ -27,6 +27,14 @@ Swift_DependencyContainer::getInstance()
   -> register('transport.failover')
   -> asNewInstanceOf('Swift_Transport_FailoverTransport')
   
+  -> register('transport.spool')
+  -> asNewInstanceOf('Swift_Transport_SpoolTransport')
+  -> withDependencies(array('transport.eventdispatcher'))
+  
+  -> register('transport.null')
+  -> asNewInstanceOf('Swift_Transport_NullTransport')
+  -> withDependencies(array('transport.eventdispatcher'))
+  
   -> register('transport.mailinvoker')
   -> asSharedInstanceOf('Swift_Transport_SimpleMailInvoker')
   

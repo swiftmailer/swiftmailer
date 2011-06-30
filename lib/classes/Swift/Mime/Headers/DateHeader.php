@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Headers/AbstractHeader.php';
 
 
 /**
@@ -36,10 +35,12 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
    * ?>
    * </code>
    * @param string $name of Header
+   * @param Swift_Mime_Grammar $grammar
    */
-  public function __construct($name)
+  public function __construct($name, Swift_Mime_Grammar $grammar)
   {
     $this->setFieldName($name);
+    parent::__construct($grammar);
   }
   
   /**

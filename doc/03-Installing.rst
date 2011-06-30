@@ -10,28 +10,31 @@ Installing from a Package
 Most users will download a package from the Swift Mailer website and install
 Swift Mailer using this.
 
-If you downloaded Swift Mailer as a `.tar.gz` or
-`.zip` file installation is as simple as extracting the archive
+If you downloaded Swift Mailer as a ``.tar.gz`` or
+``.zip`` file installation is as simple as extracting the archive
 and uploading it to your web server.
 
-### Extracting the Library
+Extracting the Library
+~~~~~~~~~~~~~~~~~~~~~~
 
 You extract the archive by using your favorite unarchiving tool such as
-`tar` or 7-Zip.
+``tar`` or 7-Zip.
 
 You will need to have access to a program that can open uncompress the
 archive. On Windows computers, 7-Zip will work. On Mac and Linux systems you
-can use `tar` on the command line.
+can use ``tar`` on the command line.
 
 To extract your downloaded package:
 
- * Use the "extract" facility of your archiving software.
+* Use the "extract" facility of your archiving software.
 
 The source code will be placed into a directory with the same name as the
 archive (e.g. Swift-4.0.0-b1).
 
 The following example shows the process on Mac OS X and Linux systems using
-the `tar` command.
+the ``tar`` command.
+
+.. code-block:: bash
 
     chrisbook:build chris$ ls
     Swift-4.0.0-dev.tar.gz
@@ -65,30 +68,36 @@ you want to keep up-to-date with ease.
 Swift Mailer's source code is kept in a git repository at github.com so you
 can get the source directly from the repository.
 
->**NOTE**
->You do not need to have git installed to use Swift Mailer from github.  If you don't
->have git installed, go to [github][1] and click the "Download" button.
+.. note::
 
-### Cloning the Repository
+    You do not need to have git installed to use Swift Mailer from github. If
+    you don't have git installed, go to `github`_ and click the "Download"
+    button.
+
+Cloning the Repository
+~~~~~~~~~~~~~~~~~~~~~~
 
 The repository can be cloned from git://github.com/swiftmailer/swiftmailer.git
-using the `git clone` command.
+using the ``git clone`` command.
 
-You will need to have `git` installed before you can use the
-`git clone` command.
+You will need to have ``git`` installed before you can use the
+``git clone`` command.
 
 To clone the repository:
 
- * Open your favorite terminal environment (command line).
+* Open your favorite terminal environment (command line).
 
- * Move to the directory you want to clone to.
+* Move to the directory you want to clone to.
 
- * Run the command `git clone git://github.com/swiftmailer/swiftmailer.git swiftmailer`.
+* Run the command ``git clone git://github.com/swiftmailer/swiftmailer.git
+  swiftmailer``.
 
 The source code will be downloaded into a directory called "swiftmailer".
 
 The example shows the process on a UNIX-like system such as Linux, BSD or Mac
 OS X.
+
+.. code-block:: bash
 
     chrisbook:~ chris$ cd source_code/
     chrisbook:source_code chris$ git clone git://github.com/swiftmailer/swiftmailer.git swiftmailer
@@ -117,39 +126,42 @@ You will need FTP, rsync or similar software installed in order to upload the
 
 To upload Swift Mailer:
 
- * Open your FTP program, or a command line if you prefer rsync/scp.
+* Open your FTP program, or a command line if you prefer rsync/scp.
 
- * Upload the "lib/" directory to your hosting account.
+* Upload the "lib/" directory to your hosting account.
 
 The files needed to use Swift Mailer should now be accessible to PHP on your
 host.
 
 The following example shows show you can upload the files using
-`rsync` on Linux or OS X.
+``rsync`` on Linux or OS X.
 
->**NOTE**
->You do not need to place the files inside your web root. They only need to be in a place
->where your PHP scripts can "include" them.
+.. note::
 
-    chrisbook:Swift-4.0.0-dev chris$ rsync -rvz lib d11wtq@swiftmailer.org:swiftmailer
-    building file list ... done
-    created directory swiftmailer
-    lib/
-    lib/mime_types.php
-    lib/preferences.php
-    lib/swift_required.php
-    lib/classes/
-    lib/classes/Swift/
-    lib/classes/Swift/Attachment.php
-    lib/classes/Swift/CharacterReader.php
-      ... etc etc ...
-    lib/dependency_maps/
-    lib/dependency_maps/cache_deps.php
-    lib/dependency_maps/mime_deps.php
-    lib/dependency_maps/transport_deps.php
+    You do not need to place the files inside your web root. They only need to be in a place
+    where your PHP scripts can "include" them.
 
-    sent 151692 bytes  received 2974 bytes  5836.45 bytes/sec
-    total size is 401405  speedup is 2.60
-    chrisbook:Swift-4.0.0-dev chris$
+    .. code-block: bash
 
-[1]: http://github.com/swiftmailer/swiftmailer
+        chrisbook:Swift-4.0.0-dev chris$ rsync -rvz lib d11wtq@swiftmailer.org:swiftmailer
+        building file list ... done
+        created directory swiftmailer
+        lib/
+        lib/mime_types.php
+        lib/preferences.php
+        lib/swift_required.php
+        lib/classes/
+        lib/classes/Swift/
+        lib/classes/Swift/Attachment.php
+        lib/classes/Swift/CharacterReader.php
+          ... etc etc ...
+        lib/dependency_maps/
+        lib/dependency_maps/cache_deps.php
+        lib/dependency_maps/mime_deps.php
+        lib/dependency_maps/transport_deps.php
+
+        sent 151692 bytes  received 2974 bytes  5836.45 bytes/sec
+        total size is 401405  speedup is 2.60
+        chrisbook:Swift-4.0.0-dev chris$
+
+.. _`github`: http://github.com/swiftmailer/swiftmailer

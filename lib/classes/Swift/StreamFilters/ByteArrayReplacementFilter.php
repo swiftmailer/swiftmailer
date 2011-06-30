@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/StreamFilter.php';
 
 /**
  * Processes bytes as they pass through a buffer and replaces sequences in it.

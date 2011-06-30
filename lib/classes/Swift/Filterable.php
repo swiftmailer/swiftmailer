@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/StreamFilter.php';
 
 /**
  * Allows StreamFilters to operate on a stream.

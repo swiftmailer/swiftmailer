@@ -37,6 +37,8 @@ class Swift_Transport_EsmtpTransportTest
   {
     $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
+    $this->_checking(Expectations::create()
+      -> one($buf)->setParam('timeout', 10));
     $smtp->setTimeout(10);
     $this->assertEqual(10, $smtp->getTimeout(), '%s: Timeout should be returned');
   }
@@ -229,6 +231,8 @@ class Swift_Transport_EsmtpTransportTest
   {
     $buf = $this->_getBuffer();
     $smtp = $this->_getTransport($buf);
+    $this->_checking(Expectations::create()
+      -> one($buf)->setParam('timeout', 30));
     
     $ref = $smtp
       ->setHost('foo')

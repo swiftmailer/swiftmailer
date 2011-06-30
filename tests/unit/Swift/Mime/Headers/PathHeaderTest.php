@@ -2,6 +2,7 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Headers/PathHeader.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_Headers_PathHeaderTest extends Swift_Tests_SwiftUnitTestCase
 {
@@ -81,7 +82,7 @@ class Swift_Mime_Headers_PathHeaderTest extends Swift_Tests_SwiftUnitTestCase
   
   private function _getHeader($name)
   {
-    return new Swift_Mime_Headers_PathHeader($name);
+    return new Swift_Mime_Headers_PathHeader($name, new Swift_Mime_Grammar());
   }
   
 }

@@ -2,6 +2,7 @@
 
 require_once 'Swift/Mime/EmbeddedFile.php';
 require_once 'Swift/Mime/AttachmentTest.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 {
@@ -58,7 +59,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
   
   private function _createEmbeddedFile($headers, $encoder, $cache)
   {
-    return new Swift_Mime_EmbeddedFile($headers, $encoder, $cache);
+    return new Swift_Mime_EmbeddedFile($headers, $encoder, $cache, new Swift_Mime_Grammar());
   }
   
 }

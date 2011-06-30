@@ -8,11 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Mime/Message.php';
-//@require 'Swift/Mime/MimePart.php';
-//@require 'Swift/Mime/MimeEntity.php';
-//@require 'Swift/Mime/HeaderSet.php';
-//@require 'Swift/Mime/ContentEncoder.php';
 
 /**
  * The default email message class.
@@ -29,12 +24,13 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
    * @param Swift_Mime_HeaderSet $headers
    * @param Swift_Mime_ContentEncoder $encoder
    * @param Swift_KeyCache $cache
+   * @param Swift_Mime_Grammar $grammar
    * @param string $charset
    */
   public function __construct(Swift_Mime_HeaderSet $headers,
-    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, $charset = null)
+    Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, $charset = null)
   {
-    parent::__construct($headers, $encoder, $cache, $charset);
+    parent::__construct($headers, $encoder, $cache, $grammar, $charset);
     $this->getHeaders()->defineOrdering(array(
       'Return-Path',
       'Sender',
@@ -581,7 +577,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
   private function _becomeMimePart()
   {
     $part = new parent($this->getHeaders()->newInstance(), $this->getEncoder(),
-      $this->_getCache(), $this->_userCharset
+      $this->_getCache(), $this->_getGrammar(), $this->_userCharset
       );
     $part->setContentType($this->_userContentType);
     $part->setBody($this->getBody());

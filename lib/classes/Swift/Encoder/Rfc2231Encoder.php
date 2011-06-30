@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Encoder.php';
-//@require 'Swift/CharacterStream.php';
 
 /**
  * Handles RFC 2231 specified Encoding in Swift Mailer.

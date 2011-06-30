@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Encoder.php';
-//@require 'Swift/CharacterStream.php';
 
 /**
  * Handles Quoted Printable (QP) Encoding in Swift Mailer.
@@ -40,7 +38,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    * @var string[]
    * @access protected
    */
-  protected static $_qpMap = array(
+  protected $_qpMap = array(
     0   => '=00', 1   => '=01', 2   => '=02', 3   => '=03', 4   => '=04',
     5   => '=05', 6   => '=06', 7   => '=07', 8   => '=08', 9   => '=09',
     10  => '=0A', 11  => '=0B', 12  => '=0C', 13  => '=0D', 14  => '=0E',
@@ -100,7 +98,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
    * @var string[]
    * @access protected
    */
-  protected static $_safeMap = array();
+  protected $_safeMap = array();
 
   /**
    * Creates a new QpEncoder for the given CharacterStream.
@@ -111,13 +109,10 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     Swift_StreamFilter $filter = null)
   {
     $this->_charStream = $charStream;
-    if (empty(self::$_safeMap))
+    foreach (array_merge(
+      array(0x09, 0x20), range(0x21, 0x3C), range(0x3E, 0x7E)) as $byte)
     {
-      foreach (array_merge(
-        array(0x09, 0x20), range(0x21, 0x3C), range(0x3E, 0x7E)) as $byte)
-      {
-        self::$_safeMap[$byte] = chr($byte);
-      }
+      $this->_safeMap[$byte] = chr($byte);
     }
     $this->_filter = $filter;
   }
@@ -215,14 +210,14 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     $size=0;
     foreach ($bytes as $b)
     {
-      if (isset(self::$_safeMap[$b]))
+      if (isset($this->_safeMap[$b]))
       {
-        $ret .= self::$_safeMap[$b];
+        $ret .= $this->_safeMap[$b];
         ++$size;
       }
       else
       {
-        $ret .= self::$_qpMap[$b];
+        $ret .= $this->_qpMap[$b];
         $size+=3;
       }
     }
@@ -255,7 +250,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     {
       case 0x09:
       case 0x20:
-        $string = substr_replace($string, self::$_qpMap[$end], -1);
+        $string = substr_replace($string, $this->_qpMap[$end], -1);
     }
     return $string;
   }

@@ -2,6 +2,7 @@
 
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/Mime/Headers/DateHeader.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_Headers_DateHeaderTest
   extends Swift_Tests_SwiftUnitTestCase
@@ -71,7 +72,7 @@ class Swift_Mime_Headers_DateHeaderTest
   
   private function _getHeader($name)
   {
-    return new Swift_Mime_Headers_DateHeader($name);
+    return new Swift_Mime_Headers_DateHeader($name, new Swift_Mime_Grammar());
   }
   
 }

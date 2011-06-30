@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-//@require 'Swift/Transport/EsmtpTransport.php';
-//@require 'Swift/Transport/IoBuffer.php';
-//@require 'Swift/Transport/Log.php';
-//@require 'Swift/Events/EventDispatcher.php';
 
 /**
  * SendmailTransport for sending mail through a sendmail/postfix (etc..) binary.

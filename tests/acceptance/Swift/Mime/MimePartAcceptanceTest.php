@@ -12,12 +12,14 @@ require_once 'Swift/KeyCache/ArrayKeyCache.php';
 require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
 require_once 'Swift/Mime/SimpleHeaderSet.php';
 require_once 'Swift/Mime/SimpleHeaderFactory.php';
+require_once 'Swift/Mime/Grammar.php';
 
 class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
 {
 
   private $_contentEncoder;
   private $_cache;
+  private $_grammar;
   private $_headers;
   
   public function setUp()
@@ -40,8 +42,9 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
     $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
       new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
       );
+    $this->_grammar = new Swift_Mime_Grammar();
     $this->_headers = new Swift_Mime_SimpleHeaderSet(
-      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder)
+      new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $this->_grammar)
       );
   }
   
@@ -132,7 +135,8 @@ class Swift_Mime_MimePartAcceptanceTest extends UnitTestCase
     $entity = new Swift_Mime_MimePart(
       $this->_headers,
       $this->_contentEncoder,
-      $this->_cache
+      $this->_cache,
+      $this->_grammar
       );
     return $entity;
   }
