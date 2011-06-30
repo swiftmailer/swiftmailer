@@ -1,6 +1,11 @@
 Changelog since Version 4.1.x
 =============================
 
+4.1.0 (2011-06-30)
+------------------
+
+ * documentation has been converted to ReST
+
 4.1.0 RC1 (2011-06-17)
 ----------------------
 
