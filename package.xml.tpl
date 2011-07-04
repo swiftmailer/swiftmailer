@@ -48,6 +48,7 @@
          <file install-as="dependency_maps/cache_deps.php" name="cache_deps.php" role="php" />
          <file install-as="dependency_maps/mime_deps.php" name="mime_deps.php" role="php" />
          <file install-as="dependency_maps/transport_deps.php" name="transport_deps.php" role="php" />
+         <file install-as="dependency_maps/message_deps.php" name="message_deps.php" role="php" />
        </dir>
        <dir name="classes">
          <file install-as="Swift.php" name="Swift.php" role="php" />
