@@ -91,7 +91,7 @@
   </target>
   
   <!-- Package up the project as a gzip file -->
-  <target name="package" depends="test, bundle">
+  <target name="package" depends="bundle">
     <tar destfile="${builddir.package}.tar.gz" compression="gzip" longfile="gnu">
       <fileset dir="${builddir}" />
     </tar>
