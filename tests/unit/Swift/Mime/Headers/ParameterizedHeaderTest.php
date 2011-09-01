@@ -119,9 +119,9 @@ class Swift_Mime_Headers_ParameterizedHeaderTest
     $header->setMaxLineLength(78);
     $this->assertEqual(
       'attachment; ' .
-      'filename*0=' . str_repeat('a', 63) . ";\r\n " .
-      'filename*1=' . str_repeat('a', 63) . ";\r\n " .
-      'filename*2=' . str_repeat('a', 54),
+      'filename*0*=utf-8\'\'' . str_repeat('a', 63) . ";\r\n " .
+      'filename*1*=' . str_repeat('a', 63) . ";\r\n " .
+      'filename*2*=' . str_repeat('a', 54),
       $header->getFieldBody()
       );
   }

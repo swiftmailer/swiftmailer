@@ -227,7 +227,7 @@ class Swift_Mime_Headers_ParameterizedHeader
       foreach ($valueLines as $i => $line)
       {
         $paramLines[] = $name . '*' . $i .
-          $this->_getEndOfParameterValue($line, $encoded, $i == 0);
+          $this->_getEndOfParameterValue($line, true, $i == 0);
       }
       return implode(";\r\n ", $paramLines);
     }
