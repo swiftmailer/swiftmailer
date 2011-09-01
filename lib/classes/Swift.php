@@ -50,7 +50,7 @@ abstract class Swift
       require self::$initPath;
     }
 
-    require_once $path;
+    require $path;
   }
   
   /**
