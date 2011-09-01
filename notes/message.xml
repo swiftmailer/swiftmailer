@@ -1,4 +1,4 @@
-<?xml version="1.0" charset="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <message>
   <subject>Some test message</subject>
   <to name="Chris Corbyn">chris@w3style.co.uk</to>
