@@ -409,7 +409,7 @@ Using the ``send()`` Method
 
 The ``send()`` method of the ``Swift_Mailer`` class
 sends a message using exactly the same logic as your Desktop mail client would
-use. Just pass it a Messgae and get a result.
+use. Just pass it a Message and get a result.
 
 To send a Message with ``send()``:
 
