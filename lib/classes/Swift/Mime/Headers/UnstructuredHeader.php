@@ -98,9 +98,7 @@ class Swift_Mime_Headers_UnstructuredHeader
     if (!$this->getCachedValue())
     {
       $this->setCachedValue(
-        str_replace('\\', '\\\\', $this->encodeWords(
-          $this, $this->_value
-          ))
+        $this->encodeWords($this, $this->_value)
         );
     }
     return $this->getCachedValue();
