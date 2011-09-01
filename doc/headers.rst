@@ -180,7 +180,7 @@ Changing the value of an existing text header is done by calling it's
 
 .. code-block:: php
 
-    $subject = $message->getHeaders()->getHeader('Subject');
+    $subject = $message->getHeaders()->get('Subject');
 
     $subject->setValue('new subject');
 
@@ -189,7 +189,7 @@ like the following:
 
 .. code-block:: php
 
-    $subject = $message->getHeaders()->getHeader('Subject');
+    $subject = $message->getHeaders()->get('Subject');
 
     $subject->setValue('amazing subject line');
 
@@ -207,7 +207,7 @@ mail clients will decode them back.
 
 .. code-block:: php
 
-    $subject = $message->getHeaders()->getHeader('Subject');
+    $subject = $message->getHeaders()->get('Subject');
 
     $subject->setValue('contains – dash');
 
@@ -257,7 +257,7 @@ method (note the pluralization).
 
 .. code-block:: php
 
-    $type = $message->getHeaders()->getHeader('Content-Type');
+    $type = $message->getHeaders()->get('Content-Type');
 
     //setParameters() takes an associative array
     $type->setParameters(array(
@@ -273,7 +273,7 @@ something like the following:
 
 .. code-block:: php
 
-    $type = $message->getHeaders()->getHeader('Content-Type');
+    $type = $message->getHeaders()->get('Content-Type');
 
     $type->setValue('text/html');
     $type->setParameter('charset', 'utf-8');
@@ -296,7 +296,7 @@ encoded so that they can be transmitted safely.
 
     $attachment = Swift_Attachment::newInstance();
 
-    $disp = $attachment->getHeaders()->getHeader('Content-Disposition');
+    $disp = $attachment->getHeaders()->get('Content-Disposition');
 
     $disp->setValue('attachment');
     $disp->setParameter('filename', 'report–may.pdf');
@@ -340,7 +340,7 @@ Changing the value of an existing date header is done by calling it's
 
 .. code-block:: php
 
-    $date = $message->getHeaders()->getHeader('Date');
+    $date = $message->getHeaders()->get('Date');
 
     $date->setTimestamp(time());
 
@@ -349,7 +349,7 @@ like the following:
 
 .. code-block:: php
 
-    $date = $message->getHeaders()->getHeader('Date');
+    $date = $message->getHeaders()->get('Date');
 
     echo $date->toString();
 
@@ -396,7 +396,7 @@ Changing the value of an existing mailbox header is done by calling it's
 
 .. code-block:: php
 
-    $to = $message->getHeaders()->getHeader('To');
+    $to = $message->getHeaders()->get('To');
 
     $to->setNameAddresses(array(
       'joe@example.org' => 'Joe Bloggs',
@@ -411,7 +411,7 @@ use the ``setAddresses()`` method instead.
 
 .. code-block:: php
 
-    $to = $message->getHeaders()->getHeader('To');
+    $to = $message->getHeaders()->get('To');
 
     $to->setAddresses(array(
       'joe@example.org',
@@ -429,7 +429,7 @@ string as the input parameter to ``setAddresses()`` and/or
 
 .. code-block:: php
 
-    $to = $message->getHeaders()->getHeader('To');
+    $to = $message->getHeaders()->get('To');
 
     $to->setAddresses('joe-bloggs@example.org');
 
@@ -438,7 +438,7 @@ something like the following:
 
 .. code-block:: php
 
-    $to = $message->getHeaders()->getHeader('To');
+    $to = $message->getHeaders()->get('To');
 
     $to->setNameAddresses(array(
       'person1@example.org' => 'Name of Person',
@@ -488,7 +488,7 @@ Changing the value of an existing date header is done by calling its
 
 .. code-block:: php
 
-    $msgId = $message->getHeaders()->getHeader('Message-ID');
+    $msgId = $message->getHeaders()->get('Message-ID');
 
     $msgId->setId(time() . '.' . uniqid('thing') . '@example.org');
 
@@ -497,7 +497,7 @@ like the following:
 
 .. code-block:: php
 
-    $msgId = $message->getHeaders()->getHeader('Message-ID');
+    $msgId = $message->getHeaders()->get('Message-ID');
 
     echo $msgId->toString();
 
@@ -531,7 +531,7 @@ Changing the value of an existing path header is done by calling its
 
 .. code-block:: php
 
-    $return = $message->getHeaders()->getHeader('Return-Path');
+    $return = $message->getHeaders()->get('Return-Path');
 
     $return->setAddress('my-address@example.org');
 
@@ -540,7 +540,7 @@ like the following:
 
 .. code-block:: php
 
-    $return = $message->getHeaders()->getHeader('Return-Path');
+    $return = $message->getHeaders()->get('Return-Path');
 
     $return->setAddress('person@example.org');
 
