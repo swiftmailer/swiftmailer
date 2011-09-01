@@ -8,7 +8,7 @@ Swift_DependencyContainer::getInstance()
   -> asValue('utf-8')
   
   -> register('mime.grammar')
-  -> asNewInstanceOf('Swift_Mime_Grammar')
+  -> asSharedInstanceOf('Swift_Mime_Grammar')
   
   -> register('mime.message')
   -> asNewInstanceOf('Swift_Mime_SimpleMessage')
