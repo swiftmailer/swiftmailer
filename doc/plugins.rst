@@ -144,7 +144,7 @@ to average out the rate.
     }
 
 Logger Plugin
-~~~~~~~~~~~~~
+-------------
 
 The Logger plugins helps with debugging during the process of sending. It can
 help to identify why an SMTP server is rejecting addresses, or any other
@@ -173,7 +173,7 @@ class that implements the ``Swift_Plugins_Logger`` interface.
   realtime. Handy for very rudimentary debug output.
 
 Using the Logger Plugin
-.......................
+~~~~~~~~~~~~~~~~~~~~~~~
 
 The Logger Plugin -- like all plugins -- is added with the Mailer
 class' ``registerPlugin()`` method. It accepts an instance of
@@ -229,7 +229,7 @@ get the contents of the log.
     echo $logger->dump();
 
 Decorator Plugin
-~~~~~~~~~~~~~~~~
+----------------
 
 Often there's a need to send the same message to multiple recipients, but with
 tiny variations such as the recipient's name being used inside the message
@@ -250,7 +250,7 @@ of all recipients prior to sending. It will use this list of recipients to
 find the required replacements during sending.
 
 Using the Decorator Plugin
-..........................
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To use the Decorator plugin, simply create an associative array of
 replacements based on email addresses and then use the mailer's
@@ -331,7 +331,7 @@ We're trying to come up with a better way ourselves and while we have several
 implement it. Watch this space.
 
 Providing Your Own Replacements Lookup for the Decorator
-........................................................
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Filling an array with replacements may not be the best solution for providing
 replacement information to the decorator. If you have a more elegant algorithm
