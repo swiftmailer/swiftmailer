@@ -4,6 +4,18 @@ Installing the Library
 Installing Swift Mailer is trivial. Usually it's just a case of uploading the
 extracted source files to your web server.
 
+Installing from PEAR
+--------------------
+
+If you want to install Swiftmailer globally on your machine, the easiest
+installation method is using the PEAR channel.
+
+To install the Swiftmailer PEAR package:
+
+* Run the command ``pear channel-discover pear.swiftmailer.org``.
+
+* Then, run the command ``pear install swiftmailer/swiftmailer``.
+
 Installing from a Package
 -------------------------
 
