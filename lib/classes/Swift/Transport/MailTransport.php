@@ -126,8 +126,14 @@ class Swift_Transport_MailTransport implements Swift_Transport
     $toHeader = $message->getHeaders()->get('To');
     $subjectHeader = $message->getHeaders()->get('Subject');
     
+    if (!$toHeader)
+    {
+      throw new Swift_TransportException(
+        'Cannot send message without a recipient'
+        );
+    }
     $to = $toHeader->getFieldBody();
-    $subject = $subjectHeader->getFieldBody();
+    $subject = $subjectHeader ? $subjectHeader->getFieldBody() : '';
     
     $reversePath = $this->_getReversePath($message);
     
