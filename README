@@ -7,8 +7,8 @@ It is released under the LGPL license.
 Homepage:      http://swiftmailer.org
 Documentation: http://swiftmailer.org/docs
 Mailing List:  http://groups.google.com/group/swiftmailer
-Bugs:          http://swiftmailer.lighthouseapp.com/
-Repository:    http://github.com/swiftmailer/swiftmailer
+Bugs:          https://github.com/swiftmailer/swiftmailer/issues
+Repository:    https://github.com/swiftmailer/swiftmailer
 
 Swift Mailer is highly object-oriented by design and lends itself
 to use in complex web application with a great deal of flexibility.
