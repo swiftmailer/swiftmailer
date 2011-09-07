@@ -50,7 +50,11 @@ class Swift_ByteStream_FileByteStream
   {
     $this->_path = $path;
     $this->_mode = $writable ? 'w+b' : 'rb';
-    $this->_quotes = ini_get('magic_quotes_runtime');
+    
+    if (function_exists('get_magic_quotes_runtime') && @get_magic_quotes_runtime() == 1)
+    {
+      $this->_quotes = true;
+    }
   }
   
   /**
