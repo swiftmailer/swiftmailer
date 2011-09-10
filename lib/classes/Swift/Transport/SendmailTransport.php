@@ -84,7 +84,7 @@ class Swift_Transport_SendmailTransport
   
   /**
    * Send the given Message.
-   * Recipient/sender data will be retreived from the Message API.
+   * Recipient/sender data will be retrieved from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
    * NOTE: If using 'sendmail -t' you will not be aware of any failures until
    * they bounce (i.e. send() will always return 100% success).

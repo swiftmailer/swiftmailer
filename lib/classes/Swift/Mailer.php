@@ -51,7 +51,7 @@ class Swift_Mailer
    * If you need to send to each recipient without disclosing details about the
    * other recipients see {@link batchSend()}.
    * 
-   * Recipient/sender data will be retreived from the Message object.
+   * Recipient/sender data will be retrieved from the Message object.
    * 
    * The return value is the number of recipients who were accepted for
    * delivery.
@@ -81,7 +81,7 @@ class Swift_Mailer
    * recipient it was sent to.
    * 
    * If an iterator is provided, recipients will be read from the iterator
-   * one-by-one, otherwise recipient data will be retreived from the Message
+   * one-by-one, otherwise recipient data will be retrieved from the Message
    * object.
    * 
    * Sender information is always read from the Message object.
