@@ -1,6 +1,23 @@
 Changelog since Version 4.1.x
 =============================
 
+4.1.2 (2011-09-13)
+------------------
+
+ * fixed wrong detection of magic_quotes_runtime
+ * fixed fatal errors when no To or Subject header has been set
+ * fixed charset on parameter header continuations
+ * added documentation about how to install Swiftmailer from the PEAR channel
+ * fixed various typos and markup problem in the documentation
+ * fixed warning when cache directory does not exist
+ * fixed "slashes are escaped" bug
+ * changed require_once() to require() in autoload
+
+4.1.1 (2011-07-04)
+------------------
+
+ * added missing file in PEAR package
+
 4.1.0 (2011-06-30)
 ------------------
 
