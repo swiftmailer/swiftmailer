@@ -61,7 +61,7 @@ class Swift_Mailer
    * All recipients (with the exception of Bcc) will be able to see the other
    * recipients this message was sent to.
    * 
-   * Recipient/sender data will be retreived from the Message object.
+   * Recipient/sender data will be retrieved from the Message object.
    * 
    * The return value is the number of recipients who were accepted for
    * delivery.
