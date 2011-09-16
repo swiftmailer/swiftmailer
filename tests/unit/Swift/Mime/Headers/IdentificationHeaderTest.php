@@ -39,7 +39,7 @@ class Swift_Mime_Headers_IdentificationHeaderTest
     $this->assertEqual('<id-left@id-right>', $header->getFieldBody());
   }
   
-  public function testIdCanBeRetreivedVerbatim()
+  public function testIdCanBeRetrievedVerbatim()
   {
     $header = $this->_getHeader('Message-ID');
     $header->setId('id-left@id-right');
