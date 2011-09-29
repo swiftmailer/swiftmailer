@@ -14,7 +14,7 @@
         {
             "name": "Fabien Potencier",
             "email": "fabien@symfony.com"
-        },
+        }
     ],
     "require": {
         "php": ">=5.2.4"
