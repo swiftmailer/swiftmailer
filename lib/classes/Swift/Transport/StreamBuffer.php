@@ -79,19 +79,6 @@ class Swift_Transport_StreamBuffer
     {
       switch ($param)
       {
-        case 'protocol':
-          if (!array_key_exists('protocol', $this->_params)
-            || $value != $this->_params['protocol'])
-          {
-            if ('tls' == $value)
-            {
-              stream_socket_enable_crypto(
-                $this->_stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT
-                );
-            }
-          }
-          break;
-          
         case 'timeout':
           if ($this->_stream)
           {
@@ -108,6 +95,11 @@ class Swift_Transport_StreamBuffer
       }
     }
     $this->_params[$param] = $value;
+  }
+  
+  public function startTLS()
+  {
+    return stream_socket_enable_crypto($this->_stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
   }
   
   /**
