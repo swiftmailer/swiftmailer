@@ -526,8 +526,13 @@ email address on the ``To:`` field.
 
         foreach ($to as $address => $name)
         {
-          $message->setTo(array($address => $name));
-          $numSent += $this->send($message, $failedRecipients);
+          if (is_int($address)) {
+            $message->setTo($name);
+          } else {
+            $message->setTo(array($address => $name));
+          }
+
+          $numSent += $mailer->send($message, $failedRecipients);
         }
 
         printf("Sent %d messages\n", $numSent);
