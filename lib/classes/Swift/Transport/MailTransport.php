@@ -75,6 +75,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
    * This string is formatted for sprintf() where %s is the sender address.
    * 
    * @param string $params
+   * @return Swift_Transport_MailTransport
    */
   public function setExtraParams($params)
   {

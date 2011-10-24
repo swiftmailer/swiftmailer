@@ -58,6 +58,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * @param mixed $body
    * @param string $contentType optional
    * @param string $charset optional
+   * @param Swift_Mime_MimePart
    */
   public function setBody($body, $contentType = null, $charset = null)
   {
@@ -83,6 +84,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * Set the character set of this entity.
    * 
    * @param string $charset
+   * @param Swift_Mime_MimePart
    */
   public function setCharset($charset)
   {
@@ -110,6 +112,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * Set the format of this entity (flowed or fixed).
    * 
    * @param string $format
+   * @param Swift_Mime_MimePart
    */
   public function setFormat($format)
   {
@@ -134,6 +137,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    * Turn delsp on or off for this entity.
    * 
    * @param boolean $delsp
+   * @param Swift_Mime_MimePart
    */
   public function setDelSp($delsp = true)
   {

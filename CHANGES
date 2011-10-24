@@ -4,6 +4,7 @@ Changelog since Version 4.1.x
 4.1.3 (201X-XX-XX)
 ------------------
 
+ * added missing @return tags on fluent methods
  * added a MessageLogger plugin that logs all sent messages
  * added composer.json
 

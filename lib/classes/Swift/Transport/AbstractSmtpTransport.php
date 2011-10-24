@@ -59,6 +59,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
    * brackets (i.e. [127.0.0.1]).
    * 
    * @param string $domain
+   * @return Swift_Transport_AbstractSmtpTransport
    */
   public function setLocalDomain($domain)
   {

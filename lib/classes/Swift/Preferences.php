@@ -75,6 +75,7 @@ class Swift_Preferences
   /**
    * Add the
    * @param boolean $dotEscape
+   * @return Swift_Preferences
    */
   public function setQPDotEscape($dotEscape)
   {

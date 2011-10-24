@@ -66,6 +66,7 @@ class Swift_Transport_SendmailTransport
    * The recommended mode is "-bs" since it is interactive and failure notifications
    * are hence possible.
    * @param string $command
+   * @return Swift_Transport_SendmailTransport
    */
   public function setCommand($command)
   {

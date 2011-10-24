@@ -159,6 +159,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /**
    * Set the Content-type of this entity.
    * @param string $type
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setContentType($type)
   {
@@ -184,6 +185,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /**
    * Set the CID of this entity.
    * @param string $id
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setId($id)
   {
@@ -209,6 +211,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * Set the description of this entity.
    * This method sets a value in the Content-ID header.
    * @param string $description
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setDescription($description)
   {
@@ -232,6 +235,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * Set the maximum line length of lines in this body.
    * Though not enforced by the library, lines should not exceed 1000 chars.
    * @param int $length
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setMaxLineLength($length)
   {
@@ -252,6 +256,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * Set all children of this entity.
    * @param array $children Swiift_Mime_Entity instances
    * @param int $compoundLevel For internal use only
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setChildren(array $children, $compoundLevel = null)
   {
@@ -345,6 +350,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * {@link Swift_OutputByteStream}.
    * @param mixed $body
    * @param string $contentType optional
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setBody($body, $contentType = null)
   {
@@ -373,6 +379,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /**
    * Set the encoder used for the body of this entity.
    * @param Swift_Mime_ContentEncoder $encoder
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setEncoder(Swift_Mime_ContentEncoder $encoder)
   {
@@ -404,6 +411,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
    * Set the boundary used to separate children in this entity.
    * @param string $boundary
    * @throws Swift_RfcComplianceException
+   * @return Swift_Mime_SimpleMimeEntity
    */
   public function setBoundary($boundary)
   {
