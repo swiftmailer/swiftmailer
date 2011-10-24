@@ -177,3 +177,25 @@ The following example shows show you can upload the files using
         chrisbook:Swift-4.0.0-dev chris$
 
 .. _`github`: http://github.com/swiftmailer/swiftmailer
+
+Troubleshooting
+---------------
+
+Swiftmailer does not work when used with function overloading as implemented
+by ``mbstring`` (``mbstring.func_overload`` set to ``2``). A workaround is to
+temporarily change the internal encoding to ``ASCII`` when sending an email:
+
+.. code-block:: php
+
+    if (function_exists('mb_internal_encoding') && ((int) ini_get('mbstring.func_overload')) & 2)
+    {
+      $mbEncoding = mb_internal_encoding();
+      mb_internal_encoding('ASCII');
+    }
+
+    // Creation your message and send it with Swiftmailer
+
+    if (isset($mbEncoding))
+    {
+      mb_internal_encoding($mbEncoding);
+    }
