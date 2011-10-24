@@ -153,7 +153,7 @@ The following example shows show you can upload the files using
     You do not need to place the files inside your web root. They only need to be in a place
     where your PHP scripts can "include" them.
 
-    .. code-block: bash
+    .. code-block:: bash
 
         chrisbook:Swift-4.0.0-dev chris$ rsync -rvz lib d11wtq@swiftmailer.org:swiftmailer
         building file list ... done

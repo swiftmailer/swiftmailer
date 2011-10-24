@@ -340,7 +340,7 @@ with the filename and content-type you specify.
     If you would usually write the file to disk anyway you should just attach
     it with ``Swift_Attachment::fromPath()`` since this will use less memory:
 
-    .. code-block: php
+    .. code-block:: php
 
         //Create your file contents in the normal way, but don't write them to disk
         $data = create_my_pdf_data();
@@ -449,7 +449,7 @@ is used as a ``src`` attribute.
     You can embed files in two stages if you prefer. Just capture the return
     value of ``embed()`` in a variable and use that as the ``src`` attribute.
 
-    .. code-block: php
+    .. code-block:: php
 
         //Create the message
         $message = Swift_Message::newInstance('My subject');
