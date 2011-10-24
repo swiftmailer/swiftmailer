@@ -5,6 +5,7 @@ Changelog since Version 4.1.x
 ------------------
 
  * added a MessageLogger plugin that logs all sent messages
+ * added composer.json
 
 4.1.2 (2011-09-13)
 ------------------
