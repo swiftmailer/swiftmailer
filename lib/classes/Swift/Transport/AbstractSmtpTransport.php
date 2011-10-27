@@ -348,18 +348,18 @@ abstract class Swift_Transport_AbstractSmtpTransport
   /** Stream the contents of the message over the buffer */
   protected function _streamMessage(Swift_Mime_Message $message)
   {
-    $this->_buffer->setWriteTranslations(array("\r\n." => "\r\n.."));
     try
     {
+      $this->_buffer->setWriteTranslations(array("\r\n." => "\r\n.."));
       $message->toByteStream($this->_buffer);
+      $this->_buffer->setWriteTranslations(array());
+      $this->executeCommand("\r\n.\r\n", array(250));
       $this->_buffer->flushBuffers();
     }
     catch (Swift_TransportException $e)
     {
       $this->_throwException($e);
     }
-    $this->_buffer->setWriteTranslations(array());
-    $this->executeCommand("\r\n.\r\n", array(250));
   }
   
   /** Determine the best-use reverse path for this message */
