@@ -4,6 +4,7 @@ Changelog since Version 4.1.x
 4.1.4 (2011-XX-XX)
 ------------------
 
+ * fixed too many opened files when sending emails with attachments
  * moved the flushBuffers() call to avoid Nagle delay
 
 4.1.3 (2011-10-27)
