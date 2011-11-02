@@ -14,7 +14,7 @@
  * @subpackage Plugins
  * @author Arjen Brouwer
  */
-class Swift_Plugins_ImpersonatePlugin implements \Swift_Events_SendListener {
+class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener {
 
     /**
      * The sender to impersonate.
