@@ -214,7 +214,7 @@ Your username and password will be used to authenticate upon first connect
 when ``send()`` are first used on the Mailer.
 
 If authentication fails, an Exception of type
-``Swift_Transport_TransportException`` will be thrown.
+``Swift_TransportException`` will be thrown.
 
 .. note::
 
@@ -315,7 +315,7 @@ To use the Sendmail Transport:
 
 A sendmail process will be started upon the first call to ``send()``. If the
 process cannot be started successfully an Exception of type
-``Swift_Transport_TransportException`` will be thrown.
+``Swift_TransportException`` will be thrown.
 
 .. code-block:: php
 
