@@ -4,6 +4,7 @@ Changelog since Version 4.1.x
 4.1.4 (2011-XX-XX)
 ------------------
 
+ * added a memory spool (Swift_MemorySpool)
  * fixed too many opened files when sending emails with attachments
  * moved the flushBuffers() call to avoid Nagle delay
 
