@@ -1,7 +1,7 @@
 Changelog since Version 4.1.x
 =============================
 
-4.1.4 (2011-XX-XX)
+4.1.4 (2011-12-16)
 ------------------
 
  * added a memory spool (Swift_MemorySpool)
