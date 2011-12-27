@@ -34,10 +34,9 @@ chance to process its queue and recover some resources.
 Using the AntiFlood Plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The AntiFlood Plugin -- like all plugins -- is added with the Mailer
-class' ``registerPlugin()`` method. It takes two constructor
-parameters: the number of emails to pause after, and optionally the number of
-seconds to pause for.
+The AntiFlood Plugin -- like all plugins -- is added with the Mailer class'
+``registerPlugin()`` method. It takes two constructor parameters: the number of
+emails to pause after, and optionally the number of seconds to pause for.
 
 To use the AntiFlood plugin:
 
@@ -59,18 +58,18 @@ specified amount of time.
 
     require_once 'lib/swift_required.php';
 
-    //Create the Mailer using any Transport
+    // Create the Mailer using any Transport
     $mailer = Swift_Mailer::newInstance(
       Swift_SmtpTransport::newInstance('smtp.example.org', 25)
     );
 
-    //Use AntiFlood to re-connect after 100 emails
+    // Use AntiFlood to re-connect after 100 emails
     $mailer->registerPlugin(new Swift_Plugins_AntiFloodPlugin(100));
 
-    //Or specify a time in seconds to pause for (30 secs)
+    // And specify a time in seconds to pause for (30 secs)
     $mailer->registerPlugin(new Swift_Plugins_AntiFloodPlugin(100, 30));
 
-    //Continue sending as normal
+    // Continue sending as normal
     for ($lotsOfRecipients as $recipient) {
       ...
 
@@ -96,9 +95,9 @@ bytes-transferred per-minute.
 Using the Throttler Plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Throttler Plugin -- like all plugins -- is added with the Mailer
-class' ``registerPlugin()`` method. It has two required
-constructor parameters that tell it how to do its rate-limiting.
+The Throttler Plugin -- like all plugins -- is added with the Mailer class'
+``registerPlugin()`` method. It has two required constructor parameters that
+tell it how to do its rate-limiting.
 
 To use the Throttler plugin:
 
@@ -112,31 +111,30 @@ To use the Throttler plugin:
 
 * Continue using Swift Mailer to send messages as normal.
 
-When Swift Mailer sends messages it will keep track of the rate at which
-sending messages is occuring. If it realises that sending is happening too
-fast, it will cause your program to ``sleep()`` for enough time
-to average out the rate.
+When Swift Mailer sends messages it will keep track of the rate at which sending
+messages is occurring. If it realises that sending is happening too fast, it
+will cause your program to ``sleep()`` for enough time to average out the rate.
 
 .. code-block:: php
 
     require_once 'lib/swift_required.php';
 
-    //Create the Mailer using any Transport
+    // Create the Mailer using any Transport
     $mailer = Swift_Mailer::newInstance(
       Swift_SmtpTransport::newInstance('smtp.example.org', 25)
     );
 
-    //Rate limit to 100 emails per-minute
+    // Rate limit to 100 emails per-minute
     $mailer->registerPlugin(new Swift_Plugins_ThrottlerPlugin(
       100, Swift_Plugins_ThrottlerPlugin::MESSAGES_PER_MINUTE
     ));
 
-    //Rate limit to 10MB per-minute
+    // Rate limit to 10MB per-minute
     $mailer->registerPlugin(new Swift_Plugins_ThrottlerPlugin(
       1024 * 1024 * 10, Swift_Plugins_ThrottlerPlugin::BYTES_PER_MINUTE
     ));
 
-    //Continue sending as normal
+    // Continue sending as normal
     for ($lotsOfRecipients as $recipient) {
       ...
 
@@ -175,9 +173,9 @@ class that implements the ``Swift_Plugins_Logger`` interface.
 Using the Logger Plugin
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The Logger Plugin -- like all plugins -- is added with the Mailer
-class' ``registerPlugin()`` method. It accepts an instance of
-``Swift_Plugins_Logger`` in its constructor.
+The Logger Plugin -- like all plugins -- is added with the Mailer class'
+``registerPlugin()`` method. It accepts an instance of ``Swift_Plugins_Logger``
+in its constructor.
 
 To use the Logger plugin:
 
@@ -204,20 +202,20 @@ get the contents of the log.
 
     require_once 'lib/swift_required.php';
 
-    //Create the Mailer using any Transport
+    // Create the Mailer using any Transport
     $mailer = Swift_Mailer::newInstance(
      Swift_SmtpTransport::newInstance('smtp.example.org', 25)
     );
 
-    //To use the ArrayLogger
+    // To use the ArrayLogger
     $logger = new Swift_Plugins_Loggers_ArrayLogger();
     $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
 
-    //Or to use the Echo Logger
+    // Or to use the Echo Logger
     $logger = new Swift_Plugins_Loggers_EchoLogger();
     $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
 
-    //Continue sending as normal
+    // Continue sending as normal
     for ($lotsOfRecipients as $recipient) {
      ...
 
@@ -252,9 +250,9 @@ find the required replacements during sending.
 Using the Decorator Plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To use the Decorator plugin, simply create an associative array of
-replacements based on email addresses and then use the mailer's
-``registerPlugin()`` method to add the plugin.
+To use the Decorator plugin, simply create an associative array of replacements
+based on email addresses and then use the mailer's ``registerPlugin()`` method
+to add the plugin.
 
 First create an associative array of replacements based on the email addresses
 you'll be sending the message to.
@@ -277,8 +275,8 @@ you'll be sending the message to.
           );
         }
 
-Now create an instance of the Decorator plugin using this array of
-replacements and then register it with the Mailer. Do this only once!
+Now create an instance of the Decorator plugin using this array of replacements 
+and then register it with the Mailer. Do this only once!
 
 .. code-block:: php
 
@@ -304,9 +302,9 @@ line) with your placeholders.
     }
 
 When you send this message to each of your recipients listed in your
-``$replacements`` array they will receive a message customized
-for just themselves. For example, the message used above when received may
-appear like this to one user:
+``$replacements`` array they will receive a message customized for just 
+themselves. For example, the message used above when received may appear like 
+this to one user:
 
 .. code-block:: text
 
@@ -339,9 +337,8 @@ that performs replacement lookups on-the-fly you may provide your own
 implementation.
 
 Providing your own replacements lookup implementation for the Decorator is
-simply a matter of passing an instance of
-``Swift_Plugins_Decorator_Replacements`` to the decorator
-plugin's constructor, rather than passing in an array.
+simply a matter of passing an instance of ``Swift_Plugins_Decorator_Replacements`` to the decorator plugin's constructor,
+rather than passing in an array.
 
 The Replacements interface is very simple to implement since it has just one
 method: ``getReplacementsFor($address)``.
@@ -378,9 +375,8 @@ plugin's constructor instead of passing an array.
 
     $mailer->registerPlugin($decorator);
 
-For each message sent, the plugin will call your class'
-``getReplacementsFor()`` method to find the array of replacements
-it needs.
+For each message sent, the plugin will call your class' ``getReplacementsFor()``
+method to find the array of replacements it needs.
 
 .. note::
 
