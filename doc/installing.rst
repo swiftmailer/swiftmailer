@@ -7,10 +7,10 @@ extracted source files to your web server.
 Installing from PEAR
 --------------------
 
-If you want to install Swiftmailer globally on your machine, the easiest
+If you want to install Swift Mailer globally on your machine, the easiest
 installation method is using the PEAR channel.
 
-To install the Swiftmailer PEAR package:
+To install the Swift Mailer PEAR package:
 
 * Run the command ``pear channel-discover pear.swiftmailer.org``.
 
@@ -48,9 +48,9 @@ the ``tar`` command.
 
 .. code-block:: bash
 
-    chrisbook:build chris$ ls
+    $ ls
     Swift-4.0.0-dev.tar.gz
-    chrisbook:build chris$ tar xvzf Swift-4.0.0-dev.tar.gz 
+    $ tar xvzf Swift-4.0.0-dev.tar.gz 
     Swift-4.0.0-dev/
     Swift-4.0.0-dev/lib/
     Swift-4.0.0-dev/lib/classes/
@@ -66,10 +66,10 @@ the ``tar`` command.
     Swift-4.0.0-dev/tests/unit/Swift/Transport/LoadBalancedTransportTest.php
     Swift-4.0.0-dev/tests/unit/Swift/Transport/SendmailTransportTest.php
     Swift-4.0.0-dev/tests/unit/Swift/Transport/StreamBufferTest.php
-    chrisbook:build chris$ cd Swift-4.0.0-dev
-    chrisbook:Swift-4.0.0-dev chris$ ls
+    $ cd Swift-4.0.0-dev
+    $ ls
     CHANGES		LICENSE.GPL	LICENSE.LGPL	README		VERSION		examples	lib		test-suite	tests
-    chrisbook:Swift-4.0.0-dev chris$
+    $
 
 Installing from Git
 -------------------
@@ -111,8 +111,8 @@ OS X.
 
 .. code-block:: bash
 
-    chrisbook:~ chris$ cd source_code/
-    chrisbook:source_code chris$ git clone git://github.com/swiftmailer/swiftmailer.git swiftmailer
+    $ cd source_code/
+    $ git clone git://github.com/swiftmailer/swiftmailer.git swiftmailer
     Initialized empty Git repository in /Users/chris/source_code/swiftmailer/.git/
     remote: Counting objects: 6815, done.
     remote: Compressing objects: 100% (2761/2761), done.
@@ -120,11 +120,11 @@ OS X.
     Receiving objects: 100% (6815/6815), 4.35 MiB | 162 KiB/s, done.
     Resolving deltas: 100% (3641/3641), done.
     Checking out files: 100% (1847/1847), done.
-    chrisbook:source_code chris$ cd swiftmailer/
-    chrisbook:swiftmailer chris$ ls
+    $ cd swiftmailer/
+    $ ls
     CHANGES		LICENSE.LGPL	README.git	VERSION		docs		lib		test-suite	util
     LICENSE.GPL	README		TODO		build.xml	examples	notes		tests
-    chrisbook:swiftmailer chris$
+    $
 
 Uploading to your Host
 ----------------------
@@ -133,8 +133,8 @@ You only need to upload the "lib/" directory to your web host for production
 use. All other files and directories are support files not needed in
 production.
 
-You will need FTP, rsync or similar software installed in order to upload the
-"lib/" directory to your web host.
+You will need FTP, ``rsync`` or similar software installed in order to upload 
+the "lib/" directory to your web host.
 
 To upload Swift Mailer:
 
@@ -150,12 +150,12 @@ The following example shows show you can upload the files using
 
 .. note::
 
-    You do not need to place the files inside your web root. They only need to be in a place
-    where your PHP scripts can "include" them.
+    You do not need to place the files inside your web root. They only need to 
+    be in a place where your PHP scripts can "include" them.
 
     .. code-block:: bash
 
-        chrisbook:Swift-4.0.0-dev chris$ rsync -rvz lib d11wtq@swiftmailer.org:swiftmailer
+        $ rsync -rvz lib d11wtq@swiftmailer.org:swiftmailer
         building file list ... done
         created directory swiftmailer
         lib/
@@ -174,14 +174,14 @@ The following example shows show you can upload the files using
 
         sent 151692 bytes  received 2974 bytes  5836.45 bytes/sec
         total size is 401405  speedup is 2.60
-        chrisbook:Swift-4.0.0-dev chris$
+        $
 
 .. _`github`: http://github.com/swiftmailer/swiftmailer
 
 Troubleshooting
 ---------------
 
-Swiftmailer does not work when used with function overloading as implemented
+Swift Mailer does not work when used with function overloading as implemented
 by ``mbstring`` (``mbstring.func_overload`` set to ``2``). A workaround is to
 temporarily change the internal encoding to ``ASCII`` when sending an email:
 
@@ -193,7 +193,7 @@ temporarily change the internal encoding to ``ASCII`` when sending an email:
       mb_internal_encoding('ASCII');
     }
 
-    // Creation your message and send it with Swiftmailer
+    // Create your message and send it with Swift Mailer
 
     if (isset($mbEncoding))
     {
