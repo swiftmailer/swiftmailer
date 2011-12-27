@@ -1,7 +1,7 @@
 Including Swift Mailer (Autoloading)
 ====================================
 
-Swift Mailer uses an auto-loader so the only file you need to include is the
+Swift Mailer uses an autoloader so the only file you need to include is the
 ``lib/swift_required.php`` file.
 
 To use Swift Mailer's autoloader:
