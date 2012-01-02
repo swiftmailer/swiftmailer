@@ -4,6 +4,12 @@ Changelog since Version 4.1.x
 4.1.5 (2011-XX-XX)
 ------------------
 
+ * enforced Swift_Spool::queueMessage() to return a Boolean
+ * made an optimization to the memory spool: start the transport only when required
+ * prevented stream_socket_client() from generating an error and throw a Swift_TransportException instead
+ * fixed a PHP warning when calling to mail() when safe_mode is off
+ * many doc tweaks
+
 4.1.4 (2011-12-16)
 ------------------
 
