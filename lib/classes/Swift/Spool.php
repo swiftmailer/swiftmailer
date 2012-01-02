@@ -35,6 +35,8 @@ interface Swift_Spool
   /**
    * Queues a message.
    * @param Swift_Mime_Message $message The message to store
+   *
+   * @return boolean Whether the operation has succeeded
    */
   public function queueMessage(Swift_Mime_Message $message);
 
