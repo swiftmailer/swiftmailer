@@ -44,10 +44,13 @@ class Swift_MemorySpool implements Swift_Spool
    * Stores a message in the queue.
    *
    * @param Swift_Mime_Message $message The message to store
+   *
+   * @return boolean Whether the operation has succeeded
    */
   public function queueMessage(Swift_Mime_Message $message)
   {
     $this->messages[] = $message;
+    return true;
   }
 
   /**
