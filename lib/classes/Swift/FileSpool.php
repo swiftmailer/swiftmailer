@@ -93,15 +93,17 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
       /* We try an exclusive creation of the file
        * This is an atomic operation, it avoid locking mechanism
        */
-      $fp=fopen($fileName.'.message', 'x');
-      if ($fp) 
+      $fp = @fopen($fileName.'.message', 'x');
+      if (false !== $fp)
       {
-        fwrite($fp, $ser);
-        fclose($fp);
-        
-        return;
-      } 
-      else 
+        if (false === fwrite($fp, $ser))
+        {
+          return false;
+        }
+
+        return fclose($fp);
+      }
+      else
       {
         /* The file allready exists, we try a longer fileName
          */
