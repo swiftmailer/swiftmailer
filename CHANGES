@@ -1,7 +1,7 @@
 Changelog since Version 4.1.x
 =============================
 
-4.1.5 (2011-XX-XX)
+4.1.5 (2012-01-04)
 ------------------
 
  * enforced Swift_Spool::queueMessage() to return a Boolean
