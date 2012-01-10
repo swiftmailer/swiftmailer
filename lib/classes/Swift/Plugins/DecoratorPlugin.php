@@ -26,7 +26,7 @@ class Swift_Plugins_DecoratorPlugin
   private $_replacements;
   
   /** The body as it was before replacements */
-  private $_orginalBody;
+  private $_originalBody;
 
   /** The original headers of the message, before replacements */
   private $_originalHeaders = array();
