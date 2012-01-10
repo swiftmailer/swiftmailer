@@ -37,12 +37,6 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
   private $_message;
   
   /**
-   * The Transport used in sending.
-   * @var Swift_Transport
-   */
-  private $_transport;
-  
-  /**
    * Any recipients which failed after sending.
    * @var string[]
    */
@@ -52,7 +46,7 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
    * The overall result as a bitmask from the class constants.
    * @var int
    */
-  private $result;
+  private $_result;
   
   /**
    * Create a new SendEvent for $source and $message.
