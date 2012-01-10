@@ -203,7 +203,6 @@ class Swift_Plugins_DecoratorPlugin
       {
         foreach ($message->getHeaders()->getAll() as $header)
         {
-          $body = $header->getFieldBodyModel();
           if (array_key_exists($header->getFieldName(), $this->_originalHeaders))
           {
             $header->setFieldBodyModel($this->_originalHeaders[$header->getFieldName()]);
