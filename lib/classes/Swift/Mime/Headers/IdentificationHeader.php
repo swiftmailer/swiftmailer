@@ -102,7 +102,7 @@ class Swift_Mime_Headers_IdentificationHeader
   {
     $actualIds = array();
     
-    foreach ($ids as $k => $id)
+    foreach ($ids as $id)
     {
       $this->_assertValidId($id);
       $actualIds[] = $id;

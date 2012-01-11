@@ -407,7 +407,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
   /** Throws an Exception if a response code is incorrect */
   protected function _assertResponseCode($response, $wanted)
   {
-    list($code, $separator) = sscanf($response, '%3d%[ -]');
+    list($code) = sscanf($response, '%3d');
     $valid = (empty($wanted) || in_array($code, $wanted));
     
     if ($evt = $this->_eventDispatcher->createResponseEvent($this, $response,
