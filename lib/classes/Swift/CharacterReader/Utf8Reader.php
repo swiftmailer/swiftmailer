@@ -85,40 +85,40 @@ class Swift_CharacterReader_Utf8Reader
    */
   public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
   {
-  	if (!isset($currentMap['i']) || !isset($currentMap['p']))
-  	{
-  	  $currentMap['p'] = $currentMap['i'] = array();
-   	}
-  	$strlen=strlen($string);
-  	$charPos=count($currentMap['p']);
-  	$foundChars=0;
-  	$invalid=false;
-  	for ($i=0; $i<$strlen; ++$i)
-  	{
-  	  $char=$string[$i];
-  	  $size=self::$s_length_map[$char];
-  	  if ($size==0)
-  	  {
-  	    /* char is invalid, we must wait for a resync */
-  	  	$invalid=true;
-  	  	continue;
-   	  }
-   	  else
-   	  {
-   	  	if ($invalid==true)
-   	  	{
-   	  	  /* We mark the chars as invalid and start a new char */
-   	  	  $currentMap['p'][$charPos+$foundChars]=$startOffset+$i;
-   	      $currentMap['i'][$charPos+$foundChars]=true;
-   	      ++$foundChars;
-   	      $invalid=false;
-   	  	}
-   	  	if (($i+$size) > $strlen){
-   	  		$ignoredChars=substr($string, $i);
-   	  		break;
-   	  	}
-   	  	for ($j=1; $j<$size; ++$j)
-   	  	{
+    if (!isset($currentMap['i']) || !isset($currentMap['p']))
+    {
+      $currentMap['p'] = $currentMap['i'] = array();
+     }
+    $strlen=strlen($string);
+    $charPos=count($currentMap['p']);
+    $foundChars=0;
+    $invalid=false;
+    for ($i=0; $i<$strlen; ++$i)
+    {
+      $char=$string[$i];
+      $size=self::$s_length_map[$char];
+      if ($size==0)
+      {
+        /* char is invalid, we must wait for a resync */
+        $invalid=true;
+        continue;
+       }
+       else
+       {
+         if ($invalid==true)
+         {
+           /* We mark the chars as invalid and start a new char */
+           $currentMap['p'][$charPos+$foundChars]=$startOffset+$i;
+           $currentMap['i'][$charPos+$foundChars]=true;
+           ++$foundChars;
+           $invalid=false;
+         }
+         if (($i+$size) > $strlen){
+           $ignoredChars=substr($string, $i);
+           break;
+         }
+         for ($j=1; $j<$size; ++$j)
+         {
           $char=$string[$i+$j];
           if ($char>"\x7F" && $char<"\xC0")
           {
@@ -130,14 +130,14 @@ class Swift_CharacterReader_Utf8Reader
             $invalid=true;
             continue 2;
           }
-   	  	}
-   	  	/* Ok we got a complete char here */
-   	  	$lastChar=$currentMap['p'][$charPos+$foundChars]=$startOffset+$i+$size;
-   	  	$i+=$j-1;
-   	    ++$foundChars;
-   	  }
-  	}
-  	return $foundChars;
+         }
+         /* Ok we got a complete char here */
+         $lastChar=$currentMap['p'][$charPos+$foundChars]=$startOffset+$i+$size;
+         $i+=$j-1;
+         ++$foundChars;
+       }
+    }
+    return $foundChars;
   }
   
   /**
@@ -146,7 +146,7 @@ class Swift_CharacterReader_Utf8Reader
    */
   public function getMapType()
   {
-  	return self::MAP_TYPE_POSITIONS;
+    return self::MAP_TYPE_POSITIONS;
   }
  
   /**
