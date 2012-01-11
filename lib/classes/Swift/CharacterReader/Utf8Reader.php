@@ -132,7 +132,7 @@ class Swift_CharacterReader_Utf8Reader
           }
          }
          /* Ok we got a complete char here */
-         $lastChar=$currentMap['p'][$charPos+$foundChars]=$startOffset+$i+$size;
+         $currentMap['p'][$charPos+$foundChars]=$startOffset+$i+$size;
          $i+=$j-1;
          ++$foundChars;
        }
