@@ -19,6 +19,8 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   implements Swift_Mime_ContentEncoder
 {
 
+  protected $_dotEscape;
+
   /**
    * Creates a new QpContentEncoder for the given CharacterStream.
    * @param Swift_CharacterStream $charStream to use for reading characters
@@ -28,11 +30,27 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
   public function __construct(Swift_CharacterStream $charStream,
     Swift_StreamFilter $filter = null, $dotEscape=false)
   {
+    $this->_dotEscape = $dotEscape;
     parent::__construct($charStream, $filter);
-    if ($dotEscape) {
+  }
+
+  public function __sleep()
+  {
+    return array('_charStream', '_filter', '_dotEscape');
+  }
+
+  protected function getSafeMapShareId()
+  {
+    return get_class($this).($this->_dotEscape ? '.dotEscape' : '');
+  }
+
+  protected function initSafeMap()
+  {
+    parent::initSafeMap();
+    if ($this->_dotEscape) {
       /* Encode . as =2e for buggy remote servers */
       unset($this->_safeMap[0x2e]);
-    }
+    }    
   }
 
   /**

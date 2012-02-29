@@ -21,6 +21,12 @@ class Swift_Mime_Headers_ParameterizedHeader
 {
   
   /**
+   * RFC 2231's definition of a token.
+   * @var string
+   */
+  const TOKEN_REGEX = '(?:[\x21\x23-\x27\x2A\x2B\x2D\x2E\x30-\x39\x41-\x5A\x5E-\x7E]+)';
+
+  /**
    * The Encoder used to encode the parameters.
    * @var Swift_Encoder
    * @access private
@@ -35,13 +41,6 @@ class Swift_Mime_Headers_ParameterizedHeader
   private $_params = array();
   
   /**
-   * RFC 2231's definition of a token.
-   * @var string
-   * @access private
-   */
-  private $_tokenRe;
-  
-  /**
    * Creates a new ParameterizedHeader with $name.
    * @param string $name
    * @param Swift_Mime_HeaderEncoder $encoder
@@ -53,7 +52,6 @@ class Swift_Mime_Headers_ParameterizedHeader
   {
     parent::__construct($name, $encoder, $grammar);
     $this->_paramEncoder = $paramEncoder;
-    $this->_tokenRe = '(?:[\x21\x23-\x27\x2A\x2B\x2D\x2E\x30-\x39\x41-\x5A\x5E-\x7E]+)';
   }
   
   /**
@@ -188,7 +186,7 @@ class Swift_Mime_Headers_ParameterizedHeader
     $firstLineOffset = 0;
     
     //If it's not already a valid parameter value...
-    if (!preg_match('/^' . $this->_tokenRe . '$/D', $value))
+    if (!preg_match('/^' . self::TOKEN_REGEX . '$/D', $value))
     {
       //TODO: text, or something else??
       //... and it's not ascii
@@ -250,7 +248,7 @@ class Swift_Mime_Headers_ParameterizedHeader
    */
   private function _getEndOfParameterValue($value, $encoded = false, $firstLine = false)
   {
-    if (!preg_match('/^' . $this->_tokenRe . '$/D', $value))
+    if (!preg_match('/^' . self::TOKEN_REGEX . '$/D', $value))
     {
       $value = '"' . $value . '"';
     }
