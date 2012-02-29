@@ -145,7 +145,8 @@ class Swift_Mime_Headers_ParameterizedHeader
    * Generate a list of all tokens in the final header.
    * This doesn't need to be overridden in theory, but it is for implementation
    * reasons to prevent potential breakage of attributes.
-   * @return string[]
+   * @param string $string The string to tokenize
+   * @return array An array of tokens as strings
    * @access protected
    */
   protected function toTokens($string = null)

@@ -439,9 +439,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
   
   /**
    * Generate a list of all tokens in the final header.
-   * @param string $string input, optional
-   * @return string[]
-   * @access private
+   * @param string $string The string to tokenize
+   * @return array An array of tokens as strings
+   * @access protected
    */
   protected function toTokens($string = null)
   {
