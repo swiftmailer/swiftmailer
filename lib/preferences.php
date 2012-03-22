@@ -13,7 +13,7 @@ Swift_Preferences::getInstance()->setCharset('utf-8');
 // a lot of memory.
 // If possible, use a disk cache to enable attaching large attachments etc
 
-$tmp = getenv('TMPDIR') ?: (function_exists('sys_get_temp_dir') ? sys_get_temp_dir() : false);
+$tmp = getenv('TMPDIR') ? getenv('TMPDIR') : (function_exists('sys_get_temp_dir') ? sys_get_temp_dir() : false);
 
 if ($tmp && is_writable($tmp))
 {
