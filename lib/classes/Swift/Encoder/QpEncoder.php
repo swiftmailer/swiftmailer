@@ -94,7 +94,6 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     );
 
   protected static $_safeMapShare = array();
-  protected $_safeMapShareId      = __CLASS__;
 
   /**
    * A map of non-encoded ascii characters.
@@ -134,7 +133,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     if(!isset(self::$_safeMapShare[$this->getSafeMapShareId()]))
     {
       $this->initSafeMap();
-      self::$_safeMapShare[$this->$_safeMapShareId] = $this->_safeMap;
+      self::$_safeMapShare[$this->getSafeMapShareId()] = $this->_safeMap;
     }
     else
     {
