@@ -4,7 +4,7 @@ Changelog since Version 4.1.x
 4.1.7 (2012-XX-XX)
 ------------------
 
- * n/a
+ * fixed QpEncoder safeMapShareId property
 
 4.1.6 (2012-03-23)
 ------------------
