@@ -84,18 +84,18 @@ class Swift_SerializedFileSpool extends Swift_ConfigurableSpool
     public function queueMessage(Swift_Mime_Message $message)
     {
         $attempt   = 0;
-        $Filename  = $this->_spoolDirectory
+        $filename  = $this->_spoolDirectory
                    . $this->_spoolFilePrefix
                    . $this->getRandomString(self::MIN_RANDOM_PART_LENGTH)
                    ;
         while($attempt < $this->_retryLimit)
         {
             $attempt++;
-            $fullFilename = $Filename.$this->_spoolFileExtension;
+            $fullFilename = $filename.$this->_spoolFileExtension;
             $fp           = @fopen($fullFilename, 'x+b');
             if(!is_resource($fp))
             {
-                $Filename .= $this->getRandomString(1);
+                $filename .= $this->getRandomString(1);
                 continue;
             }
             try
