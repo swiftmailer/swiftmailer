@@ -53,7 +53,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
    * 
    * @return array Swift_Transport
    */
-  public function getTransports(array $transports)
+  public function getTransports()
   {
     return array_merge($this->_transports, $this->_deadTransports);
   }
