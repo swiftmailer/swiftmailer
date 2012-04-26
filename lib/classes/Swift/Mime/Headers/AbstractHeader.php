@@ -381,14 +381,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         )
       );
     
-    foreach ($encodedTextLines as $lineNum => $line)
-    {
-      $encodedTextLines[$lineNum] = '=?' . $charsetDecl .
+    return '=?' . $charsetDecl .
         '?' . $this->_encoder->getName() .
-        '?' . $line . '?=';
-    }
-    
-    return implode("\r\n ", $encodedTextLines);
+        '?' . implode('', $encodedTextLines) . '?=';
   }
   
   /**
