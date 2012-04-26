@@ -4,7 +4,6 @@
     "description": "Swiftmailer, free feature-rich PHP mailer",
     "keywords": ["mail","mailer"],
     "homepage": "http://swiftmailer.org",
-    "version": "4.1.7",
     "license": "LGPL",
     "authors": [
         {
@@ -18,5 +17,10 @@
     ],
     "require": {
         "php": ">=5.2.4"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.1-dev"
+        }
     }
 }
