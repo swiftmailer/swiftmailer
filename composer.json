@@ -16,6 +16,11 @@
             "email": "fabien@symfony.com"
         }
     ],
+    "autoload": {
+        "psr-0" : {
+            "Swift" : "lib/classes/"
+        }
+    },
     "require": {
         "php": ">=5.2.4"
     }
