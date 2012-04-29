@@ -84,7 +84,7 @@ class Swift_Transport_EsmtpTransport
 
   /**
    * Set the port to connect to.
-   * @param int $port
+   * @param integer $port
    * @return Swift_Transport_EsmtpTransport
    */
   public function setPort($port)
@@ -104,7 +104,7 @@ class Swift_Transport_EsmtpTransport
 
   /**
    * Set the connection timeout.
-   * @param int $timeout seconds
+   * @param integer $timeout seconds
    * @return Swift_Transport_EsmtpTransport
    */
   public function setTimeout($timeout)
@@ -202,7 +202,7 @@ class Swift_Transport_EsmtpTransport
    * If no response codes are given, the response will not be validated.
    * If codes are given, an exception will be thrown on an invalid response.
    * @param string $command
-   * @param int[] $codes
+   * @param integer[] $codes
    * @param string[] &$failures
    * @return string
    */

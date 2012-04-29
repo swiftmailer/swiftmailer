@@ -79,7 +79,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
    * Add a new Date header using $timestamp (UNIX time).
    *
    * @param string $name
-   * @param int $timestamp
+   * @param integer $timestamp
    */
   public function addDateHeader($name, $timestamp = null)
   {
@@ -142,7 +142,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
    * If multiple headers match, the actual one may be specified by $index.
    *
    * @param string $name
-   * @param int $index
+   * @param integer $index
    *
    * @return boolean
    */
@@ -163,7 +163,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
    * offset.
    *
    * @param Swift_Mime_Header $header
-   * @param int $index
+   * @param integer $index
    */
   public function set(Swift_Mime_Header $header, $index = 0)
   {
@@ -177,7 +177,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
    * Returns NULL if none present.
    *
    * @param string $name
-   * @param int $index
+   * @param integer $index
    *
    * @return Swift_Mime_Header
    */
@@ -223,7 +223,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
    * If multiple headers match, the actual one may be specified by $index.
    *
    * @param string $name
-   * @param int $index
+   * @param integer $index
    */
   public function remove($name, $index = 0)
   {

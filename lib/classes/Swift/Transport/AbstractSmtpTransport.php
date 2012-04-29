@@ -290,7 +290,7 @@ abstract class Swift_Transport_AbstractSmtpTransport
    * If codes are given, an exception will be thrown on an invalid response.
    *
    * @param string $command
-   * @param int[] $codes
+   * @param integer[] $codes
    * @param string[] &$failures
    * @return string
    */

@@ -28,7 +28,7 @@ class Swift_CharacterReader_GenericFixedWidthReader
 
   /**
    * Creates a new GenericFixedWidthReader using $width bytes per character.
-   * @param int $width
+   * @param integer $width
    */
   public function __construct($width)
   {
@@ -39,7 +39,7 @@ class Swift_CharacterReader_GenericFixedWidthReader
    * Returns the complete character-map
    *
    * @param string $string
-   * @param int $startOffset
+   * @param integer $startOffset
    * @param array $currentMap
    * @param mixed $ignoredChars
    * @return integer

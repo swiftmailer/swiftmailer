@@ -117,7 +117,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   /**
    * Execute a recovery if for anyreason a process is sending for too long
    *
-   * @param int $timeout in second Defaults is for very slow smtp responses
+   * @param integer $timeout in second Defaults is for very slow smtp responses
    */
   public function recover($timeout=900)
   {
@@ -142,7 +142,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
    * @param Swift_Transport $transport         A transport instance
    * @param string[]        &$failedRecipients An array of failures by-reference
    *
-   * @return int The number of sent emails
+   * @return integer The number of sent emails
    */
   public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
   {

@@ -79,7 +79,7 @@ class Swift_CharacterReader_Utf8Reader
    * Returns the complete character map
    *
    * @param string $string
-   * @param int $startOffset
+   * @param integer $startOffset
    * @param array $currentMap
    * @param mixed $ignoredChars
    * @return integer

@@ -31,7 +31,7 @@ class Swift_KeyCache_DummyKeyCache implements Swift_KeyCache
    * @param string $nsKey
    * @param string $itemKey
    * @param string $string
-   * @param int $mode
+   * @param integer $mode
    * @see MODE_WRITE, MODE_APPEND
    */
   public function setString($nsKey, $itemKey, $string, $mode)
@@ -42,7 +42,7 @@ class Swift_KeyCache_DummyKeyCache implements Swift_KeyCache
    * @param string $nsKey
    * @param string $itemKey
    * @param Swift_OutputByteStream $os
-   * @param int $mode
+   * @param integer $mode
    * @see MODE_WRITE, MODE_APPEND
    */
   public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os,

@@ -234,7 +234,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /**
    * Set the maximum line length of lines in this body.
    * Though not enforced by the library, lines should not exceed 1000 chars.
-   * @param int $length
+   * @param integer $length
    * @return Swift_Mime_SimpleMimeEntity
    */
   public function setMaxLineLength($length)
@@ -255,7 +255,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   /**
    * Set all children of this entity.
    * @param array $children Swiift_Mime_Entity instances
-   * @param int $compoundLevel For internal use only
+   * @param integer $compoundLevel For internal use only
    * @return Swift_Mime_SimpleMimeEntity
    */
   public function setChildren(array $children, $compoundLevel = null)

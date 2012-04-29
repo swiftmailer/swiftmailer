@@ -18,21 +18,21 @@
 class Swift_Mime_ContentEncoder_PlainContentEncoder
   implements Swift_Mime_ContentEncoder
 {
-  
+
   /**
    * The name of this encoding scheme (probably 7bit or 8bit).
    * @var string
    * @access private
    */
   private $_name;
-  
+
   /**
    * True if canonical transformations should be done.
    * @var boolean
    * @access private
    */
   private $_canonical;
-  
+
   /**
    * Creates a new PlainContentEncoder with $name (probably 7bit or 8bit).
    * @param string $name
@@ -43,12 +43,12 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
     $this->_name = $name;
     $this->_canonical = $canonical;
   }
-  
+
   /**
    * Encode a given string to produce an encoded string.
    * @param string $string
-   * @param int $firstLineOffset, ignored
-   * @param int $maxLineLength - 0 means no wrapping will occur
+   * @param integer $firstLineOffset, ignored
+   * @param integer $maxLineLength - 0 means no wrapping will occur
    * @return string
    */
   public function encodeString($string, $firstLineOffset = 0,
@@ -60,13 +60,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
     }
     return $this->_safeWordWrap($string, $maxLineLength, "\r\n");
   }
-  
+
   /**
    * Encode stream $in to stream $out.
    * @param Swift_OutputByteStream $in
    * @param Swift_InputByteStream $out
-   * @param int $firstLineOffset, ignored
-   * @param int $maxLineLength, optional, 0 means no wrapping will occur
+   * @param integer $firstLineOffset, ignored
+   * @param integer $maxLineLength, optional, 0 means no wrapping will occur
    */
   public function encodeByteStream(
     Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
@@ -84,7 +84,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
       $lastLinePos = strrpos($wrapped, "\r\n");
       $leftOver = substr($wrapped, $lastLinePos);
       $wrapped = substr($wrapped, 0, $lastLinePos);
-      
+
       $is->write($wrapped);
     }
     if (strlen($leftOver))
@@ -92,7 +92,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
       $is->write($leftOver);
     }
   }
-  
+
   /**
    * Get the name of this encoding scheme.
    * @return string
@@ -101,20 +101,20 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
   {
     return $this->_name;
   }
-  
+
   /**
    * Not used.
    */
   public function charsetChanged($charset)
   {
   }
-  
+
   // -- Private methods
-  
+
   /**
    * A safer (but weaker) wordwrap for unicode.
    * @param string $string
-   * @param int $length
+   * @param integer $length
    * @param string $le
    * @return string
    * @access private
@@ -125,20 +125,20 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
     {
       return $string;
     }
-    
+
     $originalLines = explode($le, $string);
-    
+
     $lines = array();
     $lineCount = 0;
-    
+
     foreach ($originalLines as $originalLine)
     {
       $lines[] = '';
       $currentLine =& $lines[$lineCount++];
-      
+
       //$chunks = preg_split('/(?<=[\ \t,\.!\?\-&\+\/])/', $originalLine);
       $chunks = preg_split('/(?<=\s)/', $originalLine);
-      
+
       foreach ($chunks as $chunk)
       {
         if (0 != strlen($currentLine)
@@ -150,10 +150,10 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
         $currentLine .= $chunk;
       }
     }
-    
+
     return implode("\r\n", $lines);
   }
-  
+
   /**
    * Canonicalize string input (fix CRLF).
    * @param string $string
@@ -168,5 +168,5 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder
       $string
       );
   }
-  
+
 }

@@ -171,7 +171,7 @@ Class Swift_CharacterStream_NgCharacterStream
   /**
    * @see Swift_CharacterStream::read()
    *
-   * @param int $length
+   * @param integer $length
    * @return string
    */
   public function read($length)
@@ -243,8 +243,8 @@ Class Swift_CharacterStream_NgCharacterStream
   /**
    * @see Swift_CharacterStream::readBytes()
    *
-   * @param int $length
-   * @return int[]
+   * @param integer $length
+   * @return integer[]
    */
   public function readBytes($length)
   {
@@ -260,7 +260,7 @@ Class Swift_CharacterStream_NgCharacterStream
   /**
    * @see Swift_CharacterStream::setPointer()
    *
-   * @param int $charOffset
+   * @param integer $charOffset
    */
   public function setPointer($charOffset)
   {

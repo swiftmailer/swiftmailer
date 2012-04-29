@@ -89,7 +89,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
 
   /**
    * Set the date at which this message was created.
-   * @param int $date
+   * @param integer $date
    * @return Swift_Mime_SimpleMessage
    */
   public function setDate($date)
@@ -422,7 +422,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
   /**
    * Set the priority of this message.
    * The value is an integer where 1 is the highest priority and 5 is the lowest.
-   * @param int $priority
+   * @param integer $priority
    * @return Swift_Mime_SimpleMessage
    */
   public function setPriority($priority)

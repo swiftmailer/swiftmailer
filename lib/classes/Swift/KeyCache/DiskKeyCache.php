@@ -23,7 +23,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
 
   /** Signal to place pointer at end of file */
   const POSITION_END = 1;
-  
+
   /** Signal to leave pointer in whatever position it currently is */
   const POSITION_CURRENT = 2;
 
@@ -77,7 +77,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    * @param string $nsKey
    * @param string $itemKey
    * @param string $string
-   * @param int $mode
+   * @param integer $mode
    * @throws Swift_IoException
    * @see MODE_WRITE, MODE_APPEND
    */
@@ -108,7 +108,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    * @param string $nsKey
    * @param string $itemKey
    * @param Swift_OutputByteStream $os
-   * @param int $mode
+   * @param integer $mode
    * @see MODE_WRITE, MODE_APPEND
    * @throws Swift_IoException
    */
@@ -286,7 +286,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
    * Get a file handle on the cache item.
    * @param string $nsKey
    * @param string $itemKey
-   * @param int $position
+   * @param integer $position
    * @return resource
    * @access private
    */
@@ -311,7 +311,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     }
     return $this->_keys[$nsKey][$itemKey];
   }
-  
+
   private function _freeHandle($nsKey, $itemKey)
   {
     $fp = $this->_getHandle($nsKey, $itemKey, self::POSITION_CURRENT);
