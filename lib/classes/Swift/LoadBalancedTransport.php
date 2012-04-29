@@ -17,7 +17,7 @@
  */
 class Swift_LoadBalancedTransport extends Swift_Transport_LoadBalancedTransport
 {
-  
+
   /**
    * Creates a new LoadBalancedTransport with $transports.
    * @param array $transports
@@ -29,10 +29,10 @@ class Swift_LoadBalancedTransport extends Swift_Transport_LoadBalancedTransport
       Swift_DependencyContainer::getInstance()
         ->createDependenciesFor('transport.loadbalanced')
       );
-    
+
     $this->setTransports($transports);
   }
-  
+
   /**
    * Create a new LoadBalancedTransport instance.
    * @param string $transports
@@ -42,5 +42,5 @@ class Swift_LoadBalancedTransport extends Swift_Transport_LoadBalancedTransport
   {
     return new self($transports);
   }
-  
+
 }

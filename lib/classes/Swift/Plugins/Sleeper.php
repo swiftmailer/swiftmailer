@@ -16,11 +16,11 @@
  */
 interface Swift_Plugins_Sleeper
 {
-  
+
   /**
    * Sleep for $seconds.
-   * @param int $seconds
+   * @param integer $seconds
    */
   public function sleep($seconds);
-  
+
 }

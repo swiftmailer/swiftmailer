@@ -15,7 +15,7 @@
  */
 class Swift_SwiftException extends Exception
 {
-  
+
   /**
    * Create a new SwiftException with $message.
    * @param string $message
@@ -24,5 +24,5 @@ class Swift_SwiftException extends Exception
   {
     parent::__construct($message);
   }
-  
+
 }

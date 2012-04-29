@@ -11,35 +11,35 @@
 
 /**
  * Redudantly and rotationally uses several Transports when sending.
- * 
+ *
  * @package Swift
  * @subpackage Transport
  * @author Chris Corbyn
  */
 class Swift_Transport_LoadBalancedTransport implements Swift_Transport
 {
-  
+
   /** Transports which are deemed useless */
   private $_deadTransports = array();
-  
+
   /**
    * The Transports which are used in rotation.
-   * 
+   *
    * @var array Swift_Transport
    * @access protected
    */
   protected $_transports = array();
-  
+
   /**
    * Creates a new LoadBalancedTransport.
    */
   public function __construct()
   {
   }
-  
+
   /**
    * Set $transports to delegate to.
-   * 
+   *
    * @param array $transports Swift_Transport
    */
   public function setTransports(array $transports)
@@ -47,27 +47,27 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     $this->_transports = $transports;
     $this->_deadTransports = array();
   }
-  
+
   /**
    * Get $transports to delegate to.
-   * 
+   *
    * @return array Swift_Transport
    */
   public function getTransports()
   {
     return array_merge($this->_transports, $this->_deadTransports);
   }
-  
+
   /**
    * Test if this Transport mechanism has started.
-   * 
+   *
    * @return boolean
    */
   public function isStarted()
   {
     return count($this->_transports) > 0;
   }
-  
+
   /**
    * Start this Transport mechanism.
    */
@@ -75,7 +75,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   {
     $this->_transports = array_merge($this->_transports, $this->_deadTransports);
   }
-  
+
   /**
    * Stop this Transport mechanism.
    */
@@ -86,13 +86,13 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
       $transport->stop();
     }
   }
-  
+
   /**
    * Send the given Message.
-   * 
+   *
    * Recipient/sender data will be retrieved from the Message API.
    * The return value is the number of recipients who were accepted for delivery.
-   * 
+   *
    * @param Swift_Mime_Message $message
    * @param string[] &$failedRecipients to collect failures by-reference
    * @return int
@@ -101,7 +101,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
   {
     $maxTransports = count($this->_transports);
     $sent = 0;
-    
+
     for ($i = 0; $i < $maxTransports
       && $transport = $this->_getNextTransport(); ++$i)
     {
@@ -121,20 +121,20 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
         $this->_killCurrentTransport();
       }
     }
-    
+
     if (count($this->_transports) == 0)
     {
       throw new Swift_TransportException(
         'All Transports in LoadBalancedTransport failed, or no Transports available'
         );
     }
-    
+
     return $sent;
   }
-  
+
   /**
    * Register a plugin.
-   * 
+   *
    * @param Swift_Events_EventListener $plugin
    */
   public function registerPlugin(Swift_Events_EventListener $plugin)
@@ -144,12 +144,12 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
       $transport->registerPlugin($plugin);
     }
   }
-  
+
   // -- Protected methods
-  
+
   /**
    * Rotates the transport list around and returns the first instance.
-   * 
+   *
    * @return Swift_Transport
    * @access protected
    */
@@ -161,10 +161,10 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     }
     return $next;
   }
-  
+
   /**
    * Tag the currently used (top of stack) transport as dead/useless.
-   * 
+   *
    * @access protected
    */
   protected function _killCurrentTransport()
@@ -181,5 +181,5 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
       $this->_deadTransports[] = $transport;
     }
   }
-  
+
 }

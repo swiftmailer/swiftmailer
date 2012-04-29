@@ -18,7 +18,7 @@
 class Swift_Transport_Esmtp_Auth_LoginAuthenticator
   implements Swift_Transport_Esmtp_Authenticator
 {
-  
+
   /**
    * Get the name of the AUTH mechanism this Authenticator handles.
    * @return string
@@ -27,7 +27,7 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticator
   {
     return 'LOGIN';
   }
-  
+
   /**
    * Try to authenticate the user with $username and $password.
    * @param Swift_Transport_SmtpAgent $agent
@@ -51,5 +51,5 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticator
       return false;
     }
   }
-  
+
 }

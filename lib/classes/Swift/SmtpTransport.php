@@ -17,12 +17,12 @@
  */
 class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
 {
-  
+
   /**
    * Create a new SmtpTransport, optionally with $host, $port and $security.
    * @param string $host
-   * @param int $port
-   * @param int $security
+   * @param integer $port
+   * @param integer $security
    */
   public function __construct($host = 'localhost', $port = 25,
     $security = null)
@@ -32,17 +32,17 @@ class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
       Swift_DependencyContainer::getInstance()
         ->createDependenciesFor('transport.smtp')
       );
-    
+
     $this->setHost($host);
     $this->setPort($port);
     $this->setEncryption($security);
   }
-  
+
   /**
    * Create a new SmtpTransport instance.
    * @param string $host
-   * @param int $port
-   * @param int $security
+   * @param integer $port
+   * @param integer $security
    * @return Swift_SmtpTransport
    */
   public static function newInstance($host = 'localhost', $port = 25,
@@ -50,5 +50,5 @@ class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
   {
     return new self($host, $port, $security);
   }
-  
+
 }

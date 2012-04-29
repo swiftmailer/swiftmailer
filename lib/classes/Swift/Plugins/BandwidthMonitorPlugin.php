@@ -19,31 +19,31 @@ class Swift_Plugins_BandwidthMonitorPlugin
   implements Swift_Events_SendListener, Swift_Events_CommandListener,
   Swift_Events_ResponseListener, Swift_InputByteStream
 {
-  
+
   /**
    * The outgoing traffic counter.
    * @var int
    * @access private
    */
   private $_out = 0;
-  
+
   /**
    * The incoming traffic counter.
    * @var int
    * @access private
    */
   private $_in = 0;
-  
+
   /** Bound byte streams */
   private $_mirrors = array();
-  
+
   /**
    * Not used.
    */
   public function beforeSendPerformed(Swift_Events_SendEvent $evt)
   {
   }
-  
+
   /**
    * Invoked immediately after the Message is sent.
    * @param Swift_Events_SendEvent $evt
@@ -53,7 +53,7 @@ class Swift_Plugins_BandwidthMonitorPlugin
     $message = $evt->getMessage();
     $message->toByteStream($this);
   }
-  
+
   /**
    * Invoked immediately following a command being sent.
    * @param Swift_Events_ResponseEvent $evt
@@ -63,7 +63,7 @@ class Swift_Plugins_BandwidthMonitorPlugin
     $command = $evt->getCommand();
     $this->_out += strlen($command);
   }
-  
+
   /**
    * Invoked immediately following a response coming back.
    * @param Swift_Events_ResponseEvent $evt
@@ -73,7 +73,7 @@ class Swift_Plugins_BandwidthMonitorPlugin
     $response = $evt->getResponse();
     $this->_in += strlen($response);
   }
-  
+
   /**
    * Called when a message is sent so that the outgoing counter can be increased.
    * @param string $bytes
@@ -86,32 +86,32 @@ class Swift_Plugins_BandwidthMonitorPlugin
       $stream->write($bytes);
     }
   }
-  
+
   /**
    * Not used.
    */
   public function commit()
   {
   }
-  
+
   /**
    * Attach $is to this stream.
    * The stream acts as an observer, receiving all data that is written.
    * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
-   * 
+   *
    * @param Swift_InputByteStream $is
    */
   public function bind(Swift_InputByteStream $is)
   {
     $this->_mirrors[] = $is;
   }
-  
+
   /**
    * Remove an already bound stream.
    * If $is is not bound, no errors will be raised.
    * If the stream currently has any buffered data it will be written to $is
    * before unbinding occurs.
-   * 
+   *
    * @param Swift_InputByteStream $is
    */
   public function unbind(Swift_InputByteStream $is)
@@ -124,7 +124,7 @@ class Swift_Plugins_BandwidthMonitorPlugin
       }
     }
   }
-  
+
   /**
    * Not used.
    */
@@ -135,7 +135,7 @@ class Swift_Plugins_BandwidthMonitorPlugin
       $stream->flushBuffers();
     }
   }
-  
+
   /**
    * Get the total number of bytes sent to the server.
    * @return int
@@ -144,7 +144,7 @@ class Swift_Plugins_BandwidthMonitorPlugin
   {
     return $this->_out;
   }
-  
+
   /**
    * Get the total number of bytes received from the server.
    * @return int
@@ -153,7 +153,7 @@ class Swift_Plugins_BandwidthMonitorPlugin
   {
     return $this->_in;
   }
-  
+
   /**
    * Reset the internal counters to zero.
    */
@@ -162,5 +162,5 @@ class Swift_Plugins_BandwidthMonitorPlugin
     $this->_out = 0;
     $this->_in = 0;
   }
-  
+
 }

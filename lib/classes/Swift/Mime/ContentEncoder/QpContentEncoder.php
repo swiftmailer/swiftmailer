@@ -50,7 +50,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
     if ($this->_dotEscape) {
       /* Encode . as =2e for buggy remote servers */
       unset($this->_safeMap[0x2e]);
-    }    
+    }
   }
 
   /**
@@ -60,8 +60,8 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
    * $firstLineOffset.
    * @param Swift_OutputByteStream $os output stream
    * @param Swift_InputByteStream $is input stream
-   * @param int $firstLineOffset
-   * @param int $maxLineLength
+   * @param integer $firstLineOffset
+   * @param integer $maxLineLength
    */
   public function encodeByteStream(
     Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0,
@@ -76,7 +76,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
 
     $this->_charStream->flushContents();
     $this->_charStream->importByteStream($os);
-    
+
     $currentLine = '';
     $prepend = '';
     $size=$lineLen=0;

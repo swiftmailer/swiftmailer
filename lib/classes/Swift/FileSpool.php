@@ -18,13 +18,13 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
 {
   /** The spool directory */
   private $_path;
-  
+
   /**
    * File WriteRetry Limit
    * @var int
    */
   private $_retryLimit=10;
-  
+
   /**
    * Create a new FileSpool.
    * @param string $path
@@ -33,7 +33,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   public function __construct($path)
   {
     $this->_path = $path;
-    
+
     if (!file_exists($this->_path))
     {
       if (!mkdir($this->_path, 0777, true))
@@ -42,7 +42,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
       }
     }
   }
-  
+
   /**
    * Tests if this Spool mechanism has started.
    *
@@ -52,32 +52,32 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   {
     return true;
   }
-  
+
   /**
    * Starts this Spool mechanism.
    */
   public function start()
   {
   }
-  
+
   /**
    * Stops this Spool mechanism.
    */
   public function stop()
   {
   }
-  
+
   /**
    * Allow to manage the enqueuing retry limit.
-   * Default, is ten and allows over 64^20 different fileNames 
-   * 
+   * Default, is ten and allows over 64^20 different fileNames
+   *
    * @param integer $limit
    */
   public function setRetryLimit($limit)
   {
     $this->_retryLimit=$limit;
   }
-  
+
   /**
    * Queues a message.
    * @param Swift_Mime_Message $message The message to store
@@ -88,7 +88,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
   {
     $ser = serialize($message);
     $fileName=$this->_path.'/'.$this->getRandomString(10);
-    for ($i = 0; $i < $this->_retryLimit; ++$i) 
+    for ($i = 0; $i < $this->_retryLimit; ++$i)
     {
       /* We try an exclusive creation of the file
        * This is an atomic operation, it avoid locking mechanism
@@ -110,14 +110,14 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         $fileName.=$this->getRandomString(1);
       }
     }
-    
+
     throw new Swift_IoException('Unable to create a file for enqueuing Message');
   }
-  
+
   /**
    * Execute a recovery if for anyreason a process is sending for too long
-   * 
-   * @param int $timeout in second Defaults is for very slow smtp responses
+   *
+   * @param integer $timeout in second Defaults is for very slow smtp responses
    */
   public function recover($timeout=900)
   {
@@ -128,21 +128,21 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
       if (substr($file, -16)=='.message.sending')
       {
         $lockedtime=filectime($file);
-        if ((time()-$lockedtime)>$timeout) 
+        if ((time()-$lockedtime)>$timeout)
         {
           rename($file, substr($file, 0, -8));
         }
       }
-    }    
+    }
   }
-  
+
   /**
    * Sends messages using the given transport instance.
    *
    * @param Swift_Transport $transport         A transport instance
    * @param string[]        &$failedRecipients An array of failures by-reference
    *
-   * @return int The number of sent emails
+   * @return integer The number of sent emails
    */
   public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
   {
@@ -164,7 +164,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
       }
 
       /* We try a rename, it's an atomic operation, and avoid locking the file */
-      if (rename($file, $file.'.sending')) 
+      if (rename($file, $file.'.sending'))
       {
         $message = unserialize(file_get_contents($file.'.sending'));
 
@@ -172,7 +172,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
 
         unlink($file.'.sending');
       }
-      else 
+      else
       {
         /* This message has just been catched by another process */
         continue;
@@ -191,17 +191,19 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
 
     return $count;
   }
-  
+
   /**
    * Returns a random string needed to generate a fileName for the queue.
-   * @param int $count
+   *
+   * @param integer $count
+   * @return string
    */
   protected function getRandomString($count) {
     // This string MUST stay FS safe, avoid special chars
     $base="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.";
     $ret='';
     $strlen=strlen($base);
-    for ($i=0; $i<$count; ++$i) 
+    for ($i=0; $i<$count; ++$i)
     {
       $ret.=$base[((int)rand(0,$strlen-1))];
     }

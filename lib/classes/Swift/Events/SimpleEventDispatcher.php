@@ -11,23 +11,23 @@
 
 /**
  * The EventDispatcher which handles the event dispatching layer.
- * 
+ *
  * @package Swift
  * @subpackage Events
  * @author Chris Corbyn
  */
 class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
 {
-  
+
   /** A map of event types to their associated listener types */
   private $_eventMap = array();
-  
+
   /** Event listeners bound to this dispatcher */
   private $_listeners = array();
-  
+
   /** Listeners queued to have an Event bubbled up the stack to them */
   private $_bubbleQueue = array();
-  
+
   /**
    * Create a new EventDispatcher.
    */
@@ -41,10 +41,10 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
       'Swift_Events_TransportExceptionEvent' => 'Swift_Events_TransportExceptionListener'
       );
   }
-  
+
   /**
    * Create a new SendEvent for $source and $message.
-   * 
+   *
    * @param Swift_Transport $source
    * @param Swift_Mime_Message
    * @return Swift_Events_SendEvent
@@ -54,10 +54,10 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
   {
     return new Swift_Events_SendEvent($source, $message);
   }
-  
+
   /**
    * Create a new CommandEvent for $source and $command.
-   * 
+   *
    * @param Swift_Transport $source
    * @param string $command That will be executed
    * @param array $successCodes That are needed
@@ -68,10 +68,10 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
   {
     return new Swift_Events_CommandEvent($source, $command, $successCodes);
   }
-  
+
   /**
    * Create a new ResponseEvent for $source and $response.
-   * 
+   *
    * @param Swift_Transport $source
    * @param string $response
    * @param boolean $valid If the response is valid
@@ -82,10 +82,10 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
   {
     return new Swift_Events_ResponseEvent($source, $response, $valid);
   }
-  
+
   /**
    * Create a new TransportChangeEvent for $source.
-   * 
+   *
    * @param Swift_Transport $source
    * @return Swift_Events_TransportChangeEvent
    */
@@ -93,10 +93,10 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
   {
     return new Swift_Events_TransportChangeEvent($source);
   }
-  
+
   /**
    * Create a new TransportExceptionEvent for $source.
-   * 
+   *
    * @param Swift_Transport $source
    * @param Swift_TransportException $ex
    * @return Swift_Events_TransportExceptionEvent
@@ -106,10 +106,10 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
   {
     return new Swift_Events_TransportExceptionEvent($source, $ex);
   }
-  
+
   /**
    * Bind an event listener to this dispatcher.
-   * 
+   *
    * @param Swift_Events_EventListener $listener
    */
   public function bindEventListener(Swift_Events_EventListener $listener)
@@ -124,10 +124,10 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
     }
     $this->_listeners[] = $listener;
   }
-  
+
   /**
    * Dispatch the given Event to all suitable listeners.
-   * 
+   *
    * @param Swift_Events_EventObject $evt
    * @param string $target method
    */
@@ -136,9 +136,9 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
     $this->_prepareBubbleQueue($evt);
     $this->_bubble($evt, $target);
   }
-  
+
   // -- Private methods
-  
+
   /** Queue listeners on a stack ready for $evt to be bubbled up it */
   private function _prepareBubbleQueue(Swift_Events_EventObject $evt)
   {
@@ -153,7 +153,7 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
       }
     }
   }
-  
+
   /** Bubble $evt up the stack calling $target() on each listener */
   private function _bubble(Swift_Events_EventObject $evt, $target)
   {
@@ -163,5 +163,5 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
       $this->_bubble($evt, $target);
     }
   }
-  
+
 }

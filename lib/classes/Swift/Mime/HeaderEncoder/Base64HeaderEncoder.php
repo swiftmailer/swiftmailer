@@ -22,7 +22,7 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoder
   extends Swift_Encoder_Base64Encoder
   implements Swift_Mime_HeaderEncoder
 {
-  
+
   /**
    * Get the name of this encoding scheme.
    * Returns the string 'B'.
@@ -32,5 +32,5 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoder
   {
     return 'B';
   }
-  
+
 }

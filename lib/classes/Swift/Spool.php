@@ -46,7 +46,7 @@ interface Swift_Spool
    * @param Swift_Transport $transport         A transport instance
    * @param string[]        &$failedRecipients An array of failures by-reference
    *
-   * @return int The number of sent emails
+   * @return integer The number of sent emails
    */
   public function flushQueue(Swift_Transport $transport, &$failedRecipients = null);
 }
