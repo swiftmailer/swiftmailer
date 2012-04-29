@@ -11,29 +11,29 @@
 
 /**
  * A MIME part, in a multipart message.
- * 
+ *
  * @package Swift
  * @subpackage Mime
  * @author Chris Corbyn
  */
 class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
 {
-  
+
   /** The format parameter last specified by the user */
   protected $_userFormat;
-  
+
   /** The charset last specified by the user */
   protected $_userCharset;
-  
+
   /** The delsp parameter last specified by the user */
   protected $_userDelSp;
-  
+
   /** The nesting level of this MimePart */
   private $_nestingLevel = self::LEVEL_ALTERNATIVE;
-  
+
   /**
    * Create a new MimePart with $headers, $encoder and $cache.
-   * 
+   *
    * @param Swift_Mime_HeaderSet $headers
    * @param Swift_Mime_ContentEncoder $encoder
    * @param Swift_KeyCache $cache
@@ -50,15 +50,16 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
       $this->setCharset($charset);
     }
   }
-  
+
   /**
    * Set the body of this entity, either as a string, or as an instance of
    * {@link Swift_OutputByteStream}.
-   * 
+   *
    * @param mixed $body
    * @param string $contentType optional
    * @param string $charset optional
    * @param Swift_Mime_MimePart
+   * @return Swift_Mime_MimePart
    */
   public function setBody($body, $contentType = null, $charset = null)
   {
@@ -69,22 +70,23 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     }
     return $this;
   }
-  
+
   /**
    * Get the character set of this entity.
-   * 
+   *
    * @return string
    */
   public function getCharset()
   {
     return $this->_getHeaderParameter('Content-Type', 'charset');
   }
-  
+
   /**
    * Set the character set of this entity.
-   * 
+   *
    * @param string $charset
    * @param Swift_Mime_MimePart
+   * @return Swift_Mime_MimePart
    */
   public function setCharset($charset)
   {
@@ -97,22 +99,23 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     parent::charsetChanged($charset);
     return $this;
   }
-  
+
   /**
    * Get the format of this entity (i.e. flowed or fixed).
-   * 
+   *
    * @return string
    */
   public function getFormat()
   {
     return $this->_getHeaderParameter('Content-Type', 'format');
   }
-  
+
   /**
    * Set the format of this entity (flowed or fixed).
-   * 
+   *
    * @param string $format
    * @param Swift_Mime_MimePart
+   * @return Swift_Mime_MimePart
    */
   public function setFormat($format)
   {
@@ -120,10 +123,10 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     $this->_userFormat = $format;
     return $this;
   }
-  
+
   /**
    * Test if delsp is being used for this entity.
-   * 
+   *
    * @return boolean
    */
   public function getDelSp()
@@ -132,12 +135,13 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
       ? true
       : false;
   }
-  
+
   /**
    * Turn delsp on or off for this entity.
-   * 
+   *
    * @param boolean $delsp
    * @param Swift_Mime_MimePart
+   * @return Swift_Mime_MimePart
    */
   public function setDelSp($delsp = true)
   {
@@ -145,10 +149,10 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     $this->_userDelSp = $delsp;
     return $this;
   }
-  
+
   /**
    * Get the nesting level of this entity.
-   * 
+   *
    * @return int
    * @see LEVEL_TOP, LEVEL_ALTERNATIVE, LEVEL_MIXED, LEVEL_RELATED
    */
@@ -156,20 +160,20 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
   {
     return $this->_nestingLevel;
   }
-  
+
   /**
    * Receive notification that the charset has changed on this document, or a
    * parent document.
-   * 
+   *
    * @param string $charset
    */
   public function charsetChanged($charset)
   {
     $this->setCharset($charset);
   }
-  
+
   // -- Protected methods
-  
+
   /** Fix the content-type and encoding of this entity */
   protected function _fixHeaders()
   {
@@ -187,11 +191,15 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
       $this->setDelSp($this->_userDelSp);
     }
   }
-  
-  /** Set the nesting level of this entity */
+
+  /**
+   * Set the nesting level of this entity
+   *
+   * @param integer $level
+   */
   protected function _setNestingLevel($level)
   {
     $this->_nestingLevel = $level;
   }
-  
+
 }

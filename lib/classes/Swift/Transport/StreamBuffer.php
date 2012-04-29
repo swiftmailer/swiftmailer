@@ -19,25 +19,25 @@ class Swift_Transport_StreamBuffer
   extends Swift_ByteStream_AbstractFilterableInputStream
   implements Swift_Transport_IoBuffer
 {
-  
+
   /** A primary socket */
   private $_stream;
-  
+
   /** The input stream */
   private $_in;
-  
+
   /** The output stream */
   private $_out;
-  
+
   /** Buffer initialization parameters */
   private $_params = array();
-  
+
   /** The ReplacementFilterFactory */
   private $_replacementFactory;
-  
+
   /** Translations performed on data being streamed into the buffer */
   private $_translations = array();
-  
+
   /**
    * Create a new StreamBuffer using $replacementFactory for transformations.
    * @param Swift_ReplacementFilterFactory $replacementFactory
@@ -47,7 +47,7 @@ class Swift_Transport_StreamBuffer
   {
     $this->_replacementFactory = $replacementFactory;
   }
-  
+
   /**
    * Perform any initialization needed, using the given $params.
    * Parameters will vary depending upon the type of IoBuffer used.
@@ -67,7 +67,7 @@ class Swift_Transport_StreamBuffer
         break;
     }
   }
-  
+
   /**
    * Set an individual param on the buffer (e.g. switching to SSL).
    * @param string $param
@@ -85,23 +85,23 @@ class Swift_Transport_StreamBuffer
             stream_set_timeout($this->_stream, $value);
           }
           break;
-          
+
         case 'blocking':
           if ($this->_stream)
           {
             stream_set_blocking($this->_stream, 1);
           }
-          
+
       }
     }
     $this->_params[$param] = $value;
   }
-  
+
   public function startTLS()
   {
     return stream_socket_enable_crypto($this->_stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
   }
-  
+
   /**
    * Perform any shutdown logic needed.
    */
@@ -126,7 +126,7 @@ class Swift_Transport_StreamBuffer
     $this->_out = null;
     $this->_in = null;
   }
-  
+
   /**
    * Set an array of string replacements which should be made on data written
    * to the buffer.  This could replace LF with CRLF for example.
@@ -142,7 +142,7 @@ class Swift_Transport_StreamBuffer
         unset($this->_translations[$search]);
       }
     }
-    
+
     foreach ($replacements as $search => $replace)
     {
       if (!isset($this->_translations[$search]))
@@ -154,26 +154,29 @@ class Swift_Transport_StreamBuffer
       }
     }
   }
-  
+
   /**
    * Get a line of output (including any CRLF).
    * The $sequence number comes from any writes and may or may not be used
    * depending upon the implementation.
+   *
    * @param int $sequence of last write to scan from
    * @return string
+   *
+   * @throws Swift_IoException
    */
   public function readLine($sequence)
   {
     if (isset($this->_out) && !feof($this->_out))
     {
       $line = fgets($this->_out);
-      if (strlen($line)==0) 
+      if (strlen($line)==0)
       {
         $metas = stream_get_meta_data($this->_out);
         if ($metas['timed_out']) {
           throw new Swift_IoException(
-            'Connection to ' . 
-              $this->_getReadConnectionDescription() . 
+            'Connection to ' .
+              $this->_getReadConnectionDescription() .
             ' Timed Out'
           );
         }
@@ -181,28 +184,31 @@ class Swift_Transport_StreamBuffer
       return $line;
     }
   }
-  
+
   /**
    * Reads $length bytes from the stream into a string and moves the pointer
    * through the stream by $length. If less bytes exist than are requested the
    * remaining bytes are given instead. If no bytes are remaining at all, boolean
    * false is returned.
-   * @param int $length
+   *
+   * @param integer $length
    * @return string
+   *
+   * @throws Swift_IoException
    */
   public function read($length)
   {
     if (isset($this->_out) && !feof($this->_out))
     {
       $ret = fread($this->_out, $length);
-      if (strlen($ret)==0) 
+      if (strlen($ret)==0)
       {
         $metas = stream_get_meta_data($this->_out);
-        if ($metas['timed_out']) 
+        if ($metas['timed_out'])
         {
           throw new Swift_IoException(
-            'Connection to ' . 
-              $this->_getReadConnectionDescription() . 
+            'Connection to ' .
+              $this->_getReadConnectionDescription() .
             ' Timed Out'
           );
         }
@@ -210,15 +216,17 @@ class Swift_Transport_StreamBuffer
       return $ret;
     }
   }
-  
+
   /** Not implemented */
   public function setReadPointer($byteOffset)
   {
   }
-  
+
   // -- Protected methods
-  
-  /** Flush the stream contents */
+
+  /**
+   * Flush the stream contents
+   */
   protected function _flush()
   {
     if (isset($this->_in))
@@ -226,8 +234,12 @@ class Swift_Transport_StreamBuffer
       fflush($this->_in);
     }
   }
-  
-  /** Write this bytes to the stream */
+
+  /** Write this bytes to the stream
+   *
+   * @param string $bytes
+   * @return integer
+   */
   protected function _commit($bytes)
   {
     if (isset($this->_in)
@@ -236,12 +248,13 @@ class Swift_Transport_StreamBuffer
       return ++$this->_sequence;
     }
   }
-  
+
   // -- Private methods
-  
+
   /**
    * Establishes a connection to a remote server.
-   * @access private
+   *
+   * @throws Swift_TransportException
    */
   private function _establishSocketConnection()
   {
@@ -280,10 +293,11 @@ class Swift_Transport_StreamBuffer
     $this->_in =& $this->_stream;
     $this->_out =& $this->_stream;
   }
-  
+
   /**
    * Opens a process for input/output.
-   * @access private
+   *
+   * @throws Swift_TransportException
    */
   private function _establishProcessConnection()
   {
@@ -304,8 +318,10 @@ class Swift_Transport_StreamBuffer
     $this->_in =& $pipes[0];
     $this->_out =& $pipes[1];
   }
-  
-  
+
+  /**
+   * @return string
+   */
   private function _getReadConnectionDescription()
   {
     switch ($this->_params['type'])
@@ -313,7 +329,7 @@ class Swift_Transport_StreamBuffer
       case self::TYPE_PROCESS:
         return 'Process '.$this->_params['command'];
         break;
-        
+
       case self::TYPE_SOCKET:
       default:
         $host = $this->_params['host'];

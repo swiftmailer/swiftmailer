@@ -36,13 +36,13 @@ class Swift_CharacterReader_GenericFixedWidthReader
   }
 
   /**
-   * Returns the complete charactermap
+   * Returns the complete character-map
    *
    * @param string $string
    * @param int $startOffset
    * @param array $currentMap
    * @param mixed $ignoredChars
-   * @return $int
+   * @return integer
    */
   public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
   {
@@ -54,10 +54,11 @@ class Swift_CharacterReader_GenericFixedWidthReader
 
     return ($strlen - $ignored)/$this->_width;
   }
-  
+
   /**
    * Returns mapType
-   * @int mapType
+   *
+   * @return integer
    */
   public function getMapType()
   {
