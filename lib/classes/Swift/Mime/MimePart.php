@@ -62,6 +62,8 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
    */
   public function setBody($body, $contentType = null, $charset = null)
   {
+    $body = Swift_Charset::convertString($body, $this->getCharset());
+  
     parent::setBody($body, $contentType);
     if (isset($charset))
     {
