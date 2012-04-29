@@ -55,11 +55,23 @@ class Swift_Plugins_DecoratorPlugin
    * the object should return just the array of replacements for the address
    * given to {@link Swift_Plugins_Decorator_Replacements::getReplacementsFor()}.
    * 
-   * @param mixed $replacements
+   * @param mixed $replacements Array or Swift_Plugins_Decorator_Replacements
    */
   public function __construct($replacements)
   {
-    if (!($replacements instanceof Swift_Plugins_Decorator_Replacements))
+    $this->setReplacements($replacements);
+  }
+
+  /**
+   * Sets replacements.
+   *
+   * @param mixed $replacements Array or Swift_Plugins_Decorator_Replacements
+   *
+   * @see __construct()
+   */
+  public function setReplacements($replacements)
+  {
+    if (!($replacements instanceof \Swift_Plugins_Decorator_Replacements))
     {
       $this->_replacements = (array) $replacements;
     }
