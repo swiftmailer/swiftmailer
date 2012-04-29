@@ -15,7 +15,7 @@
  */
 interface Swift_ReplacementFilterFactory
 {
-  
+
   /**
    * Create a filter to replace $search with $replace.
    * @param mixed $search
@@ -23,5 +23,5 @@ interface Swift_ReplacementFilterFactory
    * @return Swift_StreamFilter
    */
   public function createFilter($search, $replace);
-  
+
 }

@@ -16,13 +16,13 @@
  */
 class Swift_Preferences
 {
-  
+
   /** Singleton instance */
   private static $_instance = null;
-  
+
   /** Constructor not to be used */
   private function __construct() { }
-  
+
   /**
    * Get a new instance of Preferences.
    * @return Swift_Preferences
@@ -35,7 +35,7 @@ class Swift_Preferences
     }
     return self::$_instance;
   }
-  
+
   /**
    * Set the default charset used.
    * @param string
@@ -47,7 +47,7 @@ class Swift_Preferences
       ->register('properties.charset')->asValue($charset);
     return $this;
   }
-  
+
   /**
    * Set the directory where temporary files can be saved.
    * @param string $dir
@@ -59,7 +59,7 @@ class Swift_Preferences
       ->register('tempdir')->asValue($dir);
     return $this;
   }
-  
+
   /**
    * Set the type of cache to use (i.e. "disk" or "array").
    * @param string $type
@@ -71,7 +71,7 @@ class Swift_Preferences
       ->register('cache')->asAliasOf(sprintf('cache.%s', $type));
     return $this;
   }
-  
+
   /**
    * Add the
    * @param boolean $dotEscape
@@ -87,5 +87,5 @@ class Swift_Preferences
       -> addConstructorValue($dotEscape);
     return $this;
   }
-  
+
 }

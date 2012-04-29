@@ -17,7 +17,7 @@
  */
 class Swift_TransportException extends Swift_IoException
 {
-  
+
   /**
    * Create a new TransportException with $message.
    * @param string $message
@@ -26,5 +26,5 @@ class Swift_TransportException extends Swift_IoException
   {
     parent::__construct($message);
   }
-  
+
 }

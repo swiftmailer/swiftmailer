@@ -18,19 +18,19 @@
 class Swift_KeyCache_SimpleKeyCacheInputStream
   implements Swift_KeyCache_KeyCacheInputStream
 {
-  
+
   /** The KeyCache being written to */
   private $_keyCache;
-  
+
   /** The nsKey of the KeyCache being written to */
   private $_nsKey;
-  
+
   /** The itemKey of the KeyCache being written to */
   private $_itemKey;
-  
+
   /** A stream to write through on each write() */
   private $_writeThrough = null;
-  
+
   /**
    * Set the KeyCache to wrap.
    * @param Swift_KeyCache $keyCache
@@ -39,7 +39,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
   {
     $this->_keyCache = $keyCache;
   }
-  
+
   /**
    * Specify a stream to write through for each write().
    * @param Swift_InputByteStream $is
@@ -48,7 +48,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
   {
     $this->_writeThrough = $is;
   }
-  
+
   /**
    * Writes $bytes to the end of the stream.
    * @param string $bytes
@@ -68,28 +68,28 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
       $this->_writeThrough->write($bytes);
     }
   }
-  
+
   /**
    * Not used.
    */
   public function commit()
   {
   }
-  
+
   /**
    * Not used.
    */
   public function bind(Swift_InputByteStream $is)
   {
   }
-  
+
   /**
    * Not used.
    */
   public function unbind(Swift_InputByteStream $is)
   {
   }
-  
+
   /**
    * Flush the contents of the stream (empty it) and set the internal pointer
    * to the beginning.
@@ -98,7 +98,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
   {
     $this->_keyCache->clearKey($this->_nsKey, $this->_itemKey);
   }
-  
+
   /**
    * Set the nsKey which will be written to.
    * @param string $nsKey
@@ -107,7 +107,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
   {
     $this->_nsKey = $nsKey;
   }
-  
+
   /**
    * Set the itemKey which will be written to.
    * @param string $itemKey
@@ -116,7 +116,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
   {
     $this->_itemKey = $itemKey;
   }
-  
+
   /**
    * Any implementation should be cloneable, allowing the clone to access a
    * separate $nsKey and $itemKey.
@@ -125,5 +125,5 @@ class Swift_KeyCache_SimpleKeyCacheInputStream
   {
     $this->_writeThrough = null;
   }
-  
+
 }

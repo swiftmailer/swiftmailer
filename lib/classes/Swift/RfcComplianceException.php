@@ -16,7 +16,7 @@
  */
 class Swift_RfcComplianceException extends Swift_SwiftException
 {
-  
+
   /**
    * Create a new RfcComplianceException with $message.
    * @param string $message
@@ -25,5 +25,5 @@ class Swift_RfcComplianceException extends Swift_SwiftException
   {
     parent::__construct($message);
   }
-  
+
 }

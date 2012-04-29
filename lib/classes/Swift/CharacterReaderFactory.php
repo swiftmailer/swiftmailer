@@ -24,5 +24,5 @@ interface Swift_CharacterReaderFactory
    * @return Swift_CharacterReader
    */
   public function getReaderFor($charset);
-  
+
 }

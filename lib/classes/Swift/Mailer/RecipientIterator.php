@@ -16,13 +16,13 @@
  */
 interface Swift_Mailer_RecipientIterator
 {
-  
+
   /**
    * Returns true only if there are more recipients to send to.
    * @return boolean
    */
   public function hasNext();
-  
+
   /**
    * Returns an array where the keys are the addresses of recipients and the
    * values are the names.
@@ -30,5 +30,5 @@ interface Swift_Mailer_RecipientIterator
    * @return array
    */
   public function nextRecipient();
-  
+
 }
