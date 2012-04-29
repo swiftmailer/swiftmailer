@@ -352,7 +352,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   /**
    * Test if the headers can be sorted
    *
-   * @return bool
+   * @return boolean
    */
   private function _canSort()
   {
@@ -391,7 +391,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
   /** Test if the given Header is always displayed
    *
    * @param Swift_Mime_Header $header
-   * @return bool
+   * @return boolean
    */
   private function _isDisplayed(Swift_Mime_Header $header)
   {
