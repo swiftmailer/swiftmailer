@@ -18,32 +18,32 @@
 abstract class Swift_ByteStream_AbstractFilterableInputStream
   implements Swift_InputByteStream, Swift_Filterable
 {
-  
+
   /** Write sequence */
-  private $_sequence = 0;
-  
+  protected $_sequence = 0;
+
   /** StreamFilters */
-  private $_filters = array();
-  
+  protected $_filters = array();
+
   /** A buffer for writing */
-  private $_writeBuffer = '';
-  
+  protected $_writeBuffer = '';
+
   /** Bound streams */
-  private $_mirrors = array();
-  
+  protected $_mirrors = array();
+
   /**
    * Commit the given bytes to the storage medium immediately.
    * @param string $bytes
    * @access protected
    */
   abstract protected function _commit($bytes);
-  
+
   /**
    * Flush any buffers/content with immediate effect.
    * @access protected
    */
   abstract protected function _flush();
-  
+
   /**
    * Add a StreamFilter to this InputByteStream.
    * @param Swift_StreamFilter $filter
@@ -53,7 +53,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   {
     $this->_filters[$key] = $filter;
   }
-  
+
   /**
    * Remove an already present StreamFilter based on its $key.
    * @param string $key
@@ -62,10 +62,11 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
   {
     unset($this->_filters[$key]);
   }
-  
+
   /**
    * Writes $bytes to the end of the stream.
    * @param string $bytes
+   * @return int
    * @throws Swift_IoException
    */
   public function write($bytes)
@@ -81,36 +82,36 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
     $this->_doWrite($this->_writeBuffer);
     return ++$this->_sequence;
   }
-  
+
   /**
    * For any bytes that are currently buffered inside the stream, force them
    * off the buffer.
-   * 
+   *
    * @throws Swift_IoException
    */
   public function commit()
   {
     $this->_doWrite($this->_writeBuffer);
   }
-  
+
   /**
    * Attach $is to this stream.
    * The stream acts as an observer, receiving all data that is written.
    * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
-   * 
+   *
    * @param Swift_InputByteStream $is
    */
   public function bind(Swift_InputByteStream $is)
   {
     $this->_mirrors[] = $is;
   }
-  
+
   /**
    * Remove an already bound stream.
    * If $is is not bound, no errors will be raised.
    * If the stream currently has any buffered data it will be written to $is
    * before unbinding occurs.
-   * 
+   *
    * @param Swift_InputByteStream $is
    */
   public function unbind(Swift_InputByteStream $is)
@@ -127,7 +128,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
       }
     }
   }
-  
+
   /**
    * Flush the contents of the stream (empty it) and set the internal pointer
    * to the beginning.
@@ -140,15 +141,15 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
       $this->_doWrite($this->_writeBuffer);
     }
     $this->_flush();
-    
+
     foreach ($this->_mirrors as $stream)
     {
       $stream->flushBuffers();
     }
   }
-  
+
   // -- Private methods
-  
+
   /** Run $bytes through all filters */
   private function _filter($bytes)
   {
@@ -158,18 +159,18 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
     }
     return $bytes;
   }
-  
+
   /** Just write the bytes to the stream */
   private function _doWrite($bytes)
   {
     $this->_commit($this->_filter($bytes));
-    
+
     foreach ($this->_mirrors as $stream)
     {
       $stream->write($bytes);
     }
-    
+
     $this->_writeBuffer = '';
   }
-  
+
 }
