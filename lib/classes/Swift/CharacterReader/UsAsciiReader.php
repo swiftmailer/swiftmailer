@@ -38,7 +38,7 @@ class Swift_CharacterReader_UsAsciiReader
     }
     return $strlen;
   }
-  
+
   /**
    * Returns mapType
    * @int mapType
@@ -47,7 +47,7 @@ class Swift_CharacterReader_UsAsciiReader
   {
     return self::MAP_TYPE_INVALID;
   }
- 
+
   /**
    * Returns an integer which specifies how many more bytes to read.
    * A positive integer indicates the number of more bytes to fetch before invoking

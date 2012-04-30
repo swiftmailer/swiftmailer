@@ -16,13 +16,13 @@
  */
 interface Swift_Transport_SmtpAgent
 {
-  
+
   /**
    * Get the IoBuffer where read/writes are occurring.
    * @return Swift_Transport_IoBuffer
    */
   public function getBuffer();
-  
+
   /**
    * Run a command against the buffer, expecting the given response codes.
    * If no response codes are given, the response will not be validated.
@@ -32,5 +32,5 @@ interface Swift_Transport_SmtpAgent
    * @param string[] &$failures
    */
   public function executeCommand($command, $codes = array(), &$failures = null);
-  
+
 }

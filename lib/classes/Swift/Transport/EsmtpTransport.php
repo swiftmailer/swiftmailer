@@ -19,21 +19,21 @@ class Swift_Transport_EsmtpTransport
   extends Swift_Transport_AbstractSmtpTransport
   implements Swift_Transport_SmtpAgent
 {
-  
+
   /**
    * ESMTP extension handlers.
    * @var Swift_Transport_EsmtpHandler[]
    * @access private
    */
   private $_handlers = array();
-  
+
   /**
    * ESMTP capabilities.
    * @var string[]
    * @access private
    */
   private $_capabilities = array();
-  
+
   /**
    * Connection buffer parameters.
    * @var array
@@ -48,7 +48,7 @@ class Swift_Transport_EsmtpTransport
     'tls' => false,
     'type' => Swift_Transport_IoBuffer::TYPE_SOCKET
     );
-  
+
   /**
    * Creates a new EsmtpTransport using the given I/O buffer.
    * @param Swift_Transport_IoBuffer $buf
@@ -61,7 +61,7 @@ class Swift_Transport_EsmtpTransport
     parent::__construct($buf, $dispatcher);
     $this->setExtensionHandlers($extensionHandlers);
   }
-  
+
   /**
    * Set the host to connect to.
    * @param string $host
@@ -72,7 +72,7 @@ class Swift_Transport_EsmtpTransport
     $this->_params['host'] = $host;
     return $this;
   }
-  
+
   /**
    * Get the host to connect to.
    * @return string
@@ -81,7 +81,7 @@ class Swift_Transport_EsmtpTransport
   {
     return $this->_params['host'];
   }
-  
+
   /**
    * Set the port to connect to.
    * @param int $port
@@ -92,7 +92,7 @@ class Swift_Transport_EsmtpTransport
     $this->_params['port'] = (int) $port;
     return $this;
   }
-  
+
   /**
    * Get the port to connect to.
    * @return int
@@ -101,7 +101,7 @@ class Swift_Transport_EsmtpTransport
   {
     return $this->_params['port'];
   }
-  
+
   /**
    * Set the connection timeout.
    * @param int $timeout seconds
@@ -113,7 +113,7 @@ class Swift_Transport_EsmtpTransport
     $this->_buffer->setParam('timeout', (int) $timeout);
     return $this;
   }
-  
+
   /**
    * Get the connection timeout.
    * @return int
@@ -122,7 +122,7 @@ class Swift_Transport_EsmtpTransport
   {
     return $this->_params['timeout'];
   }
-  
+
   /**
    * Set the encryption type (tls or ssl)
    * @param string $encryption
@@ -140,7 +140,7 @@ class Swift_Transport_EsmtpTransport
     }
     return $this;
   }
-  
+
   /**
    * Get the encryption type.
    * @return string
@@ -149,7 +149,7 @@ class Swift_Transport_EsmtpTransport
   {
     return $this->_params['tls'] ? 'tls' : $this->_params['protocol'];
   }
-  
+
   /**
    * Sets the sourceIp
    * @param string $source
@@ -169,7 +169,7 @@ class Swift_Transport_EsmtpTransport
   {
     return $this->_params['sourceIp'];
   }
-  
+
   /**
    * Set ESMTP extension handlers.
    * @param Swift_Transport_EsmtpHandler[] $handlers
@@ -187,7 +187,7 @@ class Swift_Transport_EsmtpTransport
     $this->_setHandlerParams();
     return $this;
   }
-  
+
   /**
    * Get ESMTP extension handlers.
    * @return Swift_Transport_EsmtpHandler[]
@@ -196,7 +196,7 @@ class Swift_Transport_EsmtpTransport
   {
     return array_values($this->_handlers);
   }
-  
+
   /**
    * Run a command against the buffer, expecting the given response codes.
    * If no response codes are given, the response will not be validated.
@@ -223,9 +223,9 @@ class Swift_Transport_EsmtpTransport
     }
     return parent::executeCommand($command, $codes, $failures);
   }
-  
+
   // -- Mixin invocation code
-  
+
   /** Mixin handling method for ESMTP handlers */
   public function __call($method, $args)
   {
@@ -249,15 +249,15 @@ class Swift_Transport_EsmtpTransport
     }
     trigger_error('Call to undefined method ' . $method, E_USER_ERROR);
   }
-  
+
   // -- Protected methods
-  
+
   /** Get the params to initialize the buffer */
   protected function _getBufferParams()
   {
     return $this->_params;
   }
-  
+
   /** Overridden to perform EHLO instead */
   protected function _doHeloCommand()
   {
@@ -277,12 +277,12 @@ class Swift_Transport_EsmtpTransport
       try
       {
         $this->executeCommand("STARTTLS\r\n", array(220));
-        
+
         if (!$this->_buffer->startTLS())
         {
           throw new Swift_TransportException('Unable to connect with TLS encryption');
         }
-        
+
         try
         {
           $response = $this->executeCommand(
@@ -307,7 +307,7 @@ class Swift_Transport_EsmtpTransport
       $handler->afterEhlo($this);
     }
   }
-  
+
   /** Overridden to add Extension support */
   protected function _doMailFromCommand($address)
   {
@@ -322,7 +322,7 @@ class Swift_Transport_EsmtpTransport
       sprintf("MAIL FROM: <%s>%s\r\n", $address, $paramStr), array(250)
       );
   }
-  
+
   /** Overridden to add Extension support */
   protected function _doRcptToCommand($address)
   {
@@ -337,9 +337,9 @@ class Swift_Transport_EsmtpTransport
       sprintf("RCPT TO: <%s>%s\r\n", $address, $paramStr), array(250, 251, 252)
       );
   }
-  
+
   // -- Private methods
-  
+
   /** Determine ESMTP capabilities by function group */
   private function _getCapabilities($ehloResponse)
   {
@@ -359,7 +359,7 @@ class Swift_Transport_EsmtpTransport
     }
     return $capabilities;
   }
-  
+
   /** Set parameters which are used by each extension handler */
   private function _setHandlerParams()
   {
@@ -371,7 +371,7 @@ class Swift_Transport_EsmtpTransport
       }
     }
   }
-  
+
   /** Get ESMTP handlers which are currently ok to use */
   private function _getActiveHandlers()
   {
@@ -385,11 +385,11 @@ class Swift_Transport_EsmtpTransport
     }
     return $handlers;
   }
-  
+
   /** Custom sort for extension handler ordering */
   private function _sortHandlers($a, $b)
   {
     return $a->getPriorityOver($b->getHandledKeyword());
   }
-  
+
 }

@@ -50,7 +50,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
     if ($this->_dotEscape) {
       /* Encode . as =2e for buggy remote servers */
       unset($this->_safeMap[0x2e]);
-    }    
+    }
   }
 
   /**
@@ -76,7 +76,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
 
     $this->_charStream->flushContents();
     $this->_charStream->importByteStream($os);
-    
+
     $currentLine = '';
     $prepend = '';
     $size=$lineLen=0;

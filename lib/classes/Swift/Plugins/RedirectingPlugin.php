@@ -23,7 +23,7 @@ class Swift_Plugins_RedirectingPlugin
    * @access private
    */
   private $_recipient;
-  
+
   /**
    * Create a new RedirectingPlugin.
    * @param int $recipient
@@ -32,7 +32,7 @@ class Swift_Plugins_RedirectingPlugin
   {
     $this->_recipient = $recipient;
   }
-  
+
   /**
    * Set the recipient of all messages.
    * @param int $threshold
@@ -41,7 +41,7 @@ class Swift_Plugins_RedirectingPlugin
   {
     $this->_recipient = $recipient;
   }
-  
+
   /**
    * Get the recipient of all messages.
    * @return int
@@ -50,7 +50,7 @@ class Swift_Plugins_RedirectingPlugin
   {
     return $this->_recipient;
   }
-  
+
   /**
    * Invoked immediately before the Message is sent.
    * @param Swift_Events_SendEvent $evt
@@ -70,19 +70,19 @@ class Swift_Plugins_RedirectingPlugin
     $headers->removeAll('Cc');
     $headers->removeAll('Bcc');
   }
-  
+
   /**
    * Invoked immediately after the Message is sent.
-   * 
+   *
    * @param Swift_Events_SendEvent $evt
    */
   public function sendPerformed(Swift_Events_SendEvent $evt)
   {
     $this->_restoreMessage($evt->getMessage());
   }
-  
+
   // -- Private methods
-  
+
   private function _restoreMessage(Swift_Mime_Message $message)
   {
     // restore original headers

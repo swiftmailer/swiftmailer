@@ -21,12 +21,12 @@ class Swift_Plugins_MessageLogger
    * @var array
    */
   private $messages;
-  
+
   public function __construct()
   {
     $this->messages = array();
   }
-  
+
   /**
    * Get the message list
    *
@@ -36,7 +36,7 @@ class Swift_Plugins_MessageLogger
   {
     return $this->messages;
   }
-  
+
   /**
    * Get the message count
    *
@@ -46,7 +46,7 @@ class Swift_Plugins_MessageLogger
   {
     return count($this->messages);
   }
-  
+
   /**
    * Empty the message list
    *
@@ -55,7 +55,7 @@ class Swift_Plugins_MessageLogger
   {
     $this->messages = array();
   }
-  
+
   /**
    * Invoked immediately before the Message is sent.
    *
@@ -65,7 +65,7 @@ class Swift_Plugins_MessageLogger
   {
     $this->messages[] = clone $evt->getMessage();
   }
-  
+
   /**
    * Invoked immediately after the Message is sent.
    *

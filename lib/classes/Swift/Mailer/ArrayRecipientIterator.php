@@ -18,14 +18,14 @@
 class Swift_Mailer_ArrayRecipientIterator
   implements Swift_Mailer_RecipientIterator
 {
-  
+
   /**
    * The list of recipients.
    * @var array
    * @access private
    */
   private $_recipients = array();
-  
+
   /**
    * Create a new ArrayRecipientIterator from $recipients.
    * @param array $recipients
@@ -34,7 +34,7 @@ class Swift_Mailer_ArrayRecipientIterator
   {
     $this->_recipients = $recipients;
   }
-  
+
   /**
    * Returns true only if there are more recipients to send to.
    * @return boolean
@@ -43,7 +43,7 @@ class Swift_Mailer_ArrayRecipientIterator
   {
     return !empty($this->_recipients);
   }
-  
+
   /**
    * Returns an array where the keys are the addresses of recipients and the
    * values are the names.
@@ -54,5 +54,5 @@ class Swift_Mailer_ArrayRecipientIterator
   {
     return array_splice($this->_recipients, 0, 1);
   }
-  
+
 }

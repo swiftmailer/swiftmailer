@@ -11,19 +11,19 @@
 
 /**
  * Swift Mailer class.
- * 
+ *
  * @package Swift
  * @author Chris Corbyn
  */
 class Swift_Mailer
 {
-  
+
   /** The Transport used to send messages */
   private $_transport;
-  
+
   /**
    * Create a new Mailer using $transport for delivery.
-   * 
+   *
    * @param Swift_Transport $transport
    */
   public function __construct(Swift_Transport $transport)
@@ -33,7 +33,7 @@ class Swift_Mailer
 
   /**
    * Create a new Mailer instance.
-   * 
+   *
    * @param Swift_Transport $transport
    * @return Swift_Mailer
    */
@@ -57,15 +57,15 @@ class Swift_Mailer
 
   /**
    * Send the given Message like it would be sent in a mail client.
-   * 
+   *
    * All recipients (with the exception of Bcc) will be able to see the other
    * recipients this message was sent to.
-   * 
+   *
    * Recipient/sender data will be retrieved from the Message object.
-   * 
+   *
    * The return value is the number of recipients who were accepted for
    * delivery.
-   * 
+   *
    * @param Swift_Mime_Message $message
    * @param array &$failedRecipients, optional
    * @return int
@@ -73,14 +73,14 @@ class Swift_Mailer
   public function send(Swift_Mime_Message $message, &$failedRecipients = null)
   {
     $failedRecipients = (array) $failedRecipients;
-    
+
     if (!$this->_transport->isStarted())
     {
       $this->_transport->start();
     }
-    
+
     $sent = 0;
-    
+
     try
     {
       $sent = $this->_transport->send($message, $failedRecipients);
@@ -92,13 +92,13 @@ class Swift_Mailer
         $failedRecipients[] = $address;
       }
     }
-    
+
     return $sent;
   }
-  
+
   /**
    * Register a plugin using a known unique key (e.g. myPlugin).
-   * 
+   *
    * @param Swift_Events_EventListener $plugin
    * @param string $key
    */
@@ -106,7 +106,7 @@ class Swift_Mailer
   {
     $this->_transport->registerPlugin($plugin);
   }
-  
+
   /**
    * The Transport used to send messages.
    * @return Swift_Transport

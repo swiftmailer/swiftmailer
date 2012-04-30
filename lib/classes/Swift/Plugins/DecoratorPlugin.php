@@ -11,10 +11,10 @@
 
 /**
  * Allows customization of Messages on-the-fly.
- * 
+ *
  * @package Swift
  * @subpackage Plugins
- * 
+ *
  * @author Chris Corbyn
  * @author Fabien Potencier
  */
@@ -24,7 +24,7 @@ class Swift_Plugins_DecoratorPlugin
 
   /** The replacement map */
   private $_replacements;
-  
+
   /** The body as it was before replacements */
   private $_originalBody;
 
@@ -39,10 +39,10 @@ class Swift_Plugins_DecoratorPlugin
 
   /**
    * Create a new DecoratorPlugin with $replacements.
-   * 
+   *
    * The $replacements can either be an associative array, or an implementation
    * of {@link Swift_Plugins_Decorator_Replacements}.
-   * 
+   *
    * When using an array, it should be of the form:
    * <code>
    * $replacements = array(
@@ -50,11 +50,11 @@ class Swift_Plugins_DecoratorPlugin
    *  "address2@domain.tld" => array("{a}" => "x", "{c}" => "y")
    * )
    * </code>
-   * 
+   *
    * When using an instance of {@link Swift_Plugins_Decorator_Replacements},
    * the object should return just the array of replacements for the address
    * given to {@link Swift_Plugins_Decorator_Replacements::getReplacementsFor()}.
-   * 
+   *
    * @param mixed $replacements
    */
   public function __construct($replacements)
@@ -71,7 +71,7 @@ class Swift_Plugins_DecoratorPlugin
 
   /**
    * Invoked immediately before the Message is sent.
-   * 
+   *
    * @param Swift_Events_SendEvent $evt
    */
   public function beforeSendPerformed(Swift_Events_SendEvent $evt)
@@ -147,19 +147,19 @@ class Swift_Plugins_DecoratorPlugin
       $this->_lastMessage = $message;
     }
   }
-  
+
   /**
    * Find a map of replacements for the address.
-   * 
+   *
    * If this plugin was provided with a delegate instance of
    * {@link Swift_Plugins_Decorator_Replacements} then the call will be
    * delegated to it.  Otherwise, it will attempt to find the replacements
    * from the array provided in the constructor.
-   * 
+   *
    * If no replacements can be found, an empty value (NULL) is returned.
-   * 
+   *
    * @param string $address
-   * 
+   *
    * @return array
    */
   public function getReplacementsFor($address)
@@ -179,7 +179,7 @@ class Swift_Plugins_DecoratorPlugin
 
   /**
    * Invoked immediately after the Message is sent.
-   * 
+   *
    * @param Swift_Events_SendEvent $evt
    */
   public function sendPerformed(Swift_Events_SendEvent $evt)

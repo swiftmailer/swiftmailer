@@ -18,7 +18,7 @@
 class Swift_Transport_Esmtp_Auth_CramMd5Authenticator
   implements Swift_Transport_Esmtp_Authenticator
 {
-  
+
   /**
    * Get the name of the AUTH mechanism this Authenticator handles.
    * @return string
@@ -27,7 +27,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator
   {
     return 'CRAM-MD5';
   }
-  
+
   /**
    * Try to authenticate the user with $username and $password.
    * @param Swift_Transport_SmtpAgent $agent
@@ -54,7 +54,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator
       return false;
     }
   }
-  
+
   /**
    * Generate a CRAM-MD5 response from a server challenge.
    * @param string $secret
@@ -67,12 +67,12 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator
     {
       $secret = pack('H32', md5($secret));
     }
-    
+
     if (strlen($secret) < 64)
     {
       $secret = str_pad($secret, 64, chr(0));
     }
-    
+
     $k_ipad = substr($secret, 0, 64) ^ str_repeat(chr(0x36), 64);
     $k_opad = substr($secret, 0, 64) ^ str_repeat(chr(0x5C), 64);
 
@@ -81,5 +81,5 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator
 
     return $digest;
   }
-  
+
 }

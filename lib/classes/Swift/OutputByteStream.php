@@ -18,7 +18,7 @@
  */
 interface Swift_OutputByteStream
 {
-  
+
   /**
    * Reads $length bytes from the stream into a string and moves the pointer
    * through the stream by $length. If less bytes exist than are requested the
@@ -29,7 +29,7 @@ interface Swift_OutputByteStream
    * @throws Swift_IoException
    */
   public function read($length);
-  
+
   /**
    * Move the internal read pointer to $byteOffset in the stream.
    * @param int $byteOffset
@@ -37,5 +37,5 @@ interface Swift_OutputByteStream
    * @throws Swift_IoException
    */
   public function setReadPointer($byteOffset);
-  
+
 }

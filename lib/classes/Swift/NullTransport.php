@@ -26,7 +26,7 @@ class Swift_NullTransport extends Swift_Transport_NullTransport
         ->createDependenciesFor('transport.null')
     );
   }
-  
+
   /**
    * Create a new NullTransport instance.
    * @return Swift_NullTransport

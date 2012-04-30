@@ -18,35 +18,35 @@
 class Swift_Plugins_AntiFloodPlugin
   implements Swift_Events_SendListener, Swift_Plugins_Sleeper
 {
-  
+
   /**
    * The number of emails to send before restarting Transport.
    * @var int
    * @access private
    */
   private $_threshold;
-  
+
   /**
    * The number of seconds to sleep for during a restart.
    * @var int
    * @access private
    */
   private $_sleep;
-  
+
   /**
    * The internal counter.
    * @var int
    * @access private
    */
   private $_counter = 0;
-  
+
   /**
    * The Sleeper instance for sleeping.
    * @var Swift_Plugins_Sleeper
    * @access private
    */
   private $_sleeper;
-  
+
   /**
    * Create a new AntiFloodPlugin with $threshold and $sleep time.
    * @param int $threshold
@@ -60,7 +60,7 @@ class Swift_Plugins_AntiFloodPlugin
     $this->setSleepTime($sleep);
     $this->_sleeper = $sleeper;
   }
-  
+
   /**
    * Set the number of emails to send before restarting.
    * @param int $threshold
@@ -69,7 +69,7 @@ class Swift_Plugins_AntiFloodPlugin
   {
     $this->_threshold = $threshold;
   }
-  
+
   /**
    * Get the number of emails to send before restarting.
    * @return int
@@ -78,7 +78,7 @@ class Swift_Plugins_AntiFloodPlugin
   {
     return $this->_threshold;
   }
-  
+
   /**
    * Set the number of seconds to sleep for during a restart.
    * @param int $sleep time
@@ -87,7 +87,7 @@ class Swift_Plugins_AntiFloodPlugin
   {
     $this->_sleep = $sleep;
   }
-  
+
   /**
    * Get the number of seconds to sleep for during a restart.
    * @return int
@@ -96,7 +96,7 @@ class Swift_Plugins_AntiFloodPlugin
   {
     return $this->_sleep;
   }
-  
+
   /**
    * Invoked immediately before the Message is sent.
    * @param Swift_Events_SendEvent $evt
@@ -104,7 +104,7 @@ class Swift_Plugins_AntiFloodPlugin
   public function beforeSendPerformed(Swift_Events_SendEvent $evt)
   {
   }
-  
+
   /**
    * Invoked immediately after the Message is sent.
    * @param Swift_Events_SendEvent $evt
@@ -124,7 +124,7 @@ class Swift_Plugins_AntiFloodPlugin
       $this->_counter = 0;
     }
   }
-  
+
   /**
    * Sleep for $seconds.
    * @param int $seconds
@@ -140,5 +140,5 @@ class Swift_Plugins_AntiFloodPlugin
       sleep($seconds);
     }
   }
-  
+
 }

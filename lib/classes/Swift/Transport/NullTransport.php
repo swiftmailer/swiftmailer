@@ -25,7 +25,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
   {
     $this->_eventDispatcher = $eventDispatcher;
   }
-  
+
   /**
    * Tests if this Transport mechanism has started.
    *
@@ -35,21 +35,21 @@ class Swift_Transport_NullTransport implements Swift_Transport
   {
     return true;
   }
-  
+
   /**
    * Starts this Transport mechanism.
    */
   public function start()
   {
   }
-  
+
   /**
    * Stops this Transport mechanism.
    */
   public function stop()
   {
   }
-  
+
   /**
    * Sends the given message.
    *
@@ -68,16 +68,16 @@ class Swift_Transport_NullTransport implements Swift_Transport
         return 0;
       }
     }
-    
+
     if ($evt)
     {
       $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
       $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
     }
-    
+
     return 0;
   }
-  
+
   /**
    * Register a plugin.
    *

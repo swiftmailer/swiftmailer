@@ -51,49 +51,49 @@ Class Swift_CharacterStream_NgCharacterStream
    * @access private
    */
   private $_charset;
-  
+
   /**
    * The datas stored as is
    *
    * @var string
    */
   private $_datas = "";
-  
+
   /**
    * Number of bytes in the stream
    *
    * @var int
    */
   private $_datasSize = 0;
-  
+
   /**
    * Map
    *
    * @var mixed
    */
   private $_map;
-  
+
   /**
    * Map Type
    *
    * @var int
    */
   private $_mapType = 0;
-  
+
   /**
    * Number of characters in the stream
    *
    * @var int
    */
   private $_charCount = 0;
-  
+
   /**
    * Position in the stream
    *
    * @var unknown_type
    */
   private $_currentPos = 0;
-  
+
   /**
    * The constructor
    *
@@ -106,7 +106,7 @@ Class Swift_CharacterStream_NgCharacterStream
     $this->setCharacterReaderFactory($factory);
     $this->setCharacterSet($charset);
   }
-  
+
   /* -- Changing parameters of the stream -- */
 
   /**
@@ -142,7 +142,7 @@ Class Swift_CharacterStream_NgCharacterStream
   	$this->_currentPos = 0;
   	$this->_datasSize = 0;
   }
-  
+
   /**
    * @see Swift_CharacterStream::importByteStream()
    *
@@ -156,7 +156,7 @@ Class Swift_CharacterStream_NgCharacterStream
     while(false!==($read = $os->read($blocks)))
       $this->write($read);
   }
-  
+
   /**
    * @see Swift_CharacterStream::importString()
    *
@@ -167,7 +167,7 @@ Class Swift_CharacterStream_NgCharacterStream
     $this->flushContents();
     $this->write($string);
   }
-  
+
   /**
    * @see Swift_CharacterStream::read()
    *
@@ -193,7 +193,7 @@ Class Swift_CharacterStream_NgCharacterStream
             $len);
         $this->_currentPos += $length;
         break;
-      
+
       case Swift_CharacterReader::MAP_TYPE_INVALID:
         $end = $this->_currentPos + $length;
         $end = $end > $this->_charCount
@@ -212,7 +212,7 @@ Class Swift_CharacterStream_NgCharacterStream
           }
         }
         break;
-      
+
       case Swift_CharacterReader::MAP_TYPE_POSITIONS:
         $end = $this->_currentPos + $length;
         $end = $end > $this->_charCount
@@ -239,7 +239,7 @@ Class Swift_CharacterStream_NgCharacterStream
   	}
   	return $ret;
   }
-  
+
   /**
    * @see Swift_CharacterStream::readBytes()
    *
@@ -256,7 +256,7 @@ Class Swift_CharacterStream_NgCharacterStream
   	}
   	return false;
   }
-  
+
   /**
    * @see Swift_CharacterStream::setPointer()
    *
@@ -269,7 +269,7 @@ Class Swift_CharacterStream_NgCharacterStream
   	}
   	$this->_currentPos = $charOffset;
   }
-  
+
   /**
    * @see Swift_CharacterStream::write()
    *

@@ -139,7 +139,7 @@ class Swift_CharacterReader_Utf8Reader
     }
     return $foundChars;
   }
-  
+
   /**
    * Returns mapType
    * @int mapType
@@ -148,7 +148,7 @@ class Swift_CharacterReader_Utf8Reader
   {
     return self::MAP_TYPE_POSITIONS;
   }
- 
+
   /**
    * Returns an integer which specifies how many more bytes to read.
    * A positive integer indicates the number of more bytes to fetch before invoking

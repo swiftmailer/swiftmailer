@@ -16,7 +16,7 @@
  */
 class Swift_IoException extends Swift_SwiftException
 {
-  
+
   /**
    * Create a new IoException with $message.
    * @param string $message
@@ -25,5 +25,5 @@ class Swift_IoException extends Swift_SwiftException
   {
     parent::__construct($message);
   }
-  
+
 }
