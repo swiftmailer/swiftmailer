@@ -47,10 +47,9 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoder
   public function encodeString($string, $firstLineOffset = 0,
     $maxLineLength = 0, $charset = 'utf-8')
   {
-      $charset = strtolower($charset);
-    if ($charset == 'iso-2022-jp')
+    if (strtolower($charset) === 'iso-2022-jp')
     {
-        $old = mb_internal_encoding();
+       $old = mb_internal_encoding();
         mb_internal_encoding('utf-8');
         $newstring = mb_encode_mimeheader($string, $charset, $this->getName(), "\r\n");
         mb_internal_encoding($old);
@@ -58,6 +57,5 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoder
     }
     return parent::encodeString($string, $firstLineOffset, $maxLineLength);
   }
-
 
 }
