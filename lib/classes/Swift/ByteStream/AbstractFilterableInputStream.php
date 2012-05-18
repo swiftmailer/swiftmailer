@@ -20,7 +20,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream
 {
   
   /** Write sequence */
-  private $_sequence = 0;
+  protected $_sequence = 0;
   
   /** StreamFilters */
   private $_filters = array();
