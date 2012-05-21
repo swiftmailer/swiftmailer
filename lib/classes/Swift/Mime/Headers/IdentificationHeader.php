@@ -72,12 +72,12 @@ class Swift_Mime_Headers_IdentificationHeader
   
   /**
    * Set the ID used in the value of this header.
-   * @param string $id
+   * @param string|array $id
    * @throws Swift_RfcComplianceException
    */
   public function setId($id)
   {
-    $this->setIds(array($id));
+    $this->setIds(is_array($id) ? $id : array($id));
   }
   
   /**
