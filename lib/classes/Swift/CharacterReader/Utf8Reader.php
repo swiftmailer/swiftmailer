@@ -142,7 +142,7 @@ class Swift_CharacterReader_Utf8Reader
   
   /**
    * Returns mapType
-   * @int mapType
+   * @return int mapType
    */
   public function getMapType()
   {
