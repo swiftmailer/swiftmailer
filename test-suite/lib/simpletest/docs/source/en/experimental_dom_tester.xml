@@ -22,9 +22,9 @@
                 started fighting for standards.
             </p>
             <p>
-                Nearly ten years later, every web developper is now familiar with CSS :
-                <em>id</em> &amp; <em>class</em> are the new tools of the trade. 
-                The tricks you've learned while styling, you can re-use them when testing your web site. 
+                Nearly ten years later, every web developer is now familiar with CSS :
+                <em>id</em> &amp; <em>class</em> are the new tools of the trade.
+                The tricks you've learned while styling, you can re-use them when testing your web site.
             </p>
             <p>
                 I was about to start with the <a href="http://flickr.com/">Flickr home page</a>
@@ -34,7 +34,7 @@
 <div id="beacon"><img src="http://geo.yahoo.com/f?s=792600119&t=7797cfa4695ea4166ba6c8ee269ec1b6" width="0" height="0" alt="" /></div>
 <div align="center">
   <table cellspacing="0" border="0" cellpadding="0" class="Photo">
-    <tr valign="top"> 
+    <tr valign="top">
 <!-- PHOTO -->
       <td>
 [...]
@@ -190,7 +190,7 @@ class TestOfLiveCssSelectors extends DomTestCase {
         </section>
     </content>
     <internal>
-        <link>A <a href="#recorder">Recorder</a> for non-developpers.</link>
+        <link>A <a href="#recorder">Recorder</a> for non-developers.</link>
         <link>Exploring the <a href="#recorder-results">Recorder results</a>.</link>
     </internal>
     <external>
