@@ -269,7 +269,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
   }
 
   /**
-   * Redefine the encoding requirements for mailboxed. Commas and semicolons are used to separate 
+   * Redefine the encoding requirements for mailboxes. Commas and semicolons are used to separate 
    * multiple addresses, and should therefore be encoded
    * @param string $token
    * @return boolean
