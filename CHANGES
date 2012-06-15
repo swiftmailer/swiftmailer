@@ -4,6 +4,7 @@ Changelog since Version 4.1.x
 4.1.8 (2012-XX-XX)
 ------------------
 
+ * fixed encoding of email addresses in headers
  * added replacements setter to the Decorator plugin
 
 4.1.7 (2012-04-26)
