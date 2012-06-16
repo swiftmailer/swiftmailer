@@ -57,7 +57,7 @@ class Swift_CharacterReader_GenericFixedWidthReader
   
   /**
    * Returns mapType
-   * @int mapType
+   * @return int mapType
    */
   public function getMapType()
   {

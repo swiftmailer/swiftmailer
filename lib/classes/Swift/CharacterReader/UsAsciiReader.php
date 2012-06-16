@@ -41,7 +41,7 @@ class Swift_CharacterReader_UsAsciiReader
   
   /**
    * Returns mapType
-   * @int mapType
+   * @return int mapType
    */
   public function getMapType()
   {
