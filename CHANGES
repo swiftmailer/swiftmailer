@@ -4,6 +4,7 @@ Changelog since Version 4.1.x
 4.1.8 (2012-XX-XX)
 ------------------
 
+ * added Japanese iso-2022-jp support
  * changed the init script to lazy-load the initialization
  * fixed docblocks (@id) which caused some problems with libraries parsing the dobclocks
  * fixed Swift_Mime_Headers_IdentificationHeader::setId() when passed an array of ids
