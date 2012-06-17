@@ -377,15 +377,18 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     
     $encodedTextLines = explode("\r\n",
       $this->_encoder->encodeString(
-        $token, $firstLineOffset, 75 - $encodingWrapperLength
+        $token, $firstLineOffset, 75 - $encodingWrapperLength, $this->_charset
         )
-      );
-    
-    foreach ($encodedTextLines as $lineNum => $line)
+    );
+
+    if (strtolower($this->_charset) !== 'iso-2022-jp') // special encoding for iso-2022-jp using mb_encode_mimeheader
     {
-      $encodedTextLines[$lineNum] = '=?' . $charsetDecl .
-        '?' . $this->_encoder->getName() .
-        '?' . $line . '?=';
+      foreach ($encodedTextLines as $lineNum => $line)
+      {
+        $encodedTextLines[$lineNum] = '=?' . $charsetDecl .
+          '?' . $this->_encoder->getName() .
+          '?' . $line . '?=';
+      }
     }
     
     return implode("\r\n ", $encodedTextLines);

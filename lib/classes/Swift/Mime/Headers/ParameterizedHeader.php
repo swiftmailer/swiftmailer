@@ -207,7 +207,7 @@ class Swift_Mime_Headers_ParameterizedHeader
       if (isset($this->_paramEncoder))
       {
         $value = $this->_paramEncoder->encodeString(
-          $origValue, $firstLineOffset, $maxValueLength
+          $origValue, $firstLineOffset, $maxValueLength, $this->getCharset()
           );
       }
       else //We have to go against RFC 2183/2231 in some areas for interoperability
