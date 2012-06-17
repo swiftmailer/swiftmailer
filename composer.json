@@ -18,6 +18,9 @@
     "require": {
         "php": ">=5.2.4"
     },
+    "autoload": {
+        "files": ["lib/swift_required.php"]
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "4.1-dev"
