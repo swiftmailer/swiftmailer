@@ -48,7 +48,7 @@ define('SWEETY_UI_TEMPLATE', SWEETY_HOME . '/templates/sweety/suite-ui.tpl.php')
 
 //Most likely you won't want to modify the include_path
 set_include_path(
-  get_include_path() . PATH_SEPARATOR .
+  dirname(__FILE__) . '/../lib' . PATH_SEPARATOR .
   SWEETY_LIB_PATH . PATH_SEPARATOR .
   SWEETY_INCLUDE_PATH . PATH_SEPARATOR .
   SWEETY_TEST_PATH
@@ -57,6 +57,9 @@ set_include_path(
 //Load in any dependencies
 require_once 'Sweety/TestLocator/PearStyleLocator.php';
 require_once 'swift_required.php';
+
+//Force init to be required
+require_once 'swift_init.php';
 
 //Load in some swift specific testig config
 require_once SWEETY_HOME . '/../tests/acceptance.conf.php';
