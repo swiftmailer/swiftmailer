@@ -455,7 +455,7 @@ ID headers contain identifiers for the entity (or the message). The most
 notable ID header is the Message-ID header on the message itself.
 
 An ID that exists inside an ID header looks more-or-less less like an email
-address.  For example, ``<![CDATA[<1234955437.499becad62ec2@example.org>]]>``.
+address.  For example, ``<1234955437.499becad62ec2@example.org>``.
 The part to the left of the @ sign is usually unique, based on the current time 
 and some random factor. The part on the right is usually a domain name.
 

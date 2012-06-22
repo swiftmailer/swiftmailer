@@ -134,7 +134,7 @@ need to make use of a small subset of them. Usually you'll use
 ``setBody()``.
 
 Calling methods is simple. You just call them like functions, but using the
-object operator "``<![CDATA[->]]>``" to do so. If you've created
+object operator "``->``" to do so. If you've created
 a message object and called it ``$message`` then you'd set a
 subject on it like so:
 
@@ -147,8 +147,8 @@ subject on it like so:
 
 All MIME entities (including a message) have a ``toString()``
 method that you can call if you want to take a look at what is going to be
-sent. For example, if you ``<![CDATA[echo
-$message->toString();]]>`` you would see something like this:
+sent. For example, if you ``echo
+$message->toString();`` you would see something like this:
 
 .. code-block:: bash
 
