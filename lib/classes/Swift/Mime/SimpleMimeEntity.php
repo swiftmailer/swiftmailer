@@ -439,6 +439,17 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   public function toString()
   {
     $string = $this->_headers->toString();
+    $string.= $this->_bodyToString();
+    return $string;
+  }
+  
+  /**
+   * Get the complete Mime body as string
+   * @return string
+   */
+  protected function _bodyToString()
+  {
+    $string='';
     if (isset($this->_body) && empty($this->_immediateChildren))
     {
       if ($this->_cache->hasKey($this->_cacheKey, 'body'))
@@ -490,7 +501,15 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   {
     $is->write($this->_headers->toString());
     $is->commit();
-    
+    $this->_bodyToByteStream($is);
+  }
+  
+  /**
+   * Write the complete Mime body entity to a {@link Swift_InputByteStream}.
+   * @param Swift_InputByteStream
+   */
+  protected function _bodyToByteStream(Swift_InputByteStream $is)
+  {
     if (empty($this->_immediateChildren))
     {
       if (isset($this->_body))
@@ -627,6 +646,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
   
   /**
    * Get the KeyCache used in this entity.
+   * @return Swift_KeyCache
    */
   protected function _getCache()
   {
