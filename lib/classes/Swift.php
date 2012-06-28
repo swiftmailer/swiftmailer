@@ -44,13 +44,13 @@ abstract class Swift
       return;
     }
 
+    require $path;
+
     if (self::$initPath && !self::$initialized)
     {
       self::$initialized = true;
       require self::$initPath;
     }
-
-    require $path;
   }
   
   /**
