@@ -67,6 +67,10 @@ Swift_DependencyContainer::getInstance()
   -> asNewInstanceOf('Swift_Mime_HeaderEncoder_QpHeaderEncoder')
   -> withDependencies(array('mime.charstream'))
   
+  -> register('mime.base64headerencoder')
+  -> asNewInstanceOf('Swift_Mime_HeaderEncoder_Base64HeaderEncoder')
+  -> withDependencies(array('mime.charstream'))
+  
   -> register('mime.charstream')
   -> asNewInstanceOf('Swift_CharacterStream_NgCharacterStream')
   -> withDependencies(array('mime.characterreaderfactory', 'properties.charset'))
