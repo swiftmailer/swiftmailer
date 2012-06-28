@@ -4,7 +4,9 @@ Changelog since Version 4.1.x
 4.1.9 (2012-XX-XX)
 ------------------
 
- * n/a
+ * added a way to override the default configuration in a lazy way
+ * changed the PEAR init script to lazy-load the initialization
+ * fixed a bug when calling Swift_Preferences before anything else (regression introduced in 4.1.8)
 
 4.1.8 (2012-06-17)
 ------------------

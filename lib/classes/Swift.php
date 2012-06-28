@@ -19,10 +19,23 @@ abstract class Swift
 {
   
   static $initialized = false;
-  static $initPath;
+  static $inits = array();
   
   /** Swift Mailer Version number generated during dist release process */
   const VERSION = '@SWIFT_VERSION_NUMBER@';
+  
+  /**
+   * Registers an initializer callable that will be called the first time
+   * a SwiftMailer class is autoloaded.
+   *
+   * This enables you to tweak the default configuration in a lazy way.
+   *
+   * @param mixed $callable A valid PHP callable that will be called when autoloading the first Swift class
+   */
+  public static function init($callable)
+  {
+    self::$inits[] = $callable;
+  }
   
   /**
    * Internal autoloader for spl_autoload_register().
@@ -46,10 +59,13 @@ abstract class Swift
 
     require $path;
 
-    if (self::$initPath && !self::$initialized)
+    if (self::$inits && !self::$initialized)
     {
       self::$initialized = true;
-      require self::$initPath;
+      foreach (self::$inits as $init)
+      {
+        call_user_func($init);
+      }
     }
   }
   
@@ -58,11 +74,14 @@ abstract class Swift
    * 
    * This is designed to play nicely with other autoloaders.
    *
-   * @param string $initPath The init script to load when autoloading the first Swift class
+   * @param mixed $callable A valid PHP callable that will be called when autoloading the first Swift class
    */
-  public static function registerAutoload($initPath = null)
+  public static function registerAutoload($callable = null)
   {
-    self::$initPath = $initPath;
+    if (null !== $callable)
+    {
+      self::$inits[] = $callable;
+    }
     spl_autoload_register(array('Swift', 'autoload'));
   }
   
