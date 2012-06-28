@@ -13,3 +13,4 @@ Swiftmailer
     headers
     sending
     plugins
+    japanese
