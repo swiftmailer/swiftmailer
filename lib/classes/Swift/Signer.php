@@ -1,31 +1,22 @@
 <?php
 
 /*
- Swift Signer Class used to sign messages.
- 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+ * This file is part of SwiftMailer.
+ * (c) 2004-2009 Chris Corbyn
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 /**
- * Base Class of Signer Infrastructure
- * @author Xavier De Cock <xdecock@gmail.com>
- * @package Swift
+ * Base Class of Signer Infrastructure.
+ *
+ * @package    Swift
  * @subpackage Signatures
+ *
+ * @author     Xavier De Cock <xdecock@gmail.com>
  */
-Interface Swift_Signer
+interface Swift_Signer
 {
-  public function reset();
+    public function reset();
 }
-?>

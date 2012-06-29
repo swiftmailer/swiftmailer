@@ -140,7 +140,7 @@ subject on it like so:
 
 .. code-block:: php
 
-    require_once 'lib/swift_required.php';  
+    require_once 'lib/swift_required.php';
 
     $message = Swift_Message::newInstance();
     $message->setSubject('My subject');
@@ -224,7 +224,7 @@ if you've included HTML.
 .. code-block:: php
 
     // Pass it as a parameter when you create the message
-    $message = Swift_Message::newInstance('Subject here', 'My amazing body');  
+    $message = Swift_Message::newInstance('Subject here', 'My amazing body');
 
     // Or set it after like this
     $message->setBody('My <em>amazing</em> body', 'text/html');
@@ -278,7 +278,7 @@ the same filename as the one you attached.
 
     // Create the attachment
     // * Note that you can technically leave the content-type parameter out
-    $attachment = Swift_Attachment::fromPath('/path/to/image.jpg', 'image/jpeg');  
+    $attachment = Swift_Attachment::fromPath('/path/to/image.jpg', 'image/jpeg');
 
     // Attach it to the message
     $message->attach($attachment);
@@ -658,11 +658,11 @@ seen by the other recipients.
 Setting ``Cc:`` Recipients
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``Cc:`` recipients are set with the ``setCc()`` or ``addCc()`` methods of the 
+``Cc:`` recipients are set with the ``setCc()`` or ``addCc()`` methods of the
 message.
 
 To set ``Cc:`` recipients, create the message object using either
-``new Swift_Message( ... )`` or ``Swift_Message::newInstance( ... )``, then call 
+``new Swift_Message( ... )`` or ``Swift_Message::newInstance( ... )``, then call
 the ``setCc()`` method with a complete array of addresses, or use the
 ``addCc()`` method to iteratively add recipients.
 
@@ -701,7 +701,7 @@ Setting ``Bcc:`` Recipients
 ``Bcc:`` recipients receive a copy of the message without anybody else knowing
 it, and are set with the ``setBcc()`` or ``addBcc()`` methods of the message.
 
-To set ``Bcc:`` recipients, create the message object using either ``new 
+To set ``Bcc:`` recipients, create the message object using either ``new
 Swift_Message( ... )`` or ``Swift_Message::newInstance( ... )``, then call the
 ``setBcc()`` method with a complete array of addresses, or use
 the ``addBcc()`` method to iteratively add recipients.
@@ -711,8 +711,8 @@ this chapter. The ``addBcc()`` method takes either one or two parameters. The
 first being the email address and the second optional parameter being the name
 of the recipient.
 
-Only the individual ``Bcc:`` recipient will see their address in the message 
-headers. Other recipients (including other ``Bcc:`` recipients) will not see the 
+Only the individual ``Bcc:`` recipient will see their address in the message
+headers. Other recipients (including other ``Bcc:`` recipients) will not see the
 address.
 
 .. note::
@@ -751,13 +751,13 @@ The sender information is contained in three possible places:
 
 * ``Return-Path:`` -- the address where bounces should go to (optional)
 
-You must always include a ``From:`` address by using ``setFrom()`` on the 
-message. Swift Mailer will use this as the default ``Return-Path:`` unless 
+You must always include a ``From:`` address by using ``setFrom()`` on the
+message. Swift Mailer will use this as the default ``Return-Path:`` unless
 otherwise specified.
 
 The ``Sender:`` address exists because the person who actually sent the email
 may not be the person who wrote the email. It has a higher precedence than the
-``From:`` address and will be used as the ``Return-Path:`` unless otherwise 
+``From:`` address and will be used as the ``Return-Path:`` unless otherwise
 specified.
 
 Setting the ``From:`` Address
@@ -841,6 +841,88 @@ Bouce notifications will be sent to this address.
 .. code-block:: php
 
     $message->setReturnPath('bounces@address.tld');
+
+
+Signed/Encrypted Message
+------------------------
+
+To increase the integrity/security of a message it is possible to sign and/or
+encrypt an message using one or multiple signers.
+
+S/MIME
+~~~~~~
+
+S/MIME can sign and/or encrypt an message using the OpenSSL extension.
+
+When signing an message, the signer creates an signature of the entire content of the message (including attachments).
+
+The certificate and private key must be PEM encoded, and can be either created using for example OpenSSL or
+obtained at an official Certificate Authority (CA).
+
+**The recipient must have the CA certificate in the list of trusted issuers in order to verify the signature.**
+
+**Make sure the certificate supports emailProtection.**
+
+When using openssl this can done by the including the *-addtrust emailProtection* parameter when creating the certificate.
+
+.. code-block:: php
+
+    $message = Swift_SignedMessage::newInstance();
+
+    $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
+    $smimeSigner->setSignCertificate('/path/to/certificate.pem', '/path/to/private-key.pem');
+    $message->attachSigner($smimeSigner);
+
+When the private is secured using an passphrase use to following instead.
+
+.. code-block:: php
+
+    $message = Swift_SignedMessage::newInstance();
+
+    $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
+    $smimeSigner->setSignCertificate('/path/to/certificate.pem', array('/path/to/private-key.pem', 'passphrase'));
+    $message->attachSigner($smimeSigner);
+
+By default the signature is added as attachment,
+making the message still readable for mailing agents not supporting signed messages.
+
+Storing the message as binary is also possible but not recommended.
+
+.. code-block:: php
+
+    $smimeSigner->setSignCertificate('/path/to/certificate.pem', '/path/to/private-key.pem', PKCS7_BINARY);
+
+When encrypting the message (also known as enveloping), the entire message (including attachments)
+is encrypted using an certificate, and the recipient can then decrypt the message using corresponding private key.
+
+Encrypting ensures nobody can read the contents of the message without the private key.
+
+Normally the recipient provides an certificate for encrypting and keeping the decryption key private.
+
+Using both signing and encrypting is also possible.
+
+.. code-block:: php
+
+    $message = Swift_SignedMessage::newInstance();
+
+    $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
+    $smimeSigner->setSignCertificate('/path/to/sign-certificate.pem', '/path/to/private-key.pem');
+    $smimeSigner->setEncryptCertificate('/path/to/encrypt-certificate.pem');
+    $message->attachSigner($smimeSigner);
+
+The used encryption cipher can be set as the second parameter of setEncryptCertificate()
+
+See http://php.net/manual/openssl.ciphers for a list of supported ciphers.
+
+By default the message is first signed and then encrypted, this can be changed by adding.
+
+.. code-block:: php
+
+    $smimeSigner->setSignThenEncrypt(false);
+
+**Changing this is not recommended as most mail agents don't support this none-standard way.**
+
+Only when having trouble with sign then encrypt method, this should be changed.
 
 Requesting a Read Receipt
 -------------------------
