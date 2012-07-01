@@ -86,6 +86,9 @@ Swift_DependencyContainer::getInstance()
   -> register('mime.qpcontentencoder')
   -> asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
   -> withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
+
+  -> register('mime.nativeqpcontentencoder')
+  -> asNewInstanceOf('Swift_Mime_ContentEncoder_NativeQpContentEncoder')
   
   -> register('mime.7bitcontentencoder')
   -> asNewInstanceOf('Swift_Mime_ContentEncoder_PlainContentEncoder')
@@ -103,7 +106,7 @@ Swift_DependencyContainer::getInstance()
   -> register('mime.rfc2231encoder')
   -> asNewInstanceOf('Swift_Encoder_Rfc2231Encoder')
   -> withDependencies(array('mime.charstream'))
-  
+
   ;
   
 unset($swift_mime_types);
