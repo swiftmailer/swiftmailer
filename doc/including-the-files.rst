@@ -47,11 +47,10 @@ executed only if you use Swift Mailer in your script.
 
 For PHP versions starting with 5.3 it is recommended using the native quoted
 printable encoder. It uses PHP’s native ``quoted_printable_encode()``-function
-to achieve much better performance. To do so, edit ``lib/swift_init.php`` and
-add the following line:
+to achieve much better performance::
 
-.. code-block:: php
-
-   Swift_DependencyContainer::getInstance()
-       ->register('mime.qpcontentencoder')
-       ->asAliasOf('mime.nativeqpcontentencoder');
+    Swift::init(function () {
+        Swift_DependencyContainer::getInstance()
+            ->register('mime.qpcontentencoder')
+            ->asAliasOf('mime.nativeqpcontentencoder');
+    });
