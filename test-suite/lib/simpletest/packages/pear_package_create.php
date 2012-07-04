@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -q
+#!/usr/bin/env php -q
 <?php
 /**
 * Generates a package.xml file for simpletest
