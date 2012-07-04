@@ -255,7 +255,7 @@ class Swift_Transport_StreamBuffer
     {
       $timeout = $this->_params['timeout'];
     }
-    $options = array();
+    $options = stream_context_get_options(stream_context_get_default());
     if (!empty($this->_params['sourceIp']))
     {
     	$options['socket']['bindto']=$this->_params['sourceIp'].':0';
