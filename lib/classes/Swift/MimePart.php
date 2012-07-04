@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 /**
  * A MIME part, in a multipart message.
  * @package Swift
@@ -17,47 +16,41 @@
  */
 class Swift_MimePart extends Swift_Mime_MimePart
 {
-  
-  /**
-   * Create a new MimePart.
-   * Details may be optionally passed into the constructor.
-   * @param string $body
-   * @param string $contentType
-   * @param string $charset
-   */
-  public function __construct($body = null, $contentType = null,
-    $charset = null)
-  {
-    call_user_func_array(
-      array($this, 'Swift_Mime_MimePart::__construct'),
-      Swift_DependencyContainer::getInstance()
-        ->createDependenciesFor('mime.part')
-      );
-    
-    if (!isset($charset))
+    /**
+     * Create a new MimePart.
+     * Details may be optionally passed into the constructor.
+     * @param string $body
+     * @param string $contentType
+     * @param string $charset
+     */
+    public function __construct($body = null, $contentType = null, $charset = null)
     {
-      $charset = Swift_DependencyContainer::getInstance()
-        ->lookup('properties.charset');
+        call_user_func_array(
+            array($this, 'Swift_Mime_MimePart::__construct'),
+            Swift_DependencyContainer::getInstance()
+                ->createDependenciesFor('mime.part')
+            );
+
+        if (!isset($charset)) {
+            $charset = Swift_DependencyContainer::getInstance()
+                ->lookup('properties.charset');
+        }
+        $this->setBody($body);
+        $this->setCharset($charset);
+        if ($contentType) {
+            $this->setContentType($contentType);
+        }
     }
-    $this->setBody($body);
-    $this->setCharset($charset);
-    if ($contentType)
+
+    /**
+     * Create a new MimePart.
+     * @param  string              $body
+     * @param  string              $contentType
+     * @param  string              $charset
+     * @return Swift_Mime_MimePart
+     */
+    public static function newInstance($body = null, $contentType = null, $charset = null)
     {
-      $this->setContentType($contentType);
+        return new self($body, $contentType, $charset);
     }
-  }
-  
-  /**
-   * Create a new MimePart.
-   * @param string $body
-   * @param string $contentType
-   * @param string $charset
-   * @return Swift_Mime_MimePart
-   */
-  public static function newInstance($body = null, $contentType = null,
-    $charset = null)
-  {
-    return new self($body, $contentType, $charset);
-  }
-  
 }

@@ -12,8 +12,9 @@
  * Dependency injection initialization for Swift Mailer.
  */
 
-if (defined('SWIFT_INIT_LOADED'))
-	return;
+if (defined('SWIFT_INIT_LOADED')) {
+    return;
+}
 
 define('SWIFT_INIT_LOADED', true);
 

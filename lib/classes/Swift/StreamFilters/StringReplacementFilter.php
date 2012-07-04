@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 /**
  * Processes bytes as they pass through a buffer and replaces sequences in it.
  * @package Swift
@@ -16,50 +15,47 @@
  */
 class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
 {
-  
-  /** The needle(s) to search for */
-  private $_search;
-  
-  /** The replacement(s) to make */
-  private $_replace;
-  
-  /**
-   * Create a new StringReplacementFilter with $search and $replace.
-   * @param string|array $search
-   * @param string|array $replace
-   */
-  public function __construct($search, $replace)
-  {
-    $this->_search = $search;
-    $this->_replace = $replace;
-  }
-  
-  /**
-   * Returns true if based on the buffer passed more bytes should be buffered.
-   * @param string $buffer
-   * @return boolean
-   */
-  public function shouldBuffer($buffer)
-  {
-    $endOfBuffer = substr($buffer, -1);
-    foreach ((array) $this->_search as $needle)
+    /** The needle(s) to search for */
+    private $_search;
+
+    /** The replacement(s) to make */
+    private $_replace;
+
+    /**
+     * Create a new StringReplacementFilter with $search and $replace.
+     * @param string|array $search
+     * @param string|array $replace
+     */
+    public function __construct($search, $replace)
     {
-      if (false !== strpos($needle, $endOfBuffer))
-      {
-        return true;
-      }
+        $this->_search = $search;
+        $this->_replace = $replace;
     }
-    return false;
-  }
-  
-  /**
-   * Perform the actual replacements on $buffer and return the result.
-   * @param string $buffer
-   * @return string
-   */
-  public function filter($buffer)
-  {
-    return str_replace($this->_search, $this->_replace, $buffer);
-  }
-  
+
+    /**
+     * Returns true if based on the buffer passed more bytes should be buffered.
+     * @param  string  $buffer
+     * @return boolean
+     */
+    public function shouldBuffer($buffer)
+    {
+        $endOfBuffer = substr($buffer, -1);
+        foreach ((array) $this->_search as $needle) {
+            if (false !== strpos($needle, $endOfBuffer)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Perform the actual replacements on $buffer and return the result.
+     * @param  string $buffer
+     * @return string
+     */
+    public function filter($buffer)
+    {
+        return str_replace($this->_search, $this->_replace, $buffer);
+    }
 }

@@ -14,11 +14,11 @@
  * @subpackage Plugins
  * @author Arjen Brouwer
  */
-class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener {
-
+class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener
+{
     /**
      * The sender to impersonate.
-     * 
+     *
      * @var String
      * @access private
      */
@@ -26,19 +26,21 @@ class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener {
 
     /**
      * Create a new ImpersonatePlugin to impersonate $sender.
-     * 
+     *
      * @param string $sender address
      */
-    public function __construct($sender) {
+    public function __construct($sender)
+    {
         $this->_sender = $sender;
     }
 
     /**
      * Invoked immediately before the Message is sent.
-     * 
+     *
      * @param Swift_Events_SendEvent $evt
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt) {
+    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    {
         $message = $evt->getMessage();
         $headers = $message->getHeaders();
 
@@ -51,18 +53,19 @@ class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener {
 
     /**
      * Invoked immediately after the Message is sent.
-     * 
+     *
      * @param Swift_Events_SendEvent $evt
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt) {
+    public function sendPerformed(Swift_Events_SendEvent $evt)
+    {
         $message = $evt->getMessage();
 
         // restore original headers
         $headers = $message->getHeaders();
 
         if ($headers->has('X-Swift-Return-Path')) {
-            $message->setReturnPath($headers->get('X-Swift-Return-Path')->getAddress());
-            $headers->removeAll('X-Swift-Return-Path');
+                $message->setReturnPath($headers->get('X-Swift-Return-Path')->getAddress());
+                $headers->removeAll('X-Swift-Return-Path');
         }
     }
 }

@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 /**
  * Generated when the state of a Transport is changed (i.e. stopped/started).
  * @package Swift
@@ -17,14 +16,12 @@
  */
 class Swift_Events_TransportChangeEvent extends Swift_Events_EventObject
 {
-  
-  /**
-   * Get the Transport.
-   * @return Swift_Transport
-   */
-  public function getTransport()
-  {
-    return $this->getSource();
-  }
-  
+    /**
+     * Get the Transport.
+     * @return Swift_Transport
+     */
+    public function getTransport()
+    {
+        return $this->getSource();
+    }
 }

@@ -3,62 +3,53 @@
 require_once 'Swift/CharacterReader/UsAsciiReader.php';
 
 class Swift_CharacterReader_UsAsciiReaderTest
-  extends UnitTestCase
+    extends UnitTestCase
 {
+    /*
 
-  /*
-
-  for ($c = '', $size = 1; false !== $bytes = $os->read($size); )
-  {
-    $c .= $bytes;
-    $size = $v->validateCharacter($c);
-    if (-1 == $size)
-    {
-      throw new Exception( ... invalid char .. );
+    for ($c = '', $size = 1; false !== $bytes = $os->read($size); ) {
+        $c .= $bytes;
+        $size = $v->validateCharacter($c);
+        if (-1 == $size) {
+            throw new Exception( ... invalid char .. );
+        } elseif (0 == $size) {
+            return $c; //next character in $os
+        }
     }
-    elseif (0 == $size)
+
+    */
+
+    private $_reader;
+
+    public function setUp()
     {
-      return $c; //next character in $os
+        $this->_reader = new Swift_CharacterReader_UsAsciiReader();
     }
-  }
 
-  */
-
-  private $_reader;
-
-  public function setUp()
-  {
-    $this->_reader = new Swift_CharacterReader_UsAsciiReader();
-  }
-
-  public function testAllValidAsciiCharactersReturnZero()
-  {
-    for ($ordinal = 0x00; $ordinal <= 0x7F; ++$ordinal)
+    public function testAllValidAsciiCharactersReturnZero()
     {
-      $this->assertIdentical(
-        0, $this->_reader->validateByteSequence(array($ordinal), 1)
-        );
+        for ($ordinal = 0x00; $ordinal <= 0x7F; ++$ordinal) {
+            $this->assertIdentical(
+                0, $this->_reader->validateByteSequence(array($ordinal), 1)
+                );
+        }
     }
-  }
 
-  public function testMultipleBytesAreInvalid()
-  {
-    for ($ordinal = 0x00; $ordinal <= 0x7F; $ordinal += 2)
+    public function testMultipleBytesAreInvalid()
     {
-      $this->assertIdentical(
-        -1, $this->_reader->validateByteSequence(array($ordinal, $ordinal + 1), 2)
-        );
+        for ($ordinal = 0x00; $ordinal <= 0x7F; $ordinal += 2) {
+            $this->assertIdentical(
+                -1, $this->_reader->validateByteSequence(array($ordinal, $ordinal + 1), 2)
+                );
+        }
     }
-  }
 
-  public function testBytesAboveAsciiRangeAreInvalid()
-  {
-    for ($ordinal = 0x80; $ordinal <= 0xFF; ++$ordinal)
+    public function testBytesAboveAsciiRangeAreInvalid()
     {
-      $this->assertIdentical(
-        -1, $this->_reader->validateByteSequence(array($ordinal), 1)
-        );
+        for ($ordinal = 0x80; $ordinal <= 0xFF; ++$ordinal) {
+            $this->assertIdentical(
+                -1, $this->_reader->validateByteSequence(array($ordinal), 1)
+                );
+        }
     }
-  }
-
 }

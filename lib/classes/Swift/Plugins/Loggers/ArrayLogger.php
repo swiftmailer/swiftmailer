@@ -16,58 +16,55 @@
  */
 class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger
 {
-  
-  /**
-   * The log contents.
-   * @var array
-   * @access private
-   */
-  private $_log = array();
-  
-  /**
-   * Max size of the log.
-   * @var int
-   * @access private
-   */
-  private $_size = 0;
-  
-  /**
-   * Create a new ArrayLogger with a maximum of $size entries.
-   * @var int $size
-   */
-  public function __construct($size = 50)
-  {
-    $this->_size = $size;
-  }
-  
-  /**
-   * Add a log entry.
-   * @param string $entry
-   */
-  public function add($entry)
-  {
-    $this->_log[] = $entry;
-    while (count($this->_log) > $this->_size)
+    /**
+     * The log contents.
+     * @var array
+     * @access private
+     */
+    private $_log = array();
+
+    /**
+     * Max size of the log.
+     * @var int
+     * @access private
+     */
+    private $_size = 0;
+
+    /**
+     * Create a new ArrayLogger with a maximum of $size entries.
+     * @var int $size
+     */
+    public function __construct($size = 50)
     {
-      array_shift($this->_log);
+        $this->_size = $size;
     }
-  }
-  
-  /**
-   * Clear the log contents.
-   */
-  public function clear()
-  {
-    $this->_log = array();
-  }
-  
-  /**
-   * Get this log as a string.
-   * @return string
-   */
-  public function dump()
-  {
-    return implode(PHP_EOL, $this->_log);
-  }
-  
+
+    /**
+     * Add a log entry.
+     * @param string $entry
+     */
+    public function add($entry)
+    {
+        $this->_log[] = $entry;
+        while (count($this->_log) > $this->_size) {
+            array_shift($this->_log);
+        }
+    }
+
+    /**
+     * Clear the log contents.
+     */
+    public function clear()
+    {
+        $this->_log = array();
+    }
+
+    /**
+     * Get this log as a string.
+     * @return string
+     */
+    public function dump()
+    {
+        return implode(PHP_EOL, $this->_log);
+    }
 }

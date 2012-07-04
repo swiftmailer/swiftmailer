@@ -13,26 +13,26 @@
  */
 class Swift_Validate
 {
-  /**
-   * Grammar Object
-   * @var Swift_Mime_Grammar
-   */
-  private static $grammar = null;
-  
-  /**
-   * Checks if an email matches the current grammars
-   * @param string $email
-   */
-  public static function email($email)
-  {
-    if (self::$grammar===null)
+    /**
+     * Grammar Object
+     * @var Swift_Mime_Grammar
+     */
+    private static $grammar = null;
+
+    /**
+     * Checks if an email matches the current grammars
+     * @param string $email
+     */
+    public static function email($email)
     {
-      self::$grammar = Swift_DependencyContainer::getInstance()
-        ->lookup('mime.grammar');
+        if (self::$grammar===null) {
+            self::$grammar = Swift_DependencyContainer::getInstance()
+                ->lookup('mime.grammar');
+        }
+
+        return preg_match(
+                '/^' . self::$grammar->getDefinition('addr-spec') . '$/D',
+                $email
+            );
     }
-    return preg_match(
-        '/^' . self::$grammar->getDefinition('addr-spec') . '$/D',
-        $email
-      );
-  }
 }
