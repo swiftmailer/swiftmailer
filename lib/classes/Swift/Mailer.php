@@ -41,7 +41,7 @@ class Swift_Mailer
     }
 
     /**
-     * Create a new class instance of one if the message services
+     * Create a new class instance of one of the message services
      * For example 'mimepart' would create a 'message.mimepart' instance
      *
      * @param  string $service
