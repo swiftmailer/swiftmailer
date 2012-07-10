@@ -4,6 +4,7 @@ Changelog since Version 4.x.x
 4.2.1 (2012-XX-XX)
 ------------------
 
+ * fixed issue with autoloading
  * added NativeQpContentEncoder to enhance performance (for PHP 5.3+)
 
 4.2.0 (2012-06-29)
