@@ -4,6 +4,7 @@ Changelog since Version 4.x.x
 4.2.1 (2012-XX-XX)
 ------------------
 
+ * changed the coding standards to PSR-1/2
  * fixed issue with autoloading
  * added NativeQpContentEncoder to enhance performance (for PHP 5.3+)
 
