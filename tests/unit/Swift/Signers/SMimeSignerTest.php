@@ -286,7 +286,7 @@ OEL;
 
         $originalMessage = $this->cleanMessage($message->toString());
 
-        $signer = new Swift_Signers_SMimeSigner();
+        $signer = Swift_Signers_SMimeSigner::newInstance();
         $signer->setSignCertificate($this->samplesDir . 'smime/sign.crt', $this->samplesDir . 'smime/sign.key');
         $signer->setEncryptCertificate($this->samplesDir . 'smime/encrypt.crt');
         $signer->setSignThenEncrypt(false);
