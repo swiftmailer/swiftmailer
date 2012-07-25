@@ -21,7 +21,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 {
     protected $signCertificate;
     protected $signPrivateKey;
-    protected $encryptCertificate;
+    protected $encryptCert;
     protected $signThenEncrypt = true;
     protected $signLevel;
     protected $encryptLevel;
@@ -117,14 +117,22 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * @link http://www.php.net/manual/en/openssl.pkcs7.flags.php
      * @link http://nl3.php.net/manual/en/openssl.ciphers.php
      *
-     * @param string  $certificate
-     * @param integer $cipher
+     * @param string|array  $recipientCerts Either an single X.509 certificate, or an assoc array of X.509 certificates.
+     * @param integer       $cipher
      *
      * @return Swift_Signers_SMimeSigner
      */
-    public function setEncryptCertificate($certificate, $cipher = null)
+    public function setEncryptCertificate($recipientCerts, $cipher = null)
     {
-        $this->encryptCertificate = 'file://' . str_replace('\\', '/', realpath($certificate));
+        if (is_array($recipientCerts)) {
+            $this->encryptCert = array();
+
+            foreach ($recipientCerts as $cert) {
+                $this->encryptCert[] = 'file://' . str_replace('\\', '/', realpath($cert));
+            }
+        } else {
+            $this->encryptCert = 'file://' . str_replace('\\', '/', realpath($recipientCerts));
+        }
 
         if (null !== $cipher) {
             $this->encryptCipher = $cipher;
@@ -194,7 +202,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      */
     public function signMessage(Swift_SignedMessage $message)
     {
-        if (null === $this->signCertificate && null === $this->encryptCertificate) {
+        if (null === $this->signCertificate && null === $this->encryptCert) {
             return $this;
         }
 
@@ -234,7 +242,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         $mimeEntity->toByteStream($messageStream);
         $messageStream->commit();
 
-        if (null !== $this->signCertificate && null !== $this->encryptCertificate) {
+        if (null !== $this->signCertificate && null !== $this->encryptCert) {
             $temporaryStream = new Swift_ByteStream_TemporaryFileByteStream();
 
             if ($this->signThenEncrypt) {
@@ -299,7 +307,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     {
         $encryptedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
 
-        if (!openssl_pkcs7_encrypt($outputStream->getPath(), $encryptedMessageStream->getPath(), $this->encryptCertificate, array())) {
+        if (!openssl_pkcs7_encrypt($outputStream->getPath(), $encryptedMessageStream->getPath(), $this->encryptCert, array())) {
             throw new Swift_IoException(sprintf('Failed to encrypt S/Mime message. Error: "%s".', openssl_error_string()));
         }
 
