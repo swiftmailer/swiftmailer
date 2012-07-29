@@ -10,14 +10,16 @@
 
 /**
  * Interface for all Transfer Encoding schemes.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 interface Swift_Mime_ContentEncoder extends Swift_Encoder
 {
     /**
      * Encode $in to $out.
+     *
      * @param Swift_OutputByteStream $os              to read from
      * @param Swift_InputByteStream  $is              to write to
      * @param integer                    $firstLineOffset
@@ -27,6 +29,7 @@ interface Swift_Mime_ContentEncoder extends Swift_Encoder
 
     /**
      * Get the MIME name of this content encoding scheme.
+     *
      * @return string
      */
     public function getName();

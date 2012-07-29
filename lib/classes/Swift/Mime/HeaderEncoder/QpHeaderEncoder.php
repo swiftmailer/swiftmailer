@@ -14,14 +14,16 @@ require_once dirname(__FILE__) . '/../../CharacterStream.php';
 
 /**
  * Handles Quoted Printable (Q) Header Encoding in Swift Mailer.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder implements Swift_Mime_HeaderEncoder
 {
     /**
      * Creates a new QpHeaderEncoder for the given CharacterStream.
+     *
      * @param Swift_CharacterStream $charStream to use for reading characters
      */
     public function __construct(Swift_CharacterStream $charStream)
@@ -34,14 +36,16 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder i
         foreach (array_merge(
             range(0x61, 0x7A), range(0x41, 0x5A),
             range(0x30, 0x39), array(0x20, 0x21, 0x2A, 0x2B, 0x2D, 0x2F)
-            ) as $byte) {
+        ) as $byte) {
             $this->_safeMap[$byte] = chr($byte);
         }
     }
 
     /**
      * Get the name of this encoding scheme.
+     *
      * Returns the string 'Q'.
+     *
      * @return string
      */
     public function getName()
@@ -50,10 +54,12 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder i
     }
 
     /**
-     * Takes an unencoded string and produces a Q encoded string from it.
+     * Takes an unencoded string and produces a QP encoded string from it.
+     *
      * @param  string $string           to encode
      * @param  int    $firstLineOffset, optional
      * @param  int    $maxLineLength,   optional, 0 indicates the default of 76 chars
+     *
      * @return string
      */
     public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0)

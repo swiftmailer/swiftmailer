@@ -8,20 +8,23 @@
  * file that was distributed with this source code.
  */
 
+// TODO Check if this can removed as its properly handled by the autoloader.
 require_once dirname(__FILE__) . '/../HeaderEncoder.php';
 require_once dirname(__FILE__) . '/../../Encoder/Base64Encoder.php';
 
 /**
  * Handles Base64 (B) Header Encoding in Swift Mailer.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Mime_HeaderEncoder_Base64HeaderEncoder extends Swift_Encoder_Base64Encoder implements Swift_Mime_HeaderEncoder
 {
     /**
      * Get the name of this encoding scheme.
      * Returns the string 'B'.
+     *
      * @return string
      */
     public function getName()
@@ -31,12 +34,15 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoder extends Swift_Encoder_Base64E
 
     /**
      * Takes an unencoded string and produces a Base64 encoded string from it.
+     *
      * If the charset is iso-2022-jp, it uses mb_encode_mimeheader instead of
      * default encodeString, otherwise pass to the parent method.
+     *
      * @param  string $string          to encode
      * @param  int    $firstLineOffset
-     * @param  int    $maxLineLength,  optional, 0 indicates the default of 76 bytes
+     * @param  int    $maxLineLength  optional, 0 indicates the default of 76 bytes
      * @param  string $charset
+     *
      * @return string
      */
     public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0, $charset = 'utf-8')
