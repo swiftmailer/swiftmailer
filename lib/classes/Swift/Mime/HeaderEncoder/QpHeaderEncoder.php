@@ -56,7 +56,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder i
      * @param  int    $maxLineLength,   optional, 0 indicates the default of 76 chars
      * @return string
      */
-    public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0, $charst = 'utf-8')
+    public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0)
     {
         return str_replace(array(' ', '=20', "=\r\n"), array('_', '_', "\r\n"),
             parent::encodeString($string, $firstLineOffset, $maxLineLength)
