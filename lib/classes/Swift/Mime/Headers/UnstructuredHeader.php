@@ -98,7 +98,7 @@ class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractH
 
     /**
      * Get the value of this header prepared for rendering.
-     * 
+     *
      * @return string
      */
     public function getFieldBody()
