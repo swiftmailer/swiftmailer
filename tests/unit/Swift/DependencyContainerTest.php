@@ -3,9 +3,11 @@
 require_once 'Swift/Tests/SwiftUnitTestCase.php';
 require_once 'Swift/DependencyContainer.php';
 
-class One {
+class One
+{
     public $arg1, $arg2;
-    public function __construct($arg1 = null, $arg2 = null) {
+    public function __construct($arg1 = null, $arg2 = null)
+    {
         $this->arg1 = $arg1;
         $this->arg2 = $arg2;
     }

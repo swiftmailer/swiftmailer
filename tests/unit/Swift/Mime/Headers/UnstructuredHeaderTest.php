@@ -345,6 +345,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
     {
         $header = new Swift_Mime_Headers_UnstructuredHeader($name, $encoder, new Swift_Mime_Grammar());
         $header->setCharset($this->_charset);
+
         return $header;
     }
 
@@ -359,6 +360,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
                 -> ignoring($encoder)
                 );
         }
+
         return $encoder;
     }
 }

@@ -392,6 +392,7 @@ class Swift_Mime_Headers_ParameterizedHeaderTest
             $paramEncoder, new Swift_Mime_Grammar()
             );
         $header->setCharset($this->_charset);
+
         return $header;
     }
 
@@ -406,6 +407,7 @@ class Swift_Mime_Headers_ParameterizedHeaderTest
                 -> ignoring($encoder)
                 );
         }
+
         return $encoder;
     }
 

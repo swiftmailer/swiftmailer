@@ -151,6 +151,7 @@ class Swift_Transport_Esmtp_AuthHandlerTest
         $this->_checking(Expectations::create()
             -> ignoring($authenticator)->getAuthKeyword() -> returns($type)
             );
+
         return $authenticator;
     }
 }

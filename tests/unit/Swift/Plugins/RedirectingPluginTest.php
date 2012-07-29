@@ -61,6 +61,7 @@ class Swift_Plugins_RedirectingPluginTest extends Swift_Tests_SwiftUnitTestCase
             -> ignoring($evt)->getMessage() -> returns($message)
             -> ignoring($evt)
             );
+
         return $evt;
     }
 }

@@ -88,6 +88,7 @@ class Swift_Plugins_AntiFloodPluginTest extends Swift_Tests_SwiftUnitTestCase
             -> ignoring($evt)->getSource() -> returns($transport)
             -> ignoring($evt)->getTransport() -> returns($transport)
             );
+
         return $evt;
     }
 

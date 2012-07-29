@@ -154,6 +154,7 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
             -> ignoring($evt)->getCommand() -> returns($command)
             -> ignoring($evt)
             );
+
         return $evt;
     }
 
@@ -164,6 +165,7 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
             -> ignoring($evt)->getResponse() -> returns($response)
             -> ignoring($evt)
             );
+
         return $evt;
     }
 
@@ -179,6 +181,7 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
             -> ignoring($evt)->getSource() -> returns($this->_createTransport())
             -> ignoring($evt)
             );
+
         return $evt;
     }
 
@@ -189,6 +192,7 @@ class Swift_Plugins_LoggerPluginTest extends Swift_Tests_SwiftUnitTestCase
             -> ignoring($evt)->getException() -> returns(new Swift_TransportException(''))
             -> ignoring($evt)
             );
+
         return $evt;
     }
 }

@@ -292,6 +292,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
                 -> ignoring($file)
                 );
         }
+
         return $file;
     }
 }

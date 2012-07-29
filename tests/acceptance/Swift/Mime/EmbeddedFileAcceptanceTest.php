@@ -144,6 +144,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends UnitTestCase
             $this->_cache,
             $this->_grammar
             );
+
         return $entity;
     }
 }

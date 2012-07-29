@@ -15,6 +15,7 @@ class Swift_Transport_SendmailTransportTest
         }
         $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher);
         $transport->setCommand($command);
+
         return $transport;
     }
 
@@ -24,6 +25,7 @@ class Swift_Transport_SendmailTransportTest
             $dispatcher = $this->_createEventDispatcher();
         }
         $sendmail = new Swift_Transport_SendmailTransport($buf, $dispatcher);
+
         return $sendmail;
     }
 

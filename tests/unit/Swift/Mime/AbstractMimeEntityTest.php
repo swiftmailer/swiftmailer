@@ -983,6 +983,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
                 -> ignoring($child)
                 );
         }
+
         return $child;
     }
 
@@ -1000,6 +1001,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
                 -> ignoring($encoder)
                 );
         }
+
         return $encoder;
     }
 
@@ -1012,6 +1014,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
                 -> ignoring($cache)
                 );
         }
+
         return $cache;
     }
 
@@ -1030,6 +1033,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
                 -> ignoring($set)
                 );
         }
+
         return $set;
     }
 
@@ -1050,6 +1054,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
                 -> ignoring($header)
                 );
         }
+
         return $header;
     }
 
@@ -1070,6 +1075,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
                     );
             }
         }
+
         return $os;
     }
 
@@ -1081,6 +1087,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
                 -> ignoring($is)
                 );
         }
+
         return $is;
     }
 
@@ -1089,6 +1096,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest
     public function returnStringFromEncoder(Yay_Invocation $invocation)
     {
         $args = $invocation->getArguments();
+
         return array_shift($args);
     }
 }
