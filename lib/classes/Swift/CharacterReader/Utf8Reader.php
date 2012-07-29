@@ -10,16 +10,17 @@
 
 /**
  * Analyzes UTF-8 characters.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Encoder
- * @author Chris Corbyn
- * @author Xavier De Cock <xdecock@gmail.com>
+ * @author     Chris Corbyn
+ * @author     Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
 {
     /** Pre-computed for optimization */
     private static $length_map=array(
-//N=0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,
+        //N=0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //0x0N
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //0x1N
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //0x2N
@@ -74,7 +75,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      );
 
     /**
-     * Returns the complete charactermap
+     * Returns the complete character map.
      *
      * @param string $string
      * @param integer    $startOffset
@@ -83,54 +84,56 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      */
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
     {
-        if (!isset($currentMap['i']) || !isset($currentMap['p'])) {
+        if (!isset($currentMap['i']) || ! isset($currentMap['p'])) {
             $currentMap['p'] = $currentMap['i'] = array();
-     }
+        }
+
         $strlen=strlen($string);
         $charPos=count($currentMap['p']);
         $foundChars=0;
         $invalid=false;
-        for ($i=0; $i<$strlen; ++$i) {
-            $char=$string[$i];
-            $size=self::$s_length_map[$char];
-            if ($size==0) {
+        for ($i = 0; $i < $strlen; ++$i) {
+            $char = $string[$i];
+            $size = self::$s_length_map[$char];
+            if ($size == 0) {
                 /* char is invalid, we must wait for a resync */
-                $invalid=true;
+                $invalid = true;
                 continue;
-       } else {
-         if ($invalid==true) {
-           /* We mark the chars as invalid and start a new char */
-           $currentMap['p'][$charPos+$foundChars]=$startOffset+$i;
-           $currentMap['i'][$charPos+$foundChars]=true;
-           ++$foundChars;
-           $invalid=false;
-         }
-         if (($i+$size) > $strlen) {
-           $ignoredChars=substr($string, $i);
-           break;
-         }
-         for ($j=1; $j<$size; ++$j) {
-                    $char=$string[$i+$j];
-                    if ($char>"\x7F" && $char<"\xC0") {
+            } else {
+                if ($invalid == true) {
+                    /* We mark the chars as invalid and start a new char */
+                    $currentMap['p'][$charPos + $foundChars] = $startOffset + $i;
+                    $currentMap['i'][$charPos + $foundChars] = true;
+                    ++$foundChars;
+                    $invalid = false;
+                }
+                if (($i + $size) > $strlen) {
+                    $ignoredChars = substr($string, $i);
+                    break;
+                }
+                for ($j = 1; $j < $size; ++$j) {
+                    $char = $string[$i + $j];
+                    if ($char > "\x7F" && $char < "\xC0") {
                         // Valid - continue parsing
                     } else {
                         /* char is invalid, we must wait for a resync */
-                        $invalid=true;
+                        $invalid = true;
                         continue 2;
                     }
-         }
-         /* Ok we got a complete char here */
-         $currentMap['p'][$charPos+$foundChars]=$startOffset+$i+$size;
-         $i+=$j-1;
-         ++$foundChars;
-       }
+                }
+                /* Ok we got a complete char here */
+                $currentMap['p'][$charPos + $foundChars] = $startOffset + $i + $size;
+                $i += $j - 1;
+                ++$foundChars;
+            }
         }
 
         return $foundChars;
     }
 
     /**
-     * Returns mapType
+     * Returns mapType.
+     *
      * @return integer mapType
      */
     public function getMapType()
@@ -140,12 +143,14 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
 
     /**
      * Returns an integer which specifies how many more bytes to read.
+     *
      * A positive integer indicates the number of more bytes to fetch before invoking
      * this method again.
      * A value of zero means this is already a valid character.
      * A value of -1 means this cannot possibly be a valid character.
+     *
      * @param  string $bytes
-     * @return int
+     * @return integer
      */
     public function validateByteSequence($bytes, $size)
     {
@@ -162,7 +167,8 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
 
     /**
      * Returns the number of bytes which should be read to start each character.
-     * @return int
+     *
+     * @return integer
      */
     public function getInitialByteSize()
     {
