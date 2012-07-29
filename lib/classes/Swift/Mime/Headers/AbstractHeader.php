@@ -165,7 +165,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set the maximum length of lines in the header (excluding EOL).
-     * @param int $lineLength
+     * @param integer $lineLength
      */
     public function setMaxLineLength($lineLength)
     {

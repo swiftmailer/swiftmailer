@@ -71,7 +71,7 @@ interface Swift_CharacterStream
 
     /**
      * Move the internal pointer to $charOffset in the stream.
-     * @param int $charOffset
+     * @param integer $charOffset
      */
     public function setPointer($charOffset);
 

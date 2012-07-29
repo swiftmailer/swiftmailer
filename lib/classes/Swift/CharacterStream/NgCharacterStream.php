@@ -248,7 +248,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::setPointer()
      *
-     * @param int $charOffset
+     * @param integer $charOffset
      */
     public function setPointer($charOffset)
     {

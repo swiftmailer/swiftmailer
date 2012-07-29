@@ -81,7 +81,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
      * @param Swift_Mime_Message $message
      * @param string[] &$failedRecipients to collect failures by-reference
      *
-     * @return int The number of sent emails
+     * @return integer The number of sent emails
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {

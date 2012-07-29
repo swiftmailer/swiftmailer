@@ -61,8 +61,8 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
      * Encode stream $in to stream $out.
      * @param Swift_OutputByteStream $in
      * @param Swift_InputByteStream  $out
-     * @param int                    $firstLineOffset, ignored
-     * @param int                    $maxLineLength,   optional, 0 means no wrapping will occur
+     * @param integer                    $firstLineOffset, ignored
+     * @param integer                    $maxLineLength,   optional, 0 means no wrapping will occur
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {

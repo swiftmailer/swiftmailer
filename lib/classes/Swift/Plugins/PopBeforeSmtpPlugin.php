@@ -49,7 +49,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      * Create a new PopBeforeSmtpPlugin for $host and $port.
      *
      * @param string $host
-     * @param int    $port
+     * @param integer    $port
      * @param string $cypto as "tls" or "ssl"
      */
     public function __construct($host, $port = 110, $crypto = null)
@@ -63,7 +63,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      * Create a new PopBeforeSmtpPlugin for $host and $port.
      *
      * @param string $host
-     * @param int    $port
+     * @param integer    $port
      * @param string $cypto as "tls" or "ssl"
      *
      * @return Swift_Plugins_PopBeforeSmtpPlugin
@@ -98,7 +98,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Set the connection timeout in seconds (default 10).
      *
-     * @param int $timeout
+     * @param integer $timeout
      */
     public function setTimeout($timeout)
     {

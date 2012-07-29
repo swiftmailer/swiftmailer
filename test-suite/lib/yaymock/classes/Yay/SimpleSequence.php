@@ -5,7 +5,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,9 +13,9 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
- 
+
 /**
  * Provides a means for Expectations to verify they are called in the correct order.
  * This allows Invocations to be forced in a particular order.
@@ -24,35 +24,35 @@
  */
 class Yay_SimpleSequence implements Yay_Sequence
 {
-  
+
   /**
    * The name of this sequence.
    * @var string
    * @access private
    */
   private $_name;
-  
+
   /**
    * The list of sequence IDs expected.
    * @var array
    * @access private
    */
   private $_sequenceIds = array();
-  
+
   /**
    * An internal sequence counter.
    * @var int
    * @access private
    */
   private $_counter = 0;
-  
+
   /**
    * The current position in the sequence.
    * @var int
    * @access private
    */
   private $_currentId = null;
-  
+
   /**
    * Create a new Sequence with $name.
    * @param string $name
@@ -61,10 +61,10 @@ class Yay_SimpleSequence implements Yay_Sequence
   {
     $this->_name = $name;
   }
-  
+
   /**
    * Ask for a new Sequence Id and register the new sequence.
-   * @return int $id
+   * @return integer $id
    */
   public function requestSequenceId()
   {
@@ -72,10 +72,10 @@ class Yay_SimpleSequence implements Yay_Sequence
     $this->_sequenceIds[] = $id;
     return $id;
   }
-  
+
   /**
    * Check if the sequence has progressed far enough for this sequence ID to be used.
-   * @param int $id
+   * @param integer $id
    * @return boolean
    */
   public function isInSequence($sequenceId)
@@ -95,7 +95,7 @@ class Yay_SimpleSequence implements Yay_Sequence
     }
     return $inSequence;
   }
-  
+
   /**
    * Write a description of this self describing object to Description.
    * @param Yay_Description $description
@@ -104,5 +104,5 @@ class Yay_SimpleSequence implements Yay_Sequence
   {
     $description->appendText(sprintf(' sequence %s;', $this->_name));
   }
-  
+
 }

@@ -10,14 +10,16 @@
 
 /**
  * A factory for creating CharacterReaders.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Encoder
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 interface Swift_CharacterReaderFactory
 {
     /**
      * Returns a CharacterReader suitable for the charset applied.
+     *
      * @param  string                $charset
      * @return Swift_CharacterReader
      */

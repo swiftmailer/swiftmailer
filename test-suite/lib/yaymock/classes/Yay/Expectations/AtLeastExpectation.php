@@ -5,7 +5,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,9 +13,9 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
- 
+
 //require 'Yay/Expectations/AbstractExpectation.php';
 //require 'Yay/Invocation.php';
 
@@ -27,30 +27,30 @@
 class Yay_Expectations_AtLeastExpectation
   extends Yay_Expectations_AbstractExpectation
 {
-  
+
   /**
    * The expected Invocation count.
    * @var int
    * @access private
    */
   private $_count = 0;
-  
+
   /**
    * The number of matched Invocations.
    * @var int
    * @access private
    */
   private $_matched = 0;
-  
+
   /**
    * Create a new AtLeastExpectation expecting at least $n Invocations.
-   * @param int $n
+   * @param integer $n
    */
   public function __construct($n)
   {
     $this->_count = $n;
   }
-  
+
   /**
    * Test if all conditions of the Invocation are satisfied.
    * @return boolean
@@ -59,7 +59,7 @@ class Yay_Expectations_AtLeastExpectation
   {
     return ($this->_matched >= $this->_count);
   }
-  
+
   /**
    * Increment the match counter by 1.
    * @param Yay_Invocation $invocation
@@ -68,7 +68,7 @@ class Yay_Expectations_AtLeastExpectation
   {
     $this->_matched++;
   }
-  
+
   /**
    * Describe the boundaries of how many invocations can occur.
    * @param Yay_Description $description
@@ -84,7 +84,7 @@ class Yay_Expectations_AtLeastExpectation
       $description->appendText('Any number');
     }
   }
-  
+
   /**
    * Describe the current status of this expectation.
    * @param Yay_Description $description
@@ -97,5 +97,5 @@ class Yay_Expectations_AtLeastExpectation
     }
     $description->appendText(sprintf(' occurred %d times', $this->_matched));
   }
-  
+
 }

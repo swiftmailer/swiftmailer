@@ -104,7 +104,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
      * @param string                 $nsKey
      * @param string                 $itemKey
      * @param Swift_OutputByteStream $os
-     * @param int                    $mode
+     * @param integer                    $mode
      * @see MODE_WRITE, MODE_APPEND
      * @throws Swift_IoException
      */

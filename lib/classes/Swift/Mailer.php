@@ -12,7 +12,7 @@
  * Swift Mailer class.
  *
  * @package Swift
- * @author Chris Corbyn
+ * @author  Chris Corbyn
  */
 class Swift_Mailer
 {
@@ -41,7 +41,8 @@ class Swift_Mailer
     }
 
     /**
-     * Create a new class instance of one of the message services
+     * Create a new class instance of one of the message services.
+     *
      * For example 'mimepart' would create a 'message.mimepart' instance
      *
      * @param  string $service
@@ -66,7 +67,8 @@ class Swift_Mailer
      *
      * @param Swift_Mime_Message $message
      * @param array &$failedRecipients, optional
-     * @return int
+     *
+     * @return integer
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {
@@ -102,6 +104,7 @@ class Swift_Mailer
 
     /**
      * The Transport used to send messages.
+     *
      * @return Swift_Transport
      */
     public function getTransport()

@@ -20,7 +20,7 @@ class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
      * Returns the complete charactermap
      *
      * @param string $string
-     * @param int    $startOffset
+     * @param integer    $startOffset
      * @param string $ignoredChars
      */
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
@@ -38,7 +38,7 @@ class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
 
     /**
      * Returns mapType
-     * @return int mapType
+     * @return integer mapType
      */
     public function getMapType()
     {

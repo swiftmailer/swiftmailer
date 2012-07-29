@@ -77,7 +77,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      * Returns the complete charactermap
      *
      * @param string $string
-     * @param int    $startOffset
+     * @param integer    $startOffset
      * @param array  $currentMap
      * @param mixed  $ignoredChars
      */
@@ -131,7 +131,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
 
     /**
      * Returns mapType
-     * @return int mapType
+     * @return integer mapType
      */
     public function getMapType()
     {
