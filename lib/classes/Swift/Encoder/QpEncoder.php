@@ -10,31 +10,33 @@
 
 /**
  * Handles Quoted Printable (QP) Encoding in Swift Mailer.
+ *
  * Possibly the most accurate RFC 2045 QP implementation found in PHP.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Encoder
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Encoder_QpEncoder implements Swift_Encoder
 {
     /**
      * The CharacterStream used for reading characters (as opposed to bytes).
+     *
      * @var Swift_CharacterStream
-     * @access protected
      */
     protected $_charStream;
 
     /**
      * A filter used if input should be canonicalized.
+     *
      * @var Swift_StreamFilter
-     * @access protected
      */
     protected $_filter;
 
     /**
-     * Pre-computed QP for HUGE optmization.
+     * Pre-computed QP for HUGE optimization.
+     *
      * @var string[]
-     * @access protected
      */
     protected static $_qpMap = array(
         0   => '=00', 1   => '=01', 2   => '=02', 3   => '=03', 4   => '=04',
@@ -95,13 +97,14 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 
     /**
      * A map of non-encoded ascii characters.
+     *
      * @var string[]
-     * @access protected
      */
     protected $_safeMap = array();
 
     /**
      * Creates a new QpEncoder for the given CharacterStream.
+     *
      * @param Swift_CharacterStream $charStream to use for reading characters
      * @param Swift_StreamFilter    $filter     if input should be canonicalized
      */
@@ -148,12 +151,15 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 
     /**
      * Takes an unencoded string and produces a QP encoded string from it.
+     *
      * QP encoded strings have a maximum line length of 76 characters.
      * If the first line needs to be shorter, indicate the difference with
      * $firstLineOffset.
+     *
      * @param  string $string           to encode
      * @param  int    $firstLineOffset, optional
-     * @param  int    $maxLineLength,   optional, 0 indicates the default of 76 chars
+     * @param  int    $maxLineLength,   optional 0 indicates the default of 76 chars
+     *
      * @return string
      */
     public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0)
@@ -173,7 +179,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         $this->_charStream->flushContents();
         $this->_charStream->importString($string);
 
-        //Fetching more than 4 chars at one is slower, as is fetching fewer bytes
+        // Fetching more than 4 chars at one is slower, as is fetching fewer bytes
         // Conveniently 4 chars is the UTF-8 safe number since UTF-8 has up to 6
         // bytes per char and (6 * 4 * 3 = 72 chars per line) * =NN is 3 bytes
         while (false !== $bytes = $this->_nextSequence()) {
@@ -210,6 +216,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 
     /**
      * Updates the charset used.
+     *
      * @param string $charset
      */
     public function charsetChanged($charset)
@@ -221,9 +228,10 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 
     /**
      * Encode the given byte array into a verbatim QP form.
-     * @param  int[]  $bytes
+     *
+     * @param  integer[]  $bytes
+     *
      * @return string
-     * @access protected
      */
     protected function _encodeByteSequence(array $bytes, &$size)
     {
@@ -244,9 +252,10 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 
     /**
      * Get the next sequence of bytes to read from the char stream.
-     * @param  int   $size number of bytes to read
-     * @return int[]
-     * @access protected
+     *
+     * @param  integer   $size number of bytes to read
+     *
+     * @return integer[]
      */
     protected function _nextSequence($size = 4)
     {
@@ -255,9 +264,10 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 
     /**
      * Make sure CRLF is correct and HT/SPACE are in valid places.
+     *
      * @param  string $string
+     *
      * @return string
-     * @access protected
      */
     protected function _standardize($string)
     {
