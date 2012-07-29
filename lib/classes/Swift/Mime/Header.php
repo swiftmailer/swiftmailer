@@ -10,16 +10,17 @@
 
 /**
  * A MIME Header.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 interface Swift_Mime_Header
 {
     /** Text headers */
     const TYPE_TEXT = 2;
 
-    /** Parameterized headers (text + params) */
+    /**  headers (text + params) */
     const TYPE_PARAMETERIZED = 6;
 
     /** Mailbox and address headers */
@@ -36,47 +37,58 @@ interface Swift_Mime_Header
 
     /**
      * Get the type of Header that this instance represents.
-     * @return int
+     *
      * @see TYPE_TEXT, TYPE_PARAMETERIZED, TYPE_MAILBOX
      * @see TYPE_DATE, TYPE_ID, TYPE_PATH
+     *
+     * @return integer
      */
     public function getFieldType();
 
     /**
      * Set the model for the field body.
+     *
      * The actual types needed will vary depending upon the type of Header.
+     *
      * @param mixed $model
      */
     public function setFieldBodyModel($model);
 
     /**
      * Set the charset used when rendering the Header.
+     *
      * @param string $charset
      */
     public function setCharset($charset);
 
     /**
      * Get the model for the field body.
+     *
      * The return type depends on the specifics of the Header.
+     *
      * @return mixed
      */
     public function getFieldBodyModel();
 
     /**
      * Get the name of this header (e.g. Subject).
+     *
      * The name is an identifier and as such will be immutable.
+     *
      * @return string
      */
     public function getFieldName();
 
     /**
      * Get the field body, prepared for folding into a final header value.
+     *
      * @return string
      */
     public function getFieldBody();
 
     /**
      * Get this Header rendered as a compliant string.
+     *
      * @return string
      */
     public function toString();

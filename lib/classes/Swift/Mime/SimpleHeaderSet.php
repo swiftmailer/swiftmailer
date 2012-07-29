@@ -11,10 +11,9 @@
 /**
  * A collection of MIME headers.
  *
- * @package Swift
+ * @package    Swift
  * @subpackage Mime
- *
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
 {
