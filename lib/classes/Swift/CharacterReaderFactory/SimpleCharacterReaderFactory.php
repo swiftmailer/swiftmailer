@@ -99,7 +99,7 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory implements Swift
     /**
      * Returns a CharacterReader suitable for the charset applied.
      *
-     * @param  string                $charset
+     * @param string $charset
      *
      * @return Swift_CharacterReader
      */

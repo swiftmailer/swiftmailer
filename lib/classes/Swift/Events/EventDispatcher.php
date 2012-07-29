@@ -30,9 +30,9 @@ interface Swift_Events_EventDispatcher
     /**
      * Create a new CommandEvent for $source and $command.
      *
-     * @param  Swift_Transport           $source
-     * @param  string                    $command      That will be executed
-     * @param  array                     $successCodes That are needed
+     * @param Swift_Transport $source
+     * @param string          $command      That will be executed
+     * @param array           $successCodes That are needed
      *
      * @return Swift_Events_CommandEvent
      */
@@ -41,9 +41,9 @@ interface Swift_Events_EventDispatcher
     /**
      * Create a new ResponseEvent for $source and $response.
      *
-     * @param  Swift_Transport            $source
-     * @param  string                     $response
-     * @param  boolean                    $valid    If the response is valid
+     * @param Swift_Transport $source
+     * @param string          $response
+     * @param boolean         $valid    If the response is valid
      *
      * @return Swift_Events_ResponseEvent
      */
@@ -52,7 +52,7 @@ interface Swift_Events_EventDispatcher
     /**
      * Create a new TransportChangeEvent for $source.
      *
-     * @param  Swift_Transport                   $source
+     * @param Swift_Transport $source
      *
      * @return Swift_Events_TransportChangeEvent
      */
@@ -61,8 +61,8 @@ interface Swift_Events_EventDispatcher
     /**
      * Create a new TransportExceptionEvent for $source.
      *
-     * @param  Swift_Transport                      $source
-     * @param  Swift_TransportException             $ex
+     * @param Swift_Transport          $source
+     * @param Swift_TransportException $ex
      *
      * @return Swift_Events_TransportExceptionEvent
      */

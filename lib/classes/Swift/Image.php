@@ -34,9 +34,9 @@ class Swift_Image extends Swift_EmbeddedFile
     /**
      * Create a new Image.
      *
-     * @param  string|Swift_OutputByteStream $data
-     * @param  string                        $filename
-     * @param  string                        $contentType
+     * @param string|Swift_OutputByteStream $data
+     * @param string                        $filename
+     * @param string                        $contentType
      *
      * @return Swift_Image
      */
@@ -48,7 +48,7 @@ class Swift_Image extends Swift_EmbeddedFile
     /**
      * Create a new Image from a filesystem path.
      *
-     * @param  string                  $path
+     * @param string $path
      *
      * @return Swift_Image
      */

@@ -236,11 +236,11 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Produces a compliant, formatted RFC 2822 'phrase' based on the string given.
      *
-     * @param  Swift_Mime_Header        $header
-     * @param  string                   $string  as displayed
-     * @param  string                   $charset of the text
-     * @param  Swift_Mime_HeaderEncoder $encoder
-     * @param  boolean                  $shorten the first line to make remove for header name
+     * @param Swift_Mime_Header        $header
+     * @param string                   $string  as displayed
+     * @param string                   $charset of the text
+     * @param Swift_Mime_HeaderEncoder $encoder
+     * @param boolean                  $shorten the first line to make remove for header name
      *
      * @return string
      */
@@ -274,8 +274,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Encode needed word tokens within a string of input.
      *
-     * @param  string $input
-     * @param  string $usedLength, optional
+     * @param string $input
+     * @param string $usedLength, optional
      *
      * @return string
      */
@@ -314,7 +314,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Test if a token needs to be encoded or not.
      *
-     * @param  string  $token
+     * @param string $token
      *
      * @return boolean
      */
@@ -326,7 +326,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Splits a string into tokens in blocks of words which can be encoded quickly.
      *
-     * @param  string   $string
+     * @param string $string
      *
      * @return string[]
      */
@@ -357,8 +357,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Get a token as an encoded word for safe insertion into headers.
      *
-     * @param  string $token            to encode
-     * @param  int    $firstLineOffset optional
+     * @param  string  $token to encode
+     * @return integer $firstLineOffset optional
      *
      * @return string
      */
@@ -397,7 +397,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Generates tokens from the given string which include CRLF as individual tokens.
      *
-     * @param  string   $token
+     * @param string $token
      *
      * @return string[]
      */
@@ -443,9 +443,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Generate a list of all tokens in the final header.
      *
-     * @param  string $string The string to tokenize
+     * @param string $string The string to tokenize
      *
-     * @return array  An array of tokens as strings
+     * @return array An array of tokens as strings
      */
     protected function toTokens($string = null)
     {
@@ -467,7 +467,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      * Takes an array of tokens which appear in the header and turns them into
      * an RFC 2822 compliant string, adding FWSP where needed.
      *
-     * @param  string[] $tokens
+     * @param string[] $tokens
      *
      * @return string
      */

@@ -62,7 +62,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the host to connect to.
      *
-     * @param  string                         $host
+     * @param string $host
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -86,7 +86,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the port to connect to.
      *
-     * @param  int                            $port
+     * @return integer $port
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -110,7 +110,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the connection timeout.
      *
-     * @param  int                            $timeout seconds
+     * @return integer $timeout seconds
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -135,7 +135,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the encryption type (tls or ssl)
      *
-     * @param  string                         $encryption
+     * @param string $encryption
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -165,7 +165,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Sets the source IP.
      *
-     * @param  string                         $source
+     * @param string $source
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -189,7 +189,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set ESMTP extension handlers.
      *
-     * @param  Swift_Transport_EsmtpHandler[] $handlers
+     * @param Swift_Transport_EsmtpHandler[] $handlers
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -222,8 +222,8 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      * If no response codes are given, the response will not be validated.
      * If codes are given, an exception will be thrown on an invalid response.
      *
-     * @param string $command
-     * @param int[]  $codes
+     * @param string   $command
+     * @param int[]    $codes
      * @param string[] $failures An array of failures by-reference
      *
      * @return string

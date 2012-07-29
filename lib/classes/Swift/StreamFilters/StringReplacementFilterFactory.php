@@ -22,8 +22,8 @@ class Swift_StreamFilters_StringReplacementFilterFactory implements Swift_Replac
     /**
      * Create a new StreamFilter to replace $search with $replace in a string.
      *
-     * @param  string             $search
-     * @param  string             $replace
+     * @param string $search
+     * @param string $replace
      *
      * @return Swift_StreamFilter
      */

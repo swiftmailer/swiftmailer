@@ -30,7 +30,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Create a new FileSpool.
      *
-     * @param  string            $path
+     * @param string $path
      *
      * @throws Swift_IoException
      */
@@ -84,7 +84,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Queues a message.
      *
-     * @param  Swift_Mime_Message $message The message to store
+     * @param Swift_Mime_Message $message The message to store
      *
      * @return boolean
      *
@@ -134,7 +134,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Sends messages using the given transport instance.
      *
-     * @param Swift_Transport $transport A transport instance
+     * @param Swift_Transport $transport        A transport instance
      * @param string[]        $failedRecipients An array of failures by-reference
      *
      * @return integer The number of sent e-mail's

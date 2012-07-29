@@ -60,8 +60,8 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
      *
      * @param Swift_OutputByteStream $os              output stream
      * @param Swift_InputByteStream  $is              input stream
-     * @param integer                    $firstLineOffset
-     * @param integer                    $maxLineLength
+     * @param integer                $firstLineOffset
+     * @param integer                $maxLineLength
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {

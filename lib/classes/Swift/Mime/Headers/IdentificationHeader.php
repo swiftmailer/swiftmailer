@@ -56,7 +56,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * This method takes a string ID, or an array of IDs.
      *
-     * @param  mixed                        $model
+     * @param mixed $model
      *
      * @throws Swift_RfcComplianceException
      */
@@ -80,7 +80,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     /**
      * Set the ID used in the value of this header.
      *
-     * @param  string|array                 $id
+     * @param string|array $id
      *
      * @throws Swift_RfcComplianceException
      */
@@ -106,7 +106,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     /**
      * Set a collection of IDs to use in the value of this Header.
      *
-     * @param  string[]                     $ids
+     * @param string[] $ids
      *
      * @throws Swift_RfcComplianceException
      */
@@ -163,7 +163,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     /**
      * Throws an Exception if the id passed does not comply with RFC 2822.
      *
-     * @param  string                       $id
+     * @param string $id
      *
      * @throws Swift_RfcComplianceException
      */

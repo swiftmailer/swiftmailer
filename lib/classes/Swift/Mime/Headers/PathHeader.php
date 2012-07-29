@@ -53,7 +53,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      * Set the model for the field body.
      * This method takes a string for an address.
      *
-     * @param  string                       $model
+     * @param string $model
      *
      * @throws Swift_RfcComplianceException
      */
@@ -76,7 +76,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
     /**
      * Set the Address which should appear in this Header.
      *
-     * @param  string                       $address
+     * @param string $address
      *
      * @throws Swift_RfcComplianceException
      */
@@ -129,7 +129,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
     /**
      * Throws an Exception if the address passed does not comply with RFC 2822.
      *
-     * @param  string                       $address
+     * @param string $address
      *
      * @throws Swift_RfcComplianceException If address is invalid
      */

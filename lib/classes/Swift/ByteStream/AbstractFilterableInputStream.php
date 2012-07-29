@@ -75,7 +75,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
     /**
      * Writes $bytes to the end of the stream.
      *
-     * @param  string            $bytes
+     * @param string $bytes
      *
      * @throws Swift_IoException
      */

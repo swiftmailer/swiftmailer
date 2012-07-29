@@ -64,7 +64,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     /**
      * Set the Content-Disposition of this attachment.
      *
-     * @param  string                $disposition
+     * @param string $disposition
      *
      * @return Swift_Mime_Attachment
      */
@@ -92,7 +92,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     /**
      * Set the filename of this attachment.
      *
-     * @param  string                $filename
+     * @param string $filename
      *
      * @return Swift_Mime_Attachment
      */
@@ -117,7 +117,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     /**
      * Set the file size of this attachment.
      *
-     * @param  integer                   $size
+     * @param integer $size
      *
      * @return Swift_Mime_Attachment
      */
@@ -131,8 +131,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     /**
      * Set the file that this attachment is for.
      *
-     * @param  Swift_FileStream      $file
-     * @param  string                $contentType optional
+     * @param Swift_FileStream $file
+     * @param string           $contentType optional
      *
      * @return Swift_Mime_Attachment
      */

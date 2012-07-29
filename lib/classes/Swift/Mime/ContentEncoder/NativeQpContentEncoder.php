@@ -35,8 +35,8 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
      *
      * @param Swift_OutputByteStream $os              to read from
      * @param Swift_InputByteStream  $is              to write to
-     * @param integer                    $firstLineOffset
-     * @param integer                    $maxLineLength   0 indicates the default length for this encoding
+     * @param integer                $firstLineOffset
+     * @param integer                $maxLineLength   0 indicates the default length for this encoding
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
@@ -62,9 +62,10 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
     /**
      * Encode a given string to produce an encoded string.
      *
-     * @param  string $string
-     * @param  int    $firstLineOffset if first line needs to be shorter
-     * @param  int    $maxLineLength   0 indicates the default length for this encoding
+     * @param  string  $string
+     * @return integer $firstLineOffset if first line needs to be shorter
+     * @return integer $maxLineLength   0 indicates the default length for this encoding
+     *
      * @return string
      */
     public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0)

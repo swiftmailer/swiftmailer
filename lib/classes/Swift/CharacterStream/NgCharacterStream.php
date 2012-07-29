@@ -95,7 +95,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
      * Constructor.
      *
      * @param Swift_CharacterReaderFactory $factory
-     * @param string                 $charset
+     * @param string                       $charset
      */
     public function __construct(Swift_CharacterReaderFactory $factory, $charset)
     {
@@ -167,7 +167,8 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::read()
      *
-     * @param  integer    $length
+     * @param integer $length
+     *
      * @return string
      */
     public function read($length)
@@ -232,7 +233,8 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::readBytes()
      *
-     * @param  integer   $length
+     * @param integer $length
+     *
      * @return integer[]
      */
     public function readBytes($length)

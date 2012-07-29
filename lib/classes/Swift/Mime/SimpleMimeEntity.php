@@ -163,7 +163,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Set the Content-type of this entity.
      *
-     * @param  string                      $type
+     * @param string $type
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -194,7 +194,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Set the CID of this entity.
      *
-     * @param  string                      $id
+     * @param string $id
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -225,7 +225,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      *
      * This method sets a value in the Content-ID header.
      *
-     * @param  string                      $description
+     * @param string $description
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -253,7 +253,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      *
      * Though not enforced by the library, lines should not exceed 1000 chars.
      *
-     * @param  integer                         $length
+     * @param integer $length
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -277,8 +277,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Set all children of this entity.
      *
-     * @param  array                       $children      Swift_Mime_Entity instances
-     * @param  integer                         $compoundLevel For internal use only
+     * @param array   $children      Swift_Mime_Entity instances
+     * @param integer $compoundLevel For internal use only
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -362,8 +362,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      * Set the body of this entity, either as a string, or as an instance of
      * {@link Swift_OutputByteStream}.
      *
-     * @param  mixed                       $body
-     * @param  string                      $contentType optional
+     * @param mixed  $body
+     * @param string $contentType optional
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -394,7 +394,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Set the encoder used for the body of this entity.
      *
-     * @param  Swift_Mime_ContentEncoder   $encoder
+     * @param Swift_Mime_ContentEncoder $encoder
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -428,7 +428,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Set the boundary used to separate children in this entity.
      *
-     * @param  string                       $boundary
+     * @param string $boundary
      *
      * @return Swift_Mime_SimpleMimeEntity
      *
@@ -821,7 +821,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Throws an Exception if the id passed does not comply with RFC 2822.
      *
-     * @param  string                       $id
+     * @param string $id
      *
      * @throws Swift_RfcComplianceException
      */

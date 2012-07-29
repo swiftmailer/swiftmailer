@@ -66,7 +66,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Set the subject of this message.
      *
-     * @param  string                   $subject
+     * @param string $subject
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -92,7 +92,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Set the date at which this message was created.
      *
-     * @param  integer                      $date
+     * @param integer $date
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -118,7 +118,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Set the return-path (the bounce address) of this message.
      *
-     * @param  string                   $address
+     * @param string $address
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -146,8 +146,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * This does not override the From field, but it has a higher significance.
      *
-     * @param  string                   $sender
-     * @param  string                   $name   optional
+     * @param string $sender
+     * @param string $name   optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -198,8 +198,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
      *
-     * @param  string                   $addresses
-     * @param  string                   $name      optional
+     * @param string $addresses
+     * @param string $name      optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -231,8 +231,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * If $name is passed this name will be associated with the address.
      *
-     * @param  string                   $address
-     * @param  string                   $name    optional
+     * @param string $address
+     * @param string $name    optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -252,8 +252,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
      *
-     * @param  string                   $addresses
-     * @param  string                   $name      optional
+     * @param string $addresses
+     * @param string $name      optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -285,8 +285,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * If $name is passed this name will be associated with the address.
      *
-     * @param  string                   $address
-     * @param  string                   $name    optional
+     * @param string $address
+     * @param string $name    optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -306,8 +306,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
      *
-     * @param  array                    $addresses
-     * @param  string                   $name      optional
+     * @param array  $addresses
+     * @param string $name      optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -339,8 +339,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * If $name is passed this name will be associated with the address.
      *
-     * @param  string                   $address
-     * @param  string                   $name    optional
+     * @param string $address
+     * @param string $name    optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -358,8 +358,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
      *
-     * @param  array                    $addresses
-     * @param  string                   $name      optional
+     * @param array  $addresses
+     * @param string $name      optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -391,8 +391,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * If $name is passed this name will be associated with the address.
      *
-     * @param  string                   $address
-     * @param  string                   $name    optional
+     * @param string $address
+     * @param string $name    optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -410,8 +410,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
      *
-     * @param  array                    $addresses
-     * @param  string                   $name      optional
+     * @param array  $addresses
+     * @param string $name      optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -443,7 +443,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * The value is an integer where 1 is the highest priority and 5 is the lowest.
      *
-     * @param  integer                      $priority
+     * @param integer $priority
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -492,7 +492,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Ask for a delivery receipt from the recipient to be sent to $addresses
      *
-     * @param  array                    $addresses
+     * @param array $addresses
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -519,7 +519,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Attach a {@link Swift_Mime_MimeEntity} such as an Attachment or MimePart.
      *
-     * @param  Swift_Mime_MimeEntity    $entity
+     * @param Swift_Mime_MimeEntity $entity
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -533,7 +533,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Remove an already attached entity.
      *
-     * @param  Swift_Mime_MimeEntity    $entity
+     * @param Swift_Mime_MimeEntity $entity
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -553,7 +553,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Attach a {@link Swift_Mime_MimeEntity} and return it's CID source.
      * This method should be used when embedding images or other data in a message.
-     * @param  Swift_Mime_MimeEntity $entity
+     *
+     * @param Swift_Mime_MimeEntity $entity
+     *
      * @return string
      */
     public function embed(Swift_Mime_MimeEntity $entity)

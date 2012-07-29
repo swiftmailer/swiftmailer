@@ -47,10 +47,10 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      *
      * @see MODE_WRITE, MODE_APPEND
      *
-     * @param string $nsKey
-     * @param string $itemKey
-     * @param string $string
-     * @param integer    $mode
+     * @param string  $nsKey
+     * @param string  $itemKey
+     * @param string  $string
+     * @param integer $mode
      */
     public function setString($nsKey, $itemKey, $string, $mode)
     {
@@ -81,7 +81,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      * @param string                 $nsKey
      * @param string                 $itemKey
      * @param Swift_OutputByteStream $os
-     * @param integer                    $mode
+     * @param integer                $mode
      */
     public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os, $mode)
     {
@@ -110,8 +110,8 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      *
      * NOTE: The stream will always write in append mode.
      *
-     * @param  string                $nsKey
-     * @param  string                $itemKey
+     * @param string $nsKey
+     * @param string $itemKey
      *
      * @return Swift_InputByteStream
      */
@@ -131,8 +131,8 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
     /**
      * Get data back out of the cache as a string.
      *
-     * @param  string $nsKey
-     * @param  string $itemKey
+     * @param string $nsKey
+     * @param string $itemKey
      *
      * @return string
      */
@@ -160,8 +160,8 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
     /**
      * Check if the given $itemKey exists in the namespace $nsKey.
      *
-     * @param  string  $nsKey
-     * @param  string  $itemKey
+     * @param string $nsKey
+     * @param string $itemKey
      *
      * @return boolean
      */

@@ -150,9 +150,9 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
      * This doesn't need to be overridden in theory, but it is for implementation
      * reasons to prevent potential breakage of attributes.
      *
-     * @param  string $string The string to tokenize
+     * @param string $string The string to tokenize
      *
-     * @return array  An array of tokens as strings
+     * @return array An array of tokens as strings
      */
     protected function toTokens($string = null)
     {
@@ -177,8 +177,8 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
     /**
      * Render a RFC 2047 compliant header parameter from the $name and $value.
      *
-     * @param  string $name
-     * @param  string $value
+     * @param string $name
+     * @param string $value
      *
      * @return string
      */
@@ -238,9 +238,9 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
     /**
      * Returns the parameter value from the "=" and beyond.
      *
-     * @param  string  $value     to append
-     * @param  boolean $encoded
-     * @param  boolean $firstLine
+     * @param string  $value     to append
+     * @param boolean $encoded
+     * @param boolean $firstLine
      *
      * @return string
      */

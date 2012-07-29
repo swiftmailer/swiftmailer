@@ -28,10 +28,10 @@ class Swift_KeyCache_DummyKeyCache implements Swift_KeyCache
 {
     /**
      * Set a string into the cache under $itemKey for the namespace $nsKey.
-     * @param string $nsKey
-     * @param string $itemKey
-     * @param string $string
-     * @param integer    $mode
+     * @param string  $nsKey
+     * @param string  $itemKey
+     * @param string  $string
+     * @param integer $mode
      * @see MODE_WRITE, MODE_APPEND
      */
     public function setString($nsKey, $itemKey, $string, $mode)
@@ -43,7 +43,7 @@ class Swift_KeyCache_DummyKeyCache implements Swift_KeyCache
      * @param string                 $nsKey
      * @param string                 $itemKey
      * @param Swift_OutputByteStream $os
-     * @param integer                    $mode
+     * @param integer                $mode
      * @see MODE_WRITE, MODE_APPEND
      */
     public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os, $mode)

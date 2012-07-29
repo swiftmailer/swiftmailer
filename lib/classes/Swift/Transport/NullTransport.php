@@ -55,7 +55,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
      * Sends the given message.
      *
      * @param Swift_Mime_Message $message
-     * @param string[] $failedRecipients An array of failures by-reference
+     * @param string[]           $failedRecipients An array of failures by-reference
      *
      * @return integer The number of sent emails
      */

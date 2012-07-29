@@ -19,7 +19,7 @@ interface Swift_StreamFilter
     /**
      * Based on the buffer given, this returns true if more buffering is needed.
      *
-     * @param  mixed   $buffer
+     * @param mixed $buffer
      *
      * @return boolean
      */
@@ -28,7 +28,7 @@ interface Swift_StreamFilter
     /**
      * Filters $buffer and returns the changes.
      *
-     * @param  mixed $buffer
+     * @param mixed $buffer
      *
      * @return mixed
      */

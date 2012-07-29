@@ -98,7 +98,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
     /**
      * Returns true if based on the buffer passed more bytes should be buffered.
      *
-     * @param  array   $buffer
+     * @param array $buffer
      *
      * @return boolean
      */
@@ -112,7 +112,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
     /**
      * Perform the actual replacements on $buffer and return the result.
      *
-     * @param  array $buffer
+     * @param array $buffer
      *
      * @return array
      */

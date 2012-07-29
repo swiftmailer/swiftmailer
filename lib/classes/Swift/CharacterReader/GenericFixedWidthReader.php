@@ -38,10 +38,10 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
     /**
      * Returns the complete character map.
      *
-     * @param string $string
-     * @param integer    $startOffset
-     * @param array  $currentMap
-     * @param mixed  $ignoredChars
+     * @param string  $string
+     * @param integer $startOffset
+     * @param array   $currentMap
+     * @param mixed   $ignoredChars
      *
      * @return integer
      */
@@ -75,7 +75,8 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
      * A value of zero means this is already a valid character.
      * A value of -1 means this cannot possibly be a valid character.
      *
-     * @param  string $bytes
+     * @param string $bytes
+     *
      * @return integer
      */
     public function validateByteSequence($bytes, $size)

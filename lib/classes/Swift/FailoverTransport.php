@@ -36,7 +36,7 @@ class Swift_FailoverTransport extends Swift_Transport_FailoverTransport
     /**
      * Create a new FailoverTransport instance.
      *
-     * @param  Swift_Transport[]                  $transports
+     * @param Swift_Transport[] $transports
      *
      * @return Swift_FailoverTransport
      */

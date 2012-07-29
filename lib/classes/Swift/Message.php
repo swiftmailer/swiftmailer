@@ -50,10 +50,10 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     /**
      * Create a new Message.
      *
-     * @param  string             $subject
-     * @param  string             $body
-     * @param  string             $contentType
-     * @param  string             $charset
+     * @param string $subject
+     * @param string $body
+     * @param string $contentType
+     * @param string $charset
      *
      * @return Swift_Mime_Message
      */

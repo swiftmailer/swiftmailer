@@ -36,7 +36,7 @@ class Swift_MailTransport extends Swift_Transport_MailTransport
     /**
      * Create a new MailTransport instance.
      *
-     * @param  string              $extraParams To be passed to mail()
+     * @param string $extraParams To be passed to mail()
      *
      * @return Swift_MailTransport
      */

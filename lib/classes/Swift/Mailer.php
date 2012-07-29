@@ -32,7 +32,7 @@ class Swift_Mailer
     /**
      * Create a new Mailer instance.
      *
-     * @param  Swift_Transport $transport
+     * @param Swift_Transport $transport
      *
      * @return Swift_Mailer
      */
@@ -46,7 +46,7 @@ class Swift_Mailer
      *
      * For example 'mimepart' would create a 'message.mimepart' instance
      *
-     * @param  string $service
+     * @param string $service
      *
      * @return object
      */
@@ -68,7 +68,7 @@ class Swift_Mailer
      * delivery.
      *
      * @param Swift_Mime_Message $message
-     * @param array $failedRecipients An array of failures by-reference
+     * @param array              $failedRecipients An array of failures by-reference
      *
      * @return integer
      */

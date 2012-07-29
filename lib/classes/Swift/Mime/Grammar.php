@@ -123,7 +123,8 @@ class Swift_Mime_Grammar
     /**
      * Get the grammar defined for $name token.
      *
-     * @param  string $name exactly as written in the RFC
+     * @param string $name exactly as written in the RFC
+     *
      * @return string
      */
     public function getDefinition($name)
@@ -160,9 +161,9 @@ class Swift_Mime_Grammar
     /**
      * Escape special characters in a string (convert to quoted-pairs).
      *
-     * @param  string   $token
-     * @param  string[] $include additional chars to escape
-     * @param  string[] $exclude chars from escaping
+     * @param string   $token
+     * @param string[] $include additional chars to escape
+     * @param string[] $exclude chars from escaping
      *
      * @return string
      */

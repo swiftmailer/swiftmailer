@@ -36,7 +36,6 @@ interface Swift_Mime_MimeEntity extends Swift_Mime_CharsetObserver, Swift_Mime_E
      * @see LEVEL_TOP, LEVEL_MIXED, LEVEL_RELATED, LEVEL_ALTERNATIVE
      *
      * @return int
-     *
      */
     public function getNestingLevel();
 

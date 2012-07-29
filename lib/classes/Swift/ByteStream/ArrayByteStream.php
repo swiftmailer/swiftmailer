@@ -72,7 +72,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
      * remaining bytes are given instead. If no bytes are remaining at all, boolean
      * false is returned.
      *
-     * @param  integer    $length
+     * @param integer $length
      *
      * @return string
      */
@@ -154,7 +154,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
     /**
      * Move the internal read pointer to $byteOffset in the stream.
      *
-     * @param  integer     $byteOffset
+     * @param integer $byteOffset
      *
      * @return boolean
      */

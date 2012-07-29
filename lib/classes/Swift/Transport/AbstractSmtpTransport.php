@@ -57,7 +57,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * If your server doesn't have a domain name, use the IP in square
      * brackets (i.e. [127.0.0.1]).
      *
-     * @param  string                                $domain
+     * @param string $domain
      *
      * @return Swift_Transport_AbstractSmtpTransport
      */
@@ -144,7 +144,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * The return value is the number of recipients who were accepted for delivery.
      *
      * @param Swift_Mime_Message $message
-     * @param string[] $failedRecipients An array of failures by-reference
+     * @param string[]           $failedRecipients An array of failures by-reference
      *
      * @return int
      */
@@ -264,8 +264,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * If no response codes are given, the response will not be validated.
      * If codes are given, an exception will be thrown on an invalid response.
      *
-     * @param string $command
-     * @param int[]  $codes
+     * @param string   $command
+     * @param int[]    $codes
      * @param string[] $failures An array of failures by-reference
      *
      * @return string

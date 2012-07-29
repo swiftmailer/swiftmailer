@@ -37,7 +37,7 @@ class Swift_SpoolTransport extends Swift_Transport_SpoolTransport
     /**
      * Create a new SpoolTransport instance.
      *
-     * @param  Swift_Spool          $spool
+     * @param Swift_Spool $spool
      *
      * @return Swift_SpoolTransport
      */

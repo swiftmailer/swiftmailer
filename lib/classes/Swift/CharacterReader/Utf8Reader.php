@@ -77,10 +77,10 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
     /**
      * Returns the complete character map.
      *
-     * @param string $string
-     * @param integer    $startOffset
-     * @param array  $currentMap
-     * @param mixed  $ignoredChars
+     * @param string  $string
+     * @param integer $startOffset
+     * @param array   $currentMap
+     * @param mixed   $ignoredChars
      */
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
     {
@@ -149,7 +149,8 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      * A value of zero means this is already a valid character.
      * A value of -1 means this cannot possibly be a valid character.
      *
-     * @param  string $bytes
+     * @param string $bytes
+     *
      * @return integer
      */
     public function validateByteSequence($bytes, $size)

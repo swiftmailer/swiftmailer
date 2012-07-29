@@ -56,7 +56,7 @@ class Swift_Preferences
     /**
      * Set the directory where temporary files can be saved.
      *
-     * @param  string            $dir
+     * @param string $dir
      *
      * @return Swift_Preferences
      */
@@ -71,7 +71,7 @@ class Swift_Preferences
     /**
      * Set the type of cache to use (i.e. "disk" or "array").
      *
-     * @param  string            $type
+     * @param string $type
      *
      * @return Swift_Preferences
      */
@@ -86,7 +86,7 @@ class Swift_Preferences
     /**
      * Set the QuotedPrintable dot escaper preference.
      *
-     * @param  boolean           $dotEscape
+     * @param boolean $dotEscape
      *
      * @return Swift_Preferences
      */

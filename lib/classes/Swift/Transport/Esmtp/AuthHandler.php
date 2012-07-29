@@ -216,7 +216,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
      *
      * This method is called to ensure extensions can be execute in an appropriate order.
      *
-     * @param  string $esmtpKeyword to compare with
+     * @param string $esmtpKeyword to compare with
      *
      * @return int
      */
@@ -247,7 +247,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     /**
      * Returns the authenticator list for the given agent.
      *
-     * @param  Swift_Transport_SmtpAgent $agent
+     * @param Swift_Transport_SmtpAgent $agent
      *
      * @return array
      */
