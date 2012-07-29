@@ -10,6 +10,7 @@
 
 /**
  * Pretends messages have been sent, but just ignores them.
+ *
  * @package Swift
  * @author  Fabien Potencier
  */
@@ -54,7 +55,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
      * Sends the given message.
      *
      * @param Swift_Mime_Message $message
-     * @param string[] &$failedRecipients to collect failures by-reference
+     * @param string[] $failedRecipients An array of failures by-reference
      *
      * @return integer The number of sent emails
      */

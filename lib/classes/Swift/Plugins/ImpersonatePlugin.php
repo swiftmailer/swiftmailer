@@ -10,9 +10,9 @@
 /**
  * Replaces the sender of a message.
  *
- * @package Swift
+ * @package    Swift
  * @subpackage Plugins
- * @author Arjen Brouwer
+ * @author     Arjen Brouwer
  */
 class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener
 {
@@ -20,7 +20,6 @@ class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener
      * The sender to impersonate.
      *
      * @var String
-     * @access private
      */
     private $_sender;
 

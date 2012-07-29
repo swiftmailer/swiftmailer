@@ -56,6 +56,7 @@ interface Swift_KeyCache
      * @param  string                $nsKey
      * @param  string                $itemKey
      * @param  Swift_InputByteStream $is     optional input stream
+     *
      * @return Swift_InputByteStream
      */
     public function getInputByteStream($nsKey, $itemKey, Swift_InputByteStream $is = null);
@@ -75,7 +76,6 @@ interface Swift_KeyCache
      *
      * @param string                $nsKey
      * @param string                $itemKey
-     *
      * @param Swift_InputByteStream $is     stream to write the data to
      */
     public function exportToByteStream($nsKey, $itemKey, Swift_InputByteStream $is);

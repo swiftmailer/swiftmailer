@@ -11,10 +11,9 @@
 /**
  * Allows customization of Messages on-the-fly.
  *
- * @package Swift
+ * @package    Swift
  * @subpackage Plugins
- *
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 interface Swift_Plugins_Decorator_Replacements
 {

@@ -68,6 +68,8 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      * @param string|Swift_OutputByteStream $body
      * @param string                        $contentType
      * @param string                        $charset
+     *
+     * @return Swift_Mime_SimpleMessage
      */
     public function addPart($body, $contentType = null, $charset = null)
     {

@@ -11,9 +11,9 @@
 /**
  * Prints all log messages in real time.
  *
- * @package Swift
+ * @package    Swift
  * @subpackage Transport
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Plugins_Loggers_EchoLogger implements Swift_Plugins_Logger
 {
@@ -32,6 +32,7 @@ class Swift_Plugins_Loggers_EchoLogger implements Swift_Plugins_Logger
 
     /**
      * Add a log entry.
+     *
      * @param string $entry
      */
     public function add($entry)

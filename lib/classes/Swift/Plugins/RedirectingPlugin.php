@@ -10,21 +10,23 @@
 
 /**
  * Redirects all email to a single recipient.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Plugins
- * @author Fabien Potencier
+ * @author     Fabien Potencier
  */
 class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 {
     /**
      * The recipient who will receive all messages.
+     *
      * @var string
-     * @access private
      */
     private $_recipient;
 
     /**
      * Create a new RedirectingPlugin.
+     *
      * @param integer $recipient
      */
     public function __construct($recipient)
@@ -34,6 +36,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
     /**
      * Set the recipient of all messages.
+     *
      * @param integer $threshold
      */
     public function setRecipient($recipient)
@@ -43,6 +46,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
     /**
      * Get the recipient of all messages.
+     *
      * @return int
      */
     public function getRecipient()
@@ -52,6 +56,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
     /**
      * Invoked immediately before the Message is sent.
+     *
      * @param Swift_Events_SendEvent $evt
      */
     public function beforeSendPerformed(Swift_Events_SendEvent $evt)

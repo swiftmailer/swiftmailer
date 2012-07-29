@@ -10,9 +10,10 @@
 
 /**
  * Buffers input and output to a resource.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Transport
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 interface Swift_Transport_IoBuffer extends Swift_InputByteStream, Swift_OutputByteStream
 {
@@ -24,13 +25,16 @@ interface Swift_Transport_IoBuffer extends Swift_InputByteStream, Swift_OutputBy
 
     /**
      * Perform any initialization needed, using the given $params.
+     *
      * Parameters will vary depending upon the type of IoBuffer used.
+     *
      * @param array $params
      */
     public function initialize(array $params);
 
     /**
      * Set an individual param on the buffer (e.g. switching to SSL).
+     *
      * @param string $param
      * @param mixed  $value
      */
@@ -43,16 +47,22 @@ interface Swift_Transport_IoBuffer extends Swift_InputByteStream, Swift_OutputBy
 
     /**
      * Set an array of string replacements which should be made on data written
-     * to the buffer.  This could replace LF with CRLF for example.
+     * to the buffer.
+     *
+     * This could replace LF with CRLF for example.
+     *
      * @param string[] $replacements
      */
     public function setWriteTranslations(array $replacements);
 
     /**
      * Get a line of output (including any CRLF).
+     *
      * The $sequence number comes from any writes and may or may not be used
      * depending upon the implementation.
+     *
      * @param  int    $sequence of last write to scan from
+     *
      * @return string
      */
     public function readLine($sequence);

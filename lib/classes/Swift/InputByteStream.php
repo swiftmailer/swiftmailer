@@ -31,6 +31,7 @@ interface Swift_InputByteStream
      * second, etc etc).
      *
      * @param  string            $bytes
+     *
      * @return integer
      *
      * @throws Swift_IoException
