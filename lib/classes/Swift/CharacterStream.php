@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-require_once dirname(__FILE__) . '/OutputByteStream.php';
-require_once dirname(__FILE__) . '/CharacterReaderFactory.php';
-
 /**
  * An abstract means of reading and writing data in terms of characters as opposed
  * to bytes.

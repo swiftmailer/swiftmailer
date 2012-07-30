@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-// TODO Check if this can removed as its properly handled by the autoloader.
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-require_once dirname(__FILE__) . '/../../Encoder/Base64Encoder.php';
-
 /**
  * Handles Base64 (B) Header Encoding in Swift Mailer.
  *

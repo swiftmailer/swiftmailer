@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-require_once dirname(__FILE__) . '/../HeaderEncoder.php';
-require_once dirname(__FILE__) . '/../../Encoder/QpEncoder.php';
-require_once dirname(__FILE__) . '/../../CharacterStream.php';
-
 /**
  * Handles Quoted Printable (Q) Header Encoding in Swift Mailer.
  *
