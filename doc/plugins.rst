@@ -2,7 +2,7 @@ Plugins
 =======
 
 Plugins are provided with Swift Mailer and can be used to extend the behavior
-of the library in ways that simple class inheritance would be more complex.
+of the library in ways where using simple class inheritance would be more complex.
 
 AntiFlood Plugin
 ----------------
