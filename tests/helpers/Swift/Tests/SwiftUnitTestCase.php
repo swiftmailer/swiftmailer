@@ -24,6 +24,7 @@ class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
             $this->fail($e->getMessage());
         }
         $this->_mockery = null;
+
         return parent::after($method);
     }
 
@@ -49,12 +50,13 @@ class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
         if (!isset($this->_mockery)) {
             $this->_mockery = new Yay_Mockery();
         }
+
         return $this->_mockery;
     }
 
     /**
      * Create a mock object.
-     * @param string $class
+     * @param  string   $class
      * @return Yay_Mock
      */
     protected function _mock($class)
@@ -73,7 +75,7 @@ class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
 
     /**
      * Create a mock object which does nothing.
-     * @param string $class
+     * @param  string   $class
      * @return Yay_Mock
      */
     protected function _stub($class)
@@ -82,6 +84,7 @@ class Swift_Tests_SwiftUnitTestCase extends UnitTestCase
         $this->_mockery()->checking(Yay_Expectations::create()
             -> ignoring($stub)
             );
+
         return $stub;
     }
 

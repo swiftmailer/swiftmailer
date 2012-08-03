@@ -19,13 +19,13 @@
  * due to limitations of PHP's internal mail() function.  You'll get an
  * all-or-nothing result from sending.
  *
- * @package Swift
+ * @package    Swift
  * @subpackage Transport
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Transport_MailTransport implements Swift_Transport
 {
-    /** Addtional parameters to pass to mail() */
+    /** Additional parameters to pass to mail() */
     private $_extraParams = '-f%s';
 
     /** The event dispatcher from the plugin API */
@@ -36,6 +36,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
 
     /**
      * Create a new MailTransport with the $log.
+     *
      * @param Swift_Transport_Log $log
      */
     public function __construct(Swift_Transport_MailInvoker $invoker, Swift_Events_EventDispatcher $eventDispatcher)
@@ -71,7 +72,8 @@ class Swift_Transport_MailTransport implements Swift_Transport
      *
      * This string is formatted for sprintf() where %s is the sender address.
      *
-     * @param  string                        $params
+     * @param string $params
+     *
      * @return Swift_Transport_MailTransport
      */
     public function setExtraParams($params)
@@ -100,7 +102,8 @@ class Swift_Transport_MailTransport implements Swift_Transport
      * The return value is the number of recipients who were accepted for delivery.
      *
      * @param Swift_Mime_Message $message
-     * @param string[] &$failedRecipients to collect failures by-reference
+     * @param string[]           $failedRecipients An array of failures by-reference
+     *
      * @return int
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)

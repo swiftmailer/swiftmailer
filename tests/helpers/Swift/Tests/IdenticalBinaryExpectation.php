@@ -17,7 +17,7 @@ class Swift_Tests_IdenticalBinaryExpectation extends SimpleExpectation
 
     /**
      * Creates a new IdenticalBinaryExpectation comparing with $left.
-     * @param string $left hand side of comparison
+     * @param string $left    hand side of comparison
      * @param string $message for expecation
      */
     public function __construct($left, $message = '%s')
@@ -28,7 +28,7 @@ class Swift_Tests_IdenticalBinaryExpectation extends SimpleExpectation
 
     /**
      * Get the given string of bytes as a stirng of Hexadecimal sequences.
-     * @param string $binary
+     * @param  string $binary
      * @return string
      */
     public function asHexString($binary)
@@ -46,7 +46,7 @@ class Swift_Tests_IdenticalBinaryExpectation extends SimpleExpectation
 
     /**
      * Test that the passed subject ($right) is identical to $left.
-     * @param string $right, subject
+     * @param  string  $right, subject
      * @return boolean
      */
     public function test($right)
@@ -68,6 +68,7 @@ class Swift_Tests_IdenticalBinaryExpectation extends SimpleExpectation
             return 'Identical binary expectation [' . $this->asHexString($right) . ']';
         } else {
             $this->_dumper=new SimpleDumper();
+
             return 'Identical binary expectation fails ' .
                 $this->_dumper->describeDifference(
                     $this->asHexString($this->_left),

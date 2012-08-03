@@ -463,7 +463,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $message->setTo('to@domain', 'Name');
     }
 
-
     public function testCcIsReturnedFromHeader()
     {
         /* -- RFC 2822, 3.6.3.
@@ -534,7 +533,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             );
         $message->setCc('cc@domain', 'Name');
     }
-
 
     public function testBccIsReturnedFromHeader()
     {

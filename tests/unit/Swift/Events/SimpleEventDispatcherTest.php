@@ -161,6 +161,7 @@ class Swift_Events_SimpleEventDispatcherTest
     private function _createDispatcher(array $map)
     {
         $dispatcher = new Swift_Events_SimpleEventDispatcher($map);
+
         return $dispatcher;
     }
 }

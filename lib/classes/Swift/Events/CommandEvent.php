@@ -10,26 +10,30 @@
 
 /**
  * Generated when a command is sent over an SMTP connection.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Events
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Events_CommandEvent extends Swift_Events_EventObject
 {
     /**
      * The command sent to the server.
+     *
      * @var string
      */
     private $_command;
 
     /**
      * An array of codes which a successful response will contain.
-     * @var int[]
+     *
+     * @var integer[]
      */
     private $_successCodes = array();
 
     /**
      * Create a new CommandEvent for $source with $command.
+     *
      * @param Swift_Transport $source
      * @param string          $command
      * @param array           $successCodes
@@ -43,6 +47,7 @@ class Swift_Events_CommandEvent extends Swift_Events_EventObject
 
     /**
      * Get the command which was sent to the server.
+     *
      * @return string
      */
     public function getCommand()
@@ -52,7 +57,8 @@ class Swift_Events_CommandEvent extends Swift_Events_EventObject
 
     /**
      * Get the numeric response codes which indicate success for this command.
-     * @return int[]
+     *
+     * @return integer[]
      */
     public function getSuccessCodes()
     {

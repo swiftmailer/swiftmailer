@@ -10,21 +10,23 @@
 
 /**
  * Handles RFC 2231 specified Encoding in Swift Mailer.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Encoder
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
 {
     /**
      * A character stream to use when reading a string as characters instead of bytes.
+     *
      * @var Swift_CharacterStream
-     * @access private
      */
     private $_charStream;
 
     /**
      * Creates a new Rfc2231Encoder using the given character stream instance.
+     *
      * @param Swift_CharacterStream
      */
     public function __construct(Swift_CharacterStream $charStream)
@@ -35,9 +37,11 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
     /**
      * Takes an unencoded string and produces a string encoded according to
      * RFC 2231 from it.
-     * @param  string $string          to encode
-     * @param  int    $firstLineOffset
-     * @param  int    $maxLineLength,  optional, 0 indicates the default of 75 bytes
+     *
+     * @param string  $string
+     * @param integer $firstLineOffset
+     * @param integer $maxLineLength   optional, 0 indicates the default of 75 bytes
+     *
      * @return string
      */
     public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0)
@@ -72,6 +76,7 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
 
     /**
      * Updates the charset used.
+     *
      * @param string $charset
      */
     public function charsetChanged($charset)

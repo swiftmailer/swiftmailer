@@ -10,18 +10,20 @@
 
 /**
  * Handles Base 64 Transfer Encoding in Swift Mailer.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Mime_ContentEncoder_Base64ContentEncoder extends Swift_Encoder_Base64Encoder implements Swift_Mime_ContentEncoder
 {
     /**
      * Encode stream $in to stream $out.
+     *
      * @param Swift_OutputByteStream $in
      * @param Swift_InputByteStream  $out
-     * @param int                    $firstLineOffset
-     * @param int                    $maxLineLength,  optional, 0 indicates the default of 76 bytes
+     * @param integer                $firstLineOffset
+     * @param integer                $maxLineLength,  optional, 0 indicates the default of 76 bytes
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
@@ -57,6 +59,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoder extends Swift_Encoder_Base6
     /**
      * Get the name of this encoding scheme.
      * Returns the string 'base64'.
+     *
      * @return string
      */
     public function getName()

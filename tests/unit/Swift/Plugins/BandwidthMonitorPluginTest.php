@@ -81,6 +81,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest
         $this->_checking(Expectations::create()
             -> ignoring($evt)->getMessage() -> returns($message)
             );
+
         return $evt;
     }
 
@@ -90,6 +91,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest
         $this->_checking(Expectations::create()
             -> ignoring($evt)->getCommand() -> returns($command)
             );
+
         return $evt;
     }
 
@@ -99,6 +101,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest
         $this->_checking(Expectations::create()
             -> ignoring($evt)->getResponse() -> returns($response)
             );
+
         return $evt;
     }
 
@@ -109,6 +112,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest
         $this->_checking(Expectations::create()
             -> ignoring($msg)->toByteStream(any()) -> calls(array($this, '_write'))
         );
+
         return $msg;
     }
 

@@ -10,6 +10,7 @@
 
 /**
  * Stores Messages in a queue.
+ *
  * @package Swift
  * @author  Fabien Potencier
  */
@@ -32,7 +33,9 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
 
     /**
      * Sets the spool object.
-     * @param  Swift_Spool                    $spool
+     *
+     * @param Swift_Spool $spool
+     *
      * @return Swift_Transport_SpoolTransport
      */
     public function setSpool(Swift_Spool $spool)
@@ -44,6 +47,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
 
     /**
      * Get the spool object.
+     *
      * @return Swift_Spool
      */
     public function getSpool()
@@ -79,9 +83,9 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
      * Sends the given message.
      *
      * @param Swift_Mime_Message $message
-     * @param string[] &$failedRecipients to collect failures by-reference
+     * @param string[]           $failedRecipients An array of failures by-reference
      *
-     * @return int The number of sent emails
+     * @return integer The number of sent e-mail's
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {

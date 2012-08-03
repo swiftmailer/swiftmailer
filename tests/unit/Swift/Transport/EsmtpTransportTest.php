@@ -12,6 +12,7 @@ class Swift_Transport_EsmtpTransportTest
         if (!$dispatcher) {
             $dispatcher = $this->_createEventDispatcher();
         }
+
         return new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher);
     }
 

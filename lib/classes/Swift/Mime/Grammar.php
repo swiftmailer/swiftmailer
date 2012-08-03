@@ -10,30 +10,30 @@
 
 /**
  * Defines the grammar to use for validation, implements the RFC 2822 (and friends) ABNF grammar definitions.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Fabien Potencier
- * @author Chris Corbyn
+ * @author     Fabien Potencier
+ * @author     Chris Corbyn
  */
 class Swift_Mime_Grammar
 {
     /**
      * Special characters used in the syntax which need to be escaped.
+     *
      * @var string[]
-     * @access private
      */
     private static $_specials = array();
 
     /**
      * Tokens defined in RFC 2822 (and some related RFCs).
+     *
      * @var string[]
-     * @access private
      */
     private static $_grammar = array();
 
     /**
      * Initialize some RFC 2822 (and friends) ABNF grammar definitions.
-     * @access protected
      */
     public function __construct()
     {
@@ -122,7 +122,9 @@ class Swift_Mime_Grammar
 
     /**
      * Get the grammar defined for $name token.
-     * @param  string $name execatly as written in the RFC
+     *
+     * @param string $name exactly as written in the RFC
+     *
      * @return string
      */
     public function getDefinition($name)
@@ -138,6 +140,7 @@ class Swift_Mime_Grammar
 
     /**
      * Returns the tokens defined in RFC 2822 (and some related RFCs).
+     *
      * @return array
      */
     public function getGrammarDefinitions()
@@ -147,6 +150,7 @@ class Swift_Mime_Grammar
 
     /**
      * Returns the current special characters used in the syntax which need to be escaped.
+     *
      * @return array
      */
     public function getSpecials()
@@ -156,16 +160,16 @@ class Swift_Mime_Grammar
 
     /**
      * Escape special characters in a string (convert to quoted-pairs).
-     * @param  string   $token
-     * @param  string[] $include additonal chars to escape
-     * @param  string[] $exclude chars from escaping
+     *
+     * @param string   $token
+     * @param string[] $include additional chars to escape
+     * @param string[] $exclude chars from escaping
+     *
      * @return string
      */
     public function escapeSpecials($token, $include = array(), $exclude = array())
     {
-        foreach (
-            array_merge(array('\\'), array_diff(self::$_specials, $exclude), $include) as $char)
-        {
+        foreach (array_merge(array('\\'), array_diff(self::$_specials, $exclude), $include) as $char) {
             $token = str_replace($char, '\\' . $char, $token);
         }
 

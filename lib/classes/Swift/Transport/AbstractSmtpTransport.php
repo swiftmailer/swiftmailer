@@ -11,9 +11,9 @@
 /**
  * Sends Messages over SMTP.
  *
- * @package Swift
+ * @package    Swift
  * @subpackage Transport
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 {
@@ -50,11 +50,15 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 
     /**
      * Set the name of the local domain which Swift will identify itself as.
+     *
      * This should be a fully-qualified domain name and should be truly the domain
-     * you're using.  If your server doesn't have a domain name, use the IP in square
+     * you're using.
+     *
+     * If your server doesn't have a domain name, use the IP in square
      * brackets (i.e. [127.0.0.1]).
      *
-     * @param  string                                $domain
+     * @param string $domain
+     *
      * @return Swift_Transport_AbstractSmtpTransport
      */
     public function setLocalDomain($domain)
@@ -75,7 +79,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     }
 
     /**
-     * Sets the sourceIp
+     * Sets the source IP.
+     *
      * @param string $source
      */
     public function setSourceIp($source)
@@ -84,7 +89,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     }
 
     /**
-     * Returns the ip used to connect to the destination
+     * Returns the IP used to connect to the destination
+     *
      * @return string
      */
     public function getSourceIp()
@@ -138,7 +144,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * The return value is the number of recipients who were accepted for delivery.
      *
      * @param Swift_Mime_Message $message
-     * @param string[] &$failedRecipients to collect failures by-reference
+     * @param string[]           $failedRecipients An array of failures by-reference
+     *
      * @return int
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
@@ -257,9 +264,10 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * If no response codes are given, the response will not be validated.
      * If codes are given, an exception will be thrown on an invalid response.
      *
-     * @param string $command
-     * @param int[]  $codes
-     * @param string[] &$failures
+     * @param string   $command
+     * @param int[]    $codes
+     * @param string[] $failures An array of failures by-reference
+     *
      * @return string
      */
     public function executeCommand($command, $codes = array(), &$failures = null)

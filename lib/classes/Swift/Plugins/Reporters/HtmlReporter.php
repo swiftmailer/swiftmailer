@@ -10,17 +10,19 @@
 
 /**
  * A HTML output reporter for the Reporter plugin.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Plugins
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Plugins_Reporters_HtmlReporter implements Swift_Plugins_Reporter
 {
     /**
      * Notifies this ReportNotifier that $address failed or succeeded.
+     *
      * @param Swift_Mime_Message $message
      * @param string             $address
-     * @param int                $result  from {@link RESULT_PASS, RESULT_FAIL}
+     * @param integer            $result  from {@see RESULT_PASS, RESULT_FAIL}
      */
     public function notify(Swift_Mime_Message $message, $address, $result)
     {

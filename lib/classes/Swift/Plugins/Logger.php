@@ -10,14 +10,16 @@
 
 /**
  * Logs events in the Transport system.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Transport
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 interface Swift_Plugins_Logger
 {
     /**
      * Add a log entry.
+     *
      * @param string $entry
      */
     public function add($entry);
@@ -29,6 +31,7 @@ interface Swift_Plugins_Logger
 
     /**
      * Get this log as a string.
+     *
      * @return string
      */
     public function dump();

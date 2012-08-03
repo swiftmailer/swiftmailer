@@ -10,44 +10,46 @@
 
 /**
  * Reduces network flooding when sending large amounts of mail.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Plugins
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_Plugins_Sleeper
 {
     /**
      * The number of emails to send before restarting Transport.
+     *
      * @var int
-     * @access private
      */
     private $_threshold;
 
     /**
      * The number of seconds to sleep for during a restart.
+     *
      * @var int
-     * @access private
      */
     private $_sleep;
 
     /**
      * The internal counter.
+     *
      * @var int
-     * @access private
      */
     private $_counter = 0;
 
     /**
      * The Sleeper instance for sleeping.
+     *
      * @var Swift_Plugins_Sleeper
-     * @access private
      */
     private $_sleeper;
 
     /**
      * Create a new AntiFloodPlugin with $threshold and $sleep time.
-     * @param int                   $threshold
-     * @param int                   $sleep     time
+     *
+     * @param integer               $threshold
+     * @param integer               $sleep     time
      * @param Swift_Plugins_Sleeper $sleeper   (not needed really)
      */
     public function __construct($threshold = 99, $sleep = 0, Swift_Plugins_Sleeper $sleeper = null)
@@ -59,7 +61,8 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
 
     /**
      * Set the number of emails to send before restarting.
-     * @param int $threshold
+     *
+     * @param integer $threshold
      */
     public function setThreshold($threshold)
     {
@@ -68,6 +71,7 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
 
     /**
      * Get the number of emails to send before restarting.
+     *
      * @return int
      */
     public function getThreshold()
@@ -77,7 +81,8 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
 
     /**
      * Set the number of seconds to sleep for during a restart.
-     * @param int $sleep time
+     *
+     * @param integer $sleep time
      */
     public function setSleepTime($sleep)
     {
@@ -86,6 +91,7 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
 
     /**
      * Get the number of seconds to sleep for during a restart.
+     *
      * @return int
      */
     public function getSleepTime()
@@ -95,6 +101,7 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
 
     /**
      * Invoked immediately before the Message is sent.
+     *
      * @param Swift_Events_SendEvent $evt
      */
     public function beforeSendPerformed(Swift_Events_SendEvent $evt)
@@ -103,6 +110,7 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
 
     /**
      * Invoked immediately after the Message is sent.
+     *
      * @param Swift_Events_SendEvent $evt
      */
     public function sendPerformed(Swift_Events_SendEvent $evt)
@@ -121,7 +129,8 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
 
     /**
      * Sleep for $seconds.
-     * @param int $seconds
+     *
+     * @param integer $seconds
      */
     public function sleep($seconds)
     {

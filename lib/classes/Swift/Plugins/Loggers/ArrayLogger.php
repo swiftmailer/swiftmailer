@@ -10,28 +10,30 @@
 
 /**
  * Logs to an Array backend.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Transport
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger
 {
     /**
      * The log contents.
+     *
      * @var array
-     * @access private
      */
     private $_log = array();
 
     /**
      * Max size of the log.
+     *
      * @var int
-     * @access private
      */
     private $_size = 0;
 
     /**
      * Create a new ArrayLogger with a maximum of $size entries.
+     *
      * @var int $size
      */
     public function __construct($size = 50)
@@ -41,6 +43,7 @@ class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger
 
     /**
      * Add a log entry.
+     *
      * @param string $entry
      */
     public function add($entry)
@@ -61,6 +64,7 @@ class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger
 
     /**
      * Get this log as a string.
+     *
      * @return string
      */
     public function dump()

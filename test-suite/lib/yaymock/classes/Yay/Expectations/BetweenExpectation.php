@@ -5,7 +5,7 @@
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,9 +13,9 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  */
- 
+
 //require 'Yay/Expectations/AbstractExpectation.php';
 //require 'Yay/Invocation.php';
 
@@ -27,38 +27,38 @@
 class Yay_Expectations_BetweenExpectation
   extends Yay_Expectations_AbstractExpectation
 {
-  
+
   /**
    * The minimum Invocation count.
    * @var int
    * @access private
    */
   private $_min = 0;
-  
+
   /**
    * The maximum Invocation count.
    * @var int
    * @access private
    */
   private $_max = 0;
-  
+
   /**
    * The number of matched Invocations.
    * @var int
    * @access private
    */
   private $_matched = 0;
-  
+
   /**
    * Create a new BetweenExpectation expecting between $min and $max Invocations.
-   * @param int $n
+   * @param integer $n
    */
   public function __construct($min, $max)
   {
     $this->_min = $min;
     $this->_max = $max;
   }
-  
+
   /**
    * Test if this Invocation is one that was expected by this Expectation.
    * @param Yay_Invocation $invocation
@@ -68,7 +68,7 @@ class Yay_Expectations_BetweenExpectation
   {
     return parent::isExpected($invocation) && ($this->_matched <= $this->_max);
   }
-  
+
   /**
    * Test if all conditions of the Invocation are satisfied.
    * @return boolean
@@ -77,7 +77,7 @@ class Yay_Expectations_BetweenExpectation
   {
     return ($this->_matched >= $this->_min);
   }
-  
+
   /**
    * Increment the match counter by 1.
    * @param Yay_Invocation $invocation
@@ -86,7 +86,7 @@ class Yay_Expectations_BetweenExpectation
   {
     $this->_matched++;
   }
-  
+
   /**
    * Describe the boundaries of how many invocations can occur.
    * @param Yay_Description $description
@@ -95,7 +95,7 @@ class Yay_Expectations_BetweenExpectation
   {
     $description->appendText(sprintf('Between %d and %d', $this->_min, $this->_max));
   }
-  
+
   /**
    * Describe the current status of this expectation.
    * @param Yay_Description $description
@@ -114,5 +114,5 @@ class Yay_Expectations_BetweenExpectation
           : $this->_max)
       ));
   }
-  
+
 }

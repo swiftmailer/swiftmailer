@@ -10,27 +10,30 @@
 
 /**
  * A Date MIME Header for Swift Mailer.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
 {
     /**
      * The UNIX timestamp value of this Header.
+     *
      * @var int
-     * @access private
      */
     private $_timestamp;
 
     /**
      * Creates a new DateHeader with $name and $timestamp.
+     *
      * Example:
      * <code>
      * <?php
      * $header = new Swift_Mime_Headers_DateHeader('Date', time());
      * ?>
      * </code>
+     *
      * @param string             $name    of Header
      * @param Swift_Mime_Grammar $grammar
      */
@@ -42,9 +45,11 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
 
     /**
      * Get the type of Header that this instance represents.
-     * @return int
+     *
      * @see TYPE_TEXT, TYPE_PARAMETERIZED, TYPE_MAILBOX
      * @see TYPE_DATE, TYPE_ID, TYPE_PATH
+     *
+     * @return int
      */
     public function getFieldType()
     {
@@ -53,8 +58,10 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
 
     /**
      * Set the model for the field body.
+     *
      * This method takes a UNIX timestamp.
-     * @param int $model
+     *
+     * @param integer $model
      */
     public function setFieldBodyModel($model)
     {
@@ -63,7 +70,9 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
 
     /**
      * Get the model for the field body.
+     *
      * This method returns a UNIX timestamp.
+     *
      * @return mixed
      */
     public function getFieldBodyModel()
@@ -73,6 +82,7 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
 
     /**
      * Get the UNIX timestamp of the Date in this Header.
+     *
      * @return int
      */
     public function getTimestamp()
@@ -82,7 +92,8 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
 
     /**
      * Set the UNIX timestamp of the Date in this Header.
-     * @param int $timestamp
+     *
+     * @param integer $timestamp
      */
     public function setTimestamp($timestamp)
     {
@@ -95,10 +106,13 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
 
     /**
      * Get the string value of the body in this Header.
+     *
      * This is not necessarily RFC 2822 compliant since folding white space will
      * not be added at this stage (see {@link toString()} for that).
-     * @return string
+     *
      * @see toString()
+     *
+     * @return string
      */
     public function getFieldBody()
     {

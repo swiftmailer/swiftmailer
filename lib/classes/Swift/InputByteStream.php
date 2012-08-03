@@ -10,11 +10,13 @@
 
 /**
  * An abstract means of writing data.
+ *
  * Classes implementing this interface may use a subsystem which requires less
  * memory than working with large strings of data.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage ByteStream
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 interface Swift_InputByteStream
 {
@@ -28,8 +30,10 @@ interface Swift_InputByteStream
      * This method returns the sequence ID of the write (i.e. 1 for first, 2 for
      * second, etc etc).
      *
-     * @param  string            $bytes
-     * @return int
+     * @param string $bytes
+     *
+     * @return integer
+     *
      * @throws Swift_IoException
      */
     public function write($bytes);
@@ -44,6 +48,7 @@ interface Swift_InputByteStream
 
     /**
      * Attach $is to this stream.
+     *
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
      *
@@ -53,6 +58,7 @@ interface Swift_InputByteStream
 
     /**
      * Remove an already bound stream.
+     *
      * If $is is not bound, no errors will be raised.
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
@@ -64,6 +70,7 @@ interface Swift_InputByteStream
     /**
      * Flush the contents of the stream (empty it) and set the internal pointer
      * to the beginning.
+     *
      * @throws Swift_IoException
      */
     public function flushBuffers();
