@@ -10,62 +10,65 @@
 
 /**
  * An abstract base MIME Header.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 {
     /**
      * The name of this Header.
+     *
      * @var string
-     * @access private
      */
     private $_name;
 
     /**
      * The Grammar used for this Header.
+     *
      * @var Swift_Mime_Grammar
-     * @access private
      */
     private $_grammar;
 
     /**
      * The Encoder used to encode this Header.
+     *
      * @var Swift_Encoder
-     * @access private
      */
     private $_encoder;
 
     /**
      * The maximum length of a line in the header.
+     *
      * @var int
-     * @access private
      */
     private $_lineLength = 78;
 
     /**
      * The language used in this Header.
+     *
      * @var string
      */
     private $_lang;
 
     /**
      * The character set of the text in this Header.
+     *
      * @var string
-     * @access private
      */
     private $_charset = 'utf-8';
 
     /**
      * The value of this Header, cached.
+     *
      * @var string
-     * @access private
      */
     private $_cachedValue = null;
 
     /**
      * Creates a new Header.
+     *
      * @param Swift_Mime_Grammar $grammar
      */
     public function __construct(Swift_Mime_Grammar $grammar)
@@ -75,6 +78,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set the character set used in this Header.
+     *
      * @param string $charset
      */
     public function setCharset($charset)
@@ -88,6 +92,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get the character set used in this Header.
+     *
      * @return string
      */
     public function getCharset()
@@ -97,8 +102,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set the language used in this Header.
+     *
      * For example, for US English, 'en-us'.
      * This can be unspecified.
+     *
      * @param string $lang
      */
     public function setLanguage($lang)
@@ -109,6 +116,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get the language used in this Header.
+     *
      * @return string
      */
     public function getLanguage()
@@ -118,6 +126,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set the encoder used for encoding the header.
+     *
      * @param Swift_Mime_HeaderEncoder $encoder
      */
     public function setEncoder(Swift_Mime_HeaderEncoder $encoder)
@@ -128,6 +137,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get the encoder used for encoding this Header.
+     *
      * @return Swift_Mime_HeaderEncoder
      */
     public function getEncoder()
@@ -137,6 +147,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set the grammar used for the header.
+     *
      * @param Swift_Mime_Grammar $grammar
      */
     public function setGrammar(Swift_Mime_Grammar $grammar)
@@ -147,6 +158,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get the grammar used for this Header.
+     *
      * @return Swift_Mime_Grammar
      */
     public function getGrammar()
@@ -156,6 +168,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get the name of this header (e.g. charset).
+     *
      * @return string
      */
     public function getFieldName()
@@ -165,7 +178,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set the maximum length of lines in the header (excluding EOL).
-     * @param int $lineLength
+     *
+     * @param integer $lineLength
      */
     public function setMaxLineLength($lineLength)
     {
@@ -175,6 +189,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get the maximum permitted length of lines in this Header.
+     *
      * @return int
      */
     public function getMaxLineLength()
@@ -184,7 +199,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get this Header rendered as a RFC 2822 compliant string.
+     *
      * @return string
+     *
      * @throws Swift_RfcComplianceException
      */
     public function toString()
@@ -208,8 +225,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set the name of this Header field.
+     *
      * @param string $name
-     * @access protected
      */
     protected function setFieldName($name)
     {
@@ -218,11 +235,13 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Produces a compliant, formatted RFC 2822 'phrase' based on the string given.
-     * @param  Swift_Mime_Header        $header
-     * @param  string                   $string  as displayed
-     * @param  string                   $charset of the text
-     * @param  Swift_Mime_HeaderEncoder $encoder
-     * @param  boolean                  $shorten the first line to make remove for header name
+     *
+     * @param Swift_Mime_Header        $header
+     * @param string                   $string  as displayed
+     * @param string                   $charset of the text
+     * @param Swift_Mime_HeaderEncoder $encoder
+     * @param boolean                  $shorten the first line to make remove for header name
+     *
      * @return string
      */
     protected function createPhrase(Swift_Mime_Header $header, $string, $charset, Swift_Mime_HeaderEncoder $encoder = null, $shorten = false)
@@ -254,8 +273,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Encode needed word tokens within a string of input.
-     * @param  string $input
-     * @param  string $usedLength, optional
+     *
+     * @param string $input
+     * @param string $usedLength, optional
+     *
      * @return string
      */
     protected function encodeWords(Swift_Mime_Header $header, $input, $usedLength = -1)
@@ -281,7 +302,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
                 }
                 $value .= $this->getTokenAsEncodedWord($token, $usedLength);
 
-                $header->setMaxLineLength(76); //Forefully override
+                $header->setMaxLineLength(76); //Forcefully override
             } else {
                 $value .= $token;
             }
@@ -292,7 +313,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Test if a token needs to be encoded or not.
-     * @param  string  $token
+     *
+     * @param string $token
+     *
      * @return boolean
      */
     protected function tokenNeedsEncoding($token)
@@ -302,7 +325,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Splits a string into tokens in blocks of words which can be encoded quickly.
-     * @param  string   $string
+     *
+     * @param string $string
+     *
      * @return string[]
      */
     protected function getEncodableWordTokens($string)
@@ -331,8 +356,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get a token as an encoded word for safe insertion into headers.
-     * @param  string $token            to encode
-     * @param  int    $firstLineOffset, optional
+     *
+     * @param  string  $token to encode
+     * @return integer $firstLineOffset optional
+     *
      * @return string
      */
     protected function getTokenAsEncodedWord($token, $firstLineOffset = 0)
@@ -369,9 +396,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Generates tokens from the given string which include CRLF as individual tokens.
-     * @param  string   $token
+     *
+     * @param string $token
+     *
      * @return string[]
-     * @access protected
      */
     protected function generateTokenLines($token)
     {
@@ -380,8 +408,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set a value into the cache.
+     *
      * @param string $value
-     * @access protected
      */
     protected function setCachedValue($value)
     {
@@ -390,8 +418,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Get the value in the cache.
+     *
      * @return string
-     * @access protected
      */
     protected function getCachedValue()
     {
@@ -400,8 +428,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Clear the cached value if $condition is met.
+     *
      * @param boolean $condition
-     * @access protected
      */
     protected function clearCachedValueIf($condition)
     {
@@ -414,9 +442,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Generate a list of all tokens in the final header.
-     * @param  string $string The string to tokenize
-     * @return array  An array of tokens as strings
-     * @access protected
+     *
+     * @param string $string The string to tokenize
+     *
+     * @return array An array of tokens as strings
      */
     protected function toTokens($string = null)
     {
@@ -437,9 +466,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Takes an array of tokens which appear in the header and turns them into
      * an RFC 2822 compliant string, adding FWSP where needed.
-     * @param  string[] $tokens
+     *
+     * @param string[] $tokens
+     *
      * @return string
-     * @access private
      */
     private function _tokensToString(array $tokens)
     {

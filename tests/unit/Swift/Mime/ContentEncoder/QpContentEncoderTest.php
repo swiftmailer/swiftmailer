@@ -6,13 +6,15 @@ require_once 'Swift/InputByteStream.php';
 require_once 'Swift/OutputByteStream.php';
 require_once 'Swift/CharacterStream.php';
 
-class Swift_StreamCollector implements Yay_Action {
+class Swift_StreamCollector implements Yay_Action
+{
     public $content = '';
     public function &invoke(Yay_Invocation $inv) {
         $args = $inv->getArguments();
         $this->content .= current($args);
     }
-    public function describeTo(Yay_Description $description) {
+    public function describeTo(Yay_Description $description)
+    {
         $description->appendText(' gathers input;');
     }
 }

@@ -10,14 +10,16 @@
 
 /**
  * Listens for Exceptions thrown from within the Transport system.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Events
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 interface Swift_Events_TransportExceptionListener extends Swift_Events_EventListener
 {
     /**
      * Invoked as a TransportException is thrown in the Transport system.
+     *
      * @param Swift_Events_TransportExceptionEvent $evt
      */
     public function exceptionThrown(Swift_Events_TransportExceptionEvent $evt);

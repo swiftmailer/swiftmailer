@@ -10,8 +10,9 @@
 
 /**
  * Processes bytes as they pass through a buffer and replaces sequences in it.
+ *
  * @package Swift
- * @author Chris Corbyn
+ * @author  Chris Corbyn
  */
 class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
 {
@@ -23,6 +24,7 @@ class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
 
     /**
      * Create a new StringReplacementFilter with $search and $replace.
+     *
      * @param string|array $search
      * @param string|array $replace
      */
@@ -34,7 +36,9 @@ class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
 
     /**
      * Returns true if based on the buffer passed more bytes should be buffered.
-     * @param  string  $buffer
+     *
+     * @param string $buffer
+     *
      * @return boolean
      */
     public function shouldBuffer($buffer)
@@ -51,7 +55,9 @@ class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
 
     /**
      * Perform the actual replacements on $buffer and return the result.
-     * @param  string $buffer
+     *
+     * @param string $buffer
+     *
      * @return string
      */
     public function filter($buffer)

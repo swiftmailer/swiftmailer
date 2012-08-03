@@ -10,23 +10,24 @@
 
 /**
  * Reduces network flooding when sending large amounts of mail.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Plugins
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener, Swift_Events_CommandListener, Swift_Events_ResponseListener, Swift_InputByteStream
 {
     /**
      * The outgoing traffic counter.
+     *
      * @var int
-     * @access private
      */
     private $_out = 0;
 
     /**
      * The incoming traffic counter.
+     *
      * @var int
-     * @access private
      */
     private $_in = 0;
 
@@ -42,6 +43,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
 
     /**
      * Invoked immediately after the Message is sent.
+     *
      * @param Swift_Events_SendEvent $evt
      */
     public function sendPerformed(Swift_Events_SendEvent $evt)
@@ -52,6 +54,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
 
     /**
      * Invoked immediately following a command being sent.
+     *
      * @param Swift_Events_ResponseEvent $evt
      */
     public function commandSent(Swift_Events_CommandEvent $evt)
@@ -62,6 +65,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
 
     /**
      * Invoked immediately following a response coming back.
+     *
      * @param Swift_Events_ResponseEvent $evt
      */
     public function responseReceived(Swift_Events_ResponseEvent $evt)
@@ -72,6 +76,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
 
     /**
      * Called when a message is sent so that the outgoing counter can be increased.
+     *
      * @param string $bytes
      */
     public function write($bytes)
@@ -91,6 +96,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
 
     /**
      * Attach $is to this stream.
+     *
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
      *
@@ -103,6 +109,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
 
     /**
      * Remove an already bound stream.
+     *
      * If $is is not bound, no errors will be raised.
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
@@ -130,6 +137,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
 
     /**
      * Get the total number of bytes sent to the server.
+     *
      * @return int
      */
     public function getBytesOut()
@@ -139,6 +147,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
 
     /**
      * Get the total number of bytes received from the server.
+     *
      * @return int
      */
     public function getBytesIn()

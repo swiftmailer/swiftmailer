@@ -319,6 +319,7 @@ class Swift_Transport_FailoverTransportTest
     {
         $transport = new Swift_Transport_FailoverTransport();
         $transport->setTransports($transports);
+
         return $transport;
     }
 

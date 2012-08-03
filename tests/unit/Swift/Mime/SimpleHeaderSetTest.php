@@ -647,6 +647,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
             -> ignoring($header)->toString() -> returns(sprintf("%s: %s\r\n", $name, $body))
             -> ignoring($header)->getFieldBody() -> returns($body)
             );
+
         return $header;
     }
 }

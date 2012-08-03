@@ -100,6 +100,7 @@ class Swift_Plugins_ThrottlerPluginTest extends Swift_Tests_SwiftUnitTestCase
         $this->_checking(Expectations::create()
             -> ignoring($msg)->toByteStream(any()) -> calls(array($this, '_write'))
         );
+
         return $msg;
     }
 
@@ -109,6 +110,7 @@ class Swift_Plugins_ThrottlerPluginTest extends Swift_Tests_SwiftUnitTestCase
         $this->_checking(Expectations::create()
             -> ignoring($evt)->getMessage() -> returns($message)
             );
+
         return $evt;
     }
 

@@ -33,6 +33,7 @@ class Swift_Mime_Headers_PathHeaderTest extends Swift_Tests_SwiftUnitTestCase
     public function testValueIsAngleAddrWithValidAddress()
     {
         /* -- RFC 2822, 3.6.7.
+
             return          =       "Return-Path:" path CRLF
 
             path            =       ([CFWS] "<" ([CFWS] / addr-spec) ">" [CFWS]) /

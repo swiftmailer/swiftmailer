@@ -10,15 +10,18 @@
 
 /**
  * An image, embedded in a multipart message.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Image extends Swift_EmbeddedFile
 {
     /**
      * Create a new EmbeddedFile.
+     *
      * Details may be optionally provided to the constructor.
+     *
      * @param string|Swift_OutputByteStream $data
      * @param string                        $filename
      * @param string                        $contentType
@@ -30,10 +33,12 @@ class Swift_Image extends Swift_EmbeddedFile
 
     /**
      * Create a new Image.
-     * @param  string|Swift_OutputByteStream $data
-     * @param  string                        $filename
-     * @param  string                        $contentType
-     * @return Swift_Mime_EmbeddedFile
+     *
+     * @param string|Swift_OutputByteStream $data
+     * @param string                        $filename
+     * @param string                        $contentType
+     *
+     * @return Swift_Image
      */
     public static function newInstance($data = null, $filename = null, $contentType = null)
     {
@@ -42,8 +47,10 @@ class Swift_Image extends Swift_EmbeddedFile
 
     /**
      * Create a new Image from a filesystem path.
-     * @param  string                  $path
-     * @return Swift_Mime_EmbeddedFile
+     *
+     * @param string $path
+     *
+     * @return Swift_Image
      */
     public static function fromPath($path)
     {

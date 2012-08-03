@@ -10,9 +10,10 @@
 
 /**
  * Creates MIME headers.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 {
@@ -30,10 +31,11 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 
     /**
      * Creates a new SimpleHeaderFactory using $encoder and $paramEncoder.
+     *
      * @param Swift_Mime_HeaderEncoder $encoder
      * @param Swift_Encoder            $paramEncoder
      * @param Swift_Mime_Grammar       $grammar
-     * @param string                   $charset
+     * @param string|null              $charset
      */
     public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, Swift_Mime_Grammar $grammar, $charset = null)
     {
@@ -45,8 +47,10 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 
     /**
      * Create a new Mailbox Header with a list of $addresses.
-     * @param  string            $name
-     * @param  array|string      $addresses
+     *
+     * @param string            $name
+     * @param array|string|null $addresses
+     *
      * @return Swift_Mime_Header
      */
     public function createMailboxHeader($name, $addresses = null)
@@ -62,8 +66,9 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 
     /**
      * Create a new Date header using $timestamp (UNIX time).
-     * @param  string            $name
-     * @param  int               $timestamp
+     * @param string       $name
+     * @param integer|null $timestamp
+     *
      * @return Swift_Mime_Header
      */
     public function createDateHeader($name, $timestamp = null)
@@ -79,8 +84,10 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 
     /**
      * Create a new basic text header with $name and $value.
-     * @param  string            $name
-     * @param  string            $value
+     *
+     * @param string $name
+     * @param string $value
+     *
      * @return Swift_Mime_Header
      */
     public function createTextHeader($name, $value = null)
@@ -96,9 +103,11 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 
     /**
      * Create a new ParameterizedHeader with $name, $value and $params.
-     * @param  string                         $name
-     * @param  string                         $value
-     * @param  array                          $params
+     *
+     * @param string $name
+     * @param string $value
+     * @param array  $params
+     *
      * @return Swift_Mime_ParameterizedHeader
      */
     public function createParameterizedHeader($name, $value = null,
@@ -123,8 +132,10 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 
     /**
      * Create a new ID header for Message-ID or Content-ID.
-     * @param  string            $name
-     * @param  string|array      $ids
+     *
+     * @param string       $name
+     * @param string|array $ids
+     *
      * @return Swift_Mime_Header
      */
     public function createIdHeader($name, $ids = null)
@@ -140,8 +151,10 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 
     /**
      * Create a new Path header with an address (path) in it.
-     * @param  string            $name
-     * @param  string            $path
+     *
+     * @param string $name
+     * @param string $path
+     *
      * @return Swift_Mime_Header
      */
     public function createPathHeader($name, $path = null)
@@ -157,6 +170,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
 
     /**
      * Notify this observer that the entity's charset has changed.
+     *
      * @param string $charset
      */
     public function charsetChanged($charset)

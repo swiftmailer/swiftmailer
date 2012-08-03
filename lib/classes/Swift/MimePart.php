@@ -10,15 +10,18 @@
 
 /**
  * A MIME part, in a multipart message.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_MimePart extends Swift_Mime_MimePart
 {
     /**
      * Create a new MimePart.
+     *
      * Details may be optionally passed into the constructor.
+     *
      * @param string $body
      * @param string $contentType
      * @param string $charset
@@ -44,9 +47,11 @@ class Swift_MimePart extends Swift_Mime_MimePart
 
     /**
      * Create a new MimePart.
-     * @param  string              $body
-     * @param  string              $contentType
-     * @param  string              $charset
+     *
+     * @param string $body
+     * @param string $contentType
+     * @param string $charset
+     *
      * @return Swift_Mime_MimePart
      */
     public static function newInstance($body = null, $contentType = null, $charset = null)

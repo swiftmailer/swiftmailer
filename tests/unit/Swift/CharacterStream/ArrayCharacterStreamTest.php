@@ -364,6 +364,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest
         $this->_checking(Expectations::create()
             -> allowing($factory)->getReaderFor('utf-8') -> returns($reader)
             );
+
         return $factory;
     }
 

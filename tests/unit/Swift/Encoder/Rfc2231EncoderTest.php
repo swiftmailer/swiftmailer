@@ -139,6 +139,5 @@ class Swift_Encoder_Rfc2231EncoderTest extends Swift_Tests_SwiftUnitTestCase
             '%s: First line should be 25 bytes shorter than the others.'
             );
 
-
     }
 }

@@ -10,15 +10,18 @@
 
 /**
  * Attachment class for attaching files to a {@link Swift_Mime_Message}.
- * @package Swift
+ *
+ * @package    Swift
  * @subpackage Mime
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Attachment extends Swift_Mime_Attachment
 {
     /**
      * Create a new Attachment.
+     *
      * Details may be optionally provided to the constructor.
+     *
      * @param string|Swift_OutputByteStream $data
      * @param string                        $filename
      * @param string                        $contentType
@@ -40,9 +43,11 @@ class Swift_Attachment extends Swift_Mime_Attachment
 
     /**
      * Create a new Attachment.
-     * @param  string|Swift_OutputByteStream $data
-     * @param  string                        $filename
-     * @param  string                        $contentType
+     *
+     * @param string|Swift_OutputByteStream $data
+     * @param string                        $filename
+     * @param string                        $contentType
+     *
      * @return Swift_Mime_Attachment
      */
     public static function newInstance($data = null, $filename = null, $contentType = null)
@@ -52,8 +57,10 @@ class Swift_Attachment extends Swift_Mime_Attachment
 
     /**
      * Create a new Attachment from a filesystem path.
-     * @param  string                $path
-     * @param  string                $contentType optional
+     *
+     * @param string $path
+     * @param string $contentType optional
+     *
      * @return Swift_Mime_Attachment
      */
     public static function fromPath($path, $contentType = null)

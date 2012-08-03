@@ -20,8 +20,7 @@ class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
 
     protected function _getMailer()
     {
-        switch (SWIFT_SMOKE_TRANSPORT_TYPE)
-        {
+        switch (SWIFT_SMOKE_TRANSPORT_TYPE) {
             case 'smtp':
                 $transport = Swift_DependencyContainer::getInstance()->lookup('transport.smtp')
                     ->setHost(SWIFT_SMOKE_SMTP_HOST)
@@ -43,6 +42,7 @@ class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
             default:
                 throw new Exception('Undefined transport [' . SWIFT_SMOKE_TRANSPORT_TYPE . ']');
         }
+
         return new Swift_Mailer($transport);
     }
 
