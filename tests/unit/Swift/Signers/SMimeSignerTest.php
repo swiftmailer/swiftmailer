@@ -212,6 +212,53 @@ OEL;
         unset($decryptedMessageStream, $messageStream);
     }
 
+    public function testEncryptedMessageWithMultipleCerts()
+    {
+        $message = Swift_SignedMessage::newInstance('Wonderful Subject')
+          ->setFrom(array('john@doe.com' => 'John Doe'))
+          ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
+          ->setBody('Here is the message itself');
+
+        $originalMessage = $this->cleanMessage($message->toString());
+
+        $signer = new Swift_Signers_SMimeSigner();
+        $signer->setEncryptCertificate(array($this->samplesDir . 'smime/encrypt.crt', $this->samplesDir . 'smime/encrypt2.crt'));
+        $message->attachSigner($signer);
+
+        $messageStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $message->toByteStream($messageStream);
+        $messageStream->commit();
+
+        $entityString = $messageStream->getContent();
+        $headers = self::getHeadersOfMessage($entityString);
+
+        if ('application/pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 50)) {
+            $this->fail('Content-type does not match.');
+
+            return false;
+        }
+
+        $expectedBody = '(?:^[a-zA-Z0-9\/\\r\\n+]*={0,2})';
+
+        $decryptedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
+
+        if (!openssl_pkcs7_decrypt($messageStream->getPath(), $decryptedMessageStream->getPath(), 'file://' . $this->samplesDir . 'smime/encrypt.crt', array('file://' . $this->samplesDir . 'smime/encrypt.key', 'swift'))) {
+            $this->fail(sprintf('Decrypt of the message failed. Internal error "%s".', openssl_error_string()));
+        }
+
+        $this->assertEqual($originalMessage, $decryptedMessageStream->getContent());
+        unset($decryptedMessageStream);
+
+        $decryptedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
+
+        if (!openssl_pkcs7_decrypt($messageStream->getPath(), $decryptedMessageStream->getPath(), 'file://' . $this->samplesDir . 'smime/encrypt2.crt', array('file://' . $this->samplesDir . 'smime/encrypt2.key', 'swift'))) {
+            $this->fail(sprintf('Decrypt of the message failed. Internal error "%s".', openssl_error_string()));
+        }
+
+        $this->assertEqual($originalMessage, $decryptedMessageStream->getContent());
+        unset($decryptedMessageStream, $messageStream);
+    }
+
     public function testSignThenEncryptedMessage()
     {
         $message = Swift_SignedMessage::newInstance('Wonderful Subject')
