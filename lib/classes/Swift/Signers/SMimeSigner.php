@@ -117,8 +117,8 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * @link http://www.php.net/manual/en/openssl.pkcs7.flags.php
      * @link http://nl3.php.net/manual/en/openssl.ciphers.php
      *
-     * @param string|array  $recipientCerts Either an single X.509 certificate, or an assoc array of X.509 certificates.
-     * @param integer       $cipher
+     * @param string|array $recipientCerts Either an single X.509 certificate, or an assoc array of X.509 certificates.
+     * @param integer      $cipher
      *
      * @return Swift_Signers_SMimeSigner
      */
