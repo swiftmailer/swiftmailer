@@ -52,6 +52,52 @@ class Swift_Plugins_RedirectingPluginTest extends Swift_Tests_SwiftUnitTestCase
         $this->assertEqual($message->getBcc(), $bcc);
     }
 
+    public function testPluginRespectsAWhitelistOfPatterns()
+    {
+        $message = Swift_Message::newInstance()
+            ->setSubject('...')
+            ->setFrom(array('john@example.com' => 'John Doe'))
+            ->setTo($to = array(
+                'fabien-to@example.com' => 'Fabien (To)',
+                'chris-to@example.com' => 'Chris (To)',
+                'lars-to@internal.com' => 'Lars (To)',
+            ))
+            ->setCc($cc = array(
+                'fabien-cc@example.com' => 'Fabien (Cc)',
+                'chris-cc@example.com' => 'Chris (Cc)',
+                'lars-cc@internal.org' => 'Lars (Cc)',
+            ))
+            ->setBcc($bcc = array(
+                'fabien-bcc@example.com' => 'Fabien (Bcc)',
+                'chris-bcc@example.com' => 'Chris (Bcc)',
+                'john-bcc@example.org' => 'John (Bcc)',
+            ))
+            ->setBody('...')
+        ;
+
+        $recipient = 'god@example.com';
+        $patterns = array('/^.*@internal.[a-z]+$/', '/^john-.*$/');
+
+        $plugin = new Swift_Plugins_RedirectingPlugin($recipient, $patterns);
+
+        $this->assertEqual($recipient, $plugin->getRecipient());
+        $this->assertEqual($plugin->getWhitelist(), $patterns);
+
+        $evt = $this->_createSendEvent($message);
+
+        $plugin->beforeSendPerformed($evt);
+
+        $this->assertEqual($message->getTo(), array('lars-to@internal.com' => 'Lars (To)', 'god@example.com' => null));
+        $this->assertEqual($message->getCc(), array('lars-cc@internal.org' => 'Lars (Cc)'));
+        $this->assertEqual($message->getBcc(), array('john-bcc@example.org' => 'John (Bcc)'));
+
+        $plugin->sendPerformed($evt);
+
+        $this->assertEqual($message->getTo(), $to);
+        $this->assertEqual($message->getCc(), $cc);
+        $this->assertEqual($message->getBcc(), $bcc);
+    }
+
     // -- Creation Methods
 
     private function _createSendEvent(Swift_Mime_Message $message)
