@@ -86,6 +86,9 @@ Swift_DependencyContainer::getInstance()
     -> asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
     -> withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
 
+    -> register('mime.rawcontentencoder')
+    -> asNewInstanceOf('Swift_Mime_ContentEncoder_RawContentEncoder')
+
     -> register('mime.nativeqpcontentencoder')
     -> asNewInstanceOf('Swift_Mime_ContentEncoder_NativeQpContentEncoder')
 

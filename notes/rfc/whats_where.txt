@@ -59,3 +59,32 @@ ABNF definitions
 RFC 3676:
 ---------
 Flowed formatting/delsp parameters
+
+RFC 2015:
+---------
+Original Mime Security with OpenPGP
+
+RFC 2440:
+---------
+Original OpenPGP message format
+
+RFC 3156:
+---------
+Current (30/01/2009) Mime Security with OpenPGP
+
+RFC 4880:
+---------
+Current (30/01/2009) OpenPGP Message format revision (fun, it's exactly original *2 --sorry)
+
+RFC 5751:
+--------
+Secure/Multipurpose Internet Mail Extensions (S/MIME) Version 3.2
+
+RFC 4870:
+---------
+DomainKeys (historic), but still used by a few people.
+
+RFX 4871:
+---------
+DKIM
+
