@@ -36,7 +36,7 @@ class Swift_LoadBalancedTransport extends Swift_Transport_LoadBalancedTransport
     /**
      * Create a new LoadBalancedTransport instance.
      *
-     * @param string $transports
+     * @param array $transports
      *
      * @return Swift_LoadBalancedTransport
      */

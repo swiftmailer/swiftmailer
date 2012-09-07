@@ -53,8 +53,9 @@ class Swift_KeyCache_DummyKeyCache implements Swift_KeyCache
     /**
      * Provides a ByteStream which when written to, writes data to $itemKey.
      * NOTE: The stream will always write in append mode.
-     * @param  string                $nsKey
-     * @param  string                $itemKey
+     * @param string                $nsKey
+     * @param string                $itemKey
+     * @param Swift_InputByteStream $writeThrough
      * @return Swift_InputByteStream
      */
     public function getInputByteStream($nsKey, $itemKey, Swift_InputByteStream $writeThrough = null)

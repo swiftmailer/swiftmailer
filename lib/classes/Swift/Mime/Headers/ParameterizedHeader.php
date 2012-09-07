@@ -92,6 +92,8 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
     /**
      * Get the value of $parameter.
      *
+     * @param string $parameter
+     *
      * @return string
      */
     public function getParameter($parameter)
@@ -106,7 +108,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
     /**
      * Set an associative array of parameter names mapped to values.
      *
-     * @param string[]
+     * @param string[] $parameters
      */
     public function setParameters(array $parameters)
     {

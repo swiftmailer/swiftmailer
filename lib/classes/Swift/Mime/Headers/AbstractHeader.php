@@ -274,8 +274,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Encode needed word tokens within a string of input.
      *
-     * @param string $input
-     * @param string $usedLength, optional
+     * @param Swift_Mime_Header $header
+     * @param string            $input
+     * @param string            $usedLength optional
      *
      * @return string
      */
@@ -357,8 +358,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Get a token as an encoded word for safe insertion into headers.
      *
-     * @param  string  $token to encode
-     * @return integer $firstLineOffset optional
+     * @param string  $token           token to encode
+     * @param integer $firstLineOffset optional
      *
      * @return string
      */

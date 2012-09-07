@@ -97,7 +97,6 @@ class Swift_Mailer
      * Register a plugin using a known unique key (e.g. myPlugin).
      *
      * @param Swift_Events_EventListener $plugin
-     * @param string                     $key
      */
     public function registerPlugin(Swift_Events_EventListener $plugin)
     {

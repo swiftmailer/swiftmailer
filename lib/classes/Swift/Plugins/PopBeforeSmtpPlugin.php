@@ -49,7 +49,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      *
      * @param string  $host
      * @param integer $port
-     * @param string  $cypto as "tls" or "ssl"
+     * @param string  $crypto as "tls" or "ssl"
      */
     public function __construct($host, $port = 110, $crypto = null)
     {
@@ -63,7 +63,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      *
      * @param string  $host
      * @param integer $port
-     * @param string  $cypto as "tls" or "ssl"
+     * @param string  $crypto as "tls" or "ssl"
      *
      * @return Swift_Plugins_PopBeforeSmtpPlugin
      */

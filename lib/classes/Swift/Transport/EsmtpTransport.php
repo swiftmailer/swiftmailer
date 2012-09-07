@@ -86,7 +86,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the port to connect to.
      *
-     * @return integer $port
+     * @param integer $port
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -110,7 +110,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the connection timeout.
      *
-     * @return integer $timeout seconds
+     * @param integer $timeout seconds
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -139,13 +139,13 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      *
      * @return Swift_Transport_EsmtpTransport
      */
-    public function setEncryption($enc)
+    public function setEncryption($encryption)
     {
-        if ('tls' == $enc) {
+        if ('tls' == $encryption) {
             $this->_params['protocol'] = 'tcp';
             $this->_params['tls'] = true;
         } else {
-            $this->_params['protocol'] = $enc;
+            $this->_params['protocol'] = $encryption;
             $this->_params['tls'] = false;
         }
 

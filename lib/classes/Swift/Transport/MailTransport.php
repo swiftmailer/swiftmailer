@@ -37,7 +37,8 @@ class Swift_Transport_MailTransport implements Swift_Transport
     /**
      * Create a new MailTransport with the $log.
      *
-     * @param Swift_Transport_Log $log
+     * @param Swift_Transport_MailInvoker  $invoker
+     * @param Swift_Events_EventDispatcher $eventDispatcher
      */
     public function __construct(Swift_Transport_MailInvoker $invoker, Swift_Events_EventDispatcher $eventDispatcher)
     {

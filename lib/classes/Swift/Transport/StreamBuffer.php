@@ -153,9 +153,11 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      * The $sequence number comes from any writes and may or may not be used
      * depending upon the implementation.
      *
-     * @return integer $sequence of last write to scan from
+     * @param integer $sequence of last write to scan from
      *
      * @return string
+     *
+     * @throws Swift_IoException
      */
     public function readLine($sequence)
     {
@@ -183,9 +185,11 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      * If less bytes exist than are requested the remaining bytes are given instead.
      * If no bytes are remaining at all, boolean false is returned.
      *
-     * @return integer $length
+     * @param integer $length
      *
      * @return string|boolean
+     *
+     * @throws Swift_IoException
      */
     public function read($length)
     {
