@@ -181,6 +181,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param string $address
      * @param string $name    optional
+     *
+     * @return Swift_Mime_SimpleMessage
      */
     public function addFrom($address, $name = null)
     {

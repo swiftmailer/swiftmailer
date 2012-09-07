@@ -81,6 +81,8 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      * @param integer $startOffset
      * @param array   $currentMap
      * @param mixed   $ignoredChars
+     *
+     * @return integer
      */
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
     {

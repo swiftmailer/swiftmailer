@@ -24,6 +24,8 @@ class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
      * @param integer $startOffset
      * @param array   $currentMap
      * @param string  $ignoredChars
+     *
+     * @return integer
      */
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
     {

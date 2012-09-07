@@ -77,6 +77,8 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      *
      * @param string $bytes
      *
+     * @return integer
+     *
      * @throws Swift_IoException
      */
     public function write($bytes)
