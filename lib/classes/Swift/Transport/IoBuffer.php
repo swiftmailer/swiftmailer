@@ -61,7 +61,7 @@ interface Swift_Transport_IoBuffer extends Swift_InputByteStream, Swift_OutputBy
      * The $sequence number comes from any writes and may or may not be used
      * depending upon the implementation.
      *
-     * @return integer $sequence of last write to scan from
+     * @param integer $sequence of last write to scan from
      *
      * @return string
      */

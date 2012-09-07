@@ -34,7 +34,8 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Create a new RedirectingPlugin.
      *
-     * @param integer $recipient
+     * @param string $recipient
+     * @param array  $whitelist
      */
     public function __construct($recipient, array $whitelist = array())
     {
@@ -45,7 +46,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Set the recipient of all messages.
      *
-     * @param integer $threshold
+     * @param string $recipient
      */
     public function setRecipient($recipient)
     {

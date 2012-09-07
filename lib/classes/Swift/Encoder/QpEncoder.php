@@ -156,9 +156,9 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
      * If the first line needs to be shorter, indicate the difference with
      * $firstLineOffset.
      *
-     * @param  string  $string to encode
-     * @return integer $firstLineOffset, optional
-     * @return integer $maxLineLength,   optional 0 indicates the default of 76 chars
+     * @param string  $string to encode
+     * @param integer $firstLineOffset, optional
+     * @param integer $maxLineLength,   optional 0 indicates the default of 76 chars
      *
      * @return string
      */
@@ -230,6 +230,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
      * Encode the given byte array into a verbatim QP form.
      *
      * @param integer[] $bytes
+     * @param integer   $size
      *
      * @return string
      */

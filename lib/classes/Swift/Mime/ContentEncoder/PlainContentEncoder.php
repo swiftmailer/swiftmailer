@@ -46,9 +46,9 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
     /**
      * Encode a given string to produce an encoded string.
      *
-     * @param  string  $string
-     * @return integer $firstLineOffset, ignored
-     * @return integer $maxLineLength    - 0 means no wrapping will occur
+     * @param string  $string
+     * @param integer $firstLineOffset ignored
+     * @param integer $maxLineLength   - 0 means no wrapping will occur
      *
      * @return string
      */
@@ -64,10 +64,10 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
     /**
      * Encode stream $in to stream $out.
      *
-     * @param Swift_OutputByteStream $in
-     * @param Swift_InputByteStream  $out
-     * @param integer                $firstLineOffset, ignored
-     * @param integer                $maxLineLength,   optional, 0 means no wrapping will occur
+     * @param Swift_OutputByteStream $os
+     * @param Swift_InputByteStream  $is
+     * @param integer                $firstLineOffset ignored
+     * @param integer                $maxLineLength   optional, 0 means no wrapping will occur
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
@@ -111,9 +111,9 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
     /**
      * A safer (but weaker) wordwrap for unicode.
      *
-     * @param  string  $string
-     * @return integer $length
-     * @param  string  $le
+     * @param string  $string
+     * @param integer $length
+     * @param string  $le
      *
      * @return string
      */

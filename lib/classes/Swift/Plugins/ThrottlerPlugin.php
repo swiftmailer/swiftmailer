@@ -151,7 +151,7 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
     /**
      * Get a number of seconds to sleep for.
      *
-     * @return integer $timePassed
+     * @param integer $timePassed
      *
      * @return int
      */
@@ -165,7 +165,7 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
     /**
      * Get a number of seconds to sleep for.
      *
-     * @return integer $timePassed
+     * @param integer $timePassed
      *
      * @return int
      */

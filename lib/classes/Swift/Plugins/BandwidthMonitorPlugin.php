@@ -55,7 +55,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
     /**
      * Invoked immediately following a command being sent.
      *
-     * @param Swift_Events_ResponseEvent $evt
+     * @param Swift_Events_CommandEvent $evt
      */
     public function commandSent(Swift_Events_CommandEvent $evt)
     {

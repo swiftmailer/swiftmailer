@@ -38,7 +38,7 @@ interface Swift_OutputByteStream
     /**
      * Move the internal read pointer to $byteOffset in the stream.
      *
-     * @return integer $byteOffset
+     * @param integer $byteOffset
      *
      * @return boolean
      *
