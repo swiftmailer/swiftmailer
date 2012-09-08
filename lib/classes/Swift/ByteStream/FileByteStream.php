@@ -41,8 +41,8 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
     /**
      * Create a new FileByteStream for $path.
      *
-     * @param string $path
-     * @param string $writable if true
+     * @param string  $path
+     * @param boolean $writable if true
      */
     public function __construct($path, $writable = false)
     {

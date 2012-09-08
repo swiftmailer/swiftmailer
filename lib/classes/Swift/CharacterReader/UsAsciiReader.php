@@ -22,7 +22,10 @@ class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
      *
      * @param string  $string
      * @param integer $startOffset
+     * @param array   $currentMap
      * @param string  $ignoredChars
+     *
+     * @return integer
      */
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
     {
@@ -55,7 +58,8 @@ class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
      * A value of zero means this is already a valid character.
      * A value of -1 means this cannot possibly be a valid character.
      *
-     * @param string $bytes
+     * @param string  $bytes
+     * @param integer $size
      *
      * @return integer
      */

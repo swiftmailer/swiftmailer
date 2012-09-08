@@ -112,7 +112,8 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
     /**
      * Perform the actual replacements on $buffer and return the result.
      *
-     * @param array $buffer
+     * @param array   $buffer
+     * @param integer $_minReplaces
      *
      * @return array
      */

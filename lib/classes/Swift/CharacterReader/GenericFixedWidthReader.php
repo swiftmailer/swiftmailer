@@ -75,7 +75,8 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
      * A value of zero means this is already a valid character.
      * A value of -1 means this cannot possibly be a valid character.
      *
-     * @param string $bytes
+     * @param string  $bytes
+     * @param integer $size
      *
      * @return integer
      */

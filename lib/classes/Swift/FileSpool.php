@@ -183,6 +183,8 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      * Returns a random string needed to generate a fileName for the queue.
      *
      * @param integer $count
+     *
+     * @return string
      */
     protected function getRandomString($count)
     {

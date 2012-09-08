@@ -54,7 +54,7 @@ interface Swift_CharacterStream
      * Read $length characters from the stream and move the internal pointer
      * $length further into the stream.
      *
-     * @return integer $length
+     * @param integer $length
      *
      * @return string
      */
@@ -64,7 +64,7 @@ interface Swift_CharacterStream
      * Read $length characters from the stream and return a 1-dimensional array
      * containing there octet values.
      *
-     * @return integer $length
+     * @param integer $length
      *
      * @return int[]
      */

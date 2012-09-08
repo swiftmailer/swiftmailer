@@ -28,6 +28,8 @@ interface Swift_Mime_ParameterizedHeader extends Swift_Mime_Header
     /**
      * Get the value of $parameter.
      *
+     * @param string $parameter
+     *
      * @return string
      */
     public function getParameter($parameter);

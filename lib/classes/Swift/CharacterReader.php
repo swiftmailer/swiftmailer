@@ -51,6 +51,7 @@ interface Swift_CharacterReader
      * A value of -1 means this cannot possibly be a valid character.
      *
      * @param integer[] $bytes
+     * @param integer   $size
      *
      * @return integer
      */

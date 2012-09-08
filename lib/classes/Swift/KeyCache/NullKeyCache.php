@@ -50,8 +50,9 @@ class Swift_KeyCache_NullKeyCache implements Swift_KeyCache
      *
      * NOTE: The stream will always write in append mode.
      *
-     * @param string $nsKey
-     * @param string $itemKey
+     * @param string                $nsKey
+     * @param string                $itemKey
+     * @param Swift_InputByteStream $writeThrough
      *
      * @return Swift_InputByteStream
      */

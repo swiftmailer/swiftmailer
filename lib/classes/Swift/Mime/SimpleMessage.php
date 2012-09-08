@@ -146,8 +146,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * This does not override the From field, but it has a higher significance.
      *
-     * @param string $sender
-     * @param string $name   optional
+     * @param string $address
+     * @param string $name    optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -181,6 +181,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param string $address
      * @param string $name    optional
+     *
+     * @return Swift_Mime_SimpleMessage
      */
     public function addFrom($address, $name = null)
     {
@@ -306,7 +308,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
      *
-     * @param array  $addresses
+     * @param mixed  $addresses
      * @param string $name      optional
      *
      * @return Swift_Mime_SimpleMessage
@@ -358,7 +360,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
      *
-     * @param array  $addresses
+     * @param mixed  $addresses
      * @param string $name      optional
      *
      * @return Swift_Mime_SimpleMessage
@@ -410,7 +412,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
      *
-     * @param array  $addresses
+     * @param mixed  $addresses
      * @param string $name      optional
      *
      * @return Swift_Mime_SimpleMessage
