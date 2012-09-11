@@ -836,7 +836,7 @@ To set the ``Return-Path:`` address:
 
 * Call the ``setReturnPath()`` method on the Message.
 
-Bouce notifications will be sent to this address.
+Bounce notifications will be sent to this address.
 
 .. code-block:: php
 
@@ -903,7 +903,7 @@ To set the character set of your Message:
     $message = Swift_Message::newInstance()
       ->setCharset('iso-8859-2');
 
-    // Apprach 3: Specify the charset when setting the body
+    // Approach 3: Specify the charset when setting the body
     $message->setBody('My body', 'text/html', 'iso-8859-2');
 
     // Approach 4: Specify the charset for each part added
