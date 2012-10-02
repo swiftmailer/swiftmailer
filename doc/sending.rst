@@ -24,7 +24,7 @@ To send a Message:
 
     The ``Swift_SmtpTransport`` and ``Swift_SendmailTransport`` transports use
     ``proc_*`` PHP functions, which might not be available on your PHP
-    installation. You can easily check if that the case by running the
+    installation. You can easily check if that's the case by running the
     following PHP script: ``<?php echo function_exists('proc_open') ? "Yep,
     that will work" : "Sorry, that won't work"; ``
 
