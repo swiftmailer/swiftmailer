@@ -4,6 +4,7 @@ Changelog since Version 4.x.x
 4.2.2 (2012-XX-XX)
 ------------------
 
+ * switched mime.qpcontentencoder to automatically use the PHP native encoder on PHP 5.4.7+
  * allowed specifying a whitelist with regular expressions in RedirectingPlugin
 
 4.2.1 (2012-07-13)

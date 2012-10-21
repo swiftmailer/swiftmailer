@@ -44,13 +44,3 @@ executed only if you use Swift Mailer in your script.
         require_once '/path/to/swift-mailer/lib/swift_init.php';
 
         /* rest of code goes here */
-
-For PHP versions starting with 5.3 it is recommended using the native quoted
-printable encoder. It uses PHP’s native ``quoted_printable_encode()``-function
-to achieve much better performance::
-
-    Swift::init(function () {
-        Swift_DependencyContainer::getInstance()
-            ->register('mime.qpcontentencoder')
-            ->asAliasOf('mime.nativeqpcontentencoder');
-    });
