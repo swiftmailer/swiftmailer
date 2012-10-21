@@ -376,17 +376,24 @@ OEL;
             return false;
         }
 
-        preg_match('%^' . $expected . '$\s*%m', $entityString, $entities);
+        $expectedBody = str_replace("\n", "\r\n", $expectedBody);
+        if (!preg_match('%' . $expectedBody . '*%m', $entityString, $entities)) {
+            $this->fail('Failed regex match.');
+
+            return false;
+        }
 
         $messageStreamClean = new Swift_ByteStream_TemporaryFileByteStream();
         $messageStreamClean->write($entities['encrypted_message']);
 
-        if (!openssl_pkcs7_decrypt($messageStream->getPath(), $messageStreamClean->getPath(), 'file://' . $this->samplesDir . 'smime/encrypt.crt', array('file://' . $this->samplesDir . 'smime/encrypt.key', 'swift'))) {
+        $decryptedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
+
+        if (!openssl_pkcs7_decrypt($messageStreamClean->getPath(), $decryptedMessageStream->getPath(), 'file://' . $this->samplesDir . 'smime/encrypt.crt', array('file://' . $this->samplesDir . 'smime/encrypt.key', 'swift'))) {
             $this->fail(sprintf('Decrypt of the message failed. Internal error "%s".', openssl_error_string()));
         }
 
-        $this->assertEqual($originalMessage, $messageStreamClean->getContent());
-        unset($messageStreamClean, $messageStream);
+        $this->assertEqual($originalMessage, $decryptedMessageStream->getContent());
+        unset($messageStreamClean, $messageStream, $decryptedMessageStream);
     }
 
     protected function assertValidVerify($expected, Swift_ByteStream_TemporaryFileByteStream $messageStream)
@@ -413,6 +420,8 @@ OEL;
 
             return false;
         }
+
+        return true;
     }
 
     protected function getBoundary($contentType)
