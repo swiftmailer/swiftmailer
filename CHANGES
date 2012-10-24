@@ -4,6 +4,7 @@ Changelog since Version 4.x.x
 4.2.2 (2012-XX-XX)
 ------------------
 
+ * added the possibility to throttle messages per second in ThrottlerPlugin (mostly for Amazon SES)
  * switched mime.qpcontentencoder to automatically use the PHP native encoder on PHP 5.4.7+
  * allowed specifying a whitelist with regular expressions in RedirectingPlugin
 
