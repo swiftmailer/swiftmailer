@@ -4,7 +4,7 @@ Changelog since Version 4.x.x
 4.3.0 (2012-XX-XX)
 ------------------
 
- * n/a
+ * added S/MIME signer and encryption support
 
 4.2.2 (2012-10-25)
 ------------------
