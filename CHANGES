@@ -4,6 +4,7 @@ Changelog since Version 4.x.x
 4.3.0 (2012-XX-XX)
 ------------------
 
+ * made the temporary directory configurable via the TMPDIR env variable
  * added S/MIME signer and encryption support
 
 4.2.2 (2012-10-25)
