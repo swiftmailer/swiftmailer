@@ -13,12 +13,15 @@ Swift_Preferences::getInstance()->setCharset('utf-8');
 // If possible, use a disk cache to enable attaching large attachments etc.
 // You can override the default temporary directory by setting the TMPDIR environment variable.
 
-$tmp = getenv('TMPDIR') ? getenv('TMPDIR') : (function_exists('sys_get_temp_dir') ? sys_get_temp_dir() : false);
-
+$tmp = getenv('TMPDIR');
 if ($tmp && is_writable($tmp)) {
     Swift_Preferences::getInstance()
-        -> setTempDir($tmp)
-        -> setCacheType('disk');
+        ->setTempDir($tmp)
+        ->setCacheType('disk');
+} elseif (function_exists('sys_get_temp_dir') && is_writable(sys_get_temp_dir())) {
+    Swift_Preferences::getInstance()
+        ->setTempDir(sys_get_temp_dir())
+        ->setCacheType('disk');
 }
 
 Swift_Preferences::getInstance()->setQPDotEscape(false);
