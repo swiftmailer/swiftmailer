@@ -12,9 +12,12 @@ Swift_Preferences::getInstance()->setCharset('utf-8');
 // Without these lines the default caching mechanism is "array" but this uses a lot of memory.
 // If possible, use a disk cache to enable attaching large attachments etc.
 // You can override the default temporary directory by setting the TMPDIR environment variable.
-if (function_exists('sys_get_temp_dir') && is_writable(sys_get_temp_dir())) {
+
+$tmp = getenv('TMPDIR') ? getenv('TMPDIR') : (function_exists('sys_get_temp_dir') ? sys_get_temp_dir() : false);
+
+if ($tmp && is_writable($tmp)) {
     Swift_Preferences::getInstance()
-        -> setTempDir(sys_get_temp_dir())
+        -> setTempDir($tmp)
         -> setCacheType('disk');
 }
 
