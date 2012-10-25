@@ -852,9 +852,9 @@ encrypt an message using one or multiple signers.
 S/MIME
 ~~~~~~
 
-S/MIME can sign and/or encrypt an message using the OpenSSL extension.
+S/MIME can sign and/or encrypt a message using the OpenSSL extension.
 
-When signing an message, the signer creates an signature of the entire content of the message (including attachments).
+When signing a message, the signer creates a signature of the entire content of the message (including attachments).
 
 The certificate and private key must be PEM encoded, and can be either created using for example OpenSSL or
 obtained at an official Certificate Authority (CA).
@@ -863,7 +863,7 @@ obtained at an official Certificate Authority (CA).
 
 **Make sure the certificate supports emailProtection.**
 
-When using openssl this can done by the including the *-addtrust emailProtection* parameter when creating the certificate.
+When using OpenSSL this can done by the including the *-addtrust emailProtection* parameter when creating the certificate.
 
 .. code-block:: php
 
@@ -873,7 +873,7 @@ When using openssl this can done by the including the *-addtrust emailProtection
     $smimeSigner->setSignCertificate('/path/to/certificate.pem', '/path/to/private-key.pem');
     $message->attachSigner($smimeSigner);
 
-When the private is secured using an passphrase use to following instead.
+When the private key is secured using a passphrase use the following instead.
 
 .. code-block:: php
 
@@ -893,11 +893,11 @@ Storing the message as binary is also possible but not recommended.
     $smimeSigner->setSignCertificate('/path/to/certificate.pem', '/path/to/private-key.pem', PKCS7_BINARY);
 
 When encrypting the message (also known as enveloping), the entire message (including attachments)
-is encrypted using an certificate, and the recipient can then decrypt the message using corresponding private key.
+is encrypted using a certificate, and the recipient can then decrypt the message using corresponding private key.
 
 Encrypting ensures nobody can read the contents of the message without the private key.
 
-Normally the recipient provides an certificate for encrypting and keeping the decryption key private.
+Normally the recipient provides a certificate for encrypting and keeping the decryption key private.
 
 Using both signing and encrypting is also possible.
 
