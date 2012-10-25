@@ -26,7 +26,7 @@ To send a Message:
     ``proc_*`` PHP functions, which might not be available on your PHP
     installation. You can easily check if that's the case by running the
     following PHP script: ``<?php echo function_exists('proc_open') ? "Yep,
-    that will work" : "Sorry, that won't work"; ``
+    that will work" : "Sorry, that won't work";``
 
 When using ``send()`` the message will be sent just like it would be sent if you
 used your mail client. An integer is returned which includes the number of
