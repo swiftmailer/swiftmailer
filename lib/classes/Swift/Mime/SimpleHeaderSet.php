@@ -103,9 +103,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
      */
     public function addParameterizedHeader($name, $value = null, $params = array())
     {
-        $this->_storeHeader($name,
-            $this->_factory->createParameterizedHeader($name, $value,
-            $params));
+        $this->_storeHeader($name, $this->_factory->createParameterizedHeader($name, $value, $params));
     }
 
     /**
@@ -144,8 +142,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     {
         $lowerName = strtolower($name);
 
-        return array_key_exists($lowerName, $this->_headers)
-            && array_key_exists($index, $this->_headers[$lowerName]);
+        return array_key_exists($lowerName, $this->_headers) && array_key_exists($index, $this->_headers[$lowerName]);
     }
 
     /**
@@ -212,19 +209,19 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     }
 
     /**
-   * Return the name of all Headers
+     * Return the name of all Headers
      *
-   * @return array
-   */
-  public function listAll()
-  {
-    $headers = $this->_headers;
+     * @return array
+     */
+    public function listAll()
+    {
+        $headers = $this->_headers;
         if ($this->_canSort()) {
-      uksort($headers, array($this, '_sortHeaders'));
-    }
+            uksort($headers, array($this, '_sortHeaders'));
+        }
 
-    return array_keys($headers);
-  }
+        return array_keys($headers);
+    }
 
   /**
      * Remove the header with the given $name if it's set.

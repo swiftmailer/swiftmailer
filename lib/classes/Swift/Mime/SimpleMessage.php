@@ -31,9 +31,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
         parent::__construct($headers, $encoder, $cache, $grammar, $charset);
         $this->getHeaders()->defineOrdering(array(
             'Return-Path',
-      'Received',
-      'DKIM-Signature',
-      'DomainKey-Signature',
+            'Received',
+            'DKIM-Signature',
+            'DomainKey-Signature',
             'Sender',
             'Message-ID',
             'Date',
@@ -47,9 +47,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
             'Content-Type',
             'Content-Transfer-Encoding'
             ));
-        $this->getHeaders()->setAlwaysDisplayed(
-            array('Date', 'Message-ID', 'From')
-            );
+        $this->getHeaders()->setAlwaysDisplayed(array('Date', 'Message-ID', 'From'));
         $this->getHeaders()->addTextHeader('MIME-Version', '1.0');
         $this->setDate(time());
         $this->setId($this->getId());
