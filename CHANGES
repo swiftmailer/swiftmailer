@@ -1,7 +1,7 @@
 Changelog since Version 4.x.x
 =============================
 
-4.2.2 (2012-XX-XX)
+4.2.2 (2012-10-25)
 ------------------
 
  * added the possibility to throttle messages per second in ThrottlerPlugin (mostly for Amazon SES)
