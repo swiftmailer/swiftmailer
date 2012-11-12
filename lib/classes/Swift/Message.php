@@ -55,7 +55,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      * @param string $contentType
      * @param string $charset
      *
-     * @return Swift_Mime_Message
+     * @return Swift_Message
      */
     public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
     {
