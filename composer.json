@@ -7,8 +7,7 @@
     "license": "LGPL",
     "authors": [
         {
-            "name": "Chris Corbyn",
-            "email": ""
+            "name": "Chris Corbyn"
         },
         {
             "name": "Fabien Potencier",
