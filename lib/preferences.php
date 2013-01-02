@@ -14,11 +14,11 @@ Swift_Preferences::getInstance()->setCharset('utf-8');
 // You can override the default temporary directory by setting the TMPDIR environment variable.
 
 $tmp = getenv('TMPDIR');
-if ($tmp && is_writable($tmp)) {
+if ($tmp && @is_writable($tmp)) {
     Swift_Preferences::getInstance()
         ->setTempDir($tmp)
         ->setCacheType('disk');
-} elseif (function_exists('sys_get_temp_dir') && is_writable(sys_get_temp_dir())) {
+} elseif (function_exists('sys_get_temp_dir') && @is_writable(sys_get_temp_dir())) {
     Swift_Preferences::getInstance()
         ->setTempDir(sys_get_temp_dir())
         ->setCacheType('disk');
