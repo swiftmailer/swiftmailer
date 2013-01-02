@@ -13,6 +13,8 @@ Swift_Preferences::getInstance()->setCharset('utf-8');
 // If possible, use a disk cache to enable attaching large attachments etc.
 // You can override the default temporary directory by setting the TMPDIR environment variable.
 
+// The @ operator in front of is_writable calls is to avoid PHP warnings
+// when using open_basedir
 $tmp = getenv('TMPDIR');
 if ($tmp && @is_writable($tmp)) {
     Swift_Preferences::getInstance()
