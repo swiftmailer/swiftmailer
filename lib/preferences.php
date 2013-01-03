@@ -16,10 +16,12 @@ Swift_Preferences::getInstance()->setCharset('utf-8');
 // The @ operator in front of is_writable calls is to avoid PHP warnings
 // when using open_basedir
 $tmp = getenv('TMPDIR');
+// @ operator suppress  warning thrown when the directory is restricted by PHP open_basedir configuration
 if ($tmp && @is_writable($tmp)) {
     Swift_Preferences::getInstance()
         ->setTempDir($tmp)
         ->setCacheType('disk');
+// @ operator suppress  warning thrown when the directory is restricted by PHP open_basedir configuration
 } elseif (function_exists('sys_get_temp_dir') && @is_writable(sys_get_temp_dir())) {
     Swift_Preferences::getInstance()
         ->setTempDir(sys_get_temp_dir())
