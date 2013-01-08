@@ -1,7 +1,7 @@
 Changelog since Version 4.x.x
 =============================
 
-4.3.0 (2012-XX-XX)
+4.3.0 (2012-01-08)
 ------------------
 
  * made the temporary directory configurable via the TMPDIR env variable
