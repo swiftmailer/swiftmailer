@@ -94,10 +94,10 @@ class Swift_Preferences
     {
         $dotEscape = !empty($dotEscape);
         Swift_DependencyContainer::getInstance()
-            -> register('mime.qpcontentencoder')
-            -> asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
-            -> withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
-            -> addConstructorValue($dotEscape);
+            ->register('mime.qpcontentencoder')
+            ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
+            ->withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
+            ->addConstructorValue($dotEscape);
 
         return $this;
     }
