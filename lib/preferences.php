@@ -28,4 +28,8 @@ if ($tmp && @is_writable($tmp)) {
         ->setCacheType('disk');
 }
 
-$preferences->setQPDotEscape(false);
+// this should only be done when Swiftmailer won't use the native QP content encoder
+// see mime_deps.php
+if (version_compare(phpversion(), '5.4.7', '<')) {
+    $preferences->setQPDotEscape(false);
+}
