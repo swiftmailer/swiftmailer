@@ -51,7 +51,7 @@ class Swift_MemorySpool implements Swift_Spool
      */
     public function queueMessage(Swift_Mime_Message $message)
     {
-        $this->messages[] = $message;
+        $this->messages[] = unserialize(serialize($message));
 
         return true;
     }
