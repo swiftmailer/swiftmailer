@@ -37,7 +37,7 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
                     $this->assertFalse(
                         // but object's clone does - not everything copied
                         $obj1_value === $obj1_clone_value,
-                        "Property `$property` cloning error: source and cloned object property is referencing same object"
+                        "Property `$property` cloning error: source and cloned objects property is referencing same object"
                     );
                 }
                 else {
