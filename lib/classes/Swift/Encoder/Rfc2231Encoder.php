@@ -83,4 +83,11 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
     {
         $this->_charStream->setCharacterSet($charset);
     }
+
+    /**
+    * Make a deep copy of object
+    */
+    public function __clone() {
+        $this->_charStream = clone $this->_charStream;
+    }
 }
