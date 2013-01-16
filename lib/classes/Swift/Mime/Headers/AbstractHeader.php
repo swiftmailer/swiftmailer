@@ -458,9 +458,11 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
         //Generate atoms; split at all invisible boundaries followed by WSP
         foreach (preg_split('~(?=[ \t])~', $string) as $token) {
-            $tokens = array_merge($tokens, $this->generateTokenLines($token));
+            $newTokens = $this->generateTokenLines($token);
+            foreach ($newTokens as $newToken) {
+                $tokens[] = $newToken;
+            }
         }
-
         return $tokens;
     }
 
