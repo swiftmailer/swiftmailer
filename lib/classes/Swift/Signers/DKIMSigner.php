@@ -353,11 +353,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     public function setBodySignedLen($len)
     {
-        if ($this->len === true) {
+        if ($len === true) {
             $this->_showLen = true;
             $this->_maxLen = PHP_INT_MAX;
-        } elseif ($this->len === false) {
-            $this->_showLen = false;
+        } elseif ($len === false) {
+            $this->showLen = false;
             $this->_maxLen = PHP_INT_MAX;
         } else {
             $this->_showLen = true;
