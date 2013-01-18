@@ -142,7 +142,7 @@ Content-Type: multipart/mixed;
 
 
 --\\1
-Content-Type: multipart/mixed; charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
 Here is the message itself
