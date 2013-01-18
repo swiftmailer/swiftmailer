@@ -49,7 +49,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
         if (empty($path)) {
             throw new Swift_IoException('File Name is empty');
         }
-    	$this->_path = $path;
+        $this->_path = $path;
         $this->_mode = $writable ? 'w+b' : 'rb';
 
         if (function_exists('get_magic_quotes_runtime') && @get_magic_quotes_runtime() == 1) {
