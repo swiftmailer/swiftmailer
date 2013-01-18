@@ -505,12 +505,11 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
         $signature = '';
     	$pkeyId=openssl_get_privatekey($this->_privateKey);
 	    if (!$pkeyId) {
-	    	throw new Swift_SwiftException('Unable to load DKIM Private Key');
+	    	throw new Swift_SwiftException('Unable to load DomainKey Private Key ['.openssl_error_string().']');
 	    }
         if (openssl_sign($this->_canonData, $signature, $pkeyId, 'sha1')) {
             return $signature;
         }
-
-        return '';
+        throw new Swift_SwiftException('Unable to sign DomainKey Hash  ['.openssl_error_string().']');
     }
 }
