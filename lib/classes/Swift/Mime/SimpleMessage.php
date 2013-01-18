@@ -622,10 +622,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
         return 'Message-ID';
     }
 
-    // -- Private methods
-
     /** Turn the body of this message into a child of itself if needed */
-    private function _becomeMimePart()
+    protected function _becomeMimePart()
     {
         $part = new parent($this->getHeaders()->newInstance(), $this->getEncoder(),
             $this->_getCache(), $this->_getGrammar(), $this->_userCharset
@@ -639,6 +637,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
         return $part;
     }
 
+    // -- Private methods
+    
     /** Get the highest nesting level nested inside this message */
     private function _getTopNestingLevel()
     {
