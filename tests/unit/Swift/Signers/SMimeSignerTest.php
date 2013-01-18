@@ -62,7 +62,7 @@ Content-Transfer-Encoding: quoted-printable
 
 Here is the message itself
 --$boundary
-Content-Type: application/pkcs7-signature; name="smime\.p7s"
+Content-Type: application/(?:x-)?pkcs7-signature; name="smime\.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime\.p7s"
 
@@ -75,7 +75,7 @@ OEL;
         unset($messageStream);
     }
 
-    public function testSingedMessageBinary()
+    public function testSignedMessageBinary()
     {
         $message = Swift_SignedMessage::newInstance('Wonderful Subject')
           ->setFrom(array('john@doe.com' => 'John Doe'))
@@ -93,7 +93,9 @@ OEL;
         $entityString = $messageStream->getContent();
         $headers = self::getHeadersOfMessage($entityString);
 
-        if ('application/pkcs7-mime; smime-type=signed-data;' !== substr($headers['content-type'], 0, 47)) {
+        if ('application/pkcs7-mime; smime-type=signed-data;' !== substr($headers['content-type'], 0, 47) 
+              && 'application/x-pkcs7-mime; smime-type=signed-data;' !== substr($headers['content-type'], 0, 49)
+            ) {
             $this->fail('Content-type does not match.');
 
             return false;
@@ -110,7 +112,7 @@ OEL;
         unset($messageStreamClean, $messageStream);
     }
 
-    public function testSingedMessageWithAttachments()
+    public function testSignedMessageWithAttachments()
     {
         $message = Swift_SignedMessage::newInstance('Wonderful Subject')
           ->setFrom(array('john@doe.com' => 'John Doe'))
@@ -139,11 +141,11 @@ This is an S/MIME signed message
 
 --$boundary
 Content-Type: multipart/mixed;
- boundary="([a-z0-9\\'\\(\\)\\+_\\-,\\.\\/:=\\?\\ ]{0,69}[a-z0-9\\'\\(\\)\\+_\\-,\\.\\/:=\\?])"
+ boundary="([a-z0-9\\'\\(\\)\\+_,\\.\\/:=\\?\\ -]{0,69}[a-z0-9\\'\\(\\)\\+_,\\.\\/:=\\?-])"
 
 
 --\\1
-Content-Type: multipart/mixed; charset=utf-8
+Content-Type: (?:multipart/mixed|text/plain); charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
 Here is the message itself
@@ -161,11 +163,11 @@ A3e\\+vkdVeAAAUEsFBgAAAAABAAEARwAAAG0AAAAAAA==
 --\\1--
 
 --$boundary
-Content-Type: application/pkcs7-signature; name="smime\\.p7s"
+Content-Type: application/(?:x-)?pkcs7-signature; name="smime\\.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime\\.p7s"
 
-(?:^[a-zA-Z0-9\/\\r\\n+]*={0,2})
+(?:[a-zA-Z0-9\\/\\r\\n+]*={0,2})
 
 --$boundary--
 OEL;
@@ -194,7 +196,9 @@ OEL;
         $entityString = $messageStream->getContent();
         $headers = self::getHeadersOfMessage($entityString);
 
-        if ('application/pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 50)) {
+        if ('application/pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 50)
+            && 'application/x-pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 52)
+            ) {
             $this->fail('Content-type does not match.');
 
             return false;
@@ -232,7 +236,9 @@ OEL;
         $entityString = $messageStream->getContent();
         $headers = self::getHeadersOfMessage($entityString);
 
-        if ('application/pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 50)) {
+        if ('application/pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 50)
+              && 'application/x-pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 52)
+            ) {
             $this->fail('Content-type does not match.');
 
             return false;
@@ -278,7 +284,9 @@ OEL;
         $entityString = $messageStream->getContent();
         $headers = self::getHeadersOfMessage($entityString);
 
-        if ('application/pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 50)) {
+        if ('application/pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 50)
+              && 'application/x-pkcs7-mime; smime-type=enveloped-data;' !== substr($headers['content-type'], 0, 52)
+            ) {
             $this->fail('Content-type does not match.');
 
             return false;
@@ -308,7 +316,7 @@ Content-Transfer-Encoding: quoted-printable
 
 Here is the message itself
 --$boundary
-Content-Type: application/pkcs7-signature; name="smime\.p7s"
+Content-Type: application/(?:x-)?pkcs7-signature; name="smime\.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime\.p7s"
 
@@ -356,14 +364,14 @@ This is an S/MIME signed message
 --$boundary
 (?P<encrypted_message>MIME-Version: 1\.0
 Content-Disposition: attachment; filename="smime\.p7m"
-Content-Type: application/pkcs7-mime; smime-type=enveloped-data; name="smime\.p7m"
+Content-Type: application/(?:x-)?pkcs7-mime; smime-type=enveloped-data; name="smime\.p7m"
 Content-Transfer-Encoding: base64
 
 (?:^[a-zA-Z0-9\/\\r\\n+]*={0,2})
 
 
 )--$boundary
-Content-Type: application/pkcs7-signature; name="smime\.p7s"
+Content-Type: application/(?:x-)?pkcs7-signature; name="smime\.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime\.p7s"
 
@@ -404,7 +412,7 @@ OEL;
         $expected = str_replace("\n", "\r\n", $expected);
 
         $actual = trim(self::getBodyOfMessage($actual));
-        if (!$this->assertPattern('%^' . $expected . '$\s*%m', $actual)) {
+        if (!$this->assertPattern('%^' . $expected . '\s*$%m', $actual)) {
             return false;
         }
 
