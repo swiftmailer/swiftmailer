@@ -124,6 +124,10 @@ class Swift_SignedMessage extends Swift_Message
         $this->savedMessage = array('headers'=> array());
         $this->savedMessage['body'] = $this->getBody();
         $this->savedMessage['children'] = $this->getChildren();
+        if (count($this->savedMessage['children']) > 0 && $this->getBody() != '') {
+            $this->setChildren(array_merge(array($this->_becomeMimePart()), $this->savedMessage['children']));
+            $this->setBody('');
+        }
     }
 
     protected function saveHeaders(array $altered)
