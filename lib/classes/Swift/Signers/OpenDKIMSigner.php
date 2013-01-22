@@ -1,0 +1,194 @@
+<?php
+
+/*
+ DKIM Signature Handler for SwiftMailer
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+ */
+
+/**
+ * DKIM Signer used to apply DKIM Signature to a message
+ * Takes advantage of pecl extension or fallbacks to php implementation
+ *
+ * @package    Swift
+ * @subpackage Signatures
+ * @author     Xavier De Cock <xdecock@gmail.com>
+ */
+
+class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
+{
+    private $_peclLoaded = false;
+
+    private $_dkimHandler = null;
+
+    private $dropFirstLF = true;
+
+    const CANON_RELAXED = 1;
+    const CANON_SIMPLE = 2;
+    const SIG_RSA_SHA1 = 3;
+    const SIG_RSA_SHA256 = 4;
+
+    public function __construct($privateKey, $domainName, $selector)
+    {
+        if (extension_loaded('opendkim')) {
+            $this->_peclLoaded = true;
+        }
+        parent::__construct($privateKey, $domainName, $selector);
+    }
+
+    public function addSignature(Swift_Mime_HeaderSet $headers)
+    {
+        if (! $this->_peclLoaded) {
+            return parent::addSignature($headers);
+        } else {
+        	$header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
+            $headerVal=$this->_dkimHandler->getSignatureHeader();
+            if (!$headerVal) {
+            	throw new Swift_SwiftException('OpenDKIM Error: '.$this->_dkimHandler->getError());
+            }
+            $header->setValue($headerVal);
+            $headers->set($header);
+        }
+
+        return $this;
+    }
+
+    public function setHeaders(Swift_Mime_HeaderSet $headers)
+    {
+        if (! $this->_peclLoaded) {
+            return parent::setHeaders($headers);
+        }
+        $bodyLen = $this->_bodyLen;
+        if (is_bool($bodyLen)) {
+            $bodyLen = - 1;
+        }
+        $hash = ($this->_hashAlgorithm == 'rsa-sha1') ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
+        $bodyCanon = ($this->_bodyCanon == 'simple') ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
+        $headerCanon = ($this->_headerCanon == 'simple') ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
+        $this->_dkimHandler = new OpenDKIMSign($this->_privateKey, $this->_selector, $this->_domainName, $headerCanon, $bodyCanon, $hash, $bodyLen);
+        // Hardcode signature Margin for now
+        $this->_dkimHandler->setMargin(78);
+        
+        if (!is_numeric($this->_signatureTimestamp)) {
+	       	OpenDKIM::setOption(OpenDKIM::OPTS_FIXEDTIME, time());
+        } else {
+        	if (!OpenDKIM::setOption(OpenDKIM::OPTS_FIXEDTIME, $this->_signatureTimestamp)) {
+    	    	echo 'error';
+    	    }
+	    }
+        if (isset($this->_signerIdentity)) {
+            $this->_dkimHandler->setSigner($this->_signerIdentity);
+        }
+        $listHeaders = $headers->listAll();
+        foreach ($listHeaders as $hName) {
+            // Check if we need to ignore Header
+            if (! isset($this->_ignoredHeaders[strtolower($hName)])) {
+                $tmp = $headers->getAll($hName);
+                if ($headers->has($hName)) {
+                    foreach ($tmp as $header) {
+                        if ($header->getFieldBody() != '') {
+                        	$htosign = $header->toString();
+                            $this->_dkimHandler->header($htosign);
+                            $this->_signedHeaders[] = $header->getFieldName();
+                        }
+                    }
+                }
+            }
+        }
+        return $this;
+    }
+
+    public function startBody()
+    {
+        if (! $this->_peclLoaded) {
+            return parent::startBody();
+        }
+        $this->dropFirstLF = true;
+        $this->_dkimHandler->eoh();
+        return $this;
+    }
+
+    public function endBody()
+    {
+        if (! $this->_peclLoaded) {
+        	return parent::endBody();
+        }
+        $this->_dkimHandler->eom();
+        return $this;
+    }
+
+    public function reset()
+    {
+        $this->_dkimHandler = null;
+        parent::reset();
+        return $this;
+    }
+
+    /**
+     * Set the signature timestamp
+     *
+     * @param timestamp $time
+     * @return Swift_Signers_DKIMSigner
+     */
+    public function setSignatureTimestamp($time)
+    {
+    	$this->_signatureTimestamp = $time;
+    	return $this;
+    }
+    
+    /**
+     * Set the signature expiration timestamp
+     *
+     * @param timestamp $time
+     * @return Swift_Signers_DKIMSigner
+     */
+    public function setSignatureExpiration($time)
+    {
+    	$this->_signatureExpiration = $time;
+    
+    	return $this;
+    }
+    
+    /**
+     * Enable / disable the DebugHeaders
+     *
+     * @param boolean $debug
+     * @return Swift_Signers_DKIMSigner
+     */
+    public function setDebugHeaders($debug)
+    {
+        $this->_debugHeaders = (bool) $debug;
+
+        return $this;
+    }
+    
+    // Protected
+
+    protected function _canonicalizeBody($string)
+    {
+        if (! $this->_peclLoaded) {
+            return parent::_canonicalizeBody($string);
+        }
+        if (false && $this->dropFirstLF === true) {
+            if ($string[0]=="\r" && $string[1]=="\n") {
+                $string=substr($string, 2);
+            }
+        }
+        $this->dropFirstLF = false;
+        if (strlen($string)) {
+        	$this->_dkimHandler->body($string);
+        }
+    }
+}
