@@ -44,32 +44,27 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     {
         if (extension_loaded('opendkim')) {
             $this->_peclLoaded = true;
+        } else {
+        	throw new Swift_SwiftException('php-opendkim extension not found');
         }
         parent::__construct($privateKey, $domainName, $selector);
     }
 
     public function addSignature(Swift_Mime_HeaderSet $headers)
     {
-        if (! $this->_peclLoaded) {
-            return parent::addSignature($headers);
-        } else {
-        	$header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
-            $headerVal=$this->_dkimHandler->getSignatureHeader();
-            if (!$headerVal) {
-            	throw new Swift_SwiftException('OpenDKIM Error: '.$this->_dkimHandler->getError());
-            }
-            $header->setValue($headerVal);
-            $headers->set($header);
+        $header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
+        $headerVal=$this->_dkimHandler->getSignatureHeader();
+        if (!$headerVal) {
+            throw new Swift_SwiftException('OpenDKIM Error: '.$this->_dkimHandler->getError());
         }
+        $header->setValue($headerVal);
+        $headers->set($header);
 
         return $this;
     }
 
     public function setHeaders(Swift_Mime_HeaderSet $headers)
     {
-        if (! $this->_peclLoaded) {
-            return parent::setHeaders($headers);
-        }
         $bodyLen = $this->_bodyLen;
         if (is_bool($bodyLen)) {
             $bodyLen = - 1;
@@ -85,7 +80,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 	       	OpenDKIM::setOption(OpenDKIM::OPTS_FIXEDTIME, time());
         } else {
         	if (!OpenDKIM::setOption(OpenDKIM::OPTS_FIXEDTIME, $this->_signatureTimestamp)) {
-    	    	echo 'error';
+		        throw new Swift_SwiftException('Unable to force signature timestamp ['.openssl_error_string().']');
     	    }
 	    }
         if (isset($this->_signerIdentity)) {
