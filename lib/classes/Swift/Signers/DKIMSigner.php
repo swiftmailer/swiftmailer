@@ -185,6 +185,24 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $this->_selector = $selector;
     }
 
+    /**
+     * Instanciate DKIMSigner
+     * 
+     * @param string $privateKey
+     * @param string $domainName
+     * @param string $selector
+     * @return Swift_Signers_DKIMSigner
+     */
+    public static function newInstance($privateKey, $domainName, $selector) 
+    {
+    	return new static($privateKey, $domainName, $selector);
+    }
+    
+    
+    /**
+     * Reset the Signer
+     * @see Swift_Signer::reset()
+     */
     public function reset()
     {
         $this->_headerHash = null;
