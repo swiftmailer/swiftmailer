@@ -854,4 +854,12 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
                 );
         }
     }
+
+    /**
+    * Make a deep copy of object
+    */
+    public function __clone() {
+        $this->_headers = clone $this->_headers;
+        $this->_encoder = clone $this->_encoder;
+    }
 }
