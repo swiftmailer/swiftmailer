@@ -126,8 +126,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
                     return $this;
                 }
             }
-        }
-        elseif ($signer instanceof Swift_Signers_BodySigner) {
+        } elseif ($signer instanceof Swift_Signers_BodySigner) {
             foreach ($this->bodySigners as $k => $bodySigner) {
                 if ($bodySigner === $signer) {
                     unset($this->bodySigners[$k]);

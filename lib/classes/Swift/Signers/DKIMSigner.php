@@ -193,7 +193,8 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @param string $selector
      * @return Swift_Signers_DKIMSigner
      */
-    public static function newInstance($privateKey, $domainName, $selector) {
+    public static function newInstance($privateKey, $domainName, $selector) 
+    {
     	return new static($privateKey, $domainName, $selector);
     }
     
