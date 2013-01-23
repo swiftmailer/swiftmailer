@@ -103,8 +103,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     {
         if ($signer instanceof Swift_Signers_HeaderSigner) {
             $this->headerSigners[] = $signer;
-        }
-        elseif ($signer instanceof Swift_Signers_BodySigner) {
+        } elseif ($signer instanceof Swift_Signers_BodySigner) {
             $this->bodySigners[] = $signer;
         }
     
