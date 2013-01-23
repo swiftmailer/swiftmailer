@@ -861,5 +861,10 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     public function __clone() {
         $this->_headers = clone $this->_headers;
         $this->_encoder = clone $this->_encoder;
+        $children = array();
+        foreach ($this->_children as $pos => $child) {
+            $children[$pos] = clone $child;
+        }
+        $this->setChildren($children);
     }
 }
