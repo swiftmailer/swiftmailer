@@ -183,7 +183,8 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     /**
     * Make a deep copy of object
     */
-    public function __clone() {
+    public function __clone()
+    {
         $this->_encoder = clone $this->_encoder;
         $this->_paramEncoder = clone $this->_paramEncoder;
     }

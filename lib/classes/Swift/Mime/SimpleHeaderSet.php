@@ -388,7 +388,8 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     /**
     * Make a deep copy of object
     */
-    public function __clone() {
+    public function __clone()
+    {
         $this->_factory = clone $this->_factory;
         foreach ($this->_headers as $groupKey => $headerGroup) {
             foreach ($headerGroup as $key => $header) {
