@@ -49,6 +49,11 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         }
         parent::__construct($privateKey, $domainName, $selector);
     }
+    
+    public function newInstance($privateKey, $domainName, $selector)
+    {
+        return new static($privateKey, $domainName, $selector);
+    }
 
     public function addSignature(Swift_Mime_HeaderSet $headers)
     {
