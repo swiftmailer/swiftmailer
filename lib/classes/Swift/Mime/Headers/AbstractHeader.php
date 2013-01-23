@@ -501,4 +501,14 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         //Implode with FWS (RFC 2822, 2.2.3)
         return implode("\r\n", $headerLines) . "\r\n";
     }
+
+    /**
+    * Make a deep copy of object
+    */
+    public function __clone()
+    {
+        if ($this->_encoder != null) {
+            $this->_encoder = clone $this->_encoder;
+        }
+    }
 }
