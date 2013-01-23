@@ -17,7 +17,7 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
 
         $this->_recursiveObjectCloningCheck($message1, $message2, $message1_clone);
     }
-    
+
     public function testBodySwap()
     {
         $message1 = new Swift_Message('Test');
@@ -47,25 +47,41 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
     }
 
     // -- Private helpers
+    protected $_stack = array();
+
     protected function _recursiveObjectCloningCheck($obj1, $obj2, $obj1_clone)
     {
         $obj1_properties = (array)$obj1;
         $obj2_properties = (array)$obj2;
         $obj1_clone_properties = (array)$obj1_clone;
 
-        foreach ($obj1_properties as $property => $value) {
+        foreach ($obj1_properties as $property => $value)
+        {
+            // collect and format information from where the property is
+            $property_parts = explode ("\x0", $property);
+            $property_name = array_pop($property_parts);
+            $property_origin = array_pop($property_parts);
+            $this->_stack[] = array('property' => $property_name, 'origin' => $property_origin, 'parent_type' => gettype($obj1));
+
+            $stack = '';
+            foreach ($this->_stack as $depth => $entry) {
+                $string = ($entry['parent_type'] == 'object') ? "->{$entry['property']}" : "[{$entry['property']}]";
+                $string .= ($entry['origin'] && $entry['origin'] != '*') ? " (from: {$entry['origin']})" : '';
+                $stack .= $string;
+            }
+
+            $obj1_value = $obj1_properties[$property];
+            $obj2_value = $obj2_properties[$property];
+            $obj1_clone_value = $obj1_clone_properties[$property];
 
             if (is_object($value)) {
-                $obj1_value = $obj1_properties[$property];
-                $obj2_value = $obj2_properties[$property];
-                $obj1_clone_value = $obj1_clone_properties[$property];
 
                 if ($obj1_value !== $obj2_value) {
                     // two separetely instanciated objects property not referencing same object
                     $this->assertFalse(
                         // but object's clone does - not everything copied
                         $obj1_value === $obj1_clone_value,
-                        "Property `$property` cloning error: source and cloned objects property is referencing same object"
+                        "Property \n$stack: Cloning error: source and cloned objects property is referencing same object"
                     );
                 }
                 else {
@@ -73,12 +89,18 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
                     $this->assertFalse(
                         // but object's clone doesn't - overdone making copies
                         $obj1_value !== $obj1_clone_value,
-                        "Property `$property` not properly cloned: it should reference same object as cloning source (overdone copping)"
+                        "Property \n$stack: Not properly cloned: it should reference same object as cloning source (overdone copping)"
                     );
                 }
                 // recurse
                 $this->_recursiveObjectCloningCheck($obj1_value, $obj2_value, $obj1_clone_value);
             }
+            elseif (is_array($value)) {
+                // look for objects in arrays
+                $this->_recursiveObjectCloningCheck($obj1_value, $obj2_value, $obj1_clone_value);
+            }
+
+            array_pop($this->_stack);
         }
     }
 
