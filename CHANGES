@@ -4,6 +4,7 @@ Changelog since Version 4.x.x
 4.3.1 (2013-XX-XX)
 ------------------
 
+ * made a performance improvement when tokenizing large headers
  * fixed usage of the PHP native QP encoder on PHP 5.4.7+
 
 4.3.0 (2013-01-08)

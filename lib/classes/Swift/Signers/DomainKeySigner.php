@@ -493,17 +493,13 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     private function _getEncryptedHash()
     {
         $signature = '';
-        $sig2 = '';
-        openssl_sign($this->_canonData, $sig2, $this->_privateKey, 'sha1');
-        var_dump($this->_hash);
-        var_dump($this->_privateKey);
-        if (openssl_private_encrypt($this->_hash, $signature, $this->_privateKey)) {
-            var_dump($this->_canonData, base64_encode($sig2), base64_encode($signature));
-
-            return $sig2;
+        $pkeyId=openssl_get_privatekey($this->_privateKey);
+        if (!$pkeyId) {
+            throw new Swift_SwiftException('Unable to load DomainKey Private Key ['.openssl_error_string().']');
+        }
+        if (openssl_sign($this->_canonData, $signature, $pkeyId, 'sha1')) {
             return $signature;
         }
-
-        return '';
+        throw new Swift_SwiftException('Unable to sign DomainKey Hash  ['.openssl_error_string().']');
     }
 }

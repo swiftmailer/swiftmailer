@@ -353,11 +353,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     public function setBodySignedLen($len)
     {
-        if ($this->len === true) {
+        if ($len === true) {
             $this->_showLen = true;
             $this->_maxLen = PHP_INT_MAX;
-        } elseif ($this->len === false) {
-            $this->_showLen = false;
+        } elseif ($len === false) {
+            $this->showLen = false;
             $this->_maxLen = PHP_INT_MAX;
         } else {
             $this->_showLen = true;
@@ -657,10 +657,13 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 $algorithm = 'sha256';
                 break;
         }
+        $pkeyId=openssl_get_privatekey($this->_privateKey);
+        if (!$pkeyId) {
+            throw new Swift_SwiftException('Unable to load DKIM Private Key ['.openssl_error_string().']');
+        }
         if (openssl_sign($this->_headerCanonData, $signature, $this->_privateKey, $algorithm)) {
             return $signature;
         }
-
-        return '';
+        throw new Swift_SwiftException('Unable to sign DKIM Hash ['.openssl_error_string().']');
     }
 }

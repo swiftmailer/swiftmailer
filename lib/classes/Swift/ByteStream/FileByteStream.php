@@ -46,6 +46,9 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
      */
     public function __construct($path, $writable = false)
     {
+        if (empty($path)) {
+            throw new Swift_IoException('The path cannot be empty');
+        }
         $this->_path = $path;
         $this->_mode = $writable ? 'w+b' : 'rb';
 
