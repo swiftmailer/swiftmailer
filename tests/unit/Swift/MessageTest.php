@@ -37,6 +37,13 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
         if ($source != $final) {
             $this->fail("Difference altough object cloned \n [".$source."]\n[".$final."]\n");
         }
+        $final = $message2->toString();
+        if ($final == $source) {
+            $this->fail('Two body matches altough they should differ'."\n [".$source."]\n[".$final."]\n");
+        }
+        $id_1 = $message1->getId();
+        $id_2 = $message2->getId();
+        $this->assertNotIdentical($id_1, $id_2, 'Message Ids are the same');
     }
 
     // -- Private helpers
