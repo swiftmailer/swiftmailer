@@ -58,7 +58,7 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
         foreach ($obj1_properties as $property => $value)
         {
             // collect and format information from where the property is
-            $property_parts = explode ("\x0", $property);
+            $property_parts = explode("\x0", $property);
             $property_name = array_pop($property_parts);
             $property_origin = array_pop($property_parts);
             $this->_stack[] = array('property' => $property_name, 'origin' => $property_origin, 'parent_type' => gettype($obj1));
@@ -77,7 +77,7 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
             if (is_object($value)) {
 
                 if ($obj1_value !== $obj2_value) {
-                    // two separetely instanciated objects property not referencing same object
+                    // two separately instanciated objects property not referencing same object
                     $this->assertFalse(
                         // but object's clone does - not everything copied
                         $obj1_value === $obj1_clone_value,
@@ -85,11 +85,11 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
                     );
                 }
                 else {
-                    // two separetely instanciated objects have same reference
+                    // two separately instanciated objects have same reference
                     $this->assertFalse(
                         // but object's clone doesn't - overdone making copies
                         $obj1_value !== $obj1_clone_value,
-                        "Property \n$stack: Not properly cloned: it should reference same object as cloning source (overdone copping)"
+                        "Property \n$stack: Not properly cloned: it should reference same object as cloning source (overdone copying)"
                     );
                 }
                 // recurse
