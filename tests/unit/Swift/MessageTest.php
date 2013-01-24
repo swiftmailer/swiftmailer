@@ -77,7 +77,7 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
             if (is_object($value)) {
 
                 if ($obj1_value !== $obj2_value) {
-                    // two separately instanciated objects property not referencing same object
+                    // two separately instantiated objects property not referencing same object
                     $this->assertFalse(
                         // but object's clone does - not everything copied
                         $obj1_value === $obj1_clone_value,
@@ -85,7 +85,7 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
                     );
                 }
                 else {
-                    // two separately instanciated objects have same reference
+                    // two separately instantiated objects have same reference
                     $this->assertFalse(
                         // but object's clone doesn't - overdone making copies
                         $obj1_value !== $obj1_clone_value,
