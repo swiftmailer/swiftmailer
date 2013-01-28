@@ -7,14 +7,14 @@ problems and their fixes...
 
 Fatal error: Call to undefined method Classname::classname()
 ------------------------------------------------------------
-SimpleTest renamed all of its constructors from 
+SimpleTest renamed all of its constructors from
 Classname to __construct; derived classes invoking
 their parent constructors should replace parent::Classname()
 with parent::__construct().
 
 Custom CSS in HtmlReporter not being applied
 --------------------------------------------
-Batch rename of protected and private methods 
+Batch rename of protected and private methods
 means that _getCss() was renamed to getCss();
 replace your function definition accordingly.
 

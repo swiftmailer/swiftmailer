@@ -8,12 +8,12 @@ $destination_path = dirname(__FILE__).'/../../docs/simpletest.org/';
 $languages = array("en/", "fr/", "../../");
 
 foreach ($languages as $language) {
-    $dir = opendir($source_path.$language);
+		$dir = opendir($source_path.$language);
 
-    while (($file = readdir($dir)) !== false) {
-	    if (is_file($source_path.$language.$file) and preg_match("/\.xml$/", $file)) {
-	        $source = simplexml_load_file($source_path.$language.$file, "SimpleTestXMLElement");
-	        $destination = $source->destination(dirname(__FILE__).'/map.xml');
+		while (($file = readdir($dir)) !== false) {
+			if (is_file($source_path.$language.$file) and preg_match("/\.xml$/", $file)) {
+					$source = simplexml_load_file($source_path.$language.$file, "SimpleTestXMLElement");
+					$destination = $source->destination(dirname(__FILE__).'/map.xml');
 
 			if (!empty($destination)) {
 				$page = file_get_contents(dirname(__FILE__).'/template.html');
@@ -23,12 +23,12 @@ foreach ($languages as $language) {
 				$page = str_replace('CONTENT', $source->content(), $page);
 				$page = str_replace('INTERNAL', $source->internal(), $page);
 				$page = str_replace('EXTERNAL', $source->external(), $page);
-				
+
 				$links = $source->links(dirname(__FILE__).'/map.xml');
 				foreach ($links as $category => $link) {
 					$page = str_replace("LINKS_".strtoupper($category), $link, $page);
 				}
-				
+
 				$destination_dir = dirname($destination_path.$destination);
 				if (!is_dir($destination_dir)) {
 					mkdir($destination_dir);
@@ -48,7 +48,7 @@ foreach ($languages as $language) {
 
 				echo $destination_path.$destination." : ".$result."\n";
 			}
-	    }
+			}
 	}
 	closedir($dir);
 }

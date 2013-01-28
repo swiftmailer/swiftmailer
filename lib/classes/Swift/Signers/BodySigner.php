@@ -11,25 +11,25 @@
 /**
  * Body Signer Interface used to apply Body-Based Signature to a message
  *
- * @package    Swift
+ * @package		Swift
  * @subpackage Signed
- * @author     Xavier De Cock <xdecock@gmail.com>
+ * @author		 Xavier De Cock <xdecock@gmail.com>
  */
 interface Swift_Signers_BodySigner extends Swift_Signer
 {
-    /**
-     * Change the Swift_Signed_Message to apply the singing.
-     *
-     * @param Swift_Signed_Message $message
-     *
-     * @return Swift_Signers_BodySigner
-     */
-    public function signMessage(Swift_SignedMessage $message);
+		/**
+		 * Change the Swift_Signed_Message to apply the singing.
+		 *
+		 * @param Swift_Signed_Message $message
+		 *
+		 * @return Swift_Signers_BodySigner
+		 */
+		public function signMessage(Swift_SignedMessage $message);
 
-    /**
-     * Return the list of header a signer might tamper
-     *
-     * @return array
-     */
-    public function getAlteredHeaders();
+		/**
+		 * Return the list of header a signer might tamper
+		 *
+		 * @return array
+		 */
+		public function getAlteredHeaders();
 }

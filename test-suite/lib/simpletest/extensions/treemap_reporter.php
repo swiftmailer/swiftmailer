@@ -1,8 +1,8 @@
 <?php
 /**
  *	Extension file for SimpleTest
- *  @package        SimpleTest
- *  @subpackage     Extensions
+ *	@package				SimpleTest
+ *	@subpackage		 Extensions
  *	@version	$Id: treemap_reporter.php 1802 2008-09-08 10:43:58Z maetl_ $
  */
 require_once(dirname(__FILE__) . '/../scorer.php');
@@ -32,8 +32,8 @@ class TreemapReporter extends SimpleReporterDecorator {
 		$css .= "h1 {font:normal 1.8em Arial;color:black;margin:0 0 0.3em 0.1em;}";
 		$css .= ".clear { clear:both; }";
 		return $css;
-	}	
-	
+	}
+
 	/**
 	 * paints the HTML header and sets up results
 	 */
@@ -44,8 +44,8 @@ class TreemapReporter extends SimpleReporterDecorator {
 		echo "<style type=\"text/css\">" . $this->_getCss() . "</style>";
 		echo "</head><body>";
 		echo "<h1>{$title}</h1>";
-	}	
-	
+	}
+
 	/**
 	 * places a clearing break below the end of the test nodes
 	 */
@@ -53,7 +53,7 @@ class TreemapReporter extends SimpleReporterDecorator {
 		echo "<br clear=\"all\">";
 		echo "</body></html>";
 	}
-	 
+
 	/**
 	 * paints start tag for div representing a test node
 	 */
@@ -63,14 +63,14 @@ class TreemapReporter extends SimpleReporterDecorator {
 		$status = $node->getStatus();
 		echo "<div title=\"$name: $description\" class=\"$status\" style=\"width:{$horiz}%;height:{$vert}%\">";
 	}
-	
+
 	/**
 	 * paints end tag for test node div
 	 */
 	function paintRectangleEnd() {
 		echo "</div>";
-	}	
-	
+	}
+
 	/**
 	 * paints wrapping treemap divs
 	 * @todo how to configure aspect and other parameters?
@@ -83,11 +83,11 @@ class TreemapReporter extends SimpleReporterDecorator {
 		$this->paintRectangleEnd();
 		$this->paintResultsFooter();
 	}
-	
+
 	/**
 	 * divides the test results based on a slice and dice algorithm
 	 *
-	 * @param TreemapNode $map sorted 
+	 * @param TreemapNode $map sorted
 	 * @param boolean $aspect flips the aspect between horizontal and vertical
 	 * @private
 	 */
@@ -113,14 +113,14 @@ class TreemapReporter extends SimpleReporterDecorator {
 			$this->paintRectangleEnd();
 		}
 	}
-	
+
 	function paintGroupEnd($group) {
 		$this->_reporter->paintGroupEnd($group);
 		if ($this->_reporter->isComplete()) {
 			$this->paintFooter($group);
 		}
 	}
-	
+
 }
 
 ?>

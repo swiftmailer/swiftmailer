@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #DEST_DIR=../docs/pkg
-if [ ! -d ../tutorials ] 
+if [ ! -d ../tutorials ]
 then
 	mkdir ../tutorials
 fi

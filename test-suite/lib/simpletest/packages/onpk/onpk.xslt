@@ -3,14 +3,14 @@
 
 	<xsl:output method="html" indent="yes" />
 	<xsl:preserve-space elements="*"/>
-	
+
 	<xsl:template match="/">
 		<html>
 			<xsl:call-template name="head"/>
 			<xsl:call-template name="body"/>
 		</html>
 	</xsl:template>
-	
+
 	<xsl:template name="head">
 		<head>
 			<xsl:call-template name="meta"/>
@@ -19,7 +19,7 @@
 			<title><xsl:value-of select="//long_title"/></title>
 		</head>
 	</xsl:template>
-		
+
 	<xsl:template name="meta">
 		<meta http-equiv="content-language" content="fr" />
 		<meta name="keywords">
@@ -47,7 +47,7 @@
 		<meta name="DC.Identifier" content="http://www.onpk.net/opera/url_filtering/index.html" />
 		<meta name="DC.Language" content="fr" />
 	</xsl:template>
-	
+
 	<xsl:template name="body">
 		<body>
 			<xsl:call-template name="masthead"/>
@@ -59,7 +59,7 @@
 			<xsl:call-template name="copyright"/>
 		</body>
 	</xsl:template>
-			
+
 	<xsl:template name="list_files">
 		<xsl:variable name="map" select="document('map_onpk.xml')/page"/>
 		<xsl:choose>
@@ -72,7 +72,7 @@
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
-	
+
 	<xsl:template name="list_item">
 		<xsl:param name="map"/>
 		<a>
@@ -80,7 +80,7 @@
 			<xsl:value-of select="$map/@title"/>
 		</a>
 	</xsl:template>
-	
+
 	<xsl:template name="list_layer">
 		<xsl:param name="map"/>
 		<xsl:if test="$map/page">
@@ -95,7 +95,7 @@
 			</ul>
 		</xsl:if>
 	</xsl:template>
-	
+
 	<xsl:template name="show_list_entry">
 		<xsl:param name="map"/>
 		<xsl:call-template name="list_item">
@@ -105,7 +105,7 @@
 			<xsl:with-param name="map" select="$map"/>
 		</xsl:call-template>
 	</xsl:template>
-	
+
 	<xsl:template name="masthead">
 		<div class="card">
 			<div class="menu">
@@ -117,21 +117,21 @@
 			</div>
 		</div>
 	</xsl:template>
-	
+
 	<xsl:template name="internal_links">
 		Cette page...
 		<ul>
 			<xsl:apply-templates select="//internal/link" mode="links"/>
 		</ul>
 	</xsl:template>
-   
+
 	<xsl:template name="external_links">
 		Pour aller plus loin...
 		<ul>
 			<xsl:apply-templates select="//external/link" mode="links"/>
 		</ul>
 	</xsl:template>
-   
+
 	<xsl:template name="further_reading">
 		<div class="out">
 			<xsl:call-template name="external_links"/>
@@ -153,7 +153,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
+
 	<xsl:template match="php">
 		<pre class="code">
 			<xsl:call-template name="preserve_strong">
@@ -161,13 +161,13 @@
 			</xsl:call-template>
 		</pre>
 	</xsl:template>
-	
+
 	<xsl:template match="code">
 		<span class="new_code">
 			<xsl:apply-templates/>
 		</span>
 	</xsl:template>
-	
+
 	<xsl:template match="section">
 		<p>
 			<a class="target">
@@ -177,11 +177,11 @@
 		</p>
 		<xsl:apply-templates/>
 	</xsl:template>
-	
+
 	<xsl:template match="introduction">
 		<xsl:apply-templates/>
 	</xsl:template>
-	
+
 	<xsl:template match="a">
 		<xsl:copy>
 			<xsl:for-each select="@class|@name|@href">
@@ -195,7 +195,7 @@
 			<xsl:apply-templates/>
 		</xsl:copy>
 	</xsl:template>
-	
+
 	<xsl:template match="*">
 		<xsl:copy>
 			<xsl:for-each select="@*">
@@ -204,11 +204,11 @@
 			<xsl:apply-templates/>
 		</xsl:copy>
 	</xsl:template>
-	
+
 	<xsl:template match="*" mode="links">
 		<li><xsl:apply-templates/></li>
 	</xsl:template>
-	
+
 	<xsl:template name="preserve_strong">
 		<xsl:param name="raw"/>
 		<xsl:choose>

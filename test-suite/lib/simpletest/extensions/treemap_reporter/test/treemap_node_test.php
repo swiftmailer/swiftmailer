@@ -10,7 +10,7 @@ class TestOfTreemapDataTypes extends UnitTestCase {
 		$this->assertEqual($node->getSize(), 0);
 		$this->assertEqual($node->getTotalSize(), 0);
 	}
-	
+
 	function testChildNodeDepth() {
 		$root = new TreemapNode("root", "test");
 		$root->putChild(new TreemapNode("child", "test"));
@@ -22,7 +22,7 @@ class TestOfTreemapDataTypes extends UnitTestCase {
 		$this->assertEqual($root->getSize(), 2);
 		$this->assertEqual($root->getTotalSize(), 4);
 	}
-	
+
 	function testGraphDepthSpread() {
 		$root = new TreemapNode("root", "test");
 		$root->putChild(new TreemapNode("child", "test"));
@@ -63,7 +63,7 @@ class TestOfTreemapDataTypes extends UnitTestCase {
 		$this->assertIdentical($stack->pop(), new TreemapNode("c", "three"));
 		$this->assertEqual($stack->size(), 2);
 	}
-	
+
 }
 
 ?>

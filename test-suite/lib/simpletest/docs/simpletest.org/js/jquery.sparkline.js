@@ -2,10 +2,10 @@
  * Javascript Sparklines Library
  * Based on a work by John Resig
  * http://ejohn.org/projects/jspark/
- * 
+ *
  * This work is licensed under a Creative Commons Attribution 2.5 License
  * More Info: http://creativecommons.org/licenses/by/2.5/
- * 
+ *
  * To use, place your data points within your HTML, like so:
  * <span class="sparkline">10,8,20,5...</span>
  *
@@ -33,7 +33,7 @@ function sparklinequery(o) {
 	} else {
 		return false;
 	}
-	
+
 
 	co.style.height = h;
 	co.style.width = w;

@@ -2,18 +2,18 @@
 <page title="SimpleTest" file="index.php">
 	<page title="Prise en main rapide de SimpleTest pour PHP" file="simple_test.php">
 	</page>
-    <page title="Documentation : les tests unitaires en PHP" file="unit_test_documentation.php">
-        <page title="Les groupes de tests" file="group_test_documentation.php"/>
-        <page title="Les bouchons serveur" file="server_stubs_documentation.php"/>
-        <page title="Les objets fantaisie" file="mock_objects_documentation.php"/>
-        <page title="Les objets fantaisie partiels" file="partial_mocks_documentation.php"/>
-        <page title="Le rapporteur de test" file="reporter_documentation.php"/>
-        <page title="Les attentes" file="expectation_documentation.php"/>
-        <page title="Le testeur web" file="web_tester_documentation.php"/>
-        <page title="Les tests des formulaires" file="form_testing_documentation.php"/>
-        <page title="L'authentification" file="authentication_documentation.php"/>
-        <page title="Le navigateur scriptable" file="browser_documentation.php"/>
-    </page>
+		<page title="Documentation : les tests unitaires en PHP" file="unit_test_documentation.php">
+				<page title="Les groupes de tests" file="group_test_documentation.php"/>
+				<page title="Les bouchons serveur" file="server_stubs_documentation.php"/>
+				<page title="Les objets fantaisie" file="mock_objects_documentation.php"/>
+				<page title="Les objets fantaisie partiels" file="partial_mocks_documentation.php"/>
+				<page title="Le rapporteur de test" file="reporter_documentation.php"/>
+				<page title="Les attentes" file="expectation_documentation.php"/>
+				<page title="Le testeur web" file="web_tester_documentation.php"/>
+				<page title="Les tests des formulaires" file="form_testing_documentation.php"/>
+				<page title="L'authentification" file="authentication_documentation.php"/>
+				<page title="Le navigateur scriptable" file="browser_documentation.php"/>
+		</page>
 	<page title="Tutorial : les tests unitaires en PHP" file="first_test_tutorial.php">
 		<page title="Grouper des tests" file="group_test_tutorial.php"/>
 		<page title="Prendre le contrôle des tests" file="gain_control_tutorial.php"/>

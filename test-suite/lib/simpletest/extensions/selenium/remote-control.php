@@ -21,8 +21,8 @@ class SimpleSeleniumRemoteControl
 
 	private $_commandMap = array(
 		'bool' => array(
-			'verify', 
-			'verifyTextPresent', 
+			'verify',
+			'verifyTextPresent',
 			'verifyTextNotPresent',
 			'verifyValue'
 		),
@@ -42,7 +42,7 @@ class SimpleSeleniumRemoteControl
 	public function sessionIdParser($response) {
 		return substr($response, 3);
 	}
-	
+
 	public function start() {
 		$response = $this->cmd('getNewBrowserSession', array($this->_browser, $this->_browserUrl));
 		$this->_sessionId = $this->sessionIdParser($response);
@@ -55,7 +55,7 @@ class SimpleSeleniumRemoteControl
 
 	public function __call($method, $arguments) {
 		$response = $this->cmd($method, $arguments);
-		
+
 		foreach ($this->_commandMap as $type => $commands) {
 			if (!in_array($method, $commands)) {
 				continue;
@@ -74,55 +74,55 @@ class SimpleSeleniumRemoteControl
 				return $response;
 		}
 	}
-	
+
 	private function _server() {
 		return "http://{$this->_host}:{$this->_port}/selenium-server/driver/";
 	}
 
-    public function buildUrlCmd($method, $arguments = array()) {
-        $params = array(
-            'cmd=' . urlencode($method),
-        );
-        $i = 1;
-        foreach ($arguments as $param) {
-            $params[] = $i++ . '=' . urlencode(trim($param));
-        }
-        if (isset($this->_sessionId)) {
-            $params[] = 'sessionId=' . $this->_sessionId;
-        }
+		public function buildUrlCmd($method, $arguments = array()) {
+				$params = array(
+						'cmd=' . urlencode($method),
+				);
+				$i = 1;
+				foreach ($arguments as $param) {
+						$params[] = $i++ . '=' . urlencode(trim($param));
+				}
+				if (isset($this->_sessionId)) {
+						$params[] = 'sessionId=' . $this->_sessionId;
+				}
 
-        return $this->_server()."?".implode('&', $params);
-    }
+				return $this->_server()."?".implode('&', $params);
+		}
 
 	public function cmd($method, $arguments = array()) {
-          $url = $this->buildUrlCmd($method, $arguments);
-          $response = $this->_sendRequest($url);
-          return $response;
+					$url = $this->buildUrlCmd($method, $arguments);
+					$response = $this->_sendRequest($url);
+					return $response;
 	}
 
 	public function isUp() {
-        return (bool)@fsockopen($this->_host, $this->_port, $errno, $errstr, 30);
+				return (bool)@fsockopen($this->_host, $this->_port, $errno, $errstr, 30);
 	}
-	
+
 	private function _initCurl($url) {
-        if (!function_exists('curl_init')) {
-            throw new Exception('this code currently requires the curl extension');
-        }
-        if (!$ch = curl_init($url)) {
-            throw new Exception('Unable to setup curl');
-        }
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, floor($this->_timeout));
-		return $ch;	
+				if (!function_exists('curl_init')) {
+						throw new Exception('this code currently requires the curl extension');
+				}
+				if (!$ch = curl_init($url)) {
+						throw new Exception('Unable to setup curl');
+				}
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_TIMEOUT, floor($this->_timeout));
+		return $ch;
 	}
-	
+
 	private function _sendRequest($url) {
-        $ch = $this->_initCurl($url);
-        $result = curl_exec($ch);
-        if (($errno = curl_errno($ch)) != 0) {
-            throw new Exception('Curl returned non-null errno ' . $errno . ':' . curl_error($ch));
-        }
-        curl_close($ch);
-        return $result;
+				$ch = $this->_initCurl($url);
+				$result = curl_exec($ch);
+				if (($errno = curl_errno($ch)) != 0) {
+						throw new Exception('Curl returned non-null errno ' . $errno . ':' . curl_error($ch));
+				}
+				curl_close($ch);
+				return $result;
 	}
 }

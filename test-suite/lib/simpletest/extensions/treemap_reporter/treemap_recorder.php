@@ -1,8 +1,8 @@
 <?php
 /**
  *	extension file for SimpleTest
- *  @package        SimpleTest
- *  @subpackage     Extensions
+ *	@package				SimpleTest
+ *	@subpackage		 Extensions
  *	@version	$Id: treemap_recorder.php 1802 2008-09-08 10:43:58Z maetl_ $
  */
 require_once(dirname(__FILE__) . '/../../scorer.php');
@@ -11,8 +11,8 @@ require_once(dirname(__FILE__) . '/../../scorer.php');
  * Collects SimpleReporter messages and constructs a
  * TreemapNode graph.
  *
- *  @package        SimpleTest
- *  @subpackage     Extensions
+ *	@package				SimpleTest
+ *	@subpackage		 Extensions
  */
 class TreemapRecorder extends SimpleReporter {
 	var $_graph;
@@ -32,31 +32,31 @@ class TreemapRecorder extends SimpleReporter {
 	function getGraph() {
 		return $this->_graph;
 	}
-	
+
 	/**
 	 * is this test run finished?
 	 */
 	function isComplete() {
 		return ($this->_graph != null);
 	}
-	
+
 	/**
 	 * returns the title of the test
 	 */
 	function getTitle() {
 		return $this->_title;
 	}
-	
+
 	/**
 	 * stashes the title of the test
 	 */
 	function paintHeader($title) {
 		$this->_title = $title;
 	}
-	
+
 	function paintFormattedMessage() {
 	}
-	
+
 	/**
 	 * acceptor for start of test group node
 	 */
@@ -65,7 +65,7 @@ class TreemapRecorder extends SimpleReporter {
 		$node = new TreemapNode("Group", $message);
 		$this->_stack->push($node);
 	}
-	
+
 	/**
 	 * acceptor for start of test case node
 	 */
@@ -74,7 +74,7 @@ class TreemapRecorder extends SimpleReporter {
 		$node = new TreemapNode("TestCase", $message);
 		$this->_stack->push($node);
 	}
-	
+
 	/**
 	 * acceptor for start of test method node
 	 */
@@ -98,7 +98,7 @@ class TreemapRecorder extends SimpleReporter {
 		}
 	}
 
-	
+
 	/**
 	 * acceptor for failing assertion node
 	 */
@@ -132,7 +132,7 @@ class TreemapRecorder extends SimpleReporter {
 		if ($node->isFailed()) $current->fail();
 		$current->putChild($node);
 	}
-	
+
 	/**
 	 * acceptor for end of test group. final group
 	 * pops the collected treemap nodes and assigns
@@ -156,8 +156,8 @@ class TreemapRecorder extends SimpleReporter {
  * Creates a treemap graph, representing
  * each node in a test visualization.
  *
- *  @package        SimpleTest
- *  @subpackage     Extensions
+ *	@package				SimpleTest
+ *	@subpackage		 Extensions
  */
 class TreemapNode {
 	var $_name;
@@ -165,37 +165,37 @@ class TreemapNode {
 	var $_status;
 	var $_parent;
 	var $_size;
-	
+
 	function TreemapNode($name, $description, $status=true) {
 		$this->_name = $name;
 		$this->_description = $description;
 		$this->_status = $status;
 		$this->_children = array();
 	}
-	
+
 	/**
 	 * @return string label of this node
 	 */
 	function getName() {
 		return $this->_name;
 	}
-	
+
 	/**
 	 * @return string description of this node
 	 */
 	function getDescription() {
 		return $this->_description;
 	}
-	
+
 	/**
 	 * @return string status class string
 	 */
 	function getStatus() {
 		return ($this->_status) ? "pass" : "fail";
 	}
-	
-	/** 
-  	 * Return list of child nodes from direct edges.
+
+	/**
+		 * Return list of child nodes from direct edges.
 	 */
 	function getChildren() {
 		uksort($this->_children, array($this, 'compareChildren'));
@@ -213,16 +213,16 @@ class TreemapNode {
 			$this->_children[$b] = $node_a;
 		}
 	}
-	
-	/** 
+
+	/**
  	 * Gets the number of immediate child edges from this node.
 	 */
 	function getSize() {
 		return count($this->_children);
 	}
-	
-	/** 
-	 * depth first search to get the total number of nodes 
+
+	/**
+	 * depth first search to get the total number of nodes
 	 * that are descendants of this node.
 	 */
 	function getTotalSize() {
@@ -237,7 +237,7 @@ class TreemapNode {
 		}
 		return $this->_size;
 	}
-	
+
 	/**
 	 * Fail this node.
 	 * @return void
@@ -245,29 +245,29 @@ class TreemapNode {
 	function fail() {
 		$this->_status = false;
 	}
-	
+
 	/** Is this node failed? */
 	function isFailed() {
 		return ($this->_status == false);
 	}
-	
+
 	/** Add an edge to a child node */
 	function putChild($node) {
 		$this->_children[] = $node;
 	}
-	
+
 	/** Is this node a leaf node? */
 	function isLeaf() {
 		return (count($this->_children) == 0);
 	}
-	
+
 }
 
 /**
  * provides LIFO stack semantics
  *
- *  @package        SimpleTest
- *  @subpackage     Extensions
+ *	@package				SimpleTest
+ *	@subpackage		 Extensions
  */
 class TreemapStack {
 	var $_list;
@@ -282,14 +282,14 @@ class TreemapStack {
 	function push($node) {
 		$this->_list[] = $node;
 	}
-	
+
 	/**
 	 * Number of elements in the stack.
 	 */
 	function size() {
 		return count($this->_list);
 	}
-	
+
 	/**
 	 * Take a peek at the top element on the
 	 * stack.
@@ -297,7 +297,7 @@ class TreemapStack {
 	function peek() {
 		return end($this->_list);
 	}
-	
+
 	/**
 	 * Pops an element off the stack.
 	 */

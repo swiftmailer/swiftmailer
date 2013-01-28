@@ -13,7 +13,7 @@
  */
 
 if (defined('SWIFT_INIT_LOADED')) {
-    return;
+		return;
 }
 
 define('SWIFT_INIT_LOADED', true);

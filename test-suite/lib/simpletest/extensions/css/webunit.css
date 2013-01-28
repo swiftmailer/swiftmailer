@@ -2,10 +2,10 @@ html {
 	font-face: Verdana, Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	color: black;
-	}	
+	}
 
-.pass { color: green; } 
-.fail { color: red; } 
+.pass { color: green; }
+.fail { color: red; }
 .activetab {
 	position: relative;
 	background: white;

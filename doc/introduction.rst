@@ -40,18 +40,18 @@ outline/pseudo code only.
 
 A code sample will look like this::
 
-    class AClass
-    {
-      ...
-    }
+		class AClass
+		{
+			...
+		}
 
-    //A Comment
-    $obj = new AClass($arg1, $arg2, ... );
+		//A Comment
+		$obj = new AClass($arg1, $arg2, ... );
 
-    /* A note about another way of doing something
-    $obj = AClass::newInstance($arg1, $arg2, ... );
+		/* A note about another way of doing something
+		$obj = AClass::newInstance($arg1, $arg2, ... );
 
-    */
+		*/
 
 The presence of 3 dots ``...`` in a code sample indicates that we have left
 out a chunk of the code for brevity, they are not actually part of the code.

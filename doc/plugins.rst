@@ -43,7 +43,7 @@ To use the AntiFlood plugin:
 * Create an instance of the Mailer using any Transport you choose.
 
 * Create an instance of the ``Swift_Plugins_AntiFloodPlugin`` class, passing
-  in one or two constructor parameters.
+	in one or two constructor parameters.
 
 * Register the plugin using the Mailer's ``registerPlugin()`` method.
 
@@ -56,25 +56,25 @@ specified amount of time.
 
 .. code-block:: php
 
-    require_once 'lib/swift_required.php';
+		require_once 'lib/swift_required.php';
 
-    // Create the Mailer using any Transport
-    $mailer = Swift_Mailer::newInstance(
-      Swift_SmtpTransport::newInstance('smtp.example.org', 25)
-    );
+		// Create the Mailer using any Transport
+		$mailer = Swift_Mailer::newInstance(
+			Swift_SmtpTransport::newInstance('smtp.example.org', 25)
+		);
 
-    // Use AntiFlood to re-connect after 100 emails
-    $mailer->registerPlugin(new Swift_Plugins_AntiFloodPlugin(100));
+		// Use AntiFlood to re-connect after 100 emails
+		$mailer->registerPlugin(new Swift_Plugins_AntiFloodPlugin(100));
 
-    // And specify a time in seconds to pause for (30 secs)
-    $mailer->registerPlugin(new Swift_Plugins_AntiFloodPlugin(100, 30));
+		// And specify a time in seconds to pause for (30 secs)
+		$mailer->registerPlugin(new Swift_Plugins_AntiFloodPlugin(100, 30));
 
-    // Continue sending as normal
-    for ($lotsOfRecipients as $recipient) {
-      ...
+		// Continue sending as normal
+		for ($lotsOfRecipients as $recipient) {
+			...
 
-      $mailer->send( ... );
-    }
+			$mailer->send( ... );
+		}
 
 Throttler Plugin
 ----------------
@@ -104,8 +104,8 @@ To use the Throttler plugin:
 * Create an instance of the Mailer using any Transport you choose.
 
 * Create an instance of the ``Swift_Plugins_ThrottlerPlugin`` class, passing
-  the number of emails, or bytes you wish to limit by, along with the mode
-  you're using.
+	the number of emails, or bytes you wish to limit by, along with the mode
+	you're using.
 
 * Register the plugin using the Mailer's ``registerPlugin()`` method.
 
@@ -117,29 +117,29 @@ will cause your program to ``sleep()`` for enough time to average out the rate.
 
 .. code-block:: php
 
-    require_once 'lib/swift_required.php';
+		require_once 'lib/swift_required.php';
 
-    // Create the Mailer using any Transport
-    $mailer = Swift_Mailer::newInstance(
-      Swift_SmtpTransport::newInstance('smtp.example.org', 25)
-    );
+		// Create the Mailer using any Transport
+		$mailer = Swift_Mailer::newInstance(
+			Swift_SmtpTransport::newInstance('smtp.example.org', 25)
+		);
 
-    // Rate limit to 100 emails per-minute
-    $mailer->registerPlugin(new Swift_Plugins_ThrottlerPlugin(
-      100, Swift_Plugins_ThrottlerPlugin::MESSAGES_PER_MINUTE
-    ));
+		// Rate limit to 100 emails per-minute
+		$mailer->registerPlugin(new Swift_Plugins_ThrottlerPlugin(
+			100, Swift_Plugins_ThrottlerPlugin::MESSAGES_PER_MINUTE
+		));
 
-    // Rate limit to 10MB per-minute
-    $mailer->registerPlugin(new Swift_Plugins_ThrottlerPlugin(
-      1024 * 1024 * 10, Swift_Plugins_ThrottlerPlugin::BYTES_PER_MINUTE
-    ));
+		// Rate limit to 10MB per-minute
+		$mailer->registerPlugin(new Swift_Plugins_ThrottlerPlugin(
+			1024 * 1024 * 10, Swift_Plugins_ThrottlerPlugin::BYTES_PER_MINUTE
+		));
 
-    // Continue sending as normal
-    for ($lotsOfRecipients as $recipient) {
-      ...
+		// Continue sending as normal
+		for ($lotsOfRecipients as $recipient) {
+			...
 
-      $mailer->send( ... );
-    }
+			$mailer->send( ... );
+		}
 
 Logger Plugin
 -------------
@@ -164,11 +164,11 @@ own implementation is incredibly simple and is achieved by creating a short
 class that implements the ``Swift_Plugins_Logger`` interface.
 
 * ``Swift_Plugins_Loggers_ArrayLogger``: Keeps a collection of log messages
-  inside an array. The array content can be cleared or dumped out to the
-  screen.
+	inside an array. The array content can be cleared or dumped out to the
+	screen.
 
 * ``Swift_Plugins_Loggers_EchoLogger``: Prints output to the screen in
-  realtime. Handy for very rudimentary debug output.
+	realtime. Handy for very rudimentary debug output.
 
 Using the Logger Plugin
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,10 +182,10 @@ To use the Logger plugin:
 * Create an instance of the Mailer using any Transport you choose.
 
 * Create an instance of the a Logger implementation of
-  ``Swift_Plugins_Logger``.
+	``Swift_Plugins_Logger``.
 
 * Create an instance of the ``Swift_Plugins_LoggerPlugin`` class, passing the
-  created Logger instance to its constructor.
+	created Logger instance to its constructor.
 
 * Register the plugin using the Mailer's ``registerPlugin()`` method.
 
@@ -200,31 +200,31 @@ get the contents of the log.
 
 .. code-block:: php
 
-    require_once 'lib/swift_required.php';
+		require_once 'lib/swift_required.php';
 
-    // Create the Mailer using any Transport
-    $mailer = Swift_Mailer::newInstance(
-     Swift_SmtpTransport::newInstance('smtp.example.org', 25)
-    );
+		// Create the Mailer using any Transport
+		$mailer = Swift_Mailer::newInstance(
+		 Swift_SmtpTransport::newInstance('smtp.example.org', 25)
+		);
 
-    // To use the ArrayLogger
-    $logger = new Swift_Plugins_Loggers_ArrayLogger();
-    $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+		// To use the ArrayLogger
+		$logger = new Swift_Plugins_Loggers_ArrayLogger();
+		$mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
 
-    // Or to use the Echo Logger
-    $logger = new Swift_Plugins_Loggers_EchoLogger();
-    $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+		// Or to use the Echo Logger
+		$logger = new Swift_Plugins_Loggers_EchoLogger();
+		$mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
 
-    // Continue sending as normal
-    for ($lotsOfRecipients as $recipient) {
-     ...
+		// Continue sending as normal
+		for ($lotsOfRecipients as $recipient) {
+		 ...
 
-     $mailer->send( ... );
-    }
+		 $mailer->send( ... );
+		}
 
-    // Dump the log contents
-    // NOTE: The EchoLogger dumps in realtime so dump() does nothing for it
-    echo $logger->dump();
+		// Dump the log contents
+		// NOTE: The EchoLogger dumps in realtime so dump() does nothing for it
+		echo $logger->dump();
 
 Decorator Plugin
 ----------------
@@ -259,68 +259,68 @@ you'll be sending the message to.
 
 .. note::
 
-    The replacements array becomes a 2-dimensional array whose keys are the
-    email addresses and whose values are an associative array of replacements
-    for that email address. The curly braces used in this example can be any
-    type of syntax you choose, provided they match the placeholders in your
-    email template.
+		The replacements array becomes a 2-dimensional array whose keys are the
+		email addresses and whose values are an associative array of replacements
+		for that email address. The curly braces used in this example can be any
+		type of syntax you choose, provided they match the placeholders in your
+		email template.
 
-    .. code-block:: php
+		.. code-block:: php
 
-        $replacements = array();
-        foreach ($users as $user) {
-          $replacements[$user['email']] = array(
-            '{username}'=>$user['username'],
-            '{password}'=>$user['password']
-          );
-        }
+				$replacements = array();
+				foreach ($users as $user) {
+					$replacements[$user['email']] = array(
+						'{username}'=>$user['username'],
+						'{password}'=>$user['password']
+					);
+				}
 
-Now create an instance of the Decorator plugin using this array of replacements 
+Now create an instance of the Decorator plugin using this array of replacements
 and then register it with the Mailer. Do this only once!
 
 .. code-block:: php
 
-    $decorator = new Swift_Plugins_DecoratorPlugin($replacements);
+		$decorator = new Swift_Plugins_DecoratorPlugin($replacements);
 
-    $mailer->registerPlugin($decorator);
+		$mailer->registerPlugin($decorator);
 
 When you create your message, replace elements in the body (and/or the subject
 line) with your placeholders.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance()
-      ->setSubject('Important notice for {username}')
-      ->setBody(
-        "Hello {username}, we have reset your password to {password}\n" .
-        "Please log in and change it at your earliest convenience."
-      )
-      ;
-  
-    foreach ($users as $user) {
-      $message->addTo($user['email']);
-    }
+		$message = Swift_Message::newInstance()
+			->setSubject('Important notice for {username}')
+			->setBody(
+				"Hello {username}, we have reset your password to {password}\n" .
+				"Please log in and change it at your earliest convenience."
+			)
+			;
+
+		foreach ($users as $user) {
+			$message->addTo($user['email']);
+		}
 
 When you send this message to each of your recipients listed in your
-``$replacements`` array they will receive a message customized for just 
-themselves. For example, the message used above when received may appear like 
+``$replacements`` array they will receive a message customized for just
+themselves. For example, the message used above when received may appear like
 this to one user:
 
 .. code-block:: text
 
-    Subject: Important notice for smilingsunshine2009
+		Subject: Important notice for smilingsunshine2009
 
-    Hello smilingsunshine2009, we have reset your password to rainyDays
-    Please log in and change it at your earliest convenience.
+		Hello smilingsunshine2009, we have reset your password to rainyDays
+		Please log in and change it at your earliest convenience.
 
 While another use may receive the message as:
 
 .. code-block:: text
 
-    Subject: Important notice for billy-bo-bob
+		Subject: Important notice for billy-bo-bob
 
-    Hello billy-bo-bob, we have reset your password to dancingOctopus
-    Please log in and change it at your earliest convenience.
+		Hello billy-bo-bob, we have reset your password to dancingOctopus
+		Please log in and change it at your earliest convenience.
 
 While the decorator plugin provides a means to solve this problem, there are
 various ways you could tackle this problem without the need for a plugin.
@@ -348,38 +348,38 @@ provide an implementation that does this. You need to create a small class.
 
 .. code-block:: php
 
-    class DbReplacements implements Swift_Plugins_Decorator_Replacements {
-      public function getReplacementsFor($address) {
-        $sql = sprintf(
-          "SELECT * FROM user WHERE email = '%s'",
-          mysql_real_escape_string($address)
-        );
-    
-        $result = mysql_query($sql);
-    
-        if ($row = mysql_fetch_assoc($result)) {
-          return array(
-            '{username}'=>$row['username'],
-            '{password}'=>$row['password']
-          );
-        }
-      }
-    }
+		class DbReplacements implements Swift_Plugins_Decorator_Replacements {
+			public function getReplacementsFor($address) {
+				$sql = sprintf(
+					"SELECT * FROM user WHERE email = '%s'",
+					mysql_real_escape_string($address)
+				);
+
+				$result = mysql_query($sql);
+
+				if ($row = mysql_fetch_assoc($result)) {
+					return array(
+						'{username}'=>$row['username'],
+						'{password}'=>$row['password']
+					);
+				}
+			}
+		}
 
 Now all you need to do is pass an instance of your class into the Decorator
 plugin's constructor instead of passing an array.
 
 .. code-block:: php
 
-    $decorator = new Swift_Plugins_DecoratorPlugin(new DbReplacements());
+		$decorator = new Swift_Plugins_DecoratorPlugin(new DbReplacements());
 
-    $mailer->registerPlugin($decorator);
+		$mailer->registerPlugin($decorator);
 
 For each message sent, the plugin will call your class' ``getReplacementsFor()``
 method to find the array of replacements it needs.
 
 .. note::
 
-    If your lookup algorithm is case sensitive, you should transform the
-    ``$address`` argument as appropriate -- for example by passing it
-    through ``strtolower()``.
+		If your lookup algorithm is case sensitive, you should transform the
+		``$address`` argument as appropriate -- for example by passing it
+	through ``strtolower()``.

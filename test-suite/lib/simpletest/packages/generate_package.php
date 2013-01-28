@@ -5,15 +5,15 @@ PEAR::setErrorHandling(PEAR_ERROR_DIE);
 $packagefile = "simpletest";
 
 $options = array(
-    'filelistgenerator' => 'svn',
-    'simpleoutput'      => true,
-    'baseinstalldir'    => 'simpletest',
-    'packagedirectory'  => dirname(__FILE__) . '/../',
-    'clearcontents'     => true,
-    'ignore'            => array('TODO.xml', 'VERSION', 'docs/', 'tutorials/', 'packages/', '.svn'),
-    'dir_roles'         => array(
-     	'test'    => 'test'
-    )
+		'filelistgenerator' => 'svn',
+		'simpleoutput'			=> true,
+		'baseinstalldir'		=> 'simpletest',
+		'packagedirectory'	=> dirname(__FILE__) . '/../',
+		'clearcontents'		 => true,
+		'ignore'						=> array('TODO.xml', 'VERSION', 'docs/', 'tutorials/', 'packages/', '.svn'),
+		'dir_roles'				 => array(
+		 	'test'		=> 'test'
+		)
 );
 
 $packagexml = PEAR_PackageFileManager2::importOptions($packagefile, $options);
@@ -46,9 +46,9 @@ $packagexml->generateContents();
 
 
 if (isset($_GET['make']) || (isset($_SERVER['argv']) && @$_SERVER['argv'][1] == 'make')) {
-    $packagexml->writePackageFile();
+		$packagexml->writePackageFile();
 } else {
-    $packagexml->debugPackageFile();
+		$packagexml->debugPackageFile();
 }
 
 ?>

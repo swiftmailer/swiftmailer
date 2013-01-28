@@ -29,7 +29,7 @@ $longDesc = <<<EOD
 The heart of SimpleTest is a testing framework built around test case classes.
 These are written as extensions of base test case classes, each extended with
 methods that actually contain test code. Top level test scripts then invoke
-the run()  methods on every one of these test cases in order. Each test
+the run()	methods on every one of these test cases in order. Each test
 method is written to invoke various assertions that the developer expects to
 be true such as assertEqual(). If the expectation is correct, then a
 successful result is dispatched to the observing test reporter, but any
@@ -40,7 +40,7 @@ language itself more or less as the application itself is built. The advantage
 of using PHP itself as the testing language is that there are no new languages
 to learn, testing can start straight away, and the developer can test any part
 of the code. Basically, all parts that can be accessed by the application code
-can also be accessed by the test code if they are in the same language. 
+can also be accessed by the test code if they are in the same language.
 EOD;
 /*---------------------------------------------------------------------------*/
 // Modify the maintainers are required
@@ -58,11 +58,11 @@ require_once('PEAR/PackageFileManager.php');
 $PPFM = new PEAR_PackageFileManager;
 
 if (version_compare(phpversion(), '4.3.0', '<') ||
-    php_sapi_name() == 'cgi') {
-    define('STDOUT', fopen('php://stdout', 'w'));
-    define('STDERR', fopen('php://stderr', 'w'));
-    register_shutdown_function(
-        create_function('', 'fclose(STDOUT); fclose(STDERR); return true;'));
+		php_sapi_name() == 'cgi') {
+		define('STDOUT', fopen('php://stdout', 'w'));
+		define('STDERR', fopen('php://stderr', 'w'));
+		register_shutdown_function(
+				create_function('', 'fclose(STDOUT); fclose(STDERR); return true;'));
 }
 
 /**
@@ -74,7 +74,7 @@ $options = array(
 	'version' => $version,
 	'packagedirectory' => $packagedir,
 	'outputdirectory' => $packagedir,
-	'pathtopackagefile' => $packagedir, 
+	'pathtopackagefile' => $packagedir,
 	'state' => $state,
 	'summary' => $shortDesc,
 	'description' => $longDesc,
@@ -103,7 +103,7 @@ $options = array(
 			'TODO' => 'doc',
 			'VERSION' => 'doc',
 		),
-	'ignore' => 
+	'ignore' =>
 		array(
 			"$packagedir/packages",
 			"$packagedir/ui",
@@ -113,8 +113,8 @@ $options = array(
 $status = $PPFM->setOptions($options);
 
 if (PEAR::isError($status)) {
-    fwrite (STDERR,$status->getMessage());
-    exit;
+		fwrite (STDERR,$status->getMessage());
+		exit;
 }
 
 foreach ( $maintainers as $maintainer ) {
@@ -128,8 +128,8 @@ foreach ( $maintainers as $maintainer ) {
 // Adds a dependency of PHP 4.2.3+
 $status = $PPFM->addDependency('php', '4.2.3', 'ge', 'php');
 if (PEAR::isError($status)) {
-    fwrite (STDERR,$status->getMessage());
-    exit;
+		fwrite (STDERR,$status->getMessage());
+		exit;
 }
 
 // hack (apparently)
