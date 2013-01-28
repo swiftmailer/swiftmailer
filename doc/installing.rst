@@ -48,28 +48,28 @@ the ``tar`` command.
 
 .. code-block:: bash
 
-    $ ls
-    Swift-4.0.0-dev.tar.gz
-    $ tar xvzf Swift-4.0.0-dev.tar.gz 
-    Swift-4.0.0-dev/
-    Swift-4.0.0-dev/lib/
-    Swift-4.0.0-dev/lib/classes/
-    Swift-4.0.0-dev/lib/classes/Swift/
-    Swift-4.0.0-dev/lib/classes/Swift/ByteStream/
-    Swift-4.0.0-dev/lib/classes/Swift/CharacterReader/
-    Swift-4.0.0-dev/lib/classes/Swift/CharacterReaderFactory/
-    Swift-4.0.0-dev/lib/classes/Swift/CharacterStream/
-    Swift-4.0.0-dev/lib/classes/Swift/Encoder/
+		$ ls
+		Swift-4.0.0-dev.tar.gz
+		$ tar xvzf Swift-4.0.0-dev.tar.gz
+		Swift-4.0.0-dev/
+		Swift-4.0.0-dev/lib/
+		Swift-4.0.0-dev/lib/classes/
+		Swift-4.0.0-dev/lib/classes/Swift/
+		Swift-4.0.0-dev/lib/classes/Swift/ByteStream/
+		Swift-4.0.0-dev/lib/classes/Swift/CharacterReader/
+		Swift-4.0.0-dev/lib/classes/Swift/CharacterReaderFactory/
+		Swift-4.0.0-dev/lib/classes/Swift/CharacterStream/
+		Swift-4.0.0-dev/lib/classes/Swift/Encoder/
 
-      ... etc etc ...
+			... etc etc ...
 
-    Swift-4.0.0-dev/tests/unit/Swift/Transport/LoadBalancedTransportTest.php
-    Swift-4.0.0-dev/tests/unit/Swift/Transport/SendmailTransportTest.php
-    Swift-4.0.0-dev/tests/unit/Swift/Transport/StreamBufferTest.php
-    $ cd Swift-4.0.0-dev
-    $ ls
-    CHANGES		LICENSE.GPL	LICENSE.LGPL	README		VERSION		examples	lib		test-suite	tests
-    $
+		Swift-4.0.0-dev/tests/unit/Swift/Transport/LoadBalancedTransportTest.php
+		Swift-4.0.0-dev/tests/unit/Swift/Transport/SendmailTransportTest.php
+		Swift-4.0.0-dev/tests/unit/Swift/Transport/StreamBufferTest.php
+		$ cd Swift-4.0.0-dev
+		$ ls
+		CHANGES		LICENSE.GPL	LICENSE.LGPL	README		VERSION		examples	lib		test-suite	tests
+		$
 
 Installing from Git
 -------------------
@@ -82,9 +82,9 @@ can get the source directly from the repository.
 
 .. note::
 
-    You do not need to have git installed to use Swift Mailer from github. If
-    you don't have git installed, go to `github`_ and click the "Download"
-    button.
+		You do not need to have git installed to use Swift Mailer from github. If
+		you don't have git installed, go to `github`_ and click the "Download"
+		button.
 
 Cloning the Repository
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -102,7 +102,7 @@ To clone the repository:
 * Move to the directory you want to clone to.
 
 * Run the command ``git clone git://github.com/swiftmailer/swiftmailer.git
-  swiftmailer``.
+	swiftmailer``.
 
 The source code will be downloaded into a directory called "swiftmailer".
 
@@ -111,20 +111,20 @@ OS X.
 
 .. code-block:: bash
 
-    $ cd source_code/
-    $ git clone git://github.com/swiftmailer/swiftmailer.git swiftmailer
-    Initialized empty Git repository in /Users/chris/source_code/swiftmailer/.git/
-    remote: Counting objects: 6815, done.
-    remote: Compressing objects: 100% (2761/2761), done.
-    remote: Total 6815 (delta 3641), reused 6326 (delta 3286)
-    Receiving objects: 100% (6815/6815), 4.35 MiB | 162 KiB/s, done.
-    Resolving deltas: 100% (3641/3641), done.
-    Checking out files: 100% (1847/1847), done.
-    $ cd swiftmailer/
-    $ ls
-    CHANGES		LICENSE.LGPL	README.git	VERSION		docs		lib		test-suite	util
-    LICENSE.GPL	README		TODO		build.xml	examples	notes		tests
-    $
+		$ cd source_code/
+		$ git clone git://github.com/swiftmailer/swiftmailer.git swiftmailer
+		Initialized empty Git repository in /Users/chris/source_code/swiftmailer/.git/
+		remote: Counting objects: 6815, done.
+		remote: Compressing objects: 100% (2761/2761), done.
+		remote: Total 6815 (delta 3641), reused 6326 (delta 3286)
+		Receiving objects: 100% (6815/6815), 4.35 MiB | 162 KiB/s, done.
+		Resolving deltas: 100% (3641/3641), done.
+		Checking out files: 100% (1847/1847), done.
+		$ cd swiftmailer/
+		$ ls
+		CHANGES		LICENSE.LGPL	README.git	VERSION		docs		lib		test-suite	util
+		LICENSE.GPL	README		TODO		build.xml	examples	notes		tests
+		$
 
 Uploading to your Host
 ----------------------
@@ -133,7 +133,7 @@ You only need to upload the "lib/" directory to your web host for production
 use. All other files and directories are support files not needed in
 production.
 
-You will need FTP, ``rsync`` or similar software installed in order to upload 
+You will need FTP, ``rsync`` or similar software installed in order to upload
 the "lib/" directory to your web host.
 
 To upload Swift Mailer:
@@ -150,31 +150,31 @@ The following example shows show you can upload the files using
 
 .. note::
 
-    You do not need to place the files inside your web root. They only need to 
-    be in a place where your PHP scripts can "include" them.
+		You do not need to place the files inside your web root. They only need to
+		be in a place where your PHP scripts can "include" them.
 
-    .. code-block:: bash
+		.. code-block:: bash
 
-        $ rsync -rvz lib d11wtq@swiftmailer.org:swiftmailer
-        building file list ... done
-        created directory swiftmailer
-        lib/
-        lib/mime_types.php
-        lib/preferences.php
-        lib/swift_required.php
-        lib/classes/
-        lib/classes/Swift/
-        lib/classes/Swift/Attachment.php
-        lib/classes/Swift/CharacterReader.php
-          ... etc etc ...
-        lib/dependency_maps/
-        lib/dependency_maps/cache_deps.php
-        lib/dependency_maps/mime_deps.php
-        lib/dependency_maps/transport_deps.php
+				$ rsync -rvz lib d11wtq@swiftmailer.org:swiftmailer
+				building file list ... done
+				created directory swiftmailer
+				lib/
+				lib/mime_types.php
+				lib/preferences.php
+				lib/swift_required.php
+				lib/classes/
+				lib/classes/Swift/
+				lib/classes/Swift/Attachment.php
+				lib/classes/Swift/CharacterReader.php
+					... etc etc ...
+				lib/dependency_maps/
+				lib/dependency_maps/cache_deps.php
+				lib/dependency_maps/mime_deps.php
+				lib/dependency_maps/transport_deps.php
 
-        sent 151692 bytes  received 2974 bytes  5836.45 bytes/sec
-        total size is 401405  speedup is 2.60
-        $
+				sent 151692 bytes	received 2974 bytes	5836.45 bytes/sec
+				total size is 401405	speedup is 2.60
+				$
 
 .. _`github`: http://github.com/swiftmailer/swiftmailer
 
@@ -187,15 +187,15 @@ temporarily change the internal encoding to ``ASCII`` when sending an email:
 
 .. code-block:: php
 
-    if (function_exists('mb_internal_encoding') && ((int) ini_get('mbstring.func_overload')) & 2)
-    {
-      $mbEncoding = mb_internal_encoding();
-      mb_internal_encoding('ASCII');
-    }
+		if (function_exists('mb_internal_encoding') && ((int) ini_get('mbstring.func_overload')) & 2)
+		{
+			$mbEncoding = mb_internal_encoding();
+			mb_internal_encoding('ASCII');
+		}
 
-    // Create your message and send it with Swift Mailer
+		// Create your message and send it with Swift Mailer
 
-    if (isset($mbEncoding))
-    {
-      mb_internal_encoding($mbEncoding);
-    }
+		if (isset($mbEncoding))
+		{
+			mb_internal_encoding($mbEncoding);
+		}

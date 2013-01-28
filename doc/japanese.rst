@@ -7,16 +7,16 @@ After requiring the Swift Mailer autoloader (by including the
 ``swift_required.php`` file), call the ``Swift::init()`` method with the
 following code::
 
-    require_once '/path/to/swift-mailer/lib/swift_required.php';
+		require_once '/path/to/swift-mailer/lib/swift_required.php';
 
-    Swift::init(function () {
-        Swift_DependencyContainer::getInstance()
-            ->register('mime.qpheaderencoder')
-            ->asAliasOf('mime.base64headerencoder');
+		Swift::init(function () {
+				Swift_DependencyContainer::getInstance()
+						->register('mime.qpheaderencoder')
+						->asAliasOf('mime.base64headerencoder');
 
-        Swift_Preferences::getInstance()->setCharset('iso-2022-jp');
-    });
+				Swift_Preferences::getInstance()->setCharset('iso-2022-jp');
+		});
 
-    /* rest of code goes here */
+		/* rest of code goes here */
 
 That's all!

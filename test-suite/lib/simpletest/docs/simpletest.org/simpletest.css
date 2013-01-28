@@ -16,7 +16,7 @@ td { vertical-align : top; }
 #internal { background: url('images/simpletest-internal-middle.png') repeat-y; margin-top : 2em; width : 306px; }
 #external { background: url('images/simpletest-external-middle.png') repeat-y; width : 306px; }
 #internal > div , #external > div { padding : 0 0.5em 0 0.5em; }
- 
+
 div.console { background-color: black; border: 4px ridge; border-color: gray; color : white; margin: 5px 40px 20px 20px; padding: 10px; }
 div.demo { background-color: white; border: 4px ridge; border-color: gray; margin: 5px; margin-left: 20px; margin-right: 40px; padding: 10px; }
 div.demo span.fail { color: red; }

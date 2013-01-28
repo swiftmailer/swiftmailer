@@ -23,7 +23,7 @@ while (($file = readdir($dir)) !== false) {
 		fclose($handle);
 		echo "succès pour ".$destination."<br />";
 	} else {
-	   echo "erreur pour ".$destination." : ".xslt_error($xh)."<br />";
+		 echo "erreur pour ".$destination." : ".xslt_error($xh)."<br />";
 	}
 
 	xslt_free($xsltProcessor);

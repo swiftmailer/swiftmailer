@@ -12,43 +12,43 @@
  * Interface for spools.
  *
  * @package Swift
- * @author  Fabien Potencier
+ * @author	Fabien Potencier
  */
 interface Swift_Spool
 {
-    /**
-     * Starts this Spool mechanism.
-     */
-    public function start();
+		/**
+		 * Starts this Spool mechanism.
+		 */
+		public function start();
 
-    /**
-     * Stops this Spool mechanism.
-     */
-    public function stop();
+		/**
+		 * Stops this Spool mechanism.
+		 */
+		public function stop();
 
-    /**
-     * Tests if this Spool mechanism has started.
-     *
-     * @return boolean
-     */
-    public function isStarted();
+		/**
+		 * Tests if this Spool mechanism has started.
+		 *
+		 * @return boolean
+		 */
+		public function isStarted();
 
-    /**
-     * Queues a message.
-     *
-     * @param Swift_Mime_Message $message The message to store
-     *
-     * @return boolean Whether the operation has succeeded
-     */
-    public function queueMessage(Swift_Mime_Message $message);
+		/**
+		 * Queues a message.
+		 *
+		 * @param Swift_Mime_Message $message The message to store
+		 *
+		 * @return boolean Whether the operation has succeeded
+		 */
+		public function queueMessage(Swift_Mime_Message $message);
 
-    /**
-     * Sends messages using the given transport instance.
-     *
-     * @param Swift_Transport $transport        A transport instance
-     * @param string[]        $failedRecipients An array of failures by-reference
-     *
-     * @return integer The number of sent emails
-     */
-    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null);
+		/**
+		 * Sends messages using the given transport instance.
+		 *
+		 * @param Swift_Transport $transport				A transport instance
+		 * @param string[]				$failedRecipients An array of failures by-reference
+		 *
+		 * @return integer The number of sent emails
+		 */
+		public function flushQueue(Swift_Transport $transport, &$failedRecipients = null);
 }

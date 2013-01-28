@@ -5,23 +5,23 @@ require_once(dirname(__FILE__).'/../package.php');
 
 class TestOfSynchronisationCheck extends UnitTestCase {
 	function testOfSynchronisationNotNecessary() {
-	    $source = dirname(__FILE__)."/package/fr/no-synchronisation.xml";
-	    $synchro = new PackagingSynchronisation($source);
-	    $this->assertEqual($synchro->result(), "source");
+			$source = dirname(__FILE__)."/package/fr/no-synchronisation.xml";
+			$synchro = new PackagingSynchronisation($source);
+			$this->assertEqual($synchro->result(), "source");
 
-	    $source = dirname(__FILE__)."/package/en/synchronisation.xml";
-	    $synchro = new PackagingSynchronisation($source);
-	    $this->assertEqual($synchro->result(), "source");
+			$source = dirname(__FILE__)."/package/en/synchronisation.xml";
+			$synchro = new PackagingSynchronisation($source);
+			$this->assertEqual($synchro->result(), "source");
 	}
-	
+
 	function testOfSynchronisationNecessary() {
-	    $source = dirname(__FILE__)."/package/fr/synchronisation.xml";
-	    $synchro = new PackagingSynchronisation($source);
-	    $this->assertEqual($synchro->revision(), "1672");
-	    $this->assertEqual($synchro->sourceRevision(), "1671");
-	    $this->assertEqual($synchro->sourceLang(), "en");
-	    $this->assertEqual($synchro->lastSynchroRevision(), "1475");
-	    $this->assertEqual($synchro->result(), "late");
+			$source = dirname(__FILE__)."/package/fr/synchronisation.xml";
+			$synchro = new PackagingSynchronisation($source);
+			$this->assertEqual($synchro->revision(), "1672");
+			$this->assertEqual($synchro->sourceRevision(), "1671");
+			$this->assertEqual($synchro->sourceLang(), "en");
+			$this->assertEqual($synchro->lastSynchroRevision(), "1475");
+			$this->assertEqual($synchro->result(), "late");
 	}
 }
 
@@ -38,7 +38,7 @@ class TestOfContentTransformationFromXMLToHTML extends UnitTestCase {
 		$this->assertPattern('/autowalk\.html/', $content);
 	}
 
-    function testOfPHPTags() {
+		function testOfPHPTags() {
 		$file = dirname(__FILE__).'/package/one_section_with_php_code.xml';
 		$source = simplexml_load_file($file, "SimpleTestXMLElement");
 		$content = $source->content();
@@ -47,7 +47,7 @@ class TestOfContentTransformationFromXMLToHTML extends UnitTestCase {
 		$this->assertPattern('/<p>/', $content);
 		$this->assertPattern('/\$log = &amp;new Log\(\'my.log\'\);/', $content);
 		$this->assertPattern('/log->message/', $content);
-    }
+		}
 
 	function testOfContentWithoutSections() {
 		$file = dirname(__FILE__).'/package/content_without_section.xml';
@@ -55,7 +55,7 @@ class TestOfContentTransformationFromXMLToHTML extends UnitTestCase {
 		$content = $source->content();
 		$this->assertPattern('/<p>/', $content);
 	}
-	
+
 	function testOfContentFromChangeLogSection() {
 		$file = dirname(__FILE__).'/package/one_section_changelogged.xml';
 		$source = simplexml_load_file($file, "SimpleTestXMLElement");
@@ -65,7 +65,7 @@ class TestOfContentTransformationFromXMLToHTML extends UnitTestCase {
 		$this->assertPattern('/<li>Some in line documentation fixes<\/li>/', $content);
 		$this->assertPattern('/<li>\[bug <a href=\"http:\/\/sourceforge.net\/tracker\/index.php\?func=detail&group_id=76550&atid=547455&aid=1853765\">1853765<\/a>\] Fixing one of the incompatible interface errors<\/li>/', $content);
 	}
-	
+
 	function testOfContentFromMilestoneSection() {
 		$file = dirname(__FILE__).'/package/one_section_milestoned.xml';
 		$source = simplexml_load_file($file, "SimpleTestXMLElement");
@@ -84,7 +84,7 @@ class TestOfContentTransformationFromXMLToHTML extends UnitTestCase {
 		$this->assertPattern('/<dt>\[bug\] error_reporting\(E_ALL|E_STRICT\)gives lots of warning<\/dt>/', $content);
 		$this->assertPattern('/<dd>We\'ve know this for years, this is the time\.<\/dd>/', $content);
 	}
-	
+
 	function testOfSingleLink() {
 		$file = dirname(__FILE__).'/package/here_download.xml';
 		$source = simplexml_load_file($file, "SimpleTestXMLElement");

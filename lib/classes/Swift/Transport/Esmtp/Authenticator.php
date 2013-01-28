@@ -11,27 +11,27 @@
 /**
  * An Authentication mechanism.
  *
- * @package    Swift
+ * @package		Swift
  * @subpackage Transport
- * @author     Chris Corbyn
+ * @author		 Chris Corbyn
  */
 interface Swift_Transport_Esmtp_Authenticator
 {
-    /**
-     * Get the name of the AUTH mechanism this Authenticator handles.
-     *
-     * @return string
-     */
-    public function getAuthKeyword();
+		/**
+		 * Get the name of the AUTH mechanism this Authenticator handles.
+		 *
+		 * @return string
+		 */
+		public function getAuthKeyword();
 
-    /**
-     * Try to authenticate the user with $username and $password.
-     *
-     * @param Swift_Transport_SmtpAgent $agent
-     * @param string                    $username
-     * @param string                    $password
-     *
-     * @return boolean
-     */
-    public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password);
+		/**
+		 * Try to authenticate the user with $username and $password.
+		 *
+		 * @param Swift_Transport_SmtpAgent $agent
+		 * @param string										$username
+		 * @param string										$password
+		 *
+		 * @return boolean
+		 */
+		public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password);
 }

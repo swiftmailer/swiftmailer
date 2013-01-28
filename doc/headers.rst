@@ -19,7 +19,7 @@ itself, attachments, MIME parts and embedded images. Each of these MIME entities
 consists of a body and a set of headers that describe the body.
 
 For all of the "standard" headers in these MIME entities, such as the
-``Content-Type``, there are named methods for working with them, such as 
+``Content-Type``, there are named methods for working with them, such as
 ``setContentType()`` and ``getContentType()``. This is because headers are a
 moderately complex area of the library. Each header has a slightly different
 required structure that it must meet in order to comply with the standards that
@@ -29,15 +29,15 @@ You fetch the HeaderSet from a MIME entity like so:
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+		$message = Swift_Message::newInstance();
 
-    // Fetch the HeaderSet from a Message object
-    $headers = $message->getHeaders();
+		// Fetch the HeaderSet from a Message object
+		$headers = $message->getHeaders();
 
-    $attachment = Swift_Attachment::fromPath('document.pdf');
+		$attachment = Swift_Attachment::fromPath('document.pdf');
 
-    // Fetch the HeaderSet from an attachment object
-    $headers = $attachment->getHeaders();
+		// Fetch the HeaderSet from an attachment object
+		$headers = $attachment->getHeaders();
 
 The job of the HeaderSet is to contain and manage instances of Header objects.
 Depending upon the MIME entity the HeaderSet came from, the contents of the
@@ -49,44 +49,44 @@ the names of the headers:
 
 .. code-block:: php
 
-    foreach ($headers->getAll() as $header) {
-      printf("%s<br />\n", $header->getFieldName());
-    }
+		foreach ($headers->getAll() as $header) {
+			printf("%s<br />\n", $header->getFieldName());
+		}
 
-    /*
-    Content-Transfer-Encoding
-    Content-Type
-    MIME-Version
-    Date
-    Message-ID
-    From
-    Subject
-    To
-    */
+		/*
+		Content-Transfer-Encoding
+		Content-Type
+		MIME-Version
+		Date
+		Message-ID
+		From
+		Subject
+		To
+		*/
 
-You can also dump out the rendered HeaderSet by calling its ``toString()`` 
+You can also dump out the rendered HeaderSet by calling its ``toString()``
 method:
 
 .. code-block:: php
 
-    echo $headers->toString();
+		echo $headers->toString();
 
-    /*
-    Message-ID: <1234869991.499a9ee7f1d5e@swift.generated>
-    Date: Tue, 17 Feb 2009 22:26:31 +1100
-    Subject: Awesome subject!
-    From: sender@example.org
-    To: recipient@example.org
-    MIME-Version: 1.0
-    Content-Type: text/plain; charset=utf-8
-    Content-Transfer-Encoding: quoted-printable
-    */
+		/*
+		Message-ID: <1234869991.499a9ee7f1d5e@swift.generated>
+		Date: Tue, 17 Feb 2009 22:26:31 +1100
+		Subject: Awesome subject!
+		From: sender@example.org
+		To: recipient@example.org
+		MIME-Version: 1.0
+		Content-Type: text/plain; charset=utf-8
+		Content-Transfer-Encoding: quoted-printable
+		*/
 
 Where the complexity comes in is when you want to modify an existing header.
 This complexity comes from the fact that each header can be of a slightly
 different type (such as a Date header, or a header that contains email
 addresses, or a header that has key-value parameters on it!). Each header in the
-HeaderSet is an instance of ``Swift_Mime_Header``. They all have common 
+HeaderSet is an instance of ``Swift_Mime_Header``. They all have common
 functionality, but knowing exactly what type of header you're working with will
 allow you a little more control.
 
@@ -98,34 +98,34 @@ You can determine the type of header by comparing the return value of its
 
 .. code-block:: php
 
-    foreach ($headers->getAll() as $header) {
-      switch ($header->getFieldType()) {
-        case Swift_Mime_Header::TYPE_TEXT: $type = 'text';
-          break;
-        case Swift_Mime_Header::TYPE_PARAMETERIZED: $type = 'parameterized';
-          break;
-        case Swift_Mime_Header::TYPE_MAILBOX: $type = 'mailbox';
-          break;
-        case Swift_Mime_Header::TYPE_DATE: $type = 'date';
-          break;
-        case Swift_Mime_Header::TYPE_ID: $type = 'ID';
-          break;
-        case Swift_Mime_Header::TYPE_PATH: $type = 'path';
-          break;
-      }
-      printf("%s: is a %s header<br />\n", $header->getFieldName(), $type);
-    }
+		foreach ($headers->getAll() as $header) {
+			switch ($header->getFieldType()) {
+				case Swift_Mime_Header::TYPE_TEXT: $type = 'text';
+					break;
+				case Swift_Mime_Header::TYPE_PARAMETERIZED: $type = 'parameterized';
+					break;
+				case Swift_Mime_Header::TYPE_MAILBOX: $type = 'mailbox';
+					break;
+				case Swift_Mime_Header::TYPE_DATE: $type = 'date';
+					break;
+				case Swift_Mime_Header::TYPE_ID: $type = 'ID';
+					break;
+				case Swift_Mime_Header::TYPE_PATH: $type = 'path';
+					break;
+			}
+			printf("%s: is a %s header<br />\n", $header->getFieldName(), $type);
+		}
 
-    /*
-    Content-Transfer-Encoding: is a text header
-    Content-Type: is a parameterized header
-    MIME-Version: is a text header
-    Date: is a date header
-    Message-ID: is a ID header
-    From: is a mailbox header
-    Subject: is a text header
-    To: is a mailbox header
-    */
+		/*
+		Content-Transfer-Encoding: is a text header
+		Content-Type: is a parameterized header
+		MIME-Version: is a text header
+		Date: is a date header
+		Message-ID: is a ID header
+		From: is a mailbox header
+		Subject: is a text header
+		To: is a mailbox header
+		*/
 
 Headers can be removed from the set, modified within the set, or added to the
 set.
@@ -165,37 +165,37 @@ HeaderSet's ``addTextHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+		$message = Swift_Message::newInstance();
 
-    $headers = $message->getHeaders();
+		$headers = $message->getHeaders();
 
-    $headers->addTextHeader('Your-Header-Name', 'the header value');
+		$headers->addTextHeader('Your-Header-Name', 'the header value');
 
 Changing the value of an existing text header is done by calling it's
 ``setValue()`` method.
 
 .. code-block:: php
 
-    $subject = $message->getHeaders()->get('Subject');
+		$subject = $message->getHeaders()->get('Subject');
 
-    $subject->setValue('new subject');
+		$subject->setValue('new subject');
 
 When output via ``toString()``, a text header produces something like the
 following:
 
 .. code-block:: php
 
-    $subject = $message->getHeaders()->get('Subject');
+		$subject = $message->getHeaders()->get('Subject');
 
-    $subject->setValue('amazing subject line');
+		$subject->setValue('amazing subject line');
 
-    echo $subject->toString();
+		echo $subject->toString();
 
-    /*
+		/*
 
-    Subject: amazing subject line
+		Subject: amazing subject line
 
-    */
+		*/
 
 If the header contains any characters that are outside of the US-ASCII range
 however, they will be encoded. This is nothing to be concerned about since
@@ -203,17 +203,17 @@ mail clients will decode them back.
 
 .. code-block:: php
 
-    $subject = $message->getHeaders()->get('Subject');
+		$subject = $message->getHeaders()->get('Subject');
 
-    $subject->setValue('contains – dash');
+		$subject->setValue('contains – dash');
 
-    echo $subject->toString();
+		echo $subject->toString();
 
-    /*
+		/*
 
-    Subject: contains =?utf-8?Q?=E2=80=93?= dash
+		Subject: contains =?utf-8?Q?=E2=80=93?= dash
 
-    */
+		*/
 
 Parameterized Headers
 ~~~~~~~~~~~~~~~~~~~~~
@@ -234,14 +234,14 @@ key-value parameters.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+		$message = Swift_Message::newInstance();
 
-    $headers = $message->getHeaders();
+		$headers = $message->getHeaders();
 
-    $headers->addParameterizedHeader(
-      'Header-Name', 'header value',
-      array('foo' => 'bar')
-      );
+		$headers->addParameterizedHeader(
+			'Header-Name', 'header value',
+			array('foo' => 'bar')
+			);
 
 To change the text value of the header, call it's ``setValue()`` method just as
 you do with text headers.
@@ -251,34 +251,34 @@ method or the ``setParameter()`` method (note the pluralization).
 
 .. code-block:: php
 
-    $type = $message->getHeaders()->get('Content-Type');
+		$type = $message->getHeaders()->get('Content-Type');
 
-    // setParameters() takes an associative array
-    $type->setParameters(array(
-      'name' => 'file.txt',
-      'charset' => 'iso-8859-1'
-      ));
+		// setParameters() takes an associative array
+		$type->setParameters(array(
+			'name' => 'file.txt',
+			'charset' => 'iso-8859-1'
+			));
 
-    // setParameter() takes two args for $key and $value
-    $type->setParameter('charset', 'iso-8859-1');
+		// setParameter() takes two args for $key and $value
+		$type->setParameter('charset', 'iso-8859-1');
 
 When output via ``toString()``, a parameterized header produces something like
 the following:
 
 .. code-block:: php
 
-    $type = $message->getHeaders()->get('Content-Type');
+		$type = $message->getHeaders()->get('Content-Type');
 
-    $type->setValue('text/html');
-    $type->setParameter('charset', 'utf-8');
+		$type->setValue('text/html');
+		$type->setParameter('charset', 'utf-8');
 
-    echo $type->toString();
+		echo $type->toString();
 
-    /*
+		/*
 
-    Content-Type: text/html; charset=utf-8
+		Content-Type: text/html; charset=utf-8
 
-    */
+		*/
 
 If the header contains any characters that are outside of the US-ASCII range
 however, they will be encoded, just like they are for text headers. This is
@@ -288,20 +288,20 @@ encoded so that they can be transmitted safely.
 
 .. code-block:: php
 
-    $attachment = Swift_Attachment::newInstance();
+		$attachment = Swift_Attachment::newInstance();
 
-    $disp = $attachment->getHeaders()->get('Content-Disposition');
+		$disp = $attachment->getHeaders()->get('Content-Disposition');
 
-    $disp->setValue('attachment');
-    $disp->setParameter('filename', 'report–may.pdf');
+		$disp->setValue('attachment');
+		$disp->setParameter('filename', 'report–may.pdf');
 
-    echo $disp->toString();
+		echo $disp->toString();
 
-    /*
+		/*
 
-    Content-Disposition: attachment; filename*=utf-8''report%E2%80%93may.pdf
+		Content-Disposition: attachment; filename*=utf-8''report%E2%80%93may.pdf
 
-    */
+		*/
 
 Date Headers
 ~~~~~~~~~~~~
@@ -310,48 +310,48 @@ Date headers contains an RFC 2822 formatted date (i.e. what PHP's ``date('r')``
 returns). They are used anywhere a date or time is needed to be presented as a
 message header.
 
-The data on which a date header is modeled is simply a UNIX timestamp such as 
-that returned by ``time()`` or ``strtotime()``.  The timestamp is used to create 
+The data on which a date header is modeled is simply a UNIX timestamp such as
+that returned by ``time()`` or ``strtotime()``.	The timestamp is used to create
 a correctly structured RFC 2822 formatted date such as
 ``Tue, 17 Feb 2009 22:26:31 +1100``.
 
-The obvious place this header type is used is in the ``Date:`` header of the 
+The obvious place this header type is used is in the ``Date:`` header of the
 message itself.
 
-It's easy to add a new date header to a HeaderSet.  You do this by calling
+It's easy to add a new date header to a HeaderSet.	You do this by calling
 the HeaderSet's ``addDateHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+		$message = Swift_Message::newInstance();
 
-    $headers = $message->getHeaders();
+		$headers = $message->getHeaders();
 
-    $headers->addDateHeader('Your-Header-Name', strtotime('3 days ago'));
+		$headers->addDateHeader('Your-Header-Name', strtotime('3 days ago'));
 
 Changing the value of an existing date header is done by calling it's
 ``setTimestamp()`` method.
 
 .. code-block:: php
 
-    $date = $message->getHeaders()->get('Date');
+		$date = $message->getHeaders()->get('Date');
 
-    $date->setTimestamp(time());
+		$date->setTimestamp(time());
 
-When output via ``toString()``, a date header produces something like the 
+When output via ``toString()``, a date header produces something like the
 following:
 
 .. code-block:: php
 
-    $date = $message->getHeaders()->get('Date');
+		$date = $message->getHeaders()->get('Date');
 
-    echo $date->toString();
+		echo $date->toString();
 
-    /*
+		/*
 
-    Date: Wed, 18 Feb 2009 13:35:02 +1100
+		Date: Wed, 18 Feb 2009 13:35:02 +1100
 
-    */
+		*/
 
 Mailbox (e-mail address) Headers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -373,29 +373,29 @@ You add a new mailbox header to a HeaderSet by calling the HeaderSet's
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+		$message = Swift_Message::newInstance();
 
-    $headers = $message->getHeaders();
+		$headers = $message->getHeaders();
 
-    $headers->addMailboxHeader('Your-Header-Name', array(
-      'person1@example.org' => 'Person Name One',
-      'person2@example.org',
-      'person3@example.org',
-      'person4@example.org' => 'Another named person'
-      ));
+		$headers->addMailboxHeader('Your-Header-Name', array(
+			'person1@example.org' => 'Person Name One',
+			'person2@example.org',
+			'person3@example.org',
+			'person4@example.org' => 'Another named person'
+			));
 
 Changing the value of an existing mailbox header is done by calling it's
 ``setNameAddresses()`` method.
 
 .. code-block:: php
 
-    $to = $message->getHeaders()->get('To');
+		$to = $message->getHeaders()->get('To');
 
-    $to->setNameAddresses(array(
-      'joe@example.org' => 'Joe Bloggs',
-      'john@example.org' => 'John Doe',
-      'no-name@example.org'
-      ));
+		$to->setNameAddresses(array(
+			'joe@example.org' => 'Joe Bloggs',
+			'john@example.org' => 'John Doe',
+			'no-name@example.org'
+			));
 
 If you don't wish to concern yourself with the complicated accepted input
 formats accepted by ``setNameAddresses()`` as described in the previous chapter
@@ -404,17 +404,17 @@ use the ``setAddresses()`` method instead.
 
 .. code-block:: php
 
-    $to = $message->getHeaders()->get('To');
+		$to = $message->getHeaders()->get('To');
 
-    $to->setAddresses(array(
-      'joe@example.org',
-      'john@example.org',
-      'no-name@example.org'
-      ));
+		$to->setAddresses(array(
+			'joe@example.org',
+			'john@example.org',
+			'no-name@example.org'
+			));
 
 .. note::
 
-    Both methods will accept the above input format in practice.
+		Both methods will accept the above input format in practice.
 
 If all you want to do is set a single address in the header, you can use a
 string as the input parameter to ``setAddresses()`` and/or
@@ -422,31 +422,31 @@ string as the input parameter to ``setAddresses()`` and/or
 
 .. code-block:: php
 
-    $to = $message->getHeaders()->get('To');
+		$to = $message->getHeaders()->get('To');
 
-    $to->setAddresses('joe-bloggs@example.org');
+		$to->setAddresses('joe-bloggs@example.org');
 
 When output via ``toString()``, a mailbox header produces something like the
 following:
 
 .. code-block:: php
 
-    $to = $message->getHeaders()->get('To');
+		$to = $message->getHeaders()->get('To');
 
-    $to->setNameAddresses(array(
-      'person1@example.org' => 'Name of Person',
-      'person2@example.org',
-      'person3@example.org' => 'Another Person'
-    ));
+		$to->setNameAddresses(array(
+			'person1@example.org' => 'Name of Person',
+			'person2@example.org',
+			'person3@example.org' => 'Another Person'
+		));
 
-    echo $to->toString();
+		echo $to->toString();
 
-    /*
+		/*
 
-    To: Name of Person <person1@example.org>, person2@example.org, Another Person
-     <person3@example.org>
+		To: Name of Person <person1@example.org>, person2@example.org, Another Person
+		 <person3@example.org>
 
-    */
+		*/
 
 ID Headers
 ~~~~~~~~~~
@@ -455,50 +455,50 @@ ID headers contain identifiers for the entity (or the message). The most
 notable ID header is the Message-ID header on the message itself.
 
 An ID that exists inside an ID header looks more-or-less less like an email
-address.  For example, ``<1234955437.499becad62ec2@example.org>``.
-The part to the left of the @ sign is usually unique, based on the current time 
+address.	For example, ``<1234955437.499becad62ec2@example.org>``.
+The part to the left of the @ sign is usually unique, based on the current time
 and some random factor. The part on the right is usually a domain name.
 
-Any ID passed to the header's ``setId()`` method absolutely MUST conform to 
-this structure, otherwise you'll get an Exception thrown at you by Swift Mailer 
-(a ``Swift_RfcComplianceException``).  This is to ensure that the generated 
-email complies with relevant RFC documents and therefore is less likely to be 
+Any ID passed to the header's ``setId()`` method absolutely MUST conform to
+this structure, otherwise you'll get an Exception thrown at you by Swift Mailer
+(a ``Swift_RfcComplianceException``).	This is to ensure that the generated
+email complies with relevant RFC documents and therefore is less likely to be
 blocked as spam.
 
-It's easy to add a new ID header to a HeaderSet.  You do this by calling
+It's easy to add a new ID header to a HeaderSet.	You do this by calling
 the HeaderSet's ``addIdHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+		$message = Swift_Message::newInstance();
 
-    $headers = $message->getHeaders();
+		$headers = $message->getHeaders();
 
-    $headers->addIdHeader('Your-Header-Name', '123456.unqiue@example.org');
+		$headers->addIdHeader('Your-Header-Name', '123456.unqiue@example.org');
 
 Changing the value of an existing date header is done by calling its
 ``setId()`` method.
 
 .. code-block:: php
 
-    $msgId = $message->getHeaders()->get('Message-ID');
+		$msgId = $message->getHeaders()->get('Message-ID');
 
-    $msgId->setId(time() . '.' . uniqid('thing') . '@example.org');
+		$msgId->setId(time() . '.' . uniqid('thing') . '@example.org');
 
 When output via ``toString()``, an ID header produces something like the
 following:
 
 .. code-block:: php
 
-    $msgId = $message->getHeaders()->get('Message-ID');
+		$msgId = $message->getHeaders()->get('Message-ID');
 
-    echo $msgId->toString();
+		echo $msgId->toString();
 
-    /*
+		/*
 
-    Message-ID: <1234955437.499becad62ec2@example.org>
+		Message-ID: <1234955437.499becad62ec2@example.org>
 
-    */
+		*/
 
 Path Headers
 ~~~~~~~~~~~~
@@ -512,11 +512,11 @@ You add a new path header to a HeaderSet by calling the HeaderSet's
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+		$message = Swift_Message::newInstance();
 
-    $headers = $message->getHeaders();
+		$headers = $message->getHeaders();
 
-    $headers->addPathHeader('Your-Header-Name', 'person@example.org');
+		$headers->addPathHeader('Your-Header-Name', 'person@example.org');
 
 
 Changing the value of an existing path header is done by calling its
@@ -524,26 +524,26 @@ Changing the value of an existing path header is done by calling its
 
 .. code-block:: php
 
-    $return = $message->getHeaders()->get('Return-Path');
+		$return = $message->getHeaders()->get('Return-Path');
 
-    $return->setAddress('my-address@example.org');
+		$return->setAddress('my-address@example.org');
 
 When output via ``toString()``, a path header produces something like the
 following:
 
 .. code-block:: php
 
-    $return = $message->getHeaders()->get('Return-Path');
+		$return = $message->getHeaders()->get('Return-Path');
 
-    $return->setAddress('person@example.org');
+		$return->setAddress('person@example.org');
 
-    echo $return->toString();
+		echo $return->toString();
 
-    /*
+		/*
 
-    Return-Path: <person@example.org>
+		Return-Path: <person@example.org>
 
-    */
+		*/
 
 Header Operations
 -----------------
@@ -562,20 +562,20 @@ To add a header to a MIME entity (such as the message):
 Get the HeaderSet from the entity by via its ``getHeaders()`` method.
 
 * Add the header to the HeaderSet by calling one of the ``add..Header()``
-  methods.
+	methods.
 
 The added header will appear in the message when it is sent.
 
 .. code-block:: php
 
-    // Adding a custom header to a message
-    $message = Swift_Message::newInstance();
-    $headers = $message->getHeaders();
-    $headers->addTextHeader('X-Mine', 'something here');
+		// Adding a custom header to a message
+		$message = Swift_Message::newInstance();
+		$headers = $message->getHeaders();
+		$headers->addTextHeader('X-Mine', 'something here');
 
-    // Adding a custom header to an attachment
-    $attachment = Swift_Attachment::fromPath('/path/to/doc.pdf');
-    $attachment->getHeaders()->addDateHeader('X-Created-Time', time());
+		// Adding a custom header to an attachment
+		$attachment = Swift_Attachment::fromPath('/path/to/doc.pdf');
+		$attachment->getHeaders()->addDateHeader('X-Created-Time', time());
 
 Retrieving Headers
 ~~~~~~~~~~~~~~~~~~
@@ -588,7 +588,7 @@ To get a header, or several headers from a MIME entity:
 * Get the HeaderSet from the entity by via its ``getHeaders()`` method.
 
 * Get the header(s) from the HeaderSet by calling either ``get()`` or
-  ``getAll()``.
+	``getAll()``.
 
 When using ``get()`` a single header is returned that matches the name (case
 insensitive) that is passed to it. When using ``getAll()`` with a header name,
@@ -597,33 +597,33 @@ arguments returns an array of all headers present in the entity.
 
 .. note::
 
-    It's valid for some headers to appear more than once in a message (e.g.
-    the Received header). For this reason ``getAll()`` exists to fetch all
-    headers with a specified name. In addition, ``get()`` accepts an optional
-    numerical index, starting from zero to specify which header you want more
-    specifically.
+		It's valid for some headers to appear more than once in a message (e.g.
+		the Received header). For this reason ``getAll()`` exists to fetch all
+		headers with a specified name. In addition, ``get()`` accepts an optional
+		numerical index, starting from zero to specify which header you want more
+		specifically.
 
 .. note::
 
-    If you want to modify the contents of the header and you don't know for
-    sure what type of header it is then you may need to check the type by
-    calling its ``getFieldType()`` method.
+		If you want to modify the contents of the header and you don't know for
+		sure what type of header it is then you may need to check the type by
+		calling its ``getFieldType()`` method.
 
-    .. code-block:: php
+		.. code-block:: php
 
-        $headers = $message->getHeaders();
+				$headers = $message->getHeaders();
 
-        // Get the To: header
-        $toHeader = $headers->get('To');
+				// Get the To: header
+				$toHeader = $headers->get('To');
 
-        // Get all headers named "X-Foo"
-        $fooHeaders = $headers->getAll('X-Foo');
+				// Get all headers named "X-Foo"
+				$fooHeaders = $headers->getAll('X-Foo');
 
-        // Get the second header named "X-Foo"
-        $foo = $headers->get('X-Foo', 1);
+				// Get the second header named "X-Foo"
+				$foo = $headers->get('X-Foo', 1);
 
-        // Get all headers that are present
-        $all = $headers->getAll();
+				// Get all headers that are present
+				$all = $headers->getAll();
 
 Check if a Header Exists
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -636,30 +636,30 @@ To check if a header exists:
 * Get the HeaderSet from the entity by via its ``getHeaders()`` method.
 
 * Call the HeaderSet's ``has()`` method specifying the header you're looking
-  for.
+	for.
 
 If the header exists, ``true`` will be returned or ``false`` if not.
 
 .. note::
 
-    It's valid for some headers to appear more than once in a message (e.g.
-    the Received header). For this reason ``has()`` accepts an optional
-    numerical index, starting from zero to specify which header you want to
-    check more specifically.
+		It's valid for some headers to appear more than once in a message (e.g.
+		the Received header). For this reason ``has()`` accepts an optional
+		numerical index, starting from zero to specify which header you want to
+		check more specifically.
 
-    .. code-block:: php
+		.. code-block:: php
 
-        $headers = $message->getHeaders();
+				$headers = $message->getHeaders();
 
-        // Check if the To: header exists
-        if ($headers->has('To')) {
-          echo 'To: exists';
-        }
+				// Check if the To: header exists
+				if ($headers->has('To')) {
+					echo 'To: exists';
+				}
 
-        // Check if an X-Foo header exists twice (i.e. check for the 2nd one)
-        if ($headers->has('X-Foo', 1)) {
-          echo 'Second X-Foo header exists';
-        }
+				// Check if an X-Foo header exists twice (i.e. check for the 2nd one)
+				if ($headers->has('X-Foo', 1)) {
+					echo 'Second X-Foo header exists';
+				}
 
 Removing Headers
 ~~~~~~~~~~~~~~~~
@@ -672,7 +672,7 @@ To remove an existing header:
 * Get the HeaderSet from the entity by via its ``getHeaders()`` method.
 
 * Call the HeaderSet's ``remove()`` or ``removeAll()`` methods specifying the
-  header you want to remove.
+	header you want to remove.
 
 When calling ``remove()`` a single header will be removed. When calling
 ``removeAll()`` all headers with the given name will be removed. If no headers
@@ -680,24 +680,24 @@ exist with the given name, no errors will occur.
 
 .. note::
 
-    It's valid for some headers to appear more than once in a message (e.g.
-    the Received header). For this reason ``remove()`` accepts an optional
-    numerical index, starting from zero to specify which header you want to
-    check more specifically. For the same reason, ``removeAll()`` exists to
-    remove all headers that have the given name.
+		It's valid for some headers to appear more than once in a message (e.g.
+		the Received header). For this reason ``remove()`` accepts an optional
+		numerical index, starting from zero to specify which header you want to
+		check more specifically. For the same reason, ``removeAll()`` exists to
+		remove all headers that have the given name.
 
-    .. code-block:: php
+		.. code-block:: php
 
-        $headers = $message->getHeaders();
+				$headers = $message->getHeaders();
 
-        // Remove the Subject: header
-        $headers->remove('Subject');
+				// Remove the Subject: header
+				$headers->remove('Subject');
 
-        // Remove all X-Foo headers
-        $headers->removeAll('X-Foo');
+				// Remove all X-Foo headers
+				$headers->removeAll('X-Foo');
 
-        // Remove only the second X-Foo header
-        $headers->remove('X-Foo', 1);
+				// Remove only the second X-Foo header
+				$headers->remove('X-Foo', 1);
 
 Modifying a Header's Content
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -714,29 +714,29 @@ To modify an existing header:
 * Get the Header by using the HeaderSet's ``get()``.
 
 * Call the Header's appropriate setter method or call the header's
-  ``setFieldBodyModel()`` method.
+	``setFieldBodyModel()`` method.
 
 The header will be updated inside the HeaderSet and the changes will be seen
 when the message is sent.
 
 .. code-block:: php
 
-    $headers = $message->getHeaders();
+		$headers = $message->getHeaders();
 
-    // Change the Subject: header
-    $subj = $headers->get('Subject');
-    $subj->setValue('new subject here');
+		// Change the Subject: header
+		$subj = $headers->get('Subject');
+		$subj->setValue('new subject here');
 
-    // Change the To: header
-    $to = $headers->get('To');
-    $to->setNameAddresses(array(
-      'person@example.org' => 'Person',
-      'thing@example.org'
-    ));
+		// Change the To: header
+		$to = $headers->get('To');
+		$to->setNameAddresses(array(
+			'person@example.org' => 'Person',
+			'thing@example.org'
+		));
 
-    // Using the setFieldBodyModel() just delegates to the correct method
-    // So here to calls setNameAddresses()
-    $to->setFieldBodyModel(array(
-      'person@example.org' => 'Person',
-      'thing@example.org'
-    ));
+		// Using the setFieldBodyModel() just delegates to the correct method
+		// So here to calls setNameAddresses()
+		$to->setFieldBodyModel(array(
+			'person@example.org' => 'Person',
+			'thing@example.org'
+		));

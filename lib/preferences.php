@@ -1,9 +1,9 @@
 <?php
 
 /****************************************************************************/
-/*                                                                          */
-/* YOU MAY WISH TO MODIFY OR REMOVE THE FOLLOWING LINES WHICH SET DEFAULTS  */
-/*                                                                          */
+/*																																					*/
+/* YOU MAY WISH TO MODIFY OR REMOVE THE FOLLOWING LINES WHICH SET DEFAULTS	*/
+/*																																					*/
 /****************************************************************************/
 
 $preferences = Swift_Preferences::getInstance();
@@ -19,17 +19,17 @@ $preferences->setCharset('utf-8');
 // when using open_basedir
 $tmp = getenv('TMPDIR');
 if ($tmp && @is_writable($tmp)) {
-    $preferences
-        ->setTempDir($tmp)
-        ->setCacheType('disk');
+		$preferences
+				->setTempDir($tmp)
+				->setCacheType('disk');
 } elseif (function_exists('sys_get_temp_dir') && @is_writable(sys_get_temp_dir())) {
-    $preferences
-        ->setTempDir(sys_get_temp_dir())
-        ->setCacheType('disk');
+		$preferences
+				->setTempDir(sys_get_temp_dir())
+				->setCacheType('disk');
 }
 
 // this should only be done when Swiftmailer won't use the native QP content encoder
 // see mime_deps.php
 if (version_compare(phpversion(), '5.4.7', '<')) {
-    $preferences->setQPDotEscape(false);
+		$preferences->setQPDotEscape(false);
 }

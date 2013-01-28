@@ -8,11 +8,11 @@
 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ along with this program.	If not, see <http://www.gnu.org/licenses/>.
 
  */
 
@@ -27,17 +27,17 @@
 interface Yay_Sequence extends Yay_SelfDescribing
 {
 
-  /**
-   * Ask for a new Sequence Id and register the new sequence.
-   * @return integer $id
-   */
-  public function requestSequenceId();
+	/**
+	 * Ask for a new Sequence Id and register the new sequence.
+	 * @return integer $id
+	 */
+	public function requestSequenceId();
 
-  /**
-   * Check if the sequence has progressed far enough for this sequence ID to be used.
-   * @param integer $id
-   * @return boolean
-   */
-  public function isInSequence($sequenceId);
+	/**
+	 * Check if the sequence has progressed far enough for this sequence ID to be used.
+	 * @param integer $id
+	 * @return boolean
+	 */
+	public function isInSequence($sequenceId);
 
 }

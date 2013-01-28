@@ -5,7 +5,7 @@ error_reporting(E_ALL | E_STRICT); ini_set('display_errors', true);
 
 if (defined('E_DEPRECATED'))
 {
-  error_reporting(error_reporting() | E_DEPRECATED);
+	error_reporting(error_reporting() | E_DEPRECATED);
 }
 
 //E_STRICT compliance -- If you change this timezone some tests may fail -
@@ -22,21 +22,21 @@ define('SWEETY_PHP_EXE', '');
 define('SWEETY_HOME', dirname(__FILE__));
 //The path to the libs being tested
 define('SWEETY_INCLUDE_PATH',
-  SWEETY_HOME . '/../lib/classes' . PATH_SEPARATOR .
-  SWEETY_HOME . '/../lib' . PATH_SEPARATOR .
-  SWEETY_HOME . '/../tests/helpers'
-  );
+	SWEETY_HOME . '/../lib/classes' . PATH_SEPARATOR .
+	SWEETY_HOME . '/../lib' . PATH_SEPARATOR .
+	SWEETY_HOME . '/../tests/helpers'
+	);
 //The path to the main test suite
 define('SWEETY_LIB_PATH', SWEETY_HOME . '/lib');
 //The path to simpletest
 define('SWEETY_SIMPLETEST_PATH', SWEETY_LIB_PATH . '/simpletest');
 //The path to any testing directories
 define('SWEETY_TEST_PATH',
-  SWEETY_HOME . '/../tests/unit' .
-  PATH_SEPARATOR . SWEETY_HOME . '/../tests/acceptance' .
-  PATH_SEPARATOR . SWEETY_HOME . '/../tests/smoke' .
-  PATH_SEPARATOR . SWEETY_HOME . '/../tests/bug'
-  );
+	SWEETY_HOME . '/../tests/unit' .
+	PATH_SEPARATOR . SWEETY_HOME . '/../tests/acceptance' .
+	PATH_SEPARATOR . SWEETY_HOME . '/../tests/smoke' .
+	PATH_SEPARATOR . SWEETY_HOME . '/../tests/bug'
+	);
 //Test locator strategies, separated by commas
 define('SWEETY_TEST_LOCATOR', 'Sweety_TestLocator_PearStyleLocator');
 //A pattern used for filtering out certain class names expected to be tests
@@ -48,10 +48,10 @@ define('SWEETY_UI_TEMPLATE', SWEETY_HOME . '/templates/sweety/suite-ui.tpl.php')
 
 //Most likely you won't want to modify the include_path
 set_include_path(
-  dirname(__FILE__) . '/../lib' . PATH_SEPARATOR .
-  SWEETY_LIB_PATH . PATH_SEPARATOR .
-  SWEETY_INCLUDE_PATH . PATH_SEPARATOR .
-  SWEETY_TEST_PATH
+	dirname(__FILE__) . '/../lib' . PATH_SEPARATOR .
+	SWEETY_LIB_PATH . PATH_SEPARATOR .
+	SWEETY_INCLUDE_PATH . PATH_SEPARATOR .
+	SWEETY_TEST_PATH
 );
 
 //Load in any dependencies

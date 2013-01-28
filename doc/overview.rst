@@ -58,7 +58,7 @@ however -- there are reasons this class exists:
 * for consistency, regardless of the Transport used
 
 * to provide abstraction from the internals in the event internal API changes
-  are made
+	are made
 
 * to provide convenience wrappers around aspects of the internal API
 
@@ -78,17 +78,17 @@ you will only need to know how to create an instance of one, and which one to
 use for your environment.
 
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| Class                           | Features                                                                                    | Pros/cons                                                                                                                                     |
+| Class													 | Features																																										| Pros/cons																																																																		 |
 +=================================+=============================================================================================+===============================================================================================================================================+
-| ``Swift_SmtpTransport``         | Sends messages over SMTP; Supports Authentication; Supports Encryption                      | Very portable; Pleasingly predictable results; Provides good feedback                                                                         |
+| ``Swift_SmtpTransport``				 | Sends messages over SMTP; Supports Authentication; Supports Encryption											| Very portable; Pleasingly predictable results; Provides good feedback																																				 |
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| ``Swift_SendmailTransport``     | Communicates with a locally installed ``sendmail`` executable (Linux/UNIX)                  | Quick time-to-run;  Provides less-accurate feedback than SMTP; Requires ``sendmail`` installation                                             |
+| ``Swift_SendmailTransport``		 | Communicates with a locally installed ``sendmail`` executable (Linux/UNIX)									| Quick time-to-run;	Provides less-accurate feedback than SMTP; Requires ``sendmail`` installation																						 |
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| ``Swift_MailTransport``         | Uses PHP's built-in ``mail()`` function                                                     | Very portable; Potentially unpredictable results; Provides extremely weak feedback                                                            |
+| ``Swift_MailTransport``				 | Uses PHP's built-in ``mail()`` function																										 | Very portable; Potentially unpredictable results; Provides extremely weak feedback																														|
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| ``Swift_LoadBalancedTransport`` | Cycles through a collection of the other Transports to manage load-reduction                | Provides graceful fallback if one Transport fails (e.g. an SMTP server is down); Keeps the load on remote services down by spreading the work |
+| ``Swift_LoadBalancedTransport`` | Cycles through a collection of the other Transports to manage load-reduction								| Provides graceful fallback if one Transport fails (e.g. an SMTP server is down); Keeps the load on remote services down by spreading the work |
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| ``Swift_FailoverTransport``     | Works in conjunction with a collection of the other Transports to provide high-availability | Provides graceful fallback if one Transport fails (e.g. an SMTP server is down)                                                               |
+| ``Swift_FailoverTransport``		 | Works in conjunction with a collection of the other Transports to provide high-availability | Provides graceful fallback if one Transport fails (e.g. an SMTP server is down)																															 |
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 
 MIME Entities
@@ -110,9 +110,9 @@ Attachment -- are its Headers and its body:
 
 .. code-block:: text
 
-    Other-Header: Another value
+		Other-Header: Another value
 
-    The body content itself
+		The body content itself
 
 The Headers of a MIME entity, and its body must conform to some strict
 standards defined by various RFC documents. Swift Mailer ensures that these
