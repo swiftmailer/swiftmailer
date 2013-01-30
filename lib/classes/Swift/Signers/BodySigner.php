@@ -12,7 +12,7 @@
  * Body Signer Interface used to apply Body-Based Signature to a message
  *
  * @package    Swift
- * @subpackage Signed
+ * @subpackage Signatures
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
 interface Swift_Signers_BodySigner extends Swift_Signer
