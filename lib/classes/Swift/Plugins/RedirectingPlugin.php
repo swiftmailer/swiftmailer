@@ -93,10 +93,19 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
         $message = $evt->getMessage();
         $headers = $message->getHeaders();
 
-        // save current recipients
-        $headers->addMailboxHeader('X-Swift-To', $message->getTo());
-        $headers->addMailboxHeader('X-Swift-Cc', $message->getCc());
-        $headers->addMailboxHeader('X-Swift-Bcc', $message->getBcc());
+        // conditionally save current recipients
+
+        if ($headers->has('to')) {
+            $headers->addMailboxHeader('X-Swift-To', $message->getTo());
+        }
+
+        if ($headers->has('cc')) {
+            $headers->addMailboxHeader('X-Swift-Cc', $message->getCc());
+        }
+
+        if ($headers->has('bcc')) {
+            $headers->addMailboxHeader('X-Swift-Bcc', $message->getBcc());
+        }
 
         // Add hard coded recipient
         $message->addTo($this->_recipient);
