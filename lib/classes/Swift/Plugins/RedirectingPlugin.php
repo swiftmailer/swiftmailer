@@ -20,7 +20,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * The recipient who will receive all messages.
      *
-     * @var string
+     * @var mixed
      */
     private $_recipient;
 
@@ -34,7 +34,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Create a new RedirectingPlugin.
      *
-     * @param string $recipient
+     * @param mixed $recipient
      * @param array  $whitelist
      */
     public function __construct($recipient, array $whitelist = array())
@@ -46,7 +46,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Set the recipient of all messages.
      *
-     * @param string $recipient
+     * @param mixed $recipient
      */
     public function setRecipient($recipient)
     {
@@ -56,7 +56,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Get the recipient of all messages.
      *
-     * @return int
+     * @return mixed
      */
     public function getRecipient()
     {
@@ -107,13 +107,18 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
             $headers->addMailboxHeader('X-Swift-Bcc', $message->getBcc());
         }
 
-        // Add hard coded recipient
-        $message->addTo($this->_recipient);
-
         // Filter remaining headers against whitelist
         $this->_filterHeaderSet($headers, 'To');
         $this->_filterHeaderSet($headers, 'Cc');
         $this->_filterHeaderSet($headers, 'Bcc');
+
+        // Add each hard coded recipient
+        foreach ( (array) $this->_recipient as $recipient) {
+            if (!array_key_exists($recipient, $message->getTo())) {
+                $message->addTo($recipient);
+            }
+        }
+
     }
 
     /**
@@ -156,7 +161,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
      */
     protected function _isWhitelisted($recipient)
     {
-        if ($recipient === $this->_recipient) {
+        if (in_array($recipient, (array) $this->_recipient)) {
             return true;
         }
 
