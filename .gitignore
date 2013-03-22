@@ -4,3 +4,4 @@ tests/smoke.conf.php
 build/*
 .project
 .settings/*
+/vendor/

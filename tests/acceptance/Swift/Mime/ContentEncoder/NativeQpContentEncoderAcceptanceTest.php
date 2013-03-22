@@ -76,6 +76,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest
         $this->_encoder->charsetChanged('utf-8');
         $this->expectException(new RuntimeException('Charset "charset" not supported. NativeQpContentEncoder only supports "utf-8"'));
         $this->_encoder->charsetChanged('charset');
+        $this->_encoder->encodeString('foo');
     }
 
     public function testGetName()
