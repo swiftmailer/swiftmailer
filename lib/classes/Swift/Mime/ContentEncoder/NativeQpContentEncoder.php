@@ -18,16 +18,26 @@
 class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_ContentEncoder
 {
     /**
+     * @var null|string
+     */
+    private $charset;
+
+    /**
+     * @param null|string $charset
+     */
+    public function __construct($charset = null)
+    {
+        $this->charset = $charset ?: 'utf-8';
+    }
+
+    /**
      * Notify this observer that the entity's charset has changed.
      *
      * @param string $charset
      */
     public function charsetChanged($charset)
     {
-        if ($charset !== 'utf-8') {
-            throw new RuntimeException(
-                sprintf('Charset "%s" not supported. NativeQpContentEncoder only supports "utf-8"', $charset));
-        }
+        $this->charset = $charset;
     }
 
     /**
@@ -37,9 +47,16 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
      * @param Swift_InputByteStream  $is              to write to
      * @param integer                $firstLineOffset
      * @param integer                $maxLineLength   0 indicates the default length for this encoding
+     *
+     * @throws RuntimeException
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
+        if ($this->charset !== 'utf-8') {
+            throw new RuntimeException(
+                sprintf('Charset "%s" not supported. NativeQpContentEncoder only supports "utf-8"', $this->charset));
+        }
+
         $string = '';
 
         while (false !== $bytes = $os->read(8192)) {
@@ -67,9 +84,42 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
      * @param integer $maxLineLength   0 indicates the default length for this encoding
      *
      * @return string
+     *
+     * @throws RuntimeException
      */
     public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0)
     {
-        return quoted_printable_encode($string);
+        if ($this->charset !== 'utf-8') {
+            throw new RuntimeException(
+                sprintf('Charset "%s" not supported. NativeQpContentEncoder only supports "utf-8"', $this->charset));
+        }
+
+        return $this->_standardize(quoted_printable_encode($string));
+    }
+
+    /**
+     * Make sure CRLF is correct and HT/SPACE are in valid places.
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    protected function _standardize($string)
+    {
+        // transform CR or LF to CRLF
+        $string = preg_replace('~=0D(?!=0A)|(?<!=0D)=0A~', '=0D=0A', $string);
+        // transform =0D=0A to CRLF
+        $string = str_replace(array("\t=0D=0A", " =0D=0A", "=0D=0A"), array("=09\r\n", "=20\r\n", "\r\n"), $string);
+
+        switch ($end = ord(substr($string, -1))) {
+            case 0x09:
+                $string = substr_replace($string, '=09', -1);
+                break;
+            case 0x20:
+                $string = substr_replace($string, '=20', -1);
+                break;
+        }
+
+        return $string;
     }
 }
