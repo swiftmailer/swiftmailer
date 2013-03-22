@@ -82,7 +82,7 @@ Swift_DependencyContainer::getInstance()
     ->register('mime.characterreaderfactory')
     ->asSharedInstanceOf('Swift_CharacterReaderFactory_SimpleCharacterReaderFactory')
 
-    ->register('mime.qpcontentencoder')
+    ->register('mime.safeqpcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
     ->withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
 
@@ -91,6 +91,10 @@ Swift_DependencyContainer::getInstance()
 
     ->register('mime.nativeqpcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_NativeQpContentEncoder')
+
+    ->register('mime.qpcontentencoderproxy')
+    ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoderProxy')
+    ->withDependencies(array('mime.safeqpcontentencoder', 'mime.nativeqpcontentencoder'))
 
     ->register('mime.7bitcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_PlainContentEncoder')
@@ -115,7 +119,12 @@ Swift_DependencyContainer::getInstance()
 if (version_compare(phpversion(), '5.4.7', '>=')) {
     Swift_DependencyContainer::getInstance()
         ->register('mime.qpcontentencoder')
-        ->asAliasOf('mime.nativeqpcontentencoder')
+        ->asAliasOf('mime.qpcontentencoderproxy')
+    ;
+} else {
+    Swift_DependencyContainer::getInstance()
+        ->register('mime.qpcontentencoder')
+        ->asAliasOf('mime.safeqpcontentencoder')
     ;
 }
 
