@@ -1,0 +1,34 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2013-04-04T14:46:46Z
+
+In Symfony, we are using `uniqid(mt_rand(), true)`
+
+---------------------------------------------------------------------------
+
+by xdecock at 2013-04-04T15:02:18Z
+
+Added the mt_rand, but if the seed is the same in mt_rand, it will give the
+same result (thus still not 100% safe on the collision level), but indeed
+better
+
+On Thu, Apr 4, 2013 at 4:46 PM, Fabien Potencier
+<notifications@github.com>wrote:
+
+> In Symfony, we are using uniqid(mt_rand(), true)
+>
+> —
+> Reply to this email directly or view it on GitHub<https://github.com/swiftmailer/swiftmailer/pull/310#issuecomment-15901587>
+> .
+>
+
+--
+Xavier De Cock
+GPG Fingerprint: 93CA EE3F 9F57 5BE1 AE4A  794D 3C74 CA9E E7A5 0C1B
+GPG Id: 0xE7A50C1B
+
+---------------------------------------------------------------------------
+
+by xdecock at 2013-04-04T15:04:52Z
+
+PS : this will not solve the problem in a php worker thread. (except if mt_rand is serialized)
