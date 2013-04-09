@@ -52,14 +52,14 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest
                     }
 
                     $this->assertEqual(
-                        quoted_printable_decode($encoded), $text,
-                        '%s: Encoded string should decode back to original string for sample ' .
-                        $sampleDir . '/' . $sampleFile
-                        );
+                        quoted_printable_decode($encoded),
+                        // CR and LF are converted to CRLF
+                        preg_replace('~\r(?!\n)|(?<!\r)\n~', "\r\n", $text),
+                        '%s: Encoded string should decode back to original string for sample '.$sampleDir.'/'.$sampleFile
+                    );
                 }
                 closedir($fileFp);
             }
-
         }
         closedir($sampleFp);
 
@@ -76,6 +76,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest
         $this->_encoder->charsetChanged('utf-8');
         $this->expectException(new RuntimeException('Charset "charset" not supported. NativeQpContentEncoder only supports "utf-8"'));
         $this->_encoder->charsetChanged('charset');
+        $this->_encoder->encodeString('foo');
     }
 
     public function testGetName()
