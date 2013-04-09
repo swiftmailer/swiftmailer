@@ -415,7 +415,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     public function getBoundary()
     {
         if (!isset($this->_boundary)) {
-            $this->_boundary = '_=_swift_v4_' . time() . '_' . getmypid() . '_' . uniqid(mt_rand(), true) . '_=_';
+            $this->_boundary = '_=_swift_v4_' . time() . '_' . md5(getmypid().mt_rand().uniqid('', true)) . '_=_';
         }
 
         return $this->_boundary;
