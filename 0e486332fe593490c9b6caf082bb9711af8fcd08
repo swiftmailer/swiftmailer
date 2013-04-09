@@ -1,0 +1,34 @@
+---------------------------------------------------------------------------
+
+by burci at 2013-04-09T09:39:45Z
+
+The bug comes with PR #310 .
+
+---------------------------------------------------------------------------
+
+by xdecock at 2013-04-09T11:36:24Z
+
+yes, the goal was to avoid collision, but can indeed be patched to use md5,
+seems a good idea.
+
+Xavier
+
+On Tue, Apr 9, 2013 at 11:39 AM, Peter Buri <notifications@github.com>wrote:
+
+> It comes with PR #310<https://github.com/swiftmailer/swiftmailer/issues/310>.
+>
+> —
+> Reply to this email directly or view it on GitHub<https://github.com/swiftmailer/swiftmailer/pull/316#issuecomment-16103309>
+> .
+>
+
+--
+Xavier De Cock
+GPG Fingerprint: 93CA EE3F 9F57 5BE1 AE4A  794D 3C74 CA9E E7A5 0C1B
+GPG Id: 0xE7A50C1B
+
+---------------------------------------------------------------------------
+
+by burci at 2013-04-09T12:01:27Z
+
+Ok, then i changed to use md5.
