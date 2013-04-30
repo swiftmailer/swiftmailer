@@ -4,7 +4,7 @@
     "description": "Swiftmailer, free feature-rich PHP mailer",
     "keywords": ["mail","mailer"],
     "homepage": "http://swiftmailer.org",
-    "license": "LGPL",
+    "license": "MIT",
     "authors": [
         {
             "name": "Chris Corbyn"

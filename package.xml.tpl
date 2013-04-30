@@ -31,7 +31,7 @@
   <release>{{ stability }}</release>
   <api>{{ stability }}</api>
  </stability>
- <license uri="http://www.opensource.org/licenses/lgpl-3.0.html">LGPL</license>
+ <license uri="http://opensource.org/licenses/mit-license.php">MIT</license>
  <notes>-</notes>
  <contents>
    <dir name="/">
