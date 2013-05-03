@@ -31,6 +31,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
     /** A mime boundary, if any is used */
     private $_boundary;
+    
+    /** The response after sending */
+    private $_response;
 
     /** Mime types to be used based on the nesting level */
     private $_compositeRanges = array(
@@ -112,6 +115,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             );
 
         $this->_id = $this->getRandomId();
+        $this->_response = array();
     }
 
     /**
@@ -532,6 +536,34 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         $this->_bodyToByteStream($is);
     }
 
+    /**
+     * Get the server response for a message.  Due to the internals of swiftmailer, 1 message may be decomposed
+     * and sent several time to different recipients.
+     *
+     * This is only populated after the sending the message to a server and the response is the text that server sends
+     * which will vary from server to server
+     *
+     * @return array array(array(recipients), response)
+     */
+    public function getResponse()
+    {
+         return $this->_response;
+    }
+    
+    /**
+     * Add a server response for a message.  Due to the internals of swiftmailer, 1 message may be decomposed
+     * and sent multiple times to different recipients.
+     *
+     * This should only be populated after a message is sent
+     * 
+     * @param array $recipients 
+     * @param string $response
+     */
+    public function addResponse(array $recipients, $response)
+    {
+          $this->_response[] = array($recipients, $response);
+    }
+    
     /**
      * Write this entire entity to a {@link Swift_InputByteStream}.
      *

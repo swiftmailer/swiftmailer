@@ -332,7 +332,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
             $this->_throwException($e);
         }
         $this->_buffer->setWriteTranslations(array());
-        $this->executeCommand("\r\n.\r\n", array(250));
+        return $this->executeCommand("\r\n.\r\n", array(250));
     }
 
     /** Determine the best-use reverse path for this message */
@@ -425,7 +425,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 
         if ($sent != 0) {
             $this->_doDataCommand();
-            $this->_streamMessage($message);
+            $response = $this->_streamMessage($message);
+            $message->addResponse($recipients, $response);
         } else {
             $this->reset();
         }

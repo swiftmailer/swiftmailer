@@ -874,6 +874,35 @@ abstract class Swift_Transport_AbstractSmtpTest
             );
     }
 
+    public function testResponseIsPopulated()
+    {
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
+        $message = $this->_createMessage();
+        $this->_checking(Expectations::create()
+            -> allowing($message)->getFrom() -> returns(array('me@domain.com'=>'Me'))
+            -> allowing($message)->getTo() -> returns(array('foo@bar' => null))
+            -> allowing($message)->getResponse() -> returns(array(array('foo@bar'), '250 OK'))
+            -> allowing($message)->addResponse(array(0 => 'foo@bar'),'250 OK')
+            -> allowing($message)
+
+            -> one($buf)->write("MAIL FROM: <me@domain.com>\r\n") -> returns(1)
+            -> one($buf)->readLine(1) -> returns("250 OK\r\n")
+            -> one($buf)->write("RCPT TO: <foo@bar>\r\n") -> returns(2)
+            -> one($buf)->readLine(2) -> returns("250 OK\r\n")
+            -> one($buf)->write("DATA\r\n") -> returns(3)
+            -> one($buf)->readLine(3) -> returns("354 OK\r\n")
+            -> one($buf)->write("\r\n.\r\n") -> returns(4)
+            -> one($buf)->readLine(4) -> returns("250 OK\r\n")
+            );
+        $this->_finishBuffer($buf);
+        $smtp->start();
+        $this->assertEqual(1, $smtp->send($message, $failures));
+        $this->assertEqual(array(array('foo@bar'), '250 OK'), $message->getResponse(),
+            '%s: Responses should be generated in recipient, response array'
+            );
+    }
+    
     public function testSendingRegeneratesMessageId()
     {
         $buf = $this->_getBuffer();
