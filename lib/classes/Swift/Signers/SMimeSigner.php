@@ -79,7 +79,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      */
     public static function newInstance($certificate = null, $privateKey = null)
     {
-        return new static($certificate, $privateKey);
+        return new self($certificate, $privateKey);
     }
 
     /**

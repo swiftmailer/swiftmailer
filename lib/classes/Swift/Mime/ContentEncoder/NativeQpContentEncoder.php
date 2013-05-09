@@ -27,7 +27,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
      */
     public function __construct($charset = null)
     {
-        $this->charset = $charset ?: 'utf-8';
+        $this->charset = $charset ? $charset : 'utf-8';
     }
 
     /**
