@@ -141,14 +141,22 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      */
     public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
     {
+        $directoryIterator = new DirectoryIterator($this->_path);
+
+        /* Start the transport only if there are queued files to send */
         if (!$transport->isStarted()) {
-            $transport->start();
+            foreach ($directoryIterator as $file) {
+                if (substr($file->getRealPath(), -8) == '.message') {
+                    $transport->start();
+                    break;
+                }
+            }
         }
 
         $failedRecipients = (array) $failedRecipients;
         $count = 0;
         $time = time();
-        foreach (new DirectoryIterator($this->_path) as $file) {
+        foreach ($directoryIterator as $file) {
             $file = $file->getRealPath();
 
             if (substr($file, -8) != '.message') {
