@@ -487,6 +487,21 @@ own address shows up in the ``To:`` field, follow the following recipe:
 Each recipient of the messages receives a different copy with only their own
 email address on the ``To:`` field.
 
+Make sure to add only valid email addresses as recipients. If you try to add an
+invalid email address with ``setTo()``, ``setCc()`` or ``setBcc()``, Swift
+Mailer will throw a ``Swift_RfcComplianceException``.
+
+If you add recipients automatically based on a data source that may contain
+invalid email addresses, you can prevent possible exceptions by validating the
+addresses using ``Swift_Validate::email($email)`` and only adding addresses
+that validate. Another way would be to wrap your ``setTo()``, ``setCc()`` and
+``setBcc()`` calls in a try-catch block and handle the
+``Swift_RfcComplianceException`` in the catch block.
+
+Handling invalid addresses properly is especially important when sending emails
+in large batches since a single invalid address might cause an unhandled
+exception and stop the execution or your script early.
+
 .. note::
 
     In the following example, two emails are sent. One to each of
