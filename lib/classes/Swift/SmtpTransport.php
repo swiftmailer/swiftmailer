@@ -14,6 +14,8 @@
  * @package    Swift
  * @subpackage Transport
  * @author     Chris Corbyn
+ * @method Swift_SmtpTransport setUsername(string $username) Set the username to authenticate with.
+ * @method Swift_SmtpTransport setPassword(string $password) Set the password to authenticate with.
  */
 class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
 {
