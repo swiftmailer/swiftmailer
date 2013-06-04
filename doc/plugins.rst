@@ -34,7 +34,7 @@ chance to process its queue and recover some resources.
 Using the AntiFlood Plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The AntiFlood Plugin -- like all plugins -- is added with the Mailer class'
+The AntiFlood Plugin -- like all plugins -- is added with the Mailer class's
 ``registerPlugin()`` method. It takes two constructor parameters: the number of
 emails to pause after, and optionally the number of seconds to pause for.
 
