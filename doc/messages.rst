@@ -582,6 +582,17 @@ Each type can contain one, or several addresses. It's possible to list only
 the addresses of the recipients, or you can personalize the address by
 providing the real name of the recipient.
 
+Make sure to add only valid email addresses as recipients. If you try to add an
+invalid email address with ``setTo()``, ``setCc()`` or ``setBcc()``, Swift
+Mailer will throw a ``Swift_RfcComplianceException``.
+
+If you add recipients automatically based on a data source that may contain
+invalid email addresses, you can prevent possible exceptions by validating the
+addresses using ``Swift_Validate::email($email)`` and only adding addresses
+that validate. Another way would be to wrap your ``setTo()``, ``setCc()`` and
+``setBcc()`` calls in a try-catch block and handle the
+``Swift_RfcComplianceException`` in the catch block.
+
 .. sidebar:: Syntax for Addresses
 
     If you only wish to refer to a single email address (for example your
