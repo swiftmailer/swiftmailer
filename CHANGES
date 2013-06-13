@@ -4,6 +4,7 @@ Changelog
 5.1.0 (2013-XX-XX)
 ------------------
 
+ * changed the spool to only start the transport when a mail has to be sent
  * fixed compatibility with PHP 5.2
  * fixed LICENSE file
 
