@@ -405,6 +405,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
                 new Swift_TransportException(
                     $e->getMessage())
                 );
+        } catch (Swift_TransportException $e) {
+            $this->_throwException($e);
         }
 
         return $response;
