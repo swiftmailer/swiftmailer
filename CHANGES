@@ -4,6 +4,8 @@ Changelog
 5.0.2 (2013-XX-XX)
 ------------------
 
+ * handled correct exception type while reading IoBuffer output
+
 5.0.1 (2013-06-17)
 ------------------
 
