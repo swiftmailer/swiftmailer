@@ -15,6 +15,10 @@ Swift_DependencyContainer::getInstance()
         'transport.buffer',
         'transport.eventdispatcher'
     ))
+    
+    ->register('transport.mailerq')
+    ->asNewInstanceOf('Swift_Transport_MailerQTransport')
+    ->withDependencies(array('transport.eventdispatcher'))
 
     ->register('transport.mail')
     ->asNewInstanceOf('Swift_Transport_MailTransport')
