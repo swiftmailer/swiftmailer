@@ -474,7 +474,6 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
 
     private function _addToHash($string)
     {
-        echo $string;
         $this->_canonData .= $string;
         hash_update($this->_hashHandler, $string);
     }
