@@ -651,10 +651,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $signature = '';
         switch ($this->_hashAlgorithm) {
             case 'rsa-sha1':
-                $algorithm = 'sha1';
+                $algorithm = OPENSSL_ALGO_SHA1;
                 break;
             case 'rsa-sha256':
-                $algorithm = 'sha256';
+                $algorithm = OPENSSL_ALGO_SHA256;
                 break;
         }
         $pkeyId=openssl_get_privatekey($this->_privateKey);
