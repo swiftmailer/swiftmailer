@@ -136,7 +136,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
         $body = parent::getFieldBody();
         foreach ($this->_params as $name => $value) {
             if (!is_null($value)) {
-                //Add the parameter
+                // Add the parameter
                 $body .= '; ' . $this->_createParameter($name, $value);
             }
         }
@@ -160,7 +160,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
     {
         $tokens = parent::toTokens(parent::getFieldBody());
 
-        //Try creating any parameters
+        // Try creating any parameters
         foreach ($this->_params as $name => $value) {
             if (!is_null($value)) {
                 //Add the semi-colon separator
@@ -189,14 +189,14 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
         $origValue = $value;
 
         $encoded = false;
-        //Allow room for parameter name, indices, "=" and DQUOTEs
+        // Allow room for parameter name, indices, "=" and DQUOTEs
         $maxValueLength = $this->getMaxLineLength() - strlen($name . '=*N"";') - 1;
         $firstLineOffset = 0;
 
-        //If it's not already a valid parameter value...
+        // If it's not already a valid parameter value...
         if (!preg_match('/^' . self::TOKEN_REGEX . '$/D', $value)) {
-            //TODO: text, or something else??
-            //... and it's not ascii
+            // TODO: text, or something else??
+            // ... and it's not ascii
             if (!preg_match('/^' . $this->getGrammar()->getDefinition('text') . '*$/D', $value)) {
                 $encoded = true;
                 //Allow space for the indices, charset and language
@@ -207,13 +207,13 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
             }
         }
 
-        //Encode if we need to
+        // Encode if we need to
         if ($encoded || strlen($value) > $maxValueLength) {
             if (isset($this->_paramEncoder)) {
                 $value = $this->_paramEncoder->encodeString(
                     $origValue, $firstLineOffset, $maxValueLength, $this->getCharset()
                     );
-            } else { //We have to go against RFC 2183/2231 in some areas for interoperability
+            } else { // We have to go against RFC 2183/2231 in some areas for interoperability
                 $value = $this->getTokenAsEncodedWord($origValue);
                 $encoded = false;
             }
@@ -221,7 +221,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
 
         $valueLines = isset($this->_paramEncoder) ? explode("\r\n", $value) : array($value);
 
-        //Need to add indices
+        // Need to add indices
         if (count($valueLines) > 1) {
             $paramLines = array();
             foreach ($valueLines as $i => $line) {

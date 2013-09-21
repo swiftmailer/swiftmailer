@@ -12,7 +12,7 @@
  * List of MIME type automatically detected in Swift Mailer.
  */
 
-//You may add or take away what you like (lowercase required)
+// You may add or take away what you like (lowercase required)
 
 $swift_mime_types = array(
     'aif'  => 'audio/x-aiff',

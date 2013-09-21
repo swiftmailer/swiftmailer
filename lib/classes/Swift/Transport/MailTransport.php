@@ -137,7 +137,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
 
         $reversePath = $this->_getReversePath($message);
 
-        //Remove headers that would otherwise be duplicated
+        // Remove headers that would otherwise be duplicated
         $message->getHeaders()->remove('To');
         $message->getHeaders()->remove('Subject');
 
@@ -146,7 +146,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
         $message->getHeaders()->set($toHeader);
         $message->getHeaders()->set($subjectHeader);
 
-        //Separate headers from body
+        // Separate headers from body
         if (false !== $endHeaders = strpos($messageStr, "\r\n\r\n")) {
             $headers = substr($messageStr, 0, $endHeaders) . "\r\n"; //Keep last EOL
             $body = substr($messageStr, $endHeaders + 4);
@@ -158,11 +158,11 @@ class Swift_Transport_MailTransport implements Swift_Transport
         unset($messageStr);
 
         if ("\r\n" != PHP_EOL) {
-            //Non-windows (not using SMTP)
+            // Non-windows (not using SMTP)
             $headers = str_replace("\r\n", PHP_EOL, $headers);
             $body = str_replace("\r\n", PHP_EOL, $body);
         } else {
-            //Windows, using SMTP
+            // Windows, using SMTP
             $headers = str_replace("\r\n.", "\r\n..", $headers);
             $body = str_replace("\r\n.", "\r\n..", $body);
         }
