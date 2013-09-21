@@ -530,10 +530,10 @@ is used as a ``src`` attribute.
         // Create your file contents in the normal way, but don't write them to disk
         $img_data = create_my_image_data();
 
-        //Create the message
+        // Create the message
         $message = Swift_Message::newInstance('My subject');
 
-        //Set the body
+        // Set the body
         $message->setBody(
         '<html>' .
         ' <head></head>' .
