@@ -256,7 +256,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
                 ))
             {
                 $return = call_user_func_array(array($handler, $method), $args);
-                //Allow fluid method calls
+                // Allow fluid method calls
                 if (is_null($return) && substr($method, 0, 3) == 'set') {
                     return $this;
                 } else {

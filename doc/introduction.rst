@@ -45,7 +45,7 @@ A code sample will look like this::
       ...
     }
 
-    //A Comment
+    // A Comment
     $obj = new AClass($arg1, $arg2, ... );
 
     /* A note about another way of doing something
