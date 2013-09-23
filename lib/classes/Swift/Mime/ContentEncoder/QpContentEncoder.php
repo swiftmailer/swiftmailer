@@ -83,7 +83,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
             if (isset($this->_filter)) {
                 // If we can't filter because we need more bytes
                 while ($this->_filter->shouldBuffer($bytes)) {
-                    //Then collect bytes into the buffer
+                    // Then collect bytes into the buffer
                     if (false === $moreBytes = $this->_nextSequence(1)) {
                         break;
                     }

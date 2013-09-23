@@ -67,7 +67,7 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory implements Swift
             'constructor' => array(4)
             );
 
-        //Utf-8
+        // Utf-8
         self::$_map['utf-?8'] = array(
             'class' => $prefix . 'Utf8Reader',
             'constructor' => array()
@@ -92,7 +92,7 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory implements Swift
         //32 bits
         self::$_map['(ucs-?4|utf-?32)'] = $fourBytes;
 
-        //Fallback
+        // Fallback
         self::$_map['.*'] = $singleByte;
     }
 
