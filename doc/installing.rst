@@ -16,6 +16,20 @@ To install the Swift Mailer PEAR package:
 
 * Then, run the command ``pear install swift/swift``.
 
+
+Installing with Composer
+------------------------
+
+If you use Composer to manage your project dependencies, you can install Swiftmailer like this:
+
+``php composer.phar require swiftmailer/swiftmailer``
+
+You'll be asked to type in the version you want, for example ``v5.0.2``.
+
+Check `Packagist`_ to have a list of all available versions.
+
+.. _`Packagist`: https://packagist.org/packages/swiftmailer/swiftmailer
+
 Installing from a Package
 -------------------------
 
