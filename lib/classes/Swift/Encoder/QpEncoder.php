@@ -183,7 +183,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         // Conveniently 4 chars is the UTF-8 safe number since UTF-8 has up to 6
         // bytes per char and (6 * 4 * 3 = 72 chars per line) * =NN is 3 bytes
         while (false !== $bytes = $this->_nextSequence()) {
-            //If we're filtering the input
+            // If we're filtering the input
             if (isset($this->_filter)) {
                 // If we can't filter because we need more bytes
                 while ($this->_filter->shouldBuffer($bytes)) {

@@ -114,7 +114,7 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
     public function bindEventListener(Swift_Events_EventListener $listener)
     {
         foreach ($this->_listeners as $l) {
-            //Already loaded
+            // Already loaded
             if ($l === $listener) {
                 return;
             }
