@@ -163,7 +163,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
         // Try creating any parameters
         foreach ($this->_params as $name => $value) {
             if (!is_null($value)) {
-                //Add the semi-colon separator
+                // Add the semi-colon separator
                 $tokens[count($tokens)-1] .= ';';
                 $tokens = array_merge($tokens, $this->generateTokenLines(
                     ' ' . $this->_createParameter($name, $value)
@@ -199,7 +199,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
             // ... and it's not ascii
             if (!preg_match('/^' . $this->getGrammar()->getDefinition('text') . '*$/D', $value)) {
                 $encoded = true;
-                //Allow space for the indices, charset and language
+                // Allow space for the indices, charset and language
                 $maxValueLength = $this->getMaxLineLength() - strlen($name . '*N*="";') - 1;
                 $firstLineOffset = strlen(
                     $this->getCharset() . "'" . $this->getLanguage() . "'"
