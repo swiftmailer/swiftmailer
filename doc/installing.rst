@@ -4,6 +4,16 @@ Installing the Library
 Installing Swift Mailer is trivial. Usually it's just a case of uploading the
 extracted source files to your web server.
 
+Installing with Composer
+------------------------
+
+If you use Composer to manage your project dependencies, you can install
+Swiftmailer like this:
+
+.. code-block:: bash
+
+    $ php composer.phar require swiftmailer/swiftmailer @stable
+
 Installing from PEAR
 --------------------
 
@@ -15,17 +25,6 @@ To install the Swift Mailer PEAR package:
 * Run the command ``pear channel-discover pear.swiftmailer.org``.
 
 * Then, run the command ``pear install swift/swift``.
-
-
-Installing with Composer
-------------------------
-
-If you use Composer to manage your project dependencies, you can install
-Swiftmailer like this:
-
-.. code-block:: bash
-
-    $ php composer.phar require swiftmailer/swiftmailer @stable
 
 Installing from a Package
 -------------------------
