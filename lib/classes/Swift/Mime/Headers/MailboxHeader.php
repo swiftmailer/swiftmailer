@@ -256,7 +256,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         foreach ($mailboxes as $key => $value) {
             if (is_string($key)) { //key is email addr
                 $address = $key;
-                $name = $value;
+                $name = '"' . $value . '"';
             } else {
                 $address = $value;
                 $name = null;
