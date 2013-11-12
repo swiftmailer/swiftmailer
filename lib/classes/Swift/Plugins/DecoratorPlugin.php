@@ -157,7 +157,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
             return $this->_replacements->getReplacementsFor($address);
         }
 
-        return !isset($this->_replacements[$address]) ?: $this->_replacements[$address];
+        return isset($this->_replacements[$address]) ?: $this->_replacements[$address];
             ? $this->_replacements[$address]
             : null
         ;
