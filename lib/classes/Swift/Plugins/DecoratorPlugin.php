@@ -89,9 +89,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
             $body = $message->getBody();
             $search = array_keys($replacements);
             $replace = array_values($replacements);
-            $bodyReplaced = str_replace(
-                $search, $replace, $body
-                );
+            $bodyReplaced = str_replace($search, $replace, $body);
             if ($body != $bodyReplaced) {
                 $this->_originalBody = $body;
                 $message->setBody($bodyReplaced);
@@ -128,9 +126,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
                 list($type, ) = sscanf($child->getContentType(), '%[^/]/%s');
                 if ('text' == $type) {
                     $body = $child->getBody();
-                    $bodyReplaced = str_replace(
-                        $search, $replace, $body
-                        );
+                    $bodyReplaced = str_replace($search, $replace, $body);
                     if ($body != $bodyReplaced) {
                         $child->setBody($bodyReplaced);
                         $this->_originalChildBodies[$child->getId()] = $body;
@@ -146,7 +142,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
      *
      * If this plugin was provided with a delegate instance of
      * {@link Swift_Plugins_Decorator_Replacements} then the call will be
-     * delegated to it.  Otherwise, it will attempt to find the replacements
+     * delegated to it. Otherwise, it will attempt to find the replacements
      * from the array provided in the constructor.
      *
      * If no replacements can be found, an empty value (NULL) is returned.
@@ -159,12 +155,12 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
     {
         if ($this->_replacements instanceof Swift_Plugins_Decorator_Replacements) {
             return $this->_replacements->getReplacementsFor($address);
-        } else {
-            return isset($this->_replacements[$address])
-                ? $this->_replacements[$address]
-                : null
-                ;
         }
+
+        return !isset($this->_replacements[$address]) ?: $this->_replacements[$address];
+            ? $this->_replacements[$address]
+            : null
+        ;
     }
 
     /**
