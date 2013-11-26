@@ -12,6 +12,14 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
 
     abstract protected function _initializeBuffer();
 
+    public function skip()
+    {
+        $this->skipUnless(false == getenv('TRAVIS'),
+            'Will fail on travis-ci if not skipped due to travis blocking ' .
+            'socket mailing tcp connections.'
+            );
+    }
+
     public function setUp()
     {
         $this->_buffer = new Swift_Transport_StreamBuffer(

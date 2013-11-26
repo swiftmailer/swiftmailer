@@ -1,0 +1,15 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+
+before_script:
+    - cp tests/acceptance.conf.php.default tests/acceptance.conf.php
+    - cp tests/smoke.conf.php.default tests/smoke.conf.php
+    - gem install mailcatcher
+    - mailcatcher --smtp-port 4456
+
+script:
+    - php test-suite/run.php

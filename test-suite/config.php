@@ -5,7 +5,11 @@ error_reporting(E_ALL | E_STRICT); ini_set('display_errors', true);
 
 if (defined('E_DEPRECATED'))
 {
-  error_reporting(error_reporting() | E_DEPRECATED);
+    if (version_compare(phpversion(), '5.5', '>=')) {
+        error_reporting(~E_DEPRECATED);
+    } else {
+        error_reporting(error_reporting() | E_DEPRECATED);
+    }
 }
 
 //E_STRICT compliance -- If you change this timezone some tests may fail -
