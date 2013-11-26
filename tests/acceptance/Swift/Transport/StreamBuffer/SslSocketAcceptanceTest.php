@@ -15,6 +15,7 @@ class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest
             'Cannot run test without an SSL enabled SMTP host to connect to (define ' .
             'SWIFT_SSL_HOST in tests/acceptance.conf.php if you wish to run this test)'
             );
+        parent::skip();
     }
 
     protected function _initializeBuffer()

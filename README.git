@@ -50,7 +50,7 @@ the repository.
 The main library files live in /lib and the tests live in /tests.  You can run
 the tests by pointing your web browser at /test-suite, or by running the
 command "php test-suite/run.php".  Some tests will be "skipped" if
-tests/smoke.conf.php and tests/acceptance.conf.php are not editted.  This is
+tests/smoke.conf.php and tests/acceptance.conf.php are not edited.  This is
 harmless and normal.
 
 If you want to create a bundled-up package from subversion you can do so if
