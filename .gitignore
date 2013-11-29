@@ -1,4 +1,4 @@
-tests/acceptance.conf.php
-tests/smoke.conf.php
-build
-vendor
+/tests/acceptance.conf.php
+/tests/smoke.conf.php
+/build
+/vendor
