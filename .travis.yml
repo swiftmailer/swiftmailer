@@ -13,7 +13,3 @@ before_script:
 
 script:
     - php test-suite/run.php
-
-notifications:
-  irc:   "irc.freenode.org#swiftmailer"
-  email: false
