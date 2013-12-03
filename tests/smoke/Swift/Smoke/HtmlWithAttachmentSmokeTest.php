@@ -25,6 +25,6 @@ class Swift_Smoke_HtmlWithAttachmentSmokeTest
         $this->assertEqual(1, $mailer->send($message),
             '%s: The smoke test should send a single message'
             );
-        $this->_visualCheck('http://swiftmailer.org/smoke/4.0.0/attachment.jpg');
+        $this->_visualCheck('http://swiftmailer.org/smoke/4.0.0/html_with_attachment.jpg');
     }
 }
