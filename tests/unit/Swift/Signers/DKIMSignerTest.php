@@ -6,6 +6,12 @@ require_once 'Swift/Mime/HeaderSet.php';
 
 class Swift_Signers_DKIMSignerTest extends Swift_Tests_SwiftUnitTestCase
 {
+    public function skip()
+    {
+        if (version_compare(phpversion(), '5.4', '<')) {
+            $this->skipUnless(defined('OPENSSL_ALGO_SHA256'), 'skipping because of https://bugs.php.net/bug.php?id=61421');
+        }
+    }
 
     public function testBasicSigningHeaderManipulation()
     {

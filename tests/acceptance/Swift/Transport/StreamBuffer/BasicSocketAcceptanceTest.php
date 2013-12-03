@@ -11,6 +11,7 @@ class Swift_Transport_StreamBuffer_BasicSocketAcceptanceTest
             'Cannot run test without an SMTP host to connect to (define ' .
             'SWIFT_SMTP_HOST in tests/acceptance.conf.php if you wish to run this test)'
             );
+        parent::skip();
     }
 
     protected function _initializeBuffer()
