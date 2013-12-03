@@ -1,0 +1,44 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2013-12-03T12:19:58Z
+
+Any way we can test this to avoid regressions?
+
+---------------------------------------------------------------------------
+
+by xdecock at 2013-12-03T12:22:11Z
+
+can't find a way, the trouble, is that it's inconsistent with _doWrite();
+
+so, basically :
+
+while using the _doWrite() path, binded stream get unfiltered content,
+
+when using the unbind path, binded stream get filtered content.
+
+On Tue, Dec 3, 2013 at 1:19 PM, Fabien Potencier
+<notifications@github.com>wrote:
+
+> Any way we can test this to avoid regressions?
+>
+> —
+> Reply to this email directly or view it on GitHub<https://github.com/swiftmailer/swiftmailer/pull/401#issuecomment-29705017>
+> .
+>
+
+--
+Xavier De Cock
+GPG Fingerprint: 93CA EE3F 9F57 5BE1 AE4A  794D 3C74 CA9E E7A5 0C1B
+GPG Id: 0xE7A50C1B
+
+---------------------------------------------------------------------------
+
+by fabpot at 2013-12-03T12:22:53Z
+
+Should fix #180, #62, #252, #400, #74, #216, #143, #72.
+
+---------------------------------------------------------------------------
+
+by richadlr at 2013-12-03T12:51:55Z
+
+Good job!!
