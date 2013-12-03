@@ -1,0 +1,186 @@
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-26T09:20:59Z
+
+@stof for some reason warnings for deprecation would not be turned off on travis, can you please check?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-26T09:55:09Z
+
+@stof aux, trying all kinds of stuff, i think there was a weird bug with simpletest on restting should skip, i have forced it with a custom method for now
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-26T09:55:46Z
+
+@stof however the part with the deprecated messages on php5.5 i have no idea why even setting the ~E_DEPRECATED is still showing
+
+---------------------------------------------------------------------------
+
+by stof at 2013-11-26T10:18:08Z
+
+``error_reporting() | ~E_DEPRECATED`` will not remove the ``E_DEPRECATED``. It is not the right way to remove a flag in a binary flag. This is why it does not remove them.
+But instead of hiding them, it would be better to stop using deprecated stuff.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-26T10:18:41Z
+
+solved the tricky ~E_DEPRECATED but weird, makes no sense
+
+now this PR can be merged and we can work on moving the other things to a higher ground in separate PRs
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-26T10:40:34Z
+
+@fabpot @stof :shipit:
+
+:baby:
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-26T17:01:03Z
+
+@fabpot i will uncomment the failing test since it got merged now. Do you have any other comments before shipping this one?
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-26T18:20:02Z
+
+@sstok https://travis-ci.org/cordoval/swiftmailer/jobs/14559000 what do you suggest? please :baby:
+
+---------------------------------------------------------------------------
+
+by fabpot at 2013-11-27T07:23:24Z
+
+Here is the configuration I'm using when running the test suite locally on my machine:
+
+`acceptance.conf.php`
+
+```php
+<?php
+
+define('SWIFT_TMP_DIR', '/tmp');
+define('SWIFT_SMTP_HOST', 'smtp.gmail.com:25');
+define('SWIFT_TLS_HOST', 'smtp.gmail.com:465');
+define('SWIFT_SSL_HOST', 'smtp.gmail.com:465');
+define('SWIFT_SENDMAIL_PATH', '/usr/sbin/sendmail');
+```
+
+`smoke.conf.php`
+
+```php
+<?php
+
+define('SWIFT_SMOKE_EMAIL_ADDRESS', 'XXXXXXXXX@gmail.com');
+define('SWIFT_SMOKE_TRANSPORT_TYPE', 'smtp');
+define('SWIFT_SMOKE_SMTP_HOST', 'smtp.gmail.com');
+define('SWIFT_SMOKE_SMTP_PORT', '465');
+define('SWIFT_SMOKE_SMTP_USER', 'XXXXXXX');
+define('SWIFT_SMOKE_SMTP_PASS', 'XXXXXXX');
+define('SWIFT_SMOKE_SMTP_ENCRYPTION', 'ssl');
+define('SWIFT_SMOKE_SENDMAIL_COMMAND', '/usr/sbin/sendmail -bs');
+```
+
+Where `XXXXXX` are obviously replaced with a test Gmail account credentials.
+
+---------------------------------------------------------------------------
+
+by sstok at 2013-11-27T08:27:47Z
+
+@cordoval Seems to be caused by wrong line ending (X509 uses \n\r), I've configured my machine with.
+
+```ini
+[core]
+    eol = lf
+    excludesfile = "/c/Users/Sebastiaan Stok/.gitignore_global"
+    autocrlf = false
+```
+
+So the line-endings got messed-up.
+
+---------------------------------------------------------------------------
+
+by sstok at 2013-11-27T08:47:39Z
+
+#397
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-28T18:56:21Z
+
+@sstok @fabpot i ran tests locally with gem mailcatcher installed and running and all tests pass.
+Travis fails weird with a cryptic error on a regexp, maybe @sstok can you please try hinting me what it is?
+
+[here](https://travis-ci.org/cordoval/swiftmailer/jobs/14671366)
+```
+>> Swift_Transport_StreamBuffer_BasicSocketAcceptanceTest OK
+1) Pattern [/^[0-9]{3}.*?\r\n$/D] not detected in [Boolean: false] at [/home/travis/build/cordoval/swiftmailer/tests/acceptance/Swift/Transport/StreamBuffer/AbstractStreamBufferAcceptanceTest.php line 27]
+    in: Swift_Transport_StreamBuffer_ProcessAcceptanceTest -> testReadLine
+2) Pattern [/^[0-9]{3}.*?\r\n$/D] not detected in [NULL] at [/home/travis/build/cordoval/swiftmailer/tests/acceptance/Swift/Transport/StreamBuffer/AbstractStreamBufferAcceptanceTest.php line 31]
+    in: Swift_Transport_StreamBuffer_ProcessAcceptanceTest -> testReadLine
+3) Pattern [/^[0-9]{3}.*?\r\n$/D] not detected in [Boolean: false] at [/home/travis/build/cordoval/swiftmailer/tests/acceptance/Swift/Transport/StreamBuffer/AbstractStreamBufferAcceptanceTest.php line 40]
+    in: Swift_Transport_StreamBuffer_ProcessAcceptanceTest -> testWrite
+4) Pattern [/^[0-9]{3}.*?\r\n$/D] not detected in [NULL] at [/home/travis/build/cordoval/swiftmailer/tests/acceptance/Swift/Transport/StreamBuffer/AbstractStreamBufferAcceptanceTest.php line 45]
+    in: Swift_Transport_StreamBuffer_ProcessAcceptanceTest -> testWrite
+5) Pattern [/^[0-9]{3}.*?\r\n$/D] not detected in [NULL] at [/home/travis/build/cordoval/swiftmailer/tests/acceptance/Swift/Transport/StreamBuffer/AbstractStreamBufferAcceptanceTest.php line 50]
+    in: Swift_Transport_StreamBuffer_ProcessAcceptanceTest -> testWrite
+  !! Swift_Transport_StreamBuffer_ProcessAcceptanceTest FAILED
+  >> Swift_Transport_StreamBuffer_SocketTimeoutTest OK
+  >> Swift_Transport_StreamBuffer_SslSocketAcceptanceTest OK
+  >> Swift_Transport_StreamBuffer_TlsSocketAcceptanceTest OK
+FAILURES!!!
+Test cases run: 107/107, Passes: 3867, Failures: 5, Exceptions: 0
+The command "php test-suite/run.php" exited with 1.
+Done. Your build exited with 1.
+```
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-28T19:09:47Z
+
+@stof any thoughts? @sstok ping
+
+nvm i resolved it with the travis guys and just skipped that test which is blocked, and i did it conditionally upon $TRAVIS.
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-29T18:12:26Z
+
+@fabpot @stof @sstok
+
+this is good to go now :baby:
+
+:+1: :shipit:
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-29T18:17:48Z
+
+@fabpot done
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-11-29T18:20:22Z
+
+@fabpot addressed the comment of gitignore as well
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-12-01T03:31:12Z
+
+bump @fabpot
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-12-03T13:10:10Z
+
+bump @fabpot done
+
+---------------------------------------------------------------------------
+
+by cordoval at 2013-12-03T13:12:00Z
+
+should i rebase or we have a clean merge? @fabpot
