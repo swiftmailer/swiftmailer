@@ -179,8 +179,9 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
       );
   }
   
-  private function preg_print_escape( $matches ) {
-  	return sprintf("&#%d;", ord($matches[0]));  	
+  private function preg_print_escape( $matches )
+  {
+      return sprintf("&#%d;", ord($matches[0]));
   }
   
   /**
