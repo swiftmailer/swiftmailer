@@ -158,7 +158,7 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
     }
     
     $xml = str_replace("\0", '?', trim($xml));
-    $xml = preg_replace('/[^\x01-\x7F]/e', 'sprintf("&#%d;", ord("$0"));', $xml); //Do something better?
+    $xml = preg_replace_callback('/[^\x01-\x7F]/', array($this, 'preg_print_escape'), $xml); //Do something better?
     if (!empty($xml))
     {
       $document = @simplexml_load_string($xml);
@@ -177,6 +177,10 @@ abstract class Sweety_Runner_AbstractTestRunner implements Sweety_Runner
         )),
       $testCase
       );
+  }
+  
+  private function preg_print_escape( $matches ) {
+  	return sprintf("&#%d;", ord($matches[0]));  	
   }
   
   /**
