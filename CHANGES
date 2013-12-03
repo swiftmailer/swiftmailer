@@ -5,6 +5,7 @@ Changelog
 ------------------
 
  * fixed double-dot bug
+ * fixed DKIM signer
 
 5.0.2 (2013-08-30)
 ------------------
