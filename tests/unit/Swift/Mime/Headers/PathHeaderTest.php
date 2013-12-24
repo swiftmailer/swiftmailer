@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit_Framework_TestCase
 {
     public function testTypeIsPathHeader()
@@ -72,6 +74,6 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit_Framework_TestCase
 
     private function _getHeader($name)
     {
-        return new Swift_Mime_Headers_PathHeader($name, new Swift_Mime_Grammar());
+        return new Swift_Mime_Headers_PathHeader($name, new EmailValidator());
     }
 }
