@@ -29,14 +29,21 @@ class Swift_Validate
      */
     public static function email($email)
     {
-        if (self::$grammar === null) {
-            self::$grammar = Swift_DependencyContainer::getInstance()
-                ->lookup('mime.grammar');
-        }
+        if (version_compare(phpversion(), '5.3.0', '>=')) {
+            $validator = new Egulias\EmailValidator\EmailValidator();
+            $isValid = $validator->isValid($email);
+        } else {
+            if (self::$grammar===null) {
+                self::$grammar = Swift_DependencyContainer::getInstance()
+                    ->lookup('mime.grammar');
+            }
 
-        return (bool) preg_match(
-                '/^'.self::$grammar->getDefinition('addr-spec').'$/D',
+            $isValid = preg_match(
+                '/^' . self::$grammar->getDefinition('addr-spec') . '$/D',
                 $email
             );
+        }
+
+        return $isValid;
     }
 }
