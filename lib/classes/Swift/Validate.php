@@ -30,7 +30,7 @@ class Swift_Validate
     public static function email($email)
     {
         if (version_compare(phpversion(), '5.3.0', '>=')) {
-            $validator = new Egulias\EmailValidator\EmailValidator();
+            $validator = new Swift_EmailValidatorBridge();
             $isValid = $validator->isValid($email);
         } else {
             if (self::$grammar===null) {
