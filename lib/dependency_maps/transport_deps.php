@@ -48,7 +48,7 @@ Swift_DependencyContainer::getInstance()
             'transport.crammd5auth',
             'transport.loginauth',
             'transport.plainauth',
-	        'transport.ntlmauth'
+            'transport.ntlmauth'
         )
     ))
 
@@ -61,8 +61,8 @@ Swift_DependencyContainer::getInstance()
     ->register('transport.plainauth')
     ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_PlainAuthenticator')
 
-	->register('transport.ntlmauth')
-	->asNewInstanceOf('Swift_Transport_Esmtp_Auth_NTLMAuthenticator')
+    ->register('transport.ntlmauth')
+    ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_NTLMAuthenticator')
 
     ->register('transport.eventdispatcher')
     ->asNewInstanceOf('Swift_Events_SimpleEventDispatcher')
