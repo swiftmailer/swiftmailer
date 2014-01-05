@@ -110,8 +110,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $message3T = "4e544c4d5353500003000000180018006000000018001800780000000c000c0040000000080008004c0000000c000c0054000000000000009a0000000102000054004500530054004e00540074006500730074004d0045004d004200450052001879f60127f8a877022132ec221bcbf3ca016a9f76095606e6285df3287c5d194f84df1a94817c7282d09754b6f9e02a";
 
         $login = $this->_getAuthenticator();
-        $message3 = hex2bin($message3T);
-        //$message3 = $this->_invokePrivateMethod('createMessage3', $login, array($domain, $username, $workstation, hex2bin($lmResponse), hex2bin($ntlmResponse)));
+        $message3 = $this->_invokePrivateMethod('createMessage3', $login, array($domain, $username, $workstation, hex2bin($lmResponse), hex2bin($ntlmResponse)));
 
         $this->assertEqual($message3T, bin2hex($message3),
             '%s: We send the same information as the example is created with so this should be the same'
@@ -127,8 +126,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $ntlmResponse = "caa4da8f25d5e840974ed8976d3ada46010100000000000030fa7e3c677bc301f5ce3d2401c8f6e90000000002000c0054004500530054004e00540001000c004d0045004d0042004500520003001e006d0065006d006200650072002e0074006500730074002e0063006f006d000000000000000000";
 
         $login = $this->_getAuthenticator();
-        $message3 = hex2bin($this->_message3);
-        //$message3 = $this->_invokePrivateMethod('createMessage3', $login, array($domain, $username, $workstation, hex2bin($lmResponse), hex2bin($ntlmResponse)));
+        $message3 = $this->_invokePrivateMethod('createMessage3', $login, array($domain, $username, $workstation, hex2bin($lmResponse), hex2bin($ntlmResponse)));
 
         $this->assertEqual($this->_message3, bin2hex($message3),
             '%s: We send the same information as the example is created with so this should be the same'
@@ -141,7 +139,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
 
         $login = $this->_getAuthenticator();
         list($domain, $user) = $this->_invokePrivateMethod('getDomainAndUsername', $login, array($username));
-
 
         $this->assertEqual('DOMAIN', $domain,
             '%s: the fetched domain did not match'
@@ -158,7 +155,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $login = $this->_getAuthenticator();
         list($domain, $user) = $this->_invokePrivateMethod('getDomainAndUsername', $login, array($username));
 
-
         $this->assertEqual('domain.com', $domain,
             '%s: the fetched domain did not match'
         );
@@ -174,7 +170,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $login = $this->_getAuthenticator();
         list($domain, $user) = $this->_invokePrivateMethod('getDomainAndUsername', $login, array($username));
 
-
         $this->assertEqual('DOMAIN', $domain,
             '%s: the fetched domain did not match'
         );
@@ -189,7 +184,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
 
         $login = $this->_getAuthenticator();
         list($domain, $user) = $this->_invokePrivateMethod('getDomainAndUsername', $login, array($username));
-
 
         $this->assertEqual('domain.com', $domain,
             '%s: the fetched domain did not match'
