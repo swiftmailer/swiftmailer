@@ -28,8 +28,7 @@ function generateUpToDateMimeArray()
     $valid_mime_types = [];
 
     // split mime type and extensions eg. "video/x-matroska        mkv mk3d mks"
-    if (preg_match_all('/^#?([a-z0-9\-\+\/\.]+)[\t]+(.*)$/miu', $mime_types, $matches) !== FALSE)
-    {
+    if (preg_match_all('/^#?([a-z0-9\-\+\/\.]+)[\t]+(.*)$/miu', $mime_types, $matches) !== FALSE) {
         // collection of predefined mimetypes (bugfix for wrong resolved or missing mime types)
         $valid_mime_types_preset = [
             'php'  => 'application/x-php',
@@ -107,8 +106,7 @@ function generateUpToDateMimeArray()
         ];
 
         // wrap array for generating file
-        foreach ($valid_mime_types_preset as $extension => $mime_type)
-        {
+        foreach ($valid_mime_types_preset as $extension => $mime_type) {
             // generate array for mimetype to extension resolver (only first match)
             $valid_mime_types[$extension] = "'{$extension}' => '{$mime_type}'";
         }
@@ -117,30 +115,25 @@ function generateUpToDateMimeArray()
         $valid_extensions = [];
 
         // all extensions from second match
-        foreach ($matches[2] as $i => $extensions)
-        {
+        foreach ($matches[2] as $i => $extensions) {
             // explode multiple extensions from string
             $extensions = explode(" ", strtolower($extensions));
 
             // force array for foreach
-            if (!is_array($extensions))
-            {
+            if (!is_array($extensions)) {
                 $extensions = array($extensions);
             }
 
-            foreach ($extensions as $extension)
-            {
+            foreach ($extensions as $extension) {
                 // get mime type
                 $mime_type = $matches[1][$i];
 
                 // check if string length lower than 10
-                if (strlen($extension) < 10)
-                {
+                if (strlen($extension) < 10) {
                     // add extension
                     $valid_extensions[] = $extension;
 
-                    if (!isset($valid_mime_types[$mime_type]))
-                    {
+                    if (!isset($valid_mime_types[$mime_type])) {
                         // generate array for mimetype to extension resolver (only first match)
                         $valid_mime_types[$extension] = "'{$extension}' => '{$mime_type}'";
                     }
@@ -151,20 +144,16 @@ function generateUpToDateMimeArray()
 
     $xml = simplexml_load_string($mime_xml);
 
-    foreach ($xml as $node)
-    {
+    foreach ($xml as $node) {
         // check if there is no pattern
-        if (!isset($node->glob["pattern"]))
-        {
+        if (!isset($node->glob["pattern"])) {
             continue;
         }
 
         // get all matching extensions from match
-        foreach ((array)$node->glob["pattern"] as $extension)
-        {
+        foreach ((array) $node->glob["pattern"] as $extension) {
             // skip none glob extensions
-            if (strpos($extension, '.') === FALSE)
-            {
+            if (strpos($extension, '.') === FALSE) {
                 continue;
             }
 
@@ -173,29 +162,25 @@ function generateUpToDateMimeArray()
             $extension = end($extension);
 
             // maximum length in database column
-            if (strlen($extension) <= 9)
-            {
+            if (strlen($extension) <= 9) {
                 $valid_extensions[] = $extension;
             }
         }
 
-        if (isset($node->glob["pattern"][0]))
-        {
+        if (isset($node->glob["pattern"][0])) {
             // mime type
-            $mime_type = strtolower((string)$node["type"]);
+            $mime_type = strtolower((string) $node["type"]);
 
             // get first extension
             $extension = strtolower(trim($node->glob["ddpattern"][0], '*.'));
 
             // skip none glob extensions and check if string length between 1 and 10
-            if (strpos($extension, '.') !== FALSE || strlen($extension) < 1 || strlen($extension) > 9)
-            {
+            if (strpos($extension, '.') !== FALSE || strlen($extension) < 1 || strlen($extension) > 9) {
                 continue;
             }
 
             // check if string length lower than 10
-            if (!isset($valid_mime_types[$mime_type]))
-            {
+            if (!isset($valid_mime_types[$mime_type])) {
                 // generate array for mimetype to extension resolver (only first match)
                 $valid_mime_types[$extension] = "'{$extension}' => '{$mime_type}'";
             }
