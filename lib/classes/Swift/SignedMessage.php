@@ -58,8 +58,7 @@ class Swift_SignedMessage extends Swift_Message
     {
         if ($signer instanceof Swift_Signers_HeaderSigner) {
             $this->headerSigners[] = $signer;
-        }
-        elseif ($signer instanceof Swift_Signers_BodySigner) {
+        } elseif ($signer instanceof Swift_Signers_BodySigner) {
             $this->bodySigners[] = $signer;
         }
 
