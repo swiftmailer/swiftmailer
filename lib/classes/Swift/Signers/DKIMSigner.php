@@ -261,6 +261,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         foreach ($this->_bound as $k => $stream) {
             if ($stream === $is) {
                 unset($this->_bound[$k]);
+
                 return;
             }
         }
