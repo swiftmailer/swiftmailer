@@ -45,7 +45,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $lmv1 = "1879f60127f8a877022132ec221bcbf3ca016a9f76095606";
 
         $login = $this->_getAuthenticator();
-        $lmv1Result = $this->_invokePrivateMethod('createLMPassword', $login, array($password, hex2bin($challenge)));
+        $lmv1Result = $this->_invokePrivateMethod('createLMPassword', $login, array($password, $this->hex2bin($challenge)));
 
         $this->assertEqual($lmv1, bin2hex($lmv1Result),
             '%s: The keys should be the same cause we use the same values to generate them.'
@@ -61,7 +61,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $lmv2 = "d6e6152ea25d03b7c6ba6629c2d6aaf0ffffff0011223344";
 
         $login = $this->_getAuthenticator();
-        $lmv2Result = $this->_invokePrivateMethod('createLMv2Password', $login, array($password, $username, $domain, hex2bin($challenge), hex2bin("ffffff0011223344")));
+        $lmv2Result = $this->_invokePrivateMethod('createLMv2Password', $login, array($password, $username, $domain, $this->hex2bin($challenge), $this->hex2bin("ffffff0011223344")));
 
         $this->assertEqual($lmv2, bin2hex($lmv2Result),
             '%s: The keys should be the same cause we use the same values to generate them.'
@@ -75,7 +75,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $ntlm = "e6285df3287c5d194f84df1a94817c7282d09754b6f9e02a";
 
         $login = $this->_getAuthenticator();
-        $ntlmResult = $this->_invokePrivateMethod('createNTLMPassword', $login, array($password, hex2bin($challenge)));
+        $ntlmResult = $this->_invokePrivateMethod('createNTLMPassword', $login, array($password, $this->hex2bin($challenge)));
 
         $this->assertEqual($ntlm, bin2hex($ntlmResult),
             '%s: The keys should be the same cause we use the same values to generate them.'
@@ -93,7 +93,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $ntlm2 = "cbabbca713eb795d04c97abc01ee498301010000000000000090d336b734c301ffffff00112233440000000002000c0044004f004d00410049004e0001000c005300450052005600450052000400140064006f006d00610069006e002e0063006f006d00030022007300650072007600650072002e0064006f006d00610069006e002e0063006f006d000000000000000000";
 
         $login = $this->_getAuthenticator();
-        $ntlmResult = $this->_invokePrivateMethod('createNTLMv2Hash', $login, array($password, $username, $domain, hex2bin($challenge), hex2bin($targetInfo), hex2bin($timestamp), hex2bin("ffffff0011223344")));
+        $ntlmResult = $this->_invokePrivateMethod('createNTLMv2Hash', $login, array($password, $username, $domain, $this->hex2bin($challenge), $this->hex2bin($targetInfo), $this->hex2bin($timestamp), $this->hex2bin("ffffff0011223344")));
 
         $this->assertEqual($ntlm2, bin2hex($ntlmResult),
             '%s: The keys should be the same cause we use the same values to generate them.'
@@ -110,7 +110,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $message3T = "4e544c4d5353500003000000180018006000000018001800780000000c000c0040000000080008004c0000000c000c0054000000000000009a0000000102000054004500530054004e00540074006500730074004d0045004d004200450052001879f60127f8a877022132ec221bcbf3ca016a9f76095606e6285df3287c5d194f84df1a94817c7282d09754b6f9e02a";
 
         $login = $this->_getAuthenticator();
-        $message3 = $this->_invokePrivateMethod('createMessage3', $login, array($domain, $username, $workstation, hex2bin($lmResponse), hex2bin($ntlmResponse)));
+        $message3 = $this->_invokePrivateMethod('createMessage3', $login, array($domain, $username, $workstation, $this->hex2bin($lmResponse), $this->hex2bin($ntlmResponse)));
 
         $this->assertEqual($message3T, bin2hex($message3),
             '%s: We send the same information as the example is created with so this should be the same'
@@ -253,5 +253,19 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
         $methodC->setAccessible(true);
 
         return $methodC->invokeArgs($instance, $args);
+    }
+
+    /**
+     * Hex2bin replacement for < PHP 5.4
+     * @param string $hex
+     * @return string Binary
+     */
+    protected function hex2bin($hex)
+    {
+        if (function_exists('hex2bin')) {
+            return hex2bin($hex);
+        } else {
+            return pack('H*', $hex);
+        }
     }
 }
