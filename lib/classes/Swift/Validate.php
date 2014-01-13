@@ -33,7 +33,7 @@ class Swift_Validate
             $validator = new Swift_EmailValidatorBridge();
             $isValid = $validator->isValid($email);
         } else {
-            if (self::$grammar===null) {
+            if (self::$grammar === null) {
                 self::$grammar = Swift_DependencyContainer::getInstance()
                     ->lookup('mime.grammar');
             }
