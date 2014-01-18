@@ -7,7 +7,7 @@
  <channel>pear.swiftmailer.org</channel>
  <summary>Free Feature-rich PHP Mailer.</summary>
  <description>
-   Swift Mailer integrates into any web app written in PHP 5, offering a flexible and elegant object-oriented approach to sending emails with a multitude of features. 
+   Swift Mailer integrates into any web app written in PHP 5, offering a flexible and elegant object-oriented approach to sending emails with a multitude of features.
  </description>
  <lead>
   <name>Fabien Potencier</name>

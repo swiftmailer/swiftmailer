@@ -20,7 +20,7 @@ Response codes
    - In particular, the 220, 221, 251, 421, and 551 reply codes
      are associated with message text that must be parsed and interpreted
      by machines.
-    
+
 Error Codes
 ------------
  * Numeric 5yz = Error
@@ -35,13 +35,13 @@ class EsmtpTransport implements Transport, EsmtpCommandWriter {
 }
 
 interface EsmtpCommandWriter {
-  public function getBuffer();   
+  public function getBuffer();
   public function executeCommand($command, $expectedCodes);
 }
 
 interface Extension {
   public function getKeyword();
-  public function afterEhlo($commandWriter);                
+  public function afterEhlo($commandWriter);
   public function getRcptParams();
   public function getMailParams();
   public function atCommand($commandWriter, $command, $expectedResponse) throws CommandSentException;
