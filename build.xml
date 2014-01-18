@@ -1,6 +1,6 @@
 <!-- Ant build file for Swift Mailer (Standard Edition) -->
 <project name="Swift Mailer SE" default="bundle">
-  
+
   <!-- Config settings -->
   <property name="path" value="." />
   <property name="builddir" value="${path}/build" />
@@ -38,8 +38,8 @@
     <include name="test/" />
     <include name="packages/" />
   </fileset>
-  
-  
+
+
   <!-- Bundle all files into a central location -->
   <target name="bundle" depends="prepare, clean, copy-classes">
     <copy file="${src.versionfile}" todir="${builddir.package}" />
@@ -53,7 +53,7 @@
     <move file="${builddir.package}/tests/smoke.conf.php.default"
       tofile="${builddir.package}/tests/smoke.conf.php" />
   </target>
-  
+
   <!-- Copy some *.default files to their required files if needed -->
   <target name="prepare">
     <copy file="${src.tests}/acceptance.conf.php.default"
@@ -61,14 +61,14 @@
       <copy file="${src.tests}/smoke.conf.php.default"
         tofile="${src.tests}/smoke.conf.php" />
   </target>
-  
+
   <!-- Clean out the build directory -->
   <target name="clean">
     <delete includeemptydirs="true">
       <fileset dir="${builddir}" includes="**/*" />
     </delete>
   </target>
-  
+
   <!-- Copy all classes from the class path to the bundle -->
   <target name="copy-classes">
     <copy todir="${builddir.package}/lib">
@@ -89,7 +89,7 @@
       <fileset refid="build.simpletest.unneeded" />
     </delete>
   </target>
-  
+
   <!-- Package up the project as a gzip file -->
   <target name="package" depends="bundle">
     <tar destfile="${builddir.package}.tar.gz" compression="gzip" longfile="gnu">
@@ -99,7 +99,7 @@
       <fileset dir="${builddir.package}" includes="**" />
     </delete>
   </target>
-  
+
   <!-- Run the included unit tests -->
   <target name="test" depends="prepare, clean, copy-classes">
     <exec executable="php" failonerror="true">
@@ -108,5 +108,5 @@
       <arg value="${runtests}" />
     </exec>
   </target>
-  
+
 </project>

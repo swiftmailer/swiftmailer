@@ -638,7 +638,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     }
 
     // -- Private methods
-    
+
     /** Get the highest nesting level nested inside this message */
     private function _getTopNestingLevel()
     {

@@ -19,7 +19,7 @@ itself, attachments, MIME parts and embedded images. Each of these MIME entities
 consists of a body and a set of headers that describe the body.
 
 For all of the "standard" headers in these MIME entities, such as the
-``Content-Type``, there are named methods for working with them, such as 
+``Content-Type``, there are named methods for working with them, such as
 ``setContentType()`` and ``getContentType()``. This is because headers are a
 moderately complex area of the library. Each header has a slightly different
 required structure that it must meet in order to comply with the standards that
@@ -64,7 +64,7 @@ the names of the headers:
     To
     */
 
-You can also dump out the rendered HeaderSet by calling its ``toString()`` 
+You can also dump out the rendered HeaderSet by calling its ``toString()``
 method:
 
 .. code-block:: php
@@ -86,7 +86,7 @@ Where the complexity comes in is when you want to modify an existing header.
 This complexity comes from the fact that each header can be of a slightly
 different type (such as a Date header, or a header that contains email
 addresses, or a header that has key-value parameters on it!). Each header in the
-HeaderSet is an instance of ``Swift_Mime_Header``. They all have common 
+HeaderSet is an instance of ``Swift_Mime_Header``. They all have common
 functionality, but knowing exactly what type of header you're working with will
 allow you a little more control.
 
@@ -310,12 +310,12 @@ Date headers contains an RFC 2822 formatted date (i.e. what PHP's ``date('r')``
 returns). They are used anywhere a date or time is needed to be presented as a
 message header.
 
-The data on which a date header is modeled is simply a UNIX timestamp such as 
-that returned by ``time()`` or ``strtotime()``.  The timestamp is used to create 
+The data on which a date header is modeled is simply a UNIX timestamp such as
+that returned by ``time()`` or ``strtotime()``.  The timestamp is used to create
 a correctly structured RFC 2822 formatted date such as
 ``Tue, 17 Feb 2009 22:26:31 +1100``.
 
-The obvious place this header type is used is in the ``Date:`` header of the 
+The obvious place this header type is used is in the ``Date:`` header of the
 message itself.
 
 It's easy to add a new date header to a HeaderSet.  You do this by calling
@@ -338,7 +338,7 @@ Changing the value of an existing date header is done by calling it's
 
     $date->setTimestamp(time());
 
-When output via ``toString()``, a date header produces something like the 
+When output via ``toString()``, a date header produces something like the
 following:
 
 .. code-block:: php
@@ -456,13 +456,13 @@ notable ID header is the Message-ID header on the message itself.
 
 An ID that exists inside an ID header looks more-or-less less like an email
 address.  For example, ``<1234955437.499becad62ec2@example.org>``.
-The part to the left of the @ sign is usually unique, based on the current time 
+The part to the left of the @ sign is usually unique, based on the current time
 and some random factor. The part on the right is usually a domain name.
 
-Any ID passed to the header's ``setId()`` method absolutely MUST conform to 
-this structure, otherwise you'll get an Exception thrown at you by Swift Mailer 
-(a ``Swift_RfcComplianceException``).  This is to ensure that the generated 
-email complies with relevant RFC documents and therefore is less likely to be 
+Any ID passed to the header's ``setId()`` method absolutely MUST conform to
+this structure, otherwise you'll get an Exception thrown at you by Swift Mailer
+(a ``Swift_RfcComplianceException``).  This is to ensure that the generated
+email complies with relevant RFC documents and therefore is less likely to be
 blocked as spam.
 
 It's easy to add a new ID header to a HeaderSet.  You do this by calling
