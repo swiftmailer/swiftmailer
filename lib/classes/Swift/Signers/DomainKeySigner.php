@@ -218,7 +218,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
         // Don't have to mirror anything
         foreach ($this->_bound as $k => $stream) {
             if ($stream === $is) {
-            	unset($this->_bound[$k]);
+                unset($this->_bound[$k]);
 
                 return;
             }

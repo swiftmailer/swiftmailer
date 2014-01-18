@@ -4,7 +4,7 @@ require_once(dirname(__FILE__) . '/../autorun.php');
 require_once(dirname(__FILE__) . '/../url.php');
 
 class TestOfUrl extends UnitTestCase {
-    
+
     function testDefaultUrl() {
         $url = new SimpleUrl('');
         $this->assertEqual($url->getScheme(), '');
@@ -13,21 +13,21 @@ class TestOfUrl extends UnitTestCase {
         $this->assertEqual($url->getHost('localhost'), 'localhost');
         $this->assertEqual($url->getPath(), '');
     }
-    
+
     function testBasicParsing() {
         $url = new SimpleUrl('https://www.lastcraft.com/test/');
         $this->assertEqual($url->getScheme(), 'https');
         $this->assertEqual($url->getHost(), 'www.lastcraft.com');
         $this->assertEqual($url->getPath(), '/test/');
     }
-    
+
     function testRelativeUrls() {
         $url = new SimpleUrl('../somewhere.php');
         $this->assertEqual($url->getScheme(), false);
         $this->assertEqual($url->getHost(), false);
         $this->assertEqual($url->getPath(), '../somewhere.php');
     }
-    
+
     function testParseBareParameter() {
         $url = new SimpleUrl('?a');
         $this->assertEqual($url->getPath(), '');
@@ -35,7 +35,7 @@ class TestOfUrl extends UnitTestCase {
         $url->addRequestParameter('x', 'X');
         $this->assertEqual($url->getEncodedRequest(), '?a=&x=X');
     }
-    
+
     function testParseEmptyParameter() {
         $url = new SimpleUrl('?a=');
         $this->assertEqual($url->getPath(), '');
@@ -43,7 +43,7 @@ class TestOfUrl extends UnitTestCase {
         $url->addRequestParameter('x', 'X');
         $this->assertEqual($url->getEncodedRequest(), '?a=&x=X');
     }
-    
+
     function testParseParameterPair() {
         $url = new SimpleUrl('?a=A');
         $this->assertEqual($url->getPath(), '');
@@ -51,21 +51,21 @@ class TestOfUrl extends UnitTestCase {
         $url->addRequestParameter('x', 'X');
         $this->assertEqual($url->getEncodedRequest(), '?a=A&x=X');
     }
-    
+
     function testParseMultipleParameters() {
         $url = new SimpleUrl('?a=A&b=B');
         $this->assertEqual($url->getEncodedRequest(), '?a=A&b=B');
         $url->addRequestParameter('x', 'X');
         $this->assertEqual($url->getEncodedRequest(), '?a=A&b=B&x=X');
     }
-    
+
     function testParsingParameterMixture() {
         $url = new SimpleUrl('?a=A&b=&c');
         $this->assertEqual($url->getEncodedRequest(), '?a=A&b=&c');
         $url->addRequestParameter('x', 'X');
         $this->assertEqual($url->getEncodedRequest(), '?a=A&b=&c=&x=X');
     }
-    
+
     function testAddParametersFromScratch() {
         $url = new SimpleUrl('');
         $url->addRequestParameter('a', 'A');
@@ -75,14 +75,14 @@ class TestOfUrl extends UnitTestCase {
         $url->addRequestParameter('a', 'aaa');
         $this->assertEqual($url->getEncodedRequest(), '?a=A&b=B&a=aaa');
     }
-    
+
     function testClearingParameters() {
         $url = new SimpleUrl('');
         $url->addRequestParameter('a', 'A');
         $url->clearRequest();
         $this->assertIdentical($url->getEncodedRequest(), '');
     }
-    
+
     function testEncodingParameters() {
         $url = new SimpleUrl('');
         $url->addRequestParameter('a', '?!"\'#~@[]{}:;<>,./|£$%^&*()_+-=');
@@ -90,14 +90,14 @@ class TestOfUrl extends UnitTestCase {
                 $request = $url->getEncodedRequest(),
                 '?a=%3F%21%22%27%23%7E%40%5B%5D%7B%7D%3A%3B%3C%3E%2C.%2F%7C%A3%24%25%5E%26%2A%28%29_%2B-%3D');
     }
-    
-    function testDecodingParameters() {            
+
+    function testDecodingParameters() {
         $url = new SimpleUrl('?a=%3F%21%22%27%23%7E%40%5B%5D%7B%7D%3A%3B%3C%3E%2C.%2F%7C%A3%24%25%5E%26%2A%28%29_%2B-%3D');
         $this->assertEqual(
                 $url->getEncodedRequest(),
                 '?a=' . urlencode('?!"\'#~@[]{}:;<>,./|£$%^&*()_+-='));
     }
-    
+
     function testUrlInQueryDoesNotConfuseParsing() {
         $url = new SimpleUrl('wibble/login.php?url=http://www.google.com/moo/');
         $this->assertFalse($url->getScheme());
@@ -105,7 +105,7 @@ class TestOfUrl extends UnitTestCase {
         $this->assertEqual($url->getPath(), 'wibble/login.php');
         $this->assertEqual($url->getEncodedRequest(), '?url=http://www.google.com/moo/');
     }
-    
+
     function testSettingCordinates() {
         $url = new SimpleUrl('');
         $url->setCoordinates('32', '45');
@@ -113,55 +113,55 @@ class TestOfUrl extends UnitTestCase {
         $this->assertIdentical($url->getY(), 45);
         $this->assertEqual($url->getEncodedRequest(), '');
     }
-    
+
     function testParseCordinates() {
         $url = new SimpleUrl('?32,45');
         $this->assertIdentical($url->getX(), 32);
         $this->assertIdentical($url->getY(), 45);
     }
-    
+
     function testClearingCordinates() {
         $url = new SimpleUrl('?32,45');
         $url->setCoordinates();
         $this->assertIdentical($url->getX(), false);
         $this->assertIdentical($url->getY(), false);
     }
-    
+
     function testParsingParameterCordinateMixture() {
         $url = new SimpleUrl('?a=A&b=&c?32,45');
         $this->assertIdentical($url->getX(), 32);
         $this->assertIdentical($url->getY(), 45);
         $this->assertEqual($url->getEncodedRequest(), '?a=A&b=&c');
     }
-    
+
     function testParsingParameterWithBadCordinates() {
         $url = new SimpleUrl('?a=A&b=&c?32');
         $this->assertIdentical($url->getX(), false);
         $this->assertIdentical($url->getY(), false);
         $this->assertEqual($url->getEncodedRequest(), '?a=A&b=&c?32');
     }
-    
+
     function testPageSplitting() {
         $url = new SimpleUrl('./here/../there/somewhere.php');
         $this->assertEqual($url->getPath(), './here/../there/somewhere.php');
         $this->assertEqual($url->getPage(), 'somewhere.php');
         $this->assertEqual($url->getBasePath(), './here/../there/');
     }
-    
+
     function testAbsolutePathPageSplitting() {
         $url = new SimpleUrl("http://host.com/here/there/somewhere.php");
         $this->assertEqual($url->getPath(), "/here/there/somewhere.php");
         $this->assertEqual($url->getPage(), "somewhere.php");
         $this->assertEqual($url->getBasePath(), "/here/there/");
     }
-    
+
     function testSplittingUrlWithNoPageGivesEmptyPage() {
         $url = new SimpleUrl('/here/there/');
         $this->assertEqual($url->getPath(), '/here/there/');
         $this->assertEqual($url->getPage(), '');
         $this->assertEqual($url->getBasePath(), '/here/there/');
     }
-    
+
     function testPathNormalisation() {
         $url = new SimpleUrl();
         $this->assertEqual(
@@ -176,7 +176,7 @@ class TestOfUrl extends UnitTestCase {
             $url->normalisePath('https://host.com/I/am/here/./../there/somewhere.php'),
             'https://host.com/I/am/there/somewhere.php');
     }
-    
+
     // regression test for #1852413
     function testHostnameExtractedFromUContainingAtSign() {
         $url = new SimpleUrl("http://localhost/name@example.com");
@@ -202,7 +202,7 @@ class TestOfUrl extends UnitTestCase {
         $this->assertEqual($url->getUsername(), 'test@test');
         $this->assertEqual($url->getPassword(), '$!£@*&%');
     }
-    
+
     function testBlitz() {
         $this->assertUrl(
                 "https://username:password@www.somewhere.com:243/this/that/here.php?a=1&b=2#anchor",
@@ -233,7 +233,7 @@ class TestOfUrl extends UnitTestCase {
                 array(false, "username", false, false, false, "/here.php", false, "?a=1&b=2", false),
                 array("a" => "1", "b" => "2"));
     }
-    
+
     function testAmbiguousHosts() {
         $this->assertUrl(
                 "tigger",
@@ -254,7 +254,7 @@ class TestOfUrl extends UnitTestCase {
                 "me.net/tigger",
                 array(false, false, false, "me.net", false, "/tigger", "net", "", false));
     }
-    
+
     function testAsString() {
         $this->assertPreserved('https://www.here.com');
         $this->assertPreserved('http://me:secret@www.here.com');
@@ -268,7 +268,7 @@ class TestOfUrl extends UnitTestCase {
         $this->assertPreserved('http://www.here.com/?a=A__b=B');
         $this->assertPreserved('http://www.example.com:8080/');
     }
-    
+
     function assertUrl($raw, $parts, $params = false, $coords = false) {
         if (! is_array($params)) {
             $params = array();
@@ -288,12 +288,12 @@ class TestOfUrl extends UnitTestCase {
             $this->assertIdentical($url->getY(), $coords[1], "[$raw] y -> %s");
         }
     }
-    
+
     function testUrlWithTwoSlashesInPath() {
         $url = new SimpleUrl('/article/categoryedit/insert//');
         $this->assertEqual($url->getPath(), '/article/categoryedit/insert//');
     }
-    
+
     function assertPreserved($string) {
         $url = new SimpleUrl($string);
         $this->assertEqual($url->asString(), $string);
@@ -301,15 +301,15 @@ class TestOfUrl extends UnitTestCase {
 }
 
 class TestOfAbsoluteUrls extends UnitTestCase {
-    
-	function testDirectoriesAfterFilename() {
-		$string = '../../index.php/foo/bar';
-		$url = new SimpleUrl($string);
-		$this->assertEqual($url->asString(), $string);
-		
-		$absolute = $url->makeAbsolute('http://www.domain.com/some/path/');
-		$this->assertEqual($absolute->asString(), 'http://www.domain.com/index.php/foo/bar');
-	}
+
+    function testDirectoriesAfterFilename() {
+        $string = '../../index.php/foo/bar';
+        $url = new SimpleUrl($string);
+        $this->assertEqual($url->asString(), $string);
+
+        $absolute = $url->makeAbsolute('http://www.domain.com/some/path/');
+        $this->assertEqual($absolute->asString(), 'http://www.domain.com/index.php/foo/bar');
+    }
 
     function testMakingAbsolute() {
         $url = new SimpleUrl('../there/somewhere.php');
@@ -320,7 +320,7 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $this->assertEqual($absolute->getPort(), 1234);
         $this->assertEqual($absolute->getPath(), '/I/am/there/somewhere.php');
     }
-    
+
     function testMakingAnEmptyUrlAbsolute() {
         $url = new SimpleUrl('');
         $this->assertEqual($url->getPath(), '');
@@ -329,7 +329,7 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $this->assertEqual($absolute->getHost(), 'host.com');
         $this->assertEqual($absolute->getPath(), '/I/am/here/page.html');
     }
-    
+
     function testMakingAnEmptyUrlAbsoluteWithMissingPageName() {
         $url = new SimpleUrl('');
         $this->assertEqual($url->getPath(), '');
@@ -338,7 +338,7 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $this->assertEqual($absolute->getHost(), 'host.com');
         $this->assertEqual($absolute->getPath(), '/I/am/here/');
     }
-    
+
     function testMakingAShortQueryUrlAbsolute() {
         $url = new SimpleUrl('?a#b');
         $this->assertEqual($url->getPath(), '');
@@ -349,7 +349,7 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $this->assertEqual($absolute->getEncodedRequest(), '?a');
         $this->assertEqual($absolute->getFragment(), 'b');
     }
-    
+
     function testMakingADirectoryUrlAbsolute() {
         $url = new SimpleUrl('hello/');
         $this->assertEqual($url->getPath(), 'hello/');
@@ -358,20 +358,20 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $absolute = $url->makeAbsolute('http://host.com/I/am/here/page.html');
         $this->assertEqual($absolute->getPath(), '/I/am/here/hello/');
     }
-    
+
     function testMakingARootUrlAbsolute() {
         $url = new SimpleUrl('/');
         $this->assertEqual($url->getPath(), '/');
         $absolute = $url->makeAbsolute('http://host.com/I/am/here/page.html');
         $this->assertEqual($absolute->getPath(), '/');
     }
-    
+
     function testMakingARootPageUrlAbsolute() {
         $url = new SimpleUrl('/here.html');
         $absolute = $url->makeAbsolute('http://host.com/I/am/here/page.html');
         $this->assertEqual($absolute->getPath(), '/here.html');
     }
-    
+
     function testCarryAuthenticationFromRootPage() {
         $url = new SimpleUrl('here.html');
         $absolute = $url->makeAbsolute('http://test:secret@host.com/');
@@ -379,7 +379,7 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $this->assertEqual($absolute->getUsername(), 'test');
         $this->assertEqual($absolute->getPassword(), 'secret');
     }
-    
+
     function testMakingCoordinateUrlAbsolute() {
         $url = new SimpleUrl('?1,2');
         $this->assertEqual($url->getPath(), '');
@@ -390,19 +390,19 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $this->assertEqual($absolute->getX(), 1);
         $this->assertEqual($absolute->getY(), 2);
     }
-    
+
     function testMakingAbsoluteAppendedPath() {
         $url = new SimpleUrl('./there/somewhere.php');
         $absolute = $url->makeAbsolute('https://host.com/here/');
         $this->assertEqual($absolute->getPath(), '/here/there/somewhere.php');
     }
-    
+
     function testMakingAbsoluteBadlyFormedAppendedPath() {
         $url = new SimpleUrl('there/somewhere.php');
         $absolute = $url->makeAbsolute('https://host.com/here/');
         $this->assertEqual($absolute->getPath(), '/here/there/somewhere.php');
     }
-    
+
     function testMakingAbsoluteHasNoEffectWhenAlreadyAbsolute() {
         $url = new SimpleUrl('https://test:secret@www.lastcraft.com:321/stuff/?a=1#f');
         $absolute = $url->makeAbsolute('http://host.com/here/');
@@ -415,7 +415,7 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $this->assertEqual($absolute->getEncodedRequest(), '?a=1');
         $this->assertEqual($absolute->getFragment(), 'f');
     }
-    
+
     function testMakingAbsoluteCarriesAuthenticationWhenAlreadyAbsolute() {
         $url = new SimpleUrl('https://www.lastcraft.com');
         $absolute = $url->makeAbsolute('http://test:secret@host.com/here/');
@@ -423,7 +423,7 @@ class TestOfAbsoluteUrls extends UnitTestCase {
         $this->assertEqual($absolute->getUsername(), 'test');
         $this->assertEqual($absolute->getPassword(), 'secret');
     }
-    
+
     function testMakingHostOnlyAbsoluteDoesNotCarryAnyOtherInformation() {
         $url = new SimpleUrl('http://www.lastcraft.com');
         $absolute = $url->makeAbsolute('https://host.com:81/here/');
@@ -435,7 +435,7 @@ class TestOfAbsoluteUrls extends UnitTestCase {
 }
 
 class TestOfFrameUrl extends UnitTestCase {
-    
+
     function testTargetAttachment() {
         $url = new SimpleUrl('http://www.site.com/home.html');
         $this->assertIdentical($url->getTarget(), false);
@@ -448,49 +448,49 @@ class TestOfFrameUrl extends UnitTestCase {
  * @note Based off of http://www.mozilla.org/quality/networking/testing/filetests.html
  */
 class TestOfFileUrl extends UnitTestCase {
-    
+
     function testMinimalUrl() {
         $url = new SimpleUrl('file:///');
         $this->assertEqual($url->getScheme(), 'file');
         $this->assertIdentical($url->getHost(), false);
         $this->assertEqual($url->getPath(), '/');
     }
-    
+
     function testUnixUrl() {
         $url = new SimpleUrl('file:///fileInRoot');
         $this->assertEqual($url->getScheme(), 'file');
         $this->assertIdentical($url->getHost(), false);
         $this->assertEqual($url->getPath(), '/fileInRoot');
     }
-    
+
     function testDOSVolumeUrl() {
         $url = new SimpleUrl('file:///C:/config.sys');
         $this->assertEqual($url->getScheme(), 'file');
         $this->assertIdentical($url->getHost(), false);
         $this->assertEqual($url->getPath(), '/C:/config.sys');
     }
-    
+
     function testDOSVolumePromotion() {
         $url = new SimpleUrl('file://C:/config.sys');
         $this->assertEqual($url->getScheme(), 'file');
         $this->assertIdentical($url->getHost(), false);
         $this->assertEqual($url->getPath(), '/C:/config.sys');
     }
-    
+
     function testDOSBackslashes() {
         $url = new SimpleUrl('file:///C:\config.sys');
         $this->assertEqual($url->getScheme(), 'file');
         $this->assertIdentical($url->getHost(), false);
         $this->assertEqual($url->getPath(), '/C:/config.sys');
     }
-    
+
     function testDOSDirnameAfterFile() {
         $url = new SimpleUrl('file://C:\config.sys');
         $this->assertEqual($url->getScheme(), 'file');
         $this->assertIdentical($url->getHost(), false);
         $this->assertEqual($url->getPath(), '/C:/config.sys');
     }
-    
+
 }
 
 ?>

@@ -1,10 +1,10 @@
 <?php
 
 /**
- *	@package	SimpleTest
- *	@subpackage	Extensions
+ *    @package    SimpleTest
+ *    @subpackage    Extensions
  *  @author     Perrick Penet <perrick@noparking.net>
- *	@version	$Id: dom_tester.php 1804 2008-09-08 13:16:44Z pp11 $
+ *    @version    $Id: dom_tester.php 1804 2008-09-08 13:16:44Z pp11 $
  */
 
 /**#@+
@@ -16,19 +16,19 @@ require_once dirname(__FILE__).'/dom_tester/css_selector.php';
 
 /**
  * CssSelectorExpectation
- * 
+ *
  * Create a CSS Selector expectactation
- * 
+ *
  * @param DomDocument $_dom
  * @param string $_selector
  * @param array $_value
- * 
+ *
  */
 class CssSelectorExpectation extends SimpleExpectation {
     var $_dom;
     var $_selector;
     var $_value;
-    
+
     /**
      *    Sets the dom tree and the css selector to compare against
      *    @param mixed $dom          Dom tree to search into.
@@ -40,11 +40,11 @@ class CssSelectorExpectation extends SimpleExpectation {
         $this->SimpleExpectation($message);
         $this->_dom = $dom;
         $this->_selector = $selector;
-        
+
         $css_selector = new CssSelector($this->_dom);
         $this->_value = $css_selector->getTexts($this->_selector);
     }
-    
+
     /**
      *    Tests the expectation. True if it matches the
      *    held value.
@@ -55,7 +55,7 @@ class CssSelectorExpectation extends SimpleExpectation {
     function test($compare) {
             return (($this->_value == $compare) && ($compare == $this->_value));
     }
-    
+
     /**
      *    Returns a human readable test message.
      *    @param mixed $compare      Comparison value.
@@ -70,11 +70,11 @@ class CssSelectorExpectation extends SimpleExpectation {
         }
         if ($this->test($compare)) {
             return "CSS selector expectation [" . $dumper->describeValue($this->_value) . "]".
-            		" using [" . $dumper->describeValue($this->_selector) . "]";
+                    " using [" . $dumper->describeValue($this->_selector) . "]";
         } else {
             return "CSS selector expectation [" . $dumper->describeValue($this->_value) . "]".
-            		" using [" . $dumper->describeValue($this->_selector) . "]".
-            		" fails with [" .
+                    " using [" . $dumper->describeValue($this->_selector) . "]".
+                    " fails with [" .
                     $dumper->describeValue($compare) . "] " .
                     $dumper->describeDifference($this->_value, $compare);
         }
@@ -83,35 +83,35 @@ class CssSelectorExpectation extends SimpleExpectation {
 
 /**
  * DomTestCase
- * 
+ *
  * Extend Web test case with DOM related assertions,
  * CSS selectors in particular
- * 
+ *
  * @param DomDocument $dom
- * 
+ *
  */
 class DomTestCase extends WebTestCase {
-	var $dom;
+    var $dom;
 
     function assertElementsBySelector($selector, $elements, $message = '%s') {
-		$this->dom = new DomDocument('1.0', 'utf-8');
-		$this->dom->validateOnParse = true;
-		$this->dom->loadHTML($this->_browser->getContent());
+        $this->dom = new DomDocument('1.0', 'utf-8');
+        $this->dom->validateOnParse = true;
+        $this->dom->loadHTML($this->_browser->getContent());
 
         return $this->assert(
                 new CssSelectorExpectation($this->dom, $selector),
                 $elements,
                 $message);
     }
-    
-	function getElementsBySelector($selector) {
-		$this->dom = new DomDocument('1.0', 'utf-8');
-		$this->dom->validateOnParse = true;
-		$this->dom->loadHTML($this->_browser->getContent());
-		
-		$css_selector = new CssSelectorExpectation($this->dom, $selector);
-		return $css_selector->_value;
-	}
+
+    function getElementsBySelector($selector) {
+        $this->dom = new DomDocument('1.0', 'utf-8');
+        $this->dom->validateOnParse = true;
+        $this->dom->loadHTML($this->_browser->getContent());
+
+        $css_selector = new CssSelectorExpectation($this->dom, $selector);
+        return $css_selector->_value;
+    }
 }
 
 ?>

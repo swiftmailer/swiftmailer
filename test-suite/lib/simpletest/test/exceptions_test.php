@@ -93,59 +93,59 @@ class TestOfCatchingExceptions extends UnitTestCase {
 
 class TestOfCallingTearDownAfterExceptions extends UnitTestCase {
     private $debri = 0;
-    
+
     function tearDown() {
         $this->debri--;
     }
 
-    function testLeaveSomeDebri() { 
+    function testLeaveSomeDebri() {
         $this->debri++;
         $this->expectException();
         throw new Exception(__FUNCTION__);
     }
 
-	function testDebriWasRemovedOnce() {
+    function testDebriWasRemovedOnce() {
         $this->assertEqual($this->debri, 0);
-	}
+    }
 }
 
 class TestOfExceptionThrownInSetUpDoesNotRunTestBody extends UnitTestCase {
 
-	function setUp() {
+    function setUp() {
         $this->expectException();
         throw new Exception();
-	}
-	
-	function testShouldNotBeRun() {
-        $this->fail('This test body should not be run');
-	}
+    }
 
-	function testShouldNotBeRunEither() {
+    function testShouldNotBeRun() {
+        $this->fail('This test body should not be run');
+    }
+
+    function testShouldNotBeRunEither() {
         $this->fail('This test body should not be run either');
-	}
+    }
 }
 
 class TestOfExpectExceptionWithSetUp extends UnitTestCase {
 
-	function setUp() {
+    function setUp() {
         $this->expectException();
-	}
-	
-	function testThisExceptionShouldBeCaught() {
-        throw new Exception();
-	}
+    }
 
-	function testJustThrowingMyTestException() {
+    function testThisExceptionShouldBeCaught() {
+        throw new Exception();
+    }
+
+    function testJustThrowingMyTestException() {
         throw new MyTestException();
-	}
+    }
 }
 
 class TestOfThrowingExceptionsInTearDown extends UnitTestCase {
-    
+
     function tearDown() {
         throw new Exception();
     }
-    
+
     function testDoesntFatal() {
         $this->expectException();
     }
