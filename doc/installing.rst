@@ -60,7 +60,7 @@ the ``tar`` command.
 
     $ ls
     Swift-4.0.0-dev.tar.gz
-    $ tar xvzf Swift-4.0.0-dev.tar.gz 
+    $ tar xvzf Swift-4.0.0-dev.tar.gz
     Swift-4.0.0-dev/
     Swift-4.0.0-dev/lib/
     Swift-4.0.0-dev/lib/classes/
@@ -142,7 +142,7 @@ You only need to upload the "lib/" directory to your web host for production
 use. All other files and directories are support files not needed in
 production.
 
-You will need FTP, ``rsync`` or similar software installed in order to upload 
+You will need FTP, ``rsync`` or similar software installed in order to upload
 the "lib/" directory to your web host.
 
 To upload Swift Mailer:
@@ -159,7 +159,7 @@ The following example shows show you can upload the files using
 
 .. note::
 
-    You do not need to place the files inside your web root. They only need to 
+    You do not need to place the files inside your web root. They only need to
     be in a place where your PHP scripts can "include" them.
 
     .. code-block:: bash
