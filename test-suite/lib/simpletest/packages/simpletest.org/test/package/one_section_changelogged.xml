@@ -5,24 +5,24 @@
     <content>
         <section name="version1.0.1" title="SimpleTest Version 1.0.1">
             <changelog version="1.0.1" date="07/04/2008">
-            	<bug>
-            		Patches and whitespace clean up
-				</bug>
-            	<change>
-            		Some in line documentation fixes
-				</change>
-            	<patch tracker="1899780">
-            		SimpleFileLoader::load: fix for $test_file already included, by daniel hahler - blueyed
-				</patch>
-            	<change>
-            		New tests for UTF8 inside the browser.
-				</change>
-            	<bug tracker="1853765">
-            		Fixing one of the incompatible interface errors
-				</bug>
-            	<change>
-            		expectException()
-            	</change>
+                <bug>
+                    Patches and whitespace clean up
+                </bug>
+                <change>
+                    Some in line documentation fixes
+                </change>
+                <patch tracker="1899780">
+                    SimpleFileLoader::load: fix for $test_file already included, by daniel hahler - blueyed
+                </patch>
+                <change>
+                    New tests for UTF8 inside the browser.
+                </change>
+                <bug tracker="1853765">
+                    Fixing one of the incompatible interface errors
+                </bug>
+                <change>
+                    expectException()
+                </change>
             </changelog>
         </section>
     </content>

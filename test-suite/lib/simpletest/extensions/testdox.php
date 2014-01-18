@@ -1,16 +1,16 @@
 <?php
 /**
- *	base include file for SimpleTest
- *	@package	SimpleTest
- *	@subpackage	Extensions
- *	@version	$Id: testdox.php 1802 2008-09-08 10:43:58Z maetl_ $
+ *    base include file for SimpleTest
+ *    @package    SimpleTest
+ *    @subpackage    Extensions
+ *    @version    $Id: testdox.php 1802 2008-09-08 10:43:58Z maetl_ $
  */
 
 /**
- *	base include file for SimpleTest
- *	@package	SimpleTest
- *	@subpackage	Extensions
- *	@version	$Id: testdox.php 1802 2008-09-08 10:43:58Z maetl_ $
+ *    base include file for SimpleTest
+ *    @package    SimpleTest
+ *    @subpackage    Extensions
+ *    @version    $Id: testdox.php 1802 2008-09-08 10:43:58Z maetl_ $
  */
 class TestDoxReporter extends SimpleReporter
 {

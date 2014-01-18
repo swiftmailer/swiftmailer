@@ -40,14 +40,14 @@ language itself more or less as the application itself is built. The advantage
 of using PHP itself as the testing language is that there are no new languages
 to learn, testing can start straight away, and the developer can test any part
 of the code. Basically, all parts that can be accessed by the application code
-can also be accessed by the test code if they are in the same language. 
+can also be accessed by the test code if they are in the same language.
 EOD;
 /*---------------------------------------------------------------------------*/
 // Modify the maintainers are required
 $maintainers = array (
-	array ('handle'=>'lastcraft','role'=>'lead','name'=>'Marcus Baker', 'email'=>'marcus@lastcraft.com'),
-	array ('handle'=>'jsweat','role'=>'helper','name'=>'Jason Sweat', 'email'=>'jsweat_php@yahoo.com'),
-	array ('handle'=>'hfuecks','role'=>'helper','name'=>'Harry Fuecks', 'email'=>'hfuecks@phppatterns.com'),
+    array ('handle'=>'lastcraft','role'=>'lead','name'=>'Marcus Baker', 'email'=>'marcus@lastcraft.com'),
+    array ('handle'=>'jsweat','role'=>'helper','name'=>'Jason Sweat', 'email'=>'jsweat_php@yahoo.com'),
+    array ('handle'=>'hfuecks','role'=>'helper','name'=>'Harry Fuecks', 'email'=>'hfuecks@phppatterns.com'),
 );
 /*---------------------------------------------------------------------------*/
 
@@ -70,45 +70,45 @@ if (version_compare(phpversion(), '4.3.0', '<') ||
 * http://pear.php.net/manual/en/developers.packagedef.php
 */
 $options = array(
-	'baseinstalldir' => 'simpletest',
-	'version' => $version,
-	'packagedirectory' => $packagedir,
-	'outputdirectory' => $packagedir,
-	'pathtopackagefile' => $packagedir, 
-	'state' => $state,
-	'summary' => $shortDesc,
-	'description' => $longDesc,
-	'filelistgenerator' => 'file',
-	'notes' => $releaseNotes,
-	'package' => 'SimpleTest',
-	'license' => 'The Open Group Test Suite License',
+    'baseinstalldir' => 'simpletest',
+    'version' => $version,
+    'packagedirectory' => $packagedir,
+    'outputdirectory' => $packagedir,
+    'pathtopackagefile' => $packagedir,
+    'state' => $state,
+    'summary' => $shortDesc,
+    'description' => $longDesc,
+    'filelistgenerator' => 'file',
+    'notes' => $releaseNotes,
+    'package' => 'SimpleTest',
+    'license' => 'The Open Group Test Suite License',
 
-	'dir_roles' => array(
-		'docs' => 'doc',
-		'test' => 'test',
-		'extensions' => 'php',
-		//'tutorials' => 'doc',
-		//'tutorials/SimpleTest' => 'doc',
-		//'ui' => 'php',
-		//'ui/css' => 'data',
-		//'ui/img' => 'data',
-		//'ui/js' => 'data',
-		//'ui/js/tests' => 'test',
-		),
-	'exceptions' =>
-		array(
-			'HELP_MY_TESTS_DONT_WORK_ANYMORE' => 'doc',
-			'LICENSE' => 'doc',
-			'README' => 'doc',
-			'TODO' => 'doc',
-			'VERSION' => 'doc',
-		),
-	'ignore' => 
-		array(
-			"$packagedir/packages",
-			"$packagedir/ui",
-			),
-	);
+    'dir_roles' => array(
+        'docs' => 'doc',
+        'test' => 'test',
+        'extensions' => 'php',
+        //'tutorials' => 'doc',
+        //'tutorials/SimpleTest' => 'doc',
+        //'ui' => 'php',
+        //'ui/css' => 'data',
+        //'ui/img' => 'data',
+        //'ui/js' => 'data',
+        //'ui/js/tests' => 'test',
+        ),
+    'exceptions' =>
+        array(
+            'HELP_MY_TESTS_DONT_WORK_ANYMORE' => 'doc',
+            'LICENSE' => 'doc',
+            'README' => 'doc',
+            'TODO' => 'doc',
+            'VERSION' => 'doc',
+        ),
+    'ignore' =>
+        array(
+            "$packagedir/packages",
+            "$packagedir/ui",
+            ),
+    );
 
 $status = $PPFM->setOptions($options);
 
@@ -118,11 +118,11 @@ if (PEAR::isError($status)) {
 }
 
 foreach ( $maintainers as $maintainer ) {
-	$PPFM->addMaintainer(
-		$maintainer['handle'],
-		$maintainer['role'],
-		$maintainer['name'],
-		$maintainer['email'] );
+    $PPFM->addMaintainer(
+        $maintainer['handle'],
+        $maintainer['role'],
+        $maintainer['name'],
+        $maintainer['email'] );
 }
 
 // Adds a dependency of PHP 4.2.3+
@@ -155,16 +155,16 @@ ob_end_clean();
 // Hacks to handle PPFM output
 $start = strpos ($output,"<?xml");
 if ( $start != 0 ) {
-	$errors = substr($output,0,($start-1));
-	$output = substr($output,$start);
-	$errors = explode("\n",$errors);
-	foreach ( $errors as $error ) {
-		fwrite (STDERR,$error."\n");
-	}
+    $errors = substr($output,0,($start-1));
+    $output = substr($output,$start);
+    $errors = explode("\n",$errors);
+    foreach ( $errors as $error ) {
+        fwrite (STDERR,$error."\n");
+    }
 }
 fwrite(STDOUT,$output);
 
 if (PEAR::isError($status)) {
-	fwrite (STDERR,$status->getMessage());
+    fwrite (STDERR,$status->getMessage());
 }
 ?>

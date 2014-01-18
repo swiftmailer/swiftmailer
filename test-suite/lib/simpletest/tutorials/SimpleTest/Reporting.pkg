@@ -16,8 +16,8 @@
             </refpurpose>
 </refnamediv>
             {@toc}
-            
-        
+
+
         <refsect1 id="{@id html}">
 <title>Reporting results in HTML</title>
             <para>
@@ -203,7 +203,7 @@ class HtmlReporter extends SimpleReporter {
                 the passes as well as the failures and errors...
 <programlisting role="php">
 class ShowPasses extends HtmlReporter {
-    
+
     function paintPass($message) {
         parent::paintPass($message);
         print "&amp;&lt;span class=\"pass\"&gt;Pass&lt;/span&gt;: ";
@@ -212,7 +212,7 @@ class ShowPasses extends HtmlReporter {
         print implode("-&amp;gt;", $breadcrumb);
         print "-&amp;gt;$message&lt;br /&gt;\n";
     }
-    
+
     function _getCss() {
         return parent::_getCss() . ' .pass { color: green; }';
     }
@@ -257,25 +257,25 @@ class ShowPasses extends HtmlReporter {
 require_once('simpletest/simple_test.php');
 
 class MyDisplay extends SimpleReporter {
-    
+
     function paintHeader($test_name) {
     }
-    
+
     function paintFooter($test_name) {
     }
-    
+
     function paintStart($test_name, $size) {
         parent::paintStart($test_name, $size);
     }
-    
+
     function paintEnd($test_name, $size) {
         parent::paintEnd($test_name, $size);
     }
-    
+
     function paintPass($message) {
         parent::paintPass($message);
     }
-    
+
     function paintFail($message) {
         parent::paintFail($message);
     }
@@ -318,7 +318,7 @@ Test cases run: 1/1, Failures: 0, Exceptions: 0
 <pre class="shell">
 File test
 1) True assertion failed.
-	in createnewfile
+    in createnewfile
 FAILURES!!!
 Test cases run: 1/1, Failures: 1, Exceptions: 0
 </pre>
@@ -399,7 +399,7 @@ Test cases run: 1/1, Failures: 1, Exceptions: 0
 <programlisting role="php">
 &lt;?php
     require_once('simpletest/xml.php');
-    
+
     ...
     $parser = &amp;new SimpleTestXmlParser(new HtmlReporter());
     $parser-&gt;parse($test_output);
@@ -430,10 +430,10 @@ Test cases run: 1/1, Failures: 1, Exceptions: 0
 &lt;?php
     require_once('../remote.php');
     require_once('../reporter.php');
-    
+
     $test_url = ...;
     $dry_url = ...;
-    
+
     $test = &amp;new GroupTest('Remote tests');
     $test-&gt;addTestCase(new RemoteTestCase($test_url, $dry_url));
     $test-&gt;run(new HtmlReporter());

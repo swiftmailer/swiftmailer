@@ -1,14 +1,14 @@
 <?php
 /**
- *	@package	SimpleTest
- *	@subpackage	Extensions
+ *    @package    SimpleTest
+ *    @subpackage    Extensions
  *  @author     Perrick Penet <perrick@noparking.net>
- *	@version	$Id: css_selector.php 1802 2008-09-08 10:43:58Z maetl_ $
+ *    @version    $Id: css_selector.php 1802 2008-09-08 10:43:58Z maetl_ $
  */
 
 /**
  * CssSelector
- * 
+ *
  * Allow to navigate a DOM with CSS selector.
  *
  * based on getElementsBySelector version 0.4 - Simon Willison, 2003-03-25

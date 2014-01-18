@@ -12,7 +12,7 @@ $options = array(
     'clearcontents'     => true,
     'ignore'            => array('TODO.xml', 'VERSION', 'docs/', 'tutorials/', 'packages/', '.svn'),
     'dir_roles'         => array(
-     	'test'    => 'test'
+         'test'    => 'test'
     )
 );
 

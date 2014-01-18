@@ -5,7 +5,7 @@
 <refpurpose/>
 </refnamediv>
             {@toc}
-            
+
         <refsect1 id="{@id fetch}">
 <title>Fetching a page</title>
             <para>
@@ -49,7 +49,7 @@ class TestOfLastcraft extends WebTestCase {
 &lt;?php
     require_once('simpletest/web_tester.php');
     require_once('simpletest/reporter.php');
-    
+
     $test = &amp;new GroupTest('Web site tests');
     $test-&gt;addTestFile('lastcraft_test.php');
     exit ($test-&gt;run(new TextReporter()) ? 0 : 1);
@@ -64,7 +64,7 @@ class TestOfLastcraft extends WebTestCase {
                 <span class="new_code">get()</span> method...
 <programlisting role="php">
 class TestOfLastcraft extends WebTestCase {
-    
+
     function testHomepage() {
         $this-&gt;assertTrue($this-&gt;get('http://www.lastcraft.com/'));
     }
@@ -98,7 +98,7 @@ Test cases run: 1/1, Failures: 0, Exceptions: 0
                 page we are on, we need to verify the page content.
 <programlisting role="php">
 class TestOfLastcraft extends WebTestCase {
-    
+
     function testHomepage() {
         $this-&gt;get('http://www.lastcraft.com/');
         $this-&gt;assertWantedPattern('/why the last craft/i');
@@ -262,7 +262,7 @@ $this-&gt;assertMime(array('text/plain', 'text/html'));
                 is in a list of allowed values...
 <programlisting role="php">
 class TestOfLastcraft extends WebTestCase {
-    
+
     function testRedirects() {
         $this-&gt;get('http://www.lastcraft.com/test/redirect.php');
         $this-&gt;assertResponse(200);&lt;/strong&gt;
@@ -282,7 +282,7 @@ class TestOfLastcraft extends WebTestCase {
                 be disabled...
 <programlisting role="php">
 class TestOfLastcraft extends WebTestCase {
-    
+
     function testHomepage() {
         $this-&gt;setMaximumRedirects(0);
         $this-&gt;get('http://www.lastcraft.com/test/redirect.php');
@@ -294,16 +294,16 @@ class TestOfLastcraft extends WebTestCase {
 <pre class="shell">
 Web site tests
 1) Expecting response in [200] got [302]
-	in testhomepage
-	in testoflastcraft
-	in lastcraft_test.php
+    in testhomepage
+    in testoflastcraft
+    in lastcraft_test.php
 FAILURES!!!
 Test cases run: 1/1, Failures: 1, Exceptions: 0
 </pre>
                 We can modify the test to correctly assert redirects with...
 <programlisting role="php">
 class TestOfLastcraft extends WebTestCase {
-    
+
     function testHomepage() {
         $this-&gt;setMaximumRedirects(0);
         $this-&gt;get('http://www.lastcraft.com/test/redirect.php');

@@ -62,8 +62,8 @@ function initial_file() {
         if (isset($_SERVER, $_SERVER['SCRIPT_FILENAME'])) {
             $file = $_SERVER['SCRIPT_FILENAME'];
         } else {
-	        $included_files = get_included_files();
-	        $file = reset($included_files);
+            $included_files = get_included_files();
+            $file = reset($included_files);
         }
     }
     return $file;
