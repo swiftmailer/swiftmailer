@@ -1,9 +1,5 @@
 <?php
 
-require_once 'Swift/Transport/AbstractSmtpEventSupportTest.php';
-require_once 'Swift/Transport/EsmtpTransport.php';
-require_once 'Swift/Events/EventDispatcher.php';
-
 class Swift_Transport_EsmtpTransportTest
     extends Swift_Transport_AbstractSmtpEventSupportTest
 {
@@ -21,7 +17,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
         $smtp->setHost('foo');
-        $this->assertEqual('foo', $smtp->getHost(), '%s: Host should be returned');
+        $this->assertEquals('foo', $smtp->getHost(), '%s: Host should be returned');
     }
 
     public function testPortCanBeSetAndFetched()
@@ -29,17 +25,19 @@ class Swift_Transport_EsmtpTransportTest
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
         $smtp->setPort(25);
-        $this->assertEqual(25, $smtp->getPort(), '%s: Port should be returned');
+        $this->assertEquals(25, $smtp->getPort(), '%s: Port should be returned');
     }
 
     public function testTimeoutCanBeSetAndFetched()
     {
         $buf = $this->_getBuffer();
+        $buf->shouldReceive('setParam')
+            ->once()
+            ->with('timeout', 10);
+
         $smtp = $this->_getTransport($buf);
-        $this->_checking(Expectations::create()
-            -> one($buf)->setParam('timeout', 10));
         $smtp->setTimeout(10);
-        $this->assertEqual(10, $smtp->getTimeout(), '%s: Timeout should be returned');
+        $this->assertEquals(10, $smtp->getTimeout(), '%s: Timeout should be returned');
     }
 
     public function testEncryptionCanBeSetAndFetched()
@@ -47,7 +45,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
         $smtp->setEncryption('tls');
-        $this->assertEqual('tls', $smtp->getEncryption(), '%s: Crypto should be returned');
+        $this->assertEquals('tls', $smtp->getEncryption(), '%s: Crypto should be returned');
     }
 
     public function testStartSendsHeloToInitiate()
@@ -92,13 +90,22 @@ class Swift_Transport_EsmtpTransportTest
 
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
-        $s = $this->_sequence('SMTP-convo');
-        $this->_checking(Expectations::create()
-            -> one($buf)->initialize() -> inSequence($s)
-            -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
-            -> one($buf)->write(pattern('~^EHLO .+?\r\n$~D')) -> inSequence($s) -> returns(1)
-            -> one($buf)->readLine(1) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
-            );
+
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^EHLO .+?\r\n$~D')
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250 ServerName' . "\r\n");
+
         $this->_finishBuffer($buf);
         try {
             $smtp->start();
@@ -109,7 +116,7 @@ class Swift_Transport_EsmtpTransportTest
 
     public function testHeloIsUsedAsFallback()
     {
-        /* -- RFC 2821, 4.1.4.
+          /* -- RFC 2821, 4.1.4.
 
        If the EHLO command is not acceptable to the SMTP server, 501, 500,
        or 502 failure replies MUST be returned as appropriate.  The SMTP
@@ -119,15 +126,30 @@ class Swift_Transport_EsmtpTransportTest
 
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
-        $s = $this->_sequence('SMTP-convo');
-        $this->_checking(Expectations::create()
-            -> one($buf)->initialize() -> inSequence($s)
-            -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
-            -> one($buf)->write(pattern('~^EHLO .+?\r\n$~D')) -> inSequence($s) -> returns(1)
-            -> one($buf)->readLine(1) -> inSequence($s) -> returns('501 WTF' . "\r\n")
-            -> one($buf)->write(pattern('~^HELO .+?\r\n$~D')) -> inSequence($s) -> returns(2)
-            -> one($buf)->readLine(2) -> inSequence($s) -> returns('250 HELO' . "\r\n")
-            );
+
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^EHLO .+?\r\n$~D')
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('501 WTF' . "\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^HELO .+?\r\n$~D')
+            ->andReturn(2);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(2)
+            ->andReturn('250 HELO' . "\r\n");
+
         $this->_finishBuffer($buf);
         try {
             $smtp->start();
@@ -142,16 +164,31 @@ class Swift_Transport_EsmtpTransportTest
     {//Overridden to first try EHLO
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
-        $s = $this->_sequence('SMTP-convo');
-        $this->_checking(Expectations::create()
-            -> one($buf)->initialize() -> inSequence($s)
-            -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
-            -> one($buf)->write(pattern('~^EHLO .*?\r\n$~D')) -> inSequence($s) -> returns(1)
-            -> one($buf)->readLine(1) -> inSequence($s) -> returns('501 WTF' . "\r\n")
-            -> one($buf)->write(pattern('~^HELO .*?\r\n$~D')) -> inSequence($s) -> returns(2)
-            -> one($buf)->readLine(2) -> inSequence($s) -> returns('504 WTF' . "\r\n")
-            );
+
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^EHLO .+?\r\n$~D')
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('501 WTF' . "\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^HELO .+?\r\n$~D')
+            ->andReturn(2);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(2)
+            ->andReturn('504 WTF' . "\r\n");
         $this->_finishBuffer($buf);
+
         try {
             $this->assertFalse($smtp->isStarted(), '%s: SMTP should begin non-started');
             $smtp->start();
@@ -176,13 +213,21 @@ class Swift_Transport_EsmtpTransportTest
 
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
-        $s = $this->_sequence('SMTP-convo');
-        $this->_checking(Expectations::create()
-            -> one($buf)->initialize() -> inSequence($s)
-            -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
-            -> one($buf)->write("EHLO mydomain.com\r\n") -> inSequence($s) -> returns(1)
-            -> one($buf)->readLine(1) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
-            );
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with("EHLO mydomain.com\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250 ServerName' . "\r\n");
+
         $this->_finishBuffer($buf);
         $smtp->setLocalDomain('mydomain.com');
         $smtp->start();
@@ -203,15 +248,29 @@ class Swift_Transport_EsmtpTransportTest
 
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
-        $s = $this->_sequence('SMTP-convo');
-        $this->_checking(Expectations::create()
-            -> one($buf)->initialize() -> inSequence($s)
-            -> one($buf)->readLine(0) -> inSequence($s) -> returns("220 some.server.tld bleh\r\n")
-            -> one($buf)->write(pattern('~^EHLO .+?\r\n$~D')) -> inSequence($s) -> returns(1)
-            -> one($buf)->readLine(1) -> inSequence($s) -> returns('501 WTF' . "\r\n")
-            -> one($buf)->write("HELO mydomain.com\r\n") -> inSequence($s) -> returns(2)
-            -> one($buf)->readLine(2) -> inSequence($s) -> returns('250 ServerName' . "\r\n")
-            );
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^EHLO .+?\r\n$~D')
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('501 WTF' . "\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with("HELO mydomain.com\r\n")
+            ->andReturn(2);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(2)
+            ->andReturn('250 ServerName' . "\r\n");
+
         $this->_finishBuffer($buf);
         $smtp->setLocalDomain('mydomain.com');
         $smtp->start();
@@ -221,8 +280,9 @@ class Swift_Transport_EsmtpTransportTest
     {
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
-        $this->_checking(Expectations::create()
-            -> one($buf)->setParam('timeout', 30));
+        $buf->shouldReceive('setParam')
+            ->once()
+            ->with('timeout', 30);
 
         $ref = $smtp
             ->setHost('foo')
@@ -230,6 +290,6 @@ class Swift_Transport_EsmtpTransportTest
             ->setEncryption('tls')
             ->setTimeout(30)
             ;
-        $this->assertReference($ref, $smtp);
+        $this->assertEquals($ref, $smtp);
     }
 }

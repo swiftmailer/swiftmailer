@@ -1,16 +1,11 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/Headers/IdentificationHeader.php';
-require_once 'Swift/Mime/Grammar.php';
-
-class Swift_Mime_Headers_IdentificationHeaderTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit_Framework_TestCase
 {
     public function testTypeIsIdHeader()
     {
         $header = $this->_getHeader('Message-ID');
-        $this->assertEqual(Swift_Mime_Header::TYPE_ID, $header->getFieldType());
+        $this->assertEquals(Swift_Mime_Header::TYPE_ID, $header->getFieldType());
     }
 
     public function testValueMatchesMsgIdSpec()
@@ -35,21 +30,21 @@ class Swift_Mime_Headers_IdentificationHeaderTest
 
         $header = $this->_getHeader('Message-ID');
         $header->setId('id-left@id-right');
-        $this->assertEqual('<id-left@id-right>', $header->getFieldBody());
+        $this->assertEquals('<id-left@id-right>', $header->getFieldBody());
     }
 
     public function testIdCanBeRetrievedVerbatim()
     {
         $header = $this->_getHeader('Message-ID');
         $header->setId('id-left@id-right');
-        $this->assertEqual('id-left@id-right', $header->getId());
+        $this->assertEquals('id-left@id-right', $header->getId());
     }
 
     public function testMultipleIdsCanBeSet()
     {
         $header = $this->_getHeader('References');
         $header->setIds(array('a@b', 'x@y'));
-        $this->assertEqual(array('a@b', 'x@y'), $header->getIds());
+        $this->assertEquals(array('a@b', 'x@y'), $header->getIds());
     }
 
     public function testSettingMultipleIdsProducesAListValue()
@@ -67,7 +62,7 @@ class Swift_Mime_Headers_IdentificationHeaderTest
 
         $header = $this->_getHeader('References');
         $header->setIds(array('a@b', 'x@y'));
-        $this->assertEqual('<a@b> <x@y>', $header->getFieldBody());
+        $this->assertEquals('<a@b> <x@y>', $header->getFieldBody());
     }
 
     public function testIdLeftCanBeQuoted()
@@ -78,8 +73,8 @@ class Swift_Mime_Headers_IdentificationHeaderTest
 
         $header = $this->_getHeader('References');
         $header->setId('"ab"@c');
-        $this->assertEqual('"ab"@c', $header->getId());
-        $this->assertEqual('<"ab"@c>', $header->getFieldBody());
+        $this->assertEquals('"ab"@c', $header->getId());
+        $this->assertEquals('<"ab"@c>', $header->getFieldBody());
     }
 
     public function testIdLeftCanContainAnglesAsQuotedPairs()
@@ -90,16 +85,16 @@ class Swift_Mime_Headers_IdentificationHeaderTest
 
         $header = $this->_getHeader('References');
         $header->setId('"a\\<\\>b"@c');
-        $this->assertEqual('"a\\<\\>b"@c', $header->getId());
-        $this->assertEqual('<"a\\<\\>b"@c>', $header->getFieldBody());
+        $this->assertEquals('"a\\<\\>b"@c', $header->getId());
+        $this->assertEquals('<"a\\<\\>b"@c>', $header->getFieldBody());
     }
 
     public function testIdLeftCanBeDotAtom()
     {
         $header = $this->_getHeader('References');
         $header->setId('a.b+&%$.c@d');
-        $this->assertEqual('a.b+&%$.c@d', $header->getId());
-        $this->assertEqual('<a.b+&%$.c@d>', $header->getFieldBody());
+        $this->assertEquals('a.b+&%$.c@d', $header->getId());
+        $this->assertEquals('<a.b+&%$.c@d>', $header->getFieldBody());
     }
 
     public function testInvalidIdLeftThrowsException()
@@ -111,7 +106,6 @@ class Swift_Mime_Headers_IdentificationHeaderTest
                 'Exception should be thrown since "a b c" is not valid id-left.'
                 );
         } catch (Exception $e) {
-            $this->pass();
         }
     }
 
@@ -123,8 +117,8 @@ class Swift_Mime_Headers_IdentificationHeaderTest
 
         $header = $this->_getHeader('References');
         $header->setId('a@b.c+&%$.d');
-        $this->assertEqual('a@b.c+&%$.d', $header->getId());
-        $this->assertEqual('<a@b.c+&%$.d>', $header->getFieldBody());
+        $this->assertEquals('a@b.c+&%$.d', $header->getId());
+        $this->assertEquals('<a@b.c+&%$.d>', $header->getFieldBody());
     }
 
     public function testIdRightCanBeLiteral()
@@ -135,8 +129,8 @@ class Swift_Mime_Headers_IdentificationHeaderTest
 
         $header = $this->_getHeader('References');
         $header->setId('a@[1.2.3.4]');
-        $this->assertEqual('a@[1.2.3.4]', $header->getId());
-        $this->assertEqual('<a@[1.2.3.4]>', $header->getFieldBody());
+        $this->assertEquals('a@[1.2.3.4]', $header->getId());
+        $this->assertEquals('<a@[1.2.3.4]>', $header->getFieldBody());
     }
 
     public function testInvalidIdRightThrowsException()
@@ -148,7 +142,6 @@ class Swift_Mime_Headers_IdentificationHeaderTest
                 'Exception should be thrown since "b c d" is not valid id-right.'
                 );
         } catch (Exception $e) {
-            $this->pass();
         }
     }
 
@@ -165,7 +158,6 @@ class Swift_Mime_Headers_IdentificationHeaderTest
                 'Exception should be thrown since "abc" is does not contain @.'
                 );
         } catch (Exception $e) {
-            $this->pass();
         }
     }
 
@@ -173,21 +165,21 @@ class Swift_Mime_Headers_IdentificationHeaderTest
     {
         $header = $this->_getHeader('Message-ID');
         $header->setFieldBodyModel('a@b');
-        $this->assertEqual(array('a@b'), $header->getIds());
+        $this->assertEquals(array('a@b'), $header->getIds());
     }
 
     public function testGetBodyModel()
     {
         $header = $this->_getHeader('Message-ID');
         $header->setId('a@b');
-        $this->assertEqual(array('a@b'), $header->getFieldBodyModel());
+        $this->assertEquals(array('a@b'), $header->getFieldBodyModel());
     }
 
     public function testStringValue()
     {
         $header = $this->_getHeader('References');
         $header->setIds(array('a@b', 'x@y'));
-        $this->assertEqual('References: <a@b> <x@y>' . "\r\n", $header->toString());
+        $this->assertEquals('References: <a@b> <x@y>' . "\r\n", $header->toString());
     }
 
     // -- Private methods

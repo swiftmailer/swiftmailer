@@ -1,27 +1,18 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Plugins/AntiFloodPlugin.php';
-require_once 'Swift/Events/TransportChangeEvent.php';
-require_once 'Swift/Transport.php';
-
-class Swift_Plugins_PopBeforeSmtpPluginTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Plugins_PopBeforeSmtpPluginTest extends \PHPUnit_Framework_TestCase
 {
     public function testPluginConnectsToPop3HostBeforeTransportStarts()
     {
         $connection = $this->_createConnection();
+        $connection->expects($this->once())
+                   ->method('connect');
 
         $plugin = $this->_createPlugin('pop.host.tld', 110);
         $plugin->setConnection($connection);
 
         $transport = $this->_createTransport();
         $evt = $this->_createTransportChangeEvent($transport);
-
-        $this->_checking(Expectations::create()
-            -> one($connection)->connect()
-            -> ignoring($connection)
-        );
 
         $plugin->beforeTransportStarted($evt);
     }
@@ -29,6 +20,8 @@ class Swift_Plugins_PopBeforeSmtpPluginTest
     public function testPluginDisconnectsFromPop3HostBeforeTransportStarts()
     {
         $connection = $this->_createConnection();
+        $connection->expects($this->once())
+                   ->method('disconnect');
 
         $plugin = $this->_createPlugin('pop.host.tld', 110);
         $plugin->setConnection($connection);
@@ -36,17 +29,16 @@ class Swift_Plugins_PopBeforeSmtpPluginTest
         $transport = $this->_createTransport();
         $evt = $this->_createTransportChangeEvent($transport);
 
-        $this->_checking(Expectations::create()
-            -> one($connection)->disconnect()
-            -> ignoring($connection)
-        );
-
         $plugin->beforeTransportStarted($evt);
     }
 
     public function testPluginDoesNotConnectToSmtpIfBoundToDifferentTransport()
     {
         $connection = $this->_createConnection();
+        $connection->expects($this->never())
+                   ->method('disconnect');
+        $connection->expects($this->never())
+                   ->method('connect');
 
         $smtp = $this->_createTransport();
 
@@ -57,16 +49,14 @@ class Swift_Plugins_PopBeforeSmtpPluginTest
         $transport = $this->_createTransport();
         $evt = $this->_createTransportChangeEvent($transport);
 
-        $this->_checking(Expectations::create()
-            -> never($connection)
-        );
-
         $plugin->beforeTransportStarted($evt);
     }
 
     public function testPluginCanBindToSpecificTransport()
     {
         $connection = $this->_createConnection();
+        $connection->expects($this->once())
+                   ->method('connect');
 
         $smtp = $this->_createTransport();
 
@@ -76,11 +66,6 @@ class Swift_Plugins_PopBeforeSmtpPluginTest
 
         $evt = $this->_createTransportChangeEvent($smtp);
 
-        $this->_checking(Expectations::create()
-            -> one($connection)->connect()
-            -> ignoring($connection)
-        );
-
         $plugin->beforeTransportStarted($evt);
     }
 
@@ -88,23 +73,27 @@ class Swift_Plugins_PopBeforeSmtpPluginTest
 
     private function _createTransport()
     {
-        return $this->_mock('Swift_Transport');
+        return $this->getMock('Swift_Transport');
     }
 
     private function _createTransportChangeEvent($transport)
     {
-        $evt = $this->_mock('Swift_Events_TransportChangeEvent');
-        $this->_checking(Expectations::create()
-            -> ignoring($evt)->getSource() -> returns($transport)
-            -> ignoring($evt)->getTransport() -> returns($transport)
-            );
+        $evt = $this->getMockBuilder('Swift_Events_TransportChangeEvent')
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $evt->expects($this->any())
+            ->method('getSource')
+            ->will($this->returnValue($transport));
+        $evt->expects($this->any())
+            ->method('getTransport')
+            ->will($this->returnValue($transport));
 
         return $evt;
     }
 
     public function _createConnection()
     {
-        return $this->_mock('Swift_Plugins_Pop_Pop3Connection');
+        return $this->getMock('Swift_Plugins_Pop_Pop3Connection');
     }
 
     public function _createPlugin($host, $port, $crypto = null)

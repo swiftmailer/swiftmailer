@@ -1,19 +1,15 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/SimpleHeaderSet.php';
-require_once 'Swift/Mime/HeaderFactory.php';
-require_once 'Swift/Mime/Header.php';
-
-class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
 {
     public function testAddMailboxHeaderDelegatesToFactory()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createMailboxHeader('From', array('person@domain'=>'Person'))
-                -> returns($this->_createHeader('From'))
-            );
+        $factory->expects($this->once())
+                ->method('createMailboxHeader')
+                ->with('From', array('person@domain'=>'Person'))
+                ->will($this->returnValue($this->_createHeader('From')));
+
         $set = $this->_createSet($factory);
         $set->addMailboxHeader('From', array('person@domain'=>'Person'));
     }
@@ -21,10 +17,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddDateHeaderDelegatesToFactory()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createDateHeader('Date', 1234)
-                -> returns($this->_createHeader('Date'))
-            );
+        $factory->expects($this->once())
+                ->method('createDateHeader')
+                ->with('Date', 1234)
+                ->will($this->returnValue($this->_createHeader('Date')));
+
         $set = $this->_createSet($factory);
         $set->addDateHeader('Date', 1234);
     }
@@ -32,10 +29,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddTextHeaderDelegatesToFactory()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createTextHeader('Subject', 'some text')
-                -> returns($this->_createHeader('Subject'))
-            );
+        $factory->expects($this->once())
+                ->method('createTextHeader')
+                ->with('Subject', 'some text')
+                ->will($this->returnValue($this->_createHeader('Subject')));
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Subject', 'some text');
     }
@@ -43,11 +41,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddParameterizedHeaderDelegatesToFactory()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createParameterizedHeader(
-                'Content-Type', 'text/plain', array('charset'=>'utf-8')
-                ) -> returns($this->_createHeader('Content-Type'))
-            );
+        $factory->expects($this->once())
+                ->method('createParameterizedHeader')
+                ->with('Content-Type', 'text/plain', array('charset'=>'utf-8'))
+                ->will($this->returnValue($this->_createHeader('Content-Type')));
+
         $set = $this->_createSet($factory);
         $set->addParameterizedHeader('Content-Type', 'text/plain',
             array('charset'=>'utf-8')
@@ -57,10 +55,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddIdHeaderDelegatesToFactory()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($this->_createHeader('Message-ID'))
-            );
+        $factory->expects($this->once())
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($this->_createHeader('Message-ID')));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
     }
@@ -68,10 +67,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddPathHeaderDelegatesToFactory()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createPathHeader('Return-Path', 'some@path')
-                -> returns($this->_createHeader('Return-Path'))
-            );
+        $factory->expects($this->once())
+                ->method('createPathHeader')
+                ->with('Return-Path', 'some@path')
+                ->will($this->returnValue($this->_createHeader('Return-Path')));
+
         $set = $this->_createSet($factory);
         $set->addPathHeader('Return-Path', 'some@path');
     }
@@ -85,10 +85,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddedMailboxHeaderIsSeenByHas()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createMailboxHeader('From', array('person@domain'=>'Person'))
-                -> returns($this->_createHeader('From'))
-            );
+        $factory->expects($this->once())
+                ->method('createMailboxHeader')
+                ->with('From', array('person@domain'=>'Person'))
+                ->will($this->returnValue($this->_createHeader('From')));
+
         $set = $this->_createSet($factory);
         $set->addMailboxHeader('From', array('person@domain'=>'Person'));
         $this->assertTrue($set->has('From'));
@@ -97,10 +98,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddedDateHeaderIsSeenByHas()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createDateHeader('Date', 1234)
-                -> returns($this->_createHeader('Date'))
-            );
+        $factory->expects($this->once())
+                ->method('createDateHeader')
+                ->with('Date', 1234)
+                ->will($this->returnValue($this->_createHeader('Date')));
+
         $set = $this->_createSet($factory);
         $set->addDateHeader('Date', 1234);
         $this->assertTrue($set->has('Date'));
@@ -109,10 +111,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddedTextHeaderIsSeenByHas()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createTextHeader('Subject', 'some text')
-                -> returns($this->_createHeader('Subject'))
-            );
+        $factory->expects($this->once())
+                ->method('createTextHeader')
+                ->with('Subject', 'some text')
+                ->will($this->returnValue($this->_createHeader('Subject')));
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Subject', 'some text');
         $this->assertTrue($set->has('Subject'));
@@ -121,11 +124,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddedParameterizedHeaderIsSeenByHas()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createParameterizedHeader(
-                'Content-Type', 'text/plain', array('charset'=>'utf-8')
-                ) -> returns($this->_createHeader('Content-Type'))
-            );
+        $factory->expects($this->once())
+                ->method('createParameterizedHeader')
+                ->with('Content-Type', 'text/plain', array('charset'=>'utf-8'))
+                ->will($this->returnValue($this->_createHeader('Content-Type')));
+
         $set = $this->_createSet($factory);
         $set->addParameterizedHeader('Content-Type', 'text/plain',
             array('charset'=>'utf-8')
@@ -136,10 +139,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddedIdHeaderIsSeenByHas()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($this->_createHeader('Message-ID'))
-            );
+        $factory->expects($this->once())
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($this->_createHeader('Message-ID')));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $this->assertTrue($set->has('Message-ID'));
@@ -148,10 +152,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testAddedPathHeaderIsSeenByHas()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createPathHeader('Return-Path', 'some@path')
-                -> returns($this->_createHeader('Return-Path'))
-            );
+        $factory->expects($this->once())
+                ->method('createPathHeader')
+                ->with('Return-Path', 'some@path')
+                ->will($this->returnValue($this->_createHeader('Return-Path')));
+
         $set = $this->_createSet($factory);
         $set->addPathHeader('Return-Path', 'some@path');
         $this->assertTrue($set->has('Return-Path'));
@@ -169,10 +174,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testHasCanAcceptOffset()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($this->_createHeader('Message-ID'))
-            );
+        $factory->expects($this->once())
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($this->_createHeader('Message-ID')));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $this->assertTrue($set->has('Message-ID', 0));
@@ -181,10 +187,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testHasWithIllegalOffsetReturnsFalse()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($this->_createHeader('Message-ID'))
-            );
+        $factory->expects($this->once())
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($this->_createHeader('Message-ID')));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $this->assertFalse($set->has('Message-ID', 1));
@@ -193,12 +200,15 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testHasCanDistinguishMultipleHeaders()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($this->_createHeader('Message-ID'))
-            -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
-                -> returns($this->_createHeader('Message-ID'))
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($this->_createHeader('Message-ID')));
+        $factory->expects($this->at(1))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'other@id')
+                ->will($this->returnValue($this->_createHeader('Message-ID')));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->addIdHeader('Message-ID', 'other@id');
@@ -209,10 +219,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     {
         $header = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header)
-            );
+        $factory->expects($this->once())
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $this->assertSame($header, $set->get('Message-ID'));
@@ -224,14 +235,19 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
         $header1 = $this->_createHeader('Message-ID');
         $header2 = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header0)
-            -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
-                -> returns($header1)
-            -> ignoring($factory)->createIdHeader('Message-ID', 'more@id')
-                -> returns($header2)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header0));
+        $factory->expects($this->at(1))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'other@id')
+                ->will($this->returnValue($header1));
+        $factory->expects($this->at(2))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'more@id')
+                ->will($this->returnValue($header2));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->addIdHeader('Message-ID', 'other@id');
@@ -251,20 +267,25 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
         $header1 = $this->_createHeader('Message-ID');
         $header2 = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header0)
-            -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
-                -> returns($header1)
-            -> ignoring($factory)->createIdHeader('Message-ID', 'more@id')
-                -> returns($header2)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header0));
+        $factory->expects($this->at(1))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'other@id')
+                ->will($this->returnValue($header1));
+        $factory->expects($this->at(2))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'more@id')
+                ->will($this->returnValue($header2));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->addIdHeader('Message-ID', 'other@id');
         $set->addIdHeader('Message-ID', 'more@id');
 
-        $this->assertEqual(array($header0, $header1, $header2),
+        $this->assertEquals(array($header0, $header1, $header2),
             $set->getAll('Message-ID')
             );
     }
@@ -275,20 +296,25 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
         $header1 = $this->_createHeader('Subject');
         $header2 = $this->_createHeader('To');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header0)
-            -> ignoring($factory)->createIdHeader('Subject', 'thing')
-                -> returns($header1)
-            -> ignoring($factory)->createIdHeader('To', 'person@example.org')
-                -> returns($header2)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header0));
+        $factory->expects($this->at(1))
+                ->method('createIdHeader')
+                ->with('Subject', 'thing')
+                ->will($this->returnValue($header1));
+        $factory->expects($this->at(2))
+                ->method('createIdHeader')
+                ->with('To', 'person@example.org')
+                ->will($this->returnValue($header2));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->addIdHeader('Subject', 'thing');
         $set->addIdHeader('To', 'person@example.org');
 
-        $this->assertEqual(array($header0, $header1, $header2),
+        $this->assertEquals(array($header0, $header1, $header2),
             $set->getAll()
             );
     }
@@ -296,17 +322,18 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testGetAllReturnsEmptyArrayIfNoneSet()
     {
         $set = $this->_createSet($this->_createFactory());
-        $this->assertEqual(array(), $set->getAll('Received'));
+        $this->assertEquals(array(), $set->getAll('Received'));
     }
 
     public function testRemoveWithUnspecifiedOffset()
     {
         $header = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->remove('Message-ID');
@@ -318,12 +345,15 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
         $header0 = $this->_createHeader('Message-ID');
         $header1 = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header0)
-            -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
-                -> returns($header1)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header0));
+        $factory->expects($this->at(1))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'other@id')
+                ->will($this->returnValue($header1));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->addIdHeader('Message-ID', 'other@id');
@@ -336,12 +366,15 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
         $header0 = $this->_createHeader('Message-ID');
         $header1 = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header0)
-            -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
-                -> returns($header1)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header0));
+        $factory->expects($this->at(1))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'other@id')
+                ->will($this->returnValue($header1));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->addIdHeader('Message-ID', 'other@id');
@@ -353,10 +386,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     {
         $header = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->remove('Message-ID', 50);
@@ -368,12 +402,15 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
         $header0 = $this->_createHeader('Message-ID');
         $header1 = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header0)
-            -> ignoring($factory)->createIdHeader('Message-ID', 'other@id')
-                -> returns($header1)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header0));
+        $factory->expects($this->at(1))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'other@id')
+                ->will($this->returnValue($header1));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->addIdHeader('Message-ID', 'other@id');
@@ -386,10 +423,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     {
         $header = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $this->assertTrue($set->has('message-id'));
@@ -399,10 +437,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     {
         $header = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $this->assertSame($header, $set->get('message-id'));
@@ -412,23 +451,25 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     {
         $header = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
-        $this->assertEqual(array($header), $set->getAll('message-id'));
+        $this->assertEquals(array($header), $set->getAll('message-id'));
     }
 
     public function testRemoveIsNotCaseSensitive()
     {
         $header = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->remove('message-id');
@@ -439,10 +480,11 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     {
         $header = $this->_createHeader('Message-ID');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createIdHeader('Message-ID', 'some@id')
-                -> returns($header)
-            );
+        $factory->expects($this->at(0))
+                ->method('createIdHeader')
+                ->with('Message-ID', 'some@id')
+                ->will($this->returnValue($header));
+
         $set = $this->_createSet($factory);
         $set->addIdHeader('Message-ID', 'some@id');
         $set->removeAll('message-id');
@@ -453,22 +495,25 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     {
         $set = $this->_createSet($this->_createFactory());
         $instance = $set->newInstance();
-        $this->assertIsA($instance, 'Swift_Mime_HeaderSet');
+        $this->assertInstanceof('Swift_Mime_HeaderSet', $instance);
     }
 
     public function testToStringJoinsHeadersTogether()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createTextHeader('Foo', 'bar')
-                -> returns($this->_createHeader('Foo', 'bar'))
-            -> one($factory)->createTextHeader('Zip', 'buttons')
-                -> returns($this->_createHeader('Zip', 'buttons'))
-            );
+        $factory->expects($this->at(0))
+                ->method('createTextHeader')
+                ->with('Foo', 'bar')
+                ->will($this->returnValue($this->_createHeader('Foo', 'bar')));
+        $factory->expects($this->at(1))
+                ->method('createTextHeader')
+                ->with('Zip', 'buttons')
+                ->will($this->returnValue($this->_createHeader('Zip', 'buttons')));
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Foo', 'bar');
         $set->addTextHeader('Zip', 'buttons');
-        $this->assertEqual(
+        $this->assertEquals(
             "Foo: bar\r\n" .
             "Zip: buttons\r\n",
             $set->toString()
@@ -478,16 +523,19 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testHeadersWithoutBodiesAreNotDisplayed()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createTextHeader('Foo', 'bar')
-                -> returns($this->_createHeader('Foo', 'bar'))
-            -> one($factory)->createTextHeader('Zip', '')
-                -> returns($this->_createHeader('Zip', ''))
-            );
+        $factory->expects($this->at(0))
+                ->method('createTextHeader')
+                ->with('Foo', 'bar')
+                ->will($this->returnValue($this->_createHeader('Foo', 'bar')));
+        $factory->expects($this->at(1))
+                ->method('createTextHeader')
+                ->with('Zip', '')
+                ->will($this->returnValue($this->_createHeader('Zip', '')));
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Foo', 'bar');
         $set->addTextHeader('Zip', '');
-        $this->assertEqual(
+        $this->assertEquals(
             "Foo: bar\r\n",
             $set->toString()
             );
@@ -496,17 +544,20 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testHeadersWithoutBodiesCanBeForcedToDisplay()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createTextHeader('Foo', '')
-                -> returns($this->_createHeader('Foo', ''))
-            -> one($factory)->createTextHeader('Zip', '')
-                -> returns($this->_createHeader('Zip', ''))
-            );
+        $factory->expects($this->at(0))
+                ->method('createTextHeader')
+                ->with('Foo', '')
+                ->will($this->returnValue($this->_createHeader('Foo', '')));
+        $factory->expects($this->at(1))
+                ->method('createTextHeader')
+                ->with('Zip', '')
+                ->will($this->returnValue($this->_createHeader('Zip', '')));
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Foo', '');
         $set->addTextHeader('Zip', '');
         $set->setAlwaysDisplayed(array('Foo', 'Zip'));
-        $this->assertEqual(
+        $this->assertEquals(
             "Foo: \r\n" .
             "Zip: \r\n",
             $set->toString()
@@ -516,14 +567,19 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testHeaderSequencesCanBeSpecified()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createTextHeader('First', 'one')
-                -> returns($this->_createHeader('First', 'one'))
-            -> one($factory)->createTextHeader('Second', 'two')
-                -> returns($this->_createHeader('Second', 'two'))
-            -> one($factory)->createTextHeader('Third', 'three')
-                -> returns($this->_createHeader('Third', 'three'))
-            );
+        $factory->expects($this->at(0))
+                ->method('createTextHeader')
+                ->with('Third', 'three')
+                ->will($this->returnValue($this->_createHeader('Third', 'three')));
+        $factory->expects($this->at(1))
+                ->method('createTextHeader')
+                ->with('First', 'one')
+                ->will($this->returnValue($this->_createHeader('First', 'one')));
+        $factory->expects($this->at(2))
+                ->method('createTextHeader')
+                ->with('Second', 'two')
+                ->will($this->returnValue($this->_createHeader('Second', 'two')));
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Third', 'three');
         $set->addTextHeader('First', 'one');
@@ -531,7 +587,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
 
         $set->defineOrdering(array('First', 'Second', 'Third'));
 
-        $this->assertEqual(
+        $this->assertEquals(
             "First: one\r\n" .
             "Second: two\r\n" .
             "Third: three\r\n",
@@ -542,18 +598,27 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testUnsortedHeadersAppearAtEnd()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->createTextHeader('First', 'one')
-                -> returns($this->_createHeader('First', 'one'))
-            -> one($factory)->createTextHeader('Second', 'two')
-                -> returns($this->_createHeader('Second', 'two'))
-            -> one($factory)->createTextHeader('Third', 'three')
-                -> returns($this->_createHeader('Third', 'three'))
-            -> one($factory)->createTextHeader('Fourth', 'four')
-                -> returns($this->_createHeader('Fourth', 'four'))
-            -> one($factory)->createTextHeader('Fifth', 'five')
-                -> returns($this->_createHeader('Fifth', 'five'))
-            );
+        $factory->expects($this->at(0))
+                ->method('createTextHeader')
+                ->with('Fourth', 'four')
+                ->will($this->returnValue($this->_createHeader('Fourth', 'four')));
+        $factory->expects($this->at(1))
+                ->method('createTextHeader')
+                ->with('Fifth', 'five')
+                ->will($this->returnValue($this->_createHeader('Fifth', 'five')));
+        $factory->expects($this->at(2))
+                ->method('createTextHeader')
+                ->with('Third', 'three')
+                ->will($this->returnValue($this->_createHeader('Third', 'three')));
+        $factory->expects($this->at(3))
+                ->method('createTextHeader')
+                ->with('First', 'one')
+                ->will($this->returnValue($this->_createHeader('First', 'one')));
+        $factory->expects($this->at(4))
+                ->method('createTextHeader')
+                ->with('Second', 'two')
+                ->will($this->returnValue($this->_createHeader('Second', 'two')));
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Fourth', 'four');
         $set->addTextHeader('Fifth', 'five');
@@ -563,7 +628,7 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
 
         $set->defineOrdering(array('First', 'Second', 'Third'));
 
-        $this->assertEqual(
+        $this->assertEquals(
             "First: one\r\n" .
             "Second: two\r\n" .
             "Third: three\r\n" .
@@ -578,15 +643,21 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
         $subject = $this->_createHeader('Subject', 'some text');
         $xHeader = $this->_createHeader('X-Header', 'some text');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createTextHeader('Subject', 'some text')
-                -> returns($subject)
-            -> ignoring($factory)->createTextHeader('X-Header', 'some text')
-                -> returns($xHeader)
-            -> ignoring($factory)
-            -> one($subject)->setCharset('utf-8')
-            -> one($xHeader)->setCharset('utf-8')
-            );
+        $factory->expects($this->at(0))
+                ->method('createTextHeader')
+                ->with('Subject', 'some text')
+                ->will($this->returnValue($subject));
+        $factory->expects($this->at(1))
+                ->method('createTextHeader')
+                ->with('X-Header', 'some text')
+                ->will($this->returnValue($xHeader));
+        $subject->expects($this->once())
+                ->method('setCharset')
+                ->with('utf-8');
+        $xHeader->expects($this->once())
+                ->method('setCharset')
+                ->with('utf-8');
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Subject', 'some text');
         $set->addTextHeader('X-Header', 'some text');
@@ -599,15 +670,21 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
         $subject = $this->_createHeader('Subject', 'some text');
         $xHeader = $this->_createHeader('X-Header', 'some text');
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> ignoring($factory)->createTextHeader('Subject', 'some text')
-                -> returns($subject)
-            -> ignoring($factory)->createTextHeader('X-Header', 'some text')
-                -> returns($xHeader)
-            -> ignoring($factory)
-            -> one($subject)->setCharset('utf-8')
-            -> one($xHeader)->setCharset('utf-8')
-            );
+        $factory->expects($this->at(0))
+                ->method('createTextHeader')
+                ->with('Subject', 'some text')
+                ->will($this->returnValue($subject));
+        $factory->expects($this->at(1))
+                ->method('createTextHeader')
+                ->with('X-Header', 'some text')
+                ->will($this->returnValue($xHeader));
+        $subject->expects($this->once())
+                ->method('setCharset')
+                ->with('utf-8');
+        $xHeader->expects($this->once())
+                ->method('setCharset')
+                ->with('utf-8');
+
         $set = $this->_createSet($factory);
         $set->addTextHeader('Subject', 'some text');
         $set->addTextHeader('X-Header', 'some text');
@@ -618,10 +695,10 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
     public function testCharsetChangeNotifiesFactory()
     {
         $factory = $this->_createFactory();
-        $this->_checking(Expectations::create()
-            -> one($factory)->charsetChanged('utf-8')
-            -> ignoring($factory)
-            );
+        $factory->expects($this->once())
+                ->method('charsetChanged')
+                ->with('utf-8');
+
         $set = $this->_createSet($factory);
 
         $set->setCharset('utf-8');
@@ -636,17 +713,21 @@ class Swift_Mime_SimpleHeaderSetTest extends Swift_Tests_SwiftUnitTestCase
 
     private function _createFactory()
     {
-        return $this->_mock('Swift_Mime_HeaderFactory');
+        return $this->getMock('Swift_Mime_HeaderFactory');
     }
 
     private function _createHeader($name, $body = '')
     {
-        $header = $this->_mock('Swift_Mime_Header');
-        $this->_checking(Expectations::create()
-            -> ignoring($header)->getFieldName() -> returns($name)
-            -> ignoring($header)->toString() -> returns(sprintf("%s: %s\r\n", $name, $body))
-            -> ignoring($header)->getFieldBody() -> returns($body)
-            );
+        $header = $this->getMock('Swift_Mime_Header');
+        $header->expects($this->any())
+               ->method('getFieldName')
+               ->will($this->returnValue($name));
+        $header->expects($this->any())
+               ->method('toString')
+               ->will($this->returnValue(sprintf("%s: %s\r\n", $name, $body)));
+        $header->expects($this->any())
+               ->method('getFieldBody')
+               ->will($this->returnValue($body));
 
         return $header;
     }

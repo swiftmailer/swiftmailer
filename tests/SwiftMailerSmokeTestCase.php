@@ -1,21 +1,21 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'swift_required.php';
-
 /**
- * Smoke test helper class.
- * @package Swift
- * @subpackage Tests
- * @author Chris Corbyn
+ * Base test for smoke tests.
+ *
+ * @package     Swift
+ * @subpackage  Tests
+ * @author      Rouven Weßling
  */
-class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
+class SwiftMailerSmokeTestCase extends SwiftMailerTestCase
 {
-    public function skip()
+    public function setUp()
     {
-        $this->skipUnless(SWIFT_SMOKE_TRANSPORT_TYPE,
-            '%s: Smoke tests are skipped if tests/smoke.conf.php is not edited'
-            );
+        if (!defined('SWIFT_SMOKE_TRANSPORT_TYPE')) {
+            $this->markTestSkipped(
+                'Smoke tests are skipped if tests/smoke.conf.php is not edited'
+             );
+        }
     }
 
     protected function _getMailer()
@@ -44,10 +44,5 @@ class Swift_Tests_SwiftSmokeTestCase extends Swift_Tests_SwiftUnitTestCase
         }
 
         return new Swift_Mailer($transport);
-    }
-
-    protected function _visualCheck($url)
-    {
-        $this->dump('{image @ ' . $url . '}');
     }
 }
