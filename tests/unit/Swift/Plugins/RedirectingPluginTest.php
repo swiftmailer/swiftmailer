@@ -98,6 +98,50 @@ class Swift_Plugins_RedirectingPluginTest extends Swift_Tests_SwiftUnitTestCase
         $this->assertEqual($message->getBcc(), $bcc);
     }
 
+    public function testArrayOfRecipientsCanBeExplicitlyDefined()
+    {
+        $message = Swift_Message::newInstance()
+            ->setSubject('...')
+            ->setFrom(array('john@example.com' => 'John Doe'))
+            ->setTo(array(
+            'fabien@example.com' => 'Fabien',
+            'chris@example.com' => 'Chris (To)',
+            'lars-to@internal.com' => 'Lars (To)',
+        ))
+            ->setCc(array(
+            'fabien@example.com' => 'Fabien',
+            'chris-cc@example.com' => 'Chris (Cc)',
+            'lars-cc@internal.org' => 'Lars (Cc)',
+        ))
+            ->setBcc(array(
+            'fabien@example.com' => 'Fabien',
+            'chris-bcc@example.com' => 'Chris (Bcc)',
+            'john-bcc@example.org' => 'John (Bcc)',
+        ))
+            ->setBody('...')
+        ;
+
+        $recipients = array('god@example.com', 'fabien@example.com');
+        $patterns = array('/^.*@internal.[a-z]+$/');
+
+        $plugin = new Swift_Plugins_RedirectingPlugin($recipients, $patterns);
+
+        $evt = $this->_createSendEvent($message);
+
+        $plugin->beforeSendPerformed($evt);
+
+        $this->assertEqual(
+            $message->getTo(),
+            array('fabien@example.com' => 'Fabien', 'lars-to@internal.com' => 'Lars (To)', 'god@example.com' => null)
+        );
+        $this->assertEqual(
+            $message->getCc(),
+            array('fabien@example.com' => 'Fabien', 'lars-cc@internal.org' => 'Lars (Cc)')
+        );
+        $this->assertEqual($message->getBcc(), array('fabien@example.com' => 'Fabien'));
+
+    }
+
     // -- Creation Methods
 
     private function _createSendEvent(Swift_Mime_Message $message)
