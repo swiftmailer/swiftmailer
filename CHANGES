@@ -4,6 +4,7 @@ Changelog
 5.1.0 (2014-XX-XX)
 ------------------
 
+ * added support for libopendkim (https://github.com/xdecock/php-opendkim)
  * merged SignedMessage and Message
  * added Gmail XOAuth2 authentication
  * updated the list of known mime types
