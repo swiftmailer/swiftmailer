@@ -35,12 +35,12 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         if (extension_loaded('opendkim')) {
             $this->_peclLoaded = true;
         } else {
-        	throw new Swift_SwiftException('php-opendkim extension not found');
+             throw new Swift_SwiftException('php-opendkim extension not found');
         }
         parent::__construct($privateKey, $domainName, $selector);
     }
     
-    public function newInstance($privateKey, $domainName, $selector)
+    public static function newInstance($privateKey, $domainName, $selector)
     {
         return new static($privateKey, $domainName, $selector);
     }
