@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by sstok at 2013-01-30T09:58:30Z
+
+Wrong license header in lib/classes/Swift/Signers/OpenDKIMSigner.php
+
+---------------------------------------------------------------------------
+
+by xdecock at 2013-01-30T10:01:49Z
+
+yeah, shit, correcting this, pretty obvious where the copy/paste came
+from...
+
+On Wed, Jan 30, 2013 at 10:58 AM, Sebastiaan Stok
+<notifications@github.com>wrote:
+
+> Wrong license header in lib/classes/Swift/Signers/OpenDKIMSigner.php
+>
+> —
+> Reply to this email directly or view it on GitHub<https://github.com/swiftmailer/swiftmailer/pull/285#issuecomment-12882241>.
+>
+>
+
+--
+Xavier De Cock
+GPG Fingerprint: 93CA EE3F 9F57 5BE1 AE4A  794D 3C74 CA9E E7A5 0C1B
+GPG Id: 0xE7A50C1B
