@@ -1,0 +1,20 @@
+---------------------------------------------------------------------------
+
+by wardpeet at 2014-01-12T13:18:58Z
+
+It seems that the travis build for php 5.5 fails at
+`The command "gem install mailcatcher" failed and exited with 1 during before_script.`
+
+---------------------------------------------------------------------------
+
+by wardpeet at 2014-01-29T07:34:08Z
+
+too bad this one isn't getting accepted.
+
+---------------------------------------------------------------------------
+
+by ooxi at 2014-01-29T09:54:59Z
+
+Well I guess the swiftmailer team isn't that open for community input :(
+
+There are like 25 pull requests and hardly any one got even feedback.
