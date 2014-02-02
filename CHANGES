@@ -4,6 +4,7 @@ Changelog
 5.1.0 (2013-XX-XX)
 ------------------
 
+ * updated the list of known mime types
  * added NTLM authentication
 
 5.0.3 (2013-12-03)
