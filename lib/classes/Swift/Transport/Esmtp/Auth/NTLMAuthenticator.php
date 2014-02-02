@@ -43,6 +43,18 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      */
     public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
     {
+        if (!function_exists('mcrypt_module_open')) {
+            throw new LogicException('The mcrypt functions need to be enabled to use the NTLM authenticator.');
+        }
+
+        if (!function_exists('openssl_random_pseudo_bytes')) {
+            throw new LogicException('The OpenSSL extension must be enabled to use the NTLM authenticator.');
+        }
+
+        if (!function_exists('bcmul')) {
+            throw new LogicException('The BCMatch functions must be enabled to use the NTLM authenticator.');
+        }
+
         try {
             // execute AUTH command and filter out the code at the beginning
             // AUTH NTLM xxxx
@@ -525,16 +537,13 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      */
     protected function getRandomBytes($length)
     {
-        $result = "";
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            $result = openssl_random_pseudo_bytes($length);
-        } else {
-            for ($i = 0; $i < $length; $i++) {
-                $result .= chr(rand(0, 255));
-            }
+        $bytes = openssl_random_pseudo_bytes($length, $strong);
+
+        if (false !== $bytes && true === $strong) {
+            return $bytes;
         }
 
-        return $result;
+        throw new RuntimeException('OpenSSL did not produce a secure random number.');
     }
 
     /** ENCRYPTION ALGORITHMS */

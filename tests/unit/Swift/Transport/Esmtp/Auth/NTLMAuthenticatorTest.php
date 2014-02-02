@@ -5,8 +5,7 @@ require_once 'Swift/Transport/SmtpAgent.php';
 require_once 'Swift/Transport/Esmtp/Auth/PlainAuthenticator.php';
 require_once 'Swift/TransportException.php';
 
-class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends Swift_Tests_SwiftUnitTestCase
 {
     private $_agent;
 
@@ -16,14 +15,13 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
 
     public function setUp()
     {
+        $this->skipIf(!function_exists('mcrypt_module_open') || !function_exists('openssl_random_pseudo_bytes') || !function_exists('bcmul'));
+
         $this->_agent = $this->_mock('Swift_Transport_SmtpAgent');
     }
 
     public function testKeywordIsNtlm()
     {
-        /* --
-        The name associated with this mechanism is "NTLM".
-        */
         $login = $this->_getAuthenticator();
         $this->assertEqual('NTLM', $login->getAuthKeyword());
     }
@@ -245,11 +243,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
 
     private function _invokePrivateMethod($method, $instance, array $args = array())
     {
-        $method = trim($method);
-        $refC = new ReflectionClass($instance);
-
-        $methodC = $refC->getMethod($method);
-
+        $methodC = new ReflectionMethod($instance, trim($method));
         $methodC->setAccessible(true);
 
         return $methodC->invokeArgs($instance, $args);
@@ -262,10 +256,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest
      */
     protected function hex2bin($hex)
     {
-        if (function_exists('hex2bin')) {
-            return hex2bin($hex);
-        } else {
-            return pack('H*', $hex);
-        }
+        return function_exists('hex2bin') ? hex2bin($hex) : pack('H*', $hex);
     }
 }
