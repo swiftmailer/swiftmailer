@@ -878,7 +878,7 @@ When using OpenSSL this can done by the including the *-addtrust emailProtection
 
 .. code-block:: php
 
-    $message = Swift_SignedMessage::newInstance();
+    $message = Swift_Message::newInstance();
 
     $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
     $smimeSigner->setSignCertificate('/path/to/certificate.pem', '/path/to/private-key.pem');
@@ -888,7 +888,7 @@ When the private key is secured using a passphrase use the following instead.
 
 .. code-block:: php
 
-    $message = Swift_SignedMessage::newInstance();
+    $message = Swift_Message::newInstance();
 
     $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
     $smimeSigner->setSignCertificate('/path/to/certificate.pem', array('/path/to/private-key.pem', 'passphrase'));
@@ -914,7 +914,7 @@ Using both signing and encrypting is also possible.
 
 .. code-block:: php
 
-    $message = Swift_SignedMessage::newInstance();
+    $message = Swift_Message::newInstance();
 
     $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
     $smimeSigner->setSignCertificate('/path/to/sign-certificate.pem', '/path/to/private-key.pem');
