@@ -6,6 +6,10 @@ require_once 'Swift/Mime/HeaderSet.php';
 
 class Swift_Signers_OpenDKIMSignerTest extends Swift_Tests_SwiftUnitTestCase
 {
+    public function skip()
+    {
+        $this->skipIf(!extension_loaded('opendkim'));
+    }
 
     public function testBasicSigningHeaderManipulation()
     {
