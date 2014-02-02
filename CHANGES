@@ -4,6 +4,7 @@ Changelog
 5.1.0 (2013-XX-XX)
 ------------------
 
+ * added Gmail XOAuth2 authentication
  * updated the list of known mime types
  * added NTLM authentication
 
