@@ -304,7 +304,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Set the to addresses of this message.
      *
-     * If multiple recipients will receive the message and array should be used.
+     * If multiple recipients will receive the message an array should be used.
+     * Example: array('receiver@domain.org', 'other@domain.org' => 'A name')
      *
      * If $name is passed and the first parameter is a string, this name will be
      * associated with the address.
