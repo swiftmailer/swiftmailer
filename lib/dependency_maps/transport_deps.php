@@ -61,7 +61,7 @@ Swift_DependencyContainer::getInstance()
 
     ->register('transport.plainauth')
     ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_PlainAuthenticator')
-    
+
     ->register('transport.xoauth2auth')
     ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_XOAuth2Authenticator')
 
