@@ -125,7 +125,7 @@ class SocketTester extends UnitTestCase { ... }
                         new classes will have been added. You should make
                         sure that the test cases are only included in this file
                         and no others (Note : with the new <cite>autorun</cite>
-                        functionnality, this problem has now been solved).
+                        functionality, this problem has now been solved).
                     </li>
                     <li>
                         New test case extension classes that get included will be

@@ -5,7 +5,7 @@
     <content>
         <section name="projects-extending-simpletest" title="Projects extending SimpleTest">
             <p>
-                Some projects are able to extend SimpleTest's functionnality :
+                Some projects are able to extend SimpleTest's functionality :
             </p>
             <dl>
                 <dt>
