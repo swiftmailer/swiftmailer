@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!-- $Id: overview.xml 1687 2008-03-06 13:05:45Z pp11 $ -->
-<page title="Apercu de SimpleTest" here="Aperçu">
+<page title="Aperçu de SimpleTest" here="Aperçu">
     <synchronisation lang="en" version="1475" date="19/01/2007" maintainer="pp11" />
     <long_title>
         Aperçu et liste des fonctionnalités des testeurs unitaires PHP et web de SimpleTest PHP
