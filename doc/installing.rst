@@ -92,8 +92,8 @@ can get the source directly from the repository.
 
 .. note::
 
-    You do not need to have git installed to use Swift Mailer from github. If
-    you don't have git installed, go to `github`_ and click the "Download"
+    You do not need to have git installed to use Swift Mailer from GitHub. If
+    you don't have git installed, go to `GitHub`_ and click the "Download"
     button.
 
 Cloning the Repository
@@ -185,7 +185,7 @@ The following example shows show you can upload the files using
         total size is 401405  speedup is 2.60
         $
 
-.. _`github`: http://github.com/swiftmailer/swiftmailer
+.. _`GitHub`: http://github.com/swiftmailer/swiftmailer
 
 Troubleshooting
 ---------------
