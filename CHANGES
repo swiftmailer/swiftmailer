@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.1.0 (2014-XX-XX)
+5.1.0 (2014-03-18)
 ------------------
 
  * fixed data writing to stream when sending large messages
