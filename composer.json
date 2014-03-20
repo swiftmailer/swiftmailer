@@ -22,6 +22,9 @@
         "php": ">=5.2.4",
         "egulias/email-validator":"~1.2"
     },
+    "suggest": {
+        "egulias/email-validator": "Strict (RFC compliant) email validation"
+    },
     "autoload": {
         "files": ["lib/swift_required.php"]
     },
