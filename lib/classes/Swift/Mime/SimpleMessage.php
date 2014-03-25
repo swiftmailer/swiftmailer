@@ -17,6 +17,9 @@
  */
 class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime_Message
 {
+    /** Optional list of explicitly-set message recipients. */
+    protected $_recipients = array();
+
     /**
      * Create a new SimpleMessage with $headers, $encoder and $cache.
      *
@@ -440,6 +443,64 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     public function getBcc()
     {
         return $this->_getHeaderFieldModel('Bcc');
+    }
+
+    /**
+     * Add a recipient to this message. Note that if any recipients are added
+     * using this method or setRecipients, they will be the only email addresses
+     * to receive a copy of this message. The To and Cc addresses will only be
+     * shown on the message.
+     *
+     * @param string $address
+     *
+     * @return Swift_Mime_SimpleMessage
+     */
+    public function addRecipient($address)
+    {
+        $current = $this->getRecipients();
+        $current[$address] = null;
+
+        return $this->setRecipients($current);
+    }
+
+    /**
+     * Set the recipients of this message. Note that if any recipients are added
+     * using this method or addRecipient, they will be the only email addresses
+     * to receive a copy of this message. The To and Cc addresses will only be
+     * shown on the message itself.
+     *
+     * The first parameter may be a single email address as a string or multiple
+     * addresses given as an array.
+     *
+     * @param mixed  $addresses
+     *
+     * @return Swift_Mime_SimpleMessage
+     */
+    public function setRecipients($addresses)
+    {
+        if (!is_array($addresses)) {
+            $addresses = array($addresses => null);
+        } elseif (array_key_exists(0, $addresses)) {
+            $addresses = array_flip($addresses);
+            $addresses = array_fill_keys(array_keys($addresses), null);
+        }
+
+        $this->_recipients = (array) $addresses;
+
+        return $this;
+    }
+
+    /**
+     * If available, get the explicitly set recipients for this message.
+     *
+     * This method always returns an associative array, whereby the keys provide
+     * the actual email addresses and the values are null.
+     *
+     * @return array
+     */
+    public function getRecipients()
+    {
+        return $this->_recipients;
     }
 
     /**
