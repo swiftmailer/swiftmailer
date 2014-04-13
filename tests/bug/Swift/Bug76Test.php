@@ -1,24 +1,20 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-
-class Swift_Bug76Test extends Swift_Tests_SwiftUnitTestCase
+class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
 {
     private $_inputFile;
     private $_outputFile;
     private $_encoder;
 
-    public function skip()
-    {
-        $this->skipUnless(
-            is_writable(SWIFT_TMP_DIR),
-            '%s: This test requires tests/acceptance.conf.php to specify a ' .
-            'writable SWIFT_TMP_DIR'
-        );
-    }
-
     public function setUp()
     {
+        if (!defined('SWIFT_TMP_DIR') || !is_writable(SWIFT_TMP_DIR)) {
+            $this->markTestSkipped(
+                'Cannot run test without a writable directory to use (' .
+                'define SWIFT_TMP_DIR in tests/config.php if you wish to run this test)'
+             );
+        }
+
         $this->_inputFile = SWIFT_TMP_DIR . '/in.bin';
         file_put_contents($this->_inputFile, '');
 

@@ -1,18 +1,6 @@
 <?php
 
-require_once 'Swift/Mime/Attachment.php';
-require_once 'Swift/Mime/Headers/UnstructuredHeader.php';
-require_once 'Swift/Mime/Headers/ParameterizedHeader.php';
-require_once 'Swift/Encoder/Rfc2231Encoder.php';
-require_once 'Swift/Mime/ContentEncoder/Base64ContentEncoder.php';
-require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
-require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
-require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
-require_once 'Swift/KeyCache/ArrayKeyCache.php';
-require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
-require_once 'Swift/Mime/Grammar.php';
-
-class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
+class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     private $_contentEncoder;
     private $_cache;
@@ -44,7 +32,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
         $attachment = $this->_createAttachment();
         $attachment->setContentType('application/pdf');
         $attachment->setDisposition('inline');
-        $this->assertEqual(
+        $this->assertEquals(
             'Content-Type: application/pdf' . "\r\n" .
             'Content-Transfer-Encoding: base64' . "\r\n" .
             'Content-Disposition: inline' . "\r\n",
@@ -56,7 +44,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
     {
         $attachment = $this->_createAttachment();
         $attachment->setContentType('application/pdf');
-        $this->assertEqual(
+        $this->assertEquals(
             'Content-Type: application/pdf' . "\r\n" .
             'Content-Transfer-Encoding: base64' . "\r\n" .
             'Content-Disposition: attachment' . "\r\n",
@@ -69,7 +57,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
         $attachment = $this->_createAttachment();
         $attachment->setContentType('application/pdf');
         $attachment->setFilename('foo.pdf');
-        $this->assertEqual(
+        $this->assertEquals(
             'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
             'Content-Transfer-Encoding: base64' . "\r\n" .
             'Content-Disposition: attachment; filename=foo.pdf' . "\r\n",
@@ -82,7 +70,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
         $attachment = $this->_createAttachment();
         $attachment->setContentType('application/pdf');
         $attachment->setSize(12340);
-        $this->assertEqual(
+        $this->assertEquals(
             'Content-Type: application/pdf' . "\r\n" .
             'Content-Transfer-Encoding: base64' . "\r\n" .
             'Content-Disposition: attachment; size=12340' . "\r\n",
@@ -96,7 +84,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
         $attachment->setContentType('application/pdf');
         $attachment->setFilename('foo.pdf');
         $attachment->setSize(12340);
-        $this->assertEqual(
+        $this->assertEquals(
             'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
             'Content-Transfer-Encoding: base64' . "\r\n" .
             'Content-Disposition: attachment; filename=foo.pdf; size=12340' . "\r\n",
@@ -111,7 +99,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends UnitTestCase
         $attachment->setFilename('foo.pdf');
         $attachment->setSize(12340);
         $attachment->setBody('abcd');
-        $this->assertEqual(
+        $this->assertEquals(
             'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
             'Content-Transfer-Encoding: base64' . "\r\n" .
             'Content-Disposition: attachment; filename=foo.pdf; size=12340' . "\r\n" .

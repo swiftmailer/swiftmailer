@@ -1,11 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/InputByteStream.php';
-require_once 'Swift/ByteStream/ArrayByteStream.php';
-
-class Swift_ByteStream_ArrayByteStreamTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
 {
     public function testReadingSingleBytesFromBaseInput()
     {
@@ -15,7 +10,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         while (false !== $bytes = $bs->read(1)) {
             $output[] = $bytes;
         }
-        $this->assertEqual($input, $output,
+        $this->assertEquals($input, $output,
             '%s: Bytes read from stream should be the same as bytes in constructor'
             );
     }
@@ -28,7 +23,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         while (false !== $bytes = $bs->read(2)) {
             $output[] = $bytes;
         }
-        $this->assertEqual(array('ab', 'cd'), $output,
+        $this->assertEquals(array('ab', 'cd'), $output,
             '%s: Bytes read from stream should be in pairs'
             );
     }
@@ -41,7 +36,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         while (false !== $bytes = $bs->read(2)) {
             $output[] = $bytes;
         }
-        $this->assertEqual(array('ab', 'cd', 'e'), $output,
+        $this->assertEquals(array('ab', 'cd', 'e'), $output,
             '%s: Bytes read from stream should be in pairs except final read'
             );
     }
@@ -51,7 +46,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         $input = array('a', 'b', 'c');
         $bs = $this->_createArrayStream($input);
         $bs->setReadPointer(1);
-        $this->assertEqual('b', $bs->read(1),
+        $this->assertEquals('b', $bs->read(1),
             '%s: Byte should be second byte since pointer as at offset 1'
             );
     }
@@ -64,7 +59,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         while (false !== $bs->read(1));
 
         $bs->setReadPointer(0);
-        $this->assertEqual('a', $bs->read(1),
+        $this->assertEquals('a', $bs->read(1),
             '%s: Byte should be first byte since pointer as at offset 0'
             );
     }
@@ -75,7 +70,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         $bs = $this->_createArrayStream($input);
 
         $bs->setReadPointer(-1);
-        $this->assertEqual('a', $bs->read(1),
+        $this->assertEquals('a', $bs->read(1),
             '%s: Byte should be first byte since pointer should be at offset 0'
             );
     }
@@ -86,7 +81,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         $bs = $this->_createArrayStream($input);
 
         $bs->setReadPointer(3);
-        $this->assertIdentical(false, $bs->read(1),
+        $this->assertSame(false, $bs->read(1),
             '%s: Stream should be at end and thus return false'
             );
     }
@@ -102,7 +97,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         while (false !== $bytes = $bs->read(1)) {
             $output[] = $bytes;
         }
-        $this->assertEqual(array('a', 'b', 'c', 'd', 'e'), $output,
+        $this->assertEquals(array('a', 'b', 'c', 'd', 'e'), $output,
             '%s: Bytes read from stream should be from initial stack + written'
             );
     }
@@ -114,7 +109,7 @@ class Swift_ByteStream_ArrayByteStreamTest
 
         $bs->flushBuffers();
 
-        $this->assertIdentical(false, $bs->read(1),
+        $this->assertSame(false, $bs->read(1),
             '%s: Contents have been flushed so read() should return false'
             );
     }
@@ -126,7 +121,7 @@ class Swift_ByteStream_ArrayByteStreamTest
         while (false !== $bytes = $bs->read(1)) {
             $output[] = $bytes;
         }
-        $this->assertEqual(array('a', 'b', 'c'), $output,
+        $this->assertEquals(array('a', 'b', 'c'), $output,
             '%s: Bytes read from stream should be the same as bytes in constructor'
             );
     }
@@ -134,15 +129,21 @@ class Swift_ByteStream_ArrayByteStreamTest
     public function testBindingOtherStreamsMirrorsWriteOperations()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->_createMockInputStream();
-        $is2 = $this->_createMockInputStream();
+        $is1 = $this->getMock('Swift_InputByteStream');
+        $is2 = $this->getMock('Swift_InputByteStream');
 
-        $this->_checking(Expectations::create()
-            -> one($is1)->write('x')
-            -> one($is2)->write('x')
-            -> one($is1)->write('y')
-            -> one($is2)->write('y')
-        );
+        $is1->expects($this->at(0))
+            ->method('write')
+            ->with('x');
+        $is1->expects($this->at(1))
+            ->method('write')
+            ->with('y');
+        $is2->expects($this->at(0))
+            ->method('write')
+            ->with('x');
+        $is2->expects($this->at(1))
+            ->method('write')
+            ->with('y');
 
         $bs->bind($is1);
         $bs->bind($is2);
@@ -154,13 +155,13 @@ class Swift_ByteStream_ArrayByteStreamTest
     public function testBindingOtherStreamsMirrorsFlushOperations()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->_createMockInputStream();
-        $is2 = $this->_createMockInputStream();
+        $is1 = $this->getMock('Swift_InputByteStream');
+        $is2 = $this->getMock('Swift_InputByteStream');
 
-        $this->_checking(Expectations::create()
-            -> one($is1)->flushBuffers()
-            -> one($is2)->flushBuffers()
-        );
+        $is1->expects($this->once())
+            ->method('flushBuffers');
+        $is2->expects($this->once())
+            ->method('flushBuffers');
 
         $bs->bind($is1);
         $bs->bind($is2);
@@ -171,14 +172,18 @@ class Swift_ByteStream_ArrayByteStreamTest
     public function testUnbindingStreamPreventsFurtherWrites()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->_createMockInputStream();
-        $is2 = $this->_createMockInputStream();
+        $is1 = $this->getMock('Swift_InputByteStream');
+        $is2 = $this->getMock('Swift_InputByteStream');
 
-        $this->_checking(Expectations::create()
-            -> one($is1)->write('x')
-            -> one($is2)->write('x')
-            -> one($is1)->write('y')
-        );
+        $is1->expects($this->at(0))
+            ->method('write')
+            ->with('x');
+        $is1->expects($this->at(1))
+            ->method('write')
+            ->with('y');
+        $is2->expects($this->once())
+            ->method('write')
+            ->with('x');
 
         $bs->bind($is1);
         $bs->bind($is2);
@@ -195,10 +200,5 @@ class Swift_ByteStream_ArrayByteStreamTest
     private function _createArrayStream($input)
     {
         return new Swift_ByteStream_ArrayByteStream($input);
-    }
-
-    private function _createMockInputStream()
-    {
-        return $this->_mock('Swift_InputByteStream');
     }
 }

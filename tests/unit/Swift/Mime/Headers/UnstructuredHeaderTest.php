@@ -1,32 +1,27 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/Headers/UnstructuredHeader.php';
-require_once 'Swift/Mime/HeaderEncoder.php';
-require_once 'Swift/Mime/Grammar.php';
 
-class Swift_Mime_Headers_UnstructuredHeaderTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Mime_Headers_UnstructuredHeaderTest extends \SwiftMailerTestCase
 {
     private $_charset = 'utf-8';
 
     public function testTypeIsTextHeader()
     {
         $header = $this->_getHeader('Subject', $this->_getEncoder('Q', true));
-        $this->assertEqual(Swift_Mime_Header::TYPE_TEXT, $header->getFieldType());
+        $this->assertEquals(Swift_Mime_Header::TYPE_TEXT, $header->getFieldType());
     }
 
     public function testGetNameReturnsNameVerbatim()
     {
         $header = $this->_getHeader('Subject', $this->_getEncoder('Q', true));
-        $this->assertEqual('Subject', $header->getFieldName());
+        $this->assertEquals('Subject', $header->getFieldName());
     }
 
     public function testGetValueReturnsValueVerbatim()
     {
         $header = $this->_getHeader('Subject', $this->_getEncoder('Q', true));
         $header->setValue('Test');
-        $this->assertEqual('Test', $header->getValue());
+        $this->assertEquals('Test', $header->getValue());
     }
 
     public function testBasicStructureIsKeyValuePair()
@@ -37,7 +32,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         */
         $header = $this->_getHeader('Subject', $this->_getEncoder('Q', true));
         $header->setValue('Test');
-        $this->assertEqual('Subject: Test' . "\r\n", $header->toString());
+        $this->assertEquals('Subject: Test' . "\r\n", $header->toString());
     }
 
     public function testLongHeadersAreFoldedAtWordBoundary()
@@ -63,7 +58,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         X-Custom-Header: The quick brown fox jumped over the fence, he was a very very
      scary brown fox with a bushy tail
         */
-        $this->assertEqual(
+        $this->assertEquals(
             'X-Custom-Header: The quick brown fox jumped over the fence, he was a' .
             ' very very' . "\r\n" . //Folding
             ' scary brown fox with a bushy tail' . "\r\n",
@@ -83,7 +78,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         $nonAsciiChar = pack('C', 0x8F);
         $header = $this->_getHeader('X-Test', $this->_getEncoder('Q', true));
         $header->setValue($nonAsciiChar);
-        $this->assertPattern(
+        $this->assertRegExp(
             '~^[^:\x00-\x20\x80-\xFF]+: [^\x80-\xFF\r\n]+\r\n$~s',
             $header->toString()
             );
@@ -100,7 +95,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         $nonAsciiChar = pack('C', 0x8F);
         $header = $this->_getHeader('X-Test', $this->_getEncoder('Q', true));
         $header->setValue($nonAsciiChar);
-        $this->assertPattern(
+        $this->assertRegExp(
             '~^X-Test: \=?.*?\?.*?\?.*?\?=\r\n$~s',
             $header->toString()
             );
@@ -108,7 +103,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
 
     public function testEncodedWordIncludesCharsetAndEncodingMethodAndText()
     {
-        /* -- RFC 2047, 2.
+         /* -- RFC 2047, 2.
         An 'encoded-word' is defined by the following ABNF grammar.  The
         notation of RFC 822 is used, with the exception that white space
         characters MUST NOT appear between components of an 'encoded-word'.
@@ -119,13 +114,14 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         $nonAsciiChar = pack('C', 0x8F);
 
         $encoder = $this->_getEncoder('Q');
-        $this->_checking(Expectations::create()
-            -> one($encoder)->encodeString($nonAsciiChar, any(), any()) -> returns('=8F')
-            -> ignoring($encoder)
-            );
+        $encoder->shouldReceive('encodeString')
+                ->once()
+                ->with($nonAsciiChar, \Mockery::any(), \Mockery::any(), \Mockery::any())
+                ->andReturn('=8F');
+
         $header = $this->_getHeader('X-Test', $encoder);
         $header->setValue($nonAsciiChar);
-        $this->assertEqual(
+        $this->assertEquals(
             'X-Test: =?' . $this->_charset . '?Q?=8F?=' . "\r\n",
             $header->toString()
             );
@@ -143,15 +139,15 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
             $encodedChar = sprintf('=%02X', $byte);
 
             $encoder = $this->_getEncoder('Q');
-            $this->_checking(Expectations::create()
-                -> one($encoder)->encodeString($char, any(), any()) -> returns($encodedChar)
-                -> ignoring($encoder)
-                );
+            $encoder->shouldReceive('encodeString')
+                ->once()
+                ->with($char, \Mockery::any(), \Mockery::any(), \Mockery::any())
+                ->andReturn($encodedChar);
 
             $header = $this->_getHeader('X-A', $encoder);
             $header->setValue($char);
 
-            $this->assertEqual(
+            $this->assertEquals(
                 'X-A: =?' . $this->_charset . '?Q?' . $encodedChar . '?=' . "\r\n",
                 $header->toString(), '%s: Non-printable ascii should be encoded'
                 );
@@ -167,15 +163,15 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
             $encodedChar = sprintf('=%02X', $byte);
 
             $encoder = $this->_getEncoder('Q');
-            $this->_checking(Expectations::create()
-                -> one($encoder)->encodeString($char, any(), any()) -> returns($encodedChar)
-                -> ignoring($encoder)
-                );
+            $encoder->shouldReceive('encodeString')
+                ->once()
+                ->with($char, \Mockery::any(), \Mockery::any(), \Mockery::any())
+                ->andReturn($encodedChar);
 
             $header = $this->_getHeader('X-A', $encoder);
             $header->setValue($char);
 
-            $this->assertEqual(
+            $this->assertEquals(
                 'X-A: =?' . $this->_charset . '?Q?' . $encodedChar . '?=' . "\r\n",
                 $header->toString(), '%s: 8-bit octets should be encoded'
                 );
@@ -198,10 +194,10 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         $nonAsciiChar = pack('C', 0x8F);
 
         $encoder = $this->_getEncoder('Q');
-        $this->_checking(Expectations::create()
-            -> one($encoder)->encodeString($nonAsciiChar, 8, 63) -> returns('=8F')
-            -> ignoring($encoder)
-            );
+        $encoder->shouldReceive('encodeString')
+                ->once()
+                ->with($nonAsciiChar, \Mockery::any(), \Mockery::any(), \Mockery::any())
+                ->andReturn('=8F');
         //Note that multi-line headers begin with LWSP which makes 75 + 1 = 76
         //Note also that =?utf-8?q??= is 12 chars which makes 75 - 12 = 63
 
@@ -209,7 +205,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         $header = $this->_getHeader('X-Test', $encoder);
         $header->setValue($nonAsciiChar);
 
-        $this->assertEqual(
+        $this->assertEquals(
             'X-Test: =?' . $this->_charset . '?Q?=8F?=' . "\r\n",
             $header->toString()
             );
@@ -228,11 +224,10 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         $nonAsciiChar = pack('C', 0x8F);
 
         $encoder = $this->_getEncoder('Q');
-        $this->_checking(Expectations::create()
-            -> one($encoder)->encodeString($nonAsciiChar, 8, 63)
-                -> returns('line_one_here' . "\r\n" . 'line_two_here')
-            -> ignoring($encoder)
-            );
+        $encoder->shouldReceive('encodeString')
+                ->once()
+                ->with($nonAsciiChar, 8, 63, \Mockery::any())
+                ->andReturn('line_one_here' . "\r\n" . 'line_two_here');
 
         //Note that multi-line headers begin with LWSP which makes 75 + 1 = 76
         //Note also that =?utf-8?q??= is 12 chars which makes 75 - 12 = 63
@@ -241,7 +236,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         $header = $this->_getHeader('X-Test', $encoder);
         $header->setValue($nonAsciiChar);
 
-        $this->assertEqual(
+        $this->assertEquals(
             'X-Test: =?' . $this->_charset . '?Q?line_one_here?=' . "\r\n" .
             ' =?' . $this->_charset . '?Q?line_two_here?=' . "\r\n",
             $header->toString()
@@ -271,19 +266,21 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         // 'start', ' word word', ' and end', ' word'
 
         $encoder = $this->_getEncoder('Q');
-        $this->_checking(Expectations::create()
-            -> one($encoder)->encodeString($word . ' ' . $word, any(), any())
-                -> returns('w=8Frd_w=8Frd')
-            -> one($encoder)->encodeString($word, any(), any()) -> returns('w=8Frd')
-            -> ignoring($encoder)
-            );
+        $encoder->shouldReceive('encodeString')
+                ->once()
+                ->with($word . ' ' . $word, \Mockery::any(), \Mockery::any(), \Mockery::any())
+                ->andReturn('w=8Frd_w=8Frd');
+        $encoder->shouldReceive('encodeString')
+                ->once()
+                ->with($word, \Mockery::any(), \Mockery::any(), \Mockery::any())
+                ->andReturn('w=8Frd');
 
         $header = $this->_getHeader('X-Test', $encoder);
         $header->setValue($text);
 
         $headerString = $header->toString();
 
-        $this->assertEqual('X-Test: start =?' . $this->_charset . '?Q?' .
+        $this->assertEquals('X-Test: start =?' . $this->_charset . '?Q?' .
             'w=8Frd_w=8Frd?= then end =?' . $this->_charset . '?Q?'.
             'w=8Frd?=' . "\r\n", $headerString,
             '%s: Adjacent encoded words should appear grouped with WSP encoded'
@@ -312,15 +309,15 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
         $value = 'fo' . pack('C', 0x8F) . 'bar';
 
         $encoder = $this->_getEncoder('Q');
-        $this->_checking(Expectations::create()
-            -> one($encoder)->encodeString($value, any(), any()) -> returns('fo=8Fbar')
-            -> ignoring($encoder)
-            );
+        $encoder->shouldReceive('encodeString')
+                ->once()
+                ->with($value, \Mockery::any(), \Mockery::any(), \Mockery::any())
+                ->andReturn('fo=8Fbar');
 
         $header = $this->_getHeader('Subject', $encoder);
         $header->setLanguage('en');
         $header->setValue($value);
-        $this->assertEqual("Subject: =?utf-8*en?Q?fo=8Fbar?=\r\n",
+        $this->assertEquals("Subject: =?utf-8*en?Q?fo=8Fbar?=\r\n",
             $header->toString()
             );
     }
@@ -329,14 +326,14 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
     {
         $header = $this->_getHeader('Subject', $this->_getEncoder('Q', true));
         $header->setFieldBodyModel('test');
-        $this->assertEqual('test', $header->getValue());
+        $this->assertEquals('test', $header->getValue());
     }
 
     public function testGetBodyModel()
     {
         $header = $this->_getHeader('Subject', $this->_getEncoder('Q', true));
         $header->setValue('test');
-        $this->assertEqual('test', $header->getFieldBodyModel());
+        $this->assertEquals('test', $header->getFieldBodyModel());
     }
 
     // -- Private methods
@@ -351,15 +348,10 @@ class Swift_Mime_Headers_UnstructuredHeaderTest
 
     private function _getEncoder($type, $stub = false)
     {
-        $encoder = $this->_mock('Swift_Mime_HeaderEncoder');
-        $this->_checking(Expectations::create()
-            -> ignoring($encoder)->getName() -> returns($type)
-            );
-        if ($stub) {
-            $this->_checking(Expectations::create()
-                -> ignoring($encoder)
-                );
-        }
+        $encoder = $this->getMockery('Swift_Mime_HeaderEncoder')->shouldIgnoreMissing();
+        $encoder->shouldReceive('getName')
+                ->zeroOrMoreTimes()
+                ->andReturn($type);
 
         return $encoder;
     }

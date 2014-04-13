@@ -1,17 +1,13 @@
 <?php
 
-require_once 'Swift/Mime/ContentEncoder/PlainContentEncoder.php';
-require_once 'Swift/ByteStream/ArrayByteStream.php';
-
-class Swift_Mime_ContentEncoder_PlainContentEncoderAcceptanceTest
-    extends UnitTestCase
+class Swift_Mime_ContentEncoder_PlainContentEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     private $_samplesDir;
     private $_encoder;
 
     public function setUp()
     {
-        $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../../_samples/charsets');
+        $this->_samplesDir = realpath(__DIR__ . '/../../../../_samples/charsets');
         $this->_encoder = new Swift_Mime_ContentEncoder_PlainContentEncoder('8bit');
     }
 
@@ -36,7 +32,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderAcceptanceTest
                     $text = file_get_contents($sampleDir . '/' . $sampleFile);
                     $encodedText = $this->_encoder->encodeString($text);
 
-                    $this->assertEqual(
+                    $this->assertEquals(
                         $encodedText, $text,
                         '%s: Encoded string should be identical to original string for sample ' .
                         $sampleDir . '/' . $sampleFile
@@ -81,7 +77,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderAcceptanceTest
                         $encoded .= $bytes;
                     }
 
-                    $this->assertEqual(
+                    $this->assertEquals(
                         $encoded, $text,
                         '%s: Encoded string should be identical to original string for sample ' .
                         $sampleDir . '/' . $sampleFile

@@ -1,11 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/Headers/DateHeader.php';
-require_once 'Swift/Mime/Grammar.php';
-
-class Swift_Mime_Headers_DateHeaderTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Mime_Headers_DateHeaderTest extends \PHPUnit_Framework_TestCase
 {
     /* --
     The following tests refer to RFC 2822, section 3.6.1 and 3.3.
@@ -14,7 +9,7 @@ class Swift_Mime_Headers_DateHeaderTest
     public function testTypeIsDateHeader()
     {
         $header = $this->_getHeader('Date');
-        $this->assertEqual(Swift_Mime_Header::TYPE_DATE, $header->getFieldType());
+        $this->assertEquals(Swift_Mime_Header::TYPE_DATE, $header->getFieldType());
     }
 
     public function testGetTimestamp()
@@ -22,7 +17,7 @@ class Swift_Mime_Headers_DateHeaderTest
         $timestamp = time();
         $header = $this->_getHeader('Date');
         $header->setTimestamp($timestamp);
-        $this->assertIdentical($timestamp, $header->getTimestamp());
+        $this->assertSame($timestamp, $header->getTimestamp());
     }
 
     public function testTimestampCanBeSetBySetter()
@@ -30,7 +25,7 @@ class Swift_Mime_Headers_DateHeaderTest
         $timestamp = time();
         $header = $this->_getHeader('Date');
         $header->setTimestamp($timestamp);
-        $this->assertIdentical($timestamp, $header->getTimestamp());
+        $this->assertSame($timestamp, $header->getTimestamp());
     }
 
     public function testIntegerTimestampIsConvertedToRfc2822Date()
@@ -38,7 +33,7 @@ class Swift_Mime_Headers_DateHeaderTest
         $timestamp = time();
         $header = $this->_getHeader('Date');
         $header->setTimestamp($timestamp);
-        $this->assertEqual(date('r', $timestamp), $header->getFieldBody());
+        $this->assertEquals(date('r', $timestamp), $header->getFieldBody());
     }
 
     public function testSetBodyModel()
@@ -46,7 +41,7 @@ class Swift_Mime_Headers_DateHeaderTest
         $timestamp = time();
         $header = $this->_getHeader('Date');
         $header->setFieldBodyModel($timestamp);
-        $this->assertEqual(date('r', $timestamp), $header->getFieldBody());
+        $this->assertEquals(date('r', $timestamp), $header->getFieldBody());
     }
 
     public function testGetBodyModel()
@@ -54,7 +49,7 @@ class Swift_Mime_Headers_DateHeaderTest
         $timestamp = time();
         $header = $this->_getHeader('Date');
         $header->setTimestamp($timestamp);
-        $this->assertEqual($timestamp, $header->getFieldBodyModel());
+        $this->assertEquals($timestamp, $header->getFieldBodyModel());
     }
 
     public function testToString()
@@ -62,7 +57,7 @@ class Swift_Mime_Headers_DateHeaderTest
         $timestamp = time();
         $header = $this->_getHeader('Date');
         $header->setTimestamp($timestamp);
-        $this->assertEqual('Date: ' . date('r', $timestamp) . "\r\n",
+        $this->assertEquals('Date: ' . date('r', $timestamp) . "\r\n",
             $header->toString()
             );
     }

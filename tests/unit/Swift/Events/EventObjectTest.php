@@ -1,16 +1,13 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Events/EventObject.php';
-
-class Swift_Events_EventObjectTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_Events_EventObjectTest extends \PHPUnit_Framework_TestCase
 {
     public function testEventSourceCanBeReturnedViaGetter()
     {
         $source = new stdClass();
         $evt = $this->_createEvent($source);
         $ref = $evt->getSource();
-        $this->assertReference($source, $ref);
+        $this->assertEquals($source, $ref);
     }
 
     public function testEventDoesNotHaveCancelledBubbleWhenNew()

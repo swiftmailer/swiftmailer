@@ -1,12 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/ByteStream/ArrayByteStream.php';
-require_once 'Swift/KeyCache/ArrayKeyCache.php';
-require_once 'Swift/KeyCache/SimpleKeyCacheInputStream.php';
-require_once 'Swift/KeyCache.php';
-
-class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     private $_cache;
     private $_key1 = 'key1';
@@ -24,7 +18,7 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
         $this->_cache->setString(
             $this->_key1, 'foo', 'test', Swift_KeyCache::MODE_WRITE
             );
-        $this->assertEqual('test', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('test', $this->_cache->getString($this->_key1, 'foo'));
     }
 
     public function testStringDataCanBeOverwritten()
@@ -35,7 +29,7 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
         $this->_cache->setString(
             $this->_key1, 'foo', 'whatever', Swift_KeyCache::MODE_WRITE
             );
-        $this->assertEqual('whatever', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('whatever', $this->_cache->getString($this->_key1, 'foo'));
     }
 
     public function testStringDataCanBeAppended()
@@ -46,7 +40,7 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
         $this->_cache->setString(
             $this->_key1, 'foo', 'ing', Swift_KeyCache::MODE_APPEND
             );
-        $this->assertEqual('testing', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('testing', $this->_cache->getString($this->_key1, 'foo'));
     }
 
     public function testHasKeyReturnValue()
@@ -66,8 +60,8 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
         $this->_cache->setString(
             $this->_key2, 'foo', 'ing', Swift_KeyCache::MODE_WRITE
             );
-        $this->assertEqual('test', $this->_cache->getString($this->_key1, 'foo'));
-        $this->assertEqual('ing', $this->_cache->getString($this->_key2, 'foo'));
+        $this->assertEquals('test', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('ing', $this->_cache->getString($this->_key2, 'foo'));
     }
 
     public function testItemKeyIsWellPartitioned()
@@ -78,8 +72,8 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
         $this->_cache->setString(
             $this->_key1, 'bar', 'ing', Swift_KeyCache::MODE_WRITE
             );
-        $this->assertEqual('test', $this->_cache->getString($this->_key1, 'foo'));
-        $this->assertEqual('ing', $this->_cache->getString($this->_key1, 'bar'));
+        $this->assertEquals('test', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('ing', $this->_cache->getString($this->_key1, 'bar'));
     }
 
     public function testByteStreamCanBeImported()
@@ -90,7 +84,7 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
         $this->_cache->importFromByteStream(
             $this->_key1, 'foo', $os, Swift_KeyCache::MODE_WRITE
             );
-        $this->assertEqual('abcdef', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('abcdef', $this->_cache->getString($this->_key1, 'foo'));
     }
 
     public function testByteStreamCanBeAppended()
@@ -108,7 +102,7 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
             $this->_key1, 'foo', $os2, Swift_KeyCache::MODE_APPEND
             );
 
-        $this->assertEqual('abcdefxyzuvw', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('abcdefxyzuvw', $this->_cache->getString($this->_key1, 'foo'));
     }
 
     public function testByteStreamAndStringCanBeAppended()
@@ -123,7 +117,7 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
         $this->_cache->importFromByteStream(
             $this->_key1, 'foo', $os, Swift_KeyCache::MODE_APPEND
             );
-        $this->assertEqual('testabcdef', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('testabcdef', $this->_cache->getString($this->_key1, 'foo'));
     }
 
     public function testDataCanBeExportedToByteStream()
@@ -141,7 +135,7 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
             $string .= $bytes;
         }
 
-        $this->assertEqual('test', $string);
+        $this->assertEquals('test', $string);
     }
 
     public function testKeyCanBeCleared()
@@ -174,6 +168,6 @@ class Swift_KeyCache_ArrayKeyCacheAcceptanceTest extends Swift_Tests_SwiftUnitTe
         $is = $this->_cache->getInputByteStream($this->_key1, 'foo');
         $is->write('abc');
         $is->write('xyz');
-        $this->assertEqual('abcxyz', $this->_cache->getString($this->_key1, 'foo'));
+        $this->assertEquals('abcxyz', $this->_cache->getString($this->_key1, 'foo'));
     }
 }

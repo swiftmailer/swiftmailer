@@ -1,12 +1,10 @@
 <?php
 
 require_once 'swift_required.php';
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
 
 //This is more of a "cross your fingers and hope it works" test!
 
-class Swift_DependencyContainerAcceptanceTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_DependencyContainerAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     public function testNoLookupsFail()
     {

@@ -1,17 +1,13 @@
 <?php
 
-require_once 'Swift/Encoder/Rfc2231Encoder.php';
-require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
-require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
-
-class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends UnitTestCase
+class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     private $_samplesDir;
     private $_factory;
 
     public function setUp()
     {
-        $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../_samples/charsets');
+        $this->_samplesDir = realpath(__DIR__ . '/../../../_samples/charsets');
         $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     }
 
@@ -41,7 +37,7 @@ class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends UnitTestCase
                     $text = file_get_contents($sampleDir . '/' . $sampleFile);
                     $encodedText = $encoder->encodeString($text);
 
-                    $this->assertEqual(
+                    $this->assertEquals(
                         urldecode(implode('', explode("\r\n", $encodedText))), $text,
                         '%s: Encoded string should decode back to original string for sample ' .
                         $sampleDir . '/' . $sampleFile

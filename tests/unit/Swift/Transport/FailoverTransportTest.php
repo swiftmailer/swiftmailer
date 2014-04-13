@@ -1,161 +1,258 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Transport/FailoverTransport.php';
-require_once 'Swift/TransportException.php';
-require_once 'Swift/Transport.php';
-require_once 'Swift/Events/EventListener.php';
-
-class Swift_Transport_FailoverTransportTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Transport_FailoverTransportTest extends \SwiftMailerTestCase
 {
     public function testFirstTransportIsUsed()
     {
-        $context = new Mockery();
-        $message1 = $context->mock('Swift_Mime_Message');
-        $message2 = $context->mock('Swift_Mime_Message');
-        $t1 = $context->mock('Swift_Transport');
-        $t2 = $context->mock('Swift_Transport');
-        $con = $context->states('Connection')->startsAs('off');
-        $context->checking(Expectations::create()
-            -> ignoring($message1)
-            -> ignoring($message2)
-            -> allowing($t1)->isStarted() -> returns(false) -> when($con->is('off'))
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con->is('on'))
-            -> one($t1)->start() -> when($con->isNot('on')) -> then($con->is('on'))
-            -> one($t1)->send($message1, optional()) -> returns(1) -> when($con->is('on'))
-            -> one($t1)->send($message2, optional()) -> returns(1) -> when($con->is('on'))
-            -> ignoring($t1)
-            -> never($t2)->start()
-            -> never($t2)->send(any(), optional())
-            -> ignoring($t2)
-            );
+        $message1 = $this->getMockery('Swift_Mime_Message');
+        $message2 = $this->getMockery('Swift_Mime_Message');
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+        $connectionState = false;
+
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState) {
+               return $connectionState;
+           });
+        $t1->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState) {
+               if (!$connectionState) {
+                   $connectionState = true;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->twice()
+           ->with(\Mockery::anyOf($message1, $message2), \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState) {
+               if ($connectionState) {
+                   return 1;
+               }
+           });
+        $t2->shouldReceive('start')->never();
+        $t2->shouldReceive('send')->never();
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->start();
-        $this->assertEqual(1, $transport->send($message1));
-        $this->assertEqual(1, $transport->send($message2));
-        $context->assertIsSatisfied();
+        $this->assertEquals(1, $transport->send($message1));
+        $this->assertEquals(1, $transport->send($message2));
     }
 
     public function testMessageCanBeTriedOnNextTransportIfExceptionThrown()
     {
         $e = new Swift_TransportException('b0rken');
 
-        $context = new Mockery();
-        $message = $context->mock('Swift_Mime_Message');
-        $t1 = $context->mock('Swift_Transport');
-        $t2 = $context->mock('Swift_Transport');
-        $con1 = $context->states('Connection')->startsAs('off');
-        $con2 = $context->states('Connection')->startsAs('off');
-        $context->checking(Expectations::create()
-            -> ignoring($message)
-            -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
-            -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-            -> one($t1)->send($message, optional()) -> throws($e) -> when($con1->is('on'))
-            -> ignoring($t1)
-            -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
-            -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
-            -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-            -> one($t2)->send($message, optional()) -> returns(1) -> when($con2->is('on'))
-            -> ignoring($t2)
-            );
+        $message = $this->getMockery('Swift_Mime_Message');
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+        $connectionState1 = false;
+        $connectionState2 = false;
+
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               if (!$connectionState1) {
+                   $connectionState1 = true;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->once()
+           ->with($message, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState1, $e) {
+               if ($connectionState1) {
+                   throw $e;
+               }
+           });
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               if (!$connectionState2) {
+                   $connectionState2 = true;
+               }
+           });
+        $t2->shouldReceive('send')
+           ->once()
+           ->with($message, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState2, $e) {
+               if ($connectionState2) {
+                   return 1;
+               }
+           });
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->start();
-        $this->assertEqual(1, $transport->send($message));
-        $context->assertIsSatisfied();
+        $this->assertEquals(1, $transport->send($message));
     }
 
     public function testZeroIsReturnedIfTransportReturnsZero()
     {
-        $context = new Mockery();
-        $message = $context->mock('Swift_Mime_Message');
-        $t1 = $context->mock('Swift_Transport');
-        $con = $context->states('Connection')->startsAs('off');
-        $context->checking(Expectations::create()
-            -> ignoring($message)
-            -> allowing($t1)->isStarted() -> returns(false) -> when($con->is('off'))
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con->is('on'))
-            -> one($t1)->start() -> when($con->isNot('on')) -> then($con->is('on'))
-            -> one($t1)->send($message, optional()) -> returns(0) -> when($con->is('on'))
-            -> ignoring($t1)
-            );
+        $message = $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
+        $t1 = $this->getMockery('Swift_Transport')->shouldIgnoreMissing();
+
+		$connectionState = false;
+		$t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState) {
+               return $connectionState;
+           });
+        $t1->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState) {
+               if (!$connectionState) {
+                   $connectionState = true;
+               }
+           });
+        $testCase = $this;
+        $t1->shouldReceive('send')
+           ->once()
+           ->with($message, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState, $testCase) {
+               if (!$connectionState) {
+                   $testCase->fail();
+               }
+               return 0;
+           });
 
         $transport = $this->_getTransport(array($t1));
         $transport->start();
-        $this->assertEqual(0, $transport->send($message));
-        $context->assertIsSatisfied();
+        $this->assertEquals(0, $transport->send($message));
     }
 
     public function testTransportsWhichThrowExceptionsAreNotRetried()
     {
         $e = new Swift_TransportException('maur b0rken');
 
-        $context = new Mockery();
-        $message1 = $context->mock('Swift_Mime_Message');
-        $message2 = $context->mock('Swift_Mime_Message');
-        $message3 = $context->mock('Swift_Mime_Message');
-        $message4 = $context->mock('Swift_Mime_Message');
-        $t1 = $context->mock('Swift_Transport');
-        $t2 = $context->mock('Swift_Transport');
-        $con1 = $context->states('Connection')->startsAs('off');
-        $con2 = $context->states('Connection')->startsAs('off');
-        $context->checking(Expectations::create()
-            -> ignoring($message1)
-            -> ignoring($message2)
-            -> ignoring($message3)
-            -> ignoring($message4)
-            -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
-            -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-            -> one($t1)->send($message1, optional()) -> throws($e) -> when($con1->is('on'))
-            -> never($t1)->send($message2, optional())
-            -> never($t1)->send($message3, optional())
-            -> never($t1)->send($message4, optional())
-            -> ignoring($t1)
-            -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
-            -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
-            -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-            -> one($t2)->send($message1, optional()) -> returns(1) -> when($con2->is('on'))
-            -> one($t2)->send($message2, optional()) -> returns(1) -> when($con2->is('on'))
-            -> one($t2)->send($message3, optional()) -> returns(1) -> when($con2->is('on'))
-            -> one($t2)->send($message4, optional()) -> returns(1) -> when($con2->is('on'))
-            -> ignoring($t2)
-            );
+        $message1 = $this->getMockery('Swift_Mime_Message');
+        $message2 = $this->getMockery('Swift_Mime_Message');
+        $message3 = $this->getMockery('Swift_Mime_Message');
+        $message4 = $this->getMockery('Swift_Mime_Message');
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+        $connectionState1 = false;
+        $connectionState2 = false;
+
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               if (!$connectionState1) {
+                   $connectionState1 = true;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->once()
+           ->with($message1, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState1, $e) {
+               if ($connectionState1) {
+                   throw $e;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->never()
+           ->with($message2, \Mockery::any());
+        $t1->shouldReceive('send')
+           ->never()
+           ->with($message3, \Mockery::any());
+        $t1->shouldReceive('send')
+           ->never()
+           ->with($message4, \Mockery::any());
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               if (!$connectionState2) {
+                   $connectionState2 = true;
+               }
+           });
+        $t2->shouldReceive('send')
+           ->times(4)
+           ->with(\Mockery::anyOf($message1, $message2, $message3, $message4), \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState2, $e) {
+               if ($connectionState2) {
+                   return 1;
+               }
+           });
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->start();
-        $this->assertEqual(1, $transport->send($message1));
-        $this->assertEqual(1, $transport->send($message2));
-        $this->assertEqual(1, $transport->send($message3));
-        $this->assertEqual(1, $transport->send($message4));
+        $this->assertEquals(1, $transport->send($message1));
+        $this->assertEquals(1, $transport->send($message2));
+        $this->assertEquals(1, $transport->send($message3));
+        $this->assertEquals(1, $transport->send($message4));
     }
 
     public function testExceptionIsThrownIfAllTransportsDie()
     {
         $e = new Swift_TransportException('b0rken');
 
-        $context = new Mockery();
-        $message = $context->mock('Swift_Mime_Message');
-        $t1 = $context->mock('Swift_Transport');
-        $t2 = $context->mock('Swift_Transport');
-        $con1 = $context->states('Connection')->startsAs('off');
-        $con2 = $context->states('Connection')->startsAs('off');
-        $context->checking(Expectations::create()
-            -> ignoring($message)
-            -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
-            -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-            -> one($t1)->send($message, optional()) -> throws($e) -> when($con1->is('on'))
-            -> ignoring($t1)
-            -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
-            -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
-            -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-            -> one($t2)->send($message, optional()) -> throws($e) -> when($con2->is('on'))
-            -> ignoring($t2)
-            );
+        $message = $this->getMockery('Swift_Mime_Message');
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+        $connectionState1 = false;
+        $connectionState2 = false;
+
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               if (!$connectionState1) {
+                   $connectionState1 = true;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->once()
+           ->with($message, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState1, $e) {
+               if ($connectionState1) {
+                   throw $e;
+               }
+           });
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               if (!$connectionState2) {
+                   $connectionState2 = true;
+               }
+           });
+        $t2->shouldReceive('send')
+           ->once()
+           ->with($message, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState2, $e) {
+               if ($connectionState2) {
+                   throw $e;
+               }
+           });
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->start();
@@ -164,54 +261,101 @@ class Swift_Transport_FailoverTransportTest
             $this->fail('All transports failed so Exception should be thrown');
         } catch (Exception $e) {
         }
-        $context->assertIsSatisfied();
     }
 
     public function testStoppingTransportStopsAllDelegates()
     {
-        $context = new Mockery();
-        $t1 = $context->mock('Swift_Transport');
-        $t2 = $context->mock('Swift_Transport');
-        $con1 = $context->states('Connection')->startsAs('on');
-        $con2 = $context->states('Connection')->startsAs('on');
-        $context->checking(Expectations::create()
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
-            -> one($t1)->stop() -> when($con1->is('on')) -> then($con1->is('off'))
-            -> ignoring($t1)
-            -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
-            -> one($t2)->stop() -> when($con2->is('on')) -> then($con2->is('off'))
-            -> ignoring($t2)
-            );
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $connectionState1 = true;
+        $connectionState2 = true;
+
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('stop')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               if ($connectionState1) {
+                   $connectionState1 = false;
+               }
+           });
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('stop')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               if ($connectionState2) {
+                   $connectionState2 = false;
+               }
+           });
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->start();
         $transport->stop();
-        $context->assertIsSatisfied();
     }
 
     public function testTransportShowsAsNotStartedIfAllDelegatesDead()
     {
         $e = new Swift_TransportException('b0rken');
 
-        $context = new Mockery();
-        $message = $context->mock('Swift_Mime_Message');
-        $t1 = $context->mock('Swift_Transport');
-        $t2 = $context->mock('Swift_Transport');
-        $con1 = $context->states('Connection')->startsAs('off');
-        $con2 = $context->states('Connection')->startsAs('off');
-        $context->checking(Expectations::create()
-            -> ignoring($message)
-            -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
-            -> one($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-            -> one($t1)->send($message, optional()) -> throws($e) -> when($con1->is('on'))
-            -> ignoring($t1)
-            -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
-            -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
-            -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-            -> one($t2)->send($message, optional()) -> throws($e) -> when($con2->is('on'))
-            -> ignoring($t2)
-            );
+        $message = $this->getMockery('Swift_Mime_Message');
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $connectionState1 = false;
+        $connectionState2 = false;
+
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               if (!$connectionState1) {
+                   $connectionState1 = true;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->once()
+           ->with($message, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState1, $e) {
+               if ($connectionState1) {
+                   $connectionState1 = false;
+                   throw $e;
+               }
+           });
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               if (!$connectionState2) {
+                   $connectionState2 = true;
+               }
+           });
+        $t2->shouldReceive('send')
+           ->once()
+           ->with($message, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState2, $e) {
+               if ($connectionState2) {
+                   $connectionState2 = false;
+                   throw $e;
+               }
+           });
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->start();
@@ -222,36 +366,74 @@ class Swift_Transport_FailoverTransportTest
         } catch (Exception $e) {
             $this->assertFalse($transport->isStarted());
         }
-        $context->assertIsSatisfied();
     }
 
     public function testRestartingTransportRestartsDeadDelegates()
     {
         $e = new Swift_TransportException('b0rken');
 
-        $context = new Mockery();
-        $message1 = $context->mock('Swift_Mime_Message');
-        $message2 = $context->mock('Swift_Mime_Message');
-        $t1 = $context->mock('Swift_Transport');
-        $t2 = $context->mock('Swift_Transport');
-        $con1 = $context->states('Connection')->startsAs('off');
-        $con2 = $context->states('Connection')->startsAs('off');
-        $context->checking(Expectations::create()
-            -> ignoring($message1)
-            -> ignoring($message2)
-            -> allowing($t1)->isStarted() -> returns(false) -> when($con1->is('off'))
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con1->is('on'))
-            -> exactly(2)->of($t1)->start() -> when($con1->isNot('on')) -> then($con1->is('on'))
-            -> one($t1)->send($message1, optional()) -> throws($e) -> when($con1->is('on')) -> then($con1->is('off'))
-            -> one($t1)->send($message2, optional()) -> returns(10) -> when($con1->is('on'))
-            -> ignoring($t1)
-            -> allowing($t2)->isStarted() -> returns(false) -> when($con2->is('off'))
-            -> allowing($t2)->isStarted() -> returns(true) -> when($con2->is('on'))
-            -> one($t2)->start() -> when($con2->isNot('on')) -> then($con2->is('on'))
-            -> one($t2)->send($message1, optional()) -> throws($e) -> when($con2->is('on'))
-            -> never($t2)->send($message2, optional())
-            -> ignoring($t2)
-            );
+        $message1 = $this->getMockery('Swift_Mime_Message');
+        $message2 = $this->getMockery('Swift_Mime_Message');
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $connectionState1 = false;
+        $connectionState2 = false;
+
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('start')
+           ->twice()
+           ->andReturnUsing(function() use (&$connectionState1) {
+               if (!$connectionState1) {
+                   $connectionState1 = true;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->once()
+           ->with($message1, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState1, $e) {
+               if ($connectionState1) {
+                   $connectionState1 = false;
+                   throw $e;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->once()
+           ->with($message2, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState1) {
+               if ($connectionState1) {
+                   return 10;
+               }
+           });
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use (&$connectionState2) {
+               if (!$connectionState2) {
+                   $connectionState2 = true;
+               }
+           });
+        $t2->shouldReceive('send')
+           ->once()
+           ->with($message1, \Mockery::any())
+           ->andReturnUsing(function() use (&$connectionState2, $e) {
+               if ($connectionState2) {
+                   $connectionState2 = false;
+                   throw $e;
+               }
+           });
+        $t2->shouldReceive('send')
+           ->never()
+           ->with($message2, \Mockery::any());
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->start();
@@ -265,52 +447,59 @@ class Swift_Transport_FailoverTransportTest
         //Restart and re-try
         $transport->start();
         $this->assertTrue($transport->isStarted());
-        $this->assertEqual(10, $transport->send($message2));
-        $context->assertIsSatisfied();
+        $this->assertEquals(10, $transport->send($message2));
     }
 
     public function testFailureReferenceIsPassedToDelegates()
     {
         $failures = array();
 
-        $context = new Mockery();
-        $message = $context->mock('Swift_Mime_Message');
-        $t1 = $context->mock('Swift_Transport');
-        $con = $context->states('Connection')->startsAs('off');
-        $context->checking(Expectations::create()
-            -> ignoring($message)
-            -> allowing($t1)->isStarted() -> returns(false) -> when($con->is('off'))
-            -> allowing($t1)->isStarted() -> returns(true) -> when($con->is('on'))
-            -> one($t1)->start() -> when($con->isNot('on')) -> then($con->is('on'))
-            -> one($t1)->send($message, reference($failures)) -> returns(1) -> when($con->is('on'))
-            -> ignoring($t1)
-            );
+        $message = $this->getMockery('Swift_Mime_Message');
+        $t1 = $this->getMockery('Swift_Transport');
+
+        $connectionState = false;
+
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function() use ($connectionState) {
+               return $connectionState;
+           });
+        $t1->shouldReceive('start')
+           ->once()
+           ->andReturnUsing(function() use ($connectionState) {
+               if (!$connectionState) {
+                   $connectionState = true;
+               }
+           });
+        $t1->shouldReceive('send')
+           ->once()
+           ->with($message, $failures)
+           ->andReturnUsing(function() use ($connectionState) {
+               if ($connectionState) {
+                   return 1;
+               }
+           });
 
         $transport = $this->_getTransport(array($t1));
         $transport->start();
         $transport->send($message, $failures);
-        $context->assertIsSatisfied();
     }
 
     public function testRegisterPluginDelegatesToLoadedTransports()
     {
-        $context = new Mockery();
+        $plugin = $this->_createPlugin();
 
-        $plugin = $this->_createPlugin($context);
-
-        $t1 = $context->mock('Swift_Transport');
-        $t2 = $context->mock('Swift_Transport');
-        $context->checking(Expectations::create()
-            -> one($t1)->registerPlugin($plugin)
-            -> one($t2)->registerPlugin($plugin)
-            -> ignoring($t1)
-            -> ignoring($t2)
-            );
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+        $t1->shouldReceive('registerPlugin')
+           ->once()
+           ->with($plugin);
+        $t2->shouldReceive('registerPlugin')
+           ->once()
+           ->with($plugin);
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->registerPlugin($plugin);
-
-        $context->assertIsSatisfied();
     }
 
     // -- Private helpers
@@ -323,13 +512,13 @@ class Swift_Transport_FailoverTransportTest
         return $transport;
     }
 
-    private function _createPlugin($context)
+    private function _createPlugin()
     {
-        return $context->mock('Swift_Events_EventListener');
+        return $this->getMockery('Swift_Events_EventListener');
     }
 
     private function _createInnerTransport()
     {
-        return $this->_mockery()->mock('Swift_Transport');
+        return $this->getMockery('Swift_Transport');
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-
-class Swift_Bug34Test extends Swift_Tests_SwiftUnitTestCase
+class Swift_Bug34Test extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -31,7 +29,7 @@ class Swift_Bug34Test extends Swift_Tests_SwiftUnitTestCase
         $boundary = $message->getBoundary();
         $cidVal = $image->getId();
 
-        $this->assertPattern(
+        $this->assertRegExp(
         '~^' .
         'Sender: Other <other@domain.tld>' . "\r\n" .
         'Message-ID: <' . $id . '>' . "\r\n" .

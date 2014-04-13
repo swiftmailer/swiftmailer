@@ -1,8 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-
-class Swift_Bug38Test extends Swift_Tests_SwiftUnitTestCase
+class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
 {
     private $_attFile;
     private $_attFileName;
@@ -12,7 +10,7 @@ class Swift_Bug38Test extends Swift_Tests_SwiftUnitTestCase
     {
         $this->_attFileName = 'data.txt';
         $this->_attFileType = 'text/plain';
-        $this->_attFile = dirname(__FILE__) . '/../../_samples/files/data.txt';
+        $this->_attFile = __DIR__ . '/../../_samples/files/data.txt';
         Swift_Preferences::getInstance()->setCharset('utf-8');
     }
 
@@ -191,6 +189,6 @@ class Swift_Bug38Test extends Swift_Tests_SwiftUnitTestCase
         while (false !== $bytes = $stream->read(8192)) {
             $string .= $bytes;
         }
-        $this->assertPattern($pattern, $string, $message);
+        $this->assertRegExp($pattern, $string, $message);
     }
 }

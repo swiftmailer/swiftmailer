@@ -1,13 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Plugins/ThrottlerPlugin.php';
-require_once 'Swift/Events/SendEvent.php';
-require_once 'Swift/Plugins/Sleeper.php';
-require_once 'Swift/Plugins/Timer.php';
-require_once 'Swift/Mime/Message.php';
-
-class Swift_Plugins_ThrottlerPluginTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
 {
     public function testBytesPerMinuteThrottling()
     {
@@ -20,16 +13,12 @@ class Swift_Plugins_ThrottlerPluginTest extends Swift_Tests_SwiftUnitTestCase
             $sleeper, $timer
             );
 
-        $this->_checking(Expectations::create()
-            -> one($timer)->getTimestamp() -> returns(0)
-            -> one($timer)->getTimestamp() -> returns(1) //expected 0.6
-            -> one($timer)->getTimestamp() -> returns(1) //expected 1.2 (sleep 1)
-            -> one($timer)->getTimestamp() -> returns(2) //expected 1.8
-            -> one($timer)->getTimestamp() -> returns(2) //expected 2.4 (sleep 1)
-            -> ignoring($timer)
-
-            -> exactly(2)->of($sleeper)->sleep(1)
-            );
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(0);
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(1); //expected 0.6
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(1); //expected 1.2 (sleep 1)
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(2); //expected 1.8
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(2); //expected 2.4 (sleep 1)
+        $sleeper->shouldReceive('sleep')->twice()->with(1);
 
         //10,000,000 bytes per minute
         //100,000 bytes per email
@@ -57,16 +46,12 @@ class Swift_Plugins_ThrottlerPluginTest extends Swift_Tests_SwiftUnitTestCase
             $sleeper, $timer
             );
 
-        $this->_checking(Expectations::create()
-            -> one($timer)->getTimestamp() -> returns(0)
-            -> one($timer)->getTimestamp() -> returns(0) //expected 1 (sleep 1)
-            -> one($timer)->getTimestamp() -> returns(2) //expected 2
-            -> one($timer)->getTimestamp() -> returns(2) //expected 3 (sleep 1)
-            -> one($timer)->getTimestamp() -> returns(4) //expected 4
-            -> ignoring($timer)
-
-            -> exactly(2)->of($sleeper)->sleep(1)
-            );
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(0);
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(0); //expected 1 (sleep 1)
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(2); //expected 2
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(2); //expected 3 (sleep 1)
+        $timer->shouldReceive('getTimestamp')->once()->andReturn(4); //expected 4
+        $sleeper->shouldReceive('sleep')->twice()->with(1);
 
         //60 messages per minute
         //1 message per second
@@ -85,42 +70,35 @@ class Swift_Plugins_ThrottlerPluginTest extends Swift_Tests_SwiftUnitTestCase
 
     private function _createSleeper()
     {
-        return $this->_mock('Swift_Plugins_Sleeper');
+        return $this->getMockery('Swift_Plugins_Sleeper');
     }
 
     private function _createTimer()
     {
-        return $this->_mock('Swift_Plugins_Timer');
+        return $this->getMockery('Swift_Plugins_Timer');
     }
 
     private function _createMessageWithByteCount($bytes)
     {
-        $this->_bytes = $bytes;
-        $msg = $this->_mock('Swift_Mime_Message');
-        $this->_checking(Expectations::create()
-            -> ignoring($msg)->toByteStream(any()) -> calls(array($this, '_write'))
-        );
+        $msg = $this->getMockery('Swift_Mime_Message');
+        $msg->shouldReceive('toByteStream')
+            ->zeroOrMoreTimes()
+            ->andReturnUsing(function($is) use ($bytes) {
+                for ($i = 0; $i < $bytes; ++$i) {
+                    $is->write('x');
+                }
+            });
 
         return $msg;
     }
 
     private function _createSendEvent($message)
     {
-        $evt = $this->_mock('Swift_Events_SendEvent');
-        $this->_checking(Expectations::create()
-            -> ignoring($evt)->getMessage() -> returns($message)
-            );
+        $evt = $this->getMockery('Swift_Events_SendEvent');
+        $evt->shouldReceive('getMessage')
+            ->zeroOrMoreTimes()
+            ->andReturn($message);
 
         return $evt;
-    }
-
-    private $_bytes = 0;
-    public function _write($invocation)
-    {
-        $args = $invocation->getArguments();
-        $is = $args[0];
-        for ($i = 0; $i < $this->_bytes; ++$i) {
-            $is->write('x');
-        }
     }
 }
