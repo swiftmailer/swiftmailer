@@ -1,13 +1,11 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-
-class Swift_Bug274Test extends Swift_Tests_SwiftUnitTestCase
+class Swift_Bug274Test extends \PHPUnit_Framework_TestCase
 {
     public function testEmptyFileNameAsAttachement()
     {
         $message = new Swift_Message();
-        $this->expectException(new Swift_IoException('The path cannot be empty'));
+        $this->setExpectedException('Swift_IoException', 'The path cannot be empty');
         $message->attach(Swift_Attachment::fromPath(''));
     }
 

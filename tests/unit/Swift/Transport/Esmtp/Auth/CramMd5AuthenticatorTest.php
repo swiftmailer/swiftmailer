@@ -1,18 +1,12 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Transport/SmtpAgent.php';
-require_once 'Swift/Transport/Esmtp/Auth/CramMd5Authenticator.php';
-require_once 'Swift/TransportException.php';
-
-class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTestCase
 {
     private $_agent;
 
     public function setUp()
     {
-        $this->_agent = $this->_mock('Swift_Transport_SmtpAgent');
+        $this->_agent = $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
     }
 
     public function testKeywordIsCramMd5()
@@ -22,18 +16,20 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
         */
 
         $cram = $this->_getAuthenticator();
-        $this->assertEqual('CRAM-MD5', $cram->getAuthKeyword());
+        $this->assertEquals('CRAM-MD5', $cram->getAuthKeyword());
     }
 
     public function testSuccessfulAuthentication()
     {
         $cram = $this->_getAuthenticator();
-        $this->_checking(Expectations::create()
-            -> one($this->_agent)->executeCommand("AUTH CRAM-MD5\r\n", array(334))
-                -> returns('334 ' . base64_encode('<foo@bar>') . "\r\n")
-            // The use of any() is controversial, but here to avoid crazy test logic
-            -> one($this->_agent)->executeCommand(any(), array(235))
-            );
+
+        $this->_agent->shouldReceive('executeCommand')
+             ->once()
+             ->with("AUTH CRAM-MD5\r\n", array(334))
+             ->andReturn('334 ' . base64_encode('<foo@bar>') . "\r\n");
+        $this->_agent->shouldReceive('executeCommand')
+             ->once()
+             ->with(\Mockery::any(), array(235));
 
         $this->assertTrue($cram->authenticate($this->_agent, 'jack', 'pass'),
             '%s: The buffer accepted all commands authentication should succeed'
@@ -43,15 +39,18 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest
     public function testAuthenticationFailureSendRsetAndReturnFalse()
     {
         $cram = $this->_getAuthenticator();
-        $this->_checking(Expectations::create()
-            -> one($this->_agent)->executeCommand("AUTH CRAM-MD5\r\n", array(334))
-                -> returns('334 ' . base64_encode('<foo@bar>') . "\r\n")
-            // The use of any() is controversial, but here to avoid crazy test logic
-            -> one($this->_agent)->executeCommand(any(), array(235))
-       -> throws(new Swift_TransportException(""))
 
-            -> one($this->_agent)->executeCommand("RSET\r\n", array(250))
-            );
+        $this->_agent->shouldReceive('executeCommand')
+             ->once()
+             ->with("AUTH CRAM-MD5\r\n", array(334))
+             ->andReturn('334 ' . base64_encode('<foo@bar>') . "\r\n");
+        $this->_agent->shouldReceive('executeCommand')
+             ->once()
+             ->with(\Mockery::any(), array(235))
+             ->andThrow(new Swift_TransportException(""));
+        $this->_agent->shouldReceive('executeCommand')
+             ->once()
+             ->with("RSET\r\n", array(250));
 
         $this->assertFalse($cram->authenticate($this->_agent, 'jack', 'pass'),
             '%s: Authentication fails, so RSET should be sent'

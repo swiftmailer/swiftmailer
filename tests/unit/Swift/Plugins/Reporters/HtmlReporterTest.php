@@ -1,11 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Plugins/Reporters/HtmlReporter.php';
-require_once 'Swift/Mime/Message.php';
-
-class Swift_Plugins_Reporters_HtmlReporterTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Plugins_Reporters_HtmlReporterTest extends \PHPUnit_Framework_TestCase
 {
     private $_html;
     private $_message;
@@ -13,7 +8,7 @@ class Swift_Plugins_Reporters_HtmlReporterTest
     public function setUp()
     {
         $this->_html = new Swift_Plugins_Reporters_HtmlReporter();
-        $this->_message = $this->_mock('Swift_Mime_Message');
+        $this->_message = $this->getMock('Swift_Mime_Message');
     }
 
     public function testReportingPass()
@@ -24,8 +19,8 @@ class Swift_Plugins_Reporters_HtmlReporterTest
             );
         $html = ob_get_clean();
 
-        $this->assertPattern('~ok|pass~i', $html, '%s: Reporter should indicate pass');
-        $this->assertPattern('~foo@bar\.tld~', $html, '%s: Reporter should show address');
+        $this->assertRegExp('~ok|pass~i', $html, '%s: Reporter should indicate pass');
+        $this->assertRegExp('~foo@bar\.tld~', $html, '%s: Reporter should show address');
     }
 
     public function testReportingFail()
@@ -36,8 +31,8 @@ class Swift_Plugins_Reporters_HtmlReporterTest
             );
         $html = ob_get_clean();
 
-        $this->assertPattern('~fail~i', $html, '%s: Reporter should indicate fail');
-        $this->assertPattern('~zip@button~', $html, '%s: Reporter should show address');
+        $this->assertRegExp('~fail~i', $html, '%s: Reporter should indicate fail');
+        $this->assertRegExp('~zip@button~', $html, '%s: Reporter should show address');
     }
 
     public function testMultipleReports()
@@ -51,9 +46,9 @@ class Swift_Plugins_Reporters_HtmlReporterTest
             );
         $html = ob_get_clean();
 
-        $this->assertPattern('~ok|pass~i', $html, '%s: Reporter should indicate pass');
-        $this->assertPattern('~foo@bar\.tld~', $html, '%s: Reporter should show address');
-        $this->assertPattern('~fail~i', $html, '%s: Reporter should indicate fail');
-        $this->assertPattern('~zip@button~', $html, '%s: Reporter should show address');
+        $this->assertRegExp('~ok|pass~i', $html, '%s: Reporter should indicate pass');
+        $this->assertRegExp('~foo@bar\.tld~', $html, '%s: Reporter should show address');
+        $this->assertRegExp('~fail~i', $html, '%s: Reporter should indicate fail');
+        $this->assertRegExp('~zip@button~', $html, '%s: Reporter should show address');
     }
 }

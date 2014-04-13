@@ -1,15 +1,13 @@
 <?php
 
-require_once 'Swift/Encoder/Base64Encoder.php';
-
-class Swift_Encoder_Base64EncoderAcceptanceTest extends UnitTestCase
+class Swift_Encoder_Base64EncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     private $_samplesDir;
     private $_encoder;
 
     public function setUp()
     {
-        $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../_samples/charsets');
+        $this->_samplesDir = realpath(__DIR__ . '/../../../_samples/charsets');
         $this->_encoder = new Swift_Encoder_Base64Encoder();
     }
 
@@ -34,7 +32,7 @@ class Swift_Encoder_Base64EncoderAcceptanceTest extends UnitTestCase
                     $text = file_get_contents($sampleDir . '/' . $sampleFile);
                     $encodedText = $this->_encoder->encodeString($text);
 
-                    $this->assertEqual(
+                    $this->assertEquals(
                         base64_decode($encodedText), $text,
                         '%s: Encoded string should decode back to original string for sample ' .
                         $sampleDir . '/' . $sampleFile

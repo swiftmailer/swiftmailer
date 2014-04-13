@@ -1,11 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/HeaderEncoder/QpHeaderEncoder.php';
-require_once 'Swift/CharacterStream.php';
-
-class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
 {
     //Most tests are already covered in QpEncoderTest since this subclass only
     // adds a getName() method
@@ -15,7 +10,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
         $encoder = $this->_createEncoder(
             $this->_createCharacterStream(true)
             );
-        $this->assertEqual('Q', $encoder->getName());
+        $this->assertEquals('Q', $encoder->getName());
     }
 
     public function testSpaceAndTabNeverAppear()
@@ -27,18 +22,12 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
      */
 
         $charStream = $this->_createCharacterStream();
-        $this->_checking(Expectations::create()
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('a')))
-            -> one($charStream)->readBytes(any()) -> returns(array(0x20))
-            -> one($charStream)->readBytes(any()) -> returns(array(0x09))
-            -> one($charStream)->readBytes(any()) -> returns(array(0x20))
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('b')))
-            -> allowing($charStream)->readBytes(any()) -> returns(false)
-            -> ignoring($charStream)
-            );
+        $charStream->shouldReceive('readBytes')
+                   ->atLeast()->times(6)
+                   ->andReturn(array(ord('a')), array(0x20), array(0x09), array(0x20), array(ord('b')), false);
 
         $encoder = $this->_createEncoder($charStream);
-        $this->assertNoPattern('~[ \t]~', $encoder->encodeString("a \t b"),
+        $this->assertNotRegExp('~[ \t]~', $encoder->encodeString("a \t b"),
             '%s: encoded-words in headers cannot contain LWSP as per RFC 2047.'
             );
     }
@@ -55,16 +44,21 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
        occupies a different code position in the character set in use.
        */
         $charStream = $this->_createCharacterStream();
-        $this->_checking(Expectations::create()
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('a')))
-            -> one($charStream)->readBytes(any()) -> returns(array(0x20))
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('b')))
-            -> allowing($charStream)->readBytes(any()) -> returns(false)
-            -> ignoring($charStream)
-            );
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(ord('a')));
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(0x20));
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(ord('b')));
+        $charStream->shouldReceive('readBytes')
+                   ->zeroOrMoreTimes()
+                   ->andReturn(false);
 
         $encoder = $this->_createEncoder($charStream);
-        $this->assertEqual('a_b', $encoder->encodeString('a b'),
+        $this->assertEquals('a_b', $encoder->encodeString('a b'),
             '%s: Spaces can be represented by more readable underscores as per RFC 2047.'
             );
     }
@@ -79,16 +73,21 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
        within encoded words.
        */
         $charStream = $this->_createCharacterStream();
-        $this->_checking(Expectations::create()
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('=')))
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('?')))
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('_')))
-            -> allowing($charStream)->readBytes(any()) -> returns(false)
-            -> ignoring($charStream)
-            );
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(ord('=')));
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(ord('?')));
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(ord('_')));
+        $charStream->shouldReceive('readBytes')
+                   ->zeroOrMoreTimes()
+                   ->andReturn(false);
 
         $encoder = $this->_createEncoder($charStream);
-        $this->assertEqual('=3D=3F=5F', $encoder->encodeString('=?_'),
+        $this->assertEquals('=3D=3F=5F', $encoder->encodeString('=?_'),
             '%s: Chars =, ? and _ (underscore) may not appear as per RFC 2047.'
             );
     }
@@ -101,16 +100,21 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
      */
 
         $charStream = $this->_createCharacterStream();
-        $this->_checking(Expectations::create()
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('(')))
-            -> one($charStream)->readBytes(any()) -> returns(array(ord('"')))
-            -> one($charStream)->readBytes(any()) -> returns(array(ord(')')))
-            -> allowing($charStream)->readBytes(any()) -> returns(false)
-            -> ignoring($charStream)
-            );
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(ord('(')));
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(ord('"')));
+        $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array(ord(')')));
+        $charStream->shouldReceive('readBytes')
+                   ->zeroOrMoreTimes()
+                   ->andReturn(false);
 
         $encoder = $this->_createEncoder($charStream);
-        $this->assertEqual('=28=22=29', $encoder->encodeString('(")'),
+        $this->assertEquals('=28=22=29', $encoder->encodeString('(")'),
             '%s: Chars (, " (DQUOTE) and ) may not appear as per RFC 2047.'
             );
     }
@@ -142,26 +146,27 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
             $char = pack('C', $byte);
 
             $charStream = $this->_createCharacterStream();
-            $this->_checking(Expectations::create()
-                -> one($charStream)->readBytes(any()) -> returns(array($byte))
-                -> allowing($charStream)->readBytes(any()) -> returns(false)
-                -> ignoring($charStream)
-                );
+            $charStream->shouldReceive('readBytes')
+                   ->once()
+                   ->andReturn(array($byte));
+            $charStream->shouldReceive('readBytes')
+                   ->zeroOrMoreTimes()
+                   ->andReturn(false);
 
             $encoder = $this->_createEncoder($charStream);
             $encodedChar = $encoder->encodeString($char);
 
             if (in_array($byte, $allowedBytes)) {
-                $this->assertEqual($char, $encodedChar,
+                $this->assertEquals($char, $encodedChar,
                     '%s: Character ' . $char . ' should not be encoded.'
                     );
             } elseif (0x20 == $byte) //Special case
             {
-                $this->assertEqual('_', $encodedChar,
+                $this->assertEquals('_', $encodedChar,
                     '%s: Space character should be replaced.'
                     );
             } else {
-                $this->assertEqual(sprintf('=%02X', $byte), $encodedChar,
+                $this->assertEquals(sprintf('=%02X', $byte), $encodedChar,
                     '%s: Byte ' . $byte . ' should be encoded.'
                     );
             }
@@ -186,9 +191,9 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
         $output = '';
         $seq = 0;
         for (; $seq < 140; ++$seq) {
-            $this->_checking(Expectations::create()
-                -> one($charStream)->readBytes(any()) -> returns(array(ord('a')))
-                );
+            $charStream->shouldReceive('readBytes')
+                       ->once()
+                       ->andReturn(array(ord('a')));
 
             if (75 == $seq) {
                 $output .= "\r\n"; // =\r\n
@@ -196,13 +201,12 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
             $output .= 'a';
         }
 
-        $this->_checking(Expectations::create()
-            -> allowing($charStream)->readBytes(any()) -> returns(false)
-            -> ignoring($charStream)
-            );
+        $charStream->shouldReceive('readBytes')
+                   ->zeroOrMoreTimes()
+                   ->andReturn(false);
 
         $encoder = $this->_createEncoder($charStream);
-        $this->assertEqual($output, $encoder->encodeString($input));
+        $this->assertEquals($output, $encoder->encodeString($input));
     }
 
     // -- Creation Methods
@@ -214,9 +218,6 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest
 
     private function _createCharacterStream($stub = false)
     {
-        return $stub
-            ? $this->_stub('Swift_CharacterStream')
-            : $this->_mock('Swift_CharacterStream')
-            ;
+        return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();
     }
 }

@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/DependencyContainer.php';
-
 class One
 {
     public $arg1, $arg2;
@@ -13,7 +10,7 @@ class One
     }
 }
 
-class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
+class Swift_DependencyContainerTest extends \PHPUnit_Framework_TestCase
 {
     private $_container;
 
@@ -25,7 +22,7 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
     public function testRegisterAndLookupValue()
     {
         $this->_container->register('foo')->asValue('bar');
-        $this->assertIdentical('bar', $this->_container->lookup('foo'));
+        $this->assertEquals('bar', $this->_container->lookup('foo'));
     }
 
     public function testHasReturnsTrueForRegisteredValue()
@@ -42,7 +39,7 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
     public function testRegisterAndLookupNewInstance()
     {
         $this->_container->register('one')->asNewInstanceOf('One');
-        $this->assertIsA($this->_container->lookup('one'), 'One');
+        $this->assertInstanceof('One', $this->_container->lookup('one'));
     }
 
     public function testHasReturnsTrueForRegisteredInstance()
@@ -56,13 +53,13 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
         $this->_container->register('one')->asNewInstanceOf('One');
         $a = $this->_container->lookup('one');
         $b = $this->_container->lookup('one');
-        $this->assertClone($a, $b);
+        $this->assertEquals($a, $b);
     }
 
     public function testRegisterAndLookupSharedInstance()
     {
         $this->_container->register('one')->asSharedInstanceOf('One');
-        $this->assertIsA($this->_container->lookup('one'), 'One');
+        $this->assertInstanceof('One', $this->_container->lookup('one'));
     }
 
     public function testHasReturnsTrueForSharedInstance()
@@ -76,7 +73,7 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
         $this->_container->register('one')->asSharedInstanceOf('One');
         $a = $this->_container->lookup('one');
         $b = $this->_container->lookup('one');
-        $this->assertSame($a, $b);
+        $this->assertEquals($a, $b);
     }
 
     public function testNewInstanceWithDependencies()
@@ -85,7 +82,7 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
         $this->_container->register('one')->asNewInstanceOf('One')
             ->withDependencies(array('foo'));
         $obj = $this->_container->lookup('one');
-        $this->assertIdentical('FOO', $obj->arg1);
+        $this->assertSame('FOO', $obj->arg1);
     }
 
     public function testNewInstanceWithMultipleDependencies()
@@ -95,8 +92,8 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
         $this->_container->register('one')->asNewInstanceOf('One')
             ->withDependencies(array('foo', 'bar'));
         $obj = $this->_container->lookup('one');
-        $this->assertIdentical('FOO', $obj->arg1);
-        $this->assertIdentical(42, $obj->arg2);
+        $this->assertSame('FOO', $obj->arg1);
+        $this->assertSame(42, $obj->arg2);
     }
 
     public function testNewInstanceWithInjectedObjects()
@@ -106,8 +103,8 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
         $this->_container->register('two')->asNewInstanceOf('One')
             ->withDependencies(array('one', 'foo'));
         $obj = $this->_container->lookup('two');
-        $this->assertClone($this->_container->lookup('one'), $obj->arg1);
-        $this->assertIdentical('FOO', $obj->arg2);
+        $this->assertEquals($this->_container->lookup('one'), $obj->arg1);
+        $this->assertSame('FOO', $obj->arg2);
     }
 
     public function testNewInstanceWithAddConstructorValue()
@@ -116,8 +113,8 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
             ->addConstructorValue('x')
             ->addConstructorValue(99);
         $obj = $this->_container->lookup('one');
-        $this->assertIdentical('x', $obj->arg1);
-        $this->assertIdentical(99, $obj->arg2);
+        $this->assertSame('x', $obj->arg1);
+        $this->assertSame(99, $obj->arg2);
     }
 
     public function testNewInstanceWithAddConstructorLookup()
@@ -129,8 +126,8 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
             ->addConstructorLookup('bar');
 
         $obj = $this->_container->lookup('one');
-        $this->assertIdentical('FOO', $obj->arg1);
-        $this->assertIdentical(42, $obj->arg2);
+        $this->assertSame('FOO', $obj->arg1);
+        $this->assertSame(42, $obj->arg2);
     }
 
     public function testResolvedDependenciesCanBeLookedUp()
@@ -140,7 +137,7 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
         $this->_container->register('two')->asNewInstanceOf('One')
             ->withDependencies(array('one', 'foo'));
         $deps = $this->_container->createDependenciesFor('two');
-        $this->assertEqual(
+        $this->assertEquals(
             array($this->_container->lookup('one'), 'FOO'), $deps
             );
     }
@@ -153,8 +150,8 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
             ->withDependencies(array(array('one', 'foo'), 'foo'));
 
         $obj = $this->_container->lookup('two');
-        $this->assertEqual(array($this->_container->lookup('one'), 'FOO'), $obj->arg1);
-        $this->assertIdentical('FOO', $obj->arg2);
+        $this->assertEquals(array($this->_container->lookup('one'), 'FOO'), $obj->arg1);
+        $this->assertSame('FOO', $obj->arg2);
     }
 
     public function testAliasCanBeSet()
@@ -162,7 +159,7 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
         $this->_container->register('foo')->asValue('FOO');
         $this->_container->register('bar')->asAliasOf('foo');
 
-        $this->assertIdentical('FOO', $this->_container->lookup('bar'));
+        $this->assertSame('FOO', $this->_container->lookup('bar'));
     }
 
     public function testAliasOfAliasCanBeSet()
@@ -172,6 +169,6 @@ class Swift_DependencyContainerTest extends Swift_Tests_SwiftUnitTestCase
         $this->_container->register('zip')->asAliasOf('bar');
         $this->_container->register('button')->asAliasOf('zip');
 
-        $this->assertIdentical('FOO', $this->_container->lookup('button'));
+        $this->assertSame('FOO', $this->_container->lookup('button'));
     }
 }

@@ -1,10 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Plugins/Loggers/EchoLogger.php';
-
-class Swift_Plugins_Loggers_EchoLoggerTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Plugins_Loggers_EchoLoggerTest extends \PHPUnit_Framework_TestCase
 {
     public function testAddingEntryDumpsSingleLineWithoutHtml()
     {
@@ -13,7 +9,7 @@ class Swift_Plugins_Loggers_EchoLoggerTest
         $logger->add(">> Foo");
         $data = ob_get_clean();
 
-        $this->assertEqual(">> Foo" . PHP_EOL, $data);
+        $this->assertEquals(">> Foo" . PHP_EOL, $data);
     }
 
     public function testAddingEntryDumpsEscapedLineWithHtml()
@@ -23,7 +19,7 @@ class Swift_Plugins_Loggers_EchoLoggerTest
         $logger->add(">> Foo");
         $data = ob_get_clean();
 
-        $this->assertEqual("&gt;&gt; Foo<br />" . PHP_EOL, $data);
+        $this->assertEquals("&gt;&gt; Foo<br />" . PHP_EOL, $data);
     }
 
 }

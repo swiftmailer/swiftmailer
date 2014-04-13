@@ -1,15 +1,11 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/StreamFilters/StringReplacementFilter.php';
-
-class Swift_StreamFilters_StringReplacementFilterTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_StreamFilters_StringReplacementFilterTest extends \PHPUnit_Framework_TestCase
 {
     public function testBasicReplacementsAreMade()
     {
         $filter = $this->_createFilter('foo', 'bar');
-        $this->assertEqual('XbarYbarZ', $filter->filter('XfooYfooZ'));
+        $this->assertEquals('XbarYbarZ', $filter->filter('XfooYfooZ'));
     }
 
     public function testShouldBufferReturnsTrueIfPartialMatchAtEndOfBuffer()
@@ -24,13 +20,13 @@ class Swift_StreamFilters_StringReplacementFilterTest
     public function testFilterCanMakeMultipleReplacements()
     {
         $filter = $this->_createFilter(array('a', 'b'), 'foo');
-        $this->assertEqual('XfooYfooZ', $filter->filter('XaYbZ'));
+        $this->assertEquals('XfooYfooZ', $filter->filter('XaYbZ'));
     }
 
     public function testMultipleReplacementsCanBeDifferent()
     {
         $filter = $this->_createFilter(array('a', 'b'), array('foo', 'zip'));
-        $this->assertEqual('XfooYzipZ', $filter->filter('XaYbZ'));
+        $this->assertEquals('XfooYzipZ', $filter->filter('XaYbZ'));
     }
 
     public function testShouldBufferReturnsFalseIfPartialMatchNotAtEndOfString()

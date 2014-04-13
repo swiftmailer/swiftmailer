@@ -1,13 +1,6 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/Mime/ContentEncoder/NativeQpContentEncoder.php';
-require_once 'Swift/CharacterStream/ArrayCharacterStream.php';
-require_once 'Swift/CharacterReaderFactory/SimpleCharacterReaderFactory.php';
-require_once 'Swift/ByteStream/ArrayByteStream.php';
-
-class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Swift_Mime_ContentEncoder_NativeQpContentEncoder
@@ -16,7 +9,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest
 
     public function setUp()
     {
-        $this->_samplesDir = realpath(dirname(__FILE__) . '/../../../../_samples/charsets');
+        $this->_samplesDir = realpath(__DIR__ . '/../../../../_samples/charsets');
         $this->_encoder = new Swift_Mime_ContentEncoder_NativeQpContentEncoder();
     }
 
@@ -51,7 +44,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest
                         $encoded .= $bytes;
                     }
 
-                    $this->assertEqual(
+                    $this->assertEquals(
                         quoted_printable_decode($encoded),
                         // CR and LF are converted to CRLF
                         preg_replace('~\r(?!\n)|(?<!\r)\n~', "\r\n", $text),
@@ -71,10 +64,12 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest
         $this->assertSame('=C3=A4=C3=B6=C3=BC=C3=9F', $encoder->encodeString('äöüß'));
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
     public function testCharsetChangeNotImplemented()
     {
         $this->_encoder->charsetChanged('utf-8');
-        $this->expectException(new RuntimeException('Charset "charset" not supported. NativeQpContentEncoder only supports "utf-8"'));
         $this->_encoder->charsetChanged('charset');
         $this->_encoder->encodeString('foo');
     }

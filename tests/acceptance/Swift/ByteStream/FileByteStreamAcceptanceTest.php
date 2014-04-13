@@ -1,26 +1,19 @@
 <?php
 
-require_once 'Swift/Tests/SwiftUnitTestCase.php';
-require_once 'Swift/InputByteStream.php';
-require_once 'Swift/ByteStream/FileByteStream.php';
-require_once 'Swift/StreamFilters/StringReplacementFilter.php';
-
-class Swift_ByteStream_FileByteStreamAcceptanceTest
-    extends Swift_Tests_SwiftUnitTestCase
+class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     private $_tmpDir;
     private $_testFile;
 
-    public function skip()
-    {
-        $this->skipUnless(
-            SWIFT_TMP_DIR, 'Cannot run test without a writable directory to use (' .
-            'define SWIFT_TMP_DIR in tests/config.php if you wish to run this test)'
-            );
-    }
-
     public function setUp()
     {
+        if (!defined('SWIFT_TMP_DIR')) {
+            $this->markTestSkipped(
+                'Cannot run test without a writable directory to use (' .
+                'define SWIFT_TMP_DIR in tests/config.php if you wish to run this test)'
+             );
+        }
+
         $this->_tmpDir = SWIFT_TMP_DIR;
         $this->_testFile = $this->_tmpDir . '/swift-test-file' . __CLASS__;
         file_put_contents($this->_testFile, 'abcdefghijklm');
@@ -38,21 +31,21 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest
         while (false !== $bytes = $file->read(8192)) {
             $str .= $bytes;
         }
-        $this->assertEqual('abcdefghijklm', $str);
+        $this->assertEquals('abcdefghijklm', $str);
     }
 
     public function testFileDataCanBeReadSequentially()
     {
         $file = $this->_createFileStream($this->_testFile);
-        $this->assertEqual('abcde', $file->read(5));
-        $this->assertEqual('fghijklm', $file->read(8));
+        $this->assertEquals('abcde', $file->read(5));
+        $this->assertEquals('fghijklm', $file->read(8));
         $this->assertFalse($file->read(1));
     }
 
     public function testFilenameIsReturned()
     {
         $file = $this->_createFileStream($this->_testFile);
-        $this->assertEqual($this->_testFile, $file->getPath());
+        $this->assertEquals($this->_testFile, $file->getPath());
     }
 
     public function testFileCanBeWrittenTo()
@@ -61,7 +54,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest
             $this->_testFile, true
             );
         $file->write('foobar');
-        $this->assertEqual('foobar', $file->read(8192));
+        $this->assertEquals('foobar', $file->read(8192));
     }
 
     public function testReadingFromThenWritingToFile()
@@ -70,9 +63,9 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest
             $this->_testFile, true
             );
         $file->write('foobar');
-        $this->assertEqual('foobar', $file->read(8192));
+        $this->assertEquals('foobar', $file->read(8192));
         $file->write('zipbutton');
-        $this->assertEqual('zipbutton', $file->read(8192));
+        $this->assertEquals('zipbutton', $file->read(8192));
     }
 
     public function testWritingToFileWithCanonicalization()
@@ -84,7 +77,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest
         $file->write("foo\r\nbar\r");
         $file->write("\nzip\r\ntest\r");
         $file->flushBuffers();
-        $this->assertEqual("foo\nbar\nzip\ntest\n", file_get_contents($this->_testFile));
+        $this->assertEquals("foo\nbar\nzip\ntest\n", file_get_contents($this->_testFile));
     }
 
     public function testBindingOtherStreamsMirrorsWriteOperations()
@@ -95,12 +88,18 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest
         $is1 = $this->_createMockInputStream();
         $is2 = $this->_createMockInputStream();
 
-        $this->_checking(Expectations::create()
-            -> one($is1)->write('x')
-            -> one($is2)->write('x')
-            -> one($is1)->write('y')
-            -> one($is2)->write('y')
-        );
+        $is1->expects($this->at(0))
+            ->method('write')
+            ->with('x');
+        $is1->expects($this->at(1))
+            ->method('write')
+            ->with('y');
+        $is2->expects($this->at(0))
+            ->method('write')
+            ->with('x');
+        $is2->expects($this->at(1))
+            ->method('write')
+            ->with('y');
 
         $file->bind($is1);
         $file->bind($is2);
@@ -117,10 +116,10 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest
         $is1 = $this->_createMockInputStream();
         $is2 = $this->_createMockInputStream();
 
-        $this->_checking(Expectations::create()
-            -> one($is1)->flushBuffers()
-            -> one($is2)->flushBuffers()
-        );
+        $is1->expects($this->once())
+            ->method('flushBuffers');
+        $is2->expects($this->once())
+            ->method('flushBuffers');
 
         $file->bind($is1);
         $file->bind($is2);
@@ -136,11 +135,15 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest
         $is1 = $this->_createMockInputStream();
         $is2 = $this->_createMockInputStream();
 
-        $this->_checking(Expectations::create()
-            -> one($is1)->write('x')
-            -> one($is2)->write('x')
-            -> one($is1)->write('y')
-        );
+        $is1->expects($this->at(0))
+            ->method('write')
+            ->with('x');
+        $is1->expects($this->at(1))
+            ->method('write')
+            ->with('y');
+        $is2->expects($this->once())
+            ->method('write')
+            ->with('x');
 
         $file->bind($is1);
         $file->bind($is2);
@@ -161,7 +164,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest
 
     private function _createMockInputStream()
     {
-        return $this->_mock('Swift_InputByteStream');
+        return $this->getMock('Swift_InputByteStream');
     }
 
     private function _createFileStream($file, $writable = false)
