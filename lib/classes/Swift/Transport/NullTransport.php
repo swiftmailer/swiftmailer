@@ -73,7 +73,13 @@ class Swift_Transport_NullTransport implements Swift_Transport
             $this->_eventDispatcher->dispatchEvent($evt, 'sendPerformed');
         }
 
-        return 0;
+        $count = (
+            count((array) $message->getTo())
+            + count((array) $message->getCc())
+            + count((array) $message->getBcc())
+            );
+
+        return $count;
     }
 
     /**
