@@ -233,8 +233,12 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             $totalBytesWritten = 0;
 
             while ($totalBytesWritten < $bytesToWrite) {
-                $bytesWriten = fwrite($this->_in, substr($bytes, $totalBytesWritten));
-                $totalBytesWritten += $bytesWriten;
+                $bytesWritten = fwrite($this->_in, substr($bytes, $totalBytesWritten));
+                // 0 bytes written indicates a closed connection
+                if ($bytesWritten === 0) {
+                    break;
+                }
+                $totalBytesWritten += $bytesWritten;
             }
             if ($totalBytesWritten > 0) {
                 return ++$this->_sequence;
