@@ -14,18 +14,6 @@ Swiftmailer like this:
 
     $ php composer.phar require swiftmailer/swiftmailer @stable
 
-Installing from PEAR
---------------------
-
-If you want to install Swift Mailer globally on your machine, the easiest
-installation method is using the PEAR channel.
-
-To install the Swift Mailer PEAR package:
-
-* Run the command ``pear channel-discover pear.swiftmailer.org``.
-
-* Then, run the command ``pear install swift/swift``.
-
 Installing from a Package
 -------------------------
 
@@ -134,6 +122,23 @@ OS X.
     $ ls
     CHANGES LICENSE ...
     $
+
+Installing from PEAR
+--------------------
+
+.. note::
+
+    Using PEAR for installing Swiftmailer is deprecated and Swiftmailer 5.1.0
+    was the last version published on the PEAR channel; use Composer instead.
+
+If you want to install Swift Mailer globally on your machine, the easiest
+installation method is using the PEAR channel.
+
+To install the Swift Mailer PEAR package:
+
+* Run the command ``pear channel-discover pear.swiftmailer.org``.
+
+* Then, run the command ``pear install swift/swift``.
 
 Uploading to your Host
 ----------------------
