@@ -4,6 +4,7 @@ Changelog
 5.2.0 (2014-XX-XX)
 ------------------
 
+ * fixed infinite loop in StreamBuffer
  * fixed NullTransport to return the number of ignored emails instead of 0
  * Use phpunit and mockery for unit testing (realityking)
 
