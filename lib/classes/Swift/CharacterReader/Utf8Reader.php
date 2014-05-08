@@ -78,11 +78,11 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      * Returns the complete character map.
      *
      * @param string  $string
-     * @param integer $startOffset
+     * @param int     $startOffset
      * @param array   $currentMap
      * @param mixed   $ignoredChars
      *
-     * @return integer
+     * @return int
      */
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
     {
@@ -136,7 +136,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
     /**
      * Returns mapType.
      *
-     * @return integer mapType
+     * @return int     mapType
      */
     public function getMapType()
     {
@@ -152,9 +152,9 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      * A value of -1 means this cannot possibly be a valid character.
      *
      * @param string  $bytes
-     * @param integer $size
+     * @param int     $size
      *
-     * @return integer
+     * @return int
      */
     public function validateByteSequence($bytes, $size)
     {
@@ -172,7 +172,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
     /**
      * Returns the number of bytes which should be read to start each character.
      *
-     * @return integer
+     * @return int
      */
     public function getInitialByteSize()
     {

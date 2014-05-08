@@ -38,7 +38,7 @@ class Swift_Mime_EmbeddedFile extends Swift_Mime_Attachment
      *
      * Returns {@see LEVEL_RELATED}.
      *
-     * @return integer
+     * @return int
      */
     public function getNestingLevel()
     {

@@ -21,7 +21,7 @@ interface Swift_StreamFilter
      *
      * @param mixed $buffer
      *
-     * @return boolean
+     * @return bool
      */
     public function shouldBuffer($buffer);
 

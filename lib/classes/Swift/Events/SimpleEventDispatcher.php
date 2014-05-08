@@ -72,7 +72,7 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
      *
      * @param Swift_Transport $source
      * @param string          $response
-     * @param boolean         $valid    If the response is valid
+     * @param bool            $valid    If the response is valid
      *
      * @return Swift_Events_ResponseEvent
      */

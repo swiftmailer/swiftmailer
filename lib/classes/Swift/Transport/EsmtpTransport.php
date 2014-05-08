@@ -86,7 +86,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the port to connect to.
      *
-     * @param integer $port
+     * @param int     $port
      *
      * @return Swift_Transport_EsmtpTransport
      */
@@ -110,7 +110,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the connection timeout.
      *
-     * @param integer $timeout seconds
+     * @param int     $timeout seconds
      *
      * @return Swift_Transport_EsmtpTransport
      */

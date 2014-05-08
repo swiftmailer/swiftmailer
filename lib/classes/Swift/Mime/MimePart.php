@@ -126,7 +126,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     /**
      * Test if delsp is being used for this entity.
      *
-     * @return boolean
+     * @return bool
      */
     public function getDelSp()
     {
@@ -138,7 +138,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     /**
      * Turn delsp on or off for this entity.
      *
-     * @param boolean $delsp
+     * @param bool    $delsp
      *
      * @return Swift_Mime_MimePart
      */

@@ -67,7 +67,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     /**
      * Create a new Date header using $timestamp (UNIX time).
      * @param string       $name
-     * @param integer|null $timestamp
+     * @param int|null     $timestamp
      *
      * @return Swift_Mime_Header
      */

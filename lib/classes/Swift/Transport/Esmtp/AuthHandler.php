@@ -145,7 +145,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     /**
      * Get the name of the ESMTP extension this handles.
      *
-     * @return boolean
+     * @return bool
      */
     public function getHandledKeyword()
     {

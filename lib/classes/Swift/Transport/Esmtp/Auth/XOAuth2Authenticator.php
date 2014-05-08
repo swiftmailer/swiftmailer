@@ -43,7 +43,7 @@ class Swift_Transport_Esmtp_Auth_XOAuth2Authenticator implements Swift_Transport
      * @param string                    $email
      * @param string                    $token
      *
-     * @return boolean
+     * @return bool
      */
     public function authenticate(Swift_Transport_SmtpAgent $agent, $email, $token)
     {

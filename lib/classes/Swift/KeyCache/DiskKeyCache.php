@@ -50,7 +50,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     /**
      * Will be true if magic_quotes_runtime is turned on.
      *
-     * @var boolean
+     * @var bool
      */
     private $_quotes = false;
 
@@ -79,7 +79,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
      * @param string  $nsKey
      * @param string  $itemKey
      * @param string  $string
-     * @param integer $mode
+     * @param int     $mode
      *
      * @throws Swift_IoException
      */
@@ -112,7 +112,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
      * @param string                 $nsKey
      * @param string                 $itemKey
      * @param Swift_OutputByteStream $os
-     * @param integer                $mode
+     * @param int                    $mode
      *
      * @throws Swift_IoException
      */
@@ -224,7 +224,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
      * @param string $nsKey
      * @param string $itemKey
      *
-     * @return boolean
+     * @return bool
      */
     public function hasKey($nsKey, $itemKey)
     {
@@ -286,7 +286,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
      *
      * @param string  $nsKey
      * @param string  $itemKey
-     * @param integer $position
+     * @param int     $position
      *
      * @return resource
      */

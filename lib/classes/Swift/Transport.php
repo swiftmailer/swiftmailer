@@ -20,7 +20,7 @@ interface Swift_Transport
     /**
      * Test if this Transport mechanism has started.
      *
-     * @return boolean
+     * @return bool
      */
     public function isStarted();
 
@@ -43,7 +43,7 @@ interface Swift_Transport
      * @param Swift_Mime_Message $message
      * @param string[]           $failedRecipients An array of failures by-reference
      *
-     * @return integer
+     * @return int
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null);
 

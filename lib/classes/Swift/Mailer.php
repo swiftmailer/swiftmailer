@@ -70,7 +70,7 @@ class Swift_Mailer
      * @param Swift_Mime_Message $message
      * @param array              $failedRecipients An array of failures by-reference
      *
-     * @return integer
+     * @return int
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {

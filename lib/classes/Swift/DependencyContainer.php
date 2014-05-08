@@ -75,7 +75,7 @@ class Swift_DependencyContainer
      *
      * @param string $itemName
      *
-     * @return boolean
+     * @return bool
      */
     public function has($itemName)
     {

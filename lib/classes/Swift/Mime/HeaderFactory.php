@@ -31,7 +31,7 @@ interface Swift_Mime_HeaderFactory extends Swift_Mime_CharsetObserver
      * Create a new Date header using $timestamp (UNIX time).
      *
      * @param string  $name
-     * @param integer $timestamp
+     * @param int     $timestamp
      *
      * @return Swift_Mime_Header
      */

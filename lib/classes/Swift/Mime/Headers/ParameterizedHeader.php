@@ -241,8 +241,8 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
      * Returns the parameter value from the "=" and beyond.
      *
      * @param string  $value     to append
-     * @param boolean $encoded
-     * @param boolean $firstLine
+     * @param bool    $encoded
+     * @param bool    $firstLine
      *
      * @return string
      */

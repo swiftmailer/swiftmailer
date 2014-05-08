@@ -24,7 +24,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
      *
      * @param Swift_CharacterStream $charStream to use for reading characters
      * @param Swift_StreamFilter    $filter     if canonicalization should occur
-     * @param boolean               $dotEscape  if dot stuffing workaround must be enabled
+     * @param bool                  $dotEscape  if dot stuffing workaround must be enabled
      */
     public function __construct(Swift_CharacterStream $charStream, Swift_StreamFilter $filter = null, $dotEscape = false)
     {
@@ -60,8 +60,8 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
      *
      * @param Swift_OutputByteStream $os              output stream
      * @param Swift_InputByteStream  $is              input stream
-     * @param integer                $firstLineOffset
-     * @param integer                $maxLineLength
+     * @param int                    $firstLineOffset
+     * @param int                    $maxLineLength
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {

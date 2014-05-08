@@ -27,9 +27,9 @@ interface Swift_OutputByteStream
      * If less bytes exist than are requested the remaining bytes are given instead.
      * If no bytes are remaining at all, boolean false is returned.
      *
-     * @param integer $length
+     * @param int     $length
      *
-     * @return string|boolean
+     * @return string|bool
      *
      * @throws Swift_IoException
      */
@@ -38,9 +38,9 @@ interface Swift_OutputByteStream
     /**
      * Move the internal read pointer to $byteOffset in the stream.
      *
-     * @param integer $byteOffset
+     * @param int     $byteOffset
      *
-     * @return boolean
+     * @return bool
      *
      * @throws Swift_IoException
      */

@@ -32,7 +32,7 @@ interface Swift_InputByteStream
      *
      * @param string $bytes
      *
-     * @return integer
+     * @return int
      *
      * @throws Swift_IoException
      */

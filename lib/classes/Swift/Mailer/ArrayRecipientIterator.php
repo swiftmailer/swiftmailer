@@ -37,7 +37,7 @@ class Swift_Mailer_ArrayRecipientIterator implements Swift_Mailer_RecipientItera
     /**
      * Returns true only if there are more recipients to send to.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasNext()
     {

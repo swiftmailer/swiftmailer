@@ -272,7 +272,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      * Produces a compliant, formatted display-name based on the string given.
      *
      * @param string  $displayName as displayed
-     * @param boolean $shorten     the first line to make remove for header name
+     * @param bool    $shorten     the first line to make remove for header name
      *
      * @return string
      */
@@ -305,7 +305,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $token
      *
-     * @return boolean
+     * @return bool
      */
     protected function tokenNeedsEncoding($token)
     {

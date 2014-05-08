@@ -48,7 +48,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Tests if this Spool mechanism has started.
      *
-     * @return boolean
+     * @return bool
      */
     public function isStarted()
     {
@@ -74,7 +74,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      *
      * Default, is ten and allows over 64^20 different fileNames
      *
-     * @param integer $limit
+     * @param int     $limit
      */
     public function setRetryLimit($limit)
     {
@@ -86,7 +86,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      *
      * @param Swift_Mime_Message $message The message to store
      *
-     * @return boolean
+     * @return bool
      *
      * @throws Swift_IoException
      */
@@ -115,7 +115,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Execute a recovery if for any reason a process is sending for too long.
      *
-     * @param integer $timeout in second Defaults is for very slow smtp responses
+     * @param int     $timeout in second Defaults is for very slow smtp responses
      */
     public function recover($timeout = 900)
     {
@@ -137,7 +137,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      * @param Swift_Transport $transport        A transport instance
      * @param string[]        $failedRecipients An array of failures by-reference
      *
-     * @return integer The number of sent e-mail's
+     * @return int     The number of sent e-mail's
      */
     public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
     {
@@ -190,7 +190,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Returns a random string needed to generate a fileName for the queue.
      *
-     * @param integer $count
+     * @param int     $count
      *
      * @return string
      */

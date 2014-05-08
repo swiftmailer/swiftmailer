@@ -26,7 +26,7 @@ class Swift_Validate
      *
      * @param string $email
      *
-     * @return boolean
+     * @return bool
      */
     public static function email($email)
     {

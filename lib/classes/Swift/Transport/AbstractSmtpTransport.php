@@ -130,7 +130,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /**
      * Test if an SMTP connection has been established.
      *
-     * @return boolean
+     * @return bool
      */
     public function isStarted()
     {

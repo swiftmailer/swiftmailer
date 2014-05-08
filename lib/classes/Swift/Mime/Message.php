@@ -41,7 +41,7 @@ interface Swift_Mime_Message extends Swift_Mime_MimeEntity
     /**
      * Set the origination date of the message as a UNIX timestamp.
      *
-     * @param integer $date
+     * @param int     $date
      */
     public function setDate($date);
 

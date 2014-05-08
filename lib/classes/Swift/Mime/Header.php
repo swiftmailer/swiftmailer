@@ -41,7 +41,7 @@ interface Swift_Mime_Header
      * @see TYPE_TEXT, TYPE_PARAMETERIZED, TYPE_MAILBOX
      * @see TYPE_DATE, TYPE_ID, TYPE_PATH
      *
-     * @return integer
+     * @return int
      */
     public function getFieldType();
 
