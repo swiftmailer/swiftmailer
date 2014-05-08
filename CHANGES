@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.2.0 (2014-XX-XX)
+5.2.0 (2014-05-08)
 ------------------
 
  * fixed Swift_ByteStream_FileByteStream::read() to match to the specification
