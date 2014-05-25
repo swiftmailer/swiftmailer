@@ -25,7 +25,7 @@ function generateUpToDateMimeArray()
     $mime_xml   = @file_get_contents(FREEDESKTOP_XML_URL);
 
     // prepare valid mime types
-    $valid_mime_types = [];
+    $valid_mime_types = array();
 
     // split mime type and extensions eg. "video/x-matroska        mkv mk3d mks"
     if (preg_match_all('/^#?([a-z0-9\-\+\/\.]+)[\t]+(.*)$/miu', $mime_types, $matches) !== FALSE) {
@@ -112,7 +112,7 @@ function generateUpToDateMimeArray()
         }
 
         // collect extensions
-        $valid_extensions = [];
+        $valid_extensions = array();
 
         // all extensions from second match
         foreach ($matches[2] as $i => $extensions) {
