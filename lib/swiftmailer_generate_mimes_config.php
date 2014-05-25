@@ -30,7 +30,7 @@ function generateUpToDateMimeArray()
     // split mime type and extensions eg. "video/x-matroska        mkv mk3d mks"
     if (preg_match_all('/^#?([a-z0-9\-\+\/\.]+)[\t]+(.*)$/miu', $mime_types, $matches) !== FALSE) {
         // collection of predefined mimetypes (bugfix for wrong resolved or missing mime types)
-        $valid_mime_types_preset = [
+        $valid_mime_types_preset = array(
             'php'  => 'application/x-php',
             'php3' => 'application/x-php',
             'php4' => 'application/x-php',
@@ -103,7 +103,7 @@ function generateUpToDateMimeArray()
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'xml'  => 'application/xml',
             'zip'  => 'application/zip'
-        ];
+        );
 
         // wrap array for generating file
         foreach ($valid_mime_types_preset as $extension => $mime_type) {
