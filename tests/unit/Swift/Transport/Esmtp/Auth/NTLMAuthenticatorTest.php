@@ -210,7 +210,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
 
     private function _getAgent()
     {
-        return $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();;
+        return $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
     }
 
     private function _invokePrivateMethod($method, $instance, array $args = array())
