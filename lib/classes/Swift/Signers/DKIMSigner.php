@@ -195,7 +195,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     public static function newInstance($privateKey, $domainName, $selector) 
     {
-    	return new static($privateKey, $domainName, $selector);
+        return new static($privateKey, $domainName, $selector);
     }
     
     
@@ -663,6 +663,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $this->_headerCanonData .= $header;
     }
 
+    /**
+     * @throws Swift_SwiftException
+     * @return string
+     */
     private function _getEncryptedHash()
     {
         $signature = '';
