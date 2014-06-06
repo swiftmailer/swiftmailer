@@ -256,7 +256,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         foreach ($mailboxes as $key => $value) {
             if (is_string($key)) { //key is email addr
                 $address = $key;
-                $name = $value;
+                $name = $this->_cleanupName($value);
             } else {
                 $address = $value;
                 $name = null;
@@ -354,5 +354,17 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
                 '] does not comply with RFC 2822, 3.6.2.'
                 );
         }
+    }
+
+    /**
+     * Filter out invalid characters from a name to be used in a Header.
+     *
+     * @param string $name
+     */
+    private function _cleanupName($name)
+    {
+        $filteredName = str_replace(array('<', '>', "\r\n", "\n\r", "\n", "\r"), ' ', $name);
+
+        return $filteredName;
     }
 }
