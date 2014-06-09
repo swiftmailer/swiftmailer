@@ -256,12 +256,13 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         foreach ($mailboxes as $key => $value) {
             if (is_string($key)) { //key is email addr
                 $address = $key;
-                $name = $this->_cleanupName($value);
+                $name = $value;
             } else {
                 $address = $value;
                 $name = null;
             }
             $this->_assertValidAddress($address);
+            $this->_assertValidName($name);
             $actualMailboxes[$address] = $name;
         }
 
@@ -357,14 +358,20 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     }
 
     /**
-     * Filter out invalid characters from a name to be used in a Header.
+     * Throws an Exception if the name passed contains invalid characters.
      *
      * @param string $name
+     *
+     * @throws Swift_RfcComplianceException If invalid.
      */
-    private function _cleanupName($name)
+    private function _assertValidName($name)
     {
-        $filteredName = str_replace(array('<', '>', "\r\n", "\n\r", "\n", "\r"), ' ', $name);
-
-        return $filteredName;
+        if (strpos($name, '<') !== false || strpos($name, '>') !== false ||
+            strpos($name, "\n") !== false || strpos($name, "\r") !== false) {
+            throw new Swift_RfcComplianceException(
+                'Name in mailbox given [' . $name .
+                '] does not comply with RFC 2822, 3.4.'
+            );
+        }
     }
 }
