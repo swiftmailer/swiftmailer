@@ -682,7 +682,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         if (!$pkeyId) {
             throw new Swift_SwiftException('Unable to load DKIM Private Key ['.openssl_error_string().']');
         }
-        if (openssl_sign($this->_headerCanonData, $signature, $this->_privateKey, $algorithm)) {
+        if (openssl_sign($this->_headerCanonData, $signature, $pkeyId, $algorithm)) {
             return $signature;
         }
         throw new Swift_SwiftException('Unable to sign DKIM Hash ['.openssl_error_string().']');
