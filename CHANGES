@@ -4,7 +4,14 @@ Changelog
 5.2.1 (2014-XX-XX)
 ------------------
 
- * n/a
+ * SECURITY FIX: fixed CLI escaping when using sendmail as a transport
+
+   Prior to 5.2.1, the sendmail transport (Swift_Transport_SendmailTransport)
+   was vulnerable to an arbitrary shell execution if the "From" header came
+   from a non-trusted source and no "Return-Path" is configured.
+
+ * fixed parameter in DKIMSigner
+ * fixed compatibility with PHP < 5.4
 
 5.2.0 (2014-05-08)
 ------------------
