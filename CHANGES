@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.2.1 (2014-XX-XX)
+5.2.1 (2014-06-13)
 ------------------
 
  * SECURITY FIX: fixed CLI escaping when using sendmail as a transport
