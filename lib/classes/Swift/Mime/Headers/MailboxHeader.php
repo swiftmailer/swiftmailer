@@ -262,6 +262,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
                 $name = null;
             }
             $this->_assertValidAddress($address);
+            $this->_assertValidName($name);
             $actualMailboxes[$address] = $name;
         }
 
@@ -353,6 +354,24 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
                 'Address in mailbox given [' . $address .
                 '] does not comply with RFC 2822, 3.6.2.'
                 );
+        }
+    }
+
+    /**
+     * Throws an Exception if the name passed contains invalid characters.
+     *
+     * @param string $name
+     *
+     * @throws Swift_RfcComplianceException If invalid.
+     */
+    private function _assertValidName($name)
+    {
+        if (strpos($name, '<') !== false || strpos($name, '>') !== false ||
+            strpos($name, "\n") !== false || strpos($name, "\r") !== false) {
+            throw new Swift_RfcComplianceException(
+                'Name in mailbox given [' . $name .
+                '] does not comply with RFC 2822, 3.4.'
+            );
         }
     }
 }
