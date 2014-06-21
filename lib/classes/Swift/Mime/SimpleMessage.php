@@ -615,6 +615,20 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
         }
     }
 
+    /** 
+     * Avoids to receive automatic email Out of office 
+     * 
+     * @return Swift_Mime_SimpleMessage
+     */
+    public function removeAutoReply()
+    {
+        $headers = $this->getHeaders();
+        $headers->addTextHeader('Precedence', 'bulk');
+        $headers->addTextHeader('Auto-Submitted', 'auto-generated');
+        
+        return $this;
+    }
+
     // -- Protected methods
 
     /** @see Swift_Mime_SimpleMimeEntity::_getIdField() */
