@@ -27,7 +27,7 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
     public function testBodySwap()
     {
         $message1 = new Swift_Message('Test');
-        $html = Swift_MimePart::newInstance('<html></html>', 'text/html');
+        $html = new Swift_MimePart('<html></html>', 'text/html');
         $html->getHeaders()->addTextHeader('X-Test-Remove', 'Test-Value');
         $html->getHeaders()->addTextHeader('X-Test-Alter', 'Test-Value');
         $message1->attach($html);

@@ -7,6 +7,6 @@ class Swift_EmbeddedFileAcceptanceTest extends Swift_Mime_EmbeddedFileAcceptance
 {
     protected function _createEmbeddedFile()
     {
-        return Swift_EmbeddedFile::newInstance();
+        return new Swift_EmbeddedFile();
     }
 }

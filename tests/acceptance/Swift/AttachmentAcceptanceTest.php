@@ -7,6 +7,6 @@ class Swift_AttachmentAcceptanceTest extends Swift_Mime_AttachmentAcceptanceTest
 {
     protected function _createAttachment()
     {
-        return Swift_Attachment::newInstance();
+        return new Swift_Attachment();
     }
 }

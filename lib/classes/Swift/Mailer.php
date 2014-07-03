@@ -29,18 +29,6 @@ class Swift_Mailer
     }
 
     /**
-     * Create a new Mailer instance.
-     *
-     * @param Swift_Transport $transport
-     *
-     * @return Swift_Mailer
-     */
-    public static function newInstance(Swift_Transport $transport)
-    {
-        return new self($transport);
-    }
-
-    /**
      * Create a new class instance of one of the message services.
      *
      * For example 'mimepart' would create a 'message.mimepart' instance

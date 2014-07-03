@@ -44,6 +44,11 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
         }
     }
 
+    public function newInstance()
+    {
+        return new self($this->_factory);
+    }
+
     /**
      * Set the charset used by these headers.
      *
@@ -244,16 +249,6 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     {
         $lowerName = strtolower($name);
         unset($this->_headers[$lowerName]);
-    }
-
-    /**
-     * Create a new instance of this HeaderSet.
-     *
-     * @return Swift_Mime_HeaderSet
-     */
-    public function newInstance()
-    {
-        return new self($this->_factory);
     }
 
     /**

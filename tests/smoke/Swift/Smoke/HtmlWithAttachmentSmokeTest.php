@@ -13,7 +13,7 @@ class Swift_Smoke_HtmlWithAttachmentSmokeTest extends SwiftMailerSmokeTestCase
     public function testAttachmentSending()
     {
         $mailer = $this->_getMailer();
-        $message = Swift_Message::newInstance('[Swift Mailer] HtmlWithAttachmentSmokeTest')
+        $message = (new Swift_Message('[Swift Mailer] HtmlWithAttachmentSmokeTest'))
             ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Swift Mailer'))
             ->setTo(SWIFT_SMOKE_EMAIL_ADDRESS)
             ->attach(Swift_Attachment::fromPath($this->_attFile))

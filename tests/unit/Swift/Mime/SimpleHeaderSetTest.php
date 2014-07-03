@@ -491,13 +491,6 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($set->has('Message-ID'));
     }
 
-    public function testNewInstance()
-    {
-        $set = $this->_createSet($this->_createFactory());
-        $instance = $set->newInstance();
-        $this->assertInstanceof('Swift_Mime_HeaderSet', $instance);
-    }
-
     public function testToStringJoinsHeadersTogether()
     {
         $factory = $this->_createFactory();

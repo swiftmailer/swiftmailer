@@ -69,19 +69,6 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     }
 
     /**
-     * Returns an new Swift_Signers_SMimeSigner instance.
-     *
-     * @param string $certificate
-     * @param string $privateKey
-     *
-     * @return Swift_Signers_SMimeSigner
-     */
-    public static function newInstance($certificate = null, $privateKey = null)
-    {
-        return new self($certificate, $privateKey);
-    }
-
-    /**
      * Set the certificate location to use for signing.
      *
      * @link http://www.php.net/manual/en/openssl.pkcs7.flags.php

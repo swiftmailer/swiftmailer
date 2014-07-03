@@ -57,20 +57,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     }
 
     /**
-     * Create a new PopBeforeSmtpPlugin for $host and $port.
-     *
-     * @param string  $host
-     * @param int     $port
-     * @param string  $crypto as "tls" or "ssl"
-     *
-     * @return Swift_Plugins_PopBeforeSmtpPlugin
-     */
-    public static function newInstance($host, $port = 110, $crypto = null)
-    {
-        return new self($host, $port, $crypto);
-    }
-
-    /**
      * Set a Pop3Connection to delegate to instead of connecting directly.
      *
      * @param Swift_Plugins_Pop_Pop3Connection $connection

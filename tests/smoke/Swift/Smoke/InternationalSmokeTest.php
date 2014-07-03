@@ -13,7 +13,7 @@ class Swift_Smoke_InternationalSmokeTest extends SwiftMailerSmokeTestCase
     public function testAttachmentSending()
     {
         $mailer = $this->_getMailer();
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setCharset('utf-8')
             ->setSubject('[Swift Mailer] InternationalSmokeTest (διεθνής)')
             ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Χριστοφορου (Swift Mailer)'))

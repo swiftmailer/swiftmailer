@@ -4,6 +4,7 @@ Changelog
 6.0.0 (2014-XX-XX)
 ------------------
 
+ * removed newInstance() methods everywhere
  * bumped minimum version to PHP 5.5
 
 5.4.1 (2015-XX-XX)

@@ -767,8 +767,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
     private function _createChild()
     {
-        return new self($this->_headers->newInstance(),
-            $this->_encoder, $this->_cache, $this->_grammar);
+        return new self($this->_headers->newInstance(), $this->_encoder, $this->_cache, $this->_grammar);
     }
 
     private function _notifyEncoderChanged(Swift_Mime_ContentEncoder $encoder)

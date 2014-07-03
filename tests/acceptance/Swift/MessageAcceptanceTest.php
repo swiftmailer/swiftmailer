@@ -52,6 +52,6 @@ class Swift_MessageAcceptanceTest extends Swift_Mime_SimpleMessageAcceptanceTest
         Swift_DependencyContainer::getInstance()
             ->register('properties.charset')->asValue(null);
 
-        return Swift_Message::newInstance();
+        return new Swift_Message();
     }
 }

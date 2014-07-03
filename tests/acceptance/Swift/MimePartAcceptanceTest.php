@@ -10,6 +10,6 @@ class Swift_MimePartAcceptanceTest extends Swift_Mime_MimePartAcceptanceTest
         Swift_DependencyContainer::getInstance()
             ->register('properties.charset')->asValue(null);
 
-        return Swift_MimePart::newInstance();
+        return new Swift_MimePart();
     }
 }

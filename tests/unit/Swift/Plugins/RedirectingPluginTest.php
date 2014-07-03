@@ -12,7 +12,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginChangesRecipients()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('...')
             ->setFrom(array('john@example.com' => 'John Doe'))
             ->setTo($to = array(
@@ -49,7 +49,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginRespectsUnsetToList()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('...')
             ->setFrom(array('john@example.com' => 'John Doe'))
             ->setCc($cc = array(
@@ -82,7 +82,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginRespectsAWhitelistOfPatterns()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('...')
             ->setFrom(array('john@example.com' => 'John Doe'))
             ->setTo($to = array(
@@ -128,7 +128,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testArrayOfRecipientsCanBeExplicitlyDefined()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('...')
             ->setFrom(array('john@example.com' => 'John Doe'))
             ->setTo(array(

@@ -61,21 +61,6 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     }
 
     /**
-     * Create a new Message.
-     *
-     * @param string $subject
-     * @param string $body
-     * @param string $contentType
-     * @param string $charset
-     *
-     * @return Swift_Message
-     */
-    public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
-    {
-        return new self($subject, $body, $contentType, $charset);
-    }
-
-    /**
      * Add a MimePart to this Message.
      *
      * @param string|Swift_OutputByteStream $body
@@ -86,9 +71,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      */
     public function addPart($body, $contentType = null, $charset = null)
     {
-        return $this->attach(Swift_MimePart::newInstance(
-            $body, $contentType, $charset
-            ));
+        return $this->attach(new Swift_MimePart($body, $contentType, $charset));
     }
 
     /**

@@ -6,7 +6,7 @@ class Swift_Bug534Test extends \PHPUnit_Framework_TestCase
 {
     public function testEmbeddedImagesAreEmbedded()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setFrom('from@example.com')
             ->setTo('to@example.com')
             ->setSubject('test')

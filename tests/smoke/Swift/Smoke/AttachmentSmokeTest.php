@@ -13,7 +13,7 @@ class Swift_Smoke_AttachmentSmokeTest extends SwiftMailerSmokeTestCase
     public function testAttachmentSending()
     {
         $mailer = $this->_getMailer();
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('[Swift Mailer] AttachmentSmokeTest')
             ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Swift Mailer'))
             ->setTo(SWIFT_SMOKE_EMAIL_ADDRESS)

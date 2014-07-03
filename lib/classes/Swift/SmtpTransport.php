@@ -40,18 +40,4 @@ class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
         $this->setPort($port);
         $this->setEncryption($security);
     }
-
-    /**
-     * Create a new SmtpTransport instance.
-     *
-     * @param string  $host
-     * @param int     $port
-     * @param string  $security
-     *
-     * @return Swift_SmtpTransport
-     */
-    public static function newInstance($host = 'localhost', $port = 25, $security = null)
-    {
-        return new self($host, $port, $security);
-    }
 }
