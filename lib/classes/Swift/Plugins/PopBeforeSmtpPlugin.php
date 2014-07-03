@@ -228,7 +228,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     {
     }
 
-    // -- Private Methods
 
     private function _command($command)
     {

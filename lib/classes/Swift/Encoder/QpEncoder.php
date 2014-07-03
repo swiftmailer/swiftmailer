@@ -222,7 +222,6 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
         $this->_charStream->setCharacterSet($charset);
     }
 
-    // -- Protected methods
 
     /**
      * Encode the given byte array into a verbatim QP form.

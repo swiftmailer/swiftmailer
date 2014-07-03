@@ -613,7 +613,6 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
         }
     }
 
-    // -- Protected methods
 
     /** @see Swift_Mime_SimpleMimeEntity::_getIdField() */
     protected function _getIdField()

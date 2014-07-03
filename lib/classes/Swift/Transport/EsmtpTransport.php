@@ -265,7 +265,6 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         trigger_error('Call to undefined method ' . $method, E_USER_ERROR);
     }
 
-    // -- Protected methods
 
     /** Get the params to initialize the buffer */
     protected function _getBufferParams()

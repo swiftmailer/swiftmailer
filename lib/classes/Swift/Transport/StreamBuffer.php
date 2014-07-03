@@ -213,7 +213,6 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     {
     }
 
-    // -- Protected methods
 
     /** Flush the stream contents */
     protected function _flush()

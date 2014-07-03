@@ -281,7 +281,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         return $response;
     }
 
-    // -- Protected methods
 
     /** Read the opening SMTP greeting */
     protected function _readGreeting()

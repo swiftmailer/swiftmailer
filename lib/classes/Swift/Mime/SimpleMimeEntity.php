@@ -575,7 +575,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         }
     }
 
-    // -- Protected methods
 
     /**
      * Get the name of the header that provides the ID of this entity

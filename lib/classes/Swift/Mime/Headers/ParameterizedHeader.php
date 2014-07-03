@@ -142,7 +142,6 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
         return $body;
     }
 
-    // -- Protected methods
 
     /**
      * Generate a list of all tokens in the final header.

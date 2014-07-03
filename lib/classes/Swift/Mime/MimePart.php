@@ -171,7 +171,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
         $this->setCharset($charset);
     }
 
-    // -- Protected methods
 
     /** Fix the content-type and encoding of this entity */
     protected function _fixHeaders()

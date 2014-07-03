@@ -69,7 +69,6 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
         return $sent;
     }
 
-    // -- Protected methods
 
     protected function _getNextTransport()
     {

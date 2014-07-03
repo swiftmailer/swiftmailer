@@ -183,9 +183,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     {
         Swift_DependencyContainer::getInstance()->createDependenciesFor('mime.message');
     }
-    
-    /* -- Protected Methods -- */
-    
+
     /**
      * loops through signers and apply the signatures
      */
