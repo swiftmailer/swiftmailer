@@ -4,6 +4,7 @@ Changelog
 6.0.0 (2014-XX-XX)
 ------------------
 
+ * removed the Swift_Transport_MailInvoker interface and Swift_Transport_SimpleMailInvoker class
  * removed the Swift_SignedMessage class
  * removed newInstance() methods everywhere
  * bumped minimum version to PHP 5.5

@@ -29,18 +29,13 @@ class Swift_Transport_MailTransport implements Swift_Transport
     /** The event dispatcher from the plugin API */
     private $_eventDispatcher;
 
-    /** An invoker that calls the mail() function */
-    private $_invoker;
-
     /**
      * Create a new MailTransport with the $log.
      *
-     * @param Swift_Transport_MailInvoker  $invoker
      * @param Swift_Events_EventDispatcher $eventDispatcher
      */
-    public function __construct(Swift_Transport_MailInvoker $invoker, Swift_Events_EventDispatcher $eventDispatcher)
+    public function __construct(Swift_Events_EventDispatcher $eventDispatcher)
     {
-        $this->_invoker = $invoker;
         $this->_eventDispatcher = $eventDispatcher;
     }
 
@@ -163,8 +158,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
             $body = str_replace("\r\n.", "\r\n..", $body);
         }
 
-        if ($this->_invoker->mail($to, $subject, $body, $headers,
-            sprintf($this->_extraParams, $reversePath))) {
+        if ($this->mail($to, $subject, $body, $headers, sprintf($this->_extraParams, $reversePath))) {
             if ($evt) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
                 $evt->setFailedRecipients($failedRecipients);
@@ -213,6 +207,24 @@ class Swift_Transport_MailTransport implements Swift_Transport
         } else {
             throw $e;
         }
+    }
+
+    /**
+     * Send mail via the mail() function.
+     *
+     * This method takes the same arguments as PHP mail().
+     *
+     * @param string $to
+     * @param string $subject
+     * @param string $body
+     * @param string $headers
+     * @param string $extraParams
+     *
+     * @return bool
+     */
+    public function mail($to, $subject, $body, $headers = null, $extraParams = null)
+    {
+        return @mail($to, $subject, $body, $headers, $extraParams);
     }
 
     /** Determine the best-use reverse path for this message */
