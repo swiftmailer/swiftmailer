@@ -11,8 +11,6 @@
 /**
  * An OpenDKIM Specific Header using only raw header datas without encoding
  *
- * @package    Swift
- * @subpackage Mime
  * @author     De Cock Xavier <xdecock@gmail.com>
  */
 class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header

@@ -11,8 +11,6 @@
 /**
  * Logs to an Array backend.
  *
- * @package    Swift
- * @subpackage Transport
  * @author     Chris Corbyn
  */
 class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger

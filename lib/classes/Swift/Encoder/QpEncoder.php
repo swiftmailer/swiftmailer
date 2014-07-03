@@ -13,8 +13,6 @@
  *
  * Possibly the most accurate RFC 2045 QP implementation found in PHP.
  *
- * @package    Swift
- * @subpackage Encoder
  * @author     Chris Corbyn
  */
 class Swift_Encoder_QpEncoder implements Swift_Encoder

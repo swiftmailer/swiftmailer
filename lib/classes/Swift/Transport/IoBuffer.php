@@ -11,8 +11,6 @@
 /**
  * Buffers input and output to a resource.
  *
- * @package    Swift
- * @subpackage Transport
  * @author     Chris Corbyn
  */
 interface Swift_Transport_IoBuffer extends Swift_InputByteStream, Swift_OutputByteStream

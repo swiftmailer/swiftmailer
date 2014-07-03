@@ -11,8 +11,6 @@
 /**
  * A Message (RFC 2822) object.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 interface Swift_Mime_Message extends Swift_Mime_MimeEntity

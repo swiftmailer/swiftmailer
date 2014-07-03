@@ -2,8 +2,6 @@
 
 /**
  * A binary safe string comparison.
- * @package Swift
- * @subpackage Tests
  * @author Chris Corbyn
  */
 class IdenticalBinaryConstraint extends \PHPUnit_Framework_Constraint

@@ -11,8 +11,6 @@
 /**
  * A KeyCache which streams to and from disk.
  *
- * @package    Swift
- * @subpackage KeyCache
  * @author     Chris Corbyn
  */
 class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache

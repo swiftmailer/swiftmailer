@@ -11,8 +11,6 @@
 /**
  * Provides a mechanism for storing data using two keys.
  *
- * @package    Swift
- * @subpackage KeyCache
  * @author     Chris Corbyn
  */
 interface Swift_KeyCache

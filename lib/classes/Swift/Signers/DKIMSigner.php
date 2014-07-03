@@ -11,8 +11,6 @@
 /**
  * DKIM Signer used to apply DKIM Signature to a message
  *
- * @package    Swift
- * @subpackage Signatures
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner

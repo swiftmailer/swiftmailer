@@ -11,8 +11,6 @@
 /**
  * Reduces network flooding when sending large amounts of mail.
  *
- * @package    Swift
- * @subpackage Plugins
  * @author     Chris Corbyn
  */
 class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_Plugins_Sleeper

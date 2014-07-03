@@ -11,8 +11,6 @@
 /**
  * A Date MIME Header for Swift Mailer.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader

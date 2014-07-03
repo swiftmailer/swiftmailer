@@ -11,8 +11,6 @@
 /**
  * Creates MIME headers.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 interface Swift_Mime_HeaderFactory extends Swift_Mime_CharsetObserver

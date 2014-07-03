@@ -9,7 +9,6 @@
 /**
  * Utility Class allowing users to simply check expressions again Swift Grammar.
  *
- * @package Swift
  * @author  Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_Validate

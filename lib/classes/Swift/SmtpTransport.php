@@ -11,8 +11,6 @@
 /**
  * Sends Messages over SMTP with ESMTP support.
  *
- * @package    Swift
- * @subpackage Transport
  * @author     Chris Corbyn
  * @method Swift_SmtpTransport setUsername(string $username) Set the username to authenticate with.
  * @method string              getUsername()                 Get the username to authenticate with.

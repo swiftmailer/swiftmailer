@@ -11,8 +11,6 @@
 /**
  * Allows reading and writing of bytes to and from a file.
  *
- * @package    Swift
- * @subpackage ByteStream
  * @author     Chris Corbyn
  */
 class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterableInputStream implements Swift_FileStream

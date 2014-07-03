@@ -11,8 +11,6 @@
 /**
  * MIME Message Signer used to apply S/MIME Signature/Encryption to a message.
  *
- * @package    Swift
- * @subpackage Signatures
  *
  * @author     Romain-Geissler
  * @author     Sebastiaan Stok <s.stok@rollerscapes.net>

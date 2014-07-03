@@ -11,8 +11,6 @@
 /**
  * A MIME entity, such as an attachment.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 interface Swift_Mime_MimeEntity extends Swift_Mime_CharsetObserver, Swift_Mime_EncodingObserver

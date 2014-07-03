@@ -13,8 +13,6 @@
 /**
  * Handles NTLM authentication.
  *
- * @package    Swift
- * @subpackage Transport
  * @author     Ward Peeters <ward@coding-tech.com>
  */
 class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Esmtp_Authenticator

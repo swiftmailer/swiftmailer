@@ -11,8 +11,6 @@
 /**
  * Generated when a response is received on a SMTP connection.
  *
- * @package    Swift
- * @subpackage Events
  * @author     Chris Corbyn
  */
 class Swift_Events_ResponseEvent extends Swift_Events_EventObject

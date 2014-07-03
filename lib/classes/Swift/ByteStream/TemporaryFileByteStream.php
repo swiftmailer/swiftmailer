@@ -9,8 +9,6 @@
 */
 
 /**
- * @package    Swift
- * @subpackage ByteStream
  * @author     Romain-Geissler
  */
 class Swift_ByteStream_TemporaryFileByteStream extends Swift_ByteStream_FileByteStream

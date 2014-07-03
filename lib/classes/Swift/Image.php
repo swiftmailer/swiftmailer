@@ -11,8 +11,6 @@
 /**
  * An image, embedded in a multipart message.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 class Swift_Image extends Swift_EmbeddedFile

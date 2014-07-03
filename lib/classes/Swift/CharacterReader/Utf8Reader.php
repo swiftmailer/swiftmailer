@@ -11,8 +11,6 @@
 /**
  * Analyzes UTF-8 characters.
  *
- * @package    Swift
- * @subpackage Encoder
  * @author     Chris Corbyn
  * @author     Xavier De Cock <xdecock@gmail.com>
  */

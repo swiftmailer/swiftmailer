@@ -11,8 +11,6 @@
 /**
  * Handles binary/7/8-bit Transfer Encoding in Swift Mailer.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_ContentEncoder

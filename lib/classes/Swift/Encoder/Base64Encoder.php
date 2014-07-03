@@ -11,8 +11,6 @@
 /**
  * Handles Base 64 Encoding in Swift Mailer.
  *
- * @package    Swift
- * @subpackage Encoder
  * @author     Chris Corbyn
  */
 class Swift_Encoder_Base64Encoder implements Swift_Encoder

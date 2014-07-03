@@ -19,8 +19,6 @@
  *   ->setPassword('YOUR_ACCESS_TOKEN');
  * </code>
  * 
- * @package    Swift
- * @subpackage Transport
  * @author     xu.li<AthenaLightenedMyPath@gmail.com>
  * @see        https://developers.google.com/google-apps/gmail/xoauth2_protocol
  */

@@ -11,7 +11,6 @@
 /**
  * Creates StreamFilters.
  *
- * @package Swift
  * @author  Chris Corbyn
  */
 interface Swift_ReplacementFilterFactory

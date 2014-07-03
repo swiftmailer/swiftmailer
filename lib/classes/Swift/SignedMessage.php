@@ -13,8 +13,6 @@
  * 
  * This class is only kept for compatibility
  *
- * @package    Swift
- * @subpackage Signed
  *
  * @author     Xavier De Cock <xdecock@gmail.com>
  * @deprecated

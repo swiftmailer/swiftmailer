@@ -11,8 +11,6 @@
 /**
  * A Mailbox Address MIME Header for something like From or Sender.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader

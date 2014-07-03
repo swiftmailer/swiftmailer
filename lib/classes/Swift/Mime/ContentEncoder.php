@@ -11,8 +11,6 @@
 /**
  * Interface for all Transfer Encoding schemes.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 interface Swift_Mime_ContentEncoder extends Swift_Encoder

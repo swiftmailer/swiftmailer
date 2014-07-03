@@ -11,7 +11,6 @@
 /**
  * Processes bytes as they pass through a stream and performs filtering.
  *
- * @package Swift
  * @author  Chris Corbyn
  */
 interface Swift_StreamFilter

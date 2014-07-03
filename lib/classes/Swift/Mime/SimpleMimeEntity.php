@@ -11,8 +11,6 @@
 /**
  * A MIME entity, in a multipart message.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity

@@ -11,8 +11,6 @@
 /**
  * An OutputByteStream which specifically reads from a file.
  *
- * @package    Swift
- * @subpackage ByteStream
  * @author     Chris Corbyn
  */
 interface Swift_FileStream extends Swift_OutputByteStream

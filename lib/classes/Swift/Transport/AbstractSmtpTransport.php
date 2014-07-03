@@ -11,8 +11,6 @@
 /**
  * Sends Messages over SMTP.
  *
- * @package    Swift
- * @subpackage Transport
  * @author     Chris Corbyn
  */
 abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport

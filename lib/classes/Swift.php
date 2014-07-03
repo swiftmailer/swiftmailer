@@ -11,7 +11,6 @@
 /**
  * General utility class in Swift Mailer, not to be instantiated.
  *
- * @package Swift
  *
  * @author Chris Corbyn
  */
