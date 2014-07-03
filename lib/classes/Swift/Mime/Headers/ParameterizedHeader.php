@@ -11,8 +11,6 @@
 /**
  * An abstract base MIME Header.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_UnstructuredHeader implements Swift_Mime_ParameterizedHeader

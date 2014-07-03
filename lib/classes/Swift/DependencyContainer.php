@@ -11,7 +11,6 @@
 /**
  * Dependency Injection container.
  *
- * @package Swift
  * @author  Chris Corbyn
  */
 class Swift_DependencyContainer

@@ -11,8 +11,6 @@
 /**
  * The Message class for building emails.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 class Swift_Message extends Swift_Mime_SimpleMessage

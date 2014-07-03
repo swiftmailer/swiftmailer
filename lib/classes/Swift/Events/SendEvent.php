@@ -11,8 +11,6 @@
 /**
  * Generated when a message is being sent.
  *
- * @package    Swift
- * @subpackage Events
  * @author     Chris Corbyn
  */
 class Swift_Events_SendEvent extends Swift_Events_EventObject

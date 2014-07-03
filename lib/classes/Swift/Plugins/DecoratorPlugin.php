@@ -11,8 +11,6 @@
 /**
  * Allows customization of Messages on-the-fly.
  *
- * @package    Swift
- * @subpackage Plugins
  * @author     Chris Corbyn
  * @author     Fabien Potencier
  */

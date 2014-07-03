@@ -11,8 +11,6 @@
 /**
  * Provides quick access to each encoding type.
  *
- * @package    Swift
- * @subpackage Encoder
  * @author     Chris Corbyn
  */
 class Swift_Encoding

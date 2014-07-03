@@ -13,7 +13,6 @@
  *
  * This stream filter deals with Byte arrays rather than simple strings.
  *
- * @package Swift
  * @author  Chris Corbyn
  */
 class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilter

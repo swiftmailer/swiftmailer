@@ -11,8 +11,6 @@
 /**
  * An embedded file, in a multipart message.
  *
- * @package    Swift
- * @subpackage Mime
  * @author     Chris Corbyn
  */
 class Swift_Mime_EmbeddedFile extends Swift_Mime_Attachment

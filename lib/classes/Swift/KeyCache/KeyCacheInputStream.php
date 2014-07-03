@@ -11,8 +11,6 @@
 /**
  * Writes data to a KeyCache using a stream.
  *
- * @package    Swift
- * @subpackage KeyCache
  * @author     Chris Corbyn
  */
 interface Swift_KeyCache_KeyCacheInputStream extends Swift_InputByteStream

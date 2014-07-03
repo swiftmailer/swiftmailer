@@ -11,8 +11,6 @@
 /**
  * A HTML output reporter for the Reporter plugin.
  *
- * @package    Swift
- * @subpackage Plugins
  * @author     Chris Corbyn
  */
 class Swift_Plugins_Reporters_HtmlReporter implements Swift_Plugins_Reporter

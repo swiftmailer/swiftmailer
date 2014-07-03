@@ -11,8 +11,6 @@
 /**
  * An ESMTP handler for AUTH support.
  *
- * @package    Swift
- * @subpackage Transport
  * @author     Chris Corbyn
  */
 class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler

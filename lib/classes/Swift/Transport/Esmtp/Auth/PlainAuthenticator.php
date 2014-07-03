@@ -11,8 +11,6 @@
 /**
  * Handles PLAIN authentication.
  *
- * @package    Swift
- * @subpackage Transport
  * @author     Chris Corbyn
  */
 class Swift_Transport_Esmtp_Auth_PlainAuthenticator implements Swift_Transport_Esmtp_Authenticator

@@ -11,8 +11,6 @@
 /**
  * Generated when a TransportException is thrown from the Transport system.
  *
- * @package    Swift
- * @subpackage Events
  * @author     Chris Corbyn
  */
 class Swift_Events_TransportExceptionEvent extends Swift_Events_EventObject

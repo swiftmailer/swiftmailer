@@ -11,8 +11,6 @@
 /**
  * DomainKey Signer used to apply DomainKeys Signature to a message
  *
- * @package    Swift
- * @subpackage Signatures
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner

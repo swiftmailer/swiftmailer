@@ -11,8 +11,6 @@
 /**
  * Makes sure a connection to a POP3 host has been established prior to connecting to SMTP.
  *
- * @package    Swift
- * @subpackage Plugins
  * @author     Chris Corbyn
  */
 class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeListener, Swift_Plugins_Pop_Pop3Connection

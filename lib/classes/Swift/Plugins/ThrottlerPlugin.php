@@ -11,8 +11,6 @@
 /**
  * Throttles the rate at which emails are sent.
  *
- * @package    Swift
- * @subpackage Plugins
  * @author     Chris Corbyn
  */
 class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin implements Swift_Plugins_Sleeper, Swift_Plugins_Timer

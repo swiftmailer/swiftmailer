@@ -10,8 +10,6 @@
 
 /**
  * Interface for all Encoder schemes.
- * @package Swift
- * @subpackage Encoder
  * @author Chris Corbyn
  */
 interface Swift_Encoder extends Swift_Mime_CharsetObserver

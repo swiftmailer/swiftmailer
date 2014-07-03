@@ -11,8 +11,6 @@
 /**
  * The minimum interface for an Event.
  *
- * @package    Swift
- * @subpackage Events
  * @author     Chris Corbyn
  */
 interface Swift_Events_Event
