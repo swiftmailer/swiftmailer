@@ -440,14 +440,14 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $dispatcher->shouldReceive('dispatchEvent')
                    ->once()
                    ->with($evt, 'beforeTransportStopped')
-                   ->andReturnUsing(function() use (&$hasRun) {
+                   ->andReturnUsing(function () use (&$hasRun) {
                        $hasRun = true;
                    });
         $dispatcher->shouldReceive('dispatchEvent')
                    ->zeroOrMoreTimes();
          $evt->shouldReceive('bubbleCancelled')
             ->zeroOrMoreTimes()
-            ->andReturnUsing(function() use (&$hasRun) {
+            ->andReturnUsing(function () use (&$hasRun) {
                 return $hasRun;
             });
 

@@ -522,7 +522,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             $headerSet = $this->_createHeaderSet(array('Content-Type' => $cType));
             $headerSet->shouldReceive('newInstance')
                       ->zeroOrMoreTimes()
-                      ->andReturnUsing(function() use ($headerSet) {
+                      ->andReturnUsing(function () use ($headerSet) {
                           return $headerSet;
                       });
             $entity = $this->_createEntity($headerSet,
@@ -978,8 +978,9 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
                 ->will($this->returnValue($name));
         $encoder->expects($this->any())
                 ->method('encodeString')
-                ->will($this->returnCallback(function() {
+                ->will($this->returnCallback(function () {
                     $args = func_get_args();
+
                     return array_shift($args);
                 }));
 
@@ -996,12 +997,12 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $set = $this->getMockery('Swift_Mime_HeaderSet')->shouldIgnoreMissing();
         $set->shouldReceive('get')
             ->zeroOrMoreTimes()
-            ->andReturnUsing(function($key) use ($headers) {
+            ->andReturnUsing(function ($key) use ($headers) {
                 return $headers[$key];
             });
         $set->shouldReceive('has')
             ->zeroOrMoreTimes()
-            ->andReturnUsing(function($key) use ($headers) {
+            ->andReturnUsing(function ($key) use ($headers) {
                 return array_key_exists($key, $headers);
             });
 
@@ -1019,7 +1020,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
                ->andReturn($model);
         $header->shouldReceive('getParameter')
                ->zeroOrMoreTimes()
-               ->andReturnUsing(function($key) use ($params) {
+               ->andReturnUsing(function ($key) use ($params) {
                    return $params[$key];
                });
 
@@ -1032,13 +1033,14 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         if (isset($data)) {
             $os->shouldReceive('read')
                ->zeroOrMoreTimes()
-               ->andReturnUsing(function() use ($data) {
+               ->andReturnUsing(function () use ($data) {
                    static $first = true;
                    if (!$first) {
                        return false;
                    }
 
                    $first = false;
+
                    return $data;
                });
         }

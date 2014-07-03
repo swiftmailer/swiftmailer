@@ -104,7 +104,6 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
     {
     }
 
-
     /**
      * A safer (but weaker) wordwrap for unicode.
      *

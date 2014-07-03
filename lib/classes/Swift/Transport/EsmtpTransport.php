@@ -265,7 +265,6 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         trigger_error('Call to undefined method ' . $method, E_USER_ERROR);
     }
 
-
     /** Get the params to initialize the buffer */
     protected function _getBufferParams()
     {
@@ -337,7 +336,6 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
             sprintf("RCPT TO: <%s>%s\r\n", $address, $paramStr), array(250, 251, 252)
             );
     }
-
 
     /** Determine ESMTP capabilities by function group */
     private function _getCapabilities($ehloResponse)

@@ -240,7 +240,6 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     {
     }
 
-
     /**
      * Returns the authenticator list for the given agent.
      *

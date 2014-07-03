@@ -192,7 +192,6 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
         unset($this->_contents[$nsKey]);
     }
 
-
     /**
      * Initialize the namespace of $nsKey if needed.
      *

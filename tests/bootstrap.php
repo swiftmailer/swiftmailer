@@ -1,7 +1,5 @@
 <?php
 
-use Symfony\Component\ClassLoader\UniversalClassLoader;
-
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__DIR__) . '/lib');

@@ -412,8 +412,9 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
         $ext1->shouldReceive('onCommand')
              ->once()
              ->with($smtp, "FOO\r\n", array(250, 251), \Mockery::any(), \Mockery::any())
-             ->andReturnUsing(function($a, $b, $c, $d, &$e) {
+             ->andReturnUsing(function ($a, $b, $c, $d, &$e) {
                  $e = true;
+
                  return "250 ok";
              });
         $ext2->shouldReceive('getHandledKeyword')
@@ -480,11 +481,11 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
         $ext1->shouldReceive('setUsername')
              ->once()
              ->with('mick')
-             ->andReturn(NULL);
+             ->andReturn(null);
         $ext1->shouldReceive('setPassword')
              ->once()
              ->with('pass')
-             ->andReturn(NULL);
+             ->andReturn(null);
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
              ->andReturn('STARTTLS');

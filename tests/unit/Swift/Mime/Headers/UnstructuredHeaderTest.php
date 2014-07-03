@@ -1,6 +1,5 @@
 <?php
 
-
 class Swift_Mime_Headers_UnstructuredHeaderTest extends \SwiftMailerTestCase
 {
     private $_charset = 'utf-8';

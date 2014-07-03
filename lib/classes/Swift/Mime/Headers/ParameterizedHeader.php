@@ -171,7 +171,6 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
         return $tokens;
     }
 
-
     /**
      * Render a RFC 2047 compliant header parameter from the $name and $value.
      *

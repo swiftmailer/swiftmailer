@@ -213,7 +213,6 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     {
     }
 
-
     /** Flush the stream contents */
     protected function _flush()
     {
@@ -243,7 +242,6 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             }
         }
     }
-
 
     /**
      * Establishes a connection to a remote server.

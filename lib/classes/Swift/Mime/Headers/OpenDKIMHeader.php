@@ -21,14 +21,14 @@ class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
      * @var string
      */
     private $_value;
-    
+
     /**
      * The name of this Header
      * @var string
      */
     private $_fieldName;
 
-	/**
+    /**
      * Creates a new SimpleHeader with $name.
      *
      * @param string                   $name
@@ -106,7 +106,7 @@ class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
     {
         return $this->_value;
     }
-    
+
     /**
      * Get this Header rendered as a RFC 2822 compliant string.
      *
@@ -114,24 +114,24 @@ class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
      */
     public function toString()
     {
-    	return $this->_fieldName.': '.$this->_value; 
+        return $this->_fieldName.': '.$this->_value;
     }
-    
+
     /**
      * Set the Header FieldName
 	 * @see Swift_Mime_Header::getFieldName()
 	 */
-	public function getFieldName()
-	{
+    public function getFieldName()
+    {
         return $this->_fieldName;
     }
 
-    /** 
+    /**
      * Ignored
      */
-    public function setCharset($charset) 
+    public function setCharset($charset)
     {
-    
+
     }
-    
+
 }

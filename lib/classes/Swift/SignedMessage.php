@@ -10,7 +10,7 @@
 
 /**
  * Signed Message, message that can be signed using a signer.
- * 
+ *
  * This class is only kept for compatibility
  *
  *

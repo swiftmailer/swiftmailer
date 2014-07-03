@@ -91,13 +91,13 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
                 ini_set('magic_quotes_runtime', 1);
             }
             $this->_offset = ftell($fp);
-            
+
             // If we read one byte after reaching the end of the file
             // feof() will return false and an empty string is returned
             if ($bytes === '' && feof($fp)) {
-            	$this->_resetReadHandle();
-            	
-            	return false;
+                $this->_resetReadHandle();
+
+                return false;
             }
 
             return $bytes;
@@ -122,7 +122,6 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
         }
         $this->_offset = $byteOffset;
     }
-
 
     /** Just write the bytes to the file */
     protected function _commit($bytes)

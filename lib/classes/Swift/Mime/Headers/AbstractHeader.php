@@ -460,6 +460,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
                 $tokens[] = $newToken;
             }
         }
+
         return $tokens;
     }
 

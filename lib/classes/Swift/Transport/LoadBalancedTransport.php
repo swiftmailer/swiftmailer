@@ -137,7 +137,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
         }
     }
 
-
     /**
      * Rotates the transport list around and returns the first instance.
      *

@@ -151,7 +151,6 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
         return $count;
     }
 
-
     /** Get the params to initialize the buffer */
     protected function _getBufferParams()
     {

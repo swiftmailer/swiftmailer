@@ -228,7 +228,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     {
     }
 
-
     private function _command($command)
     {
         if (!fwrite($this->_socket, $command)) {

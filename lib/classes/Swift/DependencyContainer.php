@@ -288,7 +288,6 @@ class Swift_DependencyContainer
         return $this;
     }
 
-
     /** Get the literal value with $itemName */
     private function _getValue($itemName)
     {

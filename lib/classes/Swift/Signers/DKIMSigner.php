@@ -185,18 +185,18 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
     /**
      * Instanciate DKIMSigner
-     * 
+     *
      * @param string $privateKey
      * @param string $domainName
      * @param string $selector
      * @return Swift_Signers_DKIMSigner
      */
-    public static function newInstance($privateKey, $domainName, $selector) 
+    public static function newInstance($privateKey, $domainName, $selector)
     {
         return new static($privateKey, $domainName, $selector);
     }
-    
-    
+
+
     /**
      * Reset the Signer
      * @see Swift_Signer::reset()
@@ -210,7 +210,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $this->_bodyHashHandler = null;
         $this->_bodyCanonIgnoreStart = 2;
         $this->_bodyCanonEmptyCounter = 0;
-        $this->_bodyCanonLastChar = NULL;
+        $this->_bodyCanonLastChar = null;
         $this->_bodyCanonSpace = false;
     }
 
@@ -277,6 +277,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         foreach ($this->_bound as $k => $stream) {
             if ($stream === $is) {
                 unset($this->_bound[$k]);
+
                 return;
             }
         }

@@ -310,7 +310,6 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         return preg_match('/[,;]/', $token) || parent::tokenNeedsEncoding($token);
     }
 
-
     /**
      * Return an array of strings conforming the the name-addr spec of RFC 2822.
      *

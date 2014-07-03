@@ -1,6 +1,5 @@
 <?php
 
-
 class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCase
 {
     public function testNameIsQuotedPrintable()

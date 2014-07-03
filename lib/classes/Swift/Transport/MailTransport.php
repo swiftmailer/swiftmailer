@@ -205,7 +205,6 @@ class Swift_Transport_MailTransport implements Swift_Transport
         $this->_eventDispatcher->bindEventListener($plugin);
     }
 
-
     /** Determine the best-use reverse path for this message */
     private function _getReversePath(Swift_Mime_Message $message)
     {

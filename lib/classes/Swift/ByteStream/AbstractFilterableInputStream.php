@@ -155,7 +155,6 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
         }
     }
 
-
     /** Run $bytes through all filters */
     private function _filter($bytes)
     {
