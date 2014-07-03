@@ -261,7 +261,6 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
         }
     }
 
-    // -- Private methods
 
     /**
      * Initialize the namespace of $nsKey if needed.

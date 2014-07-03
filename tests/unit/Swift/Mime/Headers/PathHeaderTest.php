@@ -70,7 +70,6 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    // -- Private methods
 
     private function _getHeader($name)
     {

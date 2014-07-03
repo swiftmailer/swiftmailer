@@ -336,7 +336,6 @@ class Swift_Mime_Headers_UnstructuredHeaderTest extends \SwiftMailerTestCase
         $this->assertEquals('test', $header->getFieldBodyModel());
     }
 
-    // -- Private methods
 
     private function _getHeader($name, $encoder)
     {

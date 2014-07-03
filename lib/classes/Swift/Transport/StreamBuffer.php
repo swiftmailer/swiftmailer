@@ -245,7 +245,6 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
         }
     }
 
-    // -- Private methods
 
     /**
      * Establishes a connection to a remote server.

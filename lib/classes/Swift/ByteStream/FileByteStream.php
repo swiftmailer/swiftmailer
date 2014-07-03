@@ -123,7 +123,6 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
         $this->_offset = $byteOffset;
     }
 
-    // -- Private methods
 
     /** Just write the bytes to the file */
     protected function _commit($bytes)

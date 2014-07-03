@@ -156,7 +156,6 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
         }
     }
 
-    // -- Private methods
 
     /**
      * Get a number of seconds to sleep for.

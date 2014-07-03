@@ -697,7 +697,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         return $id;
     }
 
-    // -- Private methods
 
     private function _readStream(Swift_OutputByteStream $os)
     {

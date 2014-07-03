@@ -132,7 +132,6 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
         $this->_bubble($evt, $target);
     }
 
-    // -- Private methods
 
     /** Queue listeners on a stack ready for $evt to be bubbled up it */
     private function _prepareBubbleQueue(Swift_Events_EventObject $evt)

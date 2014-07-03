@@ -182,7 +182,6 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
         $this->_restoreMessage($evt->getMessage());
     }
 
-    // -- Private methods
 
     private function _restoreMessage(Swift_Mime_Message $message)
     {

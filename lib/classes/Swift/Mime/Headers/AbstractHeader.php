@@ -437,7 +437,6 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         }
     }
 
-    // -- Private methods
 
     /**
      * Generate a list of all tokens in the final header.
