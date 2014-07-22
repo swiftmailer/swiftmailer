@@ -220,7 +220,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the from address of this message.
      *
-     * @return string
+     * @return mixed
      */
     public function getFrom()
     {
