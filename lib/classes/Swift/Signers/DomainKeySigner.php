@@ -60,7 +60,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     /**
      * Signer identity
      *
-     * @var unknown_type
+     * @var string
      */
     protected $_signerIdentity;
 
@@ -89,7 +89,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     /**
      * Hash Handler
      *
-     * @var hash_ressource
+     * @var resource|null
      */
     private $_hashHandler;
 
