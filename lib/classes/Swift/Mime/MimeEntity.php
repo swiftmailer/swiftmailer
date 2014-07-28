@@ -78,7 +78,7 @@ interface Swift_Mime_MimeEntity extends Swift_Mime_CharsetObserver, Swift_Mime_E
     /**
      * Get the collection of Headers in this Mime entity.
      *
-     * @return Swift_Mime_Header[]
+     * @return Swift_Mime_HeaderSet
      */
     public function getHeaders();
 
