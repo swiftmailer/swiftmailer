@@ -50,7 +50,7 @@ class Swift_MemorySpool implements Swift_Spool
      */
     public function queueMessage(Swift_Mime_Message $message)
     {
-        $this->messages[] = $message;
+        $this->messages[] = serialize($message);
 
         return true;
     }
@@ -75,7 +75,7 @@ class Swift_MemorySpool implements Swift_Spool
 
         $count = 0;
         while ($message = array_pop($this->messages)) {
-            $count += $transport->send($message, $failedRecipients);
+            $count += $transport->send(unserialize($message), $failedRecipients);
         }
 
         return $count;
