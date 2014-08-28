@@ -1,13 +1,6 @@
 <?php
 
-require_once 'Swift/Mime/MimeEntity.php';
-require_once 'Swift/Mime/SimpleMessage.php';
-require_once 'Swift/Mime/SimpleMessageTest.php';
-require_once 'Swift/Mime/Header.php';
-require_once 'Swift/Mime/ParameterizedHeader.php';
-require_once 'Swift/Mime/Grammar.php';
-
-class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
+class Swift_MessageTest extends \PHPUnit_Framework_TestCase
 {
     public function testCloning()
     {
@@ -17,7 +10,7 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
 
         $this->_recursiveObjectCloningCheck($message1, $message2, $message1_clone);
     }
-    
+
     public function testBodySwap()
     {
         $message1 = new Swift_Message('Test');
@@ -35,23 +28,23 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
         }
         $final = $message1->toString();
         if ($source != $final) {
-            $this->fail("Difference altough object cloned \n [".$source."]\n[".$final."]\n");
+            $this->fail("Difference although object cloned \n [".$source."]\n[".$final."]\n");
         }
         $final = $message2->toString();
         if ($final == $source) {
-            $this->fail('Two body matches altough they should differ'."\n [".$source."]\n[".$final."]\n");
+            $this->fail('Two body matches although they should differ'."\n [".$source."]\n[".$final."]\n");
         }
         $id_1 = $message1->getId();
         $id_2 = $message2->getId();
-        $this->assertNotIdentical($id_1, $id_2, 'Message Ids are the same');
+        $this->assertNotEquals($id_1, $id_2, 'Message Ids are the same');
     }
 
     // -- Private helpers
     protected function _recursiveObjectCloningCheck($obj1, $obj2, $obj1_clone)
     {
-        $obj1_properties = (array)$obj1;
-        $obj2_properties = (array)$obj2;
-        $obj1_clone_properties = (array)$obj1_clone;
+        $obj1_properties = (array) $obj1;
+        $obj2_properties = (array) $obj2;
+        $obj1_clone_properties = (array) $obj1_clone;
 
         foreach ($obj1_properties as $property => $value) {
 
@@ -67,8 +60,7 @@ class Swift_MessageTest extends Swift_Mime_SimpleMessageTest
                         $obj1_value === $obj1_clone_value,
                         "Property `$property` cloning error: source and cloned objects property is referencing same object"
                     );
-                }
-                else {
+                } else {
                     // two separetely instanciated objects have same reference
                     $this->assertFalse(
                         // but object's clone doesn't - overdone making copies
