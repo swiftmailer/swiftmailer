@@ -75,7 +75,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin->sendPerformed($evt);
 
-        $this->assertEquals($message->getTo(), []);
+        $this->assertEquals($message->getTo(), array());
         $this->assertEquals($message->getCc(), $cc);
         $this->assertEquals($message->getBcc(), $bcc);
     }
