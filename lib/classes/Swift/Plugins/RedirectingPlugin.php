@@ -112,8 +112,9 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
         // Add each hard coded recipient
         $to = $message->getTo();
-        if ($to === null)
-            $to = [];
+        if (null === $to) {
+            $to = array();
+        }
 
         foreach ( (array) $this->_recipient as $recipient) {
             if (!array_key_exists($recipient, $to)) {
@@ -194,8 +195,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
         if ($headers->has('X-Swift-To')) {
             $message->setTo($headers->get('X-Swift-To')->getNameAddresses());
             $headers->removeAll('X-Swift-To');
-        }
-        else {
+        } else {
             $message->setTo(null);
         }
 
