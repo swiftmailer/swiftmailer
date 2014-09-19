@@ -47,6 +47,39 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($message->getBcc(), $bcc);
     }
 
+    public function testPluginRespectsUnsetToList()
+    {
+        $message = Swift_Message::newInstance()
+            ->setSubject('...')
+            ->setFrom(array('john@example.com' => 'John Doe'))
+            ->setCc($cc = array(
+                'fabien-cc@example.com' => 'Fabien (Cc)',
+                'chris-cc@example.com' => 'Chris (Cc)',
+            ))
+            ->setBcc($bcc = array(
+                'fabien-bcc@example.com' => 'Fabien (Bcc)',
+                'chris-bcc@example.com' => 'Chris (Bcc)',
+            ))
+            ->setBody('...')
+        ;
+
+        $plugin = new Swift_Plugins_RedirectingPlugin('god@example.com');
+
+        $evt = $this->_createSendEvent($message);
+
+        $plugin->beforeSendPerformed($evt);
+
+        $this->assertEquals($message->getTo(), array('god@example.com' => ''));
+        $this->assertEquals($message->getCc(), array());
+        $this->assertEquals($message->getBcc(), array());
+
+        $plugin->sendPerformed($evt);
+
+        $this->assertEquals($message->getTo(), array());
+        $this->assertEquals($message->getCc(), $cc);
+        $this->assertEquals($message->getBcc(), $bcc);
+    }
+
     public function testPluginRespectsAWhitelistOfPatterns()
     {
         $message = Swift_Message::newInstance()
