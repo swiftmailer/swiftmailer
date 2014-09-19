@@ -4,6 +4,7 @@ Changelog
 5.2.2 (2014-XX-XX)
 ------------------
 
+ * fixed PHP warning in the redirect plugin
  * changed the way to and cc-ed email are sent to only use one transaction
 
 5.2.1 (2014-06-13)
