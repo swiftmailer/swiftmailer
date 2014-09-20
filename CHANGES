@@ -4,6 +4,7 @@ Changelog
 5.2.2 (2014-XX-XX)
 ------------------
 
+ * fixed Japanese support
  * fixed the memory spool when the message changes when in the pool
  * added support for cloning messages
  * fixed PHP warning in the redirect plugin
