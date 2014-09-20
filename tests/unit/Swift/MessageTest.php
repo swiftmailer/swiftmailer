@@ -86,12 +86,14 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
                 $obj1_value = $obj1_properties[$property];
                 $obj2_value = $obj2_properties[$property];
                 $obj1_clone_value = $obj1_clone_properties[$property];
+
                 return $this->_recursiveArrayCloningCheck($obj1_value, $obj2_value, $obj1_clone_value);
             }
         }
     }
 
-    protected function _recursiveArrayCloningCheck($array1, $array2, $array1_clone) {
+    protected function _recursiveArrayCloningCheck($array1, $array2, $array1_clone)
+    {
         foreach ($array1 as $key => $value) {
             if (is_object($value)) {
                 $arr1_value = $array1[$key];
@@ -118,6 +120,7 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
                 $arr1_value = $array1[$key];
                 $arr2_value = $array2[$key];
                 $arr1_clone_value = $array1_clone[$key];
+
                 return $this->_recursiveArrayCloningCheck($obj1_value, $obj2_value, $obj1_clone_value);
             }
         }
