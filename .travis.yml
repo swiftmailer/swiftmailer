@@ -10,9 +10,11 @@ php:
 before_install:
     - cp tests/acceptance.conf.php.default tests/acceptance.conf.php
     - cp tests/smoke.conf.php.default tests/smoke.conf.php
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then sudo apt-get install libopendkim-dev && cd /tmp/ && git clone https://github.com/xdecock/php-opendkim && cd /tmp/php-opendkim && phpize && ./configure && make && make install; fi;'
+    - sh  -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then echo "extension = opendkim.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
+    - gem install mailcatcher
 
 install:
-    - gem install mailcatcher
     - COMPOSER_ROOT_VERSION=dev-master composer --prefer-source install
 
 before_script:
