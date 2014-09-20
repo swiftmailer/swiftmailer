@@ -269,6 +269,10 @@ class Swift_Message extends Swift_Mime_SimpleMessage
         $this->savedMessage = array();
     }
 
+    /**
+     * Clone Message Signers
+     * @see Swift_Mime_SimpleMimeEntity::__clone()
+     */
     public function __clone()
     {
         parent::__clone();
