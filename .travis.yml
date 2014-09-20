@@ -7,12 +7,15 @@ php:
   - 5.6
   - hhvm-nightly
 
-before_script:
+before_install:
     - cp tests/acceptance.conf.php.default tests/acceptance.conf.php
     - cp tests/smoke.conf.php.default tests/smoke.conf.php
-    - composer self-update
-    - composer update --no-interaction --prefer-source
+
+install:
     - gem install mailcatcher
+    - COMPOSER_ROOT_VERSION=dev-master composer --prefer-source install
+
+before_script:
     - mailcatcher --smtp-port 4456
 
 script:
