@@ -49,7 +49,8 @@ class Swift_Transport_EsmtpTransportTest
     }
 
     public function testStartSendsHeloToInitiate()
-    {//Overridden for EHLO instead
+    {
+        //Overridden for EHLO instead
     }
 
     public function testStartSendsEhloToInitiate()
@@ -104,7 +105,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf->shouldReceive('readLine')
             ->once()
             ->with(1)
-            ->andReturn('250 ServerName' . "\r\n");
+            ->andReturn('250 ServerName'."\r\n");
 
         $this->_finishBuffer($buf);
         try {
@@ -116,7 +117,7 @@ class Swift_Transport_EsmtpTransportTest
 
     public function testHeloIsUsedAsFallback()
     {
-          /* -- RFC 2821, 4.1.4.
+        /* -- RFC 2821, 4.1.4.
 
        If the EHLO command is not acceptable to the SMTP server, 501, 500,
        or 502 failure replies MUST be returned as appropriate.  The SMTP
@@ -140,7 +141,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf->shouldReceive('readLine')
             ->once()
             ->with(1)
-            ->andReturn('501 WTF' . "\r\n");
+            ->andReturn('501 WTF'."\r\n");
         $buf->shouldReceive('write')
             ->once()
             ->with('~^HELO .+?\r\n$~D')
@@ -148,7 +149,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf->shouldReceive('readLine')
             ->once()
             ->with(2)
-            ->andReturn('250 HELO' . "\r\n");
+            ->andReturn('250 HELO'."\r\n");
 
         $this->_finishBuffer($buf);
         try {
@@ -161,7 +162,8 @@ class Swift_Transport_EsmtpTransportTest
     }
 
     public function testInvalidHeloResponseCausesException()
-    {//Overridden to first try EHLO
+    {
+        //Overridden to first try EHLO
         $buf = $this->_getBuffer();
         $smtp = $this->_getTransport($buf);
 
@@ -178,7 +180,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf->shouldReceive('readLine')
             ->once()
             ->with(1)
-            ->andReturn('501 WTF' . "\r\n");
+            ->andReturn('501 WTF'."\r\n");
         $buf->shouldReceive('write')
             ->once()
             ->with('~^HELO .+?\r\n$~D')
@@ -186,7 +188,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf->shouldReceive('readLine')
             ->once()
             ->with(2)
-            ->andReturn('504 WTF' . "\r\n");
+            ->andReturn('504 WTF'."\r\n");
         $this->_finishBuffer($buf);
 
         try {
@@ -226,7 +228,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf->shouldReceive('readLine')
             ->once()
             ->with(1)
-            ->andReturn('250 ServerName' . "\r\n");
+            ->andReturn('250 ServerName'."\r\n");
 
         $this->_finishBuffer($buf);
         $smtp->setLocalDomain('mydomain.com');
@@ -234,7 +236,8 @@ class Swift_Transport_EsmtpTransportTest
     }
 
     public function testDomainNameIsPlacedInHelo()
-    { //Overridden to include ESMTP
+    {
+        //Overridden to include ESMTP
         /* -- RFC 2821, 4.1.4.
 
        The SMTP client MUST, if possible, ensure that the domain parameter
@@ -261,7 +264,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf->shouldReceive('readLine')
             ->once()
             ->with(1)
-            ->andReturn('501 WTF' . "\r\n");
+            ->andReturn('501 WTF'."\r\n");
         $buf->shouldReceive('write')
             ->once()
             ->with("HELO mydomain.com\r\n")
@@ -269,7 +272,7 @@ class Swift_Transport_EsmtpTransportTest
         $buf->shouldReceive('readLine')
             ->once()
             ->with(2)
-            ->andReturn('250 ServerName' . "\r\n");
+            ->andReturn('250 ServerName'."\r\n");
 
         $this->_finishBuffer($buf);
         $smtp->setLocalDomain('mydomain.com');

@@ -7,11 +7,11 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $factory = $this->_createFactory();
         $factory->expects($this->once())
                 ->method('createMailboxHeader')
-                ->with('From', array('person@domain'=>'Person'))
+                ->with('From', array('person@domain' => 'Person'))
                 ->will($this->returnValue($this->_createHeader('From')));
 
         $set = $this->_createSet($factory);
-        $set->addMailboxHeader('From', array('person@domain'=>'Person'));
+        $set->addMailboxHeader('From', array('person@domain' => 'Person'));
     }
 
     public function testAddDateHeaderDelegatesToFactory()
@@ -43,12 +43,12 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $factory = $this->_createFactory();
         $factory->expects($this->once())
                 ->method('createParameterizedHeader')
-                ->with('Content-Type', 'text/plain', array('charset'=>'utf-8'))
+                ->with('Content-Type', 'text/plain', array('charset' => 'utf-8'))
                 ->will($this->returnValue($this->_createHeader('Content-Type')));
 
         $set = $this->_createSet($factory);
         $set->addParameterizedHeader('Content-Type', 'text/plain',
-            array('charset'=>'utf-8')
+            array('charset' => 'utf-8')
             );
     }
 
@@ -87,11 +87,11 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $factory = $this->_createFactory();
         $factory->expects($this->once())
                 ->method('createMailboxHeader')
-                ->with('From', array('person@domain'=>'Person'))
+                ->with('From', array('person@domain' => 'Person'))
                 ->will($this->returnValue($this->_createHeader('From')));
 
         $set = $this->_createSet($factory);
-        $set->addMailboxHeader('From', array('person@domain'=>'Person'));
+        $set->addMailboxHeader('From', array('person@domain' => 'Person'));
         $this->assertTrue($set->has('From'));
     }
 
@@ -126,12 +126,12 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $factory = $this->_createFactory();
         $factory->expects($this->once())
                 ->method('createParameterizedHeader')
-                ->with('Content-Type', 'text/plain', array('charset'=>'utf-8'))
+                ->with('Content-Type', 'text/plain', array('charset' => 'utf-8'))
                 ->will($this->returnValue($this->_createHeader('Content-Type')));
 
         $set = $this->_createSet($factory);
         $set->addParameterizedHeader('Content-Type', 'text/plain',
-            array('charset'=>'utf-8')
+            array('charset' => 'utf-8')
             );
         $this->assertTrue($set->has('Content-Type'));
     }
@@ -514,7 +514,7 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $set->addTextHeader('Foo', 'bar');
         $set->addTextHeader('Zip', 'buttons');
         $this->assertEquals(
-            "Foo: bar\r\n" .
+            "Foo: bar\r\n".
             "Zip: buttons\r\n",
             $set->toString()
             );
@@ -558,7 +558,7 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $set->addTextHeader('Zip', '');
         $set->setAlwaysDisplayed(array('Foo', 'Zip'));
         $this->assertEquals(
-            "Foo: \r\n" .
+            "Foo: \r\n".
             "Zip: \r\n",
             $set->toString()
             );
@@ -588,8 +588,8 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $set->defineOrdering(array('First', 'Second', 'Third'));
 
         $this->assertEquals(
-            "First: one\r\n" .
-            "Second: two\r\n" .
+            "First: one\r\n".
+            "Second: two\r\n".
             "Third: three\r\n",
             $set->toString()
             );
@@ -629,10 +629,10 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $set->defineOrdering(array('First', 'Second', 'Third'));
 
         $this->assertEquals(
-            "First: one\r\n" .
-            "Second: two\r\n" .
-            "Third: three\r\n" .
-            "Fourth: four\r\n" .
+            "First: one\r\n".
+            "Second: two\r\n".
+            "Third: three\r\n".
+            "Fourth: four\r\n".
             "Fifth: five\r\n",
             $set->toString()
             );

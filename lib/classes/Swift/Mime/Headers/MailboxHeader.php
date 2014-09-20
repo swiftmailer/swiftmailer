@@ -252,7 +252,8 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         $actualMailboxes = array();
 
         foreach ($mailboxes as $key => $value) {
-            if (is_string($key)) { //key is email addr
+            if (is_string($key)) {
+                //key is email addr
                 $address = $key;
                 $name = $value;
             } else {
@@ -325,7 +326,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
             $mailboxStr = $email;
             if (!is_null($name)) {
                 $nameStr = $this->createDisplayNameString($name, empty($strings));
-                $mailboxStr = $nameStr . ' <' . $mailboxStr . '>';
+                $mailboxStr = $nameStr.' <'.$mailboxStr.'>';
             }
             $strings[] = $mailboxStr;
         }
@@ -342,11 +343,10 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      */
     private function _assertValidAddress($address)
     {
-        if (!preg_match('/^' . $this->getGrammar()->getDefinition('addr-spec') . '$/D',
-            $address))
-        {
+        if (!preg_match('/^'.$this->getGrammar()->getDefinition('addr-spec').'$/D',
+            $address)) {
             throw new Swift_RfcComplianceException(
-                'Address in mailbox given [' . $address .
+                'Address in mailbox given ['.$address.
                 '] does not comply with RFC 2822, 3.6.2.'
                 );
         }

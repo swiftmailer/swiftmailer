@@ -43,7 +43,7 @@ class Swift_Transport_SendmailTransportTest
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'));
+                ->andReturn(array('foo@bar' => 'Foobar', 'zip@button' => 'Zippy'));
         $message->shouldReceive('toByteStream')
                 ->once()
                 ->with($buf);
@@ -53,7 +53,7 @@ class Swift_Transport_SendmailTransportTest
             ->once();
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array("\r\n"=>"\n", "\n." => "\n.."));
+            ->with(array("\r\n" => "\n", "\n." => "\n.."));
         $buf->shouldReceive('setWriteTranslations')
             ->once()
             ->with(array());
@@ -70,7 +70,7 @@ class Swift_Transport_SendmailTransportTest
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'));
+                ->andReturn(array('foo@bar' => 'Foobar', 'zip@button' => 'Zippy'));
         $message->shouldReceive('toByteStream')
                 ->once()
                 ->with($buf);
@@ -80,7 +80,7 @@ class Swift_Transport_SendmailTransportTest
             ->once();
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array("\r\n"=>"\n"));
+            ->with(array("\r\n" => "\n"));
         $buf->shouldReceive('setWriteTranslations')
             ->once()
             ->with(array());
@@ -97,7 +97,7 @@ class Swift_Transport_SendmailTransportTest
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'));
+                ->andReturn(array('foo@bar' => 'Foobar', 'zip@button' => 'Zippy'));
         $message->shouldReceive('toByteStream')
                 ->once()
                 ->with($buf);
@@ -107,7 +107,7 @@ class Swift_Transport_SendmailTransportTest
             ->once();
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array("\r\n"=>"\n"));
+            ->with(array("\r\n" => "\n"));
         $buf->shouldReceive('setWriteTranslations')
             ->once()
             ->with(array());
@@ -124,7 +124,7 @@ class Swift_Transport_SendmailTransportTest
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar'=>'Foobar', 'zip@button'=>'Zippy'));
+                ->andReturn(array('foo@bar' => 'Foobar', 'zip@button' => 'Zippy'));
         $message->shouldReceive('generateId');
         $buf->shouldReceive('initialize')
             ->once();
@@ -132,7 +132,7 @@ class Swift_Transport_SendmailTransportTest
             ->once();
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array("\r\n"=>"\n", "\n." => "\n.."));
+            ->with(array("\r\n" => "\n", "\n." => "\n.."));
         $buf->shouldReceive('setWriteTranslations')
             ->once()
             ->with(array());

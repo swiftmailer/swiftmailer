@@ -179,7 +179,6 @@ class Swift_Message extends Swift_Mime_SimpleMessage
         parent::toByteStream($is);
 
         $this->restoreMessage();
-
     }
 
     public function __wakeup()
@@ -218,7 +217,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      */
     protected function saveMessage()
     {
-        $this->savedMessage = array('headers'=> array());
+        $this->savedMessage = array('headers' => array());
         $this->savedMessage['body'] = $this->getBody();
         $this->savedMessage['children'] = $this->getChildren();
         if (count($this->savedMessage['children']) > 0 && $this->getBody() != '') {

@@ -9,13 +9,13 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
     {
         if (!defined('SWIFT_TMP_DIR')) {
             $this->markTestSkipped(
-                'Cannot run test without a writable directory to use (' .
+                'Cannot run test without a writable directory to use ('.
                 'define SWIFT_TMP_DIR in tests/config.php if you wish to run this test)'
              );
         }
 
         $this->_tmpDir = SWIFT_TMP_DIR;
-        $this->_testFile = $this->_tmpDir . '/swift-test-file' . __CLASS__;
+        $this->_testFile = $this->_tmpDir.'/swift-test-file'.__CLASS__;
         file_put_contents($this->_testFile, 'abcdefghijklm');
     }
 

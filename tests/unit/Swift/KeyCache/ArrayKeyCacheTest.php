@@ -149,7 +149,7 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
         $os->expects($this->at(0))
            ->method('read')
            ->will($this->returnValue('abc'));
-           $os->expects($this->at(1))
+        $os->expects($this->at(1))
            ->method('read')
            ->will($this->returnValue('def'));
         $os->expects($this->at(2))

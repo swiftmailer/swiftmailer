@@ -146,10 +146,10 @@ class Swift_Transport_MailTransport implements Swift_Transport
 
         // Separate headers from body
         if (false !== $endHeaders = strpos($messageStr, "\r\n\r\n")) {
-            $headers = substr($messageStr, 0, $endHeaders) . "\r\n"; //Keep last EOL
+            $headers = substr($messageStr, 0, $endHeaders)."\r\n"; //Keep last EOL
             $body = substr($messageStr, $endHeaders + 4);
         } else {
-            $headers = $messageStr . "\r\n";
+            $headers = $messageStr."\r\n";
             $body = '';
         }
 
@@ -166,8 +166,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
         }
 
         if ($this->_invoker->mail($to, $subject, $body, $headers,
-            sprintf($this->_extraParams, $reversePath)))
-        {
+            sprintf($this->_extraParams, $reversePath))) {
             if ($evt) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
                 $evt->setFailedRecipients($failedRecipients);

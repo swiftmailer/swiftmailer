@@ -7,7 +7,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderAcceptanceTest extends \PHPU
 
     public function setUp()
     {
-        $this->_samplesDir = realpath(__DIR__ . '/../../../../_samples/charsets');
+        $this->_samplesDir = realpath(__DIR__.'/../../../../_samples/charsets');
         $this->_encoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
     }
 
@@ -19,17 +19,16 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderAcceptanceTest extends \PHPU
                 continue;
             }
 
-            $sampleDir = $this->_samplesDir . '/' . $encodingDir;
+            $sampleDir = $this->_samplesDir.'/'.$encodingDir;
 
             if (is_dir($sampleDir)) {
-
                 $fileFp = opendir($sampleDir);
                 while (false !== $sampleFile = readdir($fileFp)) {
                     if (substr($sampleFile, 0, 1) == '.') {
                         continue;
                     }
 
-                    $text = file_get_contents($sampleDir . '/' . $sampleFile);
+                    $text = file_get_contents($sampleDir.'/'.$sampleFile);
 
                     $os = new Swift_ByteStream_ArrayByteStream();
                     $os->write($text);
@@ -45,13 +44,12 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderAcceptanceTest extends \PHPU
 
                     $this->assertEquals(
                         base64_decode($encoded), $text,
-                        '%s: Encoded string should decode back to original string for sample ' .
-                        $sampleDir . '/' . $sampleFile
+                        '%s: Encoded string should decode back to original string for sample '.
+                        $sampleDir.'/'.$sampleFile
                         );
                 }
                 closedir($fileFp);
             }
-
         }
         closedir($sampleFp);
     }

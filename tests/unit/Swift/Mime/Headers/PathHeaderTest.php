@@ -65,7 +65,7 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit_Framework_TestCase
     {
         $header = $this->_getHeader('Return-Path');
         $header->setAddress('chris@swiftmailer.org');
-        $this->assertEquals('Return-Path: <chris@swiftmailer.org>' . "\r\n",
+        $this->assertEquals('Return-Path: <chris@swiftmailer.org>'."\r\n",
             $header->toString()
             );
     }

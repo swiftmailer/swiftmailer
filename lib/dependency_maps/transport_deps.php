@@ -6,14 +6,14 @@ Swift_DependencyContainer::getInstance()
     ->withDependencies(array(
         'transport.buffer',
         array('transport.authhandler'),
-        'transport.eventdispatcher'
+        'transport.eventdispatcher',
     ))
 
     ->register('transport.sendmail')
     ->asNewInstanceOf('Swift_Transport_SendmailTransport')
     ->withDependencies(array(
         'transport.buffer',
-        'transport.eventdispatcher'
+        'transport.eventdispatcher',
     ))
 
     ->register('transport.mail')
@@ -50,7 +50,7 @@ Swift_DependencyContainer::getInstance()
             'transport.plainauth',
             'transport.ntlmauth',
             'transport.xoauth2auth',
-        )
+        ),
     ))
 
     ->register('transport.crammd5auth')

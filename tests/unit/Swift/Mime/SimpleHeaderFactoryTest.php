@@ -24,9 +24,9 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
     public function testMailboxHeaderHasCorrectModel()
     {
         $header = $this->_factory->createMailboxHeader('X-Foo',
-            array('foo@bar'=>'FooBar')
+            array('foo@bar' => 'FooBar')
             );
-        $this->assertEquals(array('foo@bar'=>'FooBar'), $header->getFieldBodyModel());
+        $this->assertEquals(array('foo@bar' => 'FooBar'), $header->getFieldBodyModel());
     }
 
     public function testDateHeaderHasCorrectType()
@@ -88,7 +88,7 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
         $header = $this->_factory->createParameterizedHeader('X-Foo', 'bar',
             array('zip' => 'button')
             );
-        $this->assertEquals(array('zip'=>'button'), $header->getParameters());
+        $this->assertEquals(array('zip' => 'button'), $header->getParameters());
     }
 
     public function testIdHeaderHasCorrectType()

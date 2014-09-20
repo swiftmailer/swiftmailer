@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/AbstractSmtpTest.php';
+require_once __DIR__.'/AbstractSmtpTest.php';
 
 abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transport_AbstractSmtpTest
 {
@@ -27,10 +27,10 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('chris@swiftmailer.org'=>null));
+                ->andReturn(array('chris@swiftmailer.org' => null));
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('mark@swiftmailer.org'=>'Mark'));
+                ->andReturn(array('mark@swiftmailer.org' => 'Mark'));
         $dispatcher->shouldReceive('createSendEvent')
                    ->once()
                    ->andReturn($evt);
@@ -58,10 +58,10 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('chris@swiftmailer.org'=>null));
+                ->andReturn(array('chris@swiftmailer.org' => null));
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('mark@swiftmailer.org'=>'Mark'));
+                ->andReturn(array('mark@swiftmailer.org' => 'Mark'));
         $dispatcher->shouldReceive('createSendEvent')
                    ->once()
                    ->andReturn($evt);
@@ -89,10 +89,10 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('chris@swiftmailer.org'=>null));
+                ->andReturn(array('chris@swiftmailer.org' => null));
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('mark@swiftmailer.org'=>'Mark'));
+                ->andReturn(array('mark@swiftmailer.org' => 'Mark'));
         $buf->shouldReceive('write')
             ->once()
             ->with("MAIL FROM: <chris@swiftmailer.org>\r\n")
@@ -140,10 +140,10 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('chris@swiftmailer.org'=>null));
+                ->andReturn(array('chris@swiftmailer.org' => null));
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('mark@swiftmailer.org'=>'Mark'));
+                ->andReturn(array('mark@swiftmailer.org' => 'Mark'));
         $buf->shouldReceive('write')
             ->once()
             ->with("MAIL FROM: <chris@swiftmailer.org>\r\n")
@@ -191,12 +191,12 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('chris@swiftmailer.org'=>null));
+                ->andReturn(array('chris@swiftmailer.org' => null));
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(array(
-                    'mark@swiftmailer.org'=>'Mark',
-                    'chris@site.tld'=>'Chris'
+                    'mark@swiftmailer.org' => 'Mark',
+                    'chris@site.tld' => 'Chris',
                 ));
         $buf->shouldReceive('write')
             ->once()
@@ -245,12 +245,12 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('chris@swiftmailer.org'=>null));
+                ->andReturn(array('chris@swiftmailer.org' => null));
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(array(
-                    'mark@swiftmailer.org'=>'Mark',
-                    'chris@site.tld'=>'Chris'
+                    'mark@swiftmailer.org' => 'Mark',
+                    'chris@site.tld' => 'Chris',
                 ));
         $dispatcher->shouldReceive('createSendEvent')
                    ->zeroOrMoreTimes()
@@ -283,10 +283,10 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('chris@swiftmailer.org'=>null));
+                ->andReturn(array('chris@swiftmailer.org' => null));
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('mark@swiftmailer.org'=>'Mark'));
+                ->andReturn(array('mark@swiftmailer.org' => 'Mark'));
         $dispatcher->shouldReceive('createSendEvent')
                    ->zeroOrMoreTimes()
                    ->with($smtp, \Mockery::any())
@@ -445,7 +445,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
                    });
         $dispatcher->shouldReceive('dispatchEvent')
                    ->zeroOrMoreTimes();
-         $evt->shouldReceive('bubbleCancelled')
+        $evt->shouldReceive('bubbleCancelled')
             ->zeroOrMoreTimes()
             ->andReturnUsing(function () use (&$hasRun) {
                 return $hasRun;

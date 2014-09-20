@@ -95,7 +95,7 @@ function generateUpToDateMimeArray()
             'wmv'  => 'audio/x-ms-wmv',
             'xls'  => 'application/excel',
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'xml'  => 'application/xml'
+            'xml'  => 'application/xml',
         );
 
         // wrap array for generating file

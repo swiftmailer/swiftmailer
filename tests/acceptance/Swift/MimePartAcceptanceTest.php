@@ -1,7 +1,7 @@
 <?php
 
 require_once 'swift_required.php';
-require_once __DIR__ . '/Mime/MimePartAcceptanceTest.php';
+require_once __DIR__.'/Mime/MimePartAcceptanceTest.php';
 
 class Swift_MimePartAcceptanceTest extends Swift_Mime_MimePartAcceptanceTest
 {

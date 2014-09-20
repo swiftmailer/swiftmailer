@@ -51,7 +51,7 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
         $plugin = $this->_createPlugin(
             array(
                 'foo@bar.tld' => array('{name}' => 'Foo', '{id}' => '123'),
-                'zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456')
+                'zip@button.tld' => array('{name}' => 'Zip', '{id}' => '456'),
                 )
             );
 
@@ -67,7 +67,7 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
     {
         $headers = $this->_createHeaders(array(
             $returnPathHeader = $this->_createHeader('Return-Path', 'foo-{id}@swiftmailer.org'),
-            $toHeader = $this->_createHeader('Subject', 'A message for {name}!')
+            $toHeader = $this->_createHeader('Subject', 'A message for {name}!'),
         ));
 
         $message = $this->_createMessage(
@@ -161,11 +161,11 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
         $replacements->shouldReceive('getReplacementsFor')
                      ->once()
                      ->with('foo@bar')
-                     ->andReturn(array('{a}'=>'b'));
+                     ->andReturn(array('{a}' => 'b'));
         $replacements->shouldReceive('getReplacementsFor')
                      ->once()
                      ->with('zip@zap')
-                     ->andReturn(array('{a}'=>'c'));
+                     ->andReturn(array('{a}' => 'c'));
 
         $plugin = $this->_createPlugin($replacements);
 

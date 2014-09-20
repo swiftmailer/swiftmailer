@@ -47,7 +47,7 @@ class Swift_Transport_Esmtp_Auth_XOAuth2Authenticator implements Swift_Transport
     {
         try {
             $param = $this->constructXOAuth2Params($email, $token);
-            $agent->executeCommand("AUTH XOAUTH2 " . $param . "\r\n", array(235));
+            $agent->executeCommand("AUTH XOAUTH2 ".$param."\r\n", array(235));
 
             return true;
         } catch (Swift_TransportException $e) {

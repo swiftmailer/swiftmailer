@@ -32,9 +32,9 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
 
         $this->_agent->shouldReceive('executeCommand')
              ->once()
-             ->with('AUTH PLAIN ' . base64_encode(
-                        'jack' . chr(0) . 'jack' . chr(0) . 'pass'
-                    ) . "\r\n", array(235));
+             ->with('AUTH PLAIN '.base64_encode(
+                        'jack'.chr(0).'jack'.chr(0).'pass'
+                    )."\r\n", array(235));
 
         $this->assertTrue($plain->authenticate($this->_agent, 'jack', 'pass'),
             '%s: The buffer accepted all commands authentication should succeed'
@@ -47,9 +47,9 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
 
         $this->_agent->shouldReceive('executeCommand')
              ->once()
-             ->with('AUTH PLAIN ' . base64_encode(
-                        'jack' . chr(0) . 'jack' . chr(0) . 'pass'
-                    ) . "\r\n", array(235))
+             ->with('AUTH PLAIN '.base64_encode(
+                        'jack'.chr(0).'jack'.chr(0).'pass'
+                    )."\r\n", array(235))
              ->andThrow(new Swift_TransportException(""));
         $this->_agent->shouldReceive('executeCommand')
              ->once()

@@ -102,8 +102,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
         $sent = 0;
 
         for ($i = 0; $i < $maxTransports
-            && $transport = $this->_getNextTransport(); ++$i)
-        {
+            && $transport = $this->_getNextTransport(); ++$i) {
             try {
                 if (!$transport->isStarted()) {
                     $transport->start();

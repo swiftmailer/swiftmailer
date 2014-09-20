@@ -24,10 +24,10 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTest
              ->with("AUTH LOGIN\r\n", array(334));
         $this->_agent->shouldReceive('executeCommand')
              ->once()
-             ->with(base64_encode('jack') . "\r\n", array(334));
+             ->with(base64_encode('jack')."\r\n", array(334));
         $this->_agent->shouldReceive('executeCommand')
              ->once()
-             ->with(base64_encode('pass') . "\r\n", array(235));
+             ->with(base64_encode('pass')."\r\n", array(235));
 
         $this->assertTrue($login->authenticate($this->_agent, 'jack', 'pass'),
             '%s: The buffer accepted all commands authentication should succeed'
@@ -43,10 +43,10 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTest
              ->with("AUTH LOGIN\r\n", array(334));
         $this->_agent->shouldReceive('executeCommand')
              ->once()
-             ->with(base64_encode('jack') . "\r\n", array(334));
+             ->with(base64_encode('jack')."\r\n", array(334));
         $this->_agent->shouldReceive('executeCommand')
              ->once()
-             ->with(base64_encode('pass') . "\r\n", array(235))
+             ->with(base64_encode('pass')."\r\n", array(235))
              ->andThrow(new Swift_TransportException(""));
         $this->_agent->shouldReceive('executeCommand')
              ->once()

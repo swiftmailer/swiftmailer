@@ -101,7 +101,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
         $this->_dispatcher->dispatchEvent($evt, 'sendPerformed');
     }
 
-     public function testListenersCanCancelBubblingOfEvent()
+    public function testListenersCanCancelBubblingOfEvent()
     {
         $transport = $this->getMock('Swift_Transport');
         $message = $this->getMock('Swift_Mime_Message');

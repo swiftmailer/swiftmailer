@@ -33,10 +33,10 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
         $file->setContentType('application/pdf');
         $file->setId('foo@bar');
         $this->assertEquals(
-            'Content-Type: application/pdf' . "\r\n" .
-            'Content-Transfer-Encoding: base64' . "\r\n" .
-            'Content-Disposition: inline' . "\r\n" .
-            'Content-ID: <foo@bar>' . "\r\n",
+            'Content-Type: application/pdf'."\r\n".
+            'Content-Transfer-Encoding: base64'."\r\n".
+            'Content-Disposition: inline'."\r\n".
+            'Content-ID: <foo@bar>'."\r\n",
             $file->toString()
             );
     }
@@ -48,10 +48,10 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
         $file->setContentType('application/pdf');
         $file->setDisposition('attachment');
         $this->assertEquals(
-            'Content-Type: application/pdf' . "\r\n" .
-            'Content-Transfer-Encoding: base64' . "\r\n" .
-            'Content-Disposition: attachment' . "\r\n" .
-            'Content-ID: <'. $id . '>' . "\r\n",
+            'Content-Type: application/pdf'."\r\n".
+            'Content-Transfer-Encoding: base64'."\r\n".
+            'Content-Disposition: attachment'."\r\n".
+            'Content-ID: <'.$id.'>'."\r\n",
             $file->toString()
             );
     }
@@ -63,10 +63,10 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
         $file->setContentType('application/pdf');
         $file->setFilename('foo.pdf');
         $this->assertEquals(
-            'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
-            'Content-Transfer-Encoding: base64' . "\r\n" .
-            'Content-Disposition: inline; filename=foo.pdf' . "\r\n" .
-            'Content-ID: <'. $id . '>' . "\r\n",
+            'Content-Type: application/pdf; name=foo.pdf'."\r\n".
+            'Content-Transfer-Encoding: base64'."\r\n".
+            'Content-Disposition: inline; filename=foo.pdf'."\r\n".
+            'Content-ID: <'.$id.'>'."\r\n",
             $file->toString()
             );
     }
@@ -78,10 +78,10 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
         $file->setContentType('application/pdf');
         $file->setSize(12340);
         $this->assertEquals(
-            'Content-Type: application/pdf' . "\r\n" .
-            'Content-Transfer-Encoding: base64' . "\r\n" .
-            'Content-Disposition: inline; size=12340' . "\r\n" .
-            'Content-ID: <'. $id . '>' . "\r\n",
+            'Content-Type: application/pdf'."\r\n".
+            'Content-Transfer-Encoding: base64'."\r\n".
+            'Content-Disposition: inline; size=12340'."\r\n".
+            'Content-ID: <'.$id.'>'."\r\n",
             $file->toString()
             );
     }
@@ -94,10 +94,10 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
         $file->setFilename('foo.pdf');
         $file->setSize(12340);
         $this->assertEquals(
-            'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
-            'Content-Transfer-Encoding: base64' . "\r\n" .
-            'Content-Disposition: inline; filename=foo.pdf; size=12340' . "\r\n" .
-            'Content-ID: <'. $id . '>' . "\r\n",
+            'Content-Type: application/pdf; name=foo.pdf'."\r\n".
+            'Content-Transfer-Encoding: base64'."\r\n".
+            'Content-Disposition: inline; filename=foo.pdf; size=12340'."\r\n".
+            'Content-ID: <'.$id.'>'."\r\n",
             $file->toString()
             );
     }
@@ -111,11 +111,11 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
         $file->setSize(12340);
         $file->setBody('abcd');
         $this->assertEquals(
-            'Content-Type: application/pdf; name=foo.pdf' . "\r\n" .
-            'Content-Transfer-Encoding: base64' . "\r\n" .
-            'Content-Disposition: inline; filename=foo.pdf; size=12340' . "\r\n" .
-            'Content-ID: <'. $id . '>' . "\r\n" .
-            "\r\n" .
+            'Content-Type: application/pdf; name=foo.pdf'."\r\n".
+            'Content-Transfer-Encoding: base64'."\r\n".
+            'Content-Disposition: inline; filename=foo.pdf; size=12340'."\r\n".
+            'Content-ID: <'.$id.'>'."\r\n".
+            "\r\n".
             base64_encode('abcd'),
             $file->toString()
             );

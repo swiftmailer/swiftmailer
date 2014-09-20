@@ -9,7 +9,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PH
 
     public function setUp()
     {
-        $this->_samplesDir = realpath(__DIR__ . '/../../../../_samples/charsets');
+        $this->_samplesDir = realpath(__DIR__.'/../../../../_samples/charsets');
         $this->_encoder = new Swift_Mime_ContentEncoder_NativeQpContentEncoder();
     }
 
@@ -21,17 +21,16 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PH
                 continue;
             }
 
-            $sampleDir = $this->_samplesDir . '/' . $encodingDir;
+            $sampleDir = $this->_samplesDir.'/'.$encodingDir;
 
             if (is_dir($sampleDir)) {
-
                 $fileFp = opendir($sampleDir);
                 while (false !== $sampleFile = readdir($fileFp)) {
                     if (substr($sampleFile, 0, 1) == '.') {
                         continue;
                     }
 
-                    $text = file_get_contents($sampleDir . '/' . $sampleFile);
+                    $text = file_get_contents($sampleDir.'/'.$sampleFile);
 
                     $os = new Swift_ByteStream_ArrayByteStream();
                     $os->write($text);
@@ -55,7 +54,6 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PH
             }
         }
         closedir($sampleFp);
-
     }
 
     public function testEncodingAndDecodingSamplesFromDiConfiguredInstance()

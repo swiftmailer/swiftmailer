@@ -47,7 +47,6 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
         $obj1_clone_properties = (array) $obj1_clone;
 
         foreach ($obj1_properties as $property => $value) {
-
             if (is_object($value)) {
                 $obj1_value = $obj1_properties[$property];
                 $obj2_value = $obj2_properties[$property];
@@ -73,5 +72,4 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
             }
         }
     }
-
 }

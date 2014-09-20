@@ -41,7 +41,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         'timeout' => 30,
         'blocking' => 1,
         'tls' => false,
-        'type' => Swift_Transport_IoBuffer::TYPE_SOCKET
+        'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
         );
 
     /**
@@ -169,7 +169,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      */
     public function setSourceIp($source)
     {
-        $this->_params['sourceIp']=$source;
+        $this->_params['sourceIp'] = $source;
 
         return $this;
     }
@@ -251,8 +251,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         foreach ($this->_handlers as $handler) {
             if (in_array(strtolower($method),
                 array_map('strtolower', (array) $handler->exposeMixinMethods())
-                ))
-            {
+                )) {
                 $return = call_user_func_array(array($handler, $method), $args);
                 // Allow fluid method calls
                 if (is_null($return) && substr($method, 0, 3) == 'set') {
@@ -262,7 +261,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
                 }
             }
         }
-        trigger_error('Call to undefined method ' . $method, E_USER_ERROR);
+        trigger_error('Call to undefined method '.$method, E_USER_ERROR);
     }
 
     /** Get the params to initialize the buffer */
@@ -317,7 +316,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         foreach ($handlers as $handler) {
             $params = array_merge($params, (array) $handler->getMailParams());
         }
-        $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
+        $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
             sprintf("MAIL FROM: <%s>%s\r\n", $address, $paramStr), array(250)
             );
@@ -331,7 +330,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         foreach ($handlers as $handler) {
             $params = array_merge($params, (array) $handler->getRcptParams());
         }
-        $paramStr = !empty($params) ? ' ' . implode(' ', $params) : '';
+        $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
             sprintf("RCPT TO: <%s>%s\r\n", $address, $paramStr), array(250, 251, 252)
             );

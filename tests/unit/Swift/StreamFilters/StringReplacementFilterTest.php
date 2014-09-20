@@ -12,7 +12,7 @@ class Swift_StreamFilters_StringReplacementFilterTest extends \PHPUnit_Framework
     {
         $filter = $this->_createFilter('foo', 'bar');
         $this->assertTrue($filter->shouldBuffer('XfooYf'),
-            '%s: Filter should buffer since "foo" is the needle and the ending ' .
+            '%s: Filter should buffer since "foo" is the needle and the ending '.
             '"f" could be from "foo"'
             );
     }
@@ -41,7 +41,7 @@ class Swift_StreamFilters_StringReplacementFilterTest extends \PHPUnit_Framework
     {
         $filter = $this->_createFilter(array('foo', 'zip'), 'bar');
         $this->assertTrue($filter->shouldBuffer('XfooYzi'),
-            '%s: Filter should buffer since "zip" is a needle and the ending ' .
+            '%s: Filter should buffer since "zip" is a needle and the ending '.
             '"zi" could be from "zip"'
             );
     }

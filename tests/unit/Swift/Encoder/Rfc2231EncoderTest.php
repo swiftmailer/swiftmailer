@@ -72,8 +72,6 @@ class Swift_Encoder_Rfc2231EncoderTest extends \SwiftMailerTestCase
             $this->assertRegExp($this->_rfc2045Token, $line,
                 '%s: Encoder should always return a valid RFC 2045 token.');
         }
-
-
     }
 
     public function testMaximumLineLengthCanBeSet()
@@ -101,14 +99,12 @@ class Swift_Encoder_Rfc2231EncoderTest extends \SwiftMailerTestCase
         $encoded = $encoder->encodeString($string, 0, 75);
 
         $this->assertEquals(
-            str_repeat('a', 75) . "\r\n" .
-            str_repeat('a', 75) . "\r\n" .
+            str_repeat('a', 75)."\r\n".
+            str_repeat('a', 75)."\r\n".
             str_repeat('a', 50),
             $encoded,
             '%s: Lines should be wrapped at each 75 characters'
             );
-
-
     }
 
     public function testFirstLineCanHaveShorterLength()
@@ -135,12 +131,11 @@ class Swift_Encoder_Rfc2231EncoderTest extends \SwiftMailerTestCase
         $encoded = $encoder->encodeString($string, 25, 75);
 
         $this->assertEquals(
-            str_repeat('a', 50) . "\r\n" .
-            str_repeat('a', 75) . "\r\n" .
+            str_repeat('a', 50)."\r\n".
+            str_repeat('a', 75)."\r\n".
             str_repeat('a', 75),
             $encoded,
             '%s: First line should be 25 bytes shorter than the others.'
             );
-
     }
 }

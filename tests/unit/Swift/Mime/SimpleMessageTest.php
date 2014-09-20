@@ -3,7 +3,8 @@
 class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 {
     public function testNestingLevelIsSubpart()
-    { //Overridden
+    {
+        //Overridden
     }
 
     public function testNestingLevelIsTop()
@@ -201,28 +202,28 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         /* -- RFC 2822, 3.6.2.
      */
 
-        $sender = $this->_createHeader('Sender', array('sender@domain'=>'Name'));
+        $sender = $this->_createHeader('Sender', array('sender@domain' => 'Name'));
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Sender' => $sender)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $this->assertEquals(array('sender@domain'=>'Name'), $message->getSender());
+        $this->assertEquals(array('sender@domain' => 'Name'), $message->getSender());
     }
 
     public function testSenderIsSetInHeader()
     {
-        $sender = $this->_createHeader('Sender', array('sender@domain'=>'Name'),
+        $sender = $this->_createHeader('Sender', array('sender@domain' => 'Name'),
             array(), false
             );
         $sender->shouldReceive('setFieldBodyModel')
                ->once()
-               ->with(array('other@domain'=>'Other'));
+               ->with(array('other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Sender' => $sender)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $message->setSender(array('other@domain'=>'Other'));
+        $message->setSender(array('other@domain' => 'Other'));
     }
 
     public function testSenderHeaderIsAddedIfNoneSet()
@@ -245,7 +246,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $headers = $this->_createHeaderSet(array(), false);
         $headers->shouldReceive('addMailboxHeader')
                 ->once()
-                ->with('Sender', array('sender@domain'=>'Name'));
+                ->with('Sender', array('sender@domain' => 'Name'));
         $headers->shouldReceive('addMailboxHeader')
                 ->zeroOrMoreTimes();
 
@@ -260,38 +261,38 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         /* -- RFC 2822, 3.6.2.
      */
 
-        $from = $this->_createHeader('From', array('from@domain'=>'Name'));
+        $from = $this->_createHeader('From', array('from@domain' => 'Name'));
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('From' => $from)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $this->assertEquals(array('from@domain'=>'Name'), $message->getFrom());
+        $this->assertEquals(array('from@domain' => 'Name'), $message->getFrom());
     }
 
     public function testFromIsSetInHeader()
     {
-        $from = $this->_createHeader('From', array('from@domain'=>'Name'),
+        $from = $this->_createHeader('From', array('from@domain' => 'Name'),
             array(), false
             );
         $from->shouldReceive('setFieldBodyModel')
              ->once()
-             ->with(array('other@domain'=>'Other'));
+             ->with(array('other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('From' => $from)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $message->setFrom(array('other@domain'=>'Other'));
+        $message->setFrom(array('other@domain' => 'Other'));
     }
 
     public function testFromIsAddedToHeadersDuringAddFrom()
     {
-        $from = $this->_createHeader('From', array('from@domain'=>'Name'),
+        $from = $this->_createHeader('From', array('from@domain' => 'Name'),
             array(), false
             );
         $from->shouldReceive('setFieldBodyModel')
              ->once()
-             ->with(array('from@domain'=>'Name', 'other@domain'=>'Other'));
+             ->with(array('from@domain' => 'Name', 'other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('From' => $from)),
@@ -320,7 +321,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $headers = $this->_createHeaderSet(array(), false);
         $headers->shouldReceive('addMailboxHeader')
                 ->once()
-                ->with('From', array('from@domain'=>'Name'));
+                ->with('From', array('from@domain' => 'Name'));
         $headers->shouldReceive('addMailboxHeader')
                 ->zeroOrMoreTimes();
 
@@ -335,38 +336,38 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         /* -- RFC 2822, 3.6.2.
      */
 
-        $reply = $this->_createHeader('Reply-To', array('reply@domain'=>'Name'));
+        $reply = $this->_createHeader('Reply-To', array('reply@domain' => 'Name'));
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Reply-To' => $reply)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $this->assertEquals(array('reply@domain'=>'Name'), $message->getReplyTo());
+        $this->assertEquals(array('reply@domain' => 'Name'), $message->getReplyTo());
     }
 
     public function testReplyToIsSetInHeader()
     {
-        $reply = $this->_createHeader('Reply-To', array('reply@domain'=>'Name'),
+        $reply = $this->_createHeader('Reply-To', array('reply@domain' => 'Name'),
             array(), false
             );
         $reply->shouldReceive('setFieldBodyModel')
               ->once()
-              ->with(array('other@domain'=>'Other'));
+              ->with(array('other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Reply-To' => $reply)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $message->setReplyTo(array('other@domain'=>'Other'));
+        $message->setReplyTo(array('other@domain' => 'Other'));
     }
 
     public function testReplyToIsAddedToHeadersDuringAddReplyTo()
     {
-        $replyTo = $this->_createHeader('Reply-To', array('from@domain'=>'Name'),
+        $replyTo = $this->_createHeader('Reply-To', array('from@domain' => 'Name'),
             array(), false
             );
         $replyTo->shouldReceive('setFieldBodyModel')
                 ->once()
-                ->with(array('from@domain'=>'Name', 'other@domain'=>'Other'));
+                ->with(array('from@domain' => 'Name', 'other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Reply-To' => $replyTo)),
@@ -395,7 +396,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $headers = $this->_createHeaderSet(array(), false);
         $headers->shouldReceive('addMailboxHeader')
                 ->once()
-                ->with('Reply-To', array('reply@domain'=>'Name'));
+                ->with('Reply-To', array('reply@domain' => 'Name'));
         $headers->shouldReceive('addMailboxHeader')
                 ->zeroOrMoreTimes();
 
@@ -410,38 +411,38 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         /* -- RFC 2822, 3.6.3.
      */
 
-        $to = $this->_createHeader('To', array('to@domain'=>'Name'));
+        $to = $this->_createHeader('To', array('to@domain' => 'Name'));
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('To' => $to)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $this->assertEquals(array('to@domain'=>'Name'), $message->getTo());
+        $this->assertEquals(array('to@domain' => 'Name'), $message->getTo());
     }
 
     public function testToIsSetInHeader()
     {
-        $to = $this->_createHeader('To', array('to@domain'=>'Name'),
+        $to = $this->_createHeader('To', array('to@domain' => 'Name'),
             array(), false
             );
         $to->shouldReceive('setFieldBodyModel')
            ->once()
-           ->with(array('other@domain'=>'Other'));
+           ->with(array('other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('To' => $to)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $message->setTo(array('other@domain'=>'Other'));
+        $message->setTo(array('other@domain' => 'Other'));
     }
 
     public function testToIsAddedToHeadersDuringAddTo()
     {
-        $to = $this->_createHeader('To', array('from@domain'=>'Name'),
+        $to = $this->_createHeader('To', array('from@domain' => 'Name'),
             array(), false
             );
         $to->shouldReceive('setFieldBodyModel')
            ->once()
-           ->with(array('from@domain'=>'Name', 'other@domain'=>'Other'));
+           ->with(array('from@domain' => 'Name', 'other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('To' => $to)),
@@ -470,7 +471,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $headers = $this->_createHeaderSet(array(), false);
         $headers->shouldReceive('addMailboxHeader')
                 ->once()
-                ->with('To', array('to@domain'=>'Name'));
+                ->with('To', array('to@domain' => 'Name'));
         $headers->shouldReceive('addMailboxHeader')
                 ->zeroOrMoreTimes();
 
@@ -485,38 +486,38 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         /* -- RFC 2822, 3.6.3.
      */
 
-        $cc = $this->_createHeader('Cc', array('cc@domain'=>'Name'));
+        $cc = $this->_createHeader('Cc', array('cc@domain' => 'Name'));
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Cc' => $cc)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $this->assertEquals(array('cc@domain'=>'Name'), $message->getCc());
+        $this->assertEquals(array('cc@domain' => 'Name'), $message->getCc());
     }
 
     public function testCcIsSetInHeader()
     {
-        $cc = $this->_createHeader('Cc', array('cc@domain'=>'Name'),
+        $cc = $this->_createHeader('Cc', array('cc@domain' => 'Name'),
             array(), false
             );
         $cc->shouldReceive('setFieldBodyModel')
            ->once()
-           ->with(array('other@domain'=>'Other'));
+           ->with(array('other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Cc' => $cc)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $message->setCc(array('other@domain'=>'Other'));
+        $message->setCc(array('other@domain' => 'Other'));
     }
 
     public function testCcIsAddedToHeadersDuringAddCc()
     {
-        $cc = $this->_createHeader('Cc', array('from@domain'=>'Name'),
+        $cc = $this->_createHeader('Cc', array('from@domain' => 'Name'),
             array(), false
             );
         $cc->shouldReceive('setFieldBodyModel')
            ->once()
-           ->with(array('from@domain'=>'Name', 'other@domain'=>'Other'));
+           ->with(array('from@domain' => 'Name', 'other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Cc' => $cc)),
@@ -545,7 +546,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $headers = $this->_createHeaderSet(array(), false);
         $headers->shouldReceive('addMailboxHeader')
                 ->once()
-                ->with('Cc', array('cc@domain'=>'Name'));
+                ->with('Cc', array('cc@domain' => 'Name'));
         $headers->shouldReceive('addMailboxHeader')
                 ->zeroOrMoreTimes();
 
@@ -560,38 +561,38 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         /* -- RFC 2822, 3.6.3.
      */
 
-        $bcc = $this->_createHeader('Bcc', array('bcc@domain'=>'Name'));
+        $bcc = $this->_createHeader('Bcc', array('bcc@domain' => 'Name'));
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Bcc' => $bcc)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $this->assertEquals(array('bcc@domain'=>'Name'), $message->getBcc());
+        $this->assertEquals(array('bcc@domain' => 'Name'), $message->getBcc());
     }
 
     public function testBccIsSetInHeader()
     {
-        $bcc = $this->_createHeader('Bcc', array('bcc@domain'=>'Name'),
+        $bcc = $this->_createHeader('Bcc', array('bcc@domain' => 'Name'),
             array(), false
             );
         $bcc->shouldReceive('setFieldBodyModel')
             ->once()
-            ->with(array('other@domain'=>'Other'));
+            ->with(array('other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Bcc' => $bcc)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $message->setBcc(array('other@domain'=>'Other'));
+        $message->setBcc(array('other@domain' => 'Other'));
     }
 
     public function testBccIsAddedToHeadersDuringAddBcc()
     {
-        $bcc = $this->_createHeader('Bcc', array('from@domain'=>'Name'),
+        $bcc = $this->_createHeader('Bcc', array('from@domain' => 'Name'),
             array(), false
             );
         $bcc->shouldReceive('setFieldBodyModel')
             ->once()
-            ->with(array('from@domain'=>'Name', 'other@domain'=>'Other'));
+            ->with(array('from@domain' => 'Name', 'other@domain' => 'Other'));
 
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Bcc' => $bcc)),
@@ -620,7 +621,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $headers = $this->_createHeaderSet(array(), false);
         $headers->shouldReceive('addMailboxHeader')
                 ->once()
-                ->with('Bcc', array('bcc@domain'=>'Name'));
+                ->with('Bcc', array('bcc@domain' => 'Name'));
         $headers->shouldReceive('addMailboxHeader')
                 ->zeroOrMoreTimes();
 
@@ -672,13 +673,13 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     public function testReadReceiptAddressReadFromHeader()
     {
         $rcpt = $this->_createHeader('Disposition-Notification-To',
-            array('chris@swiftmailer.org'=>'Chris')
+            array('chris@swiftmailer.org' => 'Chris')
             );
         $message = $this->_createMessage(
             $this->_createHeaderSet(array('Disposition-Notification-To' => $rcpt)),
             $this->_createEncoder(), $this->_createCache()
             );
-        $this->assertEquals(array('chris@swiftmailer.org'=>'Chris'),
+        $this->assertEquals(array('chris@swiftmailer.org' => 'Chris'),
             $message->getReadReceiptTo()
             );
     }

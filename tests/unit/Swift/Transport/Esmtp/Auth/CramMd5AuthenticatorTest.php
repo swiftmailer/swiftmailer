@@ -26,7 +26,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTe
         $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with("AUTH CRAM-MD5\r\n", array(334))
-             ->andReturn('334 ' . base64_encode('<foo@bar>') . "\r\n");
+             ->andReturn('334 '.base64_encode('<foo@bar>')."\r\n");
         $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with(\Mockery::any(), array(235));
@@ -43,7 +43,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTe
         $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with("AUTH CRAM-MD5\r\n", array(334))
-             ->andReturn('334 ' . base64_encode('<foo@bar>') . "\r\n");
+             ->andReturn('334 '.base64_encode('<foo@bar>')."\r\n");
         $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with(\Mockery::any(), array(235))

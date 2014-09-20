@@ -1,6 +1,6 @@
 <?php
 
-require dirname(__FILE__) . '/../mime_types.php';
+require dirname(__FILE__).'/../mime_types.php';
 
 Swift_DependencyContainer::getInstance()
     ->register('properties.charset')
@@ -16,7 +16,7 @@ Swift_DependencyContainer::getInstance()
         'mime.qpcontentencoder',
         'cache',
         'mime.grammar',
-        'properties.charset'
+        'properties.charset',
     ))
 
     ->register('mime.part')
@@ -26,7 +26,7 @@ Swift_DependencyContainer::getInstance()
         'mime.qpcontentencoder',
         'cache',
         'mime.grammar',
-        'properties.charset'
+        'properties.charset',
     ))
 
     ->register('mime.attachment')
@@ -35,7 +35,7 @@ Swift_DependencyContainer::getInstance()
         'mime.headerset',
         'mime.base64contentencoder',
         'cache',
-        'mime.grammar'
+        'mime.grammar',
     ))
     ->addConstructorValue($swift_mime_types)
 
@@ -45,7 +45,7 @@ Swift_DependencyContainer::getInstance()
         'mime.headerset',
         'mime.base64contentencoder',
         'cache',
-        'mime.grammar'
+        'mime.grammar',
     ))
     ->addConstructorValue($swift_mime_types)
 
@@ -55,7 +55,7 @@ Swift_DependencyContainer::getInstance()
             'mime.qpheaderencoder',
             'mime.rfc2231encoder',
             'mime.grammar',
-            'properties.charset'
+            'properties.charset',
         ))
 
     ->register('mime.headerset')

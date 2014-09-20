@@ -11,7 +11,7 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
     {
         if (true == getenv('TRAVIS')) {
             $this->markTestSkipped(
-                'Will fail on travis-ci if not skipped due to travis blocking ' .
+                'Will fail on travis-ci if not skipped due to travis blocking '.
                 'socket mailing tcp connections.'
              );
         }

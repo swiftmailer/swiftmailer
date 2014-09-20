@@ -57,7 +57,7 @@ class Swift_Mime_Headers_DateHeaderTest extends \PHPUnit_Framework_TestCase
         $timestamp = time();
         $header = $this->_getHeader('Date');
         $header->setTimestamp($timestamp);
-        $this->assertEquals('Date: ' . date('r', $timestamp) . "\r\n",
+        $this->assertEquals('Date: '.date('r', $timestamp)."\r\n",
             $header->toString()
             );
     }

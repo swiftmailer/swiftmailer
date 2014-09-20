@@ -167,7 +167,6 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
             array('fabien@example.com' => 'Fabien', 'lars-cc@internal.org' => 'Lars (Cc)')
         );
         $this->assertEquals($message->getBcc(), array('fabien@example.com' => 'Fabien'));
-
     }
 
     // -- Creation Methods

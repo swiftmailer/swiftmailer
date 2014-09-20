@@ -24,7 +24,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      *
      * @var int
      */
-    private $_retryLimit=10;
+    private $_retryLimit = 10;
 
     /**
      * Create a new FileSpool.
@@ -77,7 +77,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      */
     public function setRetryLimit($limit)
     {
-        $this->_retryLimit=$limit;
+        $this->_retryLimit = $limit;
     }
 
     /**
@@ -92,10 +92,10 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     public function queueMessage(Swift_Mime_Message $message)
     {
         $ser = serialize($message);
-        $fileName = $this->_path . '/' . $this->getRandomString(10);
+        $fileName = $this->_path.'/'.$this->getRandomString(10);
         for ($i = 0; $i < $this->_retryLimit; ++$i) {
             /* We try an exclusive creation of the file. This is an atomic operation, it avoid locking mechanism */
-            $fp = @fopen($fileName . '.message', 'x');
+            $fp = @fopen($fileName.'.message', 'x');
             if (false !== $fp) {
                 if (false === fwrite($fp, $ser)) {
                     return false;

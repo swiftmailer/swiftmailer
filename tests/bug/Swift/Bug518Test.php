@@ -35,5 +35,4 @@ class Swift_Bug518Test extends \PHPUnit_Framework_TestCase
 
         $memorySpool->flushQueue($transport, $failedRecipients);
     }
-
 }

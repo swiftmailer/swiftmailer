@@ -121,7 +121,6 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
                 $message->addTo($recipient);
             }
         }
-
     }
 
     /**

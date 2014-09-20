@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__DIR__) . '/EsmtpTransportTest.php';
-require_once dirname(dirname(dirname(dirname(__DIR__)))) . '/fixtures/EsmtpTransportFixture.php';
+require_once dirname(__DIR__).'/EsmtpTransportTest.php';
+require_once dirname(dirname(dirname(dirname(__DIR__)))).'/fixtures/EsmtpTransportFixture.php';
 
 interface Swift_Transport_EsmtpHandlerMixin extends Swift_Transport_EsmtpHandler
 {
@@ -12,7 +12,6 @@ interface Swift_Transport_EsmtpHandlerMixin extends Swift_Transport_EsmtpHandler
 class Swift_Transport_EsmtpTransport_ExtensionSupportTest
     extends Swift_Transport_EsmtpTransportTest
 {
-
     public function testExtensionHandlersAreSortedAsNeeded()
     {
         $buf = $this->_getBuffer();
@@ -237,10 +236,10 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('me@domain'=>'Me'));
+                ->andReturn(array('me@domain' => 'Me'));
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar'=>null));
+                ->andReturn(array('foo@bar' => null));
 
         $buf->shouldReceive('readLine')
             ->once()

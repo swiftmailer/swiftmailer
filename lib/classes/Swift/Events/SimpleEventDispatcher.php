@@ -34,7 +34,7 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
             'Swift_Events_ResponseEvent' => 'Swift_Events_ResponseListener',
             'Swift_Events_SendEvent' => 'Swift_Events_SendListener',
             'Swift_Events_TransportChangeEvent' => 'Swift_Events_TransportChangeListener',
-            'Swift_Events_TransportExceptionEvent' => 'Swift_Events_TransportExceptionListener'
+            'Swift_Events_TransportExceptionEvent' => 'Swift_Events_TransportExceptionListener',
             );
     }
 
@@ -139,8 +139,7 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
         $evtClass = get_class($evt);
         foreach ($this->_listeners as $listener) {
             if (array_key_exists($evtClass, $this->_eventMap)
-                && ($listener instanceof $this->_eventMap[$evtClass]))
-            {
+                && ($listener instanceof $this->_eventMap[$evtClass])) {
                 $this->_bubbleQueue[] = $listener;
             }
         }

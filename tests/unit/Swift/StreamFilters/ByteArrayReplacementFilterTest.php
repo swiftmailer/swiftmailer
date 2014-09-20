@@ -15,7 +15,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilterTest extends \PHPUnit_Framew
     {
         $filter = $this->_createFilter(array(0x61, 0x62), array(0x63, 0x64));
         $this->assertTrue($filter->shouldBuffer(array(0x59, 0x60, 0x61)),
-            '%s: Filter should buffer since 0x61 0x62 is the needle and the ending ' .
+            '%s: Filter should buffer since 0x61 0x62 is the needle and the ending '.
             '0x61 could be from 0x61 0x62'
             );
     }
@@ -50,7 +50,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilterTest extends \PHPUnit_Framew
     {
         $filter = $this->_createFilter(array(array(0x61, 0x62), array(0x63)), array(0x64));
         $this->assertTrue($filter->shouldBuffer(array(0x59, 0x60, 0x61)),
-            '%s: Filter should buffer since 0x61 0x62 is a needle and the ending ' .
+            '%s: Filter should buffer since 0x61 0x62 is a needle and the ending '.
             '0x61 could be from 0x61 0x62'
             );
     }

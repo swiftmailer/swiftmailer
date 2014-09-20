@@ -98,8 +98,8 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         $encoder->shouldReceive('encodeString')
                 ->once()
                 ->with($value, \Mockery::any(), 63, \Mockery::any())
-                ->andReturn(str_repeat('a', 63) . "\r\n" .
-                    str_repeat('a', 63) . "\r\n" . str_repeat('a', 54));
+                ->andReturn(str_repeat('a', 63)."\r\n".
+                    str_repeat('a', 63)."\r\n".str_repeat('a', 54));
 
         $header = $this->_getHeader('Content-Disposition',
             $this->_getHeaderEncoder('Q', true), $encoder
@@ -108,10 +108,10 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         $header->setParameters(array('filename' => $value));
         $header->setMaxLineLength(78);
         $this->assertEquals(
-            'attachment; ' .
-            'filename*0*=utf-8\'\'' . str_repeat('a', 63) . ";\r\n " .
-            'filename*1*=' . str_repeat('a', 63) . ";\r\n " .
-            'filename*2*=' . str_repeat('a', 54),
+            'attachment; '.
+            'filename*0*=utf-8\'\''.str_repeat('a', 63).";\r\n ".
+            'filename*1*='.str_repeat('a', 63).";\r\n ".
+            'filename*2*='.str_repeat('a', 54),
             $header->getFieldBody()
             );
     }
@@ -141,13 +141,13 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         omitted.
         */
 
-        $value = str_repeat('a', 20) . pack('C', 0x8F) . str_repeat('a', 10);
+        $value = str_repeat('a', 20).pack('C', 0x8F).str_repeat('a', 10);
 
         $encoder = $this->_getParameterEncoder();
         $encoder->shouldReceive('encodeString')
                 ->once()
                 ->with($value, 12, 62, \Mockery::any())
-                ->andReturn(str_repeat('a', 20) . '%8F' . str_repeat('a', 10));
+                ->andReturn(str_repeat('a', 20).'%8F'.str_repeat('a', 10));
 
         $header = $this->_getHeader('Content-Disposition',
             $this->_getHeaderEncoder('Q', true), $encoder
@@ -157,8 +157,8 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         $header->setMaxLineLength(78);
         $header->setLanguage($this->_lang);
         $this->assertEquals(
-            'attachment; filename*=' . $this->_charset . "'" . $this->_lang . "'" .
-            str_repeat('a', 20) . '%8F' . str_repeat('a', 10),
+            'attachment; filename*='.$this->_charset."'".$this->_lang."'".
+            str_repeat('a', 20).'%8F'.str_repeat('a', 10),
             $header->getFieldBody()
             );
     }
@@ -194,13 +194,13 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
            MUST be present even when the fields are left blank.
         */
 
-        $value = str_repeat('a', 20) . pack('C', 0x8F) . str_repeat('a', 60);
+        $value = str_repeat('a', 20).pack('C', 0x8F).str_repeat('a', 60);
 
         $encoder = $this->_getParameterEncoder();
         $encoder->shouldReceive('encodeString')
                 ->once()
                 ->with($value, 12, 62, \Mockery::any())
-                ->andReturn(str_repeat('a', 20) . '%8F' . str_repeat('a', 28) . "\r\n" .
+                ->andReturn(str_repeat('a', 20).'%8F'.str_repeat('a', 28)."\r\n".
                     str_repeat('a', 32));
 
         $header = $this->_getHeader('Content-Disposition',
@@ -211,9 +211,9 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         $header->setMaxLineLength(78);
         $header->setLanguage($this->_lang);
         $this->assertEquals(
-            'attachment; filename*0*=' . $this->_charset . "'" . $this->_lang . "'" .
-            str_repeat('a', 20) . '%8F' . str_repeat('a', 28) . ";\r\n " .
-            'filename*1*=' . str_repeat('a', 32),
+            'attachment; filename*0*='.$this->_charset."'".$this->_lang."'".
+            str_repeat('a', 20).'%8F'.str_repeat('a', 28).";\r\n ".
+            'filename*1*='.str_repeat('a', 32),
             $header->getFieldBody()
             );
     }
@@ -225,14 +225,14 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
             );
         $header->setValue('text/html');
         $header->setParameters(array('charset' => 'utf-8'));
-        $this->assertEquals('Content-Type: text/html; charset=utf-8' . "\r\n",
+        $this->assertEquals('Content-Type: text/html; charset=utf-8'."\r\n",
             $header->toString()
             );
     }
 
     public function testValueCanBeEncodedIfNonAscii()
     {
-        $value = 'fo' . pack('C', 0x8F) .'bar';
+        $value = 'fo'.pack('C', 0x8F).'bar';
 
         $encoder = $this->_getHeaderEncoder('Q');
         $encoder->shouldReceive('encodeString')
@@ -243,14 +243,14 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         $header = $this->_getHeader('X-Foo', $encoder, $this->_getParameterEncoder(true));
         $header->setValue($value);
         $header->setParameters(array('lookslike' => 'foobar'));
-        $this->assertEquals('X-Foo: =?utf-8?Q?fo=8Fbar?=; lookslike=foobar' . "\r\n",
+        $this->assertEquals('X-Foo: =?utf-8?Q?fo=8Fbar?=; lookslike=foobar'."\r\n",
             $header->toString()
             );
     }
 
     public function testValueAndParamCanBeEncodedIfNonAscii()
     {
-        $value = 'fo' . pack('C', 0x8F) .'bar';
+        $value = 'fo'.pack('C', 0x8F).'bar';
 
         $encoder = $this->_getHeaderEncoder('Q');
         $encoder->shouldReceive('encodeString')
@@ -274,7 +274,7 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
 
     public function testParamsAreEncodedWithEncodedWordsIfNoParamEncoderSet()
     {
-        $value = 'fo' . pack('C', 0x8F) .'bar';
+        $value = 'fo'.pack('C', 0x8F).'bar';
 
         $encoder = $this->_getHeaderEncoder('Q');
         $encoder->shouldReceive('encodeString')
@@ -309,7 +309,7 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
                     From: =?US-ASCII*EN?Q?Keith_Moore?= <moore@cs.utk.edu>
         */
 
-        $value = 'fo' . pack('C', 0x8F) .'bar';
+        $value = 'fo'.pack('C', 0x8F).'bar';
 
         $encoder = $this->_getHeaderEncoder('Q');
         $encoder->shouldReceive('encodeString')
@@ -355,9 +355,9 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         $header = $this->_getHeader('Content-Type',
             $this->_getHeaderEncoder('Q', true), $this->_getParameterEncoder(true)
             );
-        $header->setParameters(array('charset'=>'utf-8', 'delsp' => 'yes'));
+        $header->setParameters(array('charset' => 'utf-8', 'delsp' => 'yes'));
         $header->setParameter('delsp', 'no');
-        $this->assertEquals(array('charset'=>'utf-8', 'delsp'=>'no'),
+        $this->assertEquals(array('charset' => 'utf-8', 'delsp' => 'no'),
             $header->getParameters()
             );
     }
@@ -367,7 +367,7 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
         $header = $this->_getHeader('Content-Type',
             $this->_getHeaderEncoder('Q', true), $this->_getParameterEncoder(true)
             );
-        $header->setParameters(array('charset'=>'utf-8', 'delsp' => 'yes'));
+        $header->setParameters(array('charset' => 'utf-8', 'delsp' => 'yes'));
         $this->assertEquals('utf-8', $header->getParameter('charset'));
     }
 

@@ -61,8 +61,8 @@ class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener
         $headers = $message->getHeaders();
 
         if ($headers->has('X-Swift-Return-Path')) {
-                $message->setReturnPath($headers->get('X-Swift-Return-Path')->getAddress());
-                $headers->removeAll('X-Swift-Return-Path');
+            $message->setReturnPath($headers->get('X-Swift-Return-Path')->getAddress());
+            $headers->removeAll('X-Swift-Return-Path');
         }
     }
 }

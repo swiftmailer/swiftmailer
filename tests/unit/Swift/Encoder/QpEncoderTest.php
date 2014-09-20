@@ -80,7 +80,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         $SPACE = chr(0x20); //32
 
         //HT
-        $string = 'a' . $HT . $HT . "\r\n" . 'b';
+        $string = 'a'.$HT.$HT."\r\n".'b';
 
         $charStream = $this->_createCharStream();
         $charStream->shouldReceive('flushContents')
@@ -99,12 +99,12 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
 
         $encoder = new Swift_Encoder_QpEncoder($charStream);
         $this->assertEquals(
-            'a' . $HT . '=09' . "\r\n" . 'b',
+            'a'.$HT.'=09'."\r\n".'b',
             $encoder->encodeString($string)
             );
 
         //SPACE
-        $string = 'a' . $SPACE . $SPACE . "\r\n" . 'b';
+        $string = 'a'.$SPACE.$SPACE."\r\n".'b';
 
         $charStream = $this->_createCharStream();
         $charStream->shouldReceive('flushContents')
@@ -123,7 +123,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
 
         $encoder = new Swift_Encoder_QpEncoder($charStream);
         $this->assertEquals(
-            'a' . $SPACE . '=20' . "\r\n" . 'b',
+            'a'.$SPACE.'=20'."\r\n".'b',
             $encoder->encodeString($string)
             );
     }
@@ -157,7 +157,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
                     equivalent to performing the three steps separately.
                     */
 
-        $string = 'a' . "\r\n" . 'b' . "\r\n" . 'c' . "\r\n";
+        $string = 'a'."\r\n".'b'."\r\n".'c'."\r\n";
 
         $charStream = $this->_createCharStream();
         $charStream->shouldReceive('flushContents')

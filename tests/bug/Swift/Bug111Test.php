@@ -5,7 +5,7 @@ class Swift_Bug111Test extends \PHPUnit_Framework_TestCase
     public function testUnstructuredHeaderSlashesShouldNotBeEscaped()
     {
         $complicated_header = array(
-            'to'=> array(
+            'to' => array(
                 'email1@example.com',
                 'email2@example.com',
                 'email3@example.com',
@@ -27,7 +27,7 @@ class Swift_Bug111Test extends \PHPUnit_Framework_TestCase
                     'http://aol.com',
                     'http://facebook.com',
                 ),
-            )
+            ),
         );
         $json = json_encode($complicated_header);
 

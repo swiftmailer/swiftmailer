@@ -10,7 +10,7 @@ class Swift_KeyCache_DiskKeyCacheAcceptanceTest extends \PHPUnit_Framework_TestC
     {
         if (!defined('SWIFT_TMP_DIR')) {
             $this->markTestSkipped(
-                'Cannot run test without a writable directory to use (' .
+                'Cannot run test without a writable directory to use ('.
                 'define SWIFT_TMP_DIR in tests/config.php if you wish to run this test)'
              );
         }

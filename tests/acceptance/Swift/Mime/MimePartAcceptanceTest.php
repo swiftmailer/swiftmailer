@@ -40,9 +40,9 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
         $part->setCharset('utf-8');
         $part->setBody('foobar');
         $this->assertEquals(
-            'Content-Type: text/plain; charset=utf-8' . "\r\n" .
-            'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
-            "\r\n" .
+            'Content-Type: text/plain; charset=utf-8'."\r\n".
+            'Content-Transfer-Encoding: quoted-printable'."\r\n".
+            "\r\n".
             'foobar',
             $part->toString()
             );
@@ -55,9 +55,9 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
         $part->setFormat('flowed');
         $part->setBody('> foobar');
         $this->assertEquals(
-            'Content-Type: text/plain; format=flowed' . "\r\n" .
-            'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
-            "\r\n" .
+            'Content-Type: text/plain; format=flowed'."\r\n".
+            'Content-Transfer-Encoding: quoted-printable'."\r\n".
+            "\r\n".
             '> foobar',
             $part->toString()
             );
@@ -70,9 +70,9 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
         $part->setDelSp(true);
         $part->setBody('foobar');
         $this->assertEquals(
-            'Content-Type: text/plain; delsp=yes' . "\r\n" .
-            'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
-            "\r\n" .
+            'Content-Type: text/plain; delsp=yes'."\r\n".
+            'Content-Transfer-Encoding: quoted-printable'."\r\n".
+            "\r\n".
             'foobar',
             $part->toString()
             );
@@ -87,9 +87,9 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
         $part->setDelSp(true);
         $part->setBody('foobar');
         $this->assertEquals(
-            'Content-Type: text/plain; charset=utf-8; format=fixed; delsp=yes' . "\r\n" .
-            'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
-            "\r\n" .
+            'Content-Type: text/plain; charset=utf-8; format=fixed; delsp=yes'."\r\n".
+            'Content-Transfer-Encoding: quoted-printable'."\r\n".
+            "\r\n".
             'foobar',
             $part->toString()
             );
@@ -102,12 +102,12 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
         $part->setCharset('utf-8');
         $part->setBody("foobar\r\rtest\ning\r");
         $this->assertEquals(
-            'Content-Type: text/plain; charset=utf-8' . "\r\n" .
-            'Content-Transfer-Encoding: quoted-printable' . "\r\n" .
-            "\r\n" .
-            "foobar\r\n" .
-            "\r\n" .
-            "test\r\n" .
+            'Content-Type: text/plain; charset=utf-8'."\r\n".
+            'Content-Transfer-Encoding: quoted-printable'."\r\n".
+            "\r\n".
+            "foobar\r\n".
+            "\r\n".
+            "test\r\n".
             "ing\r\n",
             $part->toString()
             );

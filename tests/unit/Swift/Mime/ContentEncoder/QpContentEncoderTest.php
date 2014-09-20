@@ -292,7 +292,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
 
         $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
         $encoder->encodeByteStream($os, $is);
-        $this->assertEquals(str_repeat('a', 75) . "=\r\n" . str_repeat('a', 66), $collection->content);
+        $this->assertEquals(str_repeat('a', 75)."=\r\n".str_repeat('a', 66), $collection->content);
     }
 
     public function testMaxLineLengthCanBeSpecified()
@@ -322,7 +322,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
 
         $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
         $encoder->encodeByteStream($os, $is, 0, 54);
-        $this->assertEquals(str_repeat('a', 53) . "=\r\n" . str_repeat('a', 48), $collection->content);
+        $this->assertEquals(str_repeat('a', 53)."=\r\n".str_repeat('a', 48), $collection->content);
     }
 
     public function testBytesBelowPermittedRangeAreEncoded()
@@ -376,15 +376,15 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         $is->shouldReceive('write')
                ->zeroOrMoreTimes()
                ->andReturnUsing($collection);
-            $charStream->shouldReceive('flushContents')
+        $charStream->shouldReceive('flushContents')
                        ->once();
-            $charStream->shouldReceive('importByteStream')
+        $charStream->shouldReceive('importByteStream')
                        ->once()
                        ->with($os);
-            $charStream->shouldReceive('readBytes')
+        $charStream->shouldReceive('readBytes')
                        ->once()
                        ->andReturn(array(61));
-            $charStream->shouldReceive('readBytes')
+        $charStream->shouldReceive('readBytes')
                        ->zeroOrMoreTimes()
                        ->andReturn(false);
 
@@ -449,14 +449,14 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                        ->once()
                        ->andReturn(array(ord('a')));
         }
-       $charStream->shouldReceive('readBytes')
+        $charStream->shouldReceive('readBytes')
                     ->zeroOrMoreTimes()
                     ->andReturn(false);
 
         $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
         $encoder->encodeByteStream($os, $is, 22);
         $this->assertEquals(
-            str_repeat('a', 53) . "=\r\n" . str_repeat('a', 75) . "=\r\n" . str_repeat('a', 13),
+            str_repeat('a', 53)."=\r\n".str_repeat('a', 75)."=\r\n".str_repeat('a', 13),
             $collection->content
             );
     }

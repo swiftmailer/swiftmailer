@@ -51,24 +51,24 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory implements Swift
         $prefix = 'Swift_CharacterReader_';
 
         $singleByte = array(
-            'class' => $prefix . 'GenericFixedWidthReader',
-            'constructor' => array(1)
+            'class' => $prefix.'GenericFixedWidthReader',
+            'constructor' => array(1),
             );
 
         $doubleByte = array(
-            'class' => $prefix . 'GenericFixedWidthReader',
-            'constructor' => array(2)
+            'class' => $prefix.'GenericFixedWidthReader',
+            'constructor' => array(2),
             );
 
         $fourBytes = array(
-            'class' => $prefix . 'GenericFixedWidthReader',
-            'constructor' => array(4)
+            'class' => $prefix.'GenericFixedWidthReader',
+            'constructor' => array(4),
             );
 
         // Utf-8
         self::$_map['utf-?8'] = array(
-            'class' => $prefix . 'Utf8Reader',
-            'constructor' => array()
+            'class' => $prefix.'Utf8Reader',
+            'constructor' => array(),
             );
 
         //7-8 bit charsets
@@ -105,7 +105,7 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory implements Swift
     {
         $charset = trim(strtolower($charset));
         foreach (self::$_map as $pattern => $spec) {
-            $re = '/^' . $pattern . '$/D';
+            $re = '/^'.$pattern.'$/D';
             if (preg_match($re, $charset)) {
                 if (!array_key_exists($pattern, self::$_loaded)) {
                     $reflector = new ReflectionClass($spec['class']);

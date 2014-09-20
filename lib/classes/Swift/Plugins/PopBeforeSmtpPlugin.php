@@ -148,8 +148,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
         } else {
             if (!isset($this->_socket)) {
                 if (!$socket = fsockopen(
-                    $this->_getHostString(), $this->_port, $errno, $errstr, $this->_timeout))
-                {
+                    $this->_getHostString(), $this->_port, $errno, $errstr, $this->_timeout)) {
                     throw new Swift_Plugins_Pop_Pop3Exception(
                         sprintf('Failed to connect to POP3 host [%s]: %s', $this->_host, $errstr)
                     );
@@ -261,11 +260,11 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
         $host = $this->_host;
         switch (strtolower($this->_crypto)) {
             case 'ssl':
-                $host = 'ssl://' . $host;
+                $host = 'ssl://'.$host;
                 break;
 
             case 'tls':
-                $host = 'tls://' . $host;
+                $host = 'tls://'.$host;
                 break;
         }
 

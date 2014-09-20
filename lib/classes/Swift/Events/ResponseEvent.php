@@ -62,5 +62,4 @@ class Swift_Events_ResponseEvent extends Swift_Events_EventObject
     {
         return $this->_valid;
     }
-
 }
