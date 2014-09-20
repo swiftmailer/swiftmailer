@@ -164,10 +164,16 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
                 );
         }
 
-        $to = (array) $message->getTo();
-        $cc = (array) $message->getCc();
+        if ($to = (array) $message->getRecipients()) {
+            $cc = array();
+            $bcc = array();
+        } else {
+            $to = (array) $message->getTo();
+            $cc = (array) $message->getCc();
+            $bcc = (array) $message->getBcc();
+        }
+
         $tos = array_merge($to, $cc);
-        $bcc = (array) $message->getBcc();
 
         $message->setBcc(array());
 

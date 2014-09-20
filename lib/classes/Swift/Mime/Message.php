@@ -220,4 +220,27 @@ interface Swift_Mime_Message extends Swift_Mime_MimeEntity
      * @return string[]
      */
     public function getBcc();
+
+    /**
+     * Explicitly set message recipients.
+     *
+     * If recipients are set with this method, these addresses will be the only
+     * ones to receive a copy of this message.
+     *
+     * The first parameter may be a single email address given as a string or
+     * multiple addresses given as an array.
+     *
+     * @param mixed  $addresses
+     */
+    public function setRecipients($addresses);
+
+    /**
+     * If available, get the explicitly set recipients for this message.
+     *
+     * This method always returns an associative array, whereby the keys provide
+     * the actual email addresses and the values are null.
+     *
+     * @return string[]
+     */
+    public function getRecipients();
 }
