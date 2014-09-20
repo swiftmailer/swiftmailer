@@ -268,4 +268,20 @@ class Swift_Message extends Swift_Mime_SimpleMessage
         $this->restoreHeaders();
         $this->savedMessage = array();
     }
+
+    /**
+     * Clone Message Signers
+     * @see Swift_Mime_SimpleMimeEntity::__clone()
+     */
+    public function __clone()
+    {
+        parent::__clone();
+        foreach ($this->bodySigners as $key => $bodySigner) {
+            $this->bodySigners[$key] = clone($bodySigner);
+        }
+
+        foreach ($this->headerSigners as $key => $headerSigner) {
+            $this->headerSigners[$key] = clone($headerSigner);
+        }
+    }
 }
