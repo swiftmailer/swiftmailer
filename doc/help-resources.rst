@@ -41,4 +41,4 @@ for most users, though bug reports should not be posted here since they may
 not be resolved.
 
 .. _`GitHub`: https://github.com/swiftmailer/swiftmailer/issues
-.. _`group`:  http://groups.google.com/group/swiftmailer
+.. _`group`:  https://groups.google.com/forum/#!forum/swiftmailer
