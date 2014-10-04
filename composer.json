@@ -15,15 +15,12 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "egulias/email-validator": "~1.2"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9.1"
-        "php": ">=5.2.4",
-        "egulias/email-validator":"~1.2"
-    },
-    "suggest": {
-        "egulias/email-validator": "Strict (RFC compliant) email validation"
+        "mockery/mockery": "~0.9.1",
+        "php": ">=5.2.4"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]

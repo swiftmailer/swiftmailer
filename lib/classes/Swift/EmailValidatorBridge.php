@@ -9,7 +9,7 @@
  */
 
 /**
- * Defines the grammar to use for validation, implements the RFC 2822 (and friends) ABNF grammar definitions.
+ * Bridge to allow the use of the EmailValidator
  *
  * @package    Swift
  * @subpackage Mime

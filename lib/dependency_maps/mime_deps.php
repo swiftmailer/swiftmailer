@@ -9,6 +9,9 @@ Swift_DependencyContainer::getInstance()
     ->register('mime.grammar')
     ->asSharedInstanceOf('Swift_Mime_Grammar')
 
+    ->register('email.validator')
+    ->asSharedInstanceOf('Swift_EmailValidatorBridge')
+
     ->register('mime.message')
     ->asNewInstanceOf('Swift_Mime_SimpleMessage')
     ->withDependencies(array(
@@ -55,6 +58,7 @@ Swift_DependencyContainer::getInstance()
             'mime.qpheaderencoder',
             'mime.rfc2231encoder',
             'mime.grammar',
+            'email.validator',
             'properties.charset',
         ))
 

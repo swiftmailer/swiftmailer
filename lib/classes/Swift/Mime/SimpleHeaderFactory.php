@@ -24,6 +24,9 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     /** The Grammar */
     private $_grammar;
 
+    /** Strict EmailValidator */
+    private $_emailValidator;
+
     /** The charset of created Headers */
     private $_charset;
 
@@ -35,11 +38,12 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
      * @param Swift_Mime_Grammar       $grammar
      * @param string|null              $charset
      */
-    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, Swift_Mime_Grammar $grammar, $charset = null)
+    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator, $charset = null)
     {
         $this->_encoder = $encoder;
         $this->_paramEncoder = $paramEncoder;
         $this->_grammar = $grammar;
+        $this->_emailValidator = $emailValidator;
         $this->_charset = $charset;
     }
 
@@ -157,7 +161,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
      */
     public function createPathHeader($name, $path = null)
     {
-        $header = new Swift_Mime_Headers_PathHeader($name, $this->_grammar);
+        $header = new Swift_Mime_Headers_PathHeader($name, $this->_grammar, $this->_emailValidator);
         if (isset($path)) {
             $header->setFieldBodyModel($path);
         }
