@@ -14,13 +14,6 @@
 class Swift_Validate
 {
     /**
-     * Grammar Object
-     *
-     * @var Swift_Mime_Grammar
-     */
-    private static $grammar = null;
-
-    /**
      * Checks if an e-mail address matches the current grammars.
      *
      * @param string $email
@@ -29,20 +22,8 @@ class Swift_Validate
      */
     public static function email($email)
     {
-        if (class_exists('\Egulias\EmailValidator\EmailValidator')) {
-            $validator = new Swift_EmailValidatorBridge();
-            $isValid = $validator->isValid($email);
-        } else {
-            if (self::$grammar === null) {
-                self::$grammar = Swift_DependencyContainer::getInstance()
-                    ->lookup('mime.grammar');
-            }
-
-            $isValid = preg_match(
-                '/^' . self::$grammar->getDefinition('addr-spec') . '$/D',
-                $email
-            );
-        }
+        $validator = new Swift_EmailValidatorBridge();
+        $isValid = $validator->isValid($email);
 
         return $isValid;
     }
