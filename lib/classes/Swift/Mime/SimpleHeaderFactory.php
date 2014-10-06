@@ -142,7 +142,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
      */
     public function createIdHeader($name, $ids = null)
     {
-        $header = new Swift_Mime_Headers_IdentificationHeader($name, $this->_grammar);
+        $header = new Swift_Mime_Headers_IdentificationHeader($name, $this->_grammar, $this->_emailValidator);
         if (isset($ids)) {
             $header->setFieldBodyModel($ids);
         }

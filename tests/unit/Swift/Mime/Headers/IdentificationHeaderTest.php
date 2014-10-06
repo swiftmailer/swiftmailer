@@ -184,6 +184,6 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit_Framework_Tes
 
     private function _getHeader($name)
     {
-        return new Swift_Mime_Headers_IdentificationHeader($name, new Swift_Mime_Grammar());
+        return new Swift_Mime_Headers_IdentificationHeader($name, new Swift_Mime_Grammar(), new Swift_EmailValidatorBridge());
     }
 }
