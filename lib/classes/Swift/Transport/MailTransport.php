@@ -122,15 +122,15 @@ class Swift_Transport_MailTransport implements Swift_Transport
             + count((array) $message->getBcc())
             );
 
+        if ($count == 0) {
+            throw new Swift_TransportException(
+                'Cannot send message without a recipient');
+        }
+
         $toHeader = $message->getHeaders()->get('To');
         $subjectHeader = $message->getHeaders()->get('Subject');
 
-        if (!$toHeader) {
-            throw new Swift_TransportException(
-                'Cannot send message without a recipient'
-                );
-        }
-        $to = $toHeader->getFieldBody();
+        $to = $toHeader ? $toHeader->getFieldBody() : '';
         $subject = $subjectHeader ? $subjectHeader->getFieldBody() : '';
 
         $reversePath = $this->_getReversePath($message);
@@ -141,7 +141,10 @@ class Swift_Transport_MailTransport implements Swift_Transport
 
         $messageStr = $message->toString();
 
-        $message->getHeaders()->set($toHeader);
+        if ($toHeader)
+        {
+            $message->getHeaders()->set($toHeader);
+        }
         $message->getHeaders()->set($subjectHeader);
 
         // Separate headers from body
