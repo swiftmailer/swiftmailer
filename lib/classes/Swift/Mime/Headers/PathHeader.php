@@ -21,13 +21,20 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      * @var string
      */
     private $_address;
+
+    /**
+     * The strict EmailValidator
+     *
+     * @var Swift_EmailValidatorBridge
+     */
     private $_emailValidator;
 
     /**
      * Creates a new PathHeader with the given $name.
      *
-     * @param string             $name
-     * @param Swift_Mime_Grammar $grammar
+     * @param Swift_Mime_Grammar         $name
+     * @param Swift_Mime_Grammar         $grammar
+     * @param Swift_EmailValidatorBridge $emailValidator
      */
     public function __construct($name, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator)
     {

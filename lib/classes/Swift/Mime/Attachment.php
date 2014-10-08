@@ -27,9 +27,9 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      * @param Swift_Mime_Grammar        $grammar
      * @param array                     $mimeTypes optional
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, $mimeTypes = array())
+    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator, $mimeTypes = array())
     {
-        parent::__construct($headers, $encoder, $cache, $grammar);
+        parent::__construct($headers, $encoder, $cache, $grammar, $emailValidator);
         $this->setDisposition('attachment');
         $this->setContentType('application/octet-stream');
         $this->_mimeTypes = $mimeTypes;

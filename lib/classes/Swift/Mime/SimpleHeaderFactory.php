@@ -33,10 +33,11 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     /**
      * Creates a new SimpleHeaderFactory using $encoder and $paramEncoder.
      *
-     * @param Swift_Mime_HeaderEncoder $encoder
-     * @param Swift_Encoder            $paramEncoder
-     * @param Swift_Mime_Grammar       $grammar
-     * @param string|null              $charset
+     * @param Swift_Mime_HeaderEncoder   $encoder
+     * @param Swift_Encoder              $paramEncoder
+     * @param Swift_Mime_Grammar         $grammar
+     * @param Swift_EmailValidatorBridge $emailValidator
+     * @param string|null                $charset
      */
     public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator, $charset = null)
     {

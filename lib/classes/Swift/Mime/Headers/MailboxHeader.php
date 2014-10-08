@@ -21,14 +21,21 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      * @var string[]
      */
     private $_mailboxes = array();
+
+    /**
+     * The strict EmailValidator
+     *
+     * @var Swift_EmailValidatorBridge
+     */
     private $_emailValidator;
 
     /**
      * Creates a new MailboxHeader with $name.
      *
-     * @param string                   $name    of Header
-     * @param Swift_Mime_HeaderEncoder $encoder
-     * @param Swift_Mime_Grammar       $grammar
+     * @param Swift_Mime_Grammar         $name
+     * @param Swift_Mime_HeaderEncoder   $encoder
+     * @param Swift_Mime_Grammar         $grammar
+     * @param Swift_EmailValidatorBridge $emailValidator
      */
     public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator)
     {

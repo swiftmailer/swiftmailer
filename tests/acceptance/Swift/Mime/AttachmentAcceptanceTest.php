@@ -119,7 +119,8 @@ class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
             $this->_headers,
             $this->_contentEncoder,
             $this->_cache,
-            $this->_grammar
+            $this->_grammar,
+            $this->_emailValidator
             );
 
         return $entity;
