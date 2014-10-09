@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
 {
     private $_factory;
@@ -153,7 +155,7 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
             $paramEncoder
                 ? $paramEncoder : $this->_createParamEncoder(),
             new Swift_Mime_Grammar(),
-            new Swift_EmailValidatorBridge()
+            new EmailValidator()
             );
     }
 

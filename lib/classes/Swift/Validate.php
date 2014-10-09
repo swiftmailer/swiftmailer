@@ -6,6 +6,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * Utility Class allowing users to simply check expressions again Swift Grammar.
  *
@@ -22,7 +24,7 @@ class Swift_Validate
      */
     public static function email($email)
     {
-        $validator = new Swift_EmailValidatorBridge();
+        $validator = new EmailValidator();
         $isValid = $validator->isValid($email);
 
         return $isValid;

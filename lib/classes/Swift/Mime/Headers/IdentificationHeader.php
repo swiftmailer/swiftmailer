@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.
  *
@@ -27,18 +29,18 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     /**
      * The strict EmailValidator
      *
-     * @var Swift_EmailValidatorBridge
+     * @var EmailValidator
      */
     private $_emailValidator;
 
     /**
      * Creates a new IdentificationHeader with the given $name and $id.
      *
-     * @param Swift_Mime_Grammar         $name
-     * @param Swift_Mime_Grammar         $grammar
-     * @param Swift_EmailValidatorBridge $emailValidator
+     * @param Swift_Mime_Grammar $name
+     * @param Swift_Mime_Grammar $grammar
+     * @param EmailValidator     $emailValidator
      */
-    public function __construct($name, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator)
+    public function __construct($name, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator)
     {
         $this->setFieldName($name);
         $this->_emailValidator = $emailValidator;

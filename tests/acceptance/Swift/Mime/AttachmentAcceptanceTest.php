@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     private $_contentEncoder;
@@ -23,7 +25,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
             new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
             );
         $this->_grammar = new Swift_Mime_Grammar();
-        $this->_emailValidator = new Swift_EmailValidatorBridge();
+        $this->_emailValidator = new EmailValidator();
         $this->_headers = new Swift_Mime_SimpleHeaderSet(
             new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $this->_grammar, $this->_emailValidator)
             );

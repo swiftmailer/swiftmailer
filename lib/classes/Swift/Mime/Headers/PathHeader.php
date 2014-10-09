@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * A Path Header in Swift Mailer, such a Return-Path.
  *
@@ -25,18 +27,18 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
     /**
      * The strict EmailValidator
      *
-     * @var Swift_EmailValidatorBridge
+     * @var EmailValidator
      */
     private $_emailValidator;
 
     /**
      * Creates a new PathHeader with the given $name.
      *
-     * @param Swift_Mime_Grammar         $name
-     * @param Swift_Mime_Grammar         $grammar
-     * @param Swift_EmailValidatorBridge $emailValidator
+     * @param string             $name
+     * @param Swift_Mime_Grammar $grammar
+     * @param EmailValidator     $emailValidator
      */
-    public function __construct($name, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator)
+    public function __construct($name, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator)
     {
         $this->setFieldName($name);
         $this->_emailValidator = $emailValidator;

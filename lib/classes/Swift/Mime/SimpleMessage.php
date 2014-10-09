@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * The default email message class.
  *
@@ -22,9 +24,10 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param Swift_Mime_ContentEncoder $encoder
      * @param Swift_KeyCache            $cache
      * @param Swift_Mime_Grammar        $grammar
-     * @param string                    $charset
+     * @param EmailValidator            $emailValidator
+     * @param null                      $charset
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator, $charset = null)
+    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator, $charset = null)
     {
         parent::__construct($headers, $encoder, $cache, $grammar, $emailValidator, $charset);
         $this->getHeaders()->defineOrdering(array(

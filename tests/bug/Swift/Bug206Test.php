@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Bug206Test extends \PHPUnit_Framework_TestCase
 {
     private $_factory;
@@ -14,7 +16,7 @@ class Swift_Bug206Test extends \PHPUnit_Framework_TestCase
             new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
         );
         $grammar = new Swift_Mime_Grammar();
-        $emailValidator = new Swift_EmailValidatorBridge();
+        $emailValidator = new EmailValidator();
         $this->_factory = new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $grammar, $emailValidator);
     }
 

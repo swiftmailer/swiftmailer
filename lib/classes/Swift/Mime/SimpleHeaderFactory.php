@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * Creates MIME headers.
  *
@@ -33,13 +35,13 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     /**
      * Creates a new SimpleHeaderFactory using $encoder and $paramEncoder.
      *
-     * @param Swift_Mime_HeaderEncoder   $encoder
-     * @param Swift_Encoder              $paramEncoder
-     * @param Swift_Mime_Grammar         $grammar
-     * @param Swift_EmailValidatorBridge $emailValidator
-     * @param string|null                $charset
+     * @param Swift_Mime_HeaderEncoder $encoder
+     * @param Swift_Encoder            $paramEncoder
+     * @param Swift_Mime_Grammar       $grammar
+     * @param EmailValidator           $emailValidator
+     * @param string|null              $charset
      */
-    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator, $charset = null)
+    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator, $charset = null)
     {
         $this->_encoder = $encoder;
         $this->_paramEncoder = $paramEncoder;

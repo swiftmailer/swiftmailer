@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * An attachment, in a multipart message.
  *
@@ -25,9 +27,10 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      * @param Swift_Mime_ContentEncoder $encoder
      * @param Swift_KeyCache            $cache
      * @param Swift_Mime_Grammar        $grammar
-     * @param array                     $mimeTypes optional
+     * @param EmailValidator            $emailValidator
+     * @param array                     $mimeTypes
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator, $mimeTypes = array())
+    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator, $mimeTypes = array())
     {
         parent::__construct($headers, $encoder, $cache, $grammar, $emailValidator);
         $this->setDisposition('attachment');

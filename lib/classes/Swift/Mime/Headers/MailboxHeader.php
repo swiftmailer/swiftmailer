@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * A Mailbox Address MIME Header for something like From or Sender.
  *
@@ -25,19 +27,19 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     /**
      * The strict EmailValidator
      *
-     * @var Swift_EmailValidatorBridge
+     * @var EmailValidator
      */
     private $_emailValidator;
 
     /**
      * Creates a new MailboxHeader with $name.
      *
-     * @param Swift_Mime_Grammar         $name
-     * @param Swift_Mime_HeaderEncoder   $encoder
-     * @param Swift_Mime_Grammar         $grammar
-     * @param Swift_EmailValidatorBridge $emailValidator
+     * @param string                   $name
+     * @param Swift_Mime_HeaderEncoder $encoder
+     * @param Swift_Mime_Grammar       $grammar
+     * @param EmailValidator           $emailValidator
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Mime_Grammar $grammar, Swift_EmailValidatorBridge $emailValidator)
+    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator)
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);

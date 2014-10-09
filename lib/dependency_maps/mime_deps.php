@@ -10,7 +10,7 @@ Swift_DependencyContainer::getInstance()
     ->asSharedInstanceOf('Swift_Mime_Grammar')
 
     ->register('email.validator')
-    ->asSharedInstanceOf('Swift_EmailValidatorBridge')
+    ->asSharedInstanceOf('Egulias\EmailValidator\EmailValidator')
 
     ->register('mime.message')
     ->asNewInstanceOf('Swift_Mime_SimpleMessage')
