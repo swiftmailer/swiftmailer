@@ -368,7 +368,7 @@ Messages will be sent using the ``mail()`` function.
 .. note::
 
     The ``mail()`` function can take a ``$additional_parameters`` parameter.
-    Swift Mailer sets this to "``-f%s``" by default, where the "%s" is
+    Swift Mailer sets this to "``-f%s``" by default, where the "``%s``" is
     substituted with the address of the sender (via a ``sprintf()``) at send
     time. You may override this default by passing an argument to
     ``newInstance()``.
