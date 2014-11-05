@@ -31,7 +31,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoder extends Swift_Encoder_Base6
 
         $remainder = 0;
 
-        while (false !== $bytes = $os->read(8190)) {
+        while (false !== $bytes = $os->read(8192)) {
             $encoded = base64_encode($bytes);
             $encodedTransformed = '';
             $thisMaxLineLength = $maxLineLength - $remainder - $firstLineOffset;
