@@ -36,7 +36,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     /**
      * Creates a new IdentificationHeader with the given $name and $id.
      *
-     * @param Swift_Mime_Grammar $name
+     * @param string             $name
      * @param Swift_Mime_Grammar $grammar
      * @param EmailValidator     $emailValidator
      */

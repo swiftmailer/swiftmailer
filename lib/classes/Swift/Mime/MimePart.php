@@ -37,7 +37,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      * @param Swift_KeyCache            $cache
      * @param Swift_Mime_Grammar        $grammar
      * @param EmailValidator            $emailValidator
-     * @param null                      $charset
+     * @param string                    $charset
      */
     public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator, $charset = null)
     {
