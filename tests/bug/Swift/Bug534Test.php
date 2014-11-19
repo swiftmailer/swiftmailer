@@ -10,11 +10,10 @@ class Swift_Bug534Test extends \PHPUnit_Framework_TestCase
         $message->setFrom(array('from@example.com' => 'From address'));
         $message->setTo(array('to@example.com' => 'To address'));
 
-        $image = Swift_Image::fromPath(__DIR__ . '/swiftmailer.png');
+        $image = Swift_Image::fromPath(__DIR__.'/swiftmailer.png');
         $cid = $message->embed($image);
-        $messageBody = 'Look at <b>this</b> image: <img alt="Embedded Image" width="181" height="68" src="'
-            . $cid . '" />';
-        $message->setBody($messageBody, 'text/html');
+        $body = 'Look at <b>this</b> image: <img alt="Embedded Image" width="181" height="68" src="'.$cid.'" />';
+        $message->setBody($body, 'text/html');
 
         $that = $this;
         $messageValidation = function ($message) use ($that) {
