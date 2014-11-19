@@ -26,7 +26,7 @@ class Swift_Bug534Test extends \PHPUnit_Framework_TestCase
             preg_match("/Content-ID: <(.*)>/", $message->toString(), $imageContentIDs);
             $imageContentID = $imageContentIDs[1];
 
-            $this->assertEquals($imageCID, $imageContentID, 'cid in body and mime part Content-ID differ');
+            $that->assertEquals($imageCID, $imageContentID, 'cid in body and mime part Content-ID differ');
 
             return true;
         };
