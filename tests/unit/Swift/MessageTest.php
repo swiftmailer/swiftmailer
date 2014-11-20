@@ -49,6 +49,8 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
         }
         $id_1 = $message1->getId();
         $id_2 = $message2->getId();
+        $this->assertEquals($id_1, $id_2, 'Message Ids differ');
+        $id_2 = $message2->generateId();
         $this->assertNotEquals($id_1, $id_2, 'Message Ids are the same');
     }
 
