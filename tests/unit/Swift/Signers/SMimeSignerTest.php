@@ -70,6 +70,49 @@ OEL;
         unset($messageStream);
     }
 
+    public function testSingedMessageExtraCerts()
+    {
+        $message = Swift_SignedMessage::newInstance('Wonderful Subject')
+          ->setFrom(array('john@doe.com' => 'John Doe'))
+          ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
+          ->setBody('Here is the message itself');
+
+        $signer = new Swift_Signers_SMimeSigner();
+        $signer->setSignCertificate($this->samplesDir.'smime/sign2.crt', $this->samplesDir.'smime/sign2.key', PKCS7_DETACHED, $this->samplesDir.'smime/intermediate.crt');
+        $message->attachSigner($signer);
+
+        $messageStream = $this->newFilteredStream();
+        $message->toByteStream($messageStream);
+        $messageStream->commit();
+
+        $entityString = $messageStream->getContent();
+        $headers = self::getHeadersOfMessage($entityString);
+
+        if (!($boundary = $this->getBoundary($headers['content-type']))) {
+            return false;
+        }
+
+        $expectedBody = <<<OEL
+This is an S/MIME signed message
+
+--$boundary
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Here is the message itself
+--$boundary
+Content-Type: application/(x\-)?pkcs7-signature; name="smime\.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime\.p7s"
+
+(?:^[a-zA-Z0-9\/\\r\\n+]*={0,2})
+
+--$boundary--
+OEL;
+        $this->assertValidVerify($expectedBody, $messageStream);
+        unset($messageStream);
+    }
+
     public function testSingedMessageBinary()
     {
         $message = Swift_SignedMessage::newInstance('Wonderful Subject')
