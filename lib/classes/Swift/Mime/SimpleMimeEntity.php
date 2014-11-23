@@ -80,7 +80,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar)
     {
-        $this->_cacheKey = md5(uniqid(getmypid().mt_rand(), true));
+        $this->_cacheKey = sha1(uniqid(mt_rand(), true));
         $this->_cache = $cache;
         $this->_headers = $headers;
         $this->_grammar = $grammar;
@@ -415,7 +415,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     public function getBoundary()
     {
         if (!isset($this->_boundary)) {
-            $this->_boundary = '_=_swift_v4_'.time().'_'.md5(getmypid().mt_rand().uniqid('', true)).'_=_';
+            $this->_boundary = '_=_swift_v4_'.time().'_'.sha1(uniqid(mt_rand(), true)).'_=_';
         }
 
         return $this->_boundary;
@@ -682,7 +682,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     protected function getRandomId()
     {
-        $idLeft = md5(getmypid().'.'.time().'.'.uniqid(mt_rand(), true));
+        $idLeft = sha1(time().'.'.uniqid(mt_rand(), true));
         $idRight = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'swift.generated';
         $id = $idLeft.'@'.$idRight;
 
