@@ -6,9 +6,6 @@ Swift_DependencyContainer::getInstance()
     ->register('properties.charset')
     ->asValue('utf-8')
 
-    ->register('mime.grammar')
-    ->asSharedInstanceOf('Swift_Mime_Grammar')
-
     ->register('email.validator')
     ->asSharedInstanceOf('Egulias\EmailValidator\EmailValidator')
 
