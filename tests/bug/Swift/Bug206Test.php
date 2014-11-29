@@ -15,9 +15,8 @@ class Swift_Bug206Test extends \PHPUnit_Framework_TestCase
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
             new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
         );
-        $grammar = new Swift_Mime_Grammar();
         $emailValidator = new EmailValidator();
-        $this->_factory = new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $grammar, $emailValidator);
+        $this->_factory = new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $emailValidator);
     }
 
     public function testMailboxHeaderEncoding()

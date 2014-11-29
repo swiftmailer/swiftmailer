@@ -154,7 +154,6 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
                 ? $encoder : $this->_createHeaderEncoder(),
             $paramEncoder
                 ? $paramEncoder : $this->_createParamEncoder(),
-            new Swift_Mime_Grammar(),
             new EmailValidator()
             );
     }

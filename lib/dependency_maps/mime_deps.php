@@ -57,7 +57,6 @@ Swift_DependencyContainer::getInstance()
     ->withDependencies(array(
             'mime.qpheaderencoder',
             'mime.rfc2231encoder',
-            'mime.grammar',
             'email.validator',
             'properties.charset',
         ))

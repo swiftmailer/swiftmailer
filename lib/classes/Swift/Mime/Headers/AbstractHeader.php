@@ -65,16 +65,6 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     private $_cachedValue = null;
 
     /**
-     * Creates a new Header.
-     *
-     * @param Swift_Mime_Grammar $grammar
-     */
-    public function __construct(Swift_Mime_Grammar $grammar)
-    {
-        $this->setGrammar($grammar);
-    }
-
-    /**
      * Set the character set used in this Header.
      *
      * @param string $charset
@@ -161,6 +151,12 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function getGrammar()
     {
+        if ($this->_grammar) {
+            return $this->_grammar;
+        }
+
+        $this->setGrammar(new Swift_Mime_Grammar());
+
         return $this->_grammar;
     }
 

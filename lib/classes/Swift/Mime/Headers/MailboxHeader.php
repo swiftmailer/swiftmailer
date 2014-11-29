@@ -36,15 +36,13 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string                   $name    of Header
      * @param Swift_Mime_HeaderEncoder $encoder
-     * @param Swift_Mime_Grammar       $grammar
      * @param EmailValidator           $emailValidator
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator)
+    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, EmailValidator $emailValidator)
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);
         $this->_emailValidator = $emailValidator;
-        parent::__construct($grammar);
     }
 
     /**

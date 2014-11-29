@@ -35,14 +35,12 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      * Creates a new PathHeader with the given $name.
      *
      * @param string             $name
-     * @param Swift_Mime_Grammar $grammar
      * @param EmailValidator     $emailValidator
      */
-    public function __construct($name, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator)
+    public function __construct($name, EmailValidator $emailValidator)
     {
         $this->setFieldName($name);
         $this->_emailValidator = $emailValidator;
-        parent::__construct($grammar);
     }
 
     /**
