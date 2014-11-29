@@ -826,6 +826,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 
     private function _createMessage($headers, $encoder, $cache)
     {
-        return new Swift_Mime_SimpleMessage($headers, $encoder, $cache, new Swift_Mime_Grammar(), new EmailValidator());
+        return new Swift_Mime_SimpleMessage($headers, $encoder, $cache, new EmailValidator());
     }
 }

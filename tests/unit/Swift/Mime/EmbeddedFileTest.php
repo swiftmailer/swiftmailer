@@ -54,6 +54,6 @@ class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 
     private function _createEmbeddedFile($headers, $encoder, $cache)
     {
-        return new Swift_Mime_EmbeddedFile($headers, $encoder, $cache, new Swift_Mime_Grammar(), new EmailValidator());
+        return new Swift_Mime_EmbeddedFile($headers, $encoder, $cache, new EmailValidator());
     }
 }

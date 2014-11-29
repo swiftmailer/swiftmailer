@@ -230,6 +230,6 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 
     protected function _createMimePart($headers, $encoder, $cache)
     {
-        return new Swift_Mime_MimePart($headers, $encoder, $cache, new Swift_Mime_Grammar(), new EmailValidator());
+        return new Swift_Mime_MimePart($headers, $encoder, $cache, new EmailValidator());
     }
 }

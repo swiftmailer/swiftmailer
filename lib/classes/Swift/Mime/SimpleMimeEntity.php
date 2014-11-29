@@ -26,9 +26,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /** The encoder that encodes the body into a streamable format */
     private $_encoder;
 
-    /** The grammar to use for id validation */
-    private $_grammar;
-
     /** Strict email validator to use for id validation */
     private $_emailValidator;
 
@@ -81,15 +78,13 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      * @param Swift_Mime_HeaderSet      $headers
      * @param Swift_Mime_ContentEncoder $encoder
      * @param Swift_KeyCache            $cache
-     * @param Swift_Mime_Grammar        $grammar
      * @param EmailValidator            $emailValidator
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, EmailValidator $emailValidator)
+    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, EmailValidator $emailValidator)
     {
         $this->_cacheKey = md5(uniqid(getmypid().mt_rand(), true));
         $this->_cache = $cache;
         $this->_headers = $headers;
-        $this->_grammar = $grammar;
         $this->_emailValidator = $emailValidator;
         $this->setEncoder($encoder);
         $this->_headers->defineOrdering(array('Content-Type', 'Content-Transfer-Encoding'));
@@ -665,16 +660,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     }
 
     /**
-     * Get the grammar used for validation.
-     *
-     * @return Swift_Mime_Grammar
-     */
-    protected function _getGrammar()
-    {
-        return $this->_grammar;
-    }
-
-    /**
      * Get the EmailValidator.
      *
      * @return EmailValidator()
@@ -783,7 +768,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     private function _createChild()
     {
         return new self($this->_headers->newInstance(),
-            $this->_encoder, $this->_cache, $this->_grammar, $this->_emailValidator);
+            $this->_encoder, $this->_cache, $this->_emailValidator);
     }
 
     private function _notifyEncoderChanged(Swift_Mime_ContentEncoder $encoder)
