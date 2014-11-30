@@ -36,6 +36,15 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
     }
 
     /**
+     * Avoid ID Regeneration on clone to keep cid: url safe
+     * @see Swift_Mime_SimpleMimeEntity::generateId()
+     * @return string
+     */
+    public function generateId(){
+        return $this->_id;
+    }
+
+    /**
      * Get the nesting level used for this attachment.
      *
      * Always returns {@link LEVEL_MIXED}.
