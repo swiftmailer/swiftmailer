@@ -283,5 +283,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
         foreach ($this->headerSigners as $key => $headerSigner) {
             $this->headerSigners[$key] = clone($headerSigner);
         }
+
+        $this->generateId();
     }
 }
