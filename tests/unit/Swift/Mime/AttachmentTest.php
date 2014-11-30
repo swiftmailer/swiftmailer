@@ -282,6 +282,10 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             );
     }
 
+    public function testGenerateIdCreatesNewId() {
+        // Expected to yield a different behaviour (for cid: url)
+    }
+
     // -- Private helpers
 
     protected function _createEntity($headers, $encoder, $cache)

@@ -55,7 +55,7 @@ class Swift_Bug34Test extends \PHPUnit_Framework_TestCase
         'Content-Type: text/html; charset=utf-8'."\r\n".
         'Content-Transfer-Encoding: quoted-printable'."\r\n".
         "\r\n".
-        '<img.*?/>'.
+        '<img.*'."(=\r\n".'.*)*?/>'.
         "\r\n\r\n".
         '--\\1'."\r\n".
         'Content-Type: image/gif; name=image.gif'."\r\n".

@@ -825,6 +825,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
         $file->setBody('<image data>');
 
         $part = $this->_createMimePart();
+        $part->setMaxLineLength(1000); // Avoid line wrapping
         $part->setContentType('text/html');
         $part->setCharset('iso-8859-1');
         $part->setBody('foo <img src="'.$message->embed($file).'" />');
@@ -852,7 +853,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             'Content-Type: text/html; charset=iso-8859-1'."\r\n".
             'Content-Transfer-Encoding: quoted-printable'."\r\n".
             "\r\n".
-            'foo <img src=3D"cid:'.$cid.'" />'.//=3D is just = in QP
+            'foo <img src=3D"cid:'.$cid.'" />'. //=3D is just = in QP
             "\r\n\r\n".
             '--\\1'."\r\n".
             'Content-Type: image/jpeg; name=myimage.jpg'."\r\n".
@@ -873,7 +874,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             "\r\n\r\n".
             '--'.$boundary.'--'."\r\n".
             '$~D',
-            $message->toString()
+            preg_replace("/(?<!PHBkZiBkYXRhPg=)=\r\n/", "", $message->toString()) // Unwrap quoted printable
             );
     }
 
