@@ -40,7 +40,8 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      * @see Swift_Mime_SimpleMimeEntity::generateId()
      * @return string
      */
-    public function generateId(){
+    public function generateId()
+    {
         return $this->getId();
     }
 

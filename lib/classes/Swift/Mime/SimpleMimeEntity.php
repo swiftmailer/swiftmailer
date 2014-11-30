@@ -415,7 +415,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     public function getBoundary()
     {
         if (!isset($this->_boundary)) {
-            $this->_boundary = '_=_swift_5_'.strtolower(str_replace(array('=','+','/'), array('', '-', ''), base64_encode(sha1($this->getRandomString(20).microtime(true),true)))).'_=_';
+            $this->_boundary = '_=_swift_5_'.strtolower(str_replace(array('=', '+', '/'), array('', '-', ''), base64_encode(sha1($this->getRandomString(20).microtime(true), true)))).'_=_';
         }
 
         return $this->_boundary;
@@ -682,15 +682,15 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     protected function getRandomId()
     {
-        $idLeft = 'sw5'.str_replace(array('=','+','/'), array('', '-',''), base64_encode(sha1($this->getRandomString(20).microtime(true),true)));
+        $idLeft = 'sw5'.str_replace(array('=', '+', '/'), array('', '-', ''), base64_encode(sha1($this->getRandomString(20).microtime(true), true)));
         if (empty($_SERVER['SERVER_NAME'])) {
-            if (@function_exists('gethostname')){ // Will only fail if function is disabled on host level
-                $hostname=gethostname();
+            if (@function_exists('gethostname')) { // Will only fail if function is disabled on host level
+                $hostname = gethostname();
             } else {
-                $hostname='swift.generated';
+                $hostname = 'swift.generated';
             }
         } else {
-            $hostname=$_SERVER['SERVER_NAME'];
+            $hostname = $_SERVER['SERVER_NAME'];
         }
         $idRight = $hostname;
         $id = $idLeft.'@'.$idRight;
@@ -722,7 +722,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
         return $ret;
     }
-
 
     private function _readStream(Swift_OutputByteStream $os)
     {
