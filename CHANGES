@@ -4,7 +4,7 @@ Changelog
 5.3.1 (2014-XX-XX)
 ------------------
 
- * n/a
+ * fixed cloning of messages with attachments
 
 5.3.0 (2014-10-04)
 ------------------
