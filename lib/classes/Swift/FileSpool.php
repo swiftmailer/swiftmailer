@@ -196,7 +196,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     protected function getRandomString($count)
     {
         // This string MUST stay FS safe, avoid special chars
-        $base = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.";
+        $base = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
         $ret = '';
         $strlen = strlen($base);
         for ($i = 0; $i < $count; ++$i) {
