@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+
+by karolsojko at 2015-01-15T10:59:01Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by sskorc at 2015-01-15T11:22:19Z
+
+Build fails due to 2 errors:
+```
+Swift_TransportException: Connection to localhost:4456 Timed Out
+```
+and
+```
+3001 Segmentation fault      phpunit --verbose
+```
+
+I guess they aren't connected with my change, they may appear because of some job configuration failure or something. Does anyone have any idea?
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-01-16T10:38:32Z
+
+:+1:
