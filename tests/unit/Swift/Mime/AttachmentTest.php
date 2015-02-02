@@ -312,6 +312,8 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
 
                  return $data;
              });
+        $file->shouldReceive('setReadPointer')
+             ->zeroOrMoreTimes();
 
         return $file;
     }
