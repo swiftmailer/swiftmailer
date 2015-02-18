@@ -1,73 +1,14 @@
 Installing the Library
 ======================
 
-Installing Swift Mailer is trivial. Usually it's just a case of uploading the
-extracted source files to your web server.
-
 Installing with Composer
 ------------------------
 
-If you use Composer to manage your project dependencies, you can install
-Swiftmailer like this:
+The recommended way to install Swiftmailer is via Composer:
 
 .. code-block:: bash
 
     $ php composer.phar require swiftmailer/swiftmailer @stable
-
-Installing from a Package
--------------------------
-
-Most users will download a package from the Swift Mailer website and install
-Swift Mailer using this.
-
-If you downloaded Swift Mailer as a ``.tar.gz`` or
-``.zip`` file installation is as simple as extracting the archive
-and uploading it to your web server.
-
-Extracting the Library
-~~~~~~~~~~~~~~~~~~~~~~
-
-You extract the archive by using your favorite unarchiving tool such as
-``tar`` or 7-Zip.
-
-You will need to have access to a program that can open uncompress the
-archive. On Windows computers, 7-Zip will work. On Mac and Linux systems you
-can use ``tar`` on the command line.
-
-To extract your downloaded package:
-
-* Use the "extract" facility of your archiving software.
-
-The source code will be placed into a directory with the same name as the
-archive (e.g. Swift-4.0.0-b1).
-
-The following example shows the process on Mac OS X and Linux systems using
-the ``tar`` command.
-
-.. code-block:: bash
-
-    $ ls
-    Swift-4.0.0-dev.tar.gz
-    $ tar xvzf Swift-4.0.0-dev.tar.gz
-    Swift-4.0.0-dev/
-    Swift-4.0.0-dev/lib/
-    Swift-4.0.0-dev/lib/classes/
-    Swift-4.0.0-dev/lib/classes/Swift/
-    Swift-4.0.0-dev/lib/classes/Swift/ByteStream/
-    Swift-4.0.0-dev/lib/classes/Swift/CharacterReader/
-    Swift-4.0.0-dev/lib/classes/Swift/CharacterReaderFactory/
-    Swift-4.0.0-dev/lib/classes/Swift/CharacterStream/
-    Swift-4.0.0-dev/lib/classes/Swift/Encoder/
-
-      ... etc etc ...
-
-    Swift-4.0.0-dev/tests/unit/Swift/Transport/LoadBalancedTransportTest.php
-    Swift-4.0.0-dev/tests/unit/Swift/Transport/SendmailTransportTest.php
-    Swift-4.0.0-dev/tests/unit/Swift/Transport/StreamBufferTest.php
-    $ cd Swift-4.0.0-dev
-    $ ls
-    CHANGES LICENSE ...
-    $
 
 Installing from Git
 -------------------
@@ -123,75 +64,6 @@ OS X.
     CHANGES LICENSE ...
     $
 
-Installing from PEAR
---------------------
-
-.. note::
-
-    Using PEAR for installing Swiftmailer is deprecated and Swiftmailer 5.1.0
-    was the last version published on the PEAR channel; use Composer instead.
-
-If you want to install Swift Mailer globally on your machine, the easiest
-installation method is using the PEAR channel.
-
-To install the Swift Mailer PEAR package:
-
-* Run the command ``pear channel-discover pear.swiftmailer.org``.
-
-* Then, run the command ``pear install swift/swift``.
-
-Uploading to your Host
-----------------------
-
-You only need to upload the "lib/" directory to your web host for production
-use. All other files and directories are support files not needed in
-production.
-
-You will need FTP, ``rsync`` or similar software installed in order to upload
-the "lib/" directory to your web host.
-
-To upload Swift Mailer:
-
-* Open your FTP program, or a command line if you prefer rsync/scp.
-
-* Upload the "lib/" directory to your hosting account.
-
-The files needed to use Swift Mailer should now be accessible to PHP on your
-host.
-
-The following example shows show you can upload the files using
-``rsync`` on Linux or OS X.
-
-.. note::
-
-    You do not need to place the files inside your web root. They only need to
-    be in a place where your PHP scripts can "include" them.
-
-    .. code-block:: bash
-
-        $ rsync -rvz lib d11wtq@swiftmailer.org:swiftmailer
-        building file list ... done
-        created directory swiftmailer
-        lib/
-        lib/mime_types.php
-        lib/preferences.php
-        lib/swift_required.php
-        lib/classes/
-        lib/classes/Swift/
-        lib/classes/Swift/Attachment.php
-        lib/classes/Swift/CharacterReader.php
-          ... etc etc ...
-        lib/dependency_maps/
-        lib/dependency_maps/cache_deps.php
-        lib/dependency_maps/mime_deps.php
-        lib/dependency_maps/transport_deps.php
-
-        sent 151692 bytes  received 2974 bytes  5836.45 bytes/sec
-        total size is 401405  speedup is 2.60
-        $
-
-.. _`GitHub`: http://github.com/swiftmailer/swiftmailer
-
 Troubleshooting
 ---------------
 
@@ -213,3 +85,5 @@ temporarily change the internal encoding to ``ASCII`` when sending an email:
     {
       mb_internal_encoding($mbEncoding);
     }
+
+.. _`GitHub`: http://github.com/swiftmailer/swiftmailer

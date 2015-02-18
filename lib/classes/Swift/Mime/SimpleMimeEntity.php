@@ -263,7 +263,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Get all children added to this entity.
      *
-     * @return array of Swift_Mime_Entity
+     * @return Swift_Mime_MimeEntity[]
      */
     public function getChildren()
     {
@@ -273,8 +273,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Set all children of this entity.
      *
-     * @param array   $children      Swift_Mime_Entity instances
-     * @param int     $compoundLevel For internal use only
+     * @param Swift_Mime_MimeEntity[] $children
+     * @param int                     $compoundLevel For internal use only
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -856,7 +856,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         $this->_headers = clone $this->_headers;
         $this->_encoder = clone $this->_encoder;
         $this->_cacheKey = uniqid();
-        $this->generateId();
         $children = array();
         foreach ($this->_children as $pos => $child) {
             $children[$pos] = clone $child;
