@@ -80,5 +80,4 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
             unset($this->_handledMessageIds[$id]);
         }
     }
-
 }
