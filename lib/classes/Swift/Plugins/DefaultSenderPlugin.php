@@ -41,7 +41,7 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
      *
      * @param string $sender address
      */
-    public function __construct($defaultSenderEmail, $defaultSenderName='')
+    public function __construct($defaultSenderEmail, $defaultSenderName = '')
     {
         $this->_defaultSenderEmail = $defaultSenderEmail;
         $this->_defaultSenderName = $defaultSenderName;
@@ -58,7 +58,7 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
         $headers = $message->getHeaders();
 
         // replace sender
-        if(!count($message->getFrom())) {
+        if (!count($message->getFrom())) {
             $message->setFrom($this->_defaultSenderEmail, $this->_defaultSenderName);
             $this->_handledMessageIds[$message->getId()] = true;
         }
@@ -75,7 +75,7 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
 
         // restore original headers
         $id = $message->getId();
-        if(array_key_exists($id, $this->_handledMessageIds)) {
+        if (array_key_exists($id, $this->_handledMessageIds)) {
             $message->setFrom(null);
             unset($this->_handledMessageIds[$id]);
         }
