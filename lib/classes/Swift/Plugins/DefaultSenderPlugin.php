@@ -18,33 +18,34 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
     /**
      * The default sender email.
      *
-     * @var String
+     * @var string
      */
-    private $_defaultSenderEmail;
+    private $defaultSenderEmail;
 
     /**
      * The default sender name.
      *
-     * @var String
+     * @var string
      */
-    private $_defaultSenderName;
+    private $defaultSenderName;
 
     /**
      * List if IDs of handled messages
      *
-     * @var array
+     * @var string[]
      */
-    private $_handledMessageIds = array();
+    private $handledMessageIds = array();
 
     /**
      * Create a new ImpersonatePlugin to impersonate $sender.
      *
-     * @param string $sender address
+     * @param string $defaultSenderEmail
+     * @param string $defaultSenderName
      */
     public function __construct($defaultSenderEmail, $defaultSenderName = '')
     {
-        $this->_defaultSenderEmail = $defaultSenderEmail;
-        $this->_defaultSenderName = $defaultSenderName;
+        $this->defaultSenderEmail = $defaultSenderEmail;
+        $this->defaultSenderName = $defaultSenderName;
     }
 
     /**
@@ -59,8 +60,8 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
 
         // replace sender
         if (!count($message->getFrom())) {
-            $message->setFrom($this->_defaultSenderEmail, $this->_defaultSenderName);
-            $this->_handledMessageIds[$message->getId()] = true;
+            $message->setFrom($this->defaultSenderEmail, $this->defaultSenderName);
+            $this->handledMessageIds[$message->getId()] = true;
         }
     }
 
@@ -75,9 +76,9 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
 
         // restore original headers
         $id = $message->getId();
-        if (array_key_exists($id, $this->_handledMessageIds)) {
+        if (array_key_exists($id, $this->handledMessageIds)) {
             $message->setFrom(null);
-            unset($this->_handledMessageIds[$id]);
+            unset($this->handledMessageIds[$id]);
         }
     }
 }
