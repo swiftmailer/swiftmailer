@@ -16,21 +16,24 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
 {
 
     /**
-     * The default sender email.
+     * Email of sender to use in all messages that are sent
+     * without any sender information.
      *
      * @var string
      */
     private $defaultSenderEmail;
 
     /**
-     * The default sender name.
+     * Name of sender to use in all messages that are sent
+     * without any sender information.
      *
      * @var string
      */
     private $defaultSenderName;
 
     /**
-     * List if IDs of handled messages
+     * List if IDs of messages which got sender information set
+     * by this plugin.
      *
      * @var string[]
      */
