@@ -12,7 +12,7 @@ class Swift_Plugins_DefaultSenderPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Swift_Plugins_DefaultSenderPlugin('john@example.com');
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $this->assertEquals($message->getFrom(), array());
 
@@ -34,7 +34,7 @@ class Swift_Plugins_DefaultSenderPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Swift_Plugins_DefaultSenderPlugin('john@example.com', 'John Doe');
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $this->assertEquals($message->getFrom(), array());
 
@@ -49,7 +49,7 @@ class Swift_Plugins_DefaultSenderPluginTest extends \PHPUnit_Framework_TestCase
 
     // -- Creation Methods
 
-    private function _createSendEvent(Swift_Mime_Message $message)
+    private function createSendEvent(Swift_Mime_Message $message)
     {
         $evt = $this->getMockBuilder('Swift_Events_SendEvent')
                     ->disableOriginalConstructor()
