@@ -40,7 +40,8 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
     private $handledMessageIds = array();
 
     /**
-     * Create a new ImpersonatePlugin to impersonate $sender.
+     * Create a new DefaultSenderPlugin to use a $defaultSenderEmail and $defaultSenderName
+     * for all messages that are sent without any sender information.
      *
      * @param string $defaultSenderEmail
      * @param string $defaultSenderName
