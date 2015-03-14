@@ -40,7 +40,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport
             $challenge = $agent->executeCommand("AUTH CRAM-MD5\r\n", array(334));
             $challenge = base64_decode(substr($challenge, 4));
             $message = base64_encode(
-                $username.' '.$this->_getResponse($password, $challenge)
+                $username.' '.$this->getResponse($password, $challenge)
                 );
             $agent->executeCommand(sprintf("%s\r\n", $message), array(235));
 
@@ -60,7 +60,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport
      *
      * @return string
      */
-    private function _getResponse($secret, $challenge)
+    private function getResponse($secret, $challenge)
     {
         if (strlen($secret) > 64) {
             $secret = pack('H32', md5($secret));

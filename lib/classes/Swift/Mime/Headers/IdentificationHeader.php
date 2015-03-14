@@ -22,7 +22,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @var string[]
      */
-    private $_ids = array();
+    private $ids = array();
 
     /**
      * Creates a new IdentificationHeader with the given $name and $id.
@@ -96,8 +96,8 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     public function getId()
     {
-        if (count($this->_ids) > 0) {
-            return $this->_ids[0];
+        if (count($this->ids) > 0) {
+            return $this->ids[0];
         }
     }
 
@@ -113,12 +113,12 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
         $actualIds = array();
 
         foreach ($ids as $id) {
-            $this->_assertValidId($id);
+            $this->assertValidId($id);
             $actualIds[] = $id;
         }
 
-        $this->clearCachedValueIf($this->_ids != $actualIds);
-        $this->_ids = $actualIds;
+        $this->clearCachedValueIf($this->ids != $actualIds);
+        $this->ids = $actualIds;
     }
 
     /**
@@ -128,7 +128,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     public function getIds()
     {
-        return $this->_ids;
+        return $this->ids;
     }
 
     /**
@@ -148,7 +148,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
         if (!$this->getCachedValue()) {
             $angleAddrs = array();
 
-            foreach ($this->_ids as $id) {
+            foreach ($this->ids as $id) {
                 $angleAddrs[] = '<'.$id.'>';
             }
 
@@ -165,7 +165,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @throws Swift_RfcComplianceException
      */
-    private function _assertValidId($id)
+    private function assertValidId($id)
     {
         if (!preg_match(
             '/^'.$this->getGrammar()->getDefinition('id-left').'@'.

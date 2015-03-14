@@ -20,14 +20,14 @@ class Swift_Events_ResponseEvent extends Swift_Events_EventObject
      *
      * @var bool
      */
-    private $_valid;
+    private $valid;
 
     /**
      * The response received from the server.
      *
      * @var string
      */
-    private $_response;
+    private $response;
 
     /**
      * Create a new ResponseEvent for $source and $response.
@@ -39,8 +39,8 @@ class Swift_Events_ResponseEvent extends Swift_Events_EventObject
     public function __construct(Swift_Transport $source, $response, $valid = false)
     {
         parent::__construct($source);
-        $this->_response = $response;
-        $this->_valid = $valid;
+        $this->response = $response;
+        $this->valid = $valid;
     }
 
     /**
@@ -50,7 +50,7 @@ class Swift_Events_ResponseEvent extends Swift_Events_EventObject
      */
     public function getResponse()
     {
-        return $this->_response;
+        return $this->response;
     }
 
     /**
@@ -60,6 +60,6 @@ class Swift_Events_ResponseEvent extends Swift_Events_EventObject
      */
     public function isValid()
     {
-        return $this->_valid;
+        return $this->valid;
     }
 }

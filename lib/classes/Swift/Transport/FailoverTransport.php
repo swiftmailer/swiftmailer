@@ -20,7 +20,7 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
      *
      * @var Swift_Transport
      */
-    private $_currentTransport;
+    private $currentTransport;
 
     /**
      * Creates a new FailoverTransport.
@@ -43,11 +43,11 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {
-        $maxTransports = count($this->_transports);
+        $maxTransports = count($this->transports);
         $sent = 0;
 
         for ($i = 0; $i < $maxTransports
-            && $transport = $this->_getNextTransport(); ++$i) {
+            && $transport = $this->getNextTransport(); ++$i) {
             try {
                 if (!$transport->isStarted()) {
                     $transport->start();
@@ -55,11 +55,11 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
 
                 return $transport->send($message, $failedRecipients);
             } catch (Swift_TransportException $e) {
-                $this->_killCurrentTransport();
+                $this->killCurrentTransport();
             }
         }
 
-        if (count($this->_transports) == 0) {
+        if (count($this->transports) == 0) {
             throw new Swift_TransportException(
                 'All Transports in FailoverTransport failed, or no Transports available'
                 );
@@ -68,18 +68,18 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
         return $sent;
     }
 
-    protected function _getNextTransport()
+    protected function getNextTransport()
     {
-        if (!isset($this->_currentTransport)) {
-            $this->_currentTransport = parent::_getNextTransport();
+        if (!isset($this->currentTransport)) {
+            $this->currentTransport = parent::getNextTransport();
         }
 
-        return $this->_currentTransport;
+        return $this->currentTransport;
     }
 
-    protected function _killCurrentTransport()
+    protected function killCurrentTransport()
     {
-        $this->_currentTransport = null;
-        parent::_killCurrentTransport();
+        $this->currentTransport = null;
+        parent::killCurrentTransport();
     }
 }

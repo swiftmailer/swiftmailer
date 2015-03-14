@@ -13,7 +13,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
 
     public function testBasicSigningHeaderManipulation()
     {
-        $headers = $this->_createHeaders();
+        $headers = $this->createHeaders();
         $messageContent = "Hello World";
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         /* @var $signer Swift_Signers_HeaderSigner */
@@ -32,7 +32,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // Default Signing
     public function testSigningDefaults()
     {
-        $headerSet = $this->_createHeaderSet();
+        $headerSet = $this->createHeaderSet();
         $messageContent = "Hello World";
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setSignatureTimestamp('1299879181');
@@ -54,7 +54,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // SHA256 Signing
     public function testSigning256()
     {
-        $headerSet = $this->_createHeaderSet();
+        $headerSet = $this->createHeaderSet();
         $messageContent = "Hello World";
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha256');
@@ -77,7 +77,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // Relaxed/Relaxed Hash Signing
     public function testSigningRelaxedRelaxed256()
     {
-        $headerSet = $this->_createHeaderSet();
+        $headerSet = $this->createHeaderSet();
         $messageContent = "Hello World";
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha256');
@@ -102,7 +102,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // Relaxed/Simple Hash Signing
     public function testSigningRelaxedSimple256()
     {
-        $headerSet = $this->_createHeaderSet();
+        $headerSet = $this->createHeaderSet();
         $messageContent = "Hello World";
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha256');
@@ -126,7 +126,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // Simple/Relaxed Hash Signing
     public function testSigningSimpleRelaxed256()
     {
-        $headerSet = $this->_createHeaderSet();
+        $headerSet = $this->createHeaderSet();
         $messageContent = "Hello World";
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha256');
@@ -148,7 +148,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     }
 
     // -- Creation Methods
-    private function _createHeaderSet()
+    private function createHeaderSet()
     {
         $cache = new Swift_KeyCache_ArrayKeyCache(new Swift_KeyCache_SimpleKeyCacheInputStream());
         $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
@@ -165,7 +165,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     /**
      * @return Swift_Mime_Headers
      */
-    private function _createHeaders()
+    private function createHeaders()
     {
         $x = 0;
         $cache = new Swift_KeyCache_ArrayKeyCache(new Swift_KeyCache_SimpleKeyCacheInputStream());

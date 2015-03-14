@@ -32,7 +32,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Swift_Plugins_RedirectingPlugin('god@example.com');
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $plugin->beforeSendPerformed($evt);
 
@@ -65,7 +65,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Swift_Plugins_RedirectingPlugin('god@example.com');
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $plugin->beforeSendPerformed($evt);
 
@@ -111,7 +111,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($recipient, $plugin->getRecipient());
         $this->assertEquals($plugin->getWhitelist(), $patterns);
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $plugin->beforeSendPerformed($evt);
 
@@ -154,7 +154,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Swift_Plugins_RedirectingPlugin($recipients, $patterns);
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $plugin->beforeSendPerformed($evt);
 
@@ -171,7 +171,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     // -- Creation Methods
 
-    private function _createSendEvent(Swift_Mime_Message $message)
+    private function createSendEvent(Swift_Mime_Message $message)
     {
         $evt = $this->getMockBuilder('Swift_Events_SendEvent')
                     ->disableOriginalConstructor()

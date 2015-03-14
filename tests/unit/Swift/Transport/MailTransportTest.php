@@ -4,14 +4,14 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 {
     public function testTransportUsesToFieldBodyInSending()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $to = $this->_createHeader();
-        $headers = $this->_createHeaders(array(
+        $to = $this->createHeader();
+        $headers = $this->createHeaders(array(
             'To' => $to,
         ));
-        $message = $this->_createMessage($headers);
+        $message = $this->createMessage($headers);
 
         $to->shouldReceive('getFieldBody')
            ->zeroOrMoreTimes()
@@ -25,14 +25,14 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testTransportUsesSubjectFieldBodyInSending()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $subj = $this->_createHeader();
-        $headers = $this->_createHeaders(array(
+        $subj = $this->createHeader();
+        $headers = $this->createHeaders(array(
             'Subject' => $subj,
         ));
-        $message = $this->_createMessage($headers);
+        $message = $this->createMessage($headers);
 
         $subj->shouldReceive('getFieldBody')
              ->zeroOrMoreTimes()
@@ -46,11 +46,11 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testTransportUsesBodyOfMessage()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $headers = $this->_createHeaders();
-        $message = $this->_createMessage($headers);
+        $headers = $this->createHeaders();
+        $message = $this->createMessage($headers);
 
         $message->shouldReceive('toString')
              ->zeroOrMoreTimes()
@@ -68,11 +68,11 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testTransportUsesHeadersFromMessage()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $headers = $this->_createHeaders();
-        $message = $this->_createMessage($headers);
+        $headers = $this->createHeaders();
+        $message = $this->createMessage($headers);
 
         $message->shouldReceive('toString')
              ->zeroOrMoreTimes()
@@ -90,11 +90,11 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testTransportReturnsCountOfAllRecipientsIfInvokerReturnsTrue()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $headers = $this->_createHeaders();
-        $message = $this->_createMessage($headers);
+        $headers = $this->createHeaders();
+        $message = $this->createMessage($headers);
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
@@ -112,11 +112,11 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testTransportReturnsZeroIfInvokerReturnsFalse()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $headers = $this->_createHeaders();
-        $message = $this->_createMessage($headers);
+        $headers = $this->createHeaders();
+        $message = $this->createMessage($headers);
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
@@ -134,14 +134,14 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testToHeaderIsRemovedFromHeaderSetDuringSending()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $to = $this->_createHeader();
-        $headers = $this->_createHeaders(array(
+        $to = $this->createHeader();
+        $headers = $this->createHeaders(array(
             'To' => $to,
         ));
-        $message = $this->_createMessage($headers);
+        $message = $this->createMessage($headers);
 
         $headers->shouldReceive('remove')
                 ->once()
@@ -157,14 +157,14 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testSubjectHeaderIsRemovedFromHeaderSetDuringSending()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $subject = $this->_createHeader();
-        $headers = $this->_createHeaders(array(
+        $subject = $this->createHeader();
+        $headers = $this->createHeaders(array(
             'Subject' => $subject,
         ));
-        $message = $this->_createMessage($headers);
+        $message = $this->createMessage($headers);
 
         $headers->shouldReceive('remove')
                 ->once()
@@ -180,14 +180,14 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testToHeaderIsPutBackAfterSending()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $to = $this->_createHeader();
-        $headers = $this->_createHeaders(array(
+        $to = $this->createHeader();
+        $headers = $this->createHeaders(array(
             'To' => $to,
         ));
-        $message = $this->_createMessage($headers);
+        $message = $this->createMessage($headers);
 
         $headers->shouldReceive('set')
                 ->once()
@@ -203,14 +203,14 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     public function testSubjectHeaderIsPutBackAfterSending()
     {
-        $dispatcher = $this->_createEventDispatcher();
-        $transport = $this->_createTransport($dispatcher);
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
 
-        $subject = $this->_createHeader();
-        $headers = $this->_createHeaders(array(
+        $subject = $this->createHeader();
+        $headers = $this->createHeaders(array(
             'Subject' => $subject,
         ));
-        $message = $this->_createMessage($headers);
+        $message = $this->createMessage($headers);
 
         $headers->shouldReceive('set')
                 ->once()
@@ -226,17 +226,17 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
     // -- Creation Methods
 
-    private function _createTransport($dispatcher)
+    private function createTransport($dispatcher)
     {
         return \Mockery::mock('Swift_Transport_MailTransport', array($dispatcher))->makePartial();
     }
 
-    private function _createEventDispatcher()
+    private function createEventDispatcher()
     {
         return $this->getMockery('Swift_Events_EventDispatcher')->shouldIgnoreMissing();
     }
 
-    private function _createMessage($headers)
+    private function createMessage($headers)
     {
         $message = $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
         $message->shouldReceive('getHeaders')
@@ -246,7 +246,7 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
         return $message;
     }
 
-    private function _createHeaders($headers = array())
+    private function createHeaders($headers = array())
     {
         $set = $this->getMockery('Swift_Mime_HeaderSet')->shouldIgnoreMissing();
 
@@ -263,7 +263,7 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
             }
         }
 
-        $header = $this->_createHeader();
+        $header = $this->createHeader();
         $set->shouldReceive('get')
             ->zeroOrMoreTimes()
             ->andReturn($header);
@@ -274,7 +274,7 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
         return $set;
     }
 
-    private function _createHeader()
+    private function createHeader()
     {
         return $this->getMockery('Swift_Mime_Header')->shouldIgnoreMissing();
     }

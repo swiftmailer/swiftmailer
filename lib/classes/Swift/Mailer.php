@@ -16,7 +16,7 @@
 class Swift_Mailer
 {
     /** The Transport used to send messages */
-    private $_transport;
+    private $transport;
 
     /**
      * Create a new Mailer using $transport for delivery.
@@ -25,7 +25,7 @@ class Swift_Mailer
      */
     public function __construct(Swift_Transport $transport)
     {
-        $this->_transport = $transport;
+        $this->transport = $transport;
     }
 
     /**
@@ -63,14 +63,14 @@ class Swift_Mailer
     {
         $failedRecipients = (array) $failedRecipients;
 
-        if (!$this->_transport->isStarted()) {
-            $this->_transport->start();
+        if (!$this->transport->isStarted()) {
+            $this->transport->start();
         }
 
         $sent = 0;
 
         try {
-            $sent = $this->_transport->send($message, $failedRecipients);
+            $sent = $this->transport->send($message, $failedRecipients);
         } catch (Swift_RfcComplianceException $e) {
             foreach ($message->getTo() as $address => $name) {
                 $failedRecipients[] = $address;
@@ -87,7 +87,7 @@ class Swift_Mailer
      */
     public function registerPlugin(Swift_Events_EventListener $plugin)
     {
-        $this->_transport->registerPlugin($plugin);
+        $this->transport->registerPlugin($plugin);
     }
 
     /**
@@ -97,6 +97,6 @@ class Swift_Mailer
      */
     public function getTransport()
     {
-        return $this->_transport;
+        return $this->transport;
     }
 }

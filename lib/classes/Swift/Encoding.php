@@ -22,7 +22,7 @@ class Swift_Encoding
      */
     public static function get7BitEncoding()
     {
-        return self::_lookup('mime.7bitcontentencoder');
+        return self::lookup('mime.7bitcontentencoder');
     }
 
     /**
@@ -32,7 +32,7 @@ class Swift_Encoding
      */
     public static function get8BitEncoding()
     {
-        return self::_lookup('mime.8bitcontentencoder');
+        return self::lookup('mime.8bitcontentencoder');
     }
 
     /**
@@ -42,7 +42,7 @@ class Swift_Encoding
      */
     public static function getQpEncoding()
     {
-        return self::_lookup('mime.qpcontentencoder');
+        return self::lookup('mime.qpcontentencoder');
     }
 
     /**
@@ -52,12 +52,12 @@ class Swift_Encoding
      */
     public static function getBase64Encoding()
     {
-        return self::_lookup('mime.base64contentencoder');
+        return self::lookup('mime.base64contentencoder');
     }
 
     // -- Private Static Methods
 
-    private static function _lookup($key)
+    private static function lookup($key)
     {
         return Swift_DependencyContainer::getInstance()->lookup($key);
     }

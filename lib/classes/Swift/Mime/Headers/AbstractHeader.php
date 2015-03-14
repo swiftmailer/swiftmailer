@@ -20,49 +20,49 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      *
      * @var string
      */
-    private $_name;
+    private $name;
 
     /**
      * The Grammar used for this Header.
      *
      * @var Swift_Mime_Grammar
      */
-    private $_grammar;
+    private $grammar;
 
     /**
      * The Encoder used to encode this Header.
      *
      * @var Swift_Encoder
      */
-    private $_encoder;
+    private $encoder;
 
     /**
      * The maximum length of a line in the header.
      *
      * @var int
      */
-    private $_lineLength = 78;
+    private $lineLength = 78;
 
     /**
      * The language used in this Header.
      *
      * @var string
      */
-    private $_lang;
+    private $lang;
 
     /**
      * The character set of the text in this Header.
      *
      * @var string
      */
-    private $_charset = 'utf-8';
+    private $charset = 'utf-8';
 
     /**
      * The value of this Header, cached.
      *
      * @var string
      */
-    private $_cachedValue = null;
+    private $cachedValue = null;
 
     /**
      * Creates a new Header.
@@ -81,10 +81,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function setCharset($charset)
     {
-        $this->clearCachedValueIf($charset != $this->_charset);
-        $this->_charset = $charset;
-        if (isset($this->_encoder)) {
-            $this->_encoder->charsetChanged($charset);
+        $this->clearCachedValueIf($charset != $this->charset);
+        $this->charset = $charset;
+        if (isset($this->encoder)) {
+            $this->encoder->charsetChanged($charset);
         }
     }
 
@@ -95,7 +95,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function getCharset()
     {
-        return $this->_charset;
+        return $this->charset;
     }
 
     /**
@@ -108,8 +108,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function setLanguage($lang)
     {
-        $this->clearCachedValueIf($this->_lang != $lang);
-        $this->_lang = $lang;
+        $this->clearCachedValueIf($this->lang != $lang);
+        $this->lang = $lang;
     }
 
     /**
@@ -119,7 +119,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function getLanguage()
     {
-        return $this->_lang;
+        return $this->lang;
     }
 
     /**
@@ -129,7 +129,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function setEncoder(Swift_Mime_HeaderEncoder $encoder)
     {
-        $this->_encoder = $encoder;
+        $this->encoder = $encoder;
         $this->setCachedValue(null);
     }
 
@@ -140,7 +140,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function getEncoder()
     {
-        return $this->_encoder;
+        return $this->encoder;
     }
 
     /**
@@ -150,7 +150,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function setGrammar(Swift_Mime_Grammar $grammar)
     {
-        $this->_grammar = $grammar;
+        $this->grammar = $grammar;
         $this->setCachedValue(null);
     }
 
@@ -161,7 +161,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function getGrammar()
     {
-        return $this->_grammar;
+        return $this->grammar;
     }
 
     /**
@@ -171,7 +171,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function getFieldName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -181,8 +181,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function setMaxLineLength($lineLength)
     {
-        $this->clearCachedValueIf($this->_lineLength != $lineLength);
-        $this->_lineLength = $lineLength;
+        $this->clearCachedValueIf($this->lineLength != $lineLength);
+        $this->lineLength = $lineLength;
     }
 
     /**
@@ -192,7 +192,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function getMaxLineLength()
     {
-        return $this->_lineLength;
+        return $this->lineLength;
     }
 
     /**
@@ -204,7 +204,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     public function toString()
     {
-        return $this->_tokensToString($this->toTokens());
+        return $this->tokensToString($this->toTokens());
     }
 
     /**
@@ -228,7 +228,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     protected function setFieldName($name)
     {
-        $this->_name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -365,12 +365,12 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     protected function getTokenAsEncodedWord($token, $firstLineOffset = 0)
     {
         // Adjust $firstLineOffset to account for space needed for syntax
-        $charsetDecl = $this->_charset;
-        if (isset($this->_lang)) {
-            $charsetDecl .= '*'.$this->_lang;
+        $charsetDecl = $this->charset;
+        if (isset($this->lang)) {
+            $charsetDecl .= '*'.$this->lang;
         }
         $encodingWrapperLength = strlen(
-            '=?'.$charsetDecl.'?'.$this->_encoder->getName().'??='
+            '=?'.$charsetDecl.'?'.$this->encoder->getName().'??='
             );
 
         if ($firstLineOffset >= 75) {
@@ -379,16 +379,16 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         }
 
         $encodedTextLines = explode("\r\n",
-            $this->_encoder->encodeString(
-                $token, $firstLineOffset, 75 - $encodingWrapperLength, $this->_charset
+            $this->encoder->encodeString(
+                $token, $firstLineOffset, 75 - $encodingWrapperLength, $this->charset
                 )
         );
 
-        if (strtolower($this->_charset) !== 'iso-2022-jp') {
+        if (strtolower($this->charset) !== 'iso-2022-jp') {
             // special encoding for iso-2022-jp using mb_encode_mimeheader
             foreach ($encodedTextLines as $lineNum => $line) {
                 $encodedTextLines[$lineNum] = '=?'.$charsetDecl.
-                    '?'.$this->_encoder->getName().
+                    '?'.$this->encoder->getName().
                     '?'.$line.'?=';
             }
         }
@@ -415,7 +415,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     protected function setCachedValue($value)
     {
-        $this->_cachedValue = $value;
+        $this->cachedValue = $value;
     }
 
     /**
@@ -425,7 +425,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     protected function getCachedValue()
     {
-        return $this->_cachedValue;
+        return $this->cachedValue;
     }
 
     /**
@@ -474,18 +474,18 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      *
      * @return string
      */
-    private function _tokensToString(array $tokens)
+    private function tokensToString(array $tokens)
     {
         $lineCount = 0;
         $headerLines = array();
-        $headerLines[] = $this->_name.': ';
+        $headerLines[] = $this->name.': ';
         $currentLine = & $headerLines[$lineCount++];
 
         // Build all tokens back into compliant header
         foreach ($tokens as $i => $token) {
             // Line longer than specified maximum or token was just a new line
             if (("\r\n" == $token) ||
-                ($i > 0 && strlen($currentLine.$token) > $this->_lineLength)
+                ($i > 0 && strlen($currentLine.$token) > $this->lineLength)
                 && 0 < strlen($currentLine)) {
                 $headerLines[] = '';
                 $currentLine = & $headerLines[$lineCount++];

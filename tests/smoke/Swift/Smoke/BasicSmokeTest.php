@@ -7,7 +7,7 @@ class Swift_Smoke_BasicSmokeTest extends SwiftMailerSmokeTestCase
 {
     public function testBasicSending()
     {
-        $mailer = $this->_getMailer();
+        $mailer = $this->getMailer();
         $message = (new Swift_Message())
             ->setSubject('[Swift Mailer] BasicSmokeTest')
             ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Swift Mailer'))

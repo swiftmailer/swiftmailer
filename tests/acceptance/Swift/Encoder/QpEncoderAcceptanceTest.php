@@ -2,18 +2,18 @@
 
 class Swift_Encoder_QpEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
-    private $_samplesDir;
-    private $_factory;
+    private $samplesDir;
+    private $factory;
 
     public function setUp()
     {
-        $this->_samplesDir = realpath(__DIR__.'/../../../_samples/charsets');
-        $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
+        $this->samplesDir = realpath(__DIR__.'/../../../_samples/charsets');
+        $this->factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     }
 
     public function testEncodingAndDecodingSamples()
     {
-        $sampleFp = opendir($this->_samplesDir);
+        $sampleFp = opendir($this->samplesDir);
         while (false !== $encodingDir = readdir($sampleFp)) {
             if (substr($encodingDir, 0, 1) == '.') {
                 continue;
@@ -21,10 +21,10 @@ class Swift_Encoder_QpEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 
             $encoding = $encodingDir;
             $charStream = new Swift_CharacterStream_ArrayCharacterStream(
-                $this->_factory, $encoding);
+                $this->factory, $encoding);
             $encoder = new Swift_Encoder_QpEncoder($charStream);
 
-            $sampleDir = $this->_samplesDir.'/'.$encodingDir;
+            $sampleDir = $this->samplesDir.'/'.$encodingDir;
 
             if (is_dir($sampleDir)) {
                 $fileFp = opendir($sampleDir);

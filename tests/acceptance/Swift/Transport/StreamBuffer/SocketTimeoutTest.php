@@ -2,9 +2,9 @@
 
 class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_TestCase
 {
-    protected $_buffer;
+    protected $buffer;
 
-    protected $_server;
+    protected $server;
 
     public function setUp()
     {
@@ -17,24 +17,24 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
 
         $serverStarted = false;
         for ($i = 0; $i<5; ++$i) {
-            $this->_randomHighPort = rand(50000,65000);
-            $this->_server = stream_socket_server('tcp://127.0.0.1:'.$this->_randomHighPort);
-            if ($this->_server) {
+            $this->randomHighPort = rand(50000,65000);
+            $this->server = stream_socket_server('tcp://127.0.0.1:'.$this->randomHighPort);
+            if ($this->server) {
                 $serverStarted = true;
             }
         }
 
-        $this->_buffer = new Swift_Transport_StreamBuffer(
+        $this->buffer = new Swift_Transport_StreamBuffer(
             $this->getMock('Swift_ReplacementFilterFactory')
         );
     }
 
-    protected function _initializeBuffer()
+    protected function initializeBuffer()
     {
         $host = '127.0.0.1';
-        $port = $this->_randomHighPort;
+        $port = $this->randomHighPort;
 
-        $this->_buffer->initialize(array(
+        $this->buffer->initialize(array(
             'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
             'host' => $host,
             'port' => $port,
@@ -46,10 +46,10 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
 
     public function testTimeoutException()
     {
-        $this->_initializeBuffer();
+        $this->initializeBuffer();
         $e = null;
         try {
-            $line = $this->_buffer->readLine(0);
+            $line = $this->buffer->readLine(0);
         } catch (Exception $e) {
         }
         $this->assertInstanceof('Swift_IoException', $e, 'IO Exception Not Thrown On Connection Timeout');
@@ -58,8 +58,8 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
 
     public function tearDown()
     {
-        if ($this->_server) {
-            stream_socket_shutdown($this->_server, STREAM_SHUT_RDWR);
+        if ($this->server) {
+            stream_socket_shutdown($this->server, STREAM_SHUT_RDWR);
         }
     }
 }
