@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.4.0 (2015-XX-XX)
+5.4.0 (2015-03-14)
 ------------------
 
  * added the possibility to add extra certs to PKCS#7 signature
