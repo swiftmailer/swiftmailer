@@ -702,7 +702,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             $string .= $bytes;
         }
 
-	$os->setReadPointer(0);
+        $os->setReadPointer(0);
 
         return $string;
     }
