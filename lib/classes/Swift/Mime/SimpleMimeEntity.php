@@ -80,7 +80,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar)
     {
-        $this->_cacheKey = md5(uniqid(getmypid().mt_rand(), true));
+        $this->_cacheKey = $this->getRandomString(40);
         $this->_cache = $cache;
         $this->_headers = $headers;
         $this->_grammar = $grammar;
@@ -415,7 +415,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     public function getBoundary()
     {
         if (!isset($this->_boundary)) {
-            $this->_boundary = '_=_swift_v4_'.time().'_'.md5(getmypid().mt_rand().uniqid('', true)).'_=_';
+            $this->_boundary = '_=_swift_5_'.strtolower(str_replace(array('=', '+', '/'), array('', '-', ''), base64_encode(sha1($this->getRandomString(20).microtime(true), true)))).'_=_';
         }
 
         return $this->_boundary;
@@ -682,8 +682,17 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     protected function getRandomId()
     {
-        $idLeft = md5(getmypid().'.'.time().'.'.uniqid(mt_rand(), true));
-        $idRight = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'swift.generated';
+        $idLeft = 'sw5'.str_replace(array('=', '+', '/'), array('', '-', ''), base64_encode(sha1($this->getRandomString(20).microtime(true), true)));
+        if (empty($_SERVER['SERVER_NAME'])) {
+            if (@function_exists('gethostname')) { // Will only fail if function is disabled on host level
+                $hostname = gethostname();
+            } else {
+                $hostname = 'swift.generated';
+            }
+        } else {
+            $hostname = $_SERVER['SERVER_NAME'];
+        }
+        $idRight = $hostname;
         $id = $idLeft.'@'.$idRight;
 
         try {
@@ -693,6 +702,25 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         }
 
         return $id;
+    }
+
+    /**
+     * Returns a random string needed to generate a messageId without relying on systemFunctions
+     * @param int $count
+     *
+     * @return string
+     */
+    protected function getRandomString($count)
+    {
+        // This string MUST stay FS safe, avoid special chars
+        $base = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.";
+        $ret = '';
+        $strlen = strlen($base);
+        for ($i = 0; $i < $count; ++$i) {
+            $ret .= $base[((int) mt_rand(0, $strlen - 1))];
+        }
+
+        return $ret;
     }
 
     private function _readStream(Swift_OutputByteStream $os)
