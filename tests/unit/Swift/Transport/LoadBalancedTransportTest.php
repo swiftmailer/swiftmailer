@@ -748,9 +748,4 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
     {
         return $this->getMockery('Swift_Events_EventListener');
     }
-
-    private function _createInnerTransport()
-    {
-        return $this->getMockery('Swift_Transport');
-    }
 }
