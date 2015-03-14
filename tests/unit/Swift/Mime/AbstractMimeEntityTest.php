@@ -1040,6 +1040,8 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
 
                    return $data;
                });
+            $os->shouldReceive('setReadPointer')
+              ->zeroOrMoreTimes();
         }
 
         return $os;
