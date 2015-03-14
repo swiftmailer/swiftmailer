@@ -41,7 +41,6 @@ function generateUpToDateMimeArray()
             'css'  => 'text/css',
             'js'   => 'text/javascript',
             'txt'  => 'text/plain',
-            'xml'  => 'text/xml',
             'aif'  => 'audio/x-aiff',
             'aiff' => 'audio/x-aiff',
             'avi'  => 'video/avi',
