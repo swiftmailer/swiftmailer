@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 {
     public function testNestingLevelIsSubpart()
@@ -824,6 +826,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 
     private function _createMessage($headers, $encoder, $cache)
     {
-        return new Swift_Mime_SimpleMessage($headers, $encoder, $cache, new Swift_Mime_Grammar());
+        return new Swift_Mime_SimpleMessage($headers, $encoder, $cache, new EmailValidator());
     }
 }

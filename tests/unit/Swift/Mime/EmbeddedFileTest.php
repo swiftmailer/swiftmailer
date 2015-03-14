@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 {
     public function testNestingLevelIsAttachment()
@@ -52,6 +54,6 @@ class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 
     private function _createEmbeddedFile($headers, $encoder, $cache)
     {
-        return new Swift_Mime_EmbeddedFile($headers, $encoder, $cache, new Swift_Mime_Grammar());
+        return new Swift_Mime_EmbeddedFile($headers, $encoder, $cache, new EmailValidator());
     }
 }

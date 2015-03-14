@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * A Path Header in Swift Mailer, such a Return-Path.
  *
@@ -23,15 +25,22 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
     private $_address;
 
     /**
+     * The strict EmailValidator
+     *
+     * @var EmailValidator
+     */
+    private $_emailValidator;
+
+    /**
      * Creates a new PathHeader with the given $name.
      *
      * @param string             $name
-     * @param Swift_Mime_Grammar $grammar
+     * @param EmailValidator     $emailValidator
      */
-    public function __construct($name, Swift_Mime_Grammar $grammar)
+    public function __construct($name, EmailValidator $emailValidator)
     {
         $this->setFieldName($name);
-        parent::__construct($grammar);
+        $this->_emailValidator = $emailValidator;
     }
 
     /**
@@ -133,11 +142,10 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      */
     private function _assertValidAddress($address)
     {
-        if (!preg_match('/^'.$this->getGrammar()->getDefinition('addr-spec').'$/D',
-            $address)) {
+        if (!$this->_emailValidator->isValid($address)) {
             throw new Swift_RfcComplianceException(
                 'Address set in PathHeader does not comply with addr-spec of RFC 2822.'
-                );
+            );
         }
     }
 }

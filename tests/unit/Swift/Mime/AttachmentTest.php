@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
 {
     public function testNestingLevelIsAttachment()
@@ -19,7 +21,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
 
         $disposition = $this->_createHeader('Content-Disposition', 'attachment');
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Disposition' => $disposition,)),
+            'Content-Disposition' => $disposition, )),
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals('attachment', $attachment->getDisposition());
@@ -37,7 +39,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
                     ->zeroOrMoreTimes();
 
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Disposition' => $disposition,)),
+            'Content-Disposition' => $disposition, )),
             $this->_createEncoder(), $this->_createCache()
             );
         $attachment->setDisposition('inline');
@@ -84,7 +86,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
               ->zeroOrMoreTimes();
 
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->_createEncoder(), $this->_createCache()
             );
     }
@@ -98,7 +100,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             array('filename' => 'foo.txt')
             );
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Disposition' => $disposition,)),
+            'Content-Disposition' => $disposition, )),
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals('foo.txt', $attachment->getFilename());
@@ -116,7 +118,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
                     ->zeroOrMoreTimes();
 
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Disposition' => $disposition,)),
+            'Content-Disposition' => $disposition, )),
             $this->_createEncoder(), $this->_createCache()
             );
         $attachment->setFilename('bar.txt');
@@ -138,7 +140,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
               ->zeroOrMoreTimes();
 
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->_createEncoder(), $this->_createCache()
             );
         $attachment->setFilename('bar.txt');
@@ -153,7 +155,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             array('size' => 1234)
             );
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Disposition' => $disposition,)),
+            'Content-Disposition' => $disposition, )),
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals(1234, $attachment->getSize());
@@ -171,7 +173,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
                     ->zeroOrMoreTimes();
 
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Disposition' => $disposition,)),
+            'Content-Disposition' => $disposition, )),
             $this->_createEncoder(), $this->_createCache()
             );
         $attachment->setSize(12345);
@@ -188,7 +190,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
                     ->with('filename', 'file.ext');
 
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Disposition' => $disposition,)),
+            'Content-Disposition' => $disposition, )),
             $this->_createEncoder(), $this->_createCache()
             );
         $attachment->setFile($file);
@@ -291,7 +293,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
 
     protected function _createAttachment($headers, $encoder, $cache, $mimeTypes = array())
     {
-        return new Swift_Mime_Attachment($headers, $encoder, $cache, new Swift_Mime_Grammar(), $mimeTypes);
+        return new Swift_Mime_Attachment($headers, $encoder, $cache, new EmailValidator(), $mimeTypes);
     }
 
     protected function _createFileStream($path, $data, $stub = true)
