@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by apinstein at 2014-11-05T17:11:30Z
+
+FYI I made the test fail first then fixed it...
+
+`git checkout 36219af08f7cdbbff8c3ba14f83b406c7dc1510d && ./vendor/bin/phpunit --filter testEncodingAndDecodingSamples tests/acceptance/Swift/Mime/ContentEncoder/Base64ContentEncoderAcceptanceTest.php`
+FAILS
+
+`git checkout 3b6c0e82f18a6359a2aba9a89b797428f23400ab && ./vendor/bin/phpunit --filter testEncodingAndDecodingSamples tests/acceptance/Swift/Mime/ContentEncoder/Base64ContentEncoderAcceptanceTest.php`
+PASSES.
+
+---------------------------------------------------------------------------
+
+by apinstein at 2014-11-05T17:55:51Z
+
+Ok, I've addressed all of the coding style issues and removed PHPUnit from composer.
+
+Also, might I suggest that you add a CONTRIB.md file or something similar? Before submitting the patch I looked in the repo for a "dev best practices" file and on the website as well and there's just no info about how to contribute appropriately.
+
+I'll also add that the tests don't pass on master... so the CI builds of this branch won't pass, either.
+
+---------------------------------------------------------------------------
+
+by apinstein at 2014-11-06T14:29:56Z
+
+I re-wrote my comments about the new approach and I think it's all ready to go.
