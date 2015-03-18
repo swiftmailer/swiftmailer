@@ -112,4 +112,26 @@ interface Swift_Mime_MimeEntity extends Swift_Mime_CharsetObserver, Swift_Mime_E
      * @param Swift_InputByteStream $is to write to
      */
     public function toByteStream(Swift_InputByteStream $is);
+    
+    /**
+     * Get the server response for a message.  Due to the internals of swiftmailer, 1 message may be decomposed
+     * and sent several time to different recipients.
+     *
+     * This is only populated after the sending the message to a server and the response is the text that server sends
+     * which will vary from server to server
+     *
+     * @return array array(array(recipients), response)
+     */
+    public function getResponse();
+    
+    /**
+     * Add a server response for a message.  Due to the internals of swiftmailer, 1 message may be decomposed
+     * and sent multiple times to different recipients.
+     *
+     * This should only be populated after a message is sent
+     * 
+     * @param array $recipients 
+     * @param string $response
+     */
+    public function addResponse(array $recipients, $response);    
 }
