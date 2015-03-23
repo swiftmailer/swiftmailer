@@ -11,7 +11,7 @@
 /**
  * Redundantly and rotationally uses several Transports when sending.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Transport_LoadBalancedTransport implements Swift_Transport
 {

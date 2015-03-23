@@ -11,7 +11,7 @@
 /**
  * A MIME part, in a multipart message.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
 {
@@ -136,7 +136,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     /**
      * Turn delsp on or off for this entity.
      *
-     * @param bool    $delsp
+     * @param bool $delsp
      *
      * @return Swift_Mime_MimePart
      */

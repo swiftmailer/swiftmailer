@@ -11,7 +11,7 @@
 /**
  * Generated when a command is sent over an SMTP connection.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Events_CommandEvent extends Swift_Events_EventObject
 {

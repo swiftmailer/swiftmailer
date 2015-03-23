@@ -11,7 +11,7 @@
 /**
  * A collection of MIME headers.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
 {
@@ -71,8 +71,8 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     /**
      * Add a new Date header using $timestamp (UNIX time).
      *
-     * @param string  $name
-     * @param int     $timestamp
+     * @param string $name
+     * @param int    $timestamp
      */
     public function addDateHeader($name, $timestamp = null)
     {
@@ -131,8 +131,8 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
      *
      * If multiple headers match, the actual one may be specified by $index.
      *
-     * @param string  $name
-     * @param int     $index
+     * @param string $name
+     * @param int    $index
      *
      * @return bool
      */
@@ -166,8 +166,8 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
      * If multiple headers match, the actual one may be specified by $index.
      * Returns NULL if none present.
      *
-     * @param string  $name
-     * @param int     $index
+     * @param string $name
+     * @param int    $index
      *
      * @return Swift_Mime_Header
      */
@@ -207,7 +207,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     }
 
     /**
-     * Return the name of all Headers
+     * Return the name of all Headers.
      *
      * @return array
      */
@@ -221,13 +221,13 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
         return array_keys($headers);
     }
 
-  /**
+    /**
      * Remove the header with the given $name if it's set.
      *
      * If multiple headers match, the actual one may be specified by $index.
      *
-     * @param string  $name
-     * @param int     $index
+     * @param string $name
+     * @param int    $index
      */
     public function remove($name, $index = 0)
     {
@@ -382,8 +382,8 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     }
 
     /**
-    * Make a deep copy of object
-    */
+     * Make a deep copy of object.
+     */
     public function __clone()
     {
         $this->_factory = clone $this->_factory;

@@ -9,56 +9,56 @@
  */
 
 /**
- * DomainKey Signer used to apply DomainKeys Signature to a message
+ * DomainKey Signer used to apply DomainKeys Signature to a message.
  *
- * @author     Xavier De Cock <xdecock@gmail.com>
+ * @author Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
 {
     /**
-     * PrivateKey
+     * PrivateKey.
      *
      * @var string
      */
     protected $_privateKey;
 
     /**
-     * DomainName
+     * DomainName.
      *
      * @var string
      */
     protected $_domainName;
 
     /**
-     * Selector
+     * Selector.
      *
      * @var string
      */
     protected $_selector;
 
     /**
-     * Hash algorithm used
+     * Hash algorithm used.
      *
      * @var string
      */
     protected $_hashAlgorithm = 'rsa-sha1';
 
     /**
-     * Canonisation method
+     * Canonisation method.
      *
      * @var string
      */
     protected $_canon = 'simple';
 
     /**
-     * Headers not being signed
+     * Headers not being signed.
      *
      * @var array
      */
     protected $_ignoredHeaders = array();
 
     /**
-     * Signer identity
+     * Signer identity.
      *
      * @var string
      */
@@ -73,21 +73,21 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
 
     // work variables
     /**
-     * Headers used to generate hash
+     * Headers used to generate hash.
      *
      * @var array
      */
     private $_signedHeaders = array();
 
     /**
-     * Stores the signature header
+     * Stores the signature header.
      *
      * @var Swift_Mime_Headers_ParameterizedHeader
      */
     protected $_domainKeyHeader;
 
     /**
-     * Hash Handler
+     * Hash Handler.
      *
      * @var resource|null
      */
@@ -110,7 +110,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     private $_bound = array();
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $privateKey
      * @param string $domainName
@@ -138,7 +138,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Resets internal states
+     * Resets internal states.
      *
      * @return Swift_Signers_DomainKeysSigner
      */
@@ -165,8 +165,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      * second, etc etc).
      *
      * @param string $bytes
-     * @return int
+     *
      * @throws Swift_IoException
+     *
+     * @return int
      * @return Swift_Signers_DomainKeysSigner
      */
     public function write($bytes)
@@ -184,6 +186,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      * off the buffer.
      *
      * @throws Swift_IoException
+     *
      * @return Swift_Signers_DomainKeysSigner
      */
     public function commit()
@@ -198,6 +201,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
      *
      * @param Swift_InputByteStream $is
+     *
      * @return Swift_Signers_DomainKeysSigner
      */
     public function bind(Swift_InputByteStream $is)
@@ -215,6 +219,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      * before unbinding occurs.
      *
      * @param Swift_InputByteStream $is
+     *
      * @return Swift_Signers_DomainKeysSigner
      */
     public function unbind(Swift_InputByteStream $is)
@@ -236,6 +241,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      * to the beginning.
      *
      * @throws Swift_IoException
+     *
      * @return Swift_Signers_DomainKeysSigner
      */
     public function flushBuffers()
@@ -246,9 +252,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Set hash_algorithm, must be one of rsa-sha256 | rsa-sha1 defaults to rsa-sha256
+     * Set hash_algorithm, must be one of rsa-sha256 | rsa-sha1 defaults to rsa-sha256.
      *
      * @param string $hash
+     *
      * @return Swift_Signers_DomainKeysSigner
      */
     public function setHashAlgorithm($hash)
@@ -259,9 +266,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Set the canonicalization algorithm
+     * Set the canonicalization algorithm.
      *
      * @param string $canon simple | nofws defaults to simple
+     *
      * @return Swift_Signers_DomainKeysSigner
      */
     public function setCanon($canon)
@@ -276,9 +284,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Set the signer identity
+     * Set the signer identity.
      *
      * @param string $identity
+     *
      * @return Swift_Signers_DomainKeySigner
      */
     public function setSignerIdentity($identity)
@@ -289,9 +298,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Enable / disable the DebugHeaders
+     * Enable / disable the DebugHeaders.
      *
-     * @param bool    $debug
+     * @param bool $debug
+     *
      * @return Swift_Signers_DomainKeySigner
      */
     public function setDebugHeaders($debug)
@@ -302,16 +312,14 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Start Body
-     *
+     * Start Body.
      */
     public function startBody()
     {
     }
 
     /**
-     * End Body
-     *
+     * End Body.
      */
     public function endBody()
     {
@@ -319,7 +327,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Returns the list of Headers Tampered by this plugin
+     * Returns the list of Headers Tampered by this plugin.
      *
      * @return array
      */
@@ -333,9 +341,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Adds an ignored Header
+     * Adds an ignored Header.
      *
      * @param string $header_name
+     *
      * @return Swift_Signers_DomainKeySigner
      */
     public function ignoreHeader($header_name)
@@ -346,9 +355,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Set the headers to sign
+     * Set the headers to sign.
      *
      * @param Swift_Mime_HeaderSet $headers
+     *
      * @return Swift_Signers_DomainKeySigner
      */
     public function setHeaders(Swift_Mime_HeaderSet $headers)
@@ -377,9 +387,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Add the signature to the given Headers
+     * Add the signature to the given Headers.
      *
      * @param Swift_Mime_HeaderSet $headers
+     *
      * @return Swift_Signers_DomainKeySigner
      */
     public function addSignature(Swift_Mime_HeaderSet $headers)
@@ -495,6 +506,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
 
     /**
      * @throws Swift_SwiftException
+     *
      * @return string
      */
     private function _getEncryptedHash()

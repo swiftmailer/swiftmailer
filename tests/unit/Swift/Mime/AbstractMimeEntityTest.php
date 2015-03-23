@@ -426,7 +426,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
                   ->zeroOrMoreTimes();
 
             $entity = $this->_createEntity($this->_createHeaderSet(array(
-                'Content-Type' => $cType,)),
+                'Content-Type' => $cType)),
                 $this->_createEncoder(), $this->_createCache()
                 );
             $entity->setChildren(array($child));
@@ -448,7 +448,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
                   ->zeroOrMoreTimes();
 
             $entity = $this->_createEntity($this->_createHeaderSet(array(
-                'Content-Type' => $cType,)),
+                'Content-Type' => $cType)),
                 $this->_createEncoder(), $this->_createCache()
                 );
             $entity->setChildren(array($child));
@@ -470,7 +470,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
                   ->zeroOrMoreTimes();
 
             $entity = $this->_createEntity($this->_createHeaderSet(array(
-                'Content-Type' => $cType,)),
+                'Content-Type' => $cType)),
                 $this->_createEncoder(), $this->_createCache()
                 );
             $entity->setChildren(array($child));

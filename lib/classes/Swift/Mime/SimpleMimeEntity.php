@@ -11,7 +11,7 @@
 /**
  * A MIME entity, in a multipart message.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 {
@@ -249,7 +249,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      *
      * Though not enforced by the library, lines should not exceed 1000 chars.
      *
-     * @param int     $length
+     * @param int $length
      *
      * @return Swift_Mime_SimpleMimeEntity
      */
@@ -426,9 +426,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      *
      * @param string $boundary
      *
-     * @return Swift_Mime_SimpleMimeEntity
-     *
      * @throws Swift_RfcComplianceException
+     *
+     * @return Swift_Mime_SimpleMimeEntity
      */
     public function setBoundary($boundary)
     {
@@ -576,7 +576,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     }
 
     /**
-     * Get the name of the header that provides the ID of this entity
+     * Get the name of the header that provides the ID of this entity.
      */
     protected function _getIdField()
     {
@@ -851,7 +851,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     }
 
     /**
-     * Make a deep copy of object
+     * Make a deep copy of object.
      */
     public function __clone()
     {

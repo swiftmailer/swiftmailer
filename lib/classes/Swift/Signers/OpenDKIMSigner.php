@@ -10,9 +10,9 @@
 
 /**
  * DKIM Signer used to apply DKIM Signature to a message
- * Takes advantage of pecl extension
+ * Takes advantage of pecl extension.
  *
- * @author     Xavier De Cock <xdecock@gmail.com>
+ * @author Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 {
@@ -128,9 +128,10 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     }
 
     /**
-     * Set the signature timestamp
+     * Set the signature timestamp.
      *
      * @param timestamp $time
+     *
      * @return Swift_Signers_DKIMSigner
      */
     public function setSignatureTimestamp($time)
@@ -141,9 +142,10 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     }
 
     /**
-     * Set the signature expiration timestamp
+     * Set the signature expiration timestamp.
      *
      * @param timestamp $time
+     *
      * @return Swift_Signers_DKIMSigner
      */
     public function setSignatureExpiration($time)
@@ -154,9 +156,10 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     }
 
     /**
-     * Enable / disable the DebugHeaders
+     * Enable / disable the DebugHeaders.
      *
-     * @param bool    $debug
+     * @param bool $debug
+     *
      * @return Swift_Signers_DKIMSigner
      */
     public function setDebugHeaders($debug)
