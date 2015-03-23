@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2014-11-30T19:21:29Z
+
+Why php 5.5? Is there any way we could keep php 5.4 support in 6.0, and drop it later?
+
+---------------------------------------------------------------------------
+
+by stof at 2015-01-05T15:34:30Z
+
+@fabpot a new major version should be the time to get rid of the weird service location done when calling each parent constructor, which is totally ugly.
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-01-05T15:36:42Z
+
+> Why php 5.5? Is there any way we could keep php 5.4 support in 6.0, and drop it later?
+
+Actually, I retract that. :+1: for php 5.5!
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-03-20T15:15:51Z
+
+Any news on this @fabpot? This looks really nice as a starting point.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2015-03-23T09:36:16Z
+
+@GrahamCampbell I think I will need some help for the next steps. I will add some steps in the description so that everyone can take one and contribute to this 6.0 version.
