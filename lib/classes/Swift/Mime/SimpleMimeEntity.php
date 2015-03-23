@@ -27,7 +27,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     private $encoder;
 
     /** Strict email validator to use for id validation */
-    private $_emailValidator;
+    private $emailValidator;
 
     /** A mime boundary, if any is used */
     private $boundary;
@@ -85,7 +85,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         $this->cacheKey = md5(uniqid(getmypid().mt_rand(), true));
         $this->cache = $cache;
         $this->headers = $headers;
-        $this->_emailValidator = $emailValidator;
+        $this->emailValidator = $emailValidator;
         $this->setEncoder($encoder);
         $this->headers->defineOrdering(array('Content-Type', 'Content-Transfer-Encoding'));
 
@@ -664,9 +664,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      *
      * @return EmailValidator()
      */
-    protected function _getEmailValidator()
+    protected function getEmailValidator()
     {
-        return $this->_emailValidator;
+        return $this->emailValidator;
     }
 
     /**
@@ -770,7 +770,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     private function createChild()
     {
         return new self($this->headers->newInstance(),
-            $this->encoder, $this->cache, $this->_emailValidator);
+            $this->encoder, $this->cache, $this->emailValidator);
     }
 
     private function notifyEncoderChanged(Swift_Mime_ContentEncoder $encoder)
@@ -841,7 +841,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     private function assertValidId($id)
     {
-        if (!$this->_emailValidator->isValid($id)) {
+        if (!$this->emailValidator->isValid($id)) {
             throw new Swift_RfcComplianceException('Invalid ID given <'.$id.'>');
         }
     }

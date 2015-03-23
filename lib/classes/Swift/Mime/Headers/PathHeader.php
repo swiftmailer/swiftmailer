@@ -29,7 +29,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @var EmailValidator
      */
-    private $_emailValidator;
+    private $emailValidator;
 
     /**
      * Creates a new PathHeader with the given $name.
@@ -40,7 +40,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
     public function __construct($name, EmailValidator $emailValidator)
     {
         $this->setFieldName($name);
-        $this->_emailValidator = $emailValidator;
+        $this->emailValidator = $emailValidator;
     }
 
     /**
@@ -142,7 +142,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      */
     private function assertValidAddress($address)
     {
-        if (!$this->_emailValidator->isValid($address)) {
+        if (!$this->emailValidator->isValid($address)) {
             throw new Swift_RfcComplianceException(
                 'Address set in PathHeader does not comply with addr-spec of RFC 2822.'
             );

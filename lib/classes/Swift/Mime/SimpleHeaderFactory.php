@@ -27,7 +27,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     private $grammar;
 
     /** Strict EmailValidator */
-    private $_emailValidator;
+    private $emailValidator;
 
     /** The charset of created Headers */
     private $charset;
@@ -44,7 +44,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
     {
         $this->encoder = $encoder;
         $this->paramEncoder = $paramEncoder;
-        $this->_emailValidator = $emailValidator;
+        $this->emailValidator = $emailValidator;
         $this->charset = $charset;
     }
 
@@ -58,7 +58,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
      */
     public function createMailboxHeader($name, $addresses = null)
     {
-        $header = new Swift_Mime_Headers_MailboxHeader($name, $this->encoder, $this->_emailValidator);
+        $header = new Swift_Mime_Headers_MailboxHeader($name, $this->encoder, $this->emailValidator);
         if (isset($addresses)) {
             $header->setFieldBodyModel($addresses);
         }
@@ -142,7 +142,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
      */
     public function createIdHeader($name, $ids = null)
     {
-        $header = new Swift_Mime_Headers_IdentificationHeader($name, $this->_emailValidator);
+        $header = new Swift_Mime_Headers_IdentificationHeader($name, $this->emailValidator);
         if (isset($ids)) {
             $header->setFieldBodyModel($ids);
         }
@@ -161,7 +161,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
      */
     public function createPathHeader($name, $path = null)
     {
-        $header = new Swift_Mime_Headers_PathHeader($name, $this->_emailValidator);
+        $header = new Swift_Mime_Headers_PathHeader($name, $this->emailValidator);
         if (isset($path)) {
             $header->setFieldBodyModel($path);
         }

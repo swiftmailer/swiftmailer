@@ -624,7 +624,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     protected function becomeMimePart()
     {
         $part = new parent($this->getHeaders()->newInstance(), $this->getEncoder(),
-            $this->getCache(), $this->_getEmailValidator(), $this->userCharset
+            $this->getCache(), $this->getEmailValidator(), $this->userCharset
             );
         $part->setContentType($this->userContentType);
         $part->setBody($this->getBody());

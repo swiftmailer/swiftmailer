@@ -29,7 +29,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @var EmailValidator
      */
-    private $_emailValidator;
+    private $emailValidator;
 
     /**
      * Creates a new MailboxHeader with $name.
@@ -42,7 +42,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);
-        $this->_emailValidator = $emailValidator;
+        $this->emailValidator = $emailValidator;
     }
 
     /**
@@ -352,7 +352,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      */
     private function assertValidAddress($address)
     {
-        if (!$this->_emailValidator->isValid($address)) {
+        if (!$this->emailValidator->isValid($address)) {
             throw new Swift_RfcComplianceException(
                 'Address in mailbox given ['.$address.'] does not comply with RFC 2822, 3.6.2.'
             );
