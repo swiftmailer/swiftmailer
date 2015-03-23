@@ -59,8 +59,8 @@ specified amount of time.
     require_once 'lib/swift_required.php';
 
     // Create the Mailer using any Transport
-    $mailer = Swift_Mailer::newInstance(
-      Swift_SmtpTransport::newInstance('smtp.example.org', 25)
+    $mailer = new Swift_Mailer(
+      new Swift_SmtpTransport('smtp.example.org', 25)
     );
 
     // Use AntiFlood to re-connect after 100 emails
@@ -120,8 +120,8 @@ will cause your program to ``sleep()`` for enough time to average out the rate.
     require_once 'lib/swift_required.php';
 
     // Create the Mailer using any Transport
-    $mailer = Swift_Mailer::newInstance(
-      Swift_SmtpTransport::newInstance('smtp.example.org', 25)
+    $mailer = new Swift_Mailer(
+      new Swift_SmtpTransport('smtp.example.org', 25)
     );
 
     // Rate limit to 100 emails per-minute
@@ -203,8 +203,8 @@ get the contents of the log.
     require_once 'lib/swift_required.php';
 
     // Create the Mailer using any Transport
-    $mailer = Swift_Mailer::newInstance(
-     Swift_SmtpTransport::newInstance('smtp.example.org', 25)
+    $mailer = new Swift_Mailer(
+     new Swift_SmtpTransport('smtp.example.org', 25)
     );
 
     // To use the ArrayLogger
@@ -289,7 +289,7 @@ line) with your placeholders.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance()
+    $message = new Swift_Message()
       ->setSubject('Important notice for {username}')
       ->setBody(
         "Hello {username}, we have reset your password to {password}\n" .

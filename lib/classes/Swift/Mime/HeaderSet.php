@@ -136,13 +136,6 @@ interface Swift_Mime_HeaderSet extends Swift_Mime_CharsetObserver
     public function removeAll($name);
 
     /**
-     * Create a new instance of this HeaderSet.
-     *
-     * @return Swift_Mime_HeaderSet
-     */
-    public function newInstance();
-
-    /**
      * Define a list of Header names as an array in the correct order.
      *
      * These Headers will be output in the given order where present.

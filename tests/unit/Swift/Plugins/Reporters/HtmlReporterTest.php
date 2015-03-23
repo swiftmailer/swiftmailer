@@ -2,19 +2,19 @@
 
 class Swift_Plugins_Reporters_HtmlReporterTest extends \PHPUnit_Framework_TestCase
 {
-    private $_html;
-    private $_message;
+    private $html;
+    private $message;
 
     public function setUp()
     {
-        $this->_html = new Swift_Plugins_Reporters_HtmlReporter();
-        $this->_message = $this->getMock('Swift_Mime_Message');
+        $this->html = new Swift_Plugins_Reporters_HtmlReporter();
+        $this->message = $this->getMock('Swift_Mime_Message');
     }
 
     public function testReportingPass()
     {
         ob_start();
-        $this->_html->notify($this->_message, 'foo@bar.tld',
+        $this->html->notify($this->message, 'foo@bar.tld',
             Swift_Plugins_Reporter::RESULT_PASS
             );
         $html = ob_get_clean();
@@ -26,7 +26,7 @@ class Swift_Plugins_Reporters_HtmlReporterTest extends \PHPUnit_Framework_TestCa
     public function testReportingFail()
     {
         ob_start();
-        $this->_html->notify($this->_message, 'zip@button',
+        $this->html->notify($this->message, 'zip@button',
             Swift_Plugins_Reporter::RESULT_FAIL
             );
         $html = ob_get_clean();
@@ -38,10 +38,10 @@ class Swift_Plugins_Reporters_HtmlReporterTest extends \PHPUnit_Framework_TestCa
     public function testMultipleReports()
     {
         ob_start();
-        $this->_html->notify($this->_message, 'foo@bar.tld',
+        $this->html->notify($this->message, 'foo@bar.tld',
             Swift_Plugins_Reporter::RESULT_PASS
             );
-        $this->_html->notify($this->_message, 'zip@button',
+        $this->html->notify($this->message, 'zip@button',
             Swift_Plugins_Reporter::RESULT_FAIL
             );
         $html = ob_get_clean();

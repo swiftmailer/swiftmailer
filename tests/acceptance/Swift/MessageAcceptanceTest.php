@@ -7,7 +7,7 @@ class Swift_MessageAcceptanceTest extends Swift_Mime_SimpleMessageAcceptanceTest
 {
     public function testAddPartWrapper()
     {
-        $message = $this->_createMessage();
+        $message = $this->createMessage();
         $message->setSubject('just a test subject');
         $message->setFrom(array(
             'chris.corbyn@swiftmailer.org' => 'Chris Corbyn',));
@@ -47,11 +47,11 @@ class Swift_MessageAcceptanceTest extends Swift_Mime_SimpleMessageAcceptanceTest
 
     // -- Private helpers
 
-    protected function _createMessage()
+    protected function createMessage()
     {
         Swift_DependencyContainer::getInstance()
             ->register('properties.charset')->asValue(null);
 
-        return Swift_Message::newInstance();
+        return new Swift_Message();
     }
 }

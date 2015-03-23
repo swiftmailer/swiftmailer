@@ -14,8 +14,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 {
     public function testExtensionHandlersAreSortedAsNeeded()
     {
-        $buf = $this->_getBuffer();
-        $smtp = $this->_getTransport($buf);
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
 
@@ -33,7 +33,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
              ->zeroOrMoreTimes()
              ->with('AUTH')
              ->andReturn(-1);
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $smtp->setExtensionHandlers(array($ext1, $ext2));
         $this->assertEquals(array($ext2, $ext1), $smtp->getExtensionHandlers());
@@ -41,8 +41,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testHandlersAreNotifiedOfParams()
     {
-        $buf = $this->_getBuffer();
-        $smtp = $this->_getTransport($buf);
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
 
@@ -79,7 +79,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
         $ext2->shouldReceive('setKeywordParams')
              ->zeroOrMoreTimes()
              ->with(array('123456'));
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $smtp->setExtensionHandlers(array($ext1, $ext2));
         $smtp->start();
@@ -87,8 +87,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testSupportedExtensionHandlersAreRunAfterEhlo()
     {
-        $buf = $this->_getBuffer();
-        $smtp = $this->_getTransport($buf);
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
@@ -132,7 +132,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
         $ext3->shouldReceive('afterEhlo')
              ->never()
              ->with($smtp);
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
         $smtp->start();
@@ -140,13 +140,13 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testExtensionsCanModifyMailFromParams()
     {
-        $buf = $this->_getBuffer();
-        $dispatcher = $this->_createEventDispatcher();
+        $buf = $this->getBuffer();
+        $dispatcher = $this->createEventDispatcher();
         $smtp = new EsmtpTransportFixture($buf, array(), $dispatcher);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
-        $message = $this->_createMessage();
+        $message = $this->createMessage();
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
@@ -191,7 +191,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
             ->once()
             ->with(3)
             ->andReturn("250 OK\r\n");
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $ext1->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
@@ -226,13 +226,13 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testExtensionsCanModifyRcptParams()
     {
-        $buf = $this->_getBuffer();
-        $dispatcher = $this->_createEventDispatcher();
+        $buf = $this->getBuffer();
+        $dispatcher = $this->createEventDispatcher();
         $smtp = new EsmtpTransportFixture($buf, array(), $dispatcher);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
-        $message = $this->_createMessage();
+        $message = $this->createMessage();
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
@@ -277,7 +277,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
             ->once()
             ->with(3)
             ->andReturn("250 OK\r\n");
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $ext1->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
@@ -312,8 +312,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testExtensionsAreNotifiedOnCommand()
     {
-        $buf = $this->_getBuffer();
-        $smtp = $this->_getTransport($buf);
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
@@ -346,7 +346,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
             ->once()
             ->with(2)
             ->andReturn("250 Cool\r\n");
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $ext1->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
@@ -374,8 +374,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testChainOfCommandAlgorithmWhenNotifyingExtensions()
     {
-        $buf = $this->_getBuffer();
-        $smtp = $this->_getTransport($buf);
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
@@ -403,7 +403,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
         $buf->shouldReceive('write')
             ->never()
             ->with("FOO\r\n");
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $ext1->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
@@ -437,8 +437,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testExtensionsCanExposeMixinMethods()
     {
-        $buf = $this->_getBuffer();
-        $smtp = $this->_getTransport($buf);
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandlerMixin')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
 
@@ -457,7 +457,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
              ->andReturn('STARTTLS');
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $smtp->setExtensionHandlers(array($ext1, $ext2));
         $smtp->setUsername('mick');
@@ -466,8 +466,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testMixinMethodsBeginningWithSetAndNullReturnAreFluid()
     {
-        $buf = $this->_getBuffer();
-        $smtp = $this->_getTransport($buf);
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandlerMixin')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
 
@@ -488,7 +488,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
              ->andReturn('STARTTLS');
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $smtp->setExtensionHandlers(array($ext1, $ext2));
         $ret = $smtp->setUsername('mick');
@@ -499,8 +499,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
 
     public function testMixinSetterWhichReturnValuesAreNotFluid()
     {
-        $buf = $this->_getBuffer();
-        $smtp = $this->_getTransport($buf);
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandlerMixin')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
 
@@ -521,7 +521,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
              ->andReturn('STARTTLS');
-        $this->_finishBuffer($buf);
+        $this->finishBuffer($buf);
 
         $smtp->setExtensionHandlers(array($ext1, $ext2));
         $this->assertEquals('x', $smtp->setUsername('mick'));

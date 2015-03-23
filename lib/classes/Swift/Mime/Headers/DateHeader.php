@@ -20,7 +20,7 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @var int
      */
-    private $_timestamp;
+    private $timestamp;
 
     /**
      * Creates a new DateHeader with $name and $timestamp.
@@ -85,7 +85,7 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
      */
     public function getTimestamp()
     {
-        return $this->_timestamp;
+        return $this->timestamp;
     }
 
     /**
@@ -98,8 +98,8 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
         if (!is_null($timestamp)) {
             $timestamp = (int) $timestamp;
         }
-        $this->clearCachedValueIf($this->_timestamp != $timestamp);
-        $this->_timestamp = $timestamp;
+        $this->clearCachedValueIf($this->timestamp != $timestamp);
+        $this->timestamp = $timestamp;
     }
 
     /**
@@ -115,8 +115,8 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
     public function getFieldBody()
     {
         if (!$this->getCachedValue()) {
-            if (isset($this->_timestamp)) {
-                $this->setCachedValue(date('r', $this->_timestamp));
+            if (isset($this->timestamp)) {
+                $this->setCachedValue(date('r', $this->timestamp));
             }
         }
 

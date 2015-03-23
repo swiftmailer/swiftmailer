@@ -40,7 +40,7 @@ recipients are delivered to successfully then the value 5 will be returned.
     require_once 'lib/swift_required.php';
 
     // Create the Transport
-    $transport = Swift_SmtpTransport::newInstance('smtp.example.org', 25)
+    $transport = (new Swift_SmtpTransport('smtp.example.org', 25))
       ->setUsername('your username')
       ->setPassword('your password')
       ;
@@ -49,17 +49,17 @@ recipients are delivered to successfully then the value 5 will be returned.
     You could alternatively use a different transport such as Sendmail or Mail:
 
     // Sendmail
-    $transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
+    $transport = new Swift_SendmailTransport('/usr/sbin/sendmail -bs');
 
     // Mail
-    $transport = Swift_MailTransport::newInstance();
+    $transport = new Swift_MailTransport();
     */
 
     // Create the Mailer using your created Transport
-    $mailer = Swift_Mailer::newInstance($transport);
+    $mailer = new Swift_Mailer($transport);
 
     // Create a message
-    $message = Swift_Message::newInstance('Wonderful Subject')
+    $message = new Swift_Message('Wonderful Subject')
       ->setFrom(array('john@doe.com' => 'John Doe'))
       ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
       ->setBody('Here is the message itself')
@@ -124,7 +124,7 @@ extremely specific to your hosting environment.
 
 To use the SMTP Transport:
 
-* Call ``Swift_SmtpTransport::newInstance()`` with the SMTP server name and
+* Call ``new Swift_SmtpTransport()`` with the SMTP server name and
   optionally with a port number (defaults to 25).
 
 * Use the returned object to create the Mailer.
@@ -137,15 +137,15 @@ A connection to the SMTP server will be established upon the first call to
     require_once 'lib/swift_required.php';
 
     // Create the Transport
-    $transport = Swift_SmtpTransport::newInstance('smtp.example.org', 25);
+    $transport = new Swift_SmtpTransport('smtp.example.org', 25);
 
     // Create the Mailer using your created Transport
-    $mailer = Swift_Mailer::newInstance($transport);
+    $mailer = new Swift_Mailer($transport);
 
     /*
     It's also possible to use multiple method calls
 
-    $transport = Swift_SmtpTransport::newInstance()
+    $transport = (new Swift_SmtpTransport())
       ->setHost('smtp.example.org')
       ->setPort(25)
       ;
@@ -160,7 +160,7 @@ a parameter or with a method call.
 To use encryption with the SMTP Transport:
 
 * Pass the encryption setting as a third parameter to
-  ``Swift_SmtpTransport::newInstance()``; or
+  ``new Swift_SmtpTransport()``; or
 
 * Call the ``setEncryption()`` method on the Transport.
 
@@ -180,15 +180,15 @@ settings.
         require_once 'lib/swift_required.php';
 
         // Create the Transport
-        $transport = Swift_SmtpTransport::newInstance('smtp.example.org', 587, 'ssl');
+        $transport = new Swift_SmtpTransport('smtp.example.org', 587, 'ssl');
 
         // Create the Mailer using your created Transport
-        $mailer = Swift_Mailer::newInstance($transport);
+        $mailer = new Swift_Mailer($transport);
 
         /*
         It's also possible to use multiple method calls
 
-        $transport = Swift_SmtpTransport::newInstance()
+        $transport = (new Swift_SmtpTransport())
           ->setHost('smtp.example.org')
           ->setPort(587)
           ->setEncryption('ssl')
@@ -203,7 +203,7 @@ with ``setUsername()`` and ``setPassword()`` methods.
 
 To use a username and password with the SMTP Transport:
 
-* Create the Transport with ``Swift_SmtpTransport::newInstance()``.
+* Create the Transport with ``new Swift_SmtpTransport()``.
 
 * Call the ``setUsername()`` and ``setPassword()`` methods on the Transport.
 
@@ -224,13 +224,13 @@ be thrown.
         require_once 'lib/swift_required.php';
 
         // Create the Transport the call setUsername() and setPassword()
-        $transport = Swift_SmtpTransport::newInstance('smtp.example.org', 25)
+        $transport = new Swift_SmtpTransport('smtp.example.org', 25)
           ->setUsername('username')
           ->setPassword('password')
           ;
 
         // Create the Mailer using your created Transport
-        $mailer = Swift_Mailer::newInstance($transport);
+        $mailer = new Swift_Mailer($transport);
 
 The Sendmail Transport
 ......................
@@ -282,7 +282,7 @@ Using the Sendmail Transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To use the Sendmail Transport you simply need to call
-``Swift_SendmailTransport::newInstance()`` with the command as a parameter.
+``new Swift_SendmailTransport()`` with the command as a parameter.
 
 To use the Sendmail Transport you need to know where ``sendmail`` or another MTA
 exists on the server. Swift Mailer uses a default value of
@@ -299,7 +299,7 @@ flags). Swift Mailer supports operational modes of "``-bs``" (default) and
 
 To use the Sendmail Transport:
 
-* Call ``Swift_SendmailTransport::newInstance()`` with the command, including
+* Call ``new Swift_SendmailTransport()`` with the command, including
   the correct command line flags. The default is to use ``/usr/sbin/sendmail
   -bs`` if this is not specified.
 
@@ -314,10 +314,10 @@ process cannot be started successfully an Exception of type
     require_once 'lib/swift_required.php';
 
     // Create the Transport
-    $transport = Swift_SendmailTransport::newInstance('/usr/sbin/exim -bs');
+    $transport = new Swift_SendmailTransport('/usr/sbin/exim -bs');
 
     // Create the Mailer using your created Transport
-    $mailer = Swift_Mailer::newInstance($transport);
+    $mailer = new Swift_Mailer($transport);
 
 The Mail Transport
 ..................
@@ -354,12 +354,12 @@ Using the Mail Transport
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 To use the Mail Transport you simply need to call
-``Swift_MailTransport::newInstance()``. It's unlikely you'll need to configure
+``new Swift_MailTransport()``. It's unlikely you'll need to configure
 the Transport.
 
 To use the Mail Transport:
 
-* Call ``Swift_MailTransport::newInstance()``.
+* Call ``new Swift_MailTransport()``.
 
 * Use the returned object to create the Mailer.
 
@@ -371,17 +371,17 @@ Messages will be sent using the ``mail()`` function.
     Swift Mailer sets this to "``-f%s``" by default, where the "``%s``" is
     substituted with the address of the sender (via a ``sprintf()``) at send
     time. You may override this default by passing an argument to
-    ``newInstance()``.
+    the constructor.
 
     .. code-block:: php
 
         require_once 'lib/swift_required.php';
 
         // Create the Transport
-        $transport = Swift_MailTransport::newInstance();
+        $transport = new Swift_MailTransport();
 
         // Create the Mailer using your created Transport
-        $mailer = Swift_Mailer::newInstance($transport);
+        $mailer = new Swift_Mailer($transport);
 
 Available Methods for Sending Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -435,13 +435,13 @@ recipients are delivered to successfully then the value 5 will be returned.
     require_once 'lib/swift_required.php';
 
     // Create the Transport
-    $transport = Swift_SmtpTransport::newInstance('localhost', 25);
+    $transport = new Swift_SmtpTransport('localhost', 25);
 
     // Create the Mailer using your created Transport
-    $mailer = Swift_Mailer::newInstance($transport);
+    $mailer = new Swift_Mailer($transport);
 
     // Create a message
-    $message = Swift_Message::newInstance('Wonderful Subject')
+    $message = new Swift_Message('Wonderful Subject')
       ->setFrom(array('john@doe.com' => 'John Doe'))
       ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
       ->setBody('Here is the message itself')
@@ -513,13 +513,13 @@ exception and stop the execution or your script early.
         require_once 'lib/swift_required.php';
 
         // Create the Transport
-        $transport = Swift_SmtpTransport::newInstance('localhost', 25);
+        $transport = new Swift_SmtpTransport('localhost', 25);
 
         // Create the Mailer using your created Transport
-        $mailer = Swift_Mailer::newInstance($transport);
+        $mailer = new Swift_Mailer($transport);
 
         // Create a message
-        $message = Swift_Message::newInstance('Wonderful Subject')
+        $message = new Swift_Message('Wonderful Subject')
           ->setFrom(array('john@doe.com' => 'John Doe'))
           ->setBody('Here is the message itself')
           ;
@@ -579,9 +579,9 @@ added to the array provided by-reference.
 
     .. code-block:: php
 
-        $mailer = Swift_Mailer::newInstance( ... );
+        $mailer = new Swift_Mailer( ... );
 
-        $message = Swift_Message::newInstance( ... )
+        $message = (new Swift_Message( ... ))
           ->setFrom( ... )
           ->setTo(array(
             'receiver@bad-domain.org' => 'Receiver Name',

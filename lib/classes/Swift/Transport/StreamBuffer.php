@@ -16,22 +16,22 @@
 class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableInputStream implements Swift_Transport_IoBuffer
 {
     /** A primary socket */
-    private $_stream;
+    private $stream;
 
     /** The input stream */
-    private $_in;
+    private $in;
 
     /** The output stream */
-    private $_out;
+    private $out;
 
     /** Buffer initialization parameters */
-    private $_params = array();
+    private $params = array();
 
     /** The ReplacementFilterFactory */
-    private $_replacementFactory;
+    private $replacementFactory;
 
     /** Translations performed on data being streamed into the buffer */
-    private $_translations = array();
+    private $translations = array();
 
     /**
      * Create a new StreamBuffer using $replacementFactory for transformations.
@@ -40,7 +40,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      */
     public function __construct(Swift_ReplacementFilterFactory $replacementFactory)
     {
-        $this->_replacementFactory = $replacementFactory;
+        $this->replacementFactory = $replacementFactory;
     }
 
     /**
@@ -52,14 +52,14 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      */
     public function initialize(array $params)
     {
-        $this->_params = $params;
+        $this->params = $params;
         switch ($params['type']) {
             case self::TYPE_PROCESS:
-                $this->_establishProcessConnection();
+                $this->establishProcessConnection();
                 break;
             case self::TYPE_SOCKET:
             default:
-                $this->_establishSocketConnection();
+                $this->establishSocketConnection();
                 break;
         }
     }
@@ -72,27 +72,27 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      */
     public function setParam($param, $value)
     {
-        if (isset($this->_stream)) {
+        if (isset($this->stream)) {
             switch ($param) {
                 case 'timeout':
-                    if ($this->_stream) {
-                        stream_set_timeout($this->_stream, $value);
+                    if ($this->stream) {
+                        stream_set_timeout($this->stream, $value);
                     }
                     break;
 
                 case 'blocking':
-                    if ($this->_stream) {
-                        stream_set_blocking($this->_stream, 1);
+                    if ($this->stream) {
+                        stream_set_blocking($this->stream, 1);
                     }
 
             }
         }
-        $this->_params[$param] = $value;
+        $this->params[$param] = $value;
     }
 
     public function startTLS()
     {
-        return stream_socket_enable_crypto($this->_stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+        return stream_socket_enable_crypto($this->stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
     }
 
     /**
@@ -100,22 +100,22 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      */
     public function terminate()
     {
-        if (isset($this->_stream)) {
-            switch ($this->_params['type']) {
+        if (isset($this->stream)) {
+            switch ($this->params['type']) {
                 case self::TYPE_PROCESS:
-                    fclose($this->_in);
-                    fclose($this->_out);
-                    proc_close($this->_stream);
+                    fclose($this->in);
+                    fclose($this->out);
+                    proc_close($this->stream);
                     break;
                 case self::TYPE_SOCKET:
                 default:
-                    fclose($this->_stream);
+                    fclose($this->stream);
                     break;
             }
         }
-        $this->_stream = null;
-        $this->_out = null;
-        $this->_in = null;
+        $this->stream = null;
+        $this->out = null;
+        $this->in = null;
     }
 
     /**
@@ -128,19 +128,19 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      */
     public function setWriteTranslations(array $replacements)
     {
-        foreach ($this->_translations as $search => $replace) {
+        foreach ($this->translations as $search => $replace) {
             if (!isset($replacements[$search])) {
                 $this->removeFilter($search);
-                unset($this->_translations[$search]);
+                unset($this->translations[$search]);
             }
         }
 
         foreach ($replacements as $search => $replace) {
-            if (!isset($this->_translations[$search])) {
+            if (!isset($this->translations[$search])) {
                 $this->addFilter(
-                    $this->_replacementFactory->createFilter($search, $replace), $search
+                    $this->replacementFactory->createFilter($search, $replace), $search
                     );
-                $this->_translations[$search] = true;
+                $this->translations[$search] = true;
             }
         }
     }
@@ -159,14 +159,14 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      */
     public function readLine($sequence)
     {
-        if (isset($this->_out) && !feof($this->_out)) {
-            $line = fgets($this->_out);
+        if (isset($this->out) && !feof($this->out)) {
+            $line = fgets($this->out);
             if (strlen($line) == 0) {
-                $metas = stream_get_meta_data($this->_out);
+                $metas = stream_get_meta_data($this->out);
                 if ($metas['timed_out']) {
                     throw new Swift_IoException(
                         'Connection to '.
-                            $this->_getReadConnectionDescription().
+                            $this->getReadConnectionDescription().
                         ' Timed Out'
                     );
                 }
@@ -191,14 +191,14 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      */
     public function read($length)
     {
-        if (isset($this->_out) && !feof($this->_out)) {
-            $ret = fread($this->_out, $length);
+        if (isset($this->out) && !feof($this->out)) {
+            $ret = fread($this->out, $length);
             if (strlen($ret) == 0) {
-                $metas = stream_get_meta_data($this->_out);
+                $metas = stream_get_meta_data($this->out);
                 if ($metas['timed_out']) {
                     throw new Swift_IoException(
                         'Connection to '.
-                            $this->_getReadConnectionDescription().
+                            $this->getReadConnectionDescription().
                         ' Timed Out'
                     );
                 }
@@ -214,22 +214,22 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     }
 
     /** Flush the stream contents */
-    protected function _flush()
+    protected function flush()
     {
-        if (isset($this->_in)) {
-            fflush($this->_in);
+        if (isset($this->in)) {
+            fflush($this->in);
         }
     }
 
     /** Write this bytes to the stream */
-    protected function _commit($bytes)
+    protected function doCommit($bytes)
     {
-        if (isset($this->_in)) {
+        if (isset($this->in)) {
             $bytesToWrite = strlen($bytes);
             $totalBytesWritten = 0;
 
             while ($totalBytesWritten < $bytesToWrite) {
-                $bytesWritten = fwrite($this->_in, substr($bytes, $totalBytesWritten));
+                $bytesWritten = fwrite($this->in, substr($bytes, $totalBytesWritten));
                 if (false === $bytesWritten || 0 === $bytesWritten) {
                     break;
                 }
@@ -238,7 +238,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             }
 
             if ($totalBytesWritten > 0) {
-                return ++$this->_sequence;
+                return ++$this->sequence;
             }
         }
     }
@@ -246,73 +246,73 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     /**
      * Establishes a connection to a remote server.
      */
-    private function _establishSocketConnection()
+    private function establishSocketConnection()
     {
-        $host = $this->_params['host'];
-        if (!empty($this->_params['protocol'])) {
-            $host = $this->_params['protocol'].'://'.$host;
+        $host = $this->params['host'];
+        if (!empty($this->params['protocol'])) {
+            $host = $this->params['protocol'].'://'.$host;
         }
         $timeout = 15;
-        if (!empty($this->_params['timeout'])) {
-            $timeout = $this->_params['timeout'];
+        if (!empty($this->params['timeout'])) {
+            $timeout = $this->params['timeout'];
         }
         $options = array();
-        if (!empty($this->_params['sourceIp'])) {
-            $options['socket']['bindto'] = $this->_params['sourceIp'].':0';
+        if (!empty($this->params['sourceIp'])) {
+            $options['socket']['bindto'] = $this->params['sourceIp'].':0';
         }
-        $this->_stream = @stream_socket_client($host.':'.$this->_params['port'], $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, stream_context_create($options));
-        if (false === $this->_stream) {
+        $this->stream = @stream_socket_client($host.':'.$this->params['port'], $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, stream_context_create($options));
+        if (false === $this->stream) {
             throw new Swift_TransportException(
-                'Connection could not be established with host '.$this->_params['host'].
+                'Connection could not be established with host '.$this->params['host'].
                 ' ['.$errstr.' #'.$errno.']'
                 );
         }
-        if (!empty($this->_params['blocking'])) {
-            stream_set_blocking($this->_stream, 1);
+        if (!empty($this->params['blocking'])) {
+            stream_set_blocking($this->stream, 1);
         } else {
-            stream_set_blocking($this->_stream, 0);
+            stream_set_blocking($this->stream, 0);
         }
-        stream_set_timeout($this->_stream, $timeout);
-        $this->_in = & $this->_stream;
-        $this->_out = & $this->_stream;
+        stream_set_timeout($this->stream, $timeout);
+        $this->in = & $this->stream;
+        $this->out = & $this->stream;
     }
 
     /**
      * Opens a process for input/output.
      */
-    private function _establishProcessConnection()
+    private function establishProcessConnection()
     {
-        $command = $this->_params['command'];
+        $command = $this->params['command'];
         $descriptorSpec = array(
             0 => array('pipe', 'r'),
             1 => array('pipe', 'w'),
             2 => array('pipe', 'w'),
             );
-        $this->_stream = proc_open($command, $descriptorSpec, $pipes);
+        $this->stream = proc_open($command, $descriptorSpec, $pipes);
         stream_set_blocking($pipes[2], 0);
         if ($err = stream_get_contents($pipes[2])) {
             throw new Swift_TransportException(
                 'Process could not be started ['.$err.']'
                 );
         }
-        $this->_in = & $pipes[0];
-        $this->_out = & $pipes[1];
+        $this->in = & $pipes[0];
+        $this->out = & $pipes[1];
     }
 
-    private function _getReadConnectionDescription()
+    private function getReadConnectionDescription()
     {
-        switch ($this->_params['type']) {
+        switch ($this->params['type']) {
             case self::TYPE_PROCESS:
-                return 'Process '.$this->_params['command'];
+                return 'Process '.$this->params['command'];
                 break;
 
             case self::TYPE_SOCKET:
             default:
-                $host = $this->_params['host'];
-                if (!empty($this->_params['protocol'])) {
-                    $host = $this->_params['protocol'].'://'.$host;
+                $host = $this->params['host'];
+                if (!empty($this->params['protocol'])) {
+                    $host = $this->params['protocol'].'://'.$host;
                 }
-                $host .= ':'.$this->_params['port'];
+                $host .= ':'.$this->params['port'];
 
                 return $host;
                 break;

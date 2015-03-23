@@ -29,7 +29,7 @@ You fetch the HeaderSet from a MIME entity like so:
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     // Fetch the HeaderSet from a Message object
     $headers = $message->getHeaders();
@@ -165,7 +165,7 @@ HeaderSet's ``addTextHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -234,7 +234,7 @@ key-value parameters.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -288,7 +288,7 @@ encoded so that they can be transmitted safely.
 
 .. code-block:: php
 
-    $attachment = Swift_Attachment::newInstance();
+    $attachment = new Swift_Attachment();
 
     $disp = $attachment->getHeaders()->get('Content-Disposition');
 
@@ -323,7 +323,7 @@ the HeaderSet's ``addDateHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -373,7 +373,7 @@ You add a new mailbox header to a HeaderSet by calling the HeaderSet's
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -470,7 +470,7 @@ the HeaderSet's ``addIdHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -512,7 +512,7 @@ You add a new path header to a HeaderSet by calling the HeaderSet's
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -569,7 +569,7 @@ The added header will appear in the message when it is sent.
 .. code-block:: php
 
     // Adding a custom header to a message
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
     $headers = $message->getHeaders();
     $headers->addTextHeader('X-Mine', 'something here');
 

@@ -18,7 +18,7 @@ Swift_DependencyContainer::getInstance()
 
     ->register('transport.mail')
     ->asNewInstanceOf('Swift_Transport_MailTransport')
-    ->withDependencies(array('transport.mailinvoker', 'transport.eventdispatcher'))
+    ->withDependencies(array('transport.eventdispatcher'))
 
     ->register('transport.loadbalanced')
     ->asNewInstanceOf('Swift_Transport_LoadBalancedTransport')
@@ -33,9 +33,6 @@ Swift_DependencyContainer::getInstance()
     ->register('transport.null')
     ->asNewInstanceOf('Swift_Transport_NullTransport')
     ->withDependencies(array('transport.eventdispatcher'))
-
-    ->register('transport.mailinvoker')
-    ->asSharedInstanceOf('Swift_Transport_SimpleMailInvoker')
 
     ->register('transport.buffer')
     ->asNewInstanceOf('Swift_Transport_StreamBuffer')

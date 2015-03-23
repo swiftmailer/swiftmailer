@@ -4,70 +4,70 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
 {
     public function setUp()
     {
-        $this->_monitor = new Swift_Plugins_BandwidthMonitorPlugin();
+        $this->monitor = new Swift_Plugins_BandwidthMonitorPlugin();
     }
 
     public function testBytesOutIncreasesWhenCommandsSent()
     {
-        $evt = $this->_createCommandEvent("RCPT TO: <foo@bar.com>\r\n");
+        $evt = $this->createCommandEvent("RCPT TO: <foo@bar.com>\r\n");
 
-        $this->assertEquals(0, $this->_monitor->getBytesOut());
-        $this->_monitor->commandSent($evt);
-        $this->assertEquals(24, $this->_monitor->getBytesOut());
-        $this->_monitor->commandSent($evt);
-        $this->assertEquals(48, $this->_monitor->getBytesOut());
+        $this->assertEquals(0, $this->monitor->getBytesOut());
+        $this->monitor->commandSent($evt);
+        $this->assertEquals(24, $this->monitor->getBytesOut());
+        $this->monitor->commandSent($evt);
+        $this->assertEquals(48, $this->monitor->getBytesOut());
     }
 
     public function testBytesInIncreasesWhenResponsesReceived()
     {
-        $evt = $this->_createResponseEvent("250 Ok\r\n");
+        $evt = $this->createResponseEvent("250 Ok\r\n");
 
-        $this->assertEquals(0, $this->_monitor->getBytesIn());
-        $this->_monitor->responseReceived($evt);
-        $this->assertEquals(8, $this->_monitor->getBytesIn());
-        $this->_monitor->responseReceived($evt);
-        $this->assertEquals(16, $this->_monitor->getBytesIn());
+        $this->assertEquals(0, $this->monitor->getBytesIn());
+        $this->monitor->responseReceived($evt);
+        $this->assertEquals(8, $this->monitor->getBytesIn());
+        $this->monitor->responseReceived($evt);
+        $this->assertEquals(16, $this->monitor->getBytesIn());
     }
 
     public function testCountersCanBeReset()
     {
-        $evt = $this->_createResponseEvent("250 Ok\r\n");
+        $evt = $this->createResponseEvent("250 Ok\r\n");
 
-        $this->assertEquals(0, $this->_monitor->getBytesIn());
-        $this->_monitor->responseReceived($evt);
-        $this->assertEquals(8, $this->_monitor->getBytesIn());
-        $this->_monitor->responseReceived($evt);
-        $this->assertEquals(16, $this->_monitor->getBytesIn());
+        $this->assertEquals(0, $this->monitor->getBytesIn());
+        $this->monitor->responseReceived($evt);
+        $this->assertEquals(8, $this->monitor->getBytesIn());
+        $this->monitor->responseReceived($evt);
+        $this->assertEquals(16, $this->monitor->getBytesIn());
 
-        $evt = $this->_createCommandEvent("RCPT TO: <foo@bar.com>\r\n");
+        $evt = $this->createCommandEvent("RCPT TO: <foo@bar.com>\r\n");
 
-        $this->assertEquals(0, $this->_monitor->getBytesOut());
-        $this->_monitor->commandSent($evt);
-        $this->assertEquals(24, $this->_monitor->getBytesOut());
-        $this->_monitor->commandSent($evt);
-        $this->assertEquals(48, $this->_monitor->getBytesOut());
+        $this->assertEquals(0, $this->monitor->getBytesOut());
+        $this->monitor->commandSent($evt);
+        $this->assertEquals(24, $this->monitor->getBytesOut());
+        $this->monitor->commandSent($evt);
+        $this->assertEquals(48, $this->monitor->getBytesOut());
 
-        $this->_monitor->reset();
+        $this->monitor->reset();
 
-        $this->assertEquals(0, $this->_monitor->getBytesOut());
-        $this->assertEquals(0, $this->_monitor->getBytesIn());
+        $this->assertEquals(0, $this->monitor->getBytesOut());
+        $this->assertEquals(0, $this->monitor->getBytesIn());
     }
 
     public function testBytesOutIncreasesAccordingToMessageLength()
     {
-        $message = $this->_createMessageWithByteCount(6);
-        $evt = $this->_createSendEvent($message);
+        $message = $this->createMessageWithByteCount(6);
+        $evt = $this->createSendEvent($message);
 
-        $this->assertEquals(0, $this->_monitor->getBytesOut());
-        $this->_monitor->sendPerformed($evt);
-        $this->assertEquals(6, $this->_monitor->getBytesOut());
-        $this->_monitor->sendPerformed($evt);
-        $this->assertEquals(12, $this->_monitor->getBytesOut());
+        $this->assertEquals(0, $this->monitor->getBytesOut());
+        $this->monitor->sendPerformed($evt);
+        $this->assertEquals(6, $this->monitor->getBytesOut());
+        $this->monitor->sendPerformed($evt);
+        $this->assertEquals(12, $this->monitor->getBytesOut());
     }
 
     // -- Creation Methods
 
-    private function _createSendEvent($message)
+    private function createSendEvent($message)
     {
         $evt = $this->getMockBuilder('Swift_Events_SendEvent')
                     ->disableOriginalConstructor()
@@ -79,7 +79,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
         return $evt;
     }
 
-    private function _createCommandEvent($command)
+    private function createCommandEvent($command)
     {
         $evt = $this->getMockBuilder('Swift_Events_CommandEvent')
                     ->disableOriginalConstructor()
@@ -91,7 +91,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
         return $evt;
     }
 
-    private function _createResponseEvent($response)
+    private function createResponseEvent($response)
     {
         $evt = $this->getMockBuilder('Swift_Events_ResponseEvent')
                     ->disableOriginalConstructor()
@@ -103,24 +103,24 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
         return $evt;
     }
 
-    private function _createMessageWithByteCount($bytes)
+    private function createMessageWithByteCount($bytes)
     {
-        $this->_bytes = $bytes;
+        $this->bytes = $bytes;
         $msg = $this->getMock('Swift_Mime_Message');
         $msg->expects($this->any())
             ->method('toByteStream')
-            ->will($this->returnCallback(array($this, '_write')));
-      /*  $this->_checking(Expectations::create()
-            -> ignoring($msg)->toByteStream(any()) -> calls(array($this, '_write'))
+            ->will($this->returnCallback(array($this, 'write')));
+      /*  $this->checking(Expectations::create()
+            -> ignoring($msg)->toByteStream(any()) -> calls(array($this, 'write'))
         ); */
 
         return $msg;
     }
 
-    private $_bytes = 0;
-    public function _write($is)
+    private $bytes = 0;
+    public function write($is)
     {
-        for ($i = 0; $i < $this->_bytes; ++$i) {
+        for ($i = 0; $i < $this->bytes; ++$i) {
             $is->write('x');
         }
     }

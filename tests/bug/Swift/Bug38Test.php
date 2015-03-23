@@ -2,15 +2,15 @@
 
 class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
 {
-    private $_attFile;
-    private $_attFileName;
-    private $_attFileType;
+    private $attFile;
+    private $attFileName;
+    private $attFileType;
 
     public function setUp()
     {
-        $this->_attFileName = 'data.txt';
-        $this->_attFileType = 'text/plain';
-        $this->_attFile = __DIR__.'/../../_samples/files/data.txt';
+        $this->attFileName = 'data.txt';
+        $this->attFileType = 'text/plain';
+        $this->attFile = __DIR__.'/../../_samples/files/data.txt';
         Swift_Preferences::getInstance()->setCharset('utf-8');
     }
 
@@ -133,7 +133,7 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         $message->setCc('other@domain.tld');
         $message->setFrom('user@domain.tld');
 
-        $attachment = Swift_Attachment::fromPath($this->_attFile);
+        $attachment = Swift_Attachment::fromPath($this->attFile);
 
         $message->attach($attachment);
 
@@ -164,11 +164,11 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
             'HTML part'.
             "\r\n\r\n".
             '--'.$boundary."\r\n".
-            'Content-Type: '.$this->_attFileType.'; name='.$this->_attFileName."\r\n".
+            'Content-Type: '.$this->attFileType.'; name='.$this->attFileName."\r\n".
             'Content-Transfer-Encoding: base64'."\r\n".
-            'Content-Disposition: attachment; filename='.$this->_attFileName."\r\n".
+            'Content-Disposition: attachment; filename='.$this->attFileName."\r\n".
             "\r\n".
-            preg_quote(base64_encode(file_get_contents($this->_attFile)), '~').
+            preg_quote(base64_encode(file_get_contents($this->attFile)), '~').
             "\r\n\r\n".
             '--'.$boundary.'--'."\r\n".
             '$~D'

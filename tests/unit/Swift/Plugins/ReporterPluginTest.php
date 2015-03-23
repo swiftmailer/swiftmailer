@@ -4,9 +4,9 @@ class Swift_Plugins_ReporterPluginTest extends \SwiftMailerTestCase
 {
     public function testReportingPasses()
     {
-        $message = $this->_createMessage();
-        $evt = $this->_createSendEvent();
-        $reporter = $this->_createReporter();
+        $message = $this->createMessage();
+        $evt = $this->createSendEvent();
+        $reporter = $this->createReporter();
 
         $message->shouldReceive('getTo')->zeroOrMoreTimes()->andReturn(array('foo@bar.tld' => 'Foo'));
         $evt->shouldReceive('getMessage')->zeroOrMoreTimes()->andReturn($message);
@@ -19,9 +19,9 @@ class Swift_Plugins_ReporterPluginTest extends \SwiftMailerTestCase
 
     public function testReportingFailedTo()
     {
-        $message = $this->_createMessage();
-        $evt = $this->_createSendEvent();
-        $reporter = $this->_createReporter();
+        $message = $this->createMessage();
+        $evt = $this->createSendEvent();
+        $reporter = $this->createReporter();
 
         $message->shouldReceive('getTo')->zeroOrMoreTimes()->andReturn(array('foo@bar.tld' => 'Foo', 'zip@button' => 'Zip'));
         $evt->shouldReceive('getMessage')->zeroOrMoreTimes()->andReturn($message);
@@ -35,9 +35,9 @@ class Swift_Plugins_ReporterPluginTest extends \SwiftMailerTestCase
 
     public function testReportingFailedCc()
     {
-        $message = $this->_createMessage();
-        $evt = $this->_createSendEvent();
-        $reporter = $this->_createReporter();
+        $message = $this->createMessage();
+        $evt = $this->createSendEvent();
+        $reporter = $this->createReporter();
 
         $message->shouldReceive('getTo')->zeroOrMoreTimes()->andReturn(array('foo@bar.tld' => 'Foo'));
         $message->shouldReceive('getCc')->zeroOrMoreTimes()->andReturn(array('zip@button' => 'Zip', 'test@test.com' => 'Test'));
@@ -53,9 +53,9 @@ class Swift_Plugins_ReporterPluginTest extends \SwiftMailerTestCase
 
     public function testReportingFailedBcc()
     {
-        $message = $this->_createMessage();
-        $evt = $this->_createSendEvent();
-        $reporter = $this->_createReporter();
+        $message = $this->createMessage();
+        $evt = $this->createSendEvent();
+        $reporter = $this->createReporter();
 
         $message->shouldReceive('getTo')->zeroOrMoreTimes()->andReturn(array('foo@bar.tld' => 'Foo'));
         $message->shouldReceive('getBcc')->zeroOrMoreTimes()->andReturn(array('zip@button' => 'Zip', 'test@test.com' => 'Test'));
@@ -71,17 +71,17 @@ class Swift_Plugins_ReporterPluginTest extends \SwiftMailerTestCase
 
     // -- Creation Methods
 
-    private function _createMessage()
+    private function createMessage()
     {
         return $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
     }
 
-    private function _createSendEvent()
+    private function createSendEvent()
     {
         return $this->getMockery('Swift_Events_SendEvent')->shouldIgnoreMissing();
     }
 
-    private function _createReporter()
+    private function createReporter()
     {
         return $this->getMockery('Swift_Plugins_Reporter')->shouldIgnoreMissing();
     }

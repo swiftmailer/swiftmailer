@@ -2,18 +2,18 @@
 
 class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
-    private $_contentEncoder;
-    private $_cache;
-    private $_grammar;
-    private $_headers;
+    private $contentEncoder;
+    private $cache;
+    private $grammar;
+    private $headers;
 
     public function setUp()
     {
-        $this->_cache = new Swift_KeyCache_ArrayKeyCache(
+        $this->cache = new Swift_KeyCache_ArrayKeyCache(
             new Swift_KeyCache_SimpleKeyCacheInputStream()
             );
         $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
-        $this->_contentEncoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
+        $this->contentEncoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
 
         $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
             new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
@@ -21,15 +21,15 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
             new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
             );
-        $this->_grammar = new Swift_Mime_Grammar();
-        $this->_headers = new Swift_Mime_SimpleHeaderSet(
-            new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $this->_grammar)
+        $this->grammar = new Swift_Mime_Grammar();
+        $this->headers = new Swift_Mime_SimpleHeaderSet(
+            new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $this->grammar)
             );
     }
 
     public function testContentIdIsSetInHeader()
     {
-        $file = $this->_createEmbeddedFile();
+        $file = $this->createEmbeddedFile();
         $file->setContentType('application/pdf');
         $file->setId('foo@bar');
         $this->assertEquals(
@@ -43,7 +43,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
 
     public function testDispositionIsSetInHeader()
     {
-        $file = $this->_createEmbeddedFile();
+        $file = $this->createEmbeddedFile();
         $id = $file->getId();
         $file->setContentType('application/pdf');
         $file->setDisposition('attachment');
@@ -58,7 +58,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
 
     public function testFilenameIsSetInHeader()
     {
-        $file = $this->_createEmbeddedFile();
+        $file = $this->createEmbeddedFile();
         $id = $file->getId();
         $file->setContentType('application/pdf');
         $file->setFilename('foo.pdf');
@@ -73,7 +73,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
 
     public function testSizeIsSetInHeader()
     {
-        $file = $this->_createEmbeddedFile();
+        $file = $this->createEmbeddedFile();
         $id = $file->getId();
         $file->setContentType('application/pdf');
         $file->setSize(12340);
@@ -88,7 +88,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
 
     public function testMultipleParametersInHeader()
     {
-        $file = $this->_createEmbeddedFile();
+        $file = $this->createEmbeddedFile();
         $id = $file->getId();
         $file->setContentType('application/pdf');
         $file->setFilename('foo.pdf');
@@ -104,7 +104,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
 
     public function testEndToEnd()
     {
-        $file = $this->_createEmbeddedFile();
+        $file = $this->createEmbeddedFile();
         $id = $file->getId();
         $file->setContentType('application/pdf');
         $file->setFilename('foo.pdf');
@@ -123,13 +123,13 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
 
     // -- Private helpers
 
-    protected function _createEmbeddedFile()
+    protected function createEmbeddedFile()
     {
         $entity = new Swift_Mime_EmbeddedFile(
-            $this->_headers,
-            $this->_contentEncoder,
-            $this->_cache,
-            $this->_grammar
+            $this->headers,
+            $this->contentEncoder,
+            $this->cache,
+            $this->grammar
             );
 
         return $entity;

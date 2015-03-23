@@ -62,7 +62,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
            ->never()
            ->with($message1, \Mockery::any());
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         $this->assertEquals(1, $transport->send($message1));
         $this->assertEquals(1, $transport->send($message2));
@@ -154,7 +154,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
            ->never()
            ->with($message3, \Mockery::any());
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
 
         $this->assertEquals(1, $transport->send($message1));
@@ -218,7 +218,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
                $testCase->fail();
            });
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         $this->assertEquals(1, $transport->send($message));
     }
@@ -277,7 +277,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
                return 0;
            });
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         $this->assertEquals(1, $transport->send($message));
     }
@@ -336,7 +336,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
                return 1;
            });
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         $this->assertEquals(0, $transport->send($message));
     }
@@ -408,7 +408,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
                $testCase->fail();
            });
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         $this->assertEquals(1, $transport->send($message1));
         $this->assertEquals(1, $transport->send($message2));
@@ -468,7 +468,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
                }
            });
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         try {
             $transport->send($message);
@@ -510,7 +510,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
                }
            });
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         $transport->stop();
     }
@@ -567,7 +567,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
                }
            });
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         $this->assertTrue($transport->isStarted());
         try {
@@ -643,7 +643,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
            ->never()
            ->with($message2, \Mockery::any());
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->start();
         $this->assertTrue($transport->isStarted());
         try {
@@ -690,14 +690,14 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
                }
            });
 
-        $transport = $this->_getTransport(array($t1));
+        $transport = $this->getTransport(array($t1));
         $transport->start();
         $transport->send($message, $failures);
     }
 
     public function testRegisterPluginDelegatesToLoadedTransports()
     {
-        $plugin = $this->_createPlugin();
+        $plugin = $this->createPlugin();
 
         $t1 = $this->getMockery('Swift_Transport');
         $t2 = $this->getMockery('Swift_Transport');
@@ -709,7 +709,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
            ->once()
            ->with($plugin);
 
-        $transport = $this->_getTransport(array($t1, $t2));
+        $transport = $this->getTransport(array($t1, $t2));
         $transport->registerPlugin($plugin);
     }
 
@@ -736,7 +736,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
 
     // -- Private helpers
 
-    private function _getTransport(array $transports)
+    private function getTransport(array $transports)
     {
         $transport = new Swift_Transport_LoadBalancedTransport();
         $transport->setTransports($transports);
@@ -744,7 +744,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         return $transport;
     }
 
-    private function _createPlugin()
+    private function createPlugin()
     {
         return $this->getMockery('Swift_Events_EventListener');
     }
