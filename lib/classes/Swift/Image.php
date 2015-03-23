@@ -11,7 +11,7 @@
 /**
  * An image, embedded in a multipart message.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Image extends Swift_EmbeddedFile
 {
@@ -38,6 +38,6 @@ class Swift_Image extends Swift_EmbeddedFile
      */
     public static function fromPath($path)
     {
-        return (new self)->setFile(new Swift_ByteStream_FileByteStream($path));
+        return (new self())->setFile(new Swift_ByteStream_FileByteStream($path));
     }
 }

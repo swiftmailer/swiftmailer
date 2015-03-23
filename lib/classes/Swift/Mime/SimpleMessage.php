@@ -13,7 +13,7 @@ use Egulias\EmailValidator\EmailValidator;
 /**
  * The default email message class.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime_Message
 {
@@ -93,7 +93,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Set the date at which this message was created.
      *
-     * @param int     $date
+     * @param int $date
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -202,7 +202,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * associated with the address.
      *
      * @param string|array $addresses
-     * @param string $name      optional
+     * @param string       $name      optional
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -447,7 +447,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * The value is an integer where 1 is the highest priority and 5 is the lowest.
      *
-     * @param int     $priority
+     * @param int $priority
      *
      * @return Swift_Mime_SimpleMessage
      */
@@ -493,7 +493,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     }
 
     /**
-     * Ask for a delivery receipt from the recipient to be sent to $addresses
+     * Ask for a delivery receipt from the recipient to be sent to $addresses.
      *
      * @param array $addresses
      *

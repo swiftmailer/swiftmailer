@@ -13,7 +13,7 @@ use Egulias\EmailValidator\EmailValidator;
 /**
  * An embedded file, in a multipart message.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Mime_EmbeddedFile extends Swift_Mime_Attachment
 {

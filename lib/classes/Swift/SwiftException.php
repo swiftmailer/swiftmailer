@@ -11,7 +11,7 @@
 /**
  * Base Exception class.
  *
- * @author  Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_SwiftException extends Exception
 {

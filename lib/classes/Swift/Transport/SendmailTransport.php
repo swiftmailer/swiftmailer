@@ -15,7 +15,7 @@
  * It is advised to use -bs mode since error reporting with -t mode is not
  * possible.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTransport
 {

@@ -11,7 +11,7 @@
 /**
  * I/O Exception class.
  *
- * @author  Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_IoException extends Swift_SwiftException
 {

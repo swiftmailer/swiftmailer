@@ -11,7 +11,7 @@
 /**
  * Dependency Injection container.
  *
- * @author  Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_DependencyContainer
 {
@@ -91,9 +91,9 @@ class Swift_DependencyContainer
      *
      * @param string $itemName
      *
-     * @return mixed
-     *
      * @throws Swift_DependencyException If the dependency is not found
+     *
+     * @return mixed
      */
     public function lookup($itemName)
     {
@@ -138,6 +138,7 @@ class Swift_DependencyContainer
      * This method returns the current DependencyContainer instance because it
      * requires the use of the fluid interface to set the specific details for the
      * dependency.
+     *
      * @see asNewInstanceOf(), asSharedInstanceOf(), asValue()
      *
      * @param string $itemName

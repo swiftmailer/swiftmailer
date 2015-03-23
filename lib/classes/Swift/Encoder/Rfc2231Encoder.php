@@ -11,7 +11,7 @@
 /**
  * Handles RFC 2231 specified Encoding in Swift Mailer.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
 {
@@ -36,9 +36,9 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
      * Takes an unencoded string and produces a string encoded according to
      * RFC 2231 from it.
      *
-     * @param string  $string
-     * @param int     $firstLineOffset
-     * @param int     $maxLineLength   optional, 0 indicates the default of 75 bytes
+     * @param string $string
+     * @param int    $firstLineOffset
+     * @param int    $maxLineLength   optional, 0 indicates the default of 75 bytes
      *
      * @return string
      */
@@ -83,8 +83,8 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
     }
 
     /**
-    * Make a deep copy of object
-    */
+     * Make a deep copy of object.
+     */
     public function __clone()
     {
         $this->charStream = clone $this->charStream;

@@ -11,7 +11,7 @@
 /**
  * Stores Messages in a queue.
  *
- * @author  Fabien Potencier
+ * @author Fabien Potencier
  */
 class Swift_Transport_SpoolTransport implements Swift_Transport
 {
@@ -84,7 +84,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
      * @param Swift_Mime_Message $message
      * @param string[]           $failedRecipients An array of failures by-reference
      *
-     * @return int     The number of sent e-mail's
+     * @return int The number of sent e-mail's
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {

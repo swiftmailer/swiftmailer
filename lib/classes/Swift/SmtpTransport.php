@@ -11,7 +11,8 @@
 /**
  * Sends Messages over SMTP with ESMTP support.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
+ *
  * @method Swift_SmtpTransport setUsername(string $username) Set the username to authenticate with.
  * @method string              getUsername()                 Get the username to authenticate with.
  * @method Swift_SmtpTransport setPassword(string $password) Set the password to authenticate with.
@@ -24,9 +25,9 @@ class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
     /**
      * Create a new SmtpTransport, optionally with $host, $port and $security.
      *
-     * @param string  $host
-     * @param int     $port
-     * @param string  $security
+     * @param string $host
+     * @param int    $port
+     * @param string $security
      */
     public function __construct($host = 'localhost', $port = 25, $security = null)
     {
