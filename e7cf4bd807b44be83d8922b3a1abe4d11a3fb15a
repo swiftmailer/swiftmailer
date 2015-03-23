@@ -1,0 +1,348 @@
+---------------------------------------------------------------------------
+
+by stof at 2013-12-26T13:07:25Z
+
+I think switching the email validation to use the EmailValidator library could be a good reason to drop the support of 5.2. PHP 5.2 reached its end of maintenance several years ago after all
+
+---------------------------------------------------------------------------
+
+by egulias at 2013-12-26T14:03:22Z
+
+@stof I know this is a bit out of topic, but I'd appreciate to move forward the symfony integration PR as well. Can you give feedback on that PR please?
+
+---------------------------------------------------------------------------
+
+by egulias at 2013-12-26T14:17:27Z
+
+I've submitted the change so this can be merged and used and changed back when the decision over the compatibility drop is done.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-01-12T18:56:14Z
+
+ping @sstok
+
+---------------------------------------------------------------------------
+
+by sstok at 2014-01-13T08:43:08Z
+
+Seems good to me :+1:
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-01-14T12:56:28Z
+
+The TravisCI failure is due to a problem with `gem install`, not the code.
+
+---------------------------------------------------------------------------
+
+by sstok at 2014-01-27T08:13:37Z
+
+@fabpot ping
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-02-14T12:14:57Z
+
+Travis failure was due to timeout, not tests.
+@fabpot @sstok ping :)
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-03-04T14:04:10Z
+
+ping @fabpot
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-03-19T22:30:00Z
+
+@fabpot I'll meet you at Sensio Labs meetings in Madrid, I hope you'll have  a minute to talk about this (too).
+
+---------------------------------------------------------------------------
+
+by romainneutron at 2014-03-20T14:37:59Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-03-27T09:42:14Z
+
+@fabpot @romainneutron now that has been merged into symfony will this merge too?
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-05-05T10:25:49Z
+
+Is Swiftmailer migrating to PHP 5.4 finaly?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-09-20T07:32:00Z
+
+@egulias I've just dropped PHP 5.2 support for Swiftmailer 5.3. Can you update this PR accordingly?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-09-20T07:32:54Z
+
+Reading the code, I see that the current `Grammar` class is used in many other places to validate part of emails. Switching to your lib will make those portions of the code still rely on the old code with a different validation strategy. That's probably not what we want.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-09-20T07:34:39Z
+
+So, validation is done in 3 places:
+
+* lib/classes/Swift/Mime/Headers/PathHeader.php
+* lib/classes/Swift/Validate.php
+* lib/classes/Swift/Mime/Headers/MailboxHeader.php
+
+And here are some other usages in the code for part of emails:
+
+* lib/classes/Swift/Mime/Headers/IdentificationHeader.php: `id-left` and `id-right`
+* lib/classes/Swift/Mime/Headers/AbstractHeader.php: `phrase` and `text`
+* lib/classes/Swift/Mime/Headers/ParameterizedHeader.php: `text`
+* lib/classes/Swift/Mime/SimpleMimeEntity.php: `id-left` and `id-right`
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-09-20T09:54:38Z
+
+Great @fabpot. I'll update the PR for 5.3 and I'll check all the places where validation is done, thanks for checking that.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-09-21T22:24:20Z
+
+After a quick look
+Seems that for
+* lib/classes/Swift/Mime/Headers/PathHeader.php
+* lib/classes/Swift/Validate.php
+* lib/classes/Swift/Mime/Headers/MailboxHeader.php
+* lib/classes/Swift/Mime/Headers/IdentificationHeader.php
+* lib/classes/Swift/Mime/SimpleMimeEntity.php
+Is viable to replace the validation. Maybe updating all of them to add the use Swift/Validate as a new dependency.
+
+And for
+* lib/classes/Swift/Mime/Headers/AbstractHeader.php: `phrase` and `text`
+* lib/classes/Swift/Mime/Headers/ParameterizedHeader.php: `text`
+They use the grammar no to validate but to create headers, so would be right to use the grammar.
+
+So I'll work on this direction, let me know if I'm wrong
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-10-04T05:46:19Z
+
+@egulias Any news on this one?
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-04T10:37:31Z
+
+I'll work on this this weekend and on the following week, is ok?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-10-04T11:14:57Z
+
+Sure. Thanks.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-04T22:42:10Z
+
+@fabpot do you want Swiftmailer to depend on the validator or shall I update the code to admit both (Swiftmailer's and EmailValidator's) validations?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-10-05T07:31:18Z
+
+@egulias Making Swiftmailer depend on the validator is fine.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-08T22:23:40Z
+
+I've letf `Swift_EmailValidatorBridge` to be used inside Swift DIC and because there is no other `use` statement yet.
+@fabpot should I squash and leave only 1 commit?
+
+---------------------------------------------------------------------------
+
+by romainneutron at 2014-10-08T22:49:52Z
+
+@egulias commits will be squashed automatically :)
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-08T22:52:13Z
+
+Great :D
+El 09/10/2014 00:49, "Romain Neutron" <notifications@github.com> escribió:
+
+> @egulias <https://github.com/egulias> commits will be squashed
+> automatically :)
+>
+> —
+> Reply to this email directly or view it on GitHub
+> <https://github.com/swiftmailer/swiftmailer/pull/409#issuecomment-58440565>
+> .
+>
+
+---------------------------------------------------------------------------
+
+by fabpot at 2014-10-09T16:02:11Z
+
+I don't really understand the need for `Swift_EmailValidatorBridge`. As the min requirement if 5.3, we can add some use statements.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-09T21:55:48Z
+
+Done. fabbot failure is due to some PHPUnit required optimizations.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-16T21:58:01Z
+
+Hi @fabpot
+SensioLabsInsight's recommendation (that's why is red) it is not related to the PR. Do you want me to solve it anyway?
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-28T19:40:51Z
+
+@fabpot let me know if anything else is needed
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-28T23:59:05Z
+
+Thanks @GrahamCampbell , I didn't saw them. Should be fine now.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-29T23:53:33Z
+
+Done.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-10-30T22:32:57Z
+
+Hope now is good, I had the IDE with wrong config.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-11-01T17:26:43Z
+
+Travis has passed green but the notifications seems not to know that. Can be rebuild?
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2014-11-01T20:02:46Z
+
+Squash and force push. That should do it.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-11-10T22:52:27Z
+
+Anything else needed to merge this?
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-11-16T17:46:36Z
+
+ping @romainneutron :)
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-11-17T23:34:52Z
+
+Done @romainneutron , thanks. Lets see if we can close this one :)
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-11-18T22:01:53Z
+
+I hope to be done now :)
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-11-24T22:44:58Z
+
+ping @romainneutron :)
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-11-29T14:03:13Z
+
+@fabpot removed Swift_Grammar usage and inlineed where needed
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2014-11-29T14:16:19Z
+
+:+1:
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-12-03T22:18:11Z
+
+I'll work on the changes this weekend.
+
+---------------------------------------------------------------------------
+
+by egulias at 2014-12-10T22:35:28Z
+
+Sorry for the delay. Anything else needs to be addressed @fabpot ?
+
+---------------------------------------------------------------------------
+
+by gondo at 2014-12-18T11:01:34Z
+
+any update on this? currently the combination of strict EmailValidator based on `egulias/EmailValidator` and SwiftMailer is unusable as both are using different validations and email passing EmailValidator is marked as invalid by SwiftMailer
+https://github.com/egulias/EmailValidator/issues/42
+
+this is  major issue, because i have cases where users successfully registered with a valid email validated by EmailValidator but SwiftMailer did throw `Swift_RfcComplianceException` exception.
+**this happened in production !!!** as it is very hard to test if you are relying on EmailValidator to do it's job.
+
+my current workaround is custom email validator https://github.com/egulias/EmailValidator/issues/42#issuecomment-67464894
+
+---------------------------------------------------------------------------
+
+by egulias at 2015-01-04T18:06:49Z
+
+We turned a year since I began this PR :)!!
+@fabpot how can I help to move this forward (even if other PR should be done)
+Thanks.
+
+---------------------------------------------------------------------------
+
+by egulias at 2015-01-22T21:42:17Z
+
+Hi again!
+Is there any way to help to move this forward?
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-02-17T08:25:54Z
+
+@fabpot @stof ping
+
+---------------------------------------------------------------------------
+
+by dstevenson at 2015-03-07T02:12:39Z
+
+What are the remaining issues here blocking a merge?
+
+---------------------------------------------------------------------------
+
+by dstevenson at 2015-03-14T00:54:50Z
+
+@fabpot @stof
+
+Did either of you have a chance to review the latest changes here?
