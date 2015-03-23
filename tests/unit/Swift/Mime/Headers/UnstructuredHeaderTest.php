@@ -335,7 +335,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest extends \SwiftMailerTestCase
 
     private function getHeader($name, $encoder)
     {
-        $header = new Swift_Mime_Headers_UnstructuredHeader($name, $encoder, new Swift_Mime_Grammar());
+        $header = new Swift_Mime_Headers_UnstructuredHeader($name, $encoder);
         $header->setCharset($this->charset);
 
         return $header;

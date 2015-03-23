@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0"
+        "php": ">=5.5.0",
+        "egulias/email-validator": "~1.2"
     },
     "require-dev": {
         "mockery/mockery": "~0.9.1"

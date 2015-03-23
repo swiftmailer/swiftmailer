@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 {
     public function testNestingLevelIsSubpart()
@@ -30,7 +32,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             array('charset' => 'iso-8859-1')
             );
         $part = $this->createMimePart($this->createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->createEncoder(), $this->createCache()
             );
         $this->assertEquals('iso-8859-1', $part->getCharset());
@@ -44,7 +46,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $cType->shouldReceive('setParameter')->once()->with('charset', 'utf-8');
 
         $part = $this->createMimePart($this->createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->createEncoder(), $this->createCache()
             );
         $part->setCharset('utf-8');
@@ -58,7 +60,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $cType->shouldReceive('setParameter')->once()->with('charset', 'utf-8');
 
         $part = $this->createMimePart($this->createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->createEncoder(), $this->createCache()
             );
         $part->setBody('', 'text/plian', 'utf-8');
@@ -112,7 +114,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $cType->shouldReceive('setParameter')->once()->with('charset', 'utf-8');
 
         $part = $this->createMimePart($this->createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->createEncoder(), $this->createCache()
             );
         $part->charsetChanged('utf-8');
@@ -151,7 +153,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             array('format' => 'flowed')
             );
         $part = $this->createMimePart($this->createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->createEncoder(), $this->createCache()
             );
         $this->assertEquals('flowed', $part->getFormat());
@@ -163,7 +165,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $cType->shouldReceive('setParameter')->once()->with('format', 'fixed');
 
         $part = $this->createMimePart($this->createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->createEncoder(), $this->createCache()
             );
         $part->setFormat('fixed');
@@ -178,10 +180,10 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             array('delsp' => 'no')
             );
         $part = $this->createMimePart($this->createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->createEncoder(), $this->createCache()
             );
-        $this->assertSame(false, $part->getDelSp());
+        $this->assertFalse($part->getDelSp());
     }
 
     public function testDelSpIsSetInHeader()
@@ -190,7 +192,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $cType->shouldReceive('setParameter')->once()->with('delsp', 'yes');
 
         $part = $this->createMimePart($this->createHeaderSet(array(
-            'Content-Type' => $cType,)),
+            'Content-Type' => $cType, )),
             $this->createEncoder(), $this->createCache()
             );
         $part->setDelSp(true);
@@ -228,6 +230,6 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 
     protected function createMimePart($headers, $encoder, $cache)
     {
-        return new Swift_Mime_MimePart($headers, $encoder, $cache, new Swift_Mime_Grammar());
+        return new Swift_Mime_MimePart($headers, $encoder, $cache, new EmailValidator());
     }
 }

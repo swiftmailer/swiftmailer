@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Egulias\EmailValidator\EmailValidator;
+
 /**
  * An embedded file, in a multipart message.
  *
@@ -21,12 +23,11 @@ class Swift_Mime_EmbeddedFile extends Swift_Mime_Attachment
      * @param Swift_Mime_HeaderSet      $headers
      * @param Swift_Mime_ContentEncoder $encoder
      * @param Swift_KeyCache            $cache
-     * @param Swift_Mime_Grammar        $grammar
      * @param array                     $mimeTypes optional
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, $mimeTypes = array())
+    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, EmailValidator $emailValidator, $mimeTypes = array())
     {
-        parent::__construct($headers, $encoder, $cache, $grammar, $mimeTypes);
+        parent::__construct($headers, $encoder, $cache, $emailValidator, $mimeTypes);
         $this->setDisposition('inline');
         $this->setId($this->getId());
     }

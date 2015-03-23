@@ -375,9 +375,7 @@ class Swift_Mime_Headers_ParameterizedHeaderTest extends \SwiftMailerTestCase
 
     private function getHeader($name, $encoder, $paramEncoder)
     {
-        $header = new Swift_Mime_Headers_ParameterizedHeader($name, $encoder,
-            $paramEncoder, new Swift_Mime_Grammar()
-            );
+        $header = new Swift_Mime_Headers_ParameterizedHeader($name, $encoder, $paramEncoder);
         $header->setCharset($this->charset);
 
         return $header;

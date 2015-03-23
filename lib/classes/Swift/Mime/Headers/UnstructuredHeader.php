@@ -27,13 +27,11 @@ class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractH
      *
      * @param string                   $name
      * @param Swift_Mime_HeaderEncoder $encoder
-     * @param Swift_Mime_Grammar       $grammar
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Mime_Grammar $grammar)
+    public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);
-        parent::__construct($grammar);
     }
 
     /**

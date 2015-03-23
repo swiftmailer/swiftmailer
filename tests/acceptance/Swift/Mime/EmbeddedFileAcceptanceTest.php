@@ -1,11 +1,13 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
     private $contentEncoder;
     private $cache;
-    private $grammar;
     private $headers;
+    private $_emailValidator;
 
     public function setUp()
     {
@@ -21,9 +23,9 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
             new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
             );
-        $this->grammar = new Swift_Mime_Grammar();
+        $this->_emailValidator = new EmailValidator();
         $this->headers = new Swift_Mime_SimpleHeaderSet(
-            new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $this->grammar)
+            new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $this->_emailValidator)
             );
     }
 
@@ -129,7 +131,7 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
             $this->headers,
             $this->contentEncoder,
             $this->cache,
-            $this->grammar
+            $this->_emailValidator
             );
 
         return $entity;

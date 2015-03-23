@@ -1,5 +1,7 @@
 <?php
 
+use Egulias\EmailValidator\EmailValidator;
+
 class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit_Framework_TestCase
 {
     public function testTypeIsIdHeader()
@@ -184,6 +186,6 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit_Framework_Tes
 
     private function getHeader($name)
     {
-        return new Swift_Mime_Headers_IdentificationHeader($name, new Swift_Mime_Grammar());
+        return new Swift_Mime_Headers_IdentificationHeader($name, new EmailValidator());
     }
 }
