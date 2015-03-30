@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by xdecock at 2015-03-30T11:28:11Z
+
+got the same segfaults (PHP 5.6 - ubuntu 15.04 Beta) but i can't isolate the issue, i'll go through GDB to understand what's the issue here
