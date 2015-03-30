@@ -95,7 +95,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
                 ->andReturn(array('mark@swiftmailer.org' => 'Mark'));
         $buf->shouldReceive('write')
             ->once()
-            ->with("MAIL FROM: <chris@swiftmailer.org>\r\n")
+            ->with("MAIL FROM:<chris@swiftmailer.org>\r\n")
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -103,7 +103,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
             ->andReturn("250 OK\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with("RCPT TO: <mark@swiftmailer.org>\r\n")
+            ->with("RCPT TO:<mark@swiftmailer.org>\r\n")
             ->andReturn(2);
         $buf->shouldReceive('readLine')
             ->once()
@@ -146,7 +146,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
                 ->andReturn(array('mark@swiftmailer.org' => 'Mark'));
         $buf->shouldReceive('write')
             ->once()
-            ->with("MAIL FROM: <chris@swiftmailer.org>\r\n")
+            ->with("MAIL FROM:<chris@swiftmailer.org>\r\n")
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -154,7 +154,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
             ->andReturn("250 OK\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with("RCPT TO: <mark@swiftmailer.org>\r\n")
+            ->with("RCPT TO:<mark@swiftmailer.org>\r\n")
             ->andReturn(2);
         $buf->shouldReceive('readLine')
             ->once()
@@ -200,7 +200,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
                 ));
         $buf->shouldReceive('write')
             ->once()
-            ->with("MAIL FROM: <chris@swiftmailer.org>\r\n")
+            ->with("MAIL FROM:<chris@swiftmailer.org>\r\n")
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -208,7 +208,7 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
             ->andReturn("250 OK\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with("RCPT TO: <mark@swiftmailer.org>\r\n")
+            ->with("RCPT TO:<mark@swiftmailer.org>\r\n")
             ->andReturn(2);
         $buf->shouldReceive('readLine')
             ->once()

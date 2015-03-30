@@ -318,7 +318,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("MAIL FROM: <%s>%s\r\n", $address, $paramStr), array(250)
+            sprintf("MAIL FROM:<%s>%s\r\n", $address, $paramStr), array(250)
             );
     }
 
@@ -332,7 +332,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("RCPT TO: <%s>%s\r\n", $address, $paramStr), array(250, 251, 252)
+            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), array(250, 251, 252)
             );
     }
 

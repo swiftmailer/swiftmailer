@@ -9,7 +9,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
 
     public function testBytesOutIncreasesWhenCommandsSent()
     {
-        $evt = $this->_createCommandEvent("RCPT TO: <foo@bar.com>\r\n");
+        $evt = $this->_createCommandEvent("RCPT TO:<foo@bar.com>\r\n");
 
         $this->assertEquals(0, $this->_monitor->getBytesOut());
         $this->_monitor->commandSent($evt);
@@ -39,7 +39,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
         $this->_monitor->responseReceived($evt);
         $this->assertEquals(16, $this->_monitor->getBytesIn());
 
-        $evt = $this->_createCommandEvent("RCPT TO: <foo@bar.com>\r\n");
+        $evt = $this->_createCommandEvent("RCPT TO:<foo@bar.com>\r\n");
 
         $this->assertEquals(0, $this->_monitor->getBytesOut());
         $this->_monitor->commandSent($evt);
