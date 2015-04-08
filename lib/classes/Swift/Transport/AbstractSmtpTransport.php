@@ -461,11 +461,11 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /** Try to determine the hostname of the server this is run on */
     private function lookupHostname()
     {
-        if (!empty($SERVER['SERVER_NAME'])
-            && $this->isFqdn($SERVER['SERVER_NAME'])) {
-            $this->domain = $SERVER['SERVER_NAME'];
-        } elseif (!empty($SERVER['SERVER_ADDR'])) {
-            $this->domain = sprintf('[%s]', $SERVER['SERVER_ADDR']);
+        if (!empty($_SERVER['SERVER_NAME'])
+            && $this->isFqdn($_SERVER['SERVER_NAME'])) {
+            $this->domain = $_SERVER['SERVER_NAME'];
+        } elseif (!empty($_SERVER['SERVER_ADDR'])) {
+            $this->domain = sprintf('[%s]', $_SERVER['SERVER_ADDR']);
         }
     }
 
