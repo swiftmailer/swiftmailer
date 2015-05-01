@@ -19,7 +19,7 @@ class Swift_IoException extends Swift_SwiftException
      * Create a new IoException with $message.
      *
      * @param string $message
-     * @param int $code
+     * @param int    $code
      */
     public function __construct($message, $code = 0)
     {
