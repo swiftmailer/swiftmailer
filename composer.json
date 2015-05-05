@@ -18,7 +18,7 @@
         "php": ">=5.3.3"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9.1"
+        "mockery/mockery": "~0.9.1,<0.9.4"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]
