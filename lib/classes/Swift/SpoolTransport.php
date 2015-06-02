@@ -11,7 +11,7 @@
 /**
  * Stores Messages in a queue.
  *
- * @author  Fabien Potencier
+ * @author Fabien Potencier
  */
 class Swift_SpoolTransport extends Swift_Transport_SpoolTransport
 {

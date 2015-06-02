@@ -11,7 +11,7 @@
 /**
  * A Mailbox Address MIME Header for something like From or Sender.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
 {
@@ -25,7 +25,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     /**
      * Creates a new MailboxHeader with $name.
      *
-     * @param string                   $name    of Header
+     * @param string                   $name           of Header
      * @param Swift_Mime_HeaderEncoder $encoder
      * @param Swift_Mime_Grammar       $grammar
      */
@@ -68,9 +68,9 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * This method returns an associative array like {@link getNameAddresses()}
      *
-     * @return array
-     *
      * @throws Swift_RfcComplianceException
+     *
+     * @return array
      */
     public function getFieldBodyModel()
     {
@@ -128,9 +128,9 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      * @see getNameAddresses()
      * @see toString()
      *
-     * @return string[]
-     *
      * @throws Swift_RfcComplianceException
+     *
+     * @return string[]
      */
     public function getNameAddressStrings()
     {
@@ -224,9 +224,9 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @see toString()
      *
-     * @return string
-     *
      * @throws Swift_RfcComplianceException
+     *
+     * @return string
      */
     public function getFieldBody()
     {
@@ -270,8 +270,8 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     /**
      * Produces a compliant, formatted display-name based on the string given.
      *
-     * @param string  $displayName as displayed
-     * @param bool    $shorten     the first line to make remove for header name
+     * @param string $displayName as displayed
+     * @param bool   $shorten     the first line to make remove for header name
      *
      * @return string
      */
@@ -287,9 +287,9 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string[] $mailboxes
      *
-     * @return string
-     *
      * @throws Swift_RfcComplianceException
+     *
+     * @return string
      */
     protected function createMailboxListString(array $mailboxes)
     {

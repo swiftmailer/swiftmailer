@@ -11,7 +11,7 @@
 /**
  * An abstract base MIME Header.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 {
@@ -177,7 +177,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Set the maximum length of lines in the header (excluding EOL).
      *
-     * @param int     $lineLength
+     * @param int $lineLength
      */
     public function setMaxLineLength($lineLength)
     {
@@ -198,9 +198,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Get this Header rendered as a RFC 2822 compliant string.
      *
-     * @return string
-     *
      * @throws Swift_RfcComplianceException
+     *
+     * @return string
      */
     public function toString()
     {
@@ -357,8 +357,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Get a token as an encoded word for safe insertion into headers.
      *
-     * @param string  $token           token to encode
-     * @param int     $firstLineOffset optional
+     * @param string $token           token to encode
+     * @param int    $firstLineOffset optional
      *
      * @return string
      */
@@ -431,7 +431,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Clear the cached value if $condition is met.
      *
-     * @param bool    $condition
+     * @param bool $condition
      */
     protected function clearCachedValueIf($condition)
     {

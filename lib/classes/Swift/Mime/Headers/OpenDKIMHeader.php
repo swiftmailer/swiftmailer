@@ -9,9 +9,9 @@
  */
 
 /**
- * An OpenDKIM Specific Header using only raw header datas without encoding
+ * An OpenDKIM Specific Header using only raw header datas without encoding.
  *
- * @author     De Cock Xavier <xdecock@gmail.com>
+ * @author De Cock Xavier <xdecock@gmail.com>
  */
 class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
 {
@@ -23,7 +23,8 @@ class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
     private $_value;
 
     /**
-     * The name of this Header
+     * The name of this Header.
+     *
      * @var string
      */
     private $_fieldName;
@@ -118,16 +119,17 @@ class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
     }
 
     /**
-     * Set the Header FieldName
-	 * @see Swift_Mime_Header::getFieldName()
-	 */
+     * Set the Header FieldName.
+     *
+     * @see Swift_Mime_Header::getFieldName()
+     */
     public function getFieldName()
     {
         return $this->_fieldName;
     }
 
     /**
-     * Ignored
+     * Ignored.
      */
     public function setCharset($charset)
     {

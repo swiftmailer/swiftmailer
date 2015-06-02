@@ -12,8 +12,8 @@
  * MIME Message Signer used to apply S/MIME Signature/Encryption to a message.
  *
  *
- * @author     Romain-Geissler
- * @author     Sebastiaan Stok <s.stok@rollerscapes.net>
+ * @author Romain-Geissler
+ * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 {
@@ -89,7 +89,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * @param string       $certificate
      * @param string|array $privateKey  If the key needs an passphrase use array('file-location', 'passphrase') instead
      * @param int          $signOptions Bitwise operator options for openssl_pkcs7_sign()
-     * @param string       $extraCerts A file containing intermediate certificates needed by the signing certificate
+     * @param string       $extraCerts  A file containing intermediate certificates needed by the signing certificate
      *
      * @return Swift_Signers_SMimeSigner
      */
@@ -234,7 +234,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
     /**
      * @param Swift_InputByteStream $inputStream
-     * @param Swift_Message   $mimeEntity
+     * @param Swift_Message         $mimeEntity
      */
     protected function toSMimeByteStream(Swift_InputByteStream $inputStream, Swift_Message $message)
     {

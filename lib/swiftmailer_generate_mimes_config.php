@@ -28,7 +28,7 @@ function generateUpToDateMimeArray()
     $valid_mime_types = array();
 
     // split mime type and extensions eg. "video/x-matroska        mkv mk3d mks"
-    if (preg_match_all('/^#?([a-z0-9\-\+\/\.]+)[\t]+(.*)$/miu', $mime_types, $matches) !== FALSE) {
+    if (preg_match_all('/^#?([a-z0-9\-\+\/\.]+)[\t]+(.*)$/miu', $mime_types, $matches) !== false) {
         // collection of predefined mimetypes (bugfix for wrong resolved or missing mime types)
         $valid_mime_types_preset = array(
             'php'  => 'application/x-php',
@@ -145,7 +145,7 @@ function generateUpToDateMimeArray()
         // get all matching extensions from match
         foreach ((array) $node->glob["pattern"] as $extension) {
             // skip none glob extensions
-            if (strpos($extension, '.') === FALSE) {
+            if (strpos($extension, '.') === false) {
                 continue;
             }
 
@@ -167,7 +167,7 @@ function generateUpToDateMimeArray()
             $extension = strtolower(trim($node->glob["ddpattern"][0], '*.'));
 
             // skip none glob extensions and check if string length between 1 and 10
-            if (strpos($extension, '.') !== FALSE || strlen($extension) < 1 || strlen($extension) > 9) {
+            if (strpos($extension, '.') !== false || strlen($extension) < 1 || strlen($extension) > 9) {
                 continue;
             }
 

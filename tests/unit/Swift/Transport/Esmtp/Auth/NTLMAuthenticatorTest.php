@@ -222,8 +222,10 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
     }
 
     /**
-     * Hex2bin replacement for < PHP 5.4
+     * Hex2bin replacement for < PHP 5.4.
+     *
      * @param string $hex
+     *
      * @return string Binary
      */
     protected function hex2bin($hex)

@@ -11,7 +11,7 @@
 /**
  * Sends Messages over SMTP.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 {
@@ -87,7 +87,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     }
 
     /**
-     * Returns the IP used to connect to the destination
+     * Returns the IP used to connect to the destination.
      *
      * @return string
      */

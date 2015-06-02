@@ -17,7 +17,7 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
 
         $serverStarted = false;
         for ($i = 0; $i<5; ++$i) {
-            $this->_randomHighPort = rand(50000,65000);
+            $this->_randomHighPort = rand(50000, 65000);
             $this->_server = stream_socket_server('tcp://127.0.0.1:'.$this->_randomHighPort);
             if ($this->_server) {
                 $serverStarted = true;
