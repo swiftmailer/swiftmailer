@@ -301,7 +301,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     protected function doMailFromCommand($address)
     {
         $this->executeCommand(
-            sprintf("MAIL FROM: <%s>\r\n", $address), array(250)
+            sprintf("MAIL FROM:<%s>\r\n", $address), array(250)
             );
     }
 
@@ -309,7 +309,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     protected function doRcptToCommand($address)
     {
         $this->executeCommand(
-            sprintf("RCPT TO: <%s>\r\n", $address), array(250, 251, 252)
+            sprintf("RCPT TO:<%s>\r\n", $address), array(250, 251, 252)
             );
     }
 

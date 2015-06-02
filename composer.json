@@ -2,7 +2,7 @@
     "name": "swiftmailer/swiftmailer",
     "type": "library",
     "description": "Swiftmailer, free feature-rich PHP mailer",
-    "keywords": ["mail","mailer"],
+    "keywords": ["mail","mailer","email"],
     "homepage": "http://swiftmailer.org",
     "license": "MIT",
     "authors": [
@@ -19,7 +19,7 @@
         "egulias/email-validator": "~1.2"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9.1"
+        "mockery/mockery": "~0.9.1,<0.9.4"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]

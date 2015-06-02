@@ -9,13 +9,13 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
 
     public function testBytesOutIncreasesWhenCommandsSent()
     {
-        $evt = $this->createCommandEvent("RCPT TO: <foo@bar.com>\r\n");
+        $evt = $this->createCommandEvent("RCPT TO:<foo@bar.com>\r\n");
 
         $this->assertEquals(0, $this->monitor->getBytesOut());
         $this->monitor->commandSent($evt);
-        $this->assertEquals(24, $this->monitor->getBytesOut());
+        $this->assertEquals(23, $this->monitor->getBytesOut());
         $this->monitor->commandSent($evt);
-        $this->assertEquals(48, $this->monitor->getBytesOut());
+        $this->assertEquals(46, $this->monitor->getBytesOut());
     }
 
     public function testBytesInIncreasesWhenResponsesReceived()
@@ -39,13 +39,13 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
         $this->monitor->responseReceived($evt);
         $this->assertEquals(16, $this->monitor->getBytesIn());
 
-        $evt = $this->createCommandEvent("RCPT TO: <foo@bar.com>\r\n");
+        $evt = $this->createCommandEvent("RCPT TO:<foo@bar.com>\r\n");
 
         $this->assertEquals(0, $this->monitor->getBytesOut());
         $this->monitor->commandSent($evt);
-        $this->assertEquals(24, $this->monitor->getBytesOut());
+        $this->assertEquals(23, $this->monitor->getBytesOut());
         $this->monitor->commandSent($evt);
-        $this->assertEquals(48, $this->monitor->getBytesOut());
+        $this->assertEquals(46, $this->monitor->getBytesOut());
 
         $this->monitor->reset();
 
