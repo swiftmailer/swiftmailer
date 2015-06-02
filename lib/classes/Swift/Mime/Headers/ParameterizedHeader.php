@@ -11,7 +11,7 @@
 /**
  * An abstract base MIME Header.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_UnstructuredHeader implements Swift_Mime_ParameterizedHeader
 {
@@ -159,7 +159,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
         foreach ($this->params as $name => $value) {
             if (!is_null($value)) {
                 // Add the semi-colon separator
-                $tokens[count($tokens)-1] .= ';';
+                $tokens[count($tokens) - 1] .= ';';
                 $tokens = array_merge($tokens, $this->generateTokenLines(
                     ' '.$this->createParameter($name, $value)
                     ));
@@ -234,9 +234,9 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
     /**
      * Returns the parameter value from the "=" and beyond.
      *
-     * @param string  $value     to append
-     * @param bool    $encoded
-     * @param bool    $firstLine
+     * @param string $value     to append
+     * @param bool   $encoded
+     * @param bool   $firstLine
      *
      * @return string
      */

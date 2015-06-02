@@ -11,7 +11,7 @@
 /**
  * Provides the base functionality for an InputStream supporting filters.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_InputByteStream, Swift_Filterable
 {
@@ -75,9 +75,9 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      *
      * @param string $bytes
      *
-     * @return int
-     *
      * @throws Swift_IoException
+     *
+     * @return int
      */
     public function write($bytes)
     {

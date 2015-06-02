@@ -11,7 +11,7 @@
 /**
  * Does real time reporting of pass/fail for each recipient.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Plugins_ReporterPlugin implements Swift_Events_SendListener
 {

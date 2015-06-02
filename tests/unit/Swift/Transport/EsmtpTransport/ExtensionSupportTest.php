@@ -414,7 +414,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest
              ->andReturnUsing(function ($a, $b, $c, $d, &$e) {
                  $e = true;
 
-                 return "250 ok";
+                 return '250 ok';
              });
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()

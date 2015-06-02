@@ -11,7 +11,7 @@
 /**
  * An image, embedded in a multipart message.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Image extends Swift_EmbeddedFile
 {
