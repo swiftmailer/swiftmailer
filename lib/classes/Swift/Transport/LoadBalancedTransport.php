@@ -65,7 +65,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     }
 
     /**
-     * Gets the Transport used in the last successful send operation.
+     * Get the Transport used in the last successful send operation.
      *
      * @return Swift_Transport
      */
