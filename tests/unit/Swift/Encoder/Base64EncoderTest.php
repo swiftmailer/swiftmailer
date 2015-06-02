@@ -80,7 +80,7 @@ class Swift_Encoder_Base64EncoderTest extends \PHPUnit_Framework_TestCase
         }
 
         for ($i = 0; $i < 30; ++$i) {
-            $input  = pack('C*', rand(0, 255), rand(0, 255), rand(0, 255));
+            $input = pack('C*', rand(0, 255), rand(0, 255), rand(0, 255));
             $this->assertRegExp(
                 '~^[a-zA-Z0-9/\+]{4}$~', $this->_encoder->encodeString($input),
                 '%s: Three bytes should have no padding'

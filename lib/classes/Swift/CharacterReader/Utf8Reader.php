@@ -84,7 +84,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      */
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
     {
-        if (!isset($currentMap['i']) || ! isset($currentMap['p'])) {
+        if (!isset($currentMap['i']) || !isset($currentMap['p'])) {
             $currentMap['p'] = $currentMap['i'] = array();
         }
 
@@ -156,7 +156,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
      */
     public function validateByteSequence($bytes, $size)
     {
-        if ($size<1) {
+        if ($size < 1) {
             return -1;
         }
         $needed = self::$length_map[$bytes[0]] - $size;

@@ -125,11 +125,12 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Instanciate DomainKeySigner
+     * Instanciate DomainKeySigner.
      *
      * @param string $privateKey
      * @param string $domainName
      * @param string $selector
+     *
      * @return Swift_Signers_DomainKeySigner
      */
     public static function newInstance($privateKey, $domainName, $selector)
@@ -369,7 +370,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
         $listHeaders = $headers->listAll();
         foreach ($listHeaders as $hName) {
             // Check if we need to ignore Header
-            if (! isset($this->_ignoredHeaders[strtolower($hName)])) {
+            if (!isset($this->_ignoredHeaders[strtolower($hName)])) {
                 if ($headers->has($hName)) {
                     $tmp = $headers->getAll($hName);
                     foreach ($tmp as $header) {
@@ -396,7 +397,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     public function addSignature(Swift_Mime_HeaderSet $headers)
     {
         // Prepare the DomainKey-Signature Header
-        $params = array('a' => $this->_hashAlgorithm, 'b' => chunk_split(base64_encode($this->_getEncryptedHash()), 73, " "), 'c' => $this->_canon, 'd' => $this->_domainName, 'h' => implode(': ', $this->_signedHeaders), 'q' => 'dns', 's' => $this->_selector);
+        $params = array('a' => $this->_hashAlgorithm, 'b' => chunk_split(base64_encode($this->_getEncryptedHash()), 73, ' '), 'c' => $this->_canon, 'd' => $this->_domainName, 'h' => implode(': ', $this->_signedHeaders), 'q' => 'dns', 's' => $this->_selector);
         $string = '';
         foreach ($params as $k => $v) {
             $string .= $k.'='.$v.'; ';
@@ -416,9 +417,9 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                 // Prepare Header and cascade
                 $exploded = explode(':', $header, 2);
                 $name = strtolower(trim($exploded[0]));
-                $value = str_replace("\r\n", "", $exploded[1]);
-                $value = preg_replace("/[ \t][ \t]+/", " ", $value);
-                $header = $name.":".trim($value)."\r\n";
+                $value = str_replace("\r\n", '', $exploded[1]);
+                $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
+                $header = $name.':'.trim($value)."\r\n";
             case 'simple' :
                 // Nothing to do
         }
@@ -434,7 +435,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     {
         $len = strlen($string);
         $canon = '';
-        $nofws = ($this->_canon == "nofws");
+        $nofws = ($this->_canon == 'nofws');
         for ($i = 0; $i < $len; ++$i) {
             if ($this->_bodyCanonIgnoreStart > 0) {
                 --$this->_bodyCanonIgnoreStart;
@@ -460,7 +461,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                         throw new Swift_SwiftException('Invalid new line sequence in mail found \n without preceding \r');
                     }
                     break;
-                case " " :
+                case ' ' :
                 case "\t" :
                 case "\x09": //HTAB
                     if ($nofws) {

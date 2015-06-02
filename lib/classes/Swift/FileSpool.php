@@ -121,10 +121,10 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         foreach (new DirectoryIterator($this->_path) as $file) {
             $file = $file->getRealPath();
 
-            if (substr($file, - 16) == '.message.sending') {
+            if (substr($file, -16) == '.message.sending') {
                 $lockedtime = filectime($file);
                 if ((time() - $lockedtime) > $timeout) {
-                    rename($file, substr($file, 0, - 8));
+                    rename($file, substr($file, 0, -8));
                 }
             }
         }
@@ -196,7 +196,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     protected function getRandomString($count)
     {
         // This string MUST stay FS safe, avoid special chars
-        $base = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
+        $base = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-';
         $ret = '';
         $strlen = strlen($base);
         for ($i = 0; $i < $count; ++$i) {

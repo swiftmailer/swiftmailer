@@ -13,7 +13,7 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoderAcceptanceTest extends \PHPUni
     {
         if (function_exists('mb_convert_encoding')) {
             // base64_encode and split cannot handle long JIS text to fold
-            $subject = "長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い件名";
+            $subject = '長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い件名';
 
             $encodedWrapperLength = strlen('=?iso-2022-jp?'.$this->_encoder->getName().'??=');
 

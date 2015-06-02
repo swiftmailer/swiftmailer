@@ -126,7 +126,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
 
         foreach ($originalLines as $originalLine) {
             $lines[] = '';
-            $currentLine = & $lines[$lineCount++];
+            $currentLine = &$lines[$lineCount++];
 
             //$chunks = preg_split('/(?<=[\ \t,\.!\?\-&\+\/])/', $originalLine);
             $chunks = preg_split('/(?<=\s)/', $originalLine);
@@ -135,7 +135,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
                 if (0 != strlen($currentLine)
                     && strlen($currentLine.$chunk) > $length) {
                     $lines[] = '';
-                    $currentLine = & $lines[$lineCount++];
+                    $currentLine = &$lines[$lineCount++];
                 }
                 $currentLine .= $chunk;
             }

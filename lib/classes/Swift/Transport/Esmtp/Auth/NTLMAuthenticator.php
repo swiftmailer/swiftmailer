@@ -18,7 +18,7 @@
 class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Esmtp_Authenticator
 {
     const NTLMSIG = "NTLMSSP\x00";
-    const DESCONST = "KGS!@#$%";
+    const DESCONST = 'KGS!@#$%';
 
     /**
      * Get the name of the AUTH mechanism this Authenticator handles.
@@ -59,7 +59,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
             $response = base64_decode(substr(trim($this->sendMessage1($agent)), 4));
 
             // extra parameters for our unit cases
-            $timestamp = func_num_args() > 3 ? func_get_arg(3) : $this->getCorrectTimestamp(bcmul(microtime(true), "1000"));
+            $timestamp = func_num_args() > 3 ? func_get_arg(3) : $this->getCorrectTimestamp(bcmul(microtime(true), '1000'));
             $client = func_num_args() > 4 ? func_get_arg(4) : $this->getRandomBytes(8);
 
             // Message 3 response
@@ -83,7 +83,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
                 // pad to $bits bit
                 $bin_length = strlen($bin);
                 if ($bin_length < $bits) {
-                    $bin = str_repeat("0", $bits - $bin_length).$bin;
+                    $bin = str_repeat('0', $bits - $bin_length).$bin;
                 }
             } else {
                 // negative
@@ -91,7 +91,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
                 $bin = base_convert($si, 10, 2);
                 $bin_length = strlen($bin);
                 if ($bin_length > $bits) {
-                    $bin = str_repeat("1", $bits - $bin_length).$bin;
+                    $bin = str_repeat('1', $bits - $bin_length).$bin;
                 }
             }
         }
@@ -258,7 +258,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
 .$domainSec // Domain header
 .$userSec // User header
 .$workSec // Workstation header
-.$this->createByte("000000009a", 8) // session key header (empty)
+.$this->createByte('000000009a', 8) // session key header (empty)
 .$this->createByte('01020000') // FLAGS
 .$this->convertTo16bit($domain) // domain name
 .$this->convertTo16bit($username) // username
@@ -368,11 +368,11 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
         bcscale(0);
 
         $time = number_format($time, 0, '.', ''); // save microtime to string
-        $time = bcadd($time, "11644473600000"); // add epoch time
+        $time = bcadd($time, '11644473600000'); // add epoch time
         $time = bcmul($time, 10000); // tenths of a microsecond.
 
         $binary = $this->si2bin($time, 64); // create 64 bit binary string
-        $timestamp = "";
+        $timestamp = '';
         for ($i = 0; $i < 8; $i++) {
             $timestamp .= chr(bindec(substr($binary, -(($i + 1) * 8), 8)));
         }
@@ -632,8 +632,10 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     }
 
     /**
-     * Hex2bin replacement for < PHP 5.4
+     * Hex2bin replacement for < PHP 5.4.
+     *
      * @param string $hex
+     *
      * @return string Binary
      */
     protected function hex2bin($hex)
@@ -655,7 +657,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
         echo substr($message, 0, 16)." NTLMSSP Signature<br />\n";
         echo $messageId." Type Indicator<br />\n";
 
-        if ($messageId == "02000000") {
+        if ($messageId == '02000000') {
             $map = array(
                 'Challenge',
                 'Context',
@@ -674,7 +676,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
             foreach ($map as $key => $value) {
                 echo bin2hex($data[$key]).' - '.$data[$key].' ||| '.$value."<br />\n";
             }
-        } elseif ($messageId == "03000000") {
+        } elseif ($messageId == '03000000') {
             $i = 0;
             $data[$i++] = substr($message, 24, 16);
             list($lmLength, $lmOffset) = $this->readSecurityBuffer($data[$i - 1]);
@@ -719,6 +721,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
             }
         }
 
-        echo "<br /><br />";
+        echo '<br /><br />';
     }
 }

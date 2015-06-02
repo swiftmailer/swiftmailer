@@ -45,9 +45,9 @@ class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
     /**
      * Create a new SmtpTransport instance.
      *
-     * @param string  $host
-     * @param int     $port
-     * @param string  $security
+     * @param string $host
+     * @param int    $port
+     * @param string $security
      *
      * @return Swift_SmtpTransport
      */

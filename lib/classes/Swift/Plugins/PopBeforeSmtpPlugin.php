@@ -59,9 +59,9 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Create a new PopBeforeSmtpPlugin for $host and $port.
      *
-     * @param string  $host
-     * @param int     $port
-     * @param string  $crypto as "tls" or "ssl"
+     * @param string $host
+     * @param int    $port
+     * @param string $crypto as "tls" or "ssl"
      *
      * @return Swift_Plugins_PopBeforeSmtpPlugin
      */

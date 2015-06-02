@@ -65,7 +65,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
                     }
                     $tree = &$tree[$char];
                 }
-                $last_size = $k+1;
+                $last_size = $k + 1;
                 $size = max($size, $last_size);
             } else {
                 $last_size = 1;
@@ -133,7 +133,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
                 if (isset($buffer [$p = $i + $j]) && isset($search_pos[$buffer[$p]])) {
                     $search_pos = $search_pos[$buffer[$p]];
                     // We have a complete pattern, save, in case we don't find a better match later
-                    if (isset($search_pos[- 1]) && $search_pos[-1] < $last_found
+                    if (isset($search_pos[-1]) && $search_pos[-1] < $last_found
                         && $search_pos[-1] > $_minReplaces) {
                         $last_found = $search_pos[-1];
                         $last_size = $search_pos[-2];

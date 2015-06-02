@@ -59,7 +59,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     {
         $bodyLen = $this->_bodyLen;
         if (is_bool($bodyLen)) {
-            $bodyLen = - 1;
+            $bodyLen = -1;
         }
         $hash = ($this->_hashAlgorithm == 'rsa-sha1') ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
         $bodyCanon = ($this->_bodyCanon == 'simple') ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
@@ -81,7 +81,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         $listHeaders = $headers->listAll();
         foreach ($listHeaders as $hName) {
             // Check if we need to ignore Header
-            if (! isset($this->_ignoredHeaders[strtolower($hName)])) {
+            if (!isset($this->_ignoredHeaders[strtolower($hName)])) {
                 $tmp = $headers->getAll($hName);
                 if ($headers->has($hName)) {
                     foreach ($tmp as $header) {
@@ -100,7 +100,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     public function startBody()
     {
-        if (! $this->_peclLoaded) {
+        if (!$this->_peclLoaded) {
             return parent::startBody();
         }
         $this->dropFirstLF = true;
@@ -111,7 +111,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     public function endBody()
     {
-        if (! $this->_peclLoaded) {
+        if (!$this->_peclLoaded) {
             return parent::endBody();
         }
         $this->_dkimHandler->eom();
@@ -173,7 +173,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     protected function _canonicalizeBody($string)
     {
-        if (! $this->_peclLoaded) {
+        if (!$this->_peclLoaded) {
             return parent::_canonicalizeBody($string);
         }
         if (false && $this->dropFirstLF === true) {

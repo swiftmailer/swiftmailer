@@ -47,7 +47,7 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTest
         $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with(base64_encode('pass')."\r\n", array(235))
-             ->andThrow(new Swift_TransportException(""));
+             ->andThrow(new Swift_TransportException(''));
         $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with("RSET\r\n", array(250));

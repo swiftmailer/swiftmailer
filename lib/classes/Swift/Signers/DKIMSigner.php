@@ -184,11 +184,12 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Instanciate DKIMSigner
+     * Instanciate DKIMSigner.
      *
      * @param string $privateKey
      * @param string $domainName
      * @param string $selector
+     *
      * @return Swift_Signers_DKIMSigner
      */
     public static function newInstance($privateKey, $domainName, $selector)
@@ -499,7 +500,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $listHeaders = $headers->listAll();
         foreach ($listHeaders as $hName) {
             // Check if we need to ignore Header
-            if (! isset($this->_ignoredHeaders[strtolower($hName)])) {
+            if (!isset($this->_ignoredHeaders[strtolower($hName)])) {
                 if ($headers->has($hName)) {
                     $tmp = $headers->getAll($hName);
                     foreach ($tmp as $header) {
@@ -564,7 +565,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         if ($this->_debugHeaders) {
             $headers->addTextHeader('X-DebugHash', base64_encode($this->_headerHash));
         }
-        $this->_dkimHeader->setValue($string." b=".trim(chunk_split(base64_encode($this->_getEncryptedHash()), 73, " ")));
+        $this->_dkimHeader->setValue($string.' b='.trim(chunk_split(base64_encode($this->_getEncryptedHash()), 73, ' ')));
 
         return $this;
     }
@@ -578,9 +579,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 // Prepare Header and cascade
                 $exploded = explode(':', $header, 2);
                 $name = strtolower(trim($exploded[0]));
-                $value = str_replace("\r\n", "", $exploded[1]);
-                $value = preg_replace("/[ \t][ \t]+/", " ", $value);
-                $header = $name.":".trim($value).($is_sig ? '' : "\r\n");
+                $value = str_replace("\r\n", '', $exploded[1]);
+                $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
+                $header = $name.':'.trim($value).($is_sig ? '' : "\r\n");
             case 'simple' :
                 // Nothing to do
         }
@@ -596,7 +597,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     {
         $len = strlen($string);
         $canon = '';
-        $method = ($this->_bodyCanon == "relaxed");
+        $method = ($this->_bodyCanon == 'relaxed');
         for ($i = 0; $i < $len; ++$i) {
             if ($this->_bodyCanonIgnoreStart > 0) {
                 --$this->_bodyCanonIgnoreStart;
@@ -622,7 +623,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                         // todo handle it but should never happen
                     }
                     break;
-                case " " :
+                case ' ' :
                 case "\t" :
                     if ($method) {
                         $this->_bodyCanonSpace = true;

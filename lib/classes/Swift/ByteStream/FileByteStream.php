@@ -191,8 +191,8 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
         }
         if ($this->_seekable === false) {
             $currentPos = ftell($this->_reader);
-            if ($currentPos<$offset) {
-                $toDiscard = $offset-$currentPos;
+            if ($currentPos < $offset) {
+                $toDiscard = $offset - $currentPos;
                 fread($this->_reader, $toDiscard);
 
                 return;

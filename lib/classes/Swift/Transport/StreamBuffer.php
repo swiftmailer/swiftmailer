@@ -273,8 +273,8 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             stream_set_blocking($this->_stream, 0);
         }
         stream_set_timeout($this->_stream, $timeout);
-        $this->_in = & $this->_stream;
-        $this->_out = & $this->_stream;
+        $this->_in = &$this->_stream;
+        $this->_out = &$this->_stream;
     }
 
     /**
@@ -295,8 +295,8 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
                 'Process could not be started ['.$err.']'
                 );
         }
-        $this->_in = & $pipes[0];
-        $this->_out = & $pipes[1];
+        $this->_in = &$pipes[0];
+        $this->_out = &$pipes[1];
     }
 
     private function _getReadConnectionDescription()

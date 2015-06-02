@@ -31,10 +31,10 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
         $to->shouldReceive('getFieldBody')
            ->zeroOrMoreTimes()
-           ->andReturn("Foo <foo@bar>");
+           ->andReturn('Foo <foo@bar>');
         $invoker->shouldReceive('mail')
                 ->once()
-                ->with("Foo <foo@bar>", \Mockery::any(), \Mockery::any(), \Mockery::any(), \Mockery::any());
+                ->with('Foo <foo@bar>', \Mockery::any(), \Mockery::any(), \Mockery::any(), \Mockery::any());
 
         $transport->send($message);
     }
@@ -53,10 +53,10 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 
         $subj->shouldReceive('getFieldBody')
              ->zeroOrMoreTimes()
-             ->andReturn("Thing");
+             ->andReturn('Thing');
         $invoker->shouldReceive('mail')
                 ->once()
-                ->with(\Mockery::any(), "Thing", \Mockery::any(), \Mockery::any(), \Mockery::any());
+                ->with(\Mockery::any(), 'Thing', \Mockery::any(), \Mockery::any(), \Mockery::any());
 
         $transport->send($message);
     }
@@ -75,11 +75,11 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
              ->andReturn(
                 "To: Foo <foo@bar>\r\n".
                 "\r\n".
-                "This body"
+                'This body'
              );
         $invoker->shouldReceive('mail')
                 ->once()
-                ->with(\Mockery::any(), \Mockery::any(), "This body", \Mockery::any(), \Mockery::any());
+                ->with(\Mockery::any(), \Mockery::any(), 'This body', \Mockery::any(), \Mockery::any());
 
         $transport->send($message);
     }
@@ -98,11 +98,11 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
              ->andReturn(
                 "Subject: Stuff\r\n".
                 "\r\n".
-                "This body"
+                'This body'
              );
         $invoker->shouldReceive('mail')
                 ->once()
-                ->with(\Mockery::any(), \Mockery::any(), \Mockery::any(), "Subject: Stuff".PHP_EOL, \Mockery::any());
+                ->with(\Mockery::any(), \Mockery::any(), \Mockery::any(), 'Subject: Stuff'.PHP_EOL, \Mockery::any());
 
         $transport->send($message);
     }
