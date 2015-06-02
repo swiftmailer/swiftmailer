@@ -10,7 +10,7 @@
 
 require __DIR__.'/classes/Swift.php';
 
-Swift::registerAutoload(function() {
+Swift::registerAutoload(function () {
     // Load in dependency maps
     require __DIR__.'/dependency_maps/cache_deps.php';
     require __DIR__.'/dependency_maps/mime_deps.php';

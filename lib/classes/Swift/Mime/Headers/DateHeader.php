@@ -32,7 +32,7 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
      * ?>
      * </code>
      *
-     * @param string             $name    of Header
+     * @param string $name of Header
      */
     public function __construct($name)
     {

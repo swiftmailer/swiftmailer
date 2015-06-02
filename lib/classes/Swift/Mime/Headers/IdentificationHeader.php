@@ -27,7 +27,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     private $ids = array();
 
     /**
-     * The strict EmailValidator
+     * The strict EmailValidator.
      *
      * @var EmailValidator
      */
@@ -36,8 +36,8 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     /**
      * Creates a new IdentificationHeader with the given $name and $id.
      *
-     * @param string             $name
-     * @param EmailValidator     $emailValidator
+     * @param string         $name
+     * @param EmailValidator $emailValidator
      */
     public function __construct($name, EmailValidator $emailValidator)
     {

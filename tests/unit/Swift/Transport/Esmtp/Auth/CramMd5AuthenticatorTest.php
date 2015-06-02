@@ -47,7 +47,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTe
         $this->agent->shouldReceive('executeCommand')
              ->once()
              ->with(\Mockery::any(), array(235))
-             ->andThrow(new Swift_TransportException(""));
+             ->andThrow(new Swift_TransportException(''));
         $this->agent->shouldReceive('executeCommand')
              ->once()
              ->with("RSET\r\n", array(250));

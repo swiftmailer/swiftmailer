@@ -95,7 +95,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
             }
 
             $enc = $this->encodeByteSequence($bytes, $size);
-            if ($currentLine && $lineLen+$size >= $thisLineLength) {
+            if ($currentLine && $lineLen + $size >= $thisLineLength) {
                 $is->write($prepend.$this->standardize($currentLine));
                 $currentLine = '';
                 $prepend = "=\r\n";

@@ -48,6 +48,6 @@ class Swift_EmbeddedFile extends Swift_Mime_EmbeddedFile
      */
     public static function fromPath($path)
     {
-        return (new self)->setFile(new Swift_ByteStream_FileByteStream($path));
+        return (new self())->setFile(new Swift_ByteStream_FileByteStream($path));
     }
 }

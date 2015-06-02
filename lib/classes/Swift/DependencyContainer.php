@@ -138,6 +138,7 @@ class Swift_DependencyContainer
      * This method returns the current DependencyContainer instance because it
      * requires the use of the fluid interface to set the specific details for the
      * dependency.
+     *
      * @see asNewInstanceOf(), asSharedInstanceOf(), asValue()
      *
      * @param string $itemName
@@ -147,7 +148,7 @@ class Swift_DependencyContainer
     public function register($itemName)
     {
         $this->store[$itemName] = array();
-        $this->endPoint = & $this->store[$itemName];
+        $this->endPoint = &$this->store[$itemName];
 
         return $this;
     }
@@ -163,7 +164,7 @@ class Swift_DependencyContainer
      */
     public function asValue($value)
     {
-        $endPoint = & $this->getEndPoint();
+        $endPoint = &$this->getEndPoint();
         $endPoint['lookupType'] = self::TYPE_VALUE;
         $endPoint['value'] = $value;
 
@@ -179,7 +180,7 @@ class Swift_DependencyContainer
      */
     public function asAliasOf($lookup)
     {
-        $endPoint = & $this->getEndPoint();
+        $endPoint = &$this->getEndPoint();
         $endPoint['lookupType'] = self::TYPE_ALIAS;
         $endPoint['ref'] = $lookup;
 
@@ -201,7 +202,7 @@ class Swift_DependencyContainer
      */
     public function asNewInstanceOf($className)
     {
-        $endPoint = & $this->getEndPoint();
+        $endPoint = &$this->getEndPoint();
         $endPoint['lookupType'] = self::TYPE_INSTANCE;
         $endPoint['className'] = $className;
 
@@ -219,7 +220,7 @@ class Swift_DependencyContainer
      */
     public function asSharedInstanceOf($className)
     {
-        $endPoint = & $this->getEndPoint();
+        $endPoint = &$this->getEndPoint();
         $endPoint['lookupType'] = self::TYPE_SHARED;
         $endPoint['className'] = $className;
 
@@ -239,7 +240,7 @@ class Swift_DependencyContainer
      */
     public function withDependencies(array $lookups)
     {
-        $endPoint = & $this->getEndPoint();
+        $endPoint = &$this->getEndPoint();
         $endPoint['args'] = array();
         foreach ($lookups as $lookup) {
             $this->addConstructorLookup($lookup);
@@ -260,7 +261,7 @@ class Swift_DependencyContainer
      */
     public function addConstructorValue($value)
     {
-        $endPoint = & $this->getEndPoint();
+        $endPoint = &$this->getEndPoint();
         if (!isset($endPoint['args'])) {
             $endPoint['args'] = array();
         }
@@ -281,7 +282,7 @@ class Swift_DependencyContainer
      */
     public function addConstructorLookup($lookup)
     {
-        $endPoint = & $this->getEndPoint();
+        $endPoint = &$this->getEndPoint();
         if (!isset($this->endPoint['args'])) {
             $endPoint['args'] = array();
         }

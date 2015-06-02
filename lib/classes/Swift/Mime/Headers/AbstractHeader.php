@@ -141,7 +141,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Set the maximum length of lines in the header (excluding EOL).
      *
-     * @param int     $lineLength
+     * @param int $lineLength
      */
     public function setMaxLineLength($lineLength)
     {
@@ -337,8 +337,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Get a token as an encoded word for safe insertion into headers.
      *
-     * @param string  $token           token to encode
-     * @param int     $firstLineOffset optional
+     * @param string $token           token to encode
+     * @param int    $firstLineOffset optional
      *
      * @return string
      */
@@ -411,7 +411,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Clear the cached value if $condition is met.
      *
-     * @param bool    $condition
+     * @param bool $condition
      */
     protected function clearCachedValueIf($condition)
     {
@@ -459,7 +459,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         $lineCount = 0;
         $headerLines = array();
         $headerLines[] = $this->name.': ';
-        $currentLine = & $headerLines[$lineCount++];
+        $currentLine = &$headerLines[$lineCount++];
 
         // Build all tokens back into compliant header
         foreach ($tokens as $i => $token) {
@@ -468,7 +468,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
                 ($i > 0 && strlen($currentLine.$token) > $this->lineLength)
                 && 0 < strlen($currentLine)) {
                 $headerLines[] = '';
-                $currentLine = & $headerLines[$lineCount++];
+                $currentLine = &$headerLines[$lineCount++];
             }
 
             // Append token to the line

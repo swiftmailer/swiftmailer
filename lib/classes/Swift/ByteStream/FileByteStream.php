@@ -39,8 +39,8 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
     /**
      * Create a new FileByteStream for $path.
      *
-     * @param string  $path
-     * @param bool    $writable if true
+     * @param string $path
+     * @param bool   $writable if true
      */
     public function __construct($path, $writable = false)
     {
@@ -73,7 +73,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
      * remaining bytes are given instead. If no bytes are remaining at all, boolean
      * false is returned.
      *
-     * @param int     $length
+     * @param int $length
      *
      * @return string|bool
      *
@@ -111,7 +111,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
     /**
      * Move the internal read pointer to $byteOffset in the stream.
      *
-     * @param int     $byteOffset
+     * @param int $byteOffset
      *
      * @return bool
      */
@@ -191,8 +191,8 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
         }
         if ($this->seekable === false) {
             $currentPos = ftell($this->reader);
-            if ($currentPos<$offset) {
-                $toDiscard = $offset-$currentPos;
+            if ($currentPos < $offset) {
+                $toDiscard = $offset - $currentPos;
                 fread($this->reader, $toDiscard);
 
                 return;

@@ -13,7 +13,6 @@
  *
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
-
 class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
 {
     /**
@@ -45,7 +44,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     private $datas = '';
 
     /**
-     * Number of bytes in the stream
+     * Number of bytes in the stream.
      *
      * @var int
      */
@@ -156,7 +155,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::read()
      *
-     * @param int     $length
+     * @param int $length
      *
      * @return string
      */
@@ -166,12 +165,12 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
             return false;
         }
         $ret = false;
-        $length = ($this->currentPos+$length > $this->charCount)
+        $length = ($this->currentPos + $length > $this->charCount)
           ? $this->charCount - $this->currentPos
           : $length;
         switch ($this->mapType) {
             case Swift_CharacterReader::MAP_TYPE_FIXED_LEN:
-                $len = $length*$this->map;
+                $len = $length * $this->map;
                 $ret = substr($this->datas,
                         $this->currentPos * $this->map,
                         $len);
@@ -185,7 +184,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
                     : $end;
                 $ret = '';
                 for (; $this->currentPos < $length; ++$this->currentPos) {
-                    if (isset ($this->map[$this->currentPos])) {
+                    if (isset($this->map[$this->currentPos])) {
                         $ret .= '?';
                     } else {
                         $ret .= $this->datas[$this->currentPos];
@@ -200,8 +199,8 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
                     : $end;
                 $ret = '';
                 $start = 0;
-                if ($this->currentPos>0) {
-                    $start = $this->map['p'][$this->currentPos-1];
+                if ($this->currentPos > 0) {
+                    $start = $this->map['p'][$this->currentPos - 1];
                 }
                 $to = $start;
                 for (; $this->currentPos < $end; ++$this->currentPos) {
@@ -222,7 +221,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::readBytes()
      *
-     * @param int     $length
+     * @param int $length
      *
      * @return integer[]
      */
@@ -241,11 +240,11 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::setPointer()
      *
-     * @param int     $charOffset
+     * @param int $charOffset
      */
     public function setPointer($charOffset)
     {
-        if ($this->charCount<$charOffset) {
+        if ($this->charCount < $charOffset) {
             $charOffset = $this->charCount;
         }
         $this->currentPos = $charOffset;
@@ -268,7 +267,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
         $this->datas .= $chars;
         $this->charCount += $this->charReader->getCharPositions(substr($this->datas, $this->datasSize), $this->datasSize, $this->map, $ignored);
         if ($ignored !== false) {
-            $this->datasSize = strlen($this->datas)-strlen($ignored);
+            $this->datasSize = strlen($this->datas) - strlen($ignored);
         } else {
             $this->datasSize = strlen($this->datas);
         }
