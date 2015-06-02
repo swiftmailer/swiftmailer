@@ -13,7 +13,7 @@
  *
  * Possibly the most accurate RFC 2045 QP implementation found in PHP.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Encoder_QpEncoder implements Swift_Encoder
 {
@@ -153,9 +153,9 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
      * If the first line needs to be shorter, indicate the difference with
      * $firstLineOffset.
      *
-     * @param string  $string to encode
-     * @param int     $firstLineOffset, optional
-     * @param int     $maxLineLength,   optional 0 indicates the default of 76 chars
+     * @param string $string           to encode
+     * @param int    $firstLineOffset, optional
+     * @param int    $maxLineLength,   optional 0 indicates the default of 76 chars
      *
      * @return string
      */
@@ -249,7 +249,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     /**
      * Get the next sequence of bytes to read from the char stream.
      *
-     * @param int     $size number of bytes to read
+     * @param int $size number of bytes to read
      *
      * @return integer[]
      */
@@ -280,8 +280,8 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     }
 
     /**
-    * Make a deep copy of object
-    */
+     * Make a deep copy of object.
+     */
     public function __clone()
     {
         $this->charStream = clone $this->charStream;

@@ -11,9 +11,8 @@
 /**
  * A CharacterStream implementation which stores characters in an internal array.
  *
- * @author     Xavier De Cock <xdecock@gmail.com>
+ * @author Xavier De Cock <xdecock@gmail.com>
  */
-
 class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
 {
     /**
@@ -45,7 +44,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     private $datas = '';
 
     /**
-     * Number of bytes in the stream
+     * Number of bytes in the stream.
      *
      * @var int
      */
@@ -156,7 +155,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::read()
      *
-     * @param int     $length
+     * @param int $length
      *
      * @return string
      */
@@ -185,7 +184,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
                     : $end;
                 $ret = '';
                 for (; $this->currentPos < $length; ++$this->currentPos) {
-                    if (isset ($this->map[$this->currentPos])) {
+                    if (isset($this->map[$this->currentPos])) {
                         $ret .= '?';
                     } else {
                         $ret .= $this->datas[$this->currentPos];
@@ -222,7 +221,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::readBytes()
      *
-     * @param int     $length
+     * @param int $length
      *
      * @return integer[]
      */
@@ -241,7 +240,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * @see Swift_CharacterStream::setPointer()
      *
-     * @param int     $charOffset
+     * @param int $charOffset
      */
     public function setPointer($charOffset)
     {

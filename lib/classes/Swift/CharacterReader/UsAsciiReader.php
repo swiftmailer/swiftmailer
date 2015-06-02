@@ -11,17 +11,17 @@
 /**
  * Analyzes US-ASCII characters.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
 {
     /**
      * Returns the complete character map.
      *
-     * @param string  $string
-     * @param int     $startOffset
-     * @param array   $currentMap
-     * @param string  $ignoredChars
+     * @param string $string
+     * @param int    $startOffset
+     * @param array  $currentMap
+     * @param string $ignoredChars
      *
      * @return int
      */
@@ -40,9 +40,9 @@ class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
     }
 
     /**
-     * Returns mapType
+     * Returns mapType.
      *
-     * @return int     mapType
+     * @return int mapType
      */
     public function getMapType()
     {
@@ -57,8 +57,8 @@ class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
      * A value of zero means this is already a valid character.
      * A value of -1 means this cannot possibly be a valid character.
      *
-     * @param string  $bytes
-     * @param int     $size
+     * @param string $bytes
+     * @param int    $size
      *
      * @return int
      */

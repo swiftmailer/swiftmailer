@@ -11,7 +11,7 @@
 /**
  * Provides quick access to each encoding type.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Encoding
 {

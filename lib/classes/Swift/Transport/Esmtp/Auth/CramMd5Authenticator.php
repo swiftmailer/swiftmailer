@@ -11,7 +11,7 @@
 /**
  * Handles CRAM-MD5 authentication.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport_Esmtp_Authenticator
 {
