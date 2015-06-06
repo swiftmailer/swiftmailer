@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.4.1 (2015-XX-XX)
+5.4.1 (2015-06-06)
 ------------------
 
  * made Swiftmailer exceptions confirm to PHP base exception constructor signature
