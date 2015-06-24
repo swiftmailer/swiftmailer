@@ -8,6 +8,8 @@ class Swift_Mime_SimpleMimeEntityTest extends Swift_Mime_AbstractMimeEntityTest
 
     protected function createEntity($headerFactory, $encoder, $cache)
     {
-        return new Swift_Mime_SimpleMimeEntity($headerFactory, $encoder, $cache, new EmailValidator());
+        $idGenerator = new Swift_Mime_IdGenerator(new EmailValidator());
+
+        return new Swift_Mime_SimpleMimeEntity($headerFactory, $encoder, $cache, $idGenerator);
     }
 }
