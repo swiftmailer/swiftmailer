@@ -9,9 +9,15 @@ Changelog
  * removed newInstance() methods everywhere
  * bumped minimum version to PHP 5.5
 
-5.4.1 (2015-XX-XX)
+5.4.2 (2015-XX-XX)
 ------------------
 
+ * n/a
+
+5.4.1 (2015-06-06)
+------------------
+
+ * made Swiftmailer exceptions confirm to PHP base exception constructor signature
  * fixed MAIL FROM & RCPT TO headers to be RFC compliant
 
 5.4.0 (2015-03-14)
