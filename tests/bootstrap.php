@@ -1,7 +1,6 @@
 <?php
 
-$autoloader = require_once dirname(__DIR__).'/vendor/autoload.php';
-$autoloader->add('Swift_', __DIR__.'/unit');
+require_once dirname(__DIR__).'/vendor/autoload.php';
 
 set_include_path(get_include_path().PATH_SEPARATOR.dirname(__DIR__).'/lib');
 
