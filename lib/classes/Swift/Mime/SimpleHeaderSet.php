@@ -74,15 +74,15 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     }
 
     /**
-     * Add a new Date header using $timestamp (UNIX time).
+     * Add a new Date header using $dateTime.
      *
-     * @param string $name
-     * @param int    $timestamp
+     * @param string            $name
+     * @param DateTimeInterface $dateTime
      */
-    public function addDateHeader($name, $timestamp = null)
+    public function addDateHeader($name, DateTimeInterface $dateTime = null)
     {
         $this->storeHeader($name,
-        $this->factory->createDateHeader($name, $timestamp));
+        $this->factory->createDateHeader($name, $dateTime));
     }
 
     /**

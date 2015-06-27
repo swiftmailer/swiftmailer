@@ -16,14 +16,16 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
 
     public function testAddDateHeaderDelegatesToFactory()
     {
+        $dateTime = new DateTimeImmutable();
+
         $factory = $this->createFactory();
         $factory->expects($this->once())
                 ->method('createDateHeader')
-                ->with('Date', 1234)
+                ->with('Date', $dateTime)
                 ->will($this->returnValue($this->createHeader('Date')));
 
         $set = $this->createSet($factory);
-        $set->addDateHeader('Date', 1234);
+        $set->addDateHeader('Date', $dateTime);
     }
 
     public function testAddTextHeaderDelegatesToFactory()
@@ -97,14 +99,16 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
 
     public function testAddedDateHeaderIsSeenByHas()
     {
+        $dateTime = new DateTimeImmutable();
+
         $factory = $this->createFactory();
         $factory->expects($this->once())
                 ->method('createDateHeader')
-                ->with('Date', 1234)
+                ->with('Date', $dateTime)
                 ->will($this->returnValue($this->createHeader('Date')));
 
         $set = $this->createSet($factory);
-        $set->addDateHeader('Date', 1234);
+        $set->addDateHeader('Date', $dateTime);
         $this->assertTrue($set->has('Date'));
     }
 

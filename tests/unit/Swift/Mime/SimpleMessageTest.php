@@ -21,20 +21,24 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 
     public function testDateIsReturnedFromHeader()
     {
-        $date = $this->createHeader('Date', 123);
+        $dateTime = new DateTimeImmutable();
+
+        $date = $this->createHeader('Date', $dateTime);
         $message = $this->createMessage(
             $this->createHeaderSet(array('Date' => $date)),
             $this->createEncoder(), $this->createCache()
             );
-        $this->assertEquals(123, $message->getDate());
+        $this->assertEquals($dateTime, $message->getDate());
     }
 
     public function testDateIsSetInHeader()
     {
-        $date = $this->createHeader('Date', 123, array(), false);
+        $dateTime = new DateTimeImmutable();
+
+        $date = $this->createHeader('Date', new DateTimeImmutable(), array(), false);
         $date->shouldReceive('setFieldBodyModel')
              ->once()
-             ->with(1234);
+             ->with($dateTime);
         $date->shouldReceive('setFieldBodyModel')
              ->zeroOrMoreTimes();
 
@@ -42,22 +46,24 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->createHeaderSet(array('Date' => $date)),
             $this->createEncoder(), $this->createCache()
             );
-        $message->setDate(1234);
+        $message->setDate($dateTime);
     }
 
     public function testDateHeaderIsCreatedIfNonePresent()
     {
+        $dateTime = new DateTimeImmutable();
+
         $headers = $this->createHeaderSet(array(), false);
         $headers->shouldReceive('addDateHeader')
                 ->once()
-                ->with('Date', 1234);
+                ->with('Date', $dateTime);
         $headers->shouldReceive('addDateHeader')
                 ->zeroOrMoreTimes();
 
         $message = $this->createMessage($headers, $this->createEncoder(),
             $this->createCache()
             );
-        $message->setDate(1234);
+        $message->setDate($dateTime);
     }
 
     public function testDateHeaderIsAddedDuringConstruction()
@@ -65,7 +71,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $headers = $this->createHeaderSet(array(), false);
         $headers->shouldReceive('addDateHeader')
                 ->once()
-                ->with('Date', '/^[0-9]+$/D');
+                ->with('Date', Mockery::type('DateTimeImmutable'));
 
         $message = $this->createMessage($headers, $this->createEncoder(),
             $this->createCache()
@@ -796,7 +802,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             ->setFormat('flowed')
             ->setDelSp(false)
             ->setSubject('subj')
-            ->setDate(123)
+            ->setDate(new DateTimeImmutable())
             ->setReturnPath('foo@bar')
             ->setSender('foo@bar')
             ->setFrom(array('x@y' => 'XY'))

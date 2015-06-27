@@ -28,7 +28,7 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         $message->setBody('HTML part', 'text/html');
 
         $id = $message->getId();
-        $date = preg_quote(date('r', $message->getDate()), '~');
+        $date = preg_quote($message->getDate()->format('r'), '~');
         $boundary = $message->getBoundary();
         $imgId = $image->getId();
 
@@ -82,7 +82,7 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         $message->setBody('HTML part', 'text/html');
 
         $id = $message->getId();
-        $date = preg_quote(date('r', $message->getDate()), '~');
+        $date = preg_quote($message->getDate()->format('r'), '~');
         $boundary = $message->getBoundary();
         $imgId = $image->getId();
 
@@ -140,7 +140,7 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         $message->setBody('HTML part', 'text/html');
 
         $id = $message->getId();
-        $date = preg_quote(date('r', $message->getDate()), '~');
+        $date = preg_quote($message->getDate()->format('r'), '~');
         $boundary = $message->getBoundary();
 
         $streamA = new Swift_ByteStream_ArrayByteStream();

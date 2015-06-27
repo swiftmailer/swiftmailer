@@ -21,7 +21,7 @@ class Swift_MessageAcceptanceTest extends Swift_Mime_SimpleMessageAcceptanceTest
 
         $this->assertEquals(
             'Message-ID: <'.$id.'>'."\r\n".
-            'Date: '.date('r', $date)."\r\n".
+            'Date: '.$date->format('r')."\r\n".
             'Subject: just a test subject'."\r\n".
             'From: Chris Corbyn <chris.corbyn@swiftmailer.org>'."\r\n".
             'MIME-Version: 1.0'."\r\n".

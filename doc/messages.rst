@@ -93,8 +93,8 @@ headers will be familiar to the majority of users, but we'll list the basic
 ones. Although it's possible to work directly with the Headers of a Message
 (or other MIME entity), the standard Headers have accessor methods provided to
 abstract away the complex details for you. For example, although the Date on a
-message is written with a strict format, you only need to pass a UNIX
-timestamp to ``setDate()``.
+message is written with a strict format, you only need to pass a
+DateTimeInterface instance to ``setDate()``.
 
 +-------------------------------+------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
 | Header                        | Description                                                                                                                        | Accessors                                   |
