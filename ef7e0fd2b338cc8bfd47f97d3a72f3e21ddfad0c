@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by sstok at 2015-06-26T15:05:44Z
+
+You can also add the autoload entry as dev to composer.json, not sure if it works in this case (PSR-0 with underscored class).
+
+```json
+    "autoload-dev": {
+        "psr-0": {
+            "Swift_": "tests/unit"
+        }
+    },
+```
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-06-26T15:12:21Z
+
+Yeh, autoload-dev should be used here.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-06-26T18:31:17Z
+
+In any case, using require_once when you care about the return value is always wrong, as you have no guarantee to get the original return value (you would get ``true`` if it was already loaded previously)
+
+---------------------------------------------------------------------------
+
+by c960657 at 2015-06-27T09:14:42Z
+
+@GrahamCampbell Done
