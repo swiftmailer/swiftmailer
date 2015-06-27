@@ -164,7 +164,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
         }
 
         if ($this->_invoker->mail($to, $subject, $body, $headers,
-            sprintf($this->_extraParams, $reversePath))) {
+            sprintf($this->_extraParams, escapeshellarg($reversePath)))) {
             if ($evt) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
                 $evt->setFailedRecipients($failedRecipients);
