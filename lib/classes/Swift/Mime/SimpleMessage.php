@@ -49,7 +49,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
             ));
         $this->getHeaders()->setAlwaysDisplayed(array('Date', 'Message-ID', 'From'));
         $this->getHeaders()->addTextHeader('MIME-Version', '1.0');
-        $this->setDate(time());
+        $this->setDate(new DateTimeImmutable());
         $this->setId($this->getId());
         $this->getHeaders()->addMailboxHeader('From');
     }
@@ -93,14 +93,14 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Set the date at which this message was created.
      *
-     * @param int $date
+     * @param DateTimeInterface $dateTime
      *
      * @return Swift_Mime_SimpleMessage
      */
-    public function setDate($date)
+    public function setDate(DateTimeInterface $dateTime)
     {
-        if (!$this->setHeaderFieldModel('Date', $date)) {
-            $this->getHeaders()->addDateHeader('Date', $date);
+        if (!$this->setHeaderFieldModel('Date', $dateTime)) {
+            $this->getHeaders()->addDateHeader('Date', $dateTime);
         }
 
         return $this;
@@ -109,7 +109,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the date at which this message was created.
      *
-     * @return int
+     * @return DateTimeInterface
      */
     public function getDate()
     {

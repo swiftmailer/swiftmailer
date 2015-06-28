@@ -26,14 +26,14 @@ interface Swift_Mime_HeaderFactory extends Swift_Mime_CharsetObserver
     public function createMailboxHeader($name, $addresses = null);
 
     /**
-     * Create a new Date header using $timestamp (UNIX time).
+     * Create a new Date header using $dateTime.
      *
-     * @param string $name
-     * @param int    $timestamp
+     * @param string            $name
+     * @param DateTimeInterface $dateTime
      *
      * @return Swift_Mime_Header
      */
-    public function createDateHeader($name, $timestamp = null);
+    public function createDateHeader($name, DateTimeInterface $dateTime = null);
 
     /**
      * Create a new basic text header with $name and $value.

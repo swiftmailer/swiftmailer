@@ -25,7 +25,7 @@ class Swift_Bug34Test extends \PHPUnit_Framework_TestCase
         $message->setSender(array('other@domain.tld' => 'Other'));
 
         $id = $message->getId();
-        $date = preg_quote(date('r', $message->getDate()), '~');
+        $date = preg_quote($message->getDate()->format('r'), '~');
         $boundary = $message->getBoundary();
         $cidVal = $image->getId();
 

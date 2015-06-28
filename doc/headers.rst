@@ -310,10 +310,9 @@ Date headers contains an RFC 2822 formatted date (i.e. what PHP's ``date('r')``
 returns). They are used anywhere a date or time is needed to be presented as a
 message header.
 
-The data on which a date header is modeled is simply a UNIX timestamp such as
-that returned by ``time()`` or ``strtotime()``.  The timestamp is used to create
-a correctly structured RFC 2822 formatted date such as
-``Tue, 17 Feb 2009 22:26:31 +1100``.
+The data on which a date header is modeled as a DateTimeImmutable object.  The
+object is used to create a correctly structured RFC 2822 formatted date with
+timezone such as ``Tue, 17 Feb 2009 22:26:31 +1100``.
 
 The obvious place this header type is used is in the ``Date:`` header of the
 message itself.
@@ -327,16 +326,16 @@ the HeaderSet's ``addDateHeader()`` method.
 
     $headers = $message->getHeaders();
 
-    $headers->addDateHeader('Your-Header-Name', strtotime('3 days ago'));
+    $headers->addDateHeader('Your-Header', new DateTimeImmutable('3 days ago'));
 
 Changing the value of an existing date header is done by calling it's
-``setTimestamp()`` method.
+``setDateTime()`` method.
 
 .. code-block:: php
 
     $date = $message->getHeaders()->get('Date');
 
-    $date->setTimestamp(time());
+    $date->setDateTime(new DateTimeImmutable());
 
 When output via ``toString()``, a date header produces something like the
 following:
