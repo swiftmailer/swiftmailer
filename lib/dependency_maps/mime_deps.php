@@ -9,13 +9,19 @@ Swift_DependencyContainer::getInstance()
     ->register('email.validator')
     ->asSharedInstanceOf('Egulias\EmailValidator\EmailValidator')
 
+    ->register('mime.idgenerator')
+    ->asSharedInstanceOf('Swift_Mime_IdGenerator')
+    ->withDependencies(array(
+        'email.validator',
+    ))
+
     ->register('mime.message')
     ->asNewInstanceOf('Swift_Mime_SimpleMessage')
     ->withDependencies(array(
         'mime.headerset',
         'mime.qpcontentencoder',
         'cache',
-        'email.validator',
+        'mime.idgenerator',
         'properties.charset',
     ))
 
@@ -25,7 +31,7 @@ Swift_DependencyContainer::getInstance()
         'mime.headerset',
         'mime.qpcontentencoder',
         'cache',
-        'email.validator',
+        'mime.idgenerator',
         'properties.charset',
     ))
 
@@ -35,7 +41,7 @@ Swift_DependencyContainer::getInstance()
         'mime.headerset',
         'mime.base64contentencoder',
         'cache',
-        'email.validator',
+        'mime.idgenerator',
     ))
     ->addConstructorValue($swift_mime_types)
 
@@ -45,7 +51,7 @@ Swift_DependencyContainer::getInstance()
         'mime.headerset',
         'mime.base64contentencoder',
         'cache',
-        'email.validator',
+        'mime.idgenerator',
     ))
     ->addConstructorValue($swift_mime_types)
 

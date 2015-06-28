@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use Egulias\EmailValidator\EmailValidator;
-
 /**
  * The default email message class.
  *
@@ -23,12 +21,12 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param Swift_Mime_HeaderSet      $headers
      * @param Swift_Mime_ContentEncoder $encoder
      * @param Swift_KeyCache            $cache
-     * @param EmailValidator            $emailValidator
+     * @param Swift_IdGenerator         $idGenerator
      * @param string                    $charset
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, EmailValidator $emailValidator, $charset = null)
+    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $charset = null)
     {
-        parent::__construct($headers, $encoder, $cache, $emailValidator, $charset);
+        parent::__construct($headers, $encoder, $cache, $idGenerator, $charset);
         $this->getHeaders()->defineOrdering(array(
             'Return-Path',
             'Received',
@@ -624,7 +622,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     protected function becomeMimePart()
     {
         $part = new parent($this->getHeaders()->newInstance(), $this->getEncoder(),
-            $this->getCache(), $this->getEmailValidator(), $this->userCharset
+            $this->getCache(), $this->getIdGenerator(), $this->userCharset
             );
         $part->setContentType($this->userContentType);
         $part->setBody($this->getBody());

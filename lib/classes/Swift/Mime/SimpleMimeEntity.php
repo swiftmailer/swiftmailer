@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use Egulias\EmailValidator\EmailValidator;
-
 /**
  * A MIME entity, in a multipart message.
  *
@@ -26,8 +24,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /** The encoder that encodes the body into a streamable format */
     private $encoder;
 
-    /** Strict email validator to use for id validation */
-    private $emailValidator;
+    /** Message ID generator */
+    private $idGenerator;
 
     /** A mime boundary, if any is used */
     private $boundary;
@@ -78,14 +76,14 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      * @param Swift_Mime_HeaderSet      $headers
      * @param Swift_Mime_ContentEncoder $encoder
      * @param Swift_KeyCache            $cache
-     * @param EmailValidator            $emailValidator
+     * @param Swift_IdGenerator         $idGenerator
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, EmailValidator $emailValidator)
+    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator)
     {
         $this->cacheKey = md5(uniqid(getmypid().mt_rand(), true));
         $this->cache = $cache;
         $this->headers = $headers;
-        $this->emailValidator = $emailValidator;
+        $this->idGenerator = $idGenerator;
         $this->setEncoder($encoder);
         $this->headers->defineOrdering(array('Content-Type', 'Content-Transfer-Encoding'));
 
@@ -111,7 +109,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
                 ),
             );
 
-        $this->id = $this->getRandomId();
+        $this->id = $this->idGenerator->generateId();
     }
 
     /**
@@ -121,7 +119,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function generateId()
     {
-        $this->setId($this->getRandomId());
+        $this->setId($this->idGenerator->generateId());
 
         return $this->id;
     }
@@ -660,13 +658,13 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     }
 
     /**
-     * Get the EmailValidator.
+     * Get the ID generator.
      *
-     * @return EmailValidator()
+     * @return Swift_IdGenerator
      */
-    protected function getEmailValidator()
+    protected function getIdGenerator()
     {
-        return $this->emailValidator;
+        return $this->idGenerator;
     }
 
     /**
@@ -675,26 +673,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     protected function clearCache()
     {
         $this->cache->clearKey($this->cacheKey, 'body');
-    }
-
-    /**
-     * Returns a random Content-ID or Message-ID.
-     *
-     * @return string
-     */
-    protected function getRandomId()
-    {
-        $idLeft = md5(getmypid().'.'.time().'.'.uniqid(mt_rand(), true));
-        $idRight = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'swift.generated';
-        $id = $idLeft.'@'.$idRight;
-
-        try {
-            $this->assertValidId($id);
-        } catch (Swift_RfcComplianceException $e) {
-            $id = $idLeft.'@swift.generated';
-        }
-
-        return $id;
     }
 
     private function readStream(Swift_OutputByteStream $os)
@@ -770,7 +748,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     private function createChild()
     {
         return new self($this->headers->newInstance(),
-            $this->encoder, $this->cache, $this->emailValidator);
+            $this->encoder, $this->cache, $this->idGenerator);
     }
 
     private function notifyEncoderChanged(Swift_Mime_ContentEncoder $encoder)
@@ -830,20 +808,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     public function __destruct()
     {
         $this->cache->clearAll($this->cacheKey);
-    }
-
-    /**
-     * Throws an Exception if the id passed does not comply with RFC 2822.
-     *
-     * @param string $id
-     *
-     * @throws Swift_RfcComplianceException
-     */
-    private function assertValidId($id)
-    {
-        if (!$this->emailValidator->isValid($id)) {
-            throw new Swift_RfcComplianceException('Invalid ID given <'.$id.'>');
-        }
     }
 
     /**

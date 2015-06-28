@@ -24,6 +24,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
             new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
             );
         $this->emailValidator = new EmailValidator();
+        $this->idGenerator = new Swift_Mime_IdGenerator($this->emailValidator);
         $this->headers = new Swift_Mime_SimpleHeaderSet(
             new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $this->emailValidator)
             );
@@ -119,7 +120,7 @@ class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
             $this->headers,
             $this->contentEncoder,
             $this->cache,
-            $this->emailValidator
+            $this->idGenerator
             );
 
         return $entity;
