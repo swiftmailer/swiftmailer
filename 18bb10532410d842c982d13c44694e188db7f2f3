@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2015-06-28T07:42:37Z
+
+Looks good to me. Can you add a note in the CHANGELOG mentioning how it affects current code?
+
+---------------------------------------------------------------------------
+
+by c960657 at 2015-06-28T09:16:49Z
+
+Type hints and changelog entry added.
