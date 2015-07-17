@@ -18,6 +18,9 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     /** The logger which is delegated to */
     private $_logger;
 
+    /** Output with timestamp */
+    private $_formatTS = true;
+
     /**
      * Create a new LoggerPlugin using $logger.
      *
@@ -57,6 +60,28 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     }
 
     /**
+     * formatting a log entry
+     * 
+     * @param string $format sprintf format option
+     * @param object $info1 object to be outputted
+     * @param object $info2 object to be outputted
+     * @return string
+     */
+    private function formatLogRow($format, $info1=false, $info2=false)
+    {
+        $output = '';
+        if ($this->_formatTS) 
+        {
+            list($sec, $usec) = explode('.', microtime(true));
+            $usec = str_replace("0.", ".", $usec);
+            $output = date('H:i:s', $sec) . $usec.' - ';
+        }
+        if ($info1) $output .= sprintf($format, $info1);
+        if ($info2) $output .= sprintf($format, $info2);
+        return $output;
+    }
+
+    /**
      * Invoked immediately following a command being sent.
      *
      * @param Swift_Events_CommandEvent $evt
@@ -64,7 +89,7 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     public function commandSent(Swift_Events_CommandEvent $evt)
     {
         $command = $evt->getCommand();
-        $this->_logger->add(sprintf('>> %s', $command));
+        $this->_logger->add($this->formatLogRow('>> %s', $command));
     }
 
     /**
@@ -75,7 +100,7 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     public function responseReceived(Swift_Events_ResponseEvent $evt)
     {
         $response = $evt->getResponse();
-        $this->_logger->add(sprintf('<< %s', $response));
+        $this->_logger->add($this->formatLogRow('<< %s', $response));
     }
 
     /**
@@ -86,7 +111,7 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     public function beforeTransportStarted(Swift_Events_TransportChangeEvent $evt)
     {
         $transportName = get_class($evt->getSource());
-        $this->_logger->add(sprintf('++ Starting %s', $transportName));
+        $this->_logger->add($this->formatLogRow('++ Starting %s', $transportName));
     }
 
     /**
@@ -97,7 +122,7 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     public function transportStarted(Swift_Events_TransportChangeEvent $evt)
     {
         $transportName = get_class($evt->getSource());
-        $this->_logger->add(sprintf('++ %s started', $transportName));
+        $this->_logger->add($this->formatLogRow('++ %s started', $transportName));
     }
 
     /**
@@ -108,7 +133,7 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     public function beforeTransportStopped(Swift_Events_TransportChangeEvent $evt)
     {
         $transportName = get_class($evt->getSource());
-        $this->_logger->add(sprintf('++ Stopping %s', $transportName));
+        $this->_logger->add($this->formatLogRow('++ Stopping %s', $transportName));
     }
 
     /**
@@ -119,7 +144,7 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     public function transportStopped(Swift_Events_TransportChangeEvent $evt)
     {
         $transportName = get_class($evt->getSource());
-        $this->_logger->add(sprintf('++ %s stopped', $transportName));
+        $this->_logger->add($this->formatLogRow('++ %s stopped', $transportName));
     }
 
     /**
@@ -132,7 +157,7 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
         $e = $evt->getException();
         $message = $e->getMessage();
         $code = $e->getCode();
-        $this->_logger->add(sprintf('!! %s (code: %s)', $message, $code));
+        $this->_logger->add($this->formatLogRow('!! %s (code: %s)', $message, $code));
         $message .= PHP_EOL;
         $message .= 'Log data:'.PHP_EOL;
         $message .= $this->_logger->dump();
