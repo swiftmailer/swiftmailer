@@ -259,7 +259,7 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 		$subject->shouldReceive('getFieldBody')->andReturn("Foo\r\nBar");
 
 		$headers = $this->_createHeaders(array(
-			'Subject' => $subject
+			'Subject' => $subject,
 		));
 		$message = $this->_createMessage($headers);
 		$message->shouldReceive('toString')
