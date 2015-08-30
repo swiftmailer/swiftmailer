@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2015-08-28T03:24:00Z
+
+Can you add a test that covers this to avoid any future regressions?
+
+---------------------------------------------------------------------------
+
+by fvosberg at 2015-08-28T14:23:37Z
+
+Thanks for your fast reply. That unit test should prevent future regressions.
