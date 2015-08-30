@@ -62,7 +62,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @var array
      */
-    protected $_ignoredHeaders = array();
+    protected $_ignoredHeaders = array('return-path' => true);
 
     /**
      * Signer identity.
