@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-08-23T10:24:56Z
+
+What?
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-08-23T10:31:00Z
+
+`7.0` would be MUCH better than `nighlty` because nightly is actually php 7.1.
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2015-08-23T10:32:06Z
+
+> nighlty because nightly is actually php 7.1.
+
+Or rather, it's meant to be according the original RFC that said the master branch would become 7.1 immaculately following the RC1 release of 7.0.
+
+---------------------------------------------------------------------------
+
+by hhamon at 2015-09-02T21:56:31Z
+
+I managed to reproduce the segfaults on PHP5.3 and PHP5.6 on my machine. I'm trying to understand why it happens though.
+
+---------------------------------------------------------------------------
+
+by hhamon at 2015-09-02T22:26:05Z
+
+Back to green! Disabling GC prevents segfaults when running PHPUnit.
