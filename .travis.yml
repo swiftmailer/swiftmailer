@@ -1,5 +1,7 @@
 language: php
 
+sudo: false
+
 before_script:
     - cp tests/acceptance.conf.php.default tests/acceptance.conf.php
     - cp tests/smoke.conf.php.default tests/smoke.conf.php
