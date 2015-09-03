@@ -352,6 +352,11 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
         $aPos = array_key_exists($lowerA, $this->_order) ? $this->_order[$lowerA] : -1;
         $bPos = array_key_exists($lowerB, $this->_order) ? $this->_order[$lowerB] : -1;
 
+        if (-1 === $aPos && -1 === $bPos) {
+            // just be sure to be determinist here
+            return $a > $b ? -1 : 1;
+        }
+
         if ($aPos == -1) {
             return 1;
         } elseif ($bPos == -1) {
