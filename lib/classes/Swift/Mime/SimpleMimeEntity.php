@@ -307,7 +307,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             }
         }
 
-        if (!empty($immediateChildren)) {
+        if ($immediateChildren) {
             $lowestLevel = $this->_getNeededChildLevel($immediateChildren[0], $compoundLevel);
 
             // Determine which composite media type is needed to accommodate the
@@ -315,6 +315,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             foreach ($this->_compositeRanges as $mediaType => $range) {
                 if ($lowestLevel > $range[0] && $lowestLevel <= $range[1]) {
                     $newContentType = $mediaType;
+
                     break;
                 }
             }
@@ -479,12 +480,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             if ($this->_cache->hasKey($this->_cacheKey, 'body')) {
                 $body = $this->_cache->getString($this->_cacheKey, 'body');
             } else {
-                $body = "\r\n".$this->_encoder->encodeString($this->getBody(), 0,
-                    $this->getMaxLineLength()
-                    );
-                $this->_cache->setString($this->_cacheKey, 'body', $body,
-                    Swift_KeyCache::MODE_WRITE
-                    );
+                $body = "\r\n".$this->_encoder->encodeString($this->getBody(), 0, $this->getMaxLineLength());
+                $this->_cache->setString($this->_cacheKey, 'body', $body, Swift_KeyCache::MODE_WRITE);
             }
             $string .= $body;
         }
@@ -709,9 +706,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
     private function _assertValidBoundary($boundary)
     {
-        if (!preg_match(
-            '/^[a-z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-z0-9\'\(\)\+_\-,\.\/:=\?]$/Di',
-            $boundary)) {
+        if (!preg_match('/^[a-z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-z0-9\'\(\)\+_\-,\.\/:=\?]$/Di', $boundary)) {
             throw new Swift_RfcComplianceException('Mime boundary set is not RFC 2046 compliant.');
         }
     }
@@ -750,8 +745,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         $realLevel = $child->getNestingLevel();
         $lowercaseType = strtolower($child->getContentType());
 
-        if (isset($filter[$realLevel])
-            && isset($filter[$realLevel][$lowercaseType])) {
+        if (isset($filter[$realLevel]) && isset($filter[$realLevel][$lowercaseType])) {
             return $filter[$realLevel][$lowercaseType];
         }
 
@@ -760,8 +754,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
     private function _createChild()
     {
-        return new self($this->_headers->newInstance(),
-            $this->_encoder, $this->_cache, $this->_grammar);
+        return new self($this->_headers->newInstance(), $this->_encoder, $this->_cache, $this->_grammar);
     }
 
     private function _notifyEncoderChanged(Swift_Mime_ContentEncoder $encoder)
@@ -827,14 +820,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     private function _assertValidId($id)
     {
-        if (!preg_match(
-            '/^'.$this->_grammar->getDefinition('id-left').'@'.
-            $this->_grammar->getDefinition('id-right').'$/D',
-            $id
-            )) {
-            throw new Swift_RfcComplianceException(
-                'Invalid ID given <'.$id.'>'
-                );
+        if (!preg_match('/^'.$this->_grammar->getDefinition('id-left').'@'.$this->_grammar->getDefinition('id-right').'$/D', $id)) {
+            throw new Swift_RfcComplianceException('Invalid ID given <'.$id.'>');
         }
     }
 
