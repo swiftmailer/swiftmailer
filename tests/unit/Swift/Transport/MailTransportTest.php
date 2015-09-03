@@ -249,44 +249,44 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
         $transport->send($message);
     }
 
-	public function testMessageHeadersOnlyHavePHPEolsDuringSending()
-	{
-		$invoker = $this->_createInvoker();
-		$dispatcher = $this->_createEventDispatcher();
-		$transport = $this->_createTransport($invoker, $dispatcher);
+    public function testMessageHeadersOnlyHavePHPEolsDuringSending()
+    {
+        $invoker = $this->_createInvoker();
+        $dispatcher = $this->_createEventDispatcher();
+        $transport = $this->_createTransport($invoker, $dispatcher);
 
-		$subject = $this->_createHeader();
-		$subject->shouldReceive('getFieldBody')->andReturn("Foo\r\nBar");
+        $subject = $this->_createHeader();
+        $subject->shouldReceive('getFieldBody')->andReturn("Foo\r\nBar");
 
-		$headers = $this->_createHeaders(array(
-			'Subject' => $subject,
-		));
-		$message = $this->_createMessage($headers);
-		$message->shouldReceive('toString')
-			->zeroOrMoreTimes()
-			->andReturn(
-				"From: Foo\r\n<foo@bar>\r\n".
-				"\r\n".
-				"This\r\n".
-				'body'
-			);
+        $headers = $this->_createHeaders(array(
+            'Subject' => $subject,
+        ));
+        $message = $this->_createMessage($headers);
+        $message->shouldReceive('toString')
+            ->zeroOrMoreTimes()
+            ->andReturn(
+                "From: Foo\r\n<foo@bar>\r\n".
+                "\r\n".
+                "This\r\n".
+                'body'
+            );
 
-		if("\r\n" != PHP_EOL) {
-			$expectedHeaders = "From: Foo\n<foo@bar>\n";
-			$expectedSubject = "Foo\nBar";
-			$expectedBody = "This\nbody";
-		} else {
-			$expectedHeaders = "From: Foo\r\n<foo@bar>\r\n";
-			$expectedSubject = "Foo\r\nBar";
-			$expectedBody = "This\r\nbody";
-		}
+        if ("\r\n" != PHP_EOL) {
+            $expectedHeaders = "From: Foo\n<foo@bar>\n";
+            $expectedSubject = "Foo\nBar";
+            $expectedBody = "This\nbody";
+        } else {
+            $expectedHeaders = "From: Foo\r\n<foo@bar>\r\n";
+            $expectedSubject = "Foo\r\nBar";
+            $expectedBody = "This\r\nbody";
+        }
 
-		$invoker->shouldReceive('mail')
-			->once()
-			->with(\Mockery::any(), $expectedSubject, $expectedBody, $expectedHeaders, \Mockery::any());
+        $invoker->shouldReceive('mail')
+            ->once()
+            ->with(\Mockery::any(), $expectedSubject, $expectedBody, $expectedHeaders, \Mockery::any());
 
-		$transport->send($message);
-	}
+        $transport->send($message);
+    }
 
     // -- Creation Methods
 

@@ -379,7 +379,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             $this->_createEncoder(), $this->_createCache()
             );
         $firstBoundary = $entity->getBoundary();
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; ++$i) {
             $this->assertEquals($firstBoundary, $entity->getBoundary());
         }
     }
@@ -623,7 +623,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             "\r\n".
             'data'.
             "\r\n\r\n--xxx--\r\n".
-            "\$~",
+            '$~',
             $entity->toString()
             );
     }
