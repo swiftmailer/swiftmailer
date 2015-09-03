@@ -602,9 +602,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             $this->headers->get($field)->setFieldBodyModel($model);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -626,9 +626,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             $this->headers->get($field)->setParameter($parameter, $value);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -740,9 +740,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         if (isset($filter[$realLevel])
             && isset($filter[$realLevel][$lowercaseType])) {
             return $filter[$realLevel][$lowercaseType];
-        } else {
-            return $realLevel;
         }
+
+        return $realLevel;
     }
 
     private function createChild()

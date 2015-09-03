@@ -224,6 +224,44 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
         $transport->send($message);
     }
 
+    public function testMessageHeadersOnlyHavePHPEolsDuringSending()
+    {
+        $dispatcher = $this->createEventDispatcher();
+        $transport = $this->createTransport($dispatcher);
+
+        $subject = $this->createHeader();
+        $subject->shouldReceive('getFieldBody')->andReturn("Foo\r\nBar");
+
+        $headers = $this->createHeaders(array(
+            'Subject' => $subject,
+        ));
+        $message = $this->createMessage($headers);
+        $message->shouldReceive('toString')
+            ->zeroOrMoreTimes()
+            ->andReturn(
+                "From: Foo\r\n<foo@bar>\r\n".
+                "\r\n".
+                "This\r\n".
+                'body'
+            );
+
+        if ("\r\n" != PHP_EOL) {
+            $expectedHeaders = "From: Foo\n<foo@bar>\n";
+            $expectedSubject = "Foo\nBar";
+            $expectedBody = "This\nbody";
+        } else {
+            $expectedHeaders = "From: Foo\r\n<foo@bar>\r\n";
+            $expectedSubject = "Foo\r\nBar";
+            $expectedBody = "This\r\nbody";
+        }
+
+        $transport->shouldReceive('mail')
+            ->once()
+            ->with(\Mockery::any(), $expectedSubject, $expectedBody, $expectedHeaders, \Mockery::any());
+
+        $transport->send($message);
+    }
+
     // -- Creation Methods
 
     private function createTransport($dispatcher)

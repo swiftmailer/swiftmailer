@@ -29,11 +29,12 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     public function __construct($privateKey, $domainName, $selector)
     {
-        if (extension_loaded('opendkim')) {
-            $this->peclLoaded = true;
-        } else {
+        if (!extension_loaded('opendkim')) {
             throw new Swift_SwiftException('php-opendkim extension not found');
         }
+
+        $this->peclLoaded = true;
+
         parent::__construct($privateKey, $domainName, $selector);
     }
 
@@ -125,7 +126,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     /**
      * Set the signature timestamp.
      *
-     * @param timestamp $time
+     * @param int $time
      *
      * @return Swift_Signers_DKIMSigner
      */
@@ -139,7 +140,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     /**
      * Set the signature expiration timestamp.
      *
-     * @param timestamp $time
+     * @param int $time
      *
      * @return Swift_Signers_DKIMSigner
      */

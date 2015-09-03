@@ -62,12 +62,12 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @var array
      */
-    protected $ignoredHeaders = array();
+    protected $ignoredHeaders = array('return-path' => true);
 
     /**
      * Signer identity.
      *
-     * @var unknown_type
+     * @var string
      */
     protected $signerIdentity;
 
@@ -143,13 +143,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     protected $dkimHeader;
 
-    /**
-     * Hash Handler.
-     *
-     * @var hash_ressource
-     */
-    private $headerHashHandler;
-
     private $bodyHashHandler;
 
     private $headerHash;
@@ -192,7 +185,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     {
         $this->headerHash = null;
         $this->signedHeaders = array();
-        $this->headerHashHandler = null;
         $this->bodyHash = null;
         $this->bodyHashHandler = null;
         $this->bodyCanonIgnoreStart = 2;
@@ -380,7 +372,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Set the signature timestamp.
      *
-     * @param timestamp $time
+     * @param int $time A timestamp
      *
      * @return Swift_Signers_DKIMSigner
      */
@@ -394,7 +386,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Set the signature expiration timestamp.
      *
-     * @param timestamp $time
+     * @param int $time A timestamp
      *
      * @return Swift_Signers_DKIMSigner
      */
@@ -547,7 +539,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $tmp = $headers->getAll('DKIM-Signature');
         $this->dkimHeader = end($tmp);
         $this->addHeader(trim($this->dkimHeader->toString())."\r\n b=", true);
-        $this->endOfHeaders();
         if ($this->debugHeaders) {
             $headers->addTextHeader('X-DebugHash', base64_encode($this->headerHash));
         }
@@ -572,11 +563,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 // Nothing to do
         }
         $this->addToHeaderHash($header);
-    }
-
-    protected function endOfHeaders()
-    {
-        //$this->headerHash=hash_final($this->headerHashHandler, true);
     }
 
     protected function canonicalizeBody($string)

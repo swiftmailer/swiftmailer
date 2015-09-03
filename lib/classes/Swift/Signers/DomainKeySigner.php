@@ -127,7 +127,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     /**
      * Resets internal states.
      *
-     * @return Swift_Signers_DomainKeysSigner
+     * @return Swift_Signers_DomainKeySigner
      */
     public function reset()
     {
@@ -157,7 +157,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @throws Swift_IoException
      *
-     * @return Swift_Signers_DomainKeysSigner
+     * @return Swift_Signers_DomainKeySigner
      */
     public function write($bytes)
     {
@@ -175,7 +175,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @throws Swift_IoException
      *
-     * @return Swift_Signers_DomainKeysSigner
+     * @return Swift_Signers_DomainKeySigner
      */
     public function commit()
     {
@@ -190,7 +190,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @param Swift_InputByteStream $is
      *
-     * @return Swift_Signers_DomainKeysSigner
+     * @return Swift_Signers_DomainKeySigner
      */
     public function bind(Swift_InputByteStream $is)
     {
@@ -208,7 +208,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @param Swift_InputByteStream $is
      *
-     * @return Swift_Signers_DomainKeysSigner
+     * @return Swift_Signers_DomainKeySigner
      */
     public function unbind(Swift_InputByteStream $is)
     {
@@ -230,7 +230,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @throws Swift_IoException
      *
-     * @return Swift_Signers_DomainKeysSigner
+     * @return Swift_Signers_DomainKeySigner
      */
     public function flushBuffers()
     {
@@ -244,7 +244,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @param string $hash
      *
-     * @return Swift_Signers_DomainKeysSigner
+     * @return Swift_Signers_DomainKeySigner
      */
     public function setHashAlgorithm($hash)
     {
@@ -258,7 +258,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @param string $canon simple | nofws defaults to simple
      *
-     * @return Swift_Signers_DomainKeysSigner
+     * @return Swift_Signers_DomainKeySigner
      */
     public function setCanon($canon)
     {
@@ -323,9 +323,9 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     {
         if ($this->debugHeaders) {
             return array('DomainKey-Signature', 'X-DebugHash');
-        } else {
-            return array('DomainKey-Signature');
         }
+
+        return array('DomainKey-Signature');
     }
 
     /**
