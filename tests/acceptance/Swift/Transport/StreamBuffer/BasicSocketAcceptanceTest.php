@@ -29,7 +29,6 @@ class Swift_Transport_StreamBuffer_BasicSocketAcceptanceTest
             'protocol' => 'tcp',
             'blocking' => 1,
             'timeout' => 15,
-            'stream_context_options' => array(),
-            ));
+        ));
     }
 }
