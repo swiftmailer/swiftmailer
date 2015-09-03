@@ -42,6 +42,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         'blocking' => 1,
         'tls' => false,
         'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
+        'stream_context_options' => array(),
         );
 
     /**
@@ -158,6 +159,30 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     public function getEncryption()
     {
         return $this->_params['tls'] ? 'tls' : $this->_params['protocol'];
+    }
+
+    /**
+     * Sets the stream context options.
+     *
+     * @param array $options
+     *
+     * @return Swift_Transport_EsmtpTransport
+     */
+    public function setStreamOptions($options)
+    {
+        $this->_params['stream_context_options'] = $options;
+
+        return $this;
+    }
+
+    /**
+     * Returns the stream context options.
+     *
+     * @return array
+     */
+    public function getStreamOptions()
+    {
+        return $this->_params['stream_context_options'];
     }
 
     /**
