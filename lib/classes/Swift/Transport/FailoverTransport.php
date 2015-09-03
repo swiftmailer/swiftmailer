@@ -37,6 +37,7 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
     {
         $maxTransports = count($this->transports);
         $sent = 0;
+        $this->lastUsedTransport = null;
 
         for ($i = 0; $i < $maxTransports
             && $transport = $this->getNextTransport(); ++$i) {
@@ -45,7 +46,11 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
                     $transport->start();
                 }
 
-                return $transport->send($message, $failedRecipients);
+                if ($sent = $transport->send($message, $failedRecipients)) {
+                    $this->lastUsedTransport = $transport;
+
+                    return $sent;
+                }
             } catch (Swift_TransportException $e) {
                 $this->killCurrentTransport();
             }

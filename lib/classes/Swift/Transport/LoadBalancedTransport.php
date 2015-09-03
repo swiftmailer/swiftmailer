@@ -30,6 +30,13 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     protected $transports = array();
 
     /**
+     * The Transport used in the last successful send operation.
+     *
+     * @var Swift_Transport
+     */
+    protected $lastUsedTransport = null;
+
+    /**
      * Set $transports to delegate to.
      *
      * @param Swift_Transport[] $transports
@@ -48,6 +55,16 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     public function getTransports()
     {
         return array_merge($this->transports, $this->deadTransports);
+    }
+
+    /**
+     * Get the Transport used in the last successful send operation.
+     *
+     * @return Swift_Transport
+     */
+    public function getLastUsedTransport()
+    {
+        return $this->lastUsedTransport;
     }
 
     /**
@@ -93,6 +110,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     {
         $maxTransports = count($this->transports);
         $sent = 0;
+        $this->lastUsedTransport = null;
 
         for ($i = 0; $i < $maxTransports
             && $transport = $this->getNextTransport(); ++$i) {
@@ -101,6 +119,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
                     $transport->start();
                 }
                 if ($sent = $transport->send($message, $failedRecipients)) {
+                    $this->lastUsedTransport = $transport;
                     break;
                 }
             } catch (Swift_TransportException $e) {
