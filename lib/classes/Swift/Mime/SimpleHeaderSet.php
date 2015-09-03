@@ -358,7 +358,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
             return -1;
         }
 
-        return ($aPos < $bPos) ? -1 : 1;
+        return $aPos < $bPos ? -1 : 1;
     }
 
     /** Test if the given Header is always displayed */

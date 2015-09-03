@@ -283,7 +283,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         // TODO: Try to refactor this logic
 
         $compoundLevel = isset($compoundLevel) ? $compoundLevel : $this->_getCompoundLevel($children);
-
         $immediateChildren = array();
         $grandchildren = array();
         $newContentType = $this->_userContentType;
@@ -314,8 +313,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             // Determine which composite media type is needed to accommodate the
             // immediate children
             foreach ($this->_compositeRanges as $mediaType => $range) {
-                if ($lowestLevel > $range[0]
-                    && $lowestLevel <= $range[1]) {
+                if ($lowestLevel > $range[0] && $lowestLevel <= $range[1]) {
                     $newContentType = $mediaType;
                     break;
                 }
@@ -346,7 +344,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function getBody()
     {
-        return ($this->_body instanceof Swift_OutputByteStream) ? $this->_readStream($this->_body) : $this->_body;
+        return $this->_body instanceof Swift_OutputByteStream ? $this->_readStream($this->_body) : $this->_body;
     }
 
     /**
@@ -802,15 +800,12 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     private function _childSortAlgorithm($a, $b)
     {
         $typePrefs = array();
-        $types = array(
-            strtolower($a->getContentType()),
-            strtolower($b->getContentType()),
-            );
+        $types = array(strtolower($a->getContentType()), strtolower($b->getContentType()));
         foreach ($types as $type) {
-            $typePrefs[] = (array_key_exists($type, $this->_alternativePartOrder)) ? $this->_alternativePartOrder[$type] : (max($this->_alternativePartOrder) + 1);
+            $typePrefs[] = array_key_exists($type, $this->_alternativePartOrder) ? $this->_alternativePartOrder[$type] : max($this->_alternativePartOrder) + 1;
         }
 
-        return ($typePrefs[0] >= $typePrefs[1]) ? 1 : -1;
+        return $typePrefs[0] >= $typePrefs[1] ? 1 : -1;
     }
 
     // -- Destructor
