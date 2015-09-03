@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by hhamon at 2015-08-12T05:01:19Z
+
+I don't know why the tests suite ends up with a segfault on PHP 5.3. On my machine (PHP 5.6.12), the test suite also segfaults when I run unit tests after a fresh checkout of the repository + composer install command.
+
+---------------------------------------------------------------------------
+
+by sstok at 2015-08-12T07:34:45Z
+
+PHP 5.3 is pretty dead on TravisCi, and try disabling the gc as used in https://github.com/symfony/phpunit-bridge/blob/2.7/bootstrap.php#L11-L15
+
+---------------------------------------------------------------------------
+
+by hhamon at 2015-08-12T13:09:44Z
+
+@stof also any reasons why the build matrix allows failures for PHP 5.6? Shouldn't we officially support PHP5.6 with Swiftmailer?
+
+---------------------------------------------------------------------------
+
+by stof at 2015-08-12T13:25:09Z
+
+@hhamon no idea
+
+---------------------------------------------------------------------------
+
+by hhamon at 2015-08-12T15:16:21Z
+
+So we can add PHP 5.6 to the list of supported versions I guess.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2015-08-23T06:43:23Z
+
+Probably because 5.6 did not work back then. It should indeed be re-integrated into the main matrix, and hopefully PHP7 as well.
