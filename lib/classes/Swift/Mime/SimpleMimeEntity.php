@@ -282,10 +282,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
         // TODO: Try to refactor this logic
 
-        $compoundLevel = isset($compoundLevel)
-            ? $compoundLevel
-            : $this->_getCompoundLevel($children)
-            ;
+        $compoundLevel = isset($compoundLevel) ? $compoundLevel : $this->_getCompoundLevel($children);
 
         $immediateChildren = array();
         $grandchildren = array();
@@ -349,9 +346,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function getBody()
     {
-        return ($this->_body instanceof Swift_OutputByteStream)
-            ? $this->_readStream($this->_body)
-            : $this->_body;
+        return ($this->_body instanceof Swift_OutputByteStream) ? $this->_readStream($this->_body) : $this->_body;
     }
 
     /**
@@ -812,9 +807,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             strtolower($b->getContentType()),
             );
         foreach ($types as $type) {
-            $typePrefs[] = (array_key_exists($type, $this->_alternativePartOrder))
-                ? $this->_alternativePartOrder[$type]
-                : (max($this->_alternativePartOrder) + 1);
+            $typePrefs[] = (array_key_exists($type, $this->_alternativePartOrder)) ? $this->_alternativePartOrder[$type] : (max($this->_alternativePartOrder) + 1);
         }
 
         return ($typePrefs[0] >= $typePrefs[1]) ? 1 : -1;
