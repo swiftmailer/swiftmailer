@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by poison at 2015-05-29T10:07:48Z
+
+Travis is failing (Build #337) because of a segfault in phpunit, which is unrelated to this commit. Can it be restarted?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2015-06-06T14:16:46Z
+
+Looks good to me. Can you add some tests?
