@@ -178,10 +178,6 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
                 break;
 
             case Swift_CharacterReader::MAP_TYPE_INVALID:
-                $end = $this->_currentPos + $length;
-                $end = $end > $this->_charCount
-                    ? $this->_charCount
-                    : $end;
                 $ret = '';
                 for (; $this->_currentPos < $length; ++$this->_currentPos) {
                     if (isset($this->_map[$this->_currentPos])) {

@@ -30,13 +30,6 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     protected $_transports = array();
 
     /**
-     * Creates a new LoadBalancedTransport.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Set $transports to delegate to.
      *
      * @param Swift_Transport[] $transports
