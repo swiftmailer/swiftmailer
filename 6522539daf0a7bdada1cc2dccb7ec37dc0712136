@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by stof at 2015-09-03T10:59:08Z
+
+@fabpot the fact that you created the branch in the main repo rather than a personal fork means that Travis runs 2 builds (for the branch and for the PR). you might want to cancel one of them to let the queue reach recent builds faster
+
+---------------------------------------------------------------------------
+
+by fabpot at 2015-09-03T11:02:59Z
+
+@stof Travis runs 2 builds anyway; the other one would have been on my fork.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-09-03T12:55:37Z
+
+@fabpot not if you disable Travis in your fork, which is possible as the PR is tested already and so the fork does not really need CI on its own (and it would not delay the PR builds as the quota of concurrent builds is per repo owner)
+
+---------------------------------------------------------------------------
+
+by fabpot at 2015-09-03T14:21:50Z
+
+I've fixed everything that fail on my machine. The other ones do pass on my laptop.
