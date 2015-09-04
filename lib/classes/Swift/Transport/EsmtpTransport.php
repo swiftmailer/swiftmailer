@@ -222,7 +222,8 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         foreach ($handlers as $handler) {
             $assoc[$handler->getHandledKeyword()] = $handler;
         }
-        uasort($assoc, array($this, '_sortHandlers'));
+
+        @uasort($assoc, array($this, '_sortHandlers'));
         $this->_handlers = $assoc;
         $this->_setHandlerParams();
 

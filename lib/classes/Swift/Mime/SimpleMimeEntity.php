@@ -794,6 +794,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
         $typePrefs = array();
         $types = array(strtolower($a->getContentType()), strtolower($b->getContentType()));
+
         foreach ($types as $type) {
             $typePrefs[] = array_key_exists($type, $this->_alternativePartOrder) ? $this->_alternativePartOrder[$type] : max($this->_alternativePartOrder) + 1;
         }
