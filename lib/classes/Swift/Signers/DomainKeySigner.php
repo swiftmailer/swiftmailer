@@ -502,7 +502,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                 $this->_hashHandler = hash_init('sha1');
                 break;
         }
-        $this->_canonLine = '';
+        $this->_bodyCanonLine = '';
     }
 
     /**
