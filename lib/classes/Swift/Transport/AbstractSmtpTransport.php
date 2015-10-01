@@ -462,17 +462,18 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     private function _lookupHostname()
     {
         if (!empty($_SERVER['SERVER_NAME'])
-            && $this->_isFqdn($_SERVER['SERVER_NAME'])) {
+            && $this->_isFqdn($_SERVER['SERVER_NAME'])
+        ) {
             $this->_domain = $_SERVER['SERVER_NAME'];
         } elseif (!empty($_SERVER['SERVER_ADDR'])) {
             // Set the address literal tag (See RFC 5321, section: 4.1.3)
-            if (strpos($_SERVER['SERVER_ADDR'], ':') === False) {
-                $tag = ''; // IPv4 addresses are not tagged.
+            if (false === strpos($_SERVER['SERVER_ADDR'], ':')) {
+                $prefix = ''; // IPv4 addresses are not tagged.
             } else {
-                $tag = 'IPv6:'; // Add prefix in case of IPv6.
+                $prefix = 'IPv6:'; // Adding prefix in case of IPv6.
             }
 
-            $this->_domain = sprintf('[%s%s]', $tag, $_SERVER['SERVER_ADDR']);
+            $this->_domain = sprintf('[%s%s]', $prefix, $_SERVER['SERVER_ADDR']);
         }
     }
 
