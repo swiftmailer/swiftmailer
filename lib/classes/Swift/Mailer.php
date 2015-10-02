@@ -89,7 +89,7 @@ class Swift_Mailer
             }
         }
         $this->_transport->stop();
-        
+
         return $sent;
     }
 
