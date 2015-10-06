@@ -347,12 +347,12 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
             $validator = new \Egulias\EmailValidator\EmailValidator();
             if (!$validator->isValid($address)) {
                 throw new Swift_RfcComplianceException(
-                    'Address in mailbox given [' . $address . '] does not comply with RFC 2822, 3.6.2.'
+                    'Address in mailbox given ['.$address.'] does not comply with RFC 2822, 3.6.2.'
                 );
             }
-        } elseif (!preg_match('/^' . $this->getGrammar()->getDefinition('addr-spec') . '$/D', $address)) {
+        } elseif (!preg_match('/^'.$this->getGrammar()->getDefinition('addr-spec').'$/D', $address)) {
             throw new Swift_RfcComplianceException(
-                'Address in mailbox given [' . $address . '] does not comply with RFC 2822, 3.6.2.'
+                'Address in mailbox given ['.$address.'] does not comply with RFC 2822, 3.6.2.'
             );
         }
     }
