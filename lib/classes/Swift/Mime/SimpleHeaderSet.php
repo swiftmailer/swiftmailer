@@ -232,7 +232,12 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     public function remove($name, $index = 0)
     {
         $lowerName = strtolower($name);
-        unset($this->_headers[$lowerName][$index]);
+        if (array_key_exists($lowerName, $this->_headers)) {
+            array_splice($this->_headers[$lowerName], $index, 1);
+            if (empty($this->_headers[$lowerName])) {
+                $this->removeAll($lowerName);
+            }
+        }
     }
 
     /**
