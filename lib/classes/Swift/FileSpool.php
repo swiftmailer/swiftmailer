@@ -92,7 +92,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     public function queueMessage(Swift_Mime_Message $message)
     {
         $ser = serialize($message);
-        $fileName = $this->_path.'/'.$this->getRandomString(10);
+        $fileName = $this->_path.'/'.uniqid(rand(), true);
         for ($i = 0; $i < $this->_retryLimit; ++$i) {
             /* We try an exclusive creation of the file. This is an atomic operation, it avoid locking mechanism */
             $fp = @fopen($fileName.'.message', 'x');
