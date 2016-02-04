@@ -166,7 +166,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
         }
 
         if ($this->_invoker->mail($to, $subject, $body, $headers,
-            sprintf($this->_extraParams, escapeshellarg($reversePath)))) {
+            $this->_formatExtraParams($this->_extraParams, $reversePath))) {
             if ($evt) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
                 $evt->setFailedRecipients($failedRecipients);
@@ -235,5 +235,24 @@ class Swift_Transport_MailTransport implements Swift_Transport
         }
 
         return $path;
+    }
+
+    /**
+     * Return php mail extra params to use for invoker->mail.
+     *
+     * @param $extraParams
+     * @param $reversePath
+     *
+     * @return mixed <string|null>
+     */
+    private function _formatExtraParams($extraParams, $reversePath)
+    {
+        if (strpos($extraParams, '-f%s') !== false) {
+            $extraParams = empty($reversePath)
+                         ? str_replace('-f%s', '', $extraParams)
+                         : sprintf($extraParams, escapeshellarg($reversePath));
+        }
+
+        return !empty($extraParams) ? $extraParams : null;
     }
 }
