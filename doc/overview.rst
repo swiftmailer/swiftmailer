@@ -31,6 +31,8 @@ The library aims to work with as many PHP 5 projects as possible:
 
 * 8 MB or more memory limit (Swift Mailer uses around 2 MB)
 
+Note: *Since Switfmailer 5.2.2, you need PHP 5.3.3 or higher.*
+
 Component Breakdown
 -------------------
 
