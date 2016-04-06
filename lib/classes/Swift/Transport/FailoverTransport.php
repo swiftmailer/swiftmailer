@@ -21,7 +21,7 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
      * @var Swift_Transport
      */
     private $_currentTransport;
-    
+
     /**
      * Creates a new FailoverTransport.		
      */		
