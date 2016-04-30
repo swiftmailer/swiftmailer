@@ -223,7 +223,9 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         foreach ($handlers as $handler) {
             $assoc[$handler->getHandledKeyword()] = $handler;
         }
-        uasort($assoc, array($this, 'sortHandlers'));
+        uasort($assoc, function ($a, $b) {
+            return $a->getPriorityOver($b->getHandledKeyword());
+        });
         $this->handlers = $assoc;
         $this->setHandlerParams();
 
@@ -402,11 +404,5 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
 
         return $handlers;
-    }
-
-    /** Custom sort for extension handler ordering */
-    private function sortHandlers($a, $b)
-    {
-        return $a->getPriorityOver($b->getHandledKeyword());
     }
 }
