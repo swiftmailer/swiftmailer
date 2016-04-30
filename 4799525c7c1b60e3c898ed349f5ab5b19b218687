@@ -1,0 +1,6 @@
+---------------------------------------------------------------------------
+
+by vhraban at 2016-04-21T10:28:35Z
+
+Travis says the tests have failed, but they have nothing to do with this change. Instead it seems like a travis build process is broken
+The command "gem install mailcatcher" failed and exited with 1 during .
