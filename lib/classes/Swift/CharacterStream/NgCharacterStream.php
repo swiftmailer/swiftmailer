@@ -165,9 +165,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
             return false;
         }
         $ret = false;
-        $length = ($this->currentPos + $length > $this->charCount)
-          ? $this->charCount - $this->currentPos
-          : $length;
+        $length = ($this->currentPos + $length > $this->charCount) ? $this->charCount - $this->currentPos : $length;
         switch ($this->mapType) {
             case Swift_CharacterReader::MAP_TYPE_FIXED_LEN:
                 $len = $length * $this->map;
@@ -190,9 +188,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
 
             case Swift_CharacterReader::MAP_TYPE_POSITIONS:
                 $end = $this->currentPos + $length;
-                $end = $end > $this->charCount
-                    ? $this->charCount
-                    : $end;
+                $end = $end > $this->charCount ? $this->charCount : $end;
                 $ret = '';
                 $start = 0;
                 if ($this->currentPos > 0) {

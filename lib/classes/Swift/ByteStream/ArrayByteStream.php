@@ -82,9 +82,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
 
         // Don't use array slice
         $end = $length + $this->offset;
-        $end = $this->arraySize < $end
-            ? $this->arraySize
-            : $end;
+        $end = $this->arraySize < $end ? $this->arraySize : $end;
         $ret = '';
         for (; $this->offset < $end; ++$this->offset) {
             $ret .= $this->array[$this->offset];

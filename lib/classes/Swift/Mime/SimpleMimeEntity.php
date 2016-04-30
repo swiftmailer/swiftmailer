@@ -281,12 +281,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     public function setChildren(array $children, $compoundLevel = null)
     {
         // TODO: Try to refactor this logic
-
-        $compoundLevel = isset($compoundLevel)
-            ? $compoundLevel
-            : $this->getCompoundLevel($children)
-            ;
-
+        $compoundLevel = isset($compoundLevel) ? $compoundLevel : $this->getCompoundLevel($children);
         $immediateChildren = array();
         $grandchildren = array();
         $newContentType = $this->userContentType;
@@ -311,15 +306,15 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             }
         }
 
-        if (!empty($immediateChildren)) {
+        if ($immediateChildren) {
             $lowestLevel = $this->getNeededChildLevel($immediateChildren[0], $compoundLevel);
 
             // Determine which composite media type is needed to accommodate the
             // immediate children
             foreach ($this->compositeRanges as $mediaType => $range) {
-                if ($lowestLevel > $range[0]
-                    && $lowestLevel <= $range[1]) {
+                if ($lowestLevel > $range[0] && $lowestLevel <= $range[1]) {
                     $newContentType = $mediaType;
+
                     break;
                 }
             }
@@ -349,9 +344,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function getBody()
     {
-        return ($this->body instanceof Swift_OutputByteStream)
-            ? $this->readStream($this->body)
-            : $this->body;
+        return $this->body instanceof Swift_OutputByteStream ? $this->readStream($this->body) : $this->body;
     }
 
     /**
@@ -486,12 +479,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             if ($this->cache->hasKey($this->cacheKey, 'body')) {
                 $body = $this->cache->getString($this->cacheKey, 'body');
             } else {
-                $body = "\r\n".$this->encoder->encodeString($this->getBody(), 0,
-                    $this->getMaxLineLength()
-                    );
-                $this->cache->setString($this->cacheKey, 'body', $body,
-                    Swift_KeyCache::MODE_WRITE
-                    );
+                $body = "\r\n".$this->encoder->encodeString($this->getBody(), 0, $this->getMaxLineLength());
+                $this->cache->setString($this->cacheKey, 'body', $body, Swift_KeyCache::MODE_WRITE);
             }
             $string .= $body;
         }
@@ -696,9 +685,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
     private function assertValidBoundary($boundary)
     {
-        if (!preg_match(
-            '/^[a-z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-z0-9\'\(\)\+_\-,\.\/:=\?]$/Di',
-            $boundary)) {
+        if (!preg_match('/^[a-z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-z0-9\'\(\)\+_\-,\.\/:=\?]$/Di', $boundary)) {
             throw new Swift_RfcComplianceException('Mime boundary set is not RFC 2046 compliant.');
         }
     }
@@ -737,8 +724,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         $realLevel = $child->getNestingLevel();
         $lowercaseType = strtolower($child->getContentType());
 
-        if (isset($filter[$realLevel])
-            && isset($filter[$realLevel][$lowercaseType])) {
+        if (isset($filter[$realLevel]) && isset($filter[$realLevel][$lowercaseType])) {
             return $filter[$realLevel][$lowercaseType];
         }
 
@@ -747,8 +733,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
     private function createChild()
     {
-        return new self($this->headers->newInstance(),
-            $this->encoder, $this->cache, $this->idGenerator);
+        return new self($this->headers->newInstance(), $this->encoder, $this->cache, $this->idGenerator);
     }
 
     private function notifyEncoderChanged(Swift_Mime_ContentEncoder $encoder)
@@ -787,17 +772,13 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     private function childSortAlgorithm($a, $b)
     {
         $typePrefs = array();
-        $types = array(
-            strtolower($a->getContentType()),
-            strtolower($b->getContentType()),
-            );
+        $types = array(strtolower($a->getContentType()), strtolower($b->getContentType()));
+
         foreach ($types as $type) {
-            $typePrefs[] = (array_key_exists($type, $this->alternativePartOrder))
-                ? $this->alternativePartOrder[$type]
-                : (max($this->alternativePartOrder) + 1);
+            $typePrefs[] = array_key_exists($type, $this->alternativePartOrder) ? $this->alternativePartOrder[$type] : max($this->alternativePartOrder) + 1;
         }
 
-        return ($typePrefs[0] >= $typePrefs[1]) ? 1 : -1;
+        return $typePrefs[0] >= $typePrefs[1] ? 1 : -1;
     }
 
     // -- Destructor

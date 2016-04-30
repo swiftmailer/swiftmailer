@@ -114,14 +114,9 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_HeaderFactory
      *
      * @return Swift_Mime_ParameterizedHeader
      */
-    public function createParameterizedHeader($name, $value = null,
-        $params = array())
+    public function createParameterizedHeader($name, $value = null, $params = array())
     {
-        $header = new Swift_Mime_Headers_ParameterizedHeader($name,
-            $this->encoder, (strtolower($name) == 'content-disposition')
-                ? $this->paramEncoder
-                : null
-            );
+        $header = new Swift_Mime_Headers_ParameterizedHeader($name, $this->encoder, (strtolower($name) == 'content-disposition') ? $this->paramEncoder : null);
         if (isset($value)) {
             $header->setFieldBodyModel($value);
         }
