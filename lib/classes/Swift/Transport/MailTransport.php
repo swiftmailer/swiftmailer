@@ -165,8 +165,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
             $body = str_replace("\r\n.", "\r\n..", $body);
         }
 
-        if ($this->_invoker->mail($to, $subject, $body, $headers,
-            $this->_formatExtraParams($this->_extraParams, $reversePath))) {
+        if ($this->_invoker->mail($to, $subject, $body, $headers, $this->_formatExtraParams($this->_extraParams, $reversePath))) {
             if ($evt) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
                 $evt->setFailedRecipients($failedRecipients);
@@ -243,16 +242,14 @@ class Swift_Transport_MailTransport implements Swift_Transport
      * @param $extraParams
      * @param $reversePath
      *
-     * @return mixed <string|null>
+     * @return string|null
      */
     private function _formatExtraParams($extraParams, $reversePath)
     {
-        if (strpos($extraParams, '-f%s') !== false) {
-            $extraParams = empty($reversePath)
-                         ? str_replace('-f%s', '', $extraParams)
-                         : sprintf($extraParams, escapeshellarg($reversePath));
+        if (false !== strpos($extraParams, '-f%s')) {
+            $extraParams = $reversePath ? sprintf($extraParams, escapeshellarg($reversePath)) : str_replace('-f%s', '', $extraParams);
         }
 
-        return !empty($extraParams) ? $extraParams : null;
+        return $extraParams ? null : $extraParams;
     }
 }
