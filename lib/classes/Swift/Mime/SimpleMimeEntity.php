@@ -798,7 +798,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     {
         $this->headers = clone $this->headers;
         $this->encoder = clone $this->encoder;
-        $this->cacheKey = uniqid();
+        $this->cacheKey = md5(uniqid(getmypid().mt_rand(), true));
         $children = array();
         foreach ($this->children as $pos => $child) {
             $children[$pos] = clone $child;
