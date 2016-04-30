@@ -373,7 +373,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
             $this->_showLen = true;
             $this->_maxLen = PHP_INT_MAX;
         } elseif ($len === false) {
-            $this->showLen = false;
+            $this->_showLen = false;
             $this->_maxLen = PHP_INT_MAX;
         } else {
             $this->_showLen = true;
