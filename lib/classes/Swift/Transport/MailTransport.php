@@ -120,7 +120,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
             count((array) $message->getTo())
             + count((array) $message->getCc())
             + count((array) $message->getBcc())
-            );
+        );
 
         $toHeader = $message->getHeaders()->get('To');
         $subjectHeader = $message->getHeaders()->get('Subject');
@@ -177,7 +177,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
                 array_keys((array) $message->getTo()),
                 array_keys((array) $message->getCc()),
                 array_keys((array) $message->getBcc())
-                );
+            );
 
             if ($evt) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_FAILED);
@@ -247,9 +247,32 @@ class Swift_Transport_MailTransport implements Swift_Transport
     private function _formatExtraParams($extraParams, $reversePath)
     {
         if (false !== strpos($extraParams, '-f%s')) {
-            $extraParams = empty($reversePath) ? str_replace('-f%s', '', $extraParams) : sprintf($extraParams, escapeshellarg($reversePath));
+            $extraParams = empty($reversePath) ? str_replace('-f%s', '', $extraParams) : sprintf($extraParams, $this->_escapeCommand($reversePath));
         }
 
         return !empty($extraParams) ? $extraParams : null;
+    }
+
+    /**
+     * Escapes a string using either escapeshellarg or wrapping the command in single quotes if the function
+     * has been disabled.
+     *
+     * @param string $command
+     *
+     * @return string
+     */
+    private function _escapeCommand($command)
+    {
+        if (is_string($command)) {
+            if (function_exists('escapeshellarg')) {
+                $command = escapeshellarg($command);
+
+            } else {
+                $command = str_replace('\'', '\\\'', $command);
+                $command = '\''.$command.'\'';
+            }
+        }
+
+        return $command;
     }
 }
