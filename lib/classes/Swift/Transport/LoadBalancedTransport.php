@@ -101,6 +101,38 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     }
 
     /**
+     * Check if this Transport mechanism is alive.
+     *
+     * If a Transport mechanism session is no longer functional, the method
+     * returns FALSE. It is the responsibility of the developer to handle this
+     * case and restart the Transport mechanism manually.
+     *
+     * @example
+     *
+     *   if (!$transport->ping()) {
+     *      $transport->stop();
+     *      $transport->start();
+     *   }
+     *
+     * The Transport mechanism will be started, if it is not already.
+     *
+     * It is undefined if the Transport mechanism attempts to restart as long as
+     * the return value reflects whether the mechanism is now functional.
+     *
+     * @return bool TRUE if the transport is alive
+     */
+    public function ping()
+    {
+        foreach ($this->transports as $transport) {
+            if (!$transport->ping()) {
+                $this->killCurrentTransport();
+            }
+        }
+
+        return count($this->transports) > 0;
+    }
+
+    /**
      * Send the given Message.
      *
      * Recipient/sender data will be retrieved from the Message API.

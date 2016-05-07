@@ -503,6 +503,88 @@ class Swift_Transport_FailoverTransportTest extends \SwiftMailerTestCase
         $transport->registerPlugin($plugin);
     }
 
+    public function testEachDelegateIsPinged()
+    {
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+        $connectionState1 = false;
+        $connectionState2 = false;
+
+        $testCase = $this;
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('ping')
+           ->once()
+           ->andReturn(true);
+
+        $transport = $this->getTransport(array($t1, $t2));
+        $this->assertTrue($transport->isStarted());
+        $this->assertTrue($transport->ping());
+    }
+
+    public function testDelegateIsKilledWhenPingFails()
+    {
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $testCase = $this;
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('ping')
+           ->once()
+           ->andReturn(false);
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('ping')
+           ->twice()
+           ->andReturn(true);
+
+        $transport = $this->getTransport(array($t1, $t2));
+        $this->assertTrue($transport->ping());
+        $this->assertTrue($transport->ping());
+        $this->assertTrue($transport->isStarted());
+    }
+
+    public function XtestTransportShowsAsNotStartedIfAllPingFails()
+    {
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $testCase = $this;
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('ping')
+           ->once()
+           ->andReturn(false);
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('ping')
+           ->once()
+           ->andReturn(false);
+
+        $transport = $this->getTransport(array($t1, $t2));
+        $this->assertFalse($transport->ping());
+        $this->assertFalse($transport->isStarted());
+        $this->assertFalse($transport->ping());
+    }
+
     // -- Private helpers
 
     private function getTransport(array $transports)

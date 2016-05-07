@@ -62,6 +62,32 @@ class Swift_Transport_MailTransport implements Swift_Transport
     }
 
     /**
+     * Check if this Transport mechanism is alive.
+     *
+     * If a Transport mechanism session is no longer functional, the method
+     * returns FALSE. It is the responsibility of the developer to handle this
+     * case and restart the Transport mechanism manually.
+     *
+     * @example
+     *
+     *   if (!$transport->ping()) {
+     *      $transport->stop();
+     *      $transport->start();
+     *   }
+     *
+     * The Transport mechanism will be started, if it is not already.
+     *
+     * It is undefined if the Transport mechanism attempts to restart as long as
+     * the return value reflects whether the mechanism is now functional.
+     *
+     * @return bool TRUE if the transport is alive
+     */
+    public function ping()
+    {
+        return true;
+    }
+
+    /**
      * Set the additional parameters used on the mail() function.
      *
      * This string is formatted for sprintf() where %s is the sender address.

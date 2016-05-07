@@ -713,13 +713,102 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         $transport->registerPlugin($plugin);
     }
 
+    public function testEachDelegateIsPinged()
+    {
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $testCase = $this;
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('ping')
+           ->once()
+           ->andReturn(true);
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('ping')
+           ->once()
+           ->andReturn(true);
+
+        $transport = $this->getTransport(array($t1, $t2));
+        $this->assertTrue($transport->isStarted());
+        $this->assertTrue($transport->ping());
+    }
+
+    public function testDelegateIsKilledWhenPingFails()
+    {
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $testCase = $this;
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('ping')
+           ->twice()
+           ->andReturn(true);
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('ping')
+           ->once()
+           ->andReturn(false);
+
+        $transport = $this->getTransport(array($t1, $t2));
+        $this->assertTrue($transport->ping());
+        $this->assertTrue($transport->ping());
+        $this->assertTrue($transport->isStarted());
+    }
+
+    public function testTransportShowsAsNotStartedIfAllPingFails()
+    {
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $testCase = $this;
+        $t1->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState1) {
+               return $connectionState1;
+           });
+        $t1->shouldReceive('ping')
+           ->once()
+           ->andReturn(false);
+
+        $t2->shouldReceive('isStarted')
+           ->zeroOrMoreTimes()
+           ->andReturnUsing(function () use (&$connectionState2) {
+               return $connectionState2;
+           });
+        $t2->shouldReceive('ping')
+           ->once()
+           ->andReturn(false);
+
+        $transport = $this->getTransport(array($t1, $t2));
+        $this->assertFalse($transport->ping());
+        $this->assertFalse($transport->isStarted());
+        $this->assertFalse($transport->ping());
+    }
+
     /**
      * Adapted from Yay_Matchers_ReferenceMatcher.
      */
     public function varsAreReferences(&$ref1, &$ref2)
     {
         if (is_object($ref2)) {
-            return ($ref1 === $ref2);
+            return $ref1 === $ref2;
         }
         if ($ref1 !== $ref2) {
             return false;
