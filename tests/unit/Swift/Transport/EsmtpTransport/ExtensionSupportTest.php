@@ -199,7 +199,11 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('FOO');
         $ext1->shouldReceive('getPriorityOver')
              ->zeroOrMoreTimes()
-             ->with('AUTH')
+             ->with('STARTTLS')
+             ->andReturn(1);
+        $ext1->shouldReceive('getPriorityOver')
+             ->zeroOrMoreTimes()
+             ->with('SIZE')
              ->andReturn(-1);
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
@@ -211,11 +215,23 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->zeroOrMoreTimes()
              ->with('AUTH')
              ->andReturn(1);
+        $ext2->shouldReceive('getPriorityOver')
+             ->zeroOrMoreTimes()
+             ->with('STARTTLS')
+             ->andReturn(1);
         $ext3->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
              ->andReturn('STARTTLS');
         $ext3->shouldReceive('getMailParams')
              ->never();
+        $ext3->shouldReceive('getPriorityOver')
+             ->zeroOrMoreTimes()
+             ->with('AUTH')
+             ->andReturn(-1);
+        $ext3->shouldReceive('getPriorityOver')
+             ->zeroOrMoreTimes()
+             ->with('SIZE')
+             ->andReturn(-1);
 
         $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
         $smtp->start();
@@ -285,7 +301,11 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('FOO');
         $ext1->shouldReceive('getPriorityOver')
              ->zeroOrMoreTimes()
-             ->with('AUTH')
+             ->with('STARTTLS')
+             ->andReturn(1);
+        $ext1->shouldReceive('getPriorityOver')
+             ->zeroOrMoreTimes()
+             ->with('SIZE')
              ->andReturn(-1);
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
@@ -295,6 +315,10 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('ZIP');
         $ext2->shouldReceive('getPriorityOver')
              ->zeroOrMoreTimes()
+             ->with('STARTTLS')
+             ->andReturn(1);
+        $ext2->shouldReceive('getPriorityOver')
+             ->zeroOrMoreTimes()
              ->with('AUTH')
              ->andReturn(1);
         $ext3->shouldReceive('getHandledKeyword')
@@ -302,6 +326,14 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('STARTTLS');
         $ext3->shouldReceive('getRcptParams')
              ->never();
+        $ext3->shouldReceive('getPriorityOver')
+             ->zeroOrMoreTimes()
+             ->with('AUTH')
+             ->andReturn(-1);
+        $ext3->shouldReceive('getPriorityOver')
+             ->zeroOrMoreTimes()
+             ->with('SIZE')
+             ->andReturn(-1);
 
         $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
         $smtp->start();
