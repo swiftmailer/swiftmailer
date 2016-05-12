@@ -9,10 +9,13 @@ Swift_DependencyContainer::getInstance()
     ->register('email.validator')
     ->asSharedInstanceOf('Egulias\EmailValidator\EmailValidator')
 
+    ->register('mime.idgenerator.idright')
+    ->asValue(!empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'swift.generated')
+
     ->register('mime.idgenerator')
     ->asSharedInstanceOf('Swift_Mime_IdGenerator')
     ->withDependencies(array(
-        'email.validator',
+        'mime.idgenerator.idright'
     ))
 
     ->register('mime.message')
