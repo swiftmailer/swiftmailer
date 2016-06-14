@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by remicollet at 2016-06-14T11:58:49Z
+
+Related to 65863b665073255fb3654e00ebb3729fb4c8ef57 (no much explanation in this commit)
+
+---------------------------------------------------------------------------
+
+by stof at 2016-06-14T15:00:35Z
+
+The question is why the testsuite tries to mock non existent methods ? this is likely to be a bug in the testsuite
+
+---------------------------------------------------------------------------
+
+by fabpot at 2016-06-14T20:22:09Z
+
+It does not call non-existent methods, but methods that are not explicitly added via `shouldReceive()`.
