@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by dmaicher at 2016-07-08T10:34:54Z
+
+@fabpot I updated the regex again because I found other issues with unescaped characters.
