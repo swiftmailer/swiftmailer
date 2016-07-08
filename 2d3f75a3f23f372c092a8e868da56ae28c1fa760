@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2016-05-08T08:08:08Z
+
+Should go to 6.x not 5.x IMO.
+
+---------------------------------------------------------------------------
+
+by c960657 at 2016-05-08T10:57:18Z
+
+@GrahamCampbell Could you elaborate on the reasoning behind this? Or perhaps direct me to some description that explains what should go into which branch in this project?
+
+The NTLM code already requires the OpenSSL extension to be installed, so this patch does not add any new requirements.
