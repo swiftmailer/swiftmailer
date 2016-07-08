@@ -1,6 +1,5 @@
 <?php
 
-use Egulias\EmailValidator\EmailValidator;
 
 class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 {
@@ -54,7 +53,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 
     private function createEmbeddedFile($headers, $encoder, $cache)
     {
-        $idGenerator = new Swift_Mime_IdGenerator(new EmailValidator());
+        $idGenerator = new Swift_Mime_IdGenerator('example.com');
 
         return new Swift_Mime_EmbeddedFile($headers, $encoder, $cache, $idGenerator);
     }

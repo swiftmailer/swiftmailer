@@ -1,6 +1,5 @@
 <?php
 
-use Egulias\EmailValidator\EmailValidator;
 
 class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 {
@@ -230,7 +229,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 
     protected function createMimePart($headers, $encoder, $cache)
     {
-        $idGenerator = new Swift_Mime_IdGenerator(new EmailValidator());
+        $idGenerator = new Swift_Mime_IdGenerator('example.com');
 
         return new Swift_Mime_MimePart($headers, $encoder, $cache, $idGenerator);
     }
