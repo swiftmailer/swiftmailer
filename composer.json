@@ -19,7 +19,7 @@
         "egulias/email-validator": "~1.2"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9.1,<0.9.4"
+        "mockery/mockery": "~0.9.1"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]
