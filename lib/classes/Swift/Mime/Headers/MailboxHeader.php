@@ -9,6 +9,7 @@
  */
 
 use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 
 /**
  * A Mailbox Address MIME Header for something like From or Sender.
@@ -351,7 +352,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      */
     private function assertValidAddress($address)
     {
-        if (!$this->emailValidator->isValid($address)) {
+        if (!$this->emailValidator->isValid($address, new RFCValidation())) {
             throw new Swift_RfcComplianceException(
                 'Address in mailbox given ['.$address.'] does not comply with RFC 2822, 3.6.2.'
             );

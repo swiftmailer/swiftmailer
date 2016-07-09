@@ -9,6 +9,7 @@
  */
 
 use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.
@@ -176,7 +177,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     private function assertValidId($id)
     {
-        if (!$this->emailValidator->isValid($id)) {
+        if (!$this->emailValidator->isValid($id, new RFCValidation())) {
             throw new Swift_RfcComplianceException('Invalid ID given <'.$id.'>');
         }
     }

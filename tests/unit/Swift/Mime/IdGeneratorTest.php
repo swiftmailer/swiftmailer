@@ -1,6 +1,7 @@
 <?php
 
 use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 
 class Swift_Mime_IdGeneratorTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,7 +23,7 @@ class Swift_Mime_IdGeneratorTest extends \PHPUnit_Framework_TestCase
         $emailValidator = new EmailValidator();
 
         $id = $idGenerator->generateId();
-        $this->assertTrue($emailValidator->isValid($id));
+        $this->assertTrue($emailValidator->isValid($id, new RFCValidation()));
         $this->assertEquals(1, preg_match('/^.{32}@example.net$/', $id));
 
         $anotherId = $idGenerator->generateId();
