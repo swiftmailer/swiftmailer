@@ -249,9 +249,24 @@ class Swift_Transport_MailTransport implements Swift_Transport
     private function _formatExtraParams($extraParams, $reversePath)
     {
         if (false !== strpos($extraParams, '-f%s')) {
-            $extraParams = empty($reversePath) ? str_replace('-f%s', '', $extraParams) : sprintf($extraParams, escapeshellarg($reversePath));
+            $extraParams = empty($reversePath) ? str_replace('-f%s', '', $extraParams) : sprintf($extraParams, $this->_escapeShellArg($reversePath));
         }
 
         return !empty($extraParams) ? $extraParams : null;
     }
+    
+     /**
+     * Escape a string to be used as a shell argument
+     *
+     * @param $input
+     *
+     * @return string|null
+     */
+    private function _escapeShellArg($input)
+    {
+      $input = str_replace('\'', '\\\'', $input);
+    
+      return '\''.$input.'\'';
+    }
+    
 }
