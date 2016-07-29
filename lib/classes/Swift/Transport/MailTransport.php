@@ -254,19 +254,18 @@ class Swift_Transport_MailTransport implements Swift_Transport
 
         return !empty($extraParams) ? $extraParams : null;
     }
-    
-     /**
-     * Escape a string to be used as a shell argument
+
+    /**
+     * Escape a string to be used as a shell argument.
      *
      * @param $input
      *
-     * @return string|null
+     * @return string
      */
     private function _escapeShellArg($input)
     {
-      $input = str_replace('\'', '\\\'', $input);
-    
-      return '\''.$input.'\'';
+        $input = str_replace('\'', '\\\'', $input);
+
+        return '\''.$input.'\'';
     }
-    
 }
