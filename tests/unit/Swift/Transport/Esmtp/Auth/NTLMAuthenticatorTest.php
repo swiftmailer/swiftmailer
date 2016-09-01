@@ -154,6 +154,21 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
         );
     }
 
+    public function testGetDomainAndUsernameWithoutDomain()
+    {
+        $username = 'user';
+
+        $login = $this->_getAuthenticator();
+        list($domain, $user) = $this->_invokePrivateMethod('getDomainAndUsername', $login, array($username));
+
+        $this->assertEquals('', $domain,
+            '%s: the fetched domain did not match'
+        );
+        $this->assertEquals('user', $user,
+            '%s: the fetched user did not match'
+        );
+    }
+
     public function testSuccessfulAuthentication()
     {
         $domain = 'TESTNT';
