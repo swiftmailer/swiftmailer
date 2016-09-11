@@ -104,7 +104,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn("220 some.server.tld bleh\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^HELO .*?\r\n$~D')
+            ->with('~^HELO example.org\r\n$~D')
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -132,7 +132,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn("220 some.server.tld bleh\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^HELO .*?\r\n$~D')
+            ->with('~^HELO example.org\r\n$~D')
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -1172,6 +1172,27 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $this->finishBuffer($buf);
         $smtp->start();
         $smtp->send($message);
+    }
+
+    public function testSetLocalDomain()
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
+
+        $smtp->setLocalDomain('example.com');
+        $this->assertEquals('example.com', $smtp->getLocalDomain());
+
+        $smtp->setLocalDomain('192.168.0.1');
+        $this->assertEquals('[192.168.0.1]', $smtp->getLocalDomain());
+
+        $smtp->setLocalDomain('[192.168.0.1]');
+        $this->assertEquals('[192.168.0.1]', $smtp->getLocalDomain());
+
+        $smtp->setLocalDomain('fd00::');
+        $this->assertEquals('[IPv6:fd00::]', $smtp->getLocalDomain());
+
+        $smtp->setLocalDomain('[IPv6:fd00::]');
+        $this->assertEquals('[IPv6:fd00::]', $smtp->getLocalDomain());
     }
 
     protected function getBuffer()

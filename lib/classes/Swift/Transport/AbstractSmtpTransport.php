@@ -38,12 +38,13 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      *
      * @param Swift_Transport_IoBuffer     $buf
      * @param Swift_Events_EventDispatcher $dispatcher
+     * @param string                       $localDomain
      */
-    public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher)
+    public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher, $localDomain)
     {
         $this->eventDispatcher = $dispatcher;
         $this->buffer = $buf;
-        $this->lookupHostname();
+        $this->setLocalDomain($localDomain);
     }
 
     /**
@@ -52,8 +53,9 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * This should be a fully-qualified domain name and should be truly the domain
      * you're using.
      *
-     * If your server doesn't have a domain name, use the IP in square
-     * brackets (i.e. [127.0.0.1]).
+     * If your server does not have a domain name, use the IP address. This will
+     * automatically be wrapped in square brackets as described in RFC 5321,
+     * section 4.1.3.
      *
      * @param string $domain
      *
@@ -61,6 +63,14 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      */
     public function setLocalDomain($domain)
     {
+        if (substr($domain, 0, 1) !== '[') {
+            if (filter_var($domain, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                $domain = '['.$domain.']';
+            } elseif (filter_var($domain, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                $domain = '[IPv6:'.$domain.']';
+            }
+        }
+
         $this->domain = $domain;
 
         return $this;
@@ -68,6 +78,9 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 
     /**
      * Get the name of the domain Swift will identify as.
+     *
+     * If an IP address was specified, this will be returned wrapped in square
+     * brackets as described in RFC 5321, section 4.1.3.
      *
      * @return string
      */
@@ -456,34 +469,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
 
         return $sent;
-    }
-
-    /** Try to determine the hostname of the server this is run on */
-    private function lookupHostname()
-    {
-        if (!empty($_SERVER['SERVER_NAME']) && $this->isFqdn($_SERVER['SERVER_NAME'])) {
-            $this->domain = $_SERVER['SERVER_NAME'];
-        } elseif (!empty($_SERVER['SERVER_ADDR'])) {
-            // Set the address literal tag (See RFC 5321, section: 4.1.3)
-            if (false === strpos($_SERVER['SERVER_ADDR'], ':')) {
-                $prefix = ''; // IPv4 addresses are not tagged.
-            } else {
-                $prefix = 'IPv6:'; // Adding prefix in case of IPv6.
-            }
-
-            $this->domain = sprintf('[%s%s]', $prefix, $_SERVER['SERVER_ADDR']);
-        }
-    }
-
-    /** Determine is the $hostname is a fully-qualified name */
-    private function isFqdn($hostname)
-    {
-        // We could do a really thorough check, but there's really no point
-        if (false !== $dotPos = strpos($hostname, '.')) {
-            return ($dotPos > 0) && ($dotPos != strlen($hostname) - 1);
-        }
-
-        return false;
     }
 
     /**
