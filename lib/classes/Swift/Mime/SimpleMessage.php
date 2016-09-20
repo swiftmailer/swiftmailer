@@ -67,7 +67,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param string $subject
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setSubject($subject)
     {
@@ -93,7 +93,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param int $date
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setDate($date)
     {
@@ -119,7 +119,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param string $address
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setReturnPath($address)
     {
@@ -148,7 +148,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param string $address
      * @param string $name    optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setSender($address, $name = null)
     {
@@ -181,7 +181,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param string $address
      * @param string $name    optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function addFrom($address, $name = null)
     {
@@ -202,7 +202,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param string|array $addresses
      * @param string       $name      optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setFrom($addresses, $name = null)
     {
@@ -235,7 +235,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param string $address
      * @param string $name    optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function addReplyTo($address, $name = null)
     {
@@ -256,7 +256,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param mixed  $addresses
      * @param string $name      optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setReplyTo($addresses, $name = null)
     {
@@ -289,7 +289,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param string $address
      * @param string $name    optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function addTo($address, $name = null)
     {
@@ -311,7 +311,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param mixed  $addresses
      * @param string $name      optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setTo($addresses, $name = null)
     {
@@ -344,7 +344,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param string $address
      * @param string $name    optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function addCc($address, $name = null)
     {
@@ -363,7 +363,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param mixed  $addresses
      * @param string $name      optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setCc($addresses, $name = null)
     {
@@ -396,7 +396,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param string $address
      * @param string $name    optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function addBcc($address, $name = null)
     {
@@ -415,7 +415,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      * @param mixed  $addresses
      * @param string $name      optional
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setBcc($addresses, $name = null)
     {
@@ -447,7 +447,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param int $priority
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setPriority($priority)
     {
@@ -495,7 +495,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param array $addresses
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function setReadReceiptTo($addresses)
     {
@@ -522,7 +522,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param Swift_Mime_MimeEntity $entity
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function attach(Swift_Mime_MimeEntity $entity)
     {
@@ -536,7 +536,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @param Swift_Mime_MimeEntity $entity
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function detach(Swift_Mime_MimeEntity $entity)
     {
