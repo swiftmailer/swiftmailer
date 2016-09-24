@@ -489,6 +489,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
                 '%[1-5]'
             );
         }
+        
         return $priority;
     }
 
