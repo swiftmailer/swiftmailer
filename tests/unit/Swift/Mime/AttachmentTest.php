@@ -19,10 +19,18 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
 
         $disposition = $this->_createHeader('Content-Disposition', 'attachment');
         $attachment = $this->_createAttachment($this->_createHeaderSet(array(
-            'Content-Disposition' => $disposition, )),
-            $this->_createEncoder(), $this->_createCache()
-            );
+        'Content-Disposition' => $disposition, )),
+        $this->_createEncoder(), $this->_createCache()
+    );
         $this->assertEquals('attachment', $attachment->getDisposition());
+    }
+
+    public function testDispositionIsNullWhenNotSet()
+    {
+        $attachment = $this->_createAttachment($this->_createHeaderSet(array()),
+            $this->_createEncoder(), $this->_createCache()
+        );
+        $this->assertNull($attachment->getDisposition());
     }
 
     public function testDispositionIsSetInHeader()
@@ -103,6 +111,13 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             );
         $this->assertEquals('foo.txt', $attachment->getFilename());
     }
+    
+    public function testFilenameIsNullWhenNotSet()
+    {
+        $attachment = $this->createAttachmentWithEmptyHeaderSet();
+        
+        $this->assertNull($attachment->getFilename());
+    }
 
     public function testFilenameIsSetInHeader()
     {
@@ -157,6 +172,13 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals(1234, $attachment->getSize());
+    }
+    
+    public function testSizeIsNullWhenNotSet()
+    {
+        $attachment = $this->createAttachmentWithEmptyHeaderSet();
+        
+        $this->assertNull($attachment->getSize());
     }
 
     public function testSizeIsSetInHeader()
@@ -316,5 +338,12 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
              ->zeroOrMoreTimes();
 
         return $file;
+    }
+    
+    private function createAttachmentWithEmptyHeaderSet()
+    {
+        return $this->_createAttachment($this->_createHeaderSet(array()),
+            $this->_createEncoder(), $this->_createCache()
+        );
     }
 }

@@ -81,7 +81,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the subject of this message.
      *
-     * @return string
+     * @return string|null
      */
     public function getSubject()
     {
@@ -107,7 +107,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the date at which this message was created.
      *
-     * @return int
+     * @return int|null
      */
     public function getDate()
     {
@@ -133,7 +133,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the return-path (bounce address) of this message.
      *
-     * @return string
+     * @return string|null
      */
     public function getReturnPath()
     {
@@ -166,7 +166,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the sender of this message.
      *
-     * @return string
+     * @return string|null
      */
     public function getSender()
     {
@@ -220,11 +220,13 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the from address of this message.
      *
-     * @return mixed
+     * @return array
      */
     public function getFrom()
     {
-        return $this->_getHeaderFieldModel('From');
+        $fromAddress = $this->_getHeaderFieldModel('From');
+
+        return isset($fromAddress) ? $fromAddress : array();
     }
 
     /**
@@ -274,7 +276,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the reply-to address of this message.
      *
-     * @return string
+     * @return string|null
      */
     public function getReplyTo()
     {
@@ -333,7 +335,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function getTo()
     {
-        return $this->_getHeaderFieldModel('To');
+        $toAddresses = $this->_getHeaderFieldModel('To');
+
+        return isset($toAddresses) ? $toAddresses : array();
     }
 
     /**
@@ -385,7 +389,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function getCc()
     {
-        return $this->_getHeaderFieldModel('Cc');
+        $ccAddress = $this->_getHeaderFieldModel('Cc');
+
+        return isset($ccAddress) ? $ccAddress : array();
     }
 
     /**
@@ -437,7 +443,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function getBcc()
     {
-        return $this->_getHeaderFieldModel('Bcc');
+        $bccAddresses = $this->_getHeaderFieldModel('Bcc');
+
+        return isset($bccAddresses) ? $bccAddresses : array();
     }
 
     /**
@@ -483,11 +491,13 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function getPriority()
     {
-        list($priority) = sscanf($this->_getHeaderFieldModel('X-Priority'),
-            '%[1-5]'
-            );
+        $priority = 3;
+        $xPriority = $this->_getHeaderFieldModel('X-Priority');
+        if (isset($xPriority)) {
+            list($priority) = sscanf($xPriority, '%[1-5]');
+        }
 
-        return isset($priority) ? $priority : 3;
+        return $priority;
     }
 
     /**
@@ -510,7 +520,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the addresses to which a read-receipt will be sent.
      *
-     * @return string
+     * @return string|null
      */
     public function getReadReceiptTo()
     {
