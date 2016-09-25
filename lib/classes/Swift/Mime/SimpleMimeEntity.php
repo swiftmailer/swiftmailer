@@ -182,7 +182,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function getId()
     {
-        $id =  $this->_id;
+        $id = $this->_id;
         if ($this->_headers->has($this->_getIdField())) {
             $tmp = (array) $this->_getHeaderFieldModel($this->_getIdField());
             $id = current($tmp);

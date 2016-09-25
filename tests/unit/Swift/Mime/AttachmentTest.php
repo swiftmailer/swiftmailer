@@ -111,11 +111,11 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             );
         $this->assertEquals('foo.txt', $attachment->getFilename());
     }
-    
+
     public function testFilenameIsNullWhenNotSet()
     {
         $attachment = $this->createAttachmentWithEmptyHeaderSet();
-        
+
         $this->assertNull($attachment->getFilename());
     }
 
@@ -173,11 +173,11 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             );
         $this->assertEquals(1234, $attachment->getSize());
     }
-    
+
     public function testSizeIsNullWhenNotSet()
     {
         $attachment = $this->createAttachmentWithEmptyHeaderSet();
-        
+
         $this->assertNull($attachment->getSize());
     }
 
@@ -339,7 +339,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
 
         return $file;
     }
-    
+
     private function createAttachmentWithEmptyHeaderSet()
     {
         return $this->_createAttachment($this->_createHeaderSet(array()),

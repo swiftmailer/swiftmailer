@@ -35,11 +35,11 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             );
         $this->assertEquals('iso-8859-1', $part->getCharset());
     }
-    
+
     public function testCharsetIsNullWhenNotSet()
     {
         $part = $this->createMimePartWithEmptyHeaderSet();
-        
+
         $this->assertNull($part->getCharset());
     }
 
@@ -163,11 +163,11 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             );
         $this->assertEquals('flowed', $part->getFormat());
     }
-    
+
     public function testFormatIsNullWhenNotSet()
     {
         $part = $this->createMimePartWithEmptyHeaderSet();
-        
+
         $this->assertNull($part->getFormat());
     }
 
@@ -188,8 +188,8 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         /* -- RFC 3676.
      */
         $part = $this->createMimeWithDelspValue('no');
-  
-        $this->assertSame(false, $part->getDelSp());
+
+        $this->assertFalse($part->getDelSp());
     }
 
     public function testDelSpIsFalseWhenHeaderValueIsYes()
@@ -199,14 +199,14 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 
         $part = $this->createMimeWithDelspValue('yes');
 
-        $this->assertSame(true, $part->getDelSp());
+        $this->assertTrue($part->getDelSp());
     }
-    
+
     public function testDelSpisFalseWhenHeaderNotSet()
     {
         $part = $this->createMimePartWithEmptyHeaderSet();
 
-        $this->assertSame(false, $part->getDelSp());
+        $this->assertFalse($part->getDelSp());
     }
 
     public function testDelSpIsSetInHeader()
@@ -255,7 +255,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
     {
         return new Swift_Mime_MimePart($headers, $encoder, $cache, new Swift_Mime_Grammar());
     }
-    
+
     private function createMimePartWithEmptyHeaderSet()
     {
         return $this->_createMimePart($this->_createHeaderSet(array()),
@@ -268,6 +268,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $cType = $this->_createHeader('Content-Type', 'text/plain',
             array('delsp' => $value)
         );
+
         return $this->_createMimePart($this->_createHeaderSet(array(
             'Content-Type' => $cType, )),
             $this->_createEncoder(), $this->_createCache()
