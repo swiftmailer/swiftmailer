@@ -262,7 +262,7 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             $this->_createEncoder(), $this->_createCache()
         );
     }
-    
+
     private function createMimeWithDelspValue($value)
     {
         $cType = $this->_createHeader('Content-Type', 'text/plain',
