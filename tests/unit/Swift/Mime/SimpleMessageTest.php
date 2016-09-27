@@ -27,11 +27,34 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(123, $message->getDate());
     }
 
-    public function testDataIsNullWhenNotSet()
+    public function testNonCollectionHeadersAreNullWhenNotSet()
     {
         $message = $this->createMessageWithEmptyHeaderSet();
 
         $this->assertNull($message->getDate());
+        $this->assertNull($message->getSubject());
+        $this->assertNull($message->getReturnPath());
+        $this->assertNull($message->getSender());
+        $this->assertNull($message->getReplyTo());
+        $this->assertNull($message->getReadReceiptTo());
+        $this->assertNull($message->getContentType());
+    }
+
+    public function testCollectionHeadersAreEmptyArrayWhenNotSet()
+    {
+        $message = $this->createMessageWithEmptyHeaderSet();
+
+        $this->assertEquals(array(), $message->getBcc());
+        $this->assertEquals(array(), $message->getCc());
+        $this->assertEquals(array(), $message->getTo());
+        $this->assertEquals(array(), $message->getFrom());
+    }
+
+    public function testPriorityDefaultWhenNotSet()
+    {
+        $message = $this->createMessageWithEmptyHeaderSet();
+
+        $this->assertEquals(3, $message->getPriority());
     }
 
     public function testDateIsSetInHeader()
@@ -94,13 +117,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals('a@b', $message->getId());
     }
 
-    public function testDescriptionIsNullWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertNull($message->getDescription());
-    }
-
     public function testIdIsSetInHeader()
     {
         $messageId = $this->_createHeader('Message-ID', 'a@b', array(), false);
@@ -140,13 +156,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals('example subject', $message->getSubject());
-    }
-
-    public function testSubjectIsNullWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertNull($message->getSubject());
     }
 
     public function testSubjectIsSetInHeader()
@@ -191,13 +200,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals('bounces@domain', $message->getReturnPath());
     }
 
-    public function testReturnPathIsNullWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertNull($message->getReturnPath());
-    }
-
     public function testReturnPathIsSetInHeader()
     {
         $path = $this->_createHeader('Return-Path', '', array(), false);
@@ -236,13 +238,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals(array('sender@domain' => 'Name'), $message->getSender());
-    }
-
-    public function testSenderIsNullWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertNull($message->getSender());
     }
 
     public function testSenderIsSetInHeader()
@@ -302,13 +297,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals(array('from@domain' => 'Name'), $message->getFrom());
-    }
-
-    public function testFromIsEmptyArrayWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertEquals(array(), $message->getFrom());
     }
 
     public function testFromIsSetInHeader()
@@ -386,13 +374,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(array('reply@domain' => 'Name'), $message->getReplyTo());
     }
 
-    public function testReplyToIsNullWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertNull($message->getReplyTo());
-    }
-
     public function testReplyToIsSetInHeader()
     {
         $reply = $this->_createHeader('Reply-To', array('reply@domain' => 'Name'),
@@ -466,13 +447,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals(array('to@domain' => 'Name'), $message->getTo());
-    }
-
-    public function testToIsEmptyArrayWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertEquals(array(), $message->getTo());
     }
 
     public function testToIsSetInHeader()
@@ -550,13 +524,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(array('cc@domain' => 'Name'), $message->getCc());
     }
 
-    public function testCcIsEmptyArrayWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertEquals(array(), $message->getCc());
-    }
-
     public function testCcIsSetInHeader()
     {
         $cc = $this->_createHeader('Cc', array('cc@domain' => 'Name'),
@@ -632,13 +599,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(array('bcc@domain' => 'Name'), $message->getBcc());
     }
 
-    public function testBccIsEmptyArrayWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertEquals(array(), $message->getBcc());
-    }
-
     public function testBccIsSetInHeader()
     {
         $bcc = $this->_createHeader('Bcc', array('bcc@domain' => 'Name'),
@@ -711,13 +671,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(2, $message->getPriority());
     }
 
-    public function testPriorityDefaultWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertEquals(3, $message->getPriority());
-    }
-
     public function testPriorityIsSetInHeader()
     {
         $prio = $this->_createHeader('X-Priority', '2 (High)', array(), false);
@@ -759,20 +712,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(array('chris@swiftmailer.org' => 'Chris'),
             $message->getReadReceiptTo()
             );
-    }
-
-    public function testReadReceiptToIsNullWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertNull($message->getReadReceiptTo());
-    }
-
-    public function testContentTypeIsNullWhenNotSet()
-    {
-        $message = $this->createMessageWithEmptyHeaderSet();
-
-        $this->assertNull($message->getContentType());
     }
 
     public function testReadReceiptIsSetInHeader()

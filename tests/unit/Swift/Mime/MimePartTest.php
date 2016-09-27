@@ -36,11 +36,12 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $this->assertEquals('iso-8859-1', $part->getCharset());
     }
 
-    public function testCharsetIsNullWhenNotSet()
+    public function testNonCollectionHeadersAreNullWhenNotSet()
     {
         $part = $this->createMimePartWithEmptyHeaderSet();
 
         $this->assertNull($part->getCharset());
+        $this->assertNull($part->getFormat());
     }
 
     public function testCharsetIsSetInHeader()
@@ -162,13 +163,6 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals('flowed', $part->getFormat());
-    }
-
-    public function testFormatIsNullWhenNotSet()
-    {
-        $part = $this->createMimePartWithEmptyHeaderSet();
-
-        $this->assertNull($part->getFormat());
     }
 
     public function testFormatIsSetInHeader()

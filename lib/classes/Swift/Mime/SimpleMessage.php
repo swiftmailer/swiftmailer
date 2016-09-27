@@ -150,15 +150,10 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      *
      * @return Swift_Mime_SimpleMessage
      */
-    public function setSender($address, $name = null)
+    public function setSender($addresses, $name = null)
     {
-        if (!is_array($address) && isset($name)) {
-            $address = array($address => $name);
-        }
-
-        if (!$this->_setHeaderFieldModel('Sender', (array) $address)) {
-            $this->getHeaders()->addMailboxHeader('Sender', (array) $address);
-        }
+        $addresses = $this->toArray($addresses, $name);
+        $this->addMailboxHeader('Sender', $addresses);
 
         return $this;
     }
@@ -206,13 +201,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function setFrom($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
-        }
-
-        if (!$this->_setHeaderFieldModel('From', (array) $addresses)) {
-            $this->getHeaders()->addMailboxHeader('From', (array) $addresses);
-        }
+        $addresses = $this->toArray($addresses, $name);
+        $this->addMailboxHeader('From', $addresses);
 
         return $this;
     }
@@ -262,13 +252,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function setReplyTo($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
-        }
-
-        if (!$this->_setHeaderFieldModel('Reply-To', (array) $addresses)) {
-            $this->getHeaders()->addMailboxHeader('Reply-To', (array) $addresses);
-        }
+        $addresses = $this->toArray($addresses, $name);
+        $this->addMailboxHeader('Reply-To', $addresses);
 
         return $this;
     }
@@ -317,13 +302,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function setTo($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
-        }
-
-        if (!$this->_setHeaderFieldModel('To', (array) $addresses)) {
-            $this->getHeaders()->addMailboxHeader('To', (array) $addresses);
-        }
+        $addresses = $this->toArray($addresses, $name);
+        $this->addMailboxHeader('To', $addresses);
 
         return $this;
     }
@@ -371,13 +351,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function setCc($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
-        }
-
-        if (!$this->_setHeaderFieldModel('Cc', (array) $addresses)) {
-            $this->getHeaders()->addMailboxHeader('Cc', (array) $addresses);
-        }
+        $addresses = $this->toArray($addresses, $name);
+        $this->addMailboxHeader('Cc', $addresses);
 
         return $this;
     }
@@ -425,13 +400,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function setBcc($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
-        }
-
-        if (!$this->_setHeaderFieldModel('Bcc', (array) $addresses)) {
-            $this->getHeaders()->addMailboxHeader('Bcc', (array) $addresses);
-        }
+        $addresses = $this->toArray($addresses, $name);
+        $this->addMailboxHeader('Bcc', $addresses);
 
         return $this;
     }
@@ -509,10 +479,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function setReadReceiptTo($addresses)
     {
-        if (!$this->_setHeaderFieldModel('Disposition-Notification-To', $addresses)) {
-            $this->getHeaders()
-                ->addMailboxHeader('Disposition-Notification-To', $addresses);
-        }
+        $this->addMailboxHeader('Disposition-Notification-To', $addresses);
 
         return $this;
     }
@@ -655,5 +622,39 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
         }
 
         return $highestLevel;
+    }
+
+    /**
+     * Standardize input to ensure it is always an array
+     * 
+     * @param mixed  $addresses string or array input
+     * @param string $name      name to associate with address
+     * 
+     * @return array
+     */
+    private function toArray($addresses, $name)
+    {
+        if (!is_array($addresses) && isset($name)) {
+            $addresses = array($addresses => $name);
+        } elseif (!is_array($addresses) && !isset($name)) {
+            $addresses = array($addresses => null);
+        }
+
+        return $addresses;
+    }
+
+    /**
+     * Add addresses mailbox header
+     * 
+     * @param string $type      type of header to add
+     * @param array  $addresses addresses to add to header
+     * 
+     * @return null
+     */
+    private function addMailboxHeader($type, $addresses)
+    {
+        if (!$this->_setHeaderFieldModel($type, $addresses)) {
+            $this->getHeaders()->addMailboxHeader($type, $addresses);
+        }
     }
 }

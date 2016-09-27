@@ -25,12 +25,15 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
         $this->assertEquals('attachment', $attachment->getDisposition());
     }
 
-    public function testDispositionIsNullWhenNotSet()
+    public function testNonCollectionHeadersAreNullWhenNotSet()
     {
         $attachment = $this->_createAttachment($this->_createHeaderSet(array()),
             $this->_createEncoder(), $this->_createCache()
         );
+
         $this->assertNull($attachment->getDisposition());
+        $this->assertNull($attachment->getFilename());
+        $this->assertNull($attachment->getSize());
     }
 
     public function testDispositionIsSetInHeader()
@@ -112,13 +115,6 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
         $this->assertEquals('foo.txt', $attachment->getFilename());
     }
 
-    public function testFilenameIsNullWhenNotSet()
-    {
-        $attachment = $this->createAttachmentWithEmptyHeaderSet();
-
-        $this->assertNull($attachment->getFilename());
-    }
-
     public function testFilenameIsSetInHeader()
     {
         $disposition = $this->_createHeader('Content-Disposition', 'attachment',
@@ -172,13 +168,6 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             $this->_createEncoder(), $this->_createCache()
             );
         $this->assertEquals(1234, $attachment->getSize());
-    }
-
-    public function testSizeIsNullWhenNotSet()
-    {
-        $attachment = $this->createAttachmentWithEmptyHeaderSet();
-
-        $this->assertNull($attachment->getSize());
     }
 
     public function testSizeIsSetInHeader()
