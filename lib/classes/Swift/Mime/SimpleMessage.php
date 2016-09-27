@@ -637,7 +637,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
         if (!is_array($addresses) && isset($name)) {
             $addresses = array($addresses => $name);
         } elseif (!is_array($addresses) && !isset($name)) {
-            $addresses = array($addresses => null);
+            $addresses = (array) $addresses;
         }
 
         return $addresses;
