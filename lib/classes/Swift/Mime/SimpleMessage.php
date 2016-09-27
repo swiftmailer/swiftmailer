@@ -625,7 +625,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     }
 
     /**
-     * Standardize input to ensure it is always an array
+     * Standardize input to ensure it is always an array.
      * 
      * @param mixed  $addresses string or array input
      * @param string $name      name to associate with address
@@ -644,12 +644,10 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     }
 
     /**
-     * Add addresses mailbox header
+     * Add addresses mailbox header.
      * 
      * @param string $type      type of header to add
      * @param array  $addresses addresses to add to header
-     * 
-     * @return null
      */
     private function addMailboxHeader($type, $addresses)
     {
