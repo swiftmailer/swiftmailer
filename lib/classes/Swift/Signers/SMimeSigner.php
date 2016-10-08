@@ -200,10 +200,11 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * Change the Swift_Message to apply the signing.
      *
      * @param Swift_Message $message
+     * @param array         $headers
      *
      * @return Swift_Signers_SMimeSigner
      */
-    public function signMessage(Swift_Message $message)
+    public function signMessage(Swift_Message $message, $headers = array())
     {
         if (null === $this->signCertificate && null === $this->encryptCert) {
             return $this;
@@ -215,7 +216,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         // Set the singed-body as the new body (without boundary)
 
         $messageStream = new Swift_ByteStream_TemporaryFileByteStream();
-        $this->toSMimeByteStream($messageStream, $message);
+        $this->toSMimeByteStream($messageStream, $message, $headers);
         $message->setEncoder(Swift_DependencyContainer::getInstance()->lookup('mime.rawcontentencoder'));
 
         $message->setChildren(array());
@@ -234,9 +235,10 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
     /**
      * @param Swift_InputByteStream $inputStream
-     * @param Swift_Message         $mimeEntity
+     * @param Swift_Message         $message
+     * @param array                 $headers
      */
-    protected function toSMimeByteStream(Swift_InputByteStream $inputStream, Swift_Message $message)
+    protected function toSMimeByteStream(Swift_InputByteStream $inputStream, Swift_Message $message, $headers = array())
     {
         $mimeEntity = $this->createMessage($message);
         $messageStream = new Swift_ByteStream_TemporaryFileByteStream();
@@ -248,16 +250,16 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
             $temporaryStream = new Swift_ByteStream_TemporaryFileByteStream();
 
             if ($this->signThenEncrypt) {
-                $this->messageStreamToSignedByteStream($messageStream, $temporaryStream);
-                $this->messageStreamToEncryptedByteStream($temporaryStream, $inputStream);
+                $this->messageStreamToSignedByteStream($messageStream, $temporaryStream, $headers);
+                $this->messageStreamToEncryptedByteStream($temporaryStream, $inputStream, $headers);
             } else {
-                $this->messageStreamToEncryptedByteStream($messageStream, $temporaryStream);
-                $this->messageStreamToSignedByteStream($temporaryStream, $inputStream);
+                $this->messageStreamToEncryptedByteStream($messageStream, $temporaryStream, $headers);
+                $this->messageStreamToSignedByteStream($temporaryStream, $inputStream, $headers);
             }
         } elseif ($this->signCertificate !== null) {
-            $this->messageStreamToSignedByteStream($messageStream, $inputStream);
+            $this->messageStreamToSignedByteStream($messageStream, $inputStream, $headers);
         } else {
-            $this->messageStreamToEncryptedByteStream($messageStream, $inputStream);
+            $this->messageStreamToEncryptedByteStream($messageStream, $inputStream, $headers);
         }
     }
 
@@ -285,14 +287,15 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * @param Swift_FileStream      $outputStream
      * @param Swift_InputByteStream $inputStream
+     * @param array                 $headers
      *
      * @throws Swift_IoException
      */
-    protected function messageStreamToSignedByteStream(Swift_FileStream $outputStream, Swift_InputByteStream $inputStream)
+    protected function messageStreamToSignedByteStream(Swift_FileStream $outputStream, Swift_InputByteStream $inputStream, $headers = array())
     {
         $signedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
 
-        $args = array($outputStream->getPath(), $signedMessageStream->getPath(), $this->signCertificate, $this->signPrivateKey, array(), $this->signOptions);
+        $args = array($outputStream->getPath(), $signedMessageStream->getPath(), $this->signCertificate, $this->signPrivateKey, $headers, $this->signOptions);
         if (null !== $this->extraCerts) {
             $args[] = $this->extraCerts;
         }
@@ -307,14 +310,15 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * @param Swift_FileStream      $outputStream
      * @param Swift_InputByteStream $is
+     * @param array                 $headers
      *
      * @throws Swift_IoException
      */
-    protected function messageStreamToEncryptedByteStream(Swift_FileStream $outputStream, Swift_InputByteStream $is)
+    protected function messageStreamToEncryptedByteStream(Swift_FileStream $outputStream, Swift_InputByteStream $is, $headers = array())
     {
         $encryptedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
 
-        if (!openssl_pkcs7_encrypt($outputStream->getPath(), $encryptedMessageStream->getPath(), $this->encryptCert, array(), 0, $this->encryptCipher)) {
+        if (!openssl_pkcs7_encrypt($outputStream->getPath(), $encryptedMessageStream->getPath(), $this->encryptCert, $headers, 0, $this->encryptCipher)) {
             throw new Swift_IoException(sprintf('Failed to encrypt S/Mime message. Error: "%s".', openssl_error_string()));
         }
 
