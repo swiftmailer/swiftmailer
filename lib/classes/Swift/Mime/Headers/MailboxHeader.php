@@ -342,11 +342,11 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      */
     private function _assertValidAddress($address)
     {
-        if (!preg_match('/^'.$this->getGrammar()->getDefinition('addr-spec').'$/D',
-            $address)) {
+        $emailValidator = new \Egulias\EmailValidator\EmailValidator;
+        if (!$emailValidator->isValid($address)) {
             throw new Swift_RfcComplianceException(
                 'Address in mailbox given ['.$address.
-                '] does not comply with RFC 2822, 3.6.2.'
+                '] does not comply with RFC 2822, 3.6.2 and RFC 6531.'
                 );
         }
     }
