@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.4.4 (2016-XX-XX)
+5.4.4 (2016-11-23)
 ------------------
 
  * reverted escaping command-line args to mail (PHP mail() function already does it)
