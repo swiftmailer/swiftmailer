@@ -558,6 +558,18 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     }
 
     /**
+    * Remove all attached entities.
+    *
+    * @return Swift_Mime_SimpleMessage
+    */
+    public function detachAll()
+    {
+        $this->setChildren(array());
+
+        return $this;
+    }
+
+    /**
      * Attach a {@link Swift_Mime_MimeEntity} and return it's CID source.
      * This method should be used when embedding images or other data in a message.
      *

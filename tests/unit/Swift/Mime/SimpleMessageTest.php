@@ -752,6 +752,23 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(array($child2), $message->getChildren());
     }
 
+    public function testAllChildrensCanBeDetached()
+    {
+        $child1 = $this->_createChild();
+        $child2 = $this->_createChild();
+
+        $message = $this->_createMessage($this->_createHeaderSet(),
+            $this->_createEncoder(), $this->_createCache()
+            );
+
+        $message->attach($child1);
+        $message->attach($child2);
+
+        $message->detachAll();
+
+        $this->assertEqual(array(), $message->getChildren());
+    }
+
     public function testEmbedAttachesChild()
     {
         $child = $this->createChild();
