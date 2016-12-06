@@ -68,7 +68,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      * @param string $contentType
      * @param string $charset
      *
-     * @return Swift_Message
+     * @return $this
      */
     public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
     {
@@ -82,7 +82,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      * @param string                        $contentType
      * @param string                        $charset
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return $this
      */
     public function addPart($body, $contentType = null, $charset = null)
     {
@@ -96,7 +96,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      *
      * @param Swift_Signer $signer
      *
-     * @return Swift_Message
+     * @return $this
      */
     public function attachSigner(Swift_Signer $signer)
     {
@@ -114,7 +114,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      *
      * @param Swift_Signer $signer
      *
-     * @return Swift_Message
+     * @return $this
      */
     public function detachSigner(Swift_Signer $signer)
     {
