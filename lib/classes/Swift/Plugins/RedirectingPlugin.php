@@ -188,7 +188,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
         $this->restoreMessage($evt->getMessage());
     }
 
-    private function restoreMessage(Swift_Mime_Message $message)
+    private function restoreMessage(Swift_Mime_SimpleMessage $message)
     {
         // restore original headers
         $headers = $message->getHeaders();

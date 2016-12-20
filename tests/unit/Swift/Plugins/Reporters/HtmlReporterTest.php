@@ -8,7 +8,7 @@ class Swift_Plugins_Reporters_HtmlReporterTest extends \PHPUnit_Framework_TestCa
     protected function setUp()
     {
         $this->html = new Swift_Plugins_Reporters_HtmlReporter();
-        $this->message = $this->getMockBuilder('Swift_Mime_Message')->getMock();
+        $this->message = $this->getMockBuilder('Swift_Mime_SimpleMessage')->disableOriginalConstructor()->getMock();
     }
 
     public function testReportingPass()

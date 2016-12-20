@@ -26,9 +26,7 @@
         "files": ["lib/swift_required.php"]
     },
     "autoload-dev": {
-        "psr-0": {
-            "Swift_": "tests/unit"
-        }
+        "psr-0": { "Swift_": "tests/unit" }
     },
     "extra": {
         "branch-alias": {

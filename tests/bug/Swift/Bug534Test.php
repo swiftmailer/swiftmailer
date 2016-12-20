@@ -2,7 +2,7 @@
 
 use Mockery as m;
 
-class Swift_Bug534Test extends \PHPUnit_Framework_TestCase
+class Swift_Bug534Test extends \SwiftMailerTestCase
 {
     public function testEmbeddedImagesAreEmbedded()
     {
@@ -15,7 +15,7 @@ class Swift_Bug534Test extends \PHPUnit_Framework_TestCase
         $message->setBody('<img src="'.$cid.'" />', 'text/html');
 
         $that = $this;
-        $messageValidation = function (Swift_Mime_Message $message) use ($that) {
+        $messageValidation = function (Swift_Mime_SimpleMessage $message) use ($that) {
             preg_match('/cid:(.*)"/', $message->toString(), $matches);
             $cid = $matches[1];
             preg_match('/Content-ID: <(.*)>/', $message->toString(), $matches);

@@ -35,11 +35,11 @@ interface Swift_Spool
     /**
      * Queues a message.
      *
-     * @param Swift_Mime_Message $message The message to store
+     * @param Swift_Mime_SimpleMessage $message The message to store
      *
      * @return bool Whether the operation has succeeded
      */
-    public function queueMessage(Swift_Mime_Message $message);
+    public function queueMessage(Swift_Mime_SimpleMessage $message);
 
     /**
      * Sends messages using the given transport instance.

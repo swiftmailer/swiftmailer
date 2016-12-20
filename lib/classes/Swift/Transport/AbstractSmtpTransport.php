@@ -141,12 +141,12 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * Recipient/sender data will be retrieved from the Message API.
      * The return value is the number of recipients who were accepted for delivery.
      *
-     * @param Swift_Mime_Message $message
+     * @param Swift_Mime_SimpleMessage $message
      * @param string[]           $failedRecipients An array of failures by-reference
      *
      * @return int
      */
-    public function send(Swift_Mime_Message $message, &$failedRecipients = null)
+    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
         $sent = 0;
         $failedRecipients = (array) $failedRecipients;
@@ -320,7 +320,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     }
 
     /** Stream the contents of the message over the buffer */
-    protected function streamMessage(Swift_Mime_Message $message)
+    protected function streamMessage(Swift_Mime_SimpleMessage $message)
     {
         $this->buffer->setWriteTranslations(array("\r\n." => "\r\n.."));
         try {
@@ -334,7 +334,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     }
 
     /** Determine the best-use reverse path for this message */
-    protected function getReversePath(Swift_Mime_Message $message)
+    protected function getReversePath(Swift_Mime_SimpleMessage $message)
     {
         $return = $message->getReturnPath();
         $sender = $message->getSender();
@@ -434,7 +434,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     }
 
     /** Send a message to the given To: recipients */
-    private function sendTo(Swift_Mime_Message $message, $reversePath, array $to, array &$failedRecipients)
+    private function sendTo(Swift_Mime_SimpleMessage $message, $reversePath, array $to, array &$failedRecipients)
     {
         if (empty($to)) {
             return 0;
@@ -445,7 +445,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     }
 
     /** Send a message to all Bcc: recipients */
-    private function sendBcc(Swift_Mime_Message $message, $reversePath, array $bcc, array &$failedRecipients)
+    private function sendBcc(Swift_Mime_SimpleMessage $message, $reversePath, array $bcc, array &$failedRecipients)
     {
         $sent = 0;
         foreach ($bcc as $forwardPath => $name) {
