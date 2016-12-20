@@ -127,8 +127,8 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
     public function testBindingOtherStreamsMirrorsWriteOperations()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->getMock('Swift_InputByteStream');
-        $is2 = $this->getMock('Swift_InputByteStream');
+        $is1 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
+        $is2 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
 
         $is1->expects($this->at(0))
             ->method('write')
@@ -153,8 +153,8 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
     public function testBindingOtherStreamsMirrorsFlushOperations()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->getMock('Swift_InputByteStream');
-        $is2 = $this->getMock('Swift_InputByteStream');
+        $is1 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
+        $is2 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
 
         $is1->expects($this->once())
             ->method('flushBuffers');
@@ -170,8 +170,8 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
     public function testUnbindingStreamPreventsFurtherWrites()
     {
         $bs = $this->_createArrayStream('');
-        $is1 = $this->getMock('Swift_InputByteStream');
-        $is2 = $this->getMock('Swift_InputByteStream');
+        $is1 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
+        $is2 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
 
         $is1->expects($this->at(0))
             ->method('write')
