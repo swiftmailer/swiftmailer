@@ -13,8 +13,20 @@
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
+class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_Mime_EncodingObserver
 {
+    /** Main message document; there can only be one of these */
+    const LEVEL_TOP = 16;
+
+    /** An entity which nests with the same precedence as an attachment */
+    const LEVEL_MIXED = 256;
+
+    /** An entity which nests with the same precedence as a mime part */
+    const LEVEL_ALTERNATIVE = 4096;
+
+    /** An entity which nests with the same precedence as embedded content */
+    const LEVEL_RELATED = 65536;
+
     /** A collection of Headers for this mime entity */
     private $headers;
 
@@ -263,7 +275,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Get all children added to this entity.
      *
-     * @return Swift_Mime_MimeEntity[]
+     * @return Swift_Mime_SimpleMimeEntity[]
      */
     public function getChildren()
     {
@@ -273,7 +285,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Set all children of this entity.
      *
-     * @param Swift_Mime_MimeEntity[] $children
+     * @param Swift_Mime_SimpleMimeEntity[] $children
      * @param int                     $compoundLevel For internal use only
      *
      * @return $this

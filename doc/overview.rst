@@ -117,7 +117,7 @@ standards defined by various RFC documents. Swift Mailer ensures that these
 specifications are followed by using various types of object, including
 Encoders and different Header types to generate the entity.
 
-Each MIME component implements the base ``Swift_Mime_MimeEntity`` interface,
+Each MIME component implements the base ``Swift_Mime_SimpleMimeEntity`` interface,
 which offers methods for retrieving Headers, adding new Headers, changing the
 Encoder, updating the body and so on!
 

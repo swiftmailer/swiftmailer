@@ -14,7 +14,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->createEncoder(), $this->createCache()
             );
         $this->assertEquals(
-            Swift_Mime_MimeEntity::LEVEL_TOP, $message->getNestingLevel()
+            Swift_Mime_SimpleMimeEntity::LEVEL_TOP, $message->getNestingLevel()
             );
     }
 
@@ -767,7 +767,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 
     public function testEmbedReturnsValidCid()
     {
-        $child = $this->createChild(Swift_Mime_MimeEntity::LEVEL_RELATED, '',
+        $child = $this->createChild(Swift_Mime_SimpleMimeEntity::LEVEL_RELATED, '',
             false
             );
         $child->shouldReceive('getId')

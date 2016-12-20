@@ -9,7 +9,7 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             $this->createEncoder(), $this->createCache()
             );
         $this->assertEquals(
-            Swift_Mime_MimeEntity::LEVEL_MIXED, $attachment->getNestingLevel()
+            Swift_Mime_SimpleMimeEntity::LEVEL_MIXED, $attachment->getNestingLevel()
             );
     }
 

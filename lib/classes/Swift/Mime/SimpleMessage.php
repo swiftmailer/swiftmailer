@@ -524,13 +524,13 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     }
 
     /**
-     * Attach a {@link Swift_Mime_MimeEntity} such as an Attachment or MimePart.
+     * Attach a {@link Swift_Mime_SimpleMimeEntity} such as an Attachment or MimePart.
      *
-     * @param Swift_Mime_MimeEntity $entity
+     * @param Swift_Mime_SimpleMimeEntity $entity
      *
      * @return $this
      */
-    public function attach(Swift_Mime_MimeEntity $entity)
+    public function attach(Swift_Mime_SimpleMimeEntity $entity)
     {
         $this->setChildren(array_merge($this->getChildren(), array($entity)));
 
@@ -540,11 +540,11 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Remove an already attached entity.
      *
-     * @param Swift_Mime_MimeEntity $entity
+     * @param Swift_Mime_SimpleMimeEntity $entity
      *
      * @return $this
      */
-    public function detach(Swift_Mime_MimeEntity $entity)
+    public function detach(Swift_Mime_SimpleMimeEntity $entity)
     {
         $newChildren = array();
         foreach ($this->getChildren() as $child) {
@@ -558,14 +558,14 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     }
 
     /**
-     * Attach a {@link Swift_Mime_MimeEntity} and return it's CID source.
+     * Attach a {@link Swift_Mime_SimpleMimeEntity} and return it's CID source.
      * This method should be used when embedding images or other data in a message.
      *
-     * @param Swift_Mime_MimeEntity $entity
+     * @param Swift_Mime_SimpleMimeEntity $entity
      *
      * @return string
      */
-    public function embed(Swift_Mime_MimeEntity $entity)
+    public function embed(Swift_Mime_SimpleMimeEntity $entity)
     {
         $this->attach($entity);
 

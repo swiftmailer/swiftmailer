@@ -14,7 +14,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
             $this->createEncoder(), $this->createCache()
             );
         $this->assertEquals(
-            Swift_Mime_MimeEntity::LEVEL_RELATED, $file->getNestingLevel()
+            Swift_Mime_SimpleMimeEntity::LEVEL_RELATED, $file->getNestingLevel()
             );
     }
 

@@ -14,7 +14,7 @@ retrieved with the ``getHeaders()`` method.
 
 As mentioned in the previous chapter, everything that forms a part of a message
 in Swift Mailer is a MIME entity that is represented by an instance of
-``Swift_Mime_MimeEntity``. This includes -- most notably -- the message object
+``Swift_Mime_SimpleMimeEntity``. This includes -- most notably -- the message object
 itself, attachments, MIME parts and embedded images. Each of these MIME entities
 consists of a body and a set of headers that describe the body.
 

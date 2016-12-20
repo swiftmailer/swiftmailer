@@ -224,7 +224,7 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
 
     private function createPart($type, $body, $id)
     {
-        $part = $this->getMockery('Swift_Mime_MimeEntity')->shouldIgnoreMissing();
+        $part = $this->getMockery('Swift_Mime_SimpleMimeEntity')->shouldIgnoreMissing();
         $part->shouldReceive('getContentType')
              ->zeroOrMoreTimes()
              ->andReturn($type);
