@@ -713,7 +713,7 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
 
     private function createFactory()
     {
-        return $this->getMockBuilder('Swift_Mime_HeaderFactory')->getMock();
+        return $this->getMockBuilder('Swift_Mime_SimpleHeaderFactory')->disableOriginalConstructor()->getMock();
     }
 
     private function createHeader($name, $body = '')

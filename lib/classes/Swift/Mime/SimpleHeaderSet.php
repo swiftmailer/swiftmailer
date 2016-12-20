@@ -33,10 +33,10 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
     /**
      * Create a new SimpleHeaderSet with the given $factory.
      *
-     * @param Swift_Mime_HeaderFactory $factory
-     * @param string                   $charset
+     * @param Swift_Mime_SimpleHeaderFactory $factory
+     * @param string                         $charset
      */
-    public function __construct(Swift_Mime_HeaderFactory $factory, $charset = null)
+    public function __construct(Swift_Mime_SimpleHeaderFactory $factory, $charset = null)
     {
         $this->factory = $factory;
         if (isset($charset)) {
