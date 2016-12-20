@@ -85,10 +85,10 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Create a new SimpleMimeEntity with $headers, $encoder and $cache.
      *
-     * @param Swift_Mime_SimpleHeaderSet      $headers
-     * @param Swift_Mime_ContentEncoder $encoder
-     * @param Swift_KeyCache            $cache
-     * @param Swift_IdGenerator         $idGenerator
+     * @param Swift_Mime_SimpleHeaderSet $headers
+     * @param Swift_Mime_ContentEncoder  $encoder
+     * @param Swift_KeyCache             $cache
+     * @param Swift_IdGenerator          $idGenerator
      */
     public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator)
     {
@@ -286,7 +286,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
      * Set all children of this entity.
      *
      * @param Swift_Mime_SimpleMimeEntity[] $children
-     * @param int                     $compoundLevel For internal use only
+     * @param int                           $compoundLevel For internal use only
      *
      * @return $this
      */
