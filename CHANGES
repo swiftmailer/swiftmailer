@@ -4,7 +4,7 @@ Changelog
 6.0.0 (2017-XX-XX)
 ------------------
 
- * removed Swift_Mime_HeaderFactory and Swift_Mime_HeaderSet interfaces
+ * removed Swift_Mime_HeaderFactory, Swift_Mime_HeaderSet, and Swift_Mime_ParameterizedHeader interfaces
  * removed Swift_MailTransport and Swift_Transport_MailTransport
  * removed Swift_Encoding
  * removed the Swift_Transport_MailInvoker interface and Swift_Transport_SimpleMailInvoker class
