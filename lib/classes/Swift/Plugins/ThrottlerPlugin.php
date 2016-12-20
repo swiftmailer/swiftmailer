@@ -98,16 +98,16 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
         $duration = $time - $this->start;
 
         switch ($this->mode) {
-            case self::BYTES_PER_MINUTE :
+            case self::BYTES_PER_MINUTE:
                 $sleep = $this->throttleBytesPerMinute($duration);
                 break;
-            case self::MESSAGES_PER_SECOND :
+            case self::MESSAGES_PER_SECOND:
                 $sleep = $this->throttleMessagesPerSecond($duration);
                 break;
-            case self::MESSAGES_PER_MINUTE :
+            case self::MESSAGES_PER_MINUTE:
                 $sleep = $this->throttleMessagesPerMinute($duration);
                 break;
-            default :
+            default:
                 $sleep = 0;
                 break;
         }

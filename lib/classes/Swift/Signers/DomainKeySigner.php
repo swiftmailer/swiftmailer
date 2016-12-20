@@ -400,14 +400,14 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     protected function addHeader($header)
     {
         switch ($this->canon) {
-            case 'nofws' :
+            case 'nofws':
                 // Prepare Header and cascade
                 $exploded = explode(':', $header, 2);
                 $name = strtolower(trim($exploded[0]));
                 $value = str_replace("\r\n", '', $exploded[1]);
                 $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
                 $header = $name.':'.trim($value)."\r\n";
-            case 'simple' :
+            case 'simple':
                 // Nothing to do
         }
         $this->addToHash($header);
@@ -429,10 +429,10 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                 continue;
             }
             switch ($string[$i]) {
-                case "\r" :
+                case "\r":
                     $this->bodyCanonLastChar = "\r";
                     break;
-                case "\n" :
+                case "\n":
                     if ($this->bodyCanonLastChar == "\r") {
                         if ($nofws) {
                             $this->bodyCanonSpace = false;
@@ -448,14 +448,14 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                         throw new Swift_SwiftException('Invalid new line sequence in mail found \n without preceding \r');
                     }
                     break;
-                case ' ' :
-                case "\t" :
+                case ' ':
+                case "\t":
                 case "\x09": //HTAB
                     if ($nofws) {
                         $this->bodyCanonSpace = true;
                         break;
                     }
-                default :
+                default:
                     if ($this->bodyCanonEmptyCounter > 0) {
                         $canon .= str_repeat("\r\n", $this->bodyCanonEmptyCounter);
                         $this->bodyCanonEmptyCounter = 0;
@@ -485,7 +485,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     {
         // Init
         switch ($this->hashAlgorithm) {
-            case 'rsa-sha1' :
+            case 'rsa-sha1':
                 $this->hashHandler = hash_init('sha1');
                 break;
         }

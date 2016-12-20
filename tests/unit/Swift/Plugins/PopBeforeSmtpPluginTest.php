@@ -73,7 +73,7 @@ class Swift_Plugins_PopBeforeSmtpPluginTest extends \PHPUnit_Framework_TestCase
 
     private function createTransport()
     {
-        return $this->getMock('Swift_Transport');
+        return $this->getMockBuilder('Swift_Transport')->getMock();
     }
 
     private function createTransportChangeEvent($transport)
@@ -93,7 +93,7 @@ class Swift_Plugins_PopBeforeSmtpPluginTest extends \PHPUnit_Framework_TestCase
 
     public function createConnection()
     {
-        return $this->getMock('Swift_Plugins_Pop_Pop3Connection');
+        return $this->getMockBuilder('Swift_Plugins_Pop_Pop3Connection')->getMock();
     }
 
     public function createPlugin($host, $port, $crypto = null)
