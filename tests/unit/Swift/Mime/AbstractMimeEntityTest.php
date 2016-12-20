@@ -1029,7 +1029,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
 
     protected function createHeaderSet($headers = array(), $stub = true)
     {
-        $set = $this->getMockery('Swift_Mime_HeaderSet')->shouldIgnoreMissing();
+        $set = $this->getMockery('Swift_Mime_SimpleHeaderSet')->shouldIgnoreMissing();
         $set->shouldReceive('get')
             ->zeroOrMoreTimes()
             ->andReturnUsing(function ($key) use ($headers) {

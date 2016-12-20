@@ -345,11 +345,11 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     /**
      * Set the headers to sign.
      *
-     * @param Swift_Mime_HeaderSet $headers
+     * @param Swift_Mime_SimpleHeaderSet $headers
      *
      * @return $this
      */
-    public function setHeaders(Swift_Mime_HeaderSet $headers)
+    public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
     {
         $this->startHash();
         $this->canonData = '';
@@ -377,11 +377,11 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     /**
      * Add the signature to the given Headers.
      *
-     * @param Swift_Mime_HeaderSet $headers
+     * @param Swift_Mime_SimpleHeaderSet $headers
      *
      * @return $this
      */
-    public function addSignature(Swift_Mime_HeaderSet $headers)
+    public function addSignature(Swift_Mime_SimpleHeaderSet $headers)
     {
         // Prepare the DomainKey-Signature Header
         $params = array('a' => $this->hashAlgorithm, 'b' => chunk_split(base64_encode($this->getEncryptedHash()), 73, ' '), 'c' => $this->canon, 'd' => $this->domainName, 'h' => implode(': ', $this->signedHeaders), 'q' => 'dns', 's' => $this->selector);

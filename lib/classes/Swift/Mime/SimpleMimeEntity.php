@@ -73,12 +73,12 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Create a new SimpleMimeEntity with $headers, $encoder and $cache.
      *
-     * @param Swift_Mime_HeaderSet      $headers
+     * @param Swift_Mime_SimpleHeaderSet      $headers
      * @param Swift_Mime_ContentEncoder $encoder
      * @param Swift_KeyCache            $cache
      * @param Swift_IdGenerator         $idGenerator
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator)
+    public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator)
     {
         $this->cacheKey = md5(uniqid(getmypid().mt_rand(), true));
         $this->cache = $cache;
@@ -125,9 +125,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     }
 
     /**
-     * Get the {@link Swift_Mime_HeaderSet} for this entity.
+     * Get the {@link Swift_Mime_SimpleHeaderSet} for this entity.
      *
-     * @return Swift_Mime_HeaderSet
+     * @return Swift_Mime_SimpleHeaderSet
      */
     public function getHeaders()
     {

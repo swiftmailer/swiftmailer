@@ -13,7 +13,7 @@
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_SimpleHeaderSet implements Swift_Mime_HeaderSet
+class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
 {
     /** HeaderFactory */
     private $factory;

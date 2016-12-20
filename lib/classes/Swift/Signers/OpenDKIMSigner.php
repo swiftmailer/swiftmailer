@@ -38,7 +38,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         parent::__construct($privateKey, $domainName, $selector);
     }
 
-    public function addSignature(Swift_Mime_HeaderSet $headers)
+    public function addSignature(Swift_Mime_SimpleHeaderSet $headers)
     {
         $header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
         $headerVal = $this->dkimHandler->getSignatureHeader();
@@ -51,7 +51,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         return $this;
     }
 
-    public function setHeaders(Swift_Mime_HeaderSet $headers)
+    public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
     {
         $bodyLen = $this->bodyLen;
         if (is_bool($bodyLen)) {

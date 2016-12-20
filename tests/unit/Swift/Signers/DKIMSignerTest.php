@@ -169,7 +169,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'));
         $emailValidator = new EmailValidator();
         $headerFactory = new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $emailValidator);
-        $headers = $this->getMockery('Swift_Mime_HeaderSet');
+        $headers = $this->getMockery('Swift_Mime_SimpleHeaderSet');
 
         $headers->shouldReceive('listAll')
                 ->zeroOrMoreTimes()

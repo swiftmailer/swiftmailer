@@ -126,10 +126,10 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Filter header set against a whitelist of regular expressions.
      *
-     * @param Swift_Mime_HeaderSet $headerSet
+     * @param Swift_Mime_SimpleHeaderSet $headerSet
      * @param string               $type
      */
-    private function filterHeaderSet(Swift_Mime_HeaderSet $headerSet, $type)
+    private function filterHeaderSet(Swift_Mime_SimpleHeaderSet $headerSet, $type)
     {
         foreach ($headerSet->getAll($type) as $headers) {
             $headers->setNameAddresses($this->filterNameAddresses($headers->getNameAddresses()));
