@@ -16,6 +16,7 @@ Changelog
 5.4.5 (2016-XX-XX)
 ------------------
 
+ * fixed CVE-2016-10033 and CVE-2016-10045
  * deprecated the mail transport
 
 5.4.4 (2016-11-23)
