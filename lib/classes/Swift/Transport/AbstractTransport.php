@@ -54,9 +54,18 @@ abstract class Swift_Transport_AbstractTransport
         $length = strlen($string);
         for ($i = 0; $i < $length; ++$i) {
             $c = $string[$i];
-            // All other characters have a special meaning in at least one common shell, including = and +.
-            // Full stop (.) has a special meaning in cmd.exe, but its impact should be negligible here.
-            // Note that this does permit non-Latin alphanumeric characters based on the current locale.
+
+            /*
+             * All other ASCII symbols have a special meaning in at least one common
+             * shell.  Notably, argument delimiters in cmd.exe include not only
+             * whitespace, but also comma, equals, and semicolon.  Plus also needs
+             * to be escaped in cmd.exe.
+             *
+             * ctype_alnum may allow non-Latin characters in some locales.  This
+             * should not present a problem on a properly configured system, or even
+             * most improperly configured systems.  If you need to enforce 7-bit
+             * ASCII, set the current language to "C".
+             */
             if (!ctype_alnum($c) && strpos('@_-.', $c) === false) {
                 return false;
             }
