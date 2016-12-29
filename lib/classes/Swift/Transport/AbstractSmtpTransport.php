@@ -13,7 +13,7 @@
  *
  * @author Chris Corbyn
  */
-abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
+abstract class Swift_Transport_AbstractSmtpTransport extends Swift_Transport_AbstractTransport implements Swift_Transport
 {
     /** Input-Output buffer for sending/receiving SMTP commands and responses */
     protected $_buffer;
@@ -331,27 +331,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
         $this->_buffer->setWriteTranslations(array());
         $this->executeCommand("\r\n.\r\n", array(250));
-    }
-
-    /** Determine the best-use reverse path for this message */
-    protected function _getReversePath(Swift_Mime_Message $message)
-    {
-        $return = $message->getReturnPath();
-        $sender = $message->getSender();
-        $from = $message->getFrom();
-        $path = null;
-        if (!empty($return)) {
-            $path = $return;
-        } elseif (!empty($sender)) {
-            // Don't use array_keys
-            reset($sender); // Reset Pointer to first pos
-            $path = key($sender); // Get key
-        } elseif (!empty($from)) {
-            reset($from); // Reset Pointer to first pos
-            $path = key($from); // Get key
-        }
-
-        return $path;
     }
 
     /** Throw a TransportException, first sending it to any listeners */
