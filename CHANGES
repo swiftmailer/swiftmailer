@@ -10,7 +10,11 @@ Changelog
 5.4.5 (2016-12-29)
 ------------------
 
- * fixed CVE-2016-10033 and CVE-2016-10045
+ * SECURITY FIX:  fixed CVE-2016-10074 by disallowing potentially unsafe shell characters
+
+   Prior to 5.4.5, the mail transport (Swift_Transport_MailTransport) was vulnerable to passing
+   arbitrary shell arguments if the "From", "ReturnPath" or "Sender" header came
+   from a non-trusted source, potentially allowing Remote Code Execution
  * deprecated the mail transport
 
 5.4.4 (2016-11-23)
