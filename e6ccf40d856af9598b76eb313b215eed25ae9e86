@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by Zenexer at 2016-12-29T09:17:09Z
+
+@barryvdh Checking now.
+
+---------------------------------------------------------------------------
+
+by barryvdh at 2016-12-29T09:31:47Z
+
+@Zenexer Can you explicitly give permission to use you code in Swiftmailer under the MIT license?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2016-12-29T09:32:10Z
+
+Thanks @barryvdh. If @Zenexer is ok for us to use his snippet of code, I will go ahead and release a new version of Swiftmailer.
+
+Actually, I will do one more thing: deprecate the Mail transport and remove it in 6.0.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2016-12-29T09:48:37Z
+
+905b0bc deprecates the mail transport. The reasoning being that as `mail()` has many drawbacks besides security (as mentioned in the phpdocs) and because this is just a wrapper on top of `sendmail`, there is no need to keep it.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2016-12-29T09:54:38Z
+
+@barryvdh Can you add a note in the `CHANGES` file?
