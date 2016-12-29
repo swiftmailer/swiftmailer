@@ -418,7 +418,7 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
     }
 
     /**
-     * @expectedException \Swift_TransportException
+     * @expectedException Swift_TransportException
      * @expectedExceptionMessage Cannot send message without a recipient
      */
     public function testExceptionWhenNoRecipients()
