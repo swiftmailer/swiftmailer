@@ -245,8 +245,6 @@ class Swift_Transport_MailTransport implements Swift_Transport
      *
      * @param string $string The string to be validated
      *
-     * @see https://github.com/swiftmailer/swiftmailer/issues/844
-     *
      * @return bool
      */
     private function _isShellSafe($string)
