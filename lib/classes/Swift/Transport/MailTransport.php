@@ -239,6 +239,35 @@ class Swift_Transport_MailTransport implements Swift_Transport
     }
 
     /**
+     * Fix CVE-2016-10074 by disallowing potentially unsafe shell characters.
+     *
+     * Note that escapeshellarg and escapeshellcmd are inadequate for our purposes, especially on Windows.
+     * @param string $string The string to be validated
+     * @see https://github.com/swiftmailer/swiftmailer/issues/844
+     * @return boolean
+     */
+    private function _isShellSafe($string)
+    {
+        // Future-proof
+        if (escapeshellcmd($string) !== $string || !in_array(escapeshellarg($string), array("'$string'", "\"$string\""))) {
+            return false;
+        }
+
+        $length = strlen($string);
+        for ($i = 0; $i < $length; $i++) {
+            $c = $string[$i];
+            // All other characters have a special meaning in at least one common shell, including = and +.
+            // Full stop (.) has a special meaning in cmd.exe, but its impact should be negligible here.
+            // Note that this does permit non-Latin alphanumeric characters based on the current locale.
+            if (!ctype_alnum($c) && strpos('@_-.', $c) === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Return php mail extra params to use for invoker->mail.
      *
      * @param $extraParams
@@ -249,7 +278,9 @@ class Swift_Transport_MailTransport implements Swift_Transport
     private function _formatExtraParams($extraParams, $reversePath)
     {
         if (false !== strpos($extraParams, '-f%s')) {
-            // no need to escape $reversePath) as mail() already does it
+            if (false === $this->_isShellSafe($reversePath)) {
+                $reversePath = null;
+            }
             $extraParams = empty($reversePath) ? str_replace('-f%s', '', $extraParams) : sprintf($extraParams, $reversePath);
         }
 
