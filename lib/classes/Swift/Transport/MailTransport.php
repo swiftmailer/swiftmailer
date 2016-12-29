@@ -20,6 +20,8 @@
  * all-or-nothing result from sending.
  *
  * @author Chris Corbyn
+ *
+ * @deprecated since 5.4.5 (to be removed in 6.0)
  */
 class Swift_Transport_MailTransport implements Swift_Transport
 {

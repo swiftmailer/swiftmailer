@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group legacy
+ */
 class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
 {
     public function testTransportInvokesMailOncePerMessage()
