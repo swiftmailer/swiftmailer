@@ -242,9 +242,12 @@ class Swift_Transport_MailTransport implements Swift_Transport
      * Fix CVE-2016-10074 by disallowing potentially unsafe shell characters.
      *
      * Note that escapeshellarg and escapeshellcmd are inadequate for our purposes, especially on Windows.
+     *
      * @param string $string The string to be validated
+     *
      * @see https://github.com/swiftmailer/swiftmailer/issues/844
-     * @return boolean
+     *
+     * @return bool
      */
     private function _isShellSafe($string)
     {
@@ -254,7 +257,7 @@ class Swift_Transport_MailTransport implements Swift_Transport
         }
 
         $length = strlen($string);
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $c = $string[$i];
             // All other characters have a special meaning in at least one common shell, including = and +.
             // Full stop (.) has a special meaning in cmd.exe, but its impact should be negligible here.
@@ -278,10 +281,11 @@ class Swift_Transport_MailTransport implements Swift_Transport
     private function _formatExtraParams($extraParams, $reversePath)
     {
         if (false !== strpos($extraParams, '-f%s')) {
-            if (false === $this->_isShellSafe($reversePath)) {
-                $reversePath = null;
+            if (empty($reversePath) || !$this->_isShellSafe($reversePath)) {
+                $extraParams = str_replace('-f%s', '', $extraParams);
+            } else {
+                $extraParams = sprintf($extraParams, $reversePath);
             }
-            $extraParams = empty($reversePath) ? str_replace('-f%s', '', $extraParams) : sprintf($extraParams, $reversePath);
         }
 
         return !empty($extraParams) ? $extraParams : null;
