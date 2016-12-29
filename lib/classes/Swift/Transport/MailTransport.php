@@ -20,6 +20,8 @@
  * all-or-nothing result from sending.
  *
  * @author Chris Corbyn
+ *
+ * @deprecated since 5.4.5 (to be removed in 6.0)
  */
 class Swift_Transport_MailTransport implements Swift_Transport
 {
@@ -40,6 +42,8 @@ class Swift_Transport_MailTransport implements Swift_Transport
      */
     public function __construct(Swift_Transport_MailInvoker $invoker, Swift_Events_EventDispatcher $eventDispatcher)
     {
+        @trigger_error(sprintf('The %s class is deprecated since version 5.4.5 and will be removed in 6.0. Use the Sendmail or SMTP transport instead.', __CLASS__), E_USER_DEPRECATED);
+
         $this->_invoker = $invoker;
         $this->_eventDispatcher = $eventDispatcher;
     }
