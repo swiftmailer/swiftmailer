@@ -491,6 +491,9 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      */
     public function __destruct()
     {
-        $this->stop();
+        try {
+            $this->stop();
+        } catch (Exception $e) {
+        }
     }
 }
