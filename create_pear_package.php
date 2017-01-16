@@ -12,7 +12,7 @@ if (!isset($argv[2]))
 
 $context = array(
   'date'          => date('Y-m-d'),
-  'time'          => date('H:m:00'),
+  'time'          => date('H:i:00'),
   'version'       => $argv[1],
   'api_version'   => $argv[1],
   'stability'     => $argv[2],
