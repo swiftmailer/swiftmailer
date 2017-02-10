@@ -29,12 +29,13 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
         $signer->addSignature($headers);
     }
 
-    // Default Signing
-    public function testSigningDefaults()
+    // SHA1 Signing
+    public function testSigningSHA1()
     {
         $headerSet = $this->_createHeaderSet();
         $messageContent = 'Hello World';
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
+        $signer->setHashAlgorithm('rsa-sha1');
         $signer->setSignatureTimestamp('1299879181');
         $altered = $signer->getAlteredHeaders();
         $this->assertEquals(array('DKIM-Signature'), $altered);
