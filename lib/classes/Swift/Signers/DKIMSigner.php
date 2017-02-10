@@ -39,9 +39,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Hash algorithm used.
      *
+     * @see RFC6376 3.3: Signers MUST implement and SHOULD sign using rsa-sha256.
+     *
      * @var string
      */
-    protected $_hashAlgorithm = 'rsa-sha1';
+    protected $_hashAlgorithm = 'rsa-sha256';
 
     /**
      * Body canon method.
@@ -174,6 +176,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $this->_domainName = $domainName;
         $this->_signerIdentity = '@'.$domainName;
         $this->_selector = $selector;
+
+        // keep fallback hash algorithm sha1, if php version is lower than 5.4.8
+        if (version_compare(phpversion(), '5.4.8', '<')) {
+            $this->_hashAlgorithm = 'rsa-sha1';
+        }
     }
 
     /**
@@ -223,6 +230,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @return int
      */
+    // TODO fix return
     public function write($bytes)
     {
         $this->_canonicalizeBody($bytes);
@@ -234,8 +242,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * For any bytes that are currently buffered inside the stream, force them
      * off the buffer.
-     *
-     * @throws Swift_IoException
      */
     public function commit()
     {
@@ -276,8 +282,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 return;
             }
         }
-
-        return;
     }
 
     /**
@@ -292,19 +296,28 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Set hash_algorithm, must be one of rsa-sha256 | rsa-sha1 defaults to rsa-sha256.
+     * Set hash_algorithm, must be one of rsa-sha256 | rsa-sha1.
      *
-     * @param string $hash
+     * @param string $hash 'rsa-sha1' or 'rsa-sha256'
+     *
+     * @throws Swift_SwiftException
      *
      * @return Swift_Signers_DKIMSigner
      */
     public function setHashAlgorithm($hash)
     {
-        // Unable to sign with rsa-sha256
-        if ($hash == 'rsa-sha1') {
-            $this->_hashAlgorithm = 'rsa-sha1';
-        } else {
-            $this->_hashAlgorithm = 'rsa-sha256';
+        switch ($hash) {
+            case 'rsa-sha1':
+                $this->_hashAlgorithm = 'rsa-sha1';
+                break;
+            case 'rsa-sha256':
+                $this->_hashAlgorithm = 'rsa-sha256';
+                if (!defined('OPENSSL_ALGO_SHA256')) {
+                    throw new Swift_SwiftException('Unable to set sha256, not offered by openssl');
+                }
+                break;
+            default:
+                throw new Swift_SwiftException('Unable to set hash algorithm');
         }
 
         return $this;
@@ -432,11 +445,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     {
         // Init
         switch ($this->_hashAlgorithm) {
-            case 'rsa-sha256':
-                $this->_bodyHashHandler = hash_init('sha256');
-                break;
             case 'rsa-sha1':
                 $this->_bodyHashHandler = hash_init('sha1');
+                break;
+            case 'rsa-sha256':
+                $this->_bodyHashHandler = hash_init('sha256');
                 break;
         }
         $this->_bodyCanonLine = '';
@@ -678,6 +691,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     private function _getEncryptedHash()
     {
         $signature = '';
+
         switch ($this->_hashAlgorithm) {
             case 'rsa-sha1':
                 $algorithm = OPENSSL_ALGO_SHA1;
@@ -685,6 +699,8 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
             case 'rsa-sha256':
                 $algorithm = OPENSSL_ALGO_SHA256;
                 break;
+            default:
+                throw new Swift_SwiftException('Unable to set hash algorithm');
         }
         $pkeyId = openssl_get_privatekey($this->_privateKey);
         if (!$pkeyId) {
