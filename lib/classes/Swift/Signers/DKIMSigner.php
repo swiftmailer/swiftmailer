@@ -700,10 +700,19 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 $algorithm = OPENSSL_ALGO_SHA256;
                 break;
         }
-        $pkeyId = openssl_get_privatekey($this->_privateKey);
-        if (!$pkeyId) {
+        // load private key
+        $pkeyId = openssl_pkey_get_private($this->_privateKey);
+        if ($pkeyId === false) {
             throw new Swift_SwiftException('Unable to load DKIM Private Key ['.openssl_error_string().']');
         }
+        // get details about key
+        $pkeyId_details = openssl_pkey_get_details($pkeyId);
+        // security: dkim headers below 1024 bit will be ignored by google mail
+        // rfc6376 3.3.3. Key Sizes: The security constraint that keys smaller than 1024 bits are subject to off-line attacks
+        if (isset($pkeyId_details['type']) && $pkeyId_details['type'] == OPENSSL_KEYTYPE_RSA && isset($pkeyId_details['bits']) && $pkeyId_details['bits'] < 1024) {
+            throw new  Swift_SwiftException('DKIM Private Key must have at least 1024 bit or higher');
+        }
+        // sign
         if (openssl_sign($this->_headerCanonData, $signature, $pkeyId, $algorithm)) {
             return $signature;
         }
