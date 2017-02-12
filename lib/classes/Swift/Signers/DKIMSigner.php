@@ -548,7 +548,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                         'a' => $this->_hashAlgorithm, 
                         'bh' => base64_encode($this->_bodyHash), 
                         'd' => $this->_domainName,
-                        'h' => implode(': ', $this->_signedHeaders),
+                        'h' => implode(':', $this->_signedHeaders),
                         'i' => $this->_signerIdentity,
                         's' => $this->_selector);
         if ($this->_bodyCanon != 'simple') {
