@@ -4,10 +4,8 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
 {
     public function setUp()
     {
-        if (version_compare(phpversion(), '5.4', '<') && !defined('OPENSSL_ALGO_SHA256')) {
-            $this->markTestSkipped(
-                'skipping because of https://bugs.php.net/bug.php?id=61421'
-             );
+        if (PHP_VERSION_ID < 50400 && !defined('OPENSSL_ALGO_SHA256')) {
+            $this->markTestSkipped('skipping because of https://bugs.php.net/bug.php?id=61421');
         }
     }
 
