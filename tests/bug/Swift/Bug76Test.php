@@ -44,8 +44,6 @@ class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
         );
     }
 
-    // -- Custom Assertions
-
     public function assertMaxLineLength($length, $filePath, $message = '%s')
     {
         $lines = file($filePath);
@@ -53,8 +51,6 @@ class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
             $this->assertTrue((strlen(trim($line)) <= 76), $message);
         }
     }
-
-    // -- Creation Methods
 
     private function _fillFileWithRandomBytes($byteCount, $file)
     {

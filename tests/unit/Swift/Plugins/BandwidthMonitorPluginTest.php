@@ -69,8 +69,6 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCa
         $this->assertEquals(12, $this->_monitor->getBytesOut());
     }
 
-    // -- Creation Methods
-
     private function _createSendEvent($message)
     {
         $evt = $this->getMockBuilder('Swift_Events_SendEvent')

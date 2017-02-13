@@ -122,8 +122,6 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    // -- Private helpers
-
     protected function _createEmbeddedFile()
     {
         $entity = new Swift_Mime_EmbeddedFile(

@@ -113,8 +113,6 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    // -- Private helpers
-
     protected function _createMimePart()
     {
         $entity = new Swift_Mime_MimePart(

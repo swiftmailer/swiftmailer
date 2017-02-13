@@ -29,8 +29,6 @@ class Swift_StreamFilters_StringReplacementFilterFactoryTest extends \PHPUnit_Fr
             );
     }
 
-    // -- Creation methods
-
     private function _createFactory()
     {
         return new Swift_StreamFilters_StringReplacementFilterFactory();

@@ -109,8 +109,6 @@ class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    // -- Private helpers
-
     protected function _createAttachment()
     {
         $entity = new Swift_Mime_Attachment(

@@ -124,8 +124,6 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
         $this->_buffer->write('y');
     }
 
-    // -- Creation Methods
-
     private function _createMockInputStream()
     {
         return $this->getMockBuilder('Swift_InputByteStream')->getMock();

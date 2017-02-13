@@ -181,8 +181,6 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         $this->assertPatternInStream($pattern, $streamB);
     }
 
-    // -- Helpers
-
     public function assertPatternInStream($pattern, $stream, $message = '%s')
     {
         $string = '';

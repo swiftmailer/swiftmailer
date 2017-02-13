@@ -465,8 +465,6 @@ class Swift_Transport_MailTransportTest extends \SwiftMailerTestCase
         $transport->send($message);
     }
 
-    // -- Creation Methods
-
     private function _createTransport($invoker, $dispatcher)
     {
         return new Swift_Transport_MailTransport($invoker, $dispatcher);
