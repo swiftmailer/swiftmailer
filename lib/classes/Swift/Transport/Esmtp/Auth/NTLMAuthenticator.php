@@ -296,9 +296,14 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
             return explode('\\', $name);
         }
 
-        list($user, $domain) = explode('@', $name);
+        if (strpos($name, '@') !== false) {
+            list($user, $domain) = explode('@', $name);
 
-        return array($domain, $user);
+            return array($domain, $user);
+        }
+
+        // no domain passed
+        return array('', $name);
     }
 
     /**
