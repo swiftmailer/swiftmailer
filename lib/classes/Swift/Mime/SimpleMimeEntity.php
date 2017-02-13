@@ -807,7 +807,9 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function __destruct()
     {
-        $this->_cache->clearAll($this->_cacheKey);
+        if ($this->_cache instanceof Swift_KeyCache) {
+            $this->_cache->clearAll($this->_cacheKey);
+        }
     }
 
     /**
