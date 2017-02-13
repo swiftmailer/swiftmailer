@@ -8,17 +8,10 @@ class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        if (!defined('SWIFT_TMP_DIR') || !is_writable(SWIFT_TMP_DIR)) {
-            $this->markTestSkipped(
-                'Cannot run test without a writable directory to use ('.
-                'define SWIFT_TMP_DIR in tests/config.php if you wish to run this test)'
-             );
-        }
-
-        $this->inputFile = SWIFT_TMP_DIR.'/in.bin';
+        $this->inputFile = sys_get_temp_dir().'/in.bin';
         file_put_contents($this->inputFile, '');
 
-        $this->outputFile = SWIFT_TMP_DIR.'/out.bin';
+        $this->outputFile = sys_get_temp_dir().'/out.bin';
         file_put_contents($this->outputFile, '');
 
         $this->encoder = $this->createEncoder();
