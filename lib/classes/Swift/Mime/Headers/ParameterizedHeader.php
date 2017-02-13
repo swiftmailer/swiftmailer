@@ -130,7 +130,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
     {
         $body = parent::getFieldBody();
         foreach ($this->params as $name => $value) {
-            if (!is_null($value)) {
+            if (null !== $value) {
                 // Add the parameter
                 $body .= '; '.$this->createParameter($name, $value);
             }
@@ -155,7 +155,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
 
         // Try creating any parameters
         foreach ($this->params as $name => $value) {
-            if (!is_null($value)) {
+            if (null !== $value) {
                 // Add the semi-colon separator
                 $tokens[count($tokens) - 1] .= ';';
                 $tokens = array_merge($tokens, $this->generateTokenLines(

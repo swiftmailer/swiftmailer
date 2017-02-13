@@ -84,7 +84,6 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
                     if ($this->stream) {
                         stream_set_blocking($this->stream, 1);
                     }
-
             }
         }
         $this->params[$param] = $value;
@@ -293,6 +292,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             1 => array('pipe', 'w'),
             2 => array('pipe', 'w'),
             );
+        $pipes = array();
         $this->stream = proc_open($command, $descriptorSpec, $pipes);
         stream_set_blocking($pipes[2], 0);
         if ($err = stream_get_contents($pipes[2])) {

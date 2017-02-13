@@ -16,7 +16,7 @@ Changelog
 5.4.6 (2017-XX-XX)
 ------------------
 
- * n/a
+ * fixed a PHP warning when sending a message that has a length of a multiple of 8192
 
 5.4.5 (2016-12-29)
 ------------------

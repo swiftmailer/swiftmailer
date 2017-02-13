@@ -719,7 +719,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
     public function varsAreReferences(&$ref1, &$ref2)
     {
         if (is_object($ref2)) {
-            return ($ref1 === $ref2);
+            return $ref1 === $ref2;
         }
         if ($ref1 !== $ref2) {
             return false;
