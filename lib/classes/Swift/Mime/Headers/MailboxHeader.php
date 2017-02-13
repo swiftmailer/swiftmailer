@@ -248,8 +248,6 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         return $this->getCachedValue();
     }
 
-    // -- Points of extension
-
     /**
      * Normalizes a user-input list of mailboxes into consistent key=>value pairs.
      *

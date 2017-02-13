@@ -57,8 +57,6 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTe
             );
     }
 
-    // -- Private helpers
-
     private function getAuthenticator()
     {
         return new Swift_Transport_Esmtp_Auth_CramMd5Authenticator();

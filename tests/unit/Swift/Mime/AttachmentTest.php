@@ -283,8 +283,6 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             );
     }
 
-    // -- Private helpers
-
     protected function createEntity($headers, $encoder, $cache)
     {
         return $this->createAttachment($headers, $encoder, $cache);

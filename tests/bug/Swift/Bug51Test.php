@@ -66,8 +66,6 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
         }
     }
 
-    // -- Custom Assertions
-
     public function assertAttachmentFromSourceMatches($attachmentData, $source)
     {
         $encHeader = 'Content-Transfer-Encoding: base64';
@@ -87,8 +85,6 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
 
         $this->assertIdenticalBinary($attachmentData, base64_decode($attachmentBase64));
     }
-
-    // -- Creation Methods
 
     private function fillFileWithRandomBytes($byteCount, $file)
     {

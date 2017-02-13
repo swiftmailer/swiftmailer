@@ -706,8 +706,6 @@ class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
         $set->setCharset('utf-8');
     }
 
-    // -- Creation methods
-
     private function createSet($factory)
     {
         return new Swift_Mime_SimpleHeaderSet($factory);

@@ -816,8 +816,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             );
     }
 
-    // -- Private helpers
-
     //abstract
     protected function createEntity($headers, $encoder, $cache)
     {

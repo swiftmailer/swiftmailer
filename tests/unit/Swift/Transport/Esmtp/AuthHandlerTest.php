@@ -148,8 +148,6 @@ class Swift_Transport_Esmtp_AuthHandlerTest extends \SwiftMailerTestCase
         $auth->afterEhlo($this->agent);
     }
 
-    // -- Private helpers
-
     private function createHandler($authenticators)
     {
         return new Swift_Transport_Esmtp_AuthHandler($authenticators);

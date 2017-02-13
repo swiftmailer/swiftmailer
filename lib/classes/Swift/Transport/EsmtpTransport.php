@@ -271,8 +271,6 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         return parent::executeCommand($command, $codes, $failures);
     }
 
-    // -- Mixin invocation code
-
     /** Mixin handling method for ESMTP handlers */
     public function __call($method, $args)
     {

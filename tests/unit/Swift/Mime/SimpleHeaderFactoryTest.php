@@ -146,8 +146,6 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
         $factory->charsetChanged('utf-8');
     }
 
-    // -- Creation methods
-
     private function createFactory($encoder = null, $paramEncoder = null)
     {
         return new Swift_Mime_SimpleHeaderFactory(

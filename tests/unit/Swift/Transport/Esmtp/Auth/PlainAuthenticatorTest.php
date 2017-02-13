@@ -60,8 +60,6 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
             );
     }
 
-    // -- Private helpers
-
     private function getAuthenticator()
     {
         return new Swift_Transport_Esmtp_Auth_PlainAuthenticator();

@@ -177,8 +177,6 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
         $plugin->sendPerformed($evt);
     }
 
-    // -- Creation methods
-
     private function createMessage($headers, $to = array(), $from = null, $subject = null,
         $body = null)
     {

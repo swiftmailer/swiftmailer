@@ -66,8 +66,6 @@ class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
         }
     }
 
-    // -- Creation Methods
-
     private function createSleeper()
     {
         return $this->getMockery('Swift_Plugins_Sleeper');

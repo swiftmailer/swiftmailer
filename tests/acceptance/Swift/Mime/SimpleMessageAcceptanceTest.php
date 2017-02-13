@@ -1228,8 +1228,6 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    // -- Private helpers
-
     protected function createMessage()
     {
         return new Swift_Message();

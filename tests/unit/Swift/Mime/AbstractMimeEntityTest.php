@@ -948,8 +948,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             );
     }
 
-    // -- Private helpers
-
     abstract protected function createEntity($headers, $encoder, $cache);
 
     protected function createChild($level = null, $string = '', $stub = true)
