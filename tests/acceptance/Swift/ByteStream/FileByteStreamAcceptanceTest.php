@@ -50,18 +50,14 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
 
     public function testFileCanBeWrittenTo()
     {
-        $file = $this->_createFileStream(
-            $this->_testFile, true
-            );
+        $file = $this->_createFileStream($this->_testFile, true);
         $file->write('foobar');
         $this->assertEquals('foobar', $file->read(8192));
     }
 
     public function testReadingFromThenWritingToFile()
     {
-        $file = $this->_createFileStream(
-            $this->_testFile, true
-            );
+        $file = $this->_createFileStream($this->_testFile, true);
         $file->write('foobar');
         $this->assertEquals('foobar', $file->read(8192));
         $file->write('zipbutton');
@@ -70,9 +66,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
 
     public function testWritingToFileWithCanonicalization()
     {
-        $file = $this->_createFileStream(
-            $this->_testFile, true
-            );
+        $file = $this->_createFileStream($this->_testFile, true);
         $file->addFilter($this->_createFilter(array("\r\n", "\r"), "\n"), 'allToLF');
         $file->write("foo\r\nbar\r");
         $file->write("\nzip\r\ntest\r");
@@ -82,9 +76,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
 
     public function testBindingOtherStreamsMirrorsWriteOperations()
     {
-        $file = $this->_createFileStream(
-            $this->_testFile, true
-            );
+        $file = $this->_createFileStream($this->_testFile, true);
         $is1 = $this->_createMockInputStream();
         $is2 = $this->_createMockInputStream();
 
@@ -129,9 +121,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
 
     public function testUnbindingStreamPreventsFurtherWrites()
     {
-        $file = $this->_createFileStream(
-            $this->_testFile, true
-            );
+        $file = $this->_createFileStream($this->_testFile, true);
         $is1 = $this->_createMockInputStream();
         $is2 = $this->_createMockInputStream();
 
@@ -154,8 +144,6 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
 
         $file->write('y');
     }
-
-    // -- Creation methods
 
     private function _createFilter($search, $replace)
     {
