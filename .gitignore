@@ -1,4 +1,7 @@
+/.phpunit
+/build/*
+/composer.lock
+/phpunit.xml
 /tests/acceptance.conf.php
 /tests/smoke.conf.php
-/build/*
 /vendor/
