@@ -52,7 +52,7 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
             $line = $this->buffer->readLine(0);
         } catch (Exception $e) {
         }
-        $this->assertInstanceof('Swift_IoException', $e, 'IO Exception Not Thrown On Connection Timeout');
+        $this->assertInstanceOf('Swift_IoException', $e, 'IO Exception Not Thrown On Connection Timeout');
         $this->assertRegExp('/Connection to .* Timed Out/', $e->getMessage());
     }
 

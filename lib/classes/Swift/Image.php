@@ -34,7 +34,7 @@ class Swift_Image extends Swift_EmbeddedFile
      *
      * @param string $path
      *
-     * @return Swift_Image
+     * @return self
      */
     public static function fromPath($path)
     {

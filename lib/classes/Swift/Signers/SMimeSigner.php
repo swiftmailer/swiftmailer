@@ -72,7 +72,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * @param int          $signOptions Bitwise operator options for openssl_pkcs7_sign()
      * @param string       $extraCerts  A file containing intermediate certificates needed by the signing certificate
      *
-     * @return Swift_Signers_SMimeSigner
+     * @return $this
      */
     public function setSignCertificate($certificate, $privateKey = null, $signOptions = PKCS7_DETACHED, $extraCerts = null)
     {
@@ -104,7 +104,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * @param string|array $recipientCerts Either an single X.509 certificate, or an assoc array of X.509 certificates.
      * @param int          $cipher
      *
-     * @return Swift_Signers_SMimeSigner
+     * @return $this
      */
     public function setEncryptCertificate($recipientCerts, $cipher = null)
     {
@@ -150,7 +150,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      *
      * @param bool $signThenEncrypt
      *
-     * @return Swift_Signers_SMimeSigner
+     * @return $this
      */
     public function setSignThenEncrypt($signThenEncrypt = true)
     {
@@ -170,7 +170,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * Resets internal states.
      *
-     * @return Swift_Signers_SMimeSigner
+     * @return $this
      */
     public function reset()
     {
@@ -182,7 +182,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      *
      * @param Swift_Message $message
      *
-     * @return Swift_Signers_SMimeSigner
+     * @return $this
      */
     public function signMessage(Swift_Message $message)
     {
