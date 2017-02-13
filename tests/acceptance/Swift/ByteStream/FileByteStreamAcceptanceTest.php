@@ -67,11 +67,11 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
 
     public function testWritingWithFulleMessageLengthOfAMultipleOf8192()
     {
-        $file = $this->_createFileStream($this->_testFile, true);
+        $file = $this->createFileStream($this->testFile, true);
         $file->addFilter($this->createFilter(array("\r\n", "\r"), "\n"), 'allToLF');
         $file->write('');
         $file->flushBuffers();
-        $this->assertEquals('', file_get_contents($this->_testFile));
+        $this->assertEquals('', file_get_contents($this->testFile));
     }
 
     public function testBindingOtherStreamsMirrorsWriteOperations()
