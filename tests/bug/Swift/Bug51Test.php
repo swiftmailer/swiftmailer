@@ -5,7 +5,7 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
     private $_attachmentFile;
     private $_outputFile;
 
-    public function setUp()
+    protected function setUp()
     {
         if (!defined('SWIFT_TMP_DIR') || !is_writable(SWIFT_TMP_DIR)) {
             $this->markTestSkipped(
@@ -21,7 +21,7 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
         file_put_contents($this->_outputFile, '');
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         unlink($this->_attachmentFile);
         unlink($this->_outputFile);

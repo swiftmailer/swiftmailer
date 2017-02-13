@@ -6,7 +6,7 @@ class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
     private $_outputFile;
     private $_encoder;
 
-    public function setUp()
+    protected function setUp()
     {
         if (!defined('SWIFT_TMP_DIR') || !is_writable(SWIFT_TMP_DIR)) {
             $this->markTestSkipped(
@@ -24,7 +24,7 @@ class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
         $this->_encoder = $this->_createEncoder();
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         unlink($this->_inputFile);
         unlink($this->_outputFile);
