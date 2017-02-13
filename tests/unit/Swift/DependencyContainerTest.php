@@ -41,7 +41,7 @@ class Swift_DependencyContainerTest extends \PHPUnit_Framework_TestCase
     public function testRegisterAndLookupNewInstance()
     {
         $this->_container->register('one')->asNewInstanceOf('One');
-        $this->assertInstanceof('One', $this->_container->lookup('one'));
+        $this->assertInstanceOf('One', $this->_container->lookup('one'));
     }
 
     public function testHasReturnsTrueForRegisteredInstance()
@@ -61,7 +61,7 @@ class Swift_DependencyContainerTest extends \PHPUnit_Framework_TestCase
     public function testRegisterAndLookupSharedInstance()
     {
         $this->_container->register('one')->asSharedInstanceOf('One');
-        $this->assertInstanceof('One', $this->_container->lookup('one'));
+        $this->assertInstanceOf('One', $this->_container->lookup('one'));
     }
 
     public function testHasReturnsTrueForSharedInstance()

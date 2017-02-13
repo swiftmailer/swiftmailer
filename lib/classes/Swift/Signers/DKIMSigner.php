@@ -190,7 +190,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @param string $domainName
      * @param string $selector
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return self
      */
     public static function newInstance($privateKey, $domainName, $selector)
     {
@@ -302,7 +302,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @throws Swift_SwiftException
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return $this
      */
     public function setHashAlgorithm($hash)
     {
@@ -328,7 +328,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param string $canon
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return $this
      */
     public function setBodyCanon($canon)
     {
@@ -346,7 +346,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param string $canon
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return $this
      */
     public function setHeaderCanon($canon)
     {
@@ -364,7 +364,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param string $identity
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return $this
      */
     public function setSignerIdentity($identity)
     {
@@ -378,7 +378,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param mixed $len (bool or int)
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return $this
      */
     public function setBodySignedLen($len)
     {
@@ -401,7 +401,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param int $time A timestamp
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return $this
      */
     public function setSignatureTimestamp($time)
     {
@@ -415,7 +415,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param int $time A timestamp
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return $this
      */
     public function setSignatureExpiration($time)
     {
