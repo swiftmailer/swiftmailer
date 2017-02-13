@@ -4,6 +4,12 @@ Changelog
 5.4.6 (2017-XX-XX)
 ------------------
 
+ * removed exceptions thrown in destructors as they lead to fatal errors
+ * switched to use sha256 by default in DKIM as per the RFC
+ * fixed an 'Undefined variable: pipes' PHP notice
+ * fixed long To headers when using the mail transport
+ * fixed NTLMAuthenticator when no domain is passed with the username
+ * prevented fatal error during unserialization of a message
  * fixed a PHP warning when sending a message that has a length of a multiple of 8192
 
 5.4.5 (2016-12-29)
