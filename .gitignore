@@ -2,3 +2,4 @@
 /tests/smoke.conf.php
 /build/*
 /vendor/
+composer.lock
