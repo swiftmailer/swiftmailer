@@ -459,6 +459,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     }
 
     /** HELPER FUNCTIONS */
+
     /**
      * Create our security buffer depending on length and offset.
      *
@@ -561,6 +562,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     }
 
     /** ENCRYPTION ALGORITHMS */
+
     /**
      * DES Encryption.
      *
