@@ -101,7 +101,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
     /**
      * When will the signature expires false means not embedded, if sigTimestamp is auto
-     * Expiration is relative, otherwhise it's absolute.
+     * Expiration is relative, otherwise it's absolute.
      *
      * @var int
      */
@@ -123,7 +123,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     protected $_signedHeaders = array();
 
     /**
-     * If debugHeaders is set store debugDatas here.
+     * If debugHeaders is set store debugData here.
      *
      * @var string
      */
@@ -583,7 +583,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * @deprecated This method is currently useless in this class but it must be
      *             kept for BC reasons due to its "protected" scope. This method
-     *             might be overriden by custom client code.
+     *             might be overridden by custom client code.
      */
     protected function _endOfHeaders()
     {
