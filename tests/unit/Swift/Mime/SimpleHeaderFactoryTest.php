@@ -6,7 +6,7 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
 {
     private $factory;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->factory = $this->createFactory();
     }

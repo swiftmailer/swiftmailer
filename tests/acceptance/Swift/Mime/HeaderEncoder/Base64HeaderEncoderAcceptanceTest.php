@@ -4,7 +4,7 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoderAcceptanceTest extends \PHPUni
 {
     private $encoder;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->encoder = new Swift_Mime_HeaderEncoder_Base64HeaderEncoder();
     }

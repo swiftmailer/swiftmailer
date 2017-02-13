@@ -6,7 +6,7 @@ class Swift_KeyCache_DiskKeyCacheAcceptanceTest extends \PHPUnit_Framework_TestC
     private $key1;
     private $key2;
 
-    public function setUp()
+    protected function setUp()
     {
         if (!defined('SWIFT_TMP_DIR')) {
             $this->markTestSkipped(

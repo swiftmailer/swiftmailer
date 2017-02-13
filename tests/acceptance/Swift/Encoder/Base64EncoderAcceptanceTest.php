@@ -5,7 +5,7 @@ class Swift_Encoder_Base64EncoderAcceptanceTest extends \PHPUnit_Framework_TestC
     private $samplesDir;
     private $encoder;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->samplesDir = realpath(__DIR__.'/../../../_samples/charsets');
         $this->encoder = new Swift_Encoder_Base64Encoder();

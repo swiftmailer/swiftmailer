@@ -9,7 +9,7 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
     private $headers;
     private $emailValidator;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->cache = new Swift_KeyCache_ArrayKeyCache(
             new Swift_KeyCache_SimpleKeyCacheInputStream()

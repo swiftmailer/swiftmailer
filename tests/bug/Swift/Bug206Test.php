@@ -6,7 +6,7 @@ class Swift_Bug206Test extends \PHPUnit_Framework_TestCase
 {
     private $factory;
 
-    public function setUp()
+    protected function setUp()
     {
         $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
         $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(

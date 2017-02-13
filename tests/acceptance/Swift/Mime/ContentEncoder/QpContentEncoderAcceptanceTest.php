@@ -5,13 +5,13 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
     private $samplesDir;
     private $factory;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->samplesDir = realpath(__DIR__.'/../../../../_samples/charsets');
         $this->factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         Swift_Preferences::getInstance()->setQPDotEscape(false);
     }

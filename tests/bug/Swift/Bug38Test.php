@@ -6,7 +6,7 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
     private $attFileName;
     private $attFileType;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->attFileName = 'data.txt';
         $this->attFileType = 'text/plain';

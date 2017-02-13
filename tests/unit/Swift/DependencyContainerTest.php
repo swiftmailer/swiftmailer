@@ -16,7 +16,7 @@ class Swift_DependencyContainerTest extends \PHPUnit_Framework_TestCase
 {
     private $container;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->container = new Swift_DependencyContainer();
     }

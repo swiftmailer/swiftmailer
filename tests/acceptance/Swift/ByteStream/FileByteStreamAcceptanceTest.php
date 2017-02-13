@@ -5,7 +5,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
     private $tmpDir;
     private $testFile;
 
-    public function setUp()
+    protected function setUp()
     {
         if (!defined('SWIFT_TMP_DIR')) {
             $this->markTestSkipped(
@@ -19,7 +19,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
         file_put_contents($this->testFile, 'abcdefghijklm');
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         unlink($this->testFile);
     }

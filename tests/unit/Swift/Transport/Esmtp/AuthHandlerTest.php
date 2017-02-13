@@ -4,7 +4,7 @@ class Swift_Transport_Esmtp_AuthHandlerTest extends \SwiftMailerTestCase
 {
     private $agent;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->agent = $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
     }

@@ -4,7 +4,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
 {
     private $dispatcher;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->dispatcher = new Swift_Events_SimpleEventDispatcher();
     }

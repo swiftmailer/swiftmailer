@@ -4,7 +4,7 @@ class Swift_Bug118Test extends \PHPUnit_Framework_TestCase
 {
     private $message;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->message = new Swift_Message();
     }
