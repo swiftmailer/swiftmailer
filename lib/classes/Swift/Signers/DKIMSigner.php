@@ -177,8 +177,8 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $this->_signerIdentity = '@'.$domainName;
         $this->_selector = $selector;
 
-        // keep fallback hash algorithm sha1, if php version is lower than 5.4.8
-        if (version_compare(phpversion(), '5.4.8', '<')) {
+        // keep fallback hash algorithm sha1 if php version is lower than 5.4.8
+        if (PHP_VERSION_ID < 50408) {
             $this->_hashAlgorithm = 'rsa-sha1';
         }
     }
