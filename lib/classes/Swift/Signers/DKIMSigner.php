@@ -44,6 +44,14 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @var string
      */
     protected $_hashAlgorithm = 'rsa-sha256';
+    
+    /**
+     * Contains openssl representation of $_hashAlgorithm.
+     * Is only set by setHashAlgorithm().
+     * 
+     * @var int
+     */
+    private $_hashAlgorithmOpenssl = -1;
 
     /**
      * Body canon method.
@@ -296,7 +304,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Set hash_algorithm, must be one of rsa-sha256 | rsa-sha1.
+     * Set and initialise hash algorithm, must be one of 'rsa-sha1' or 'rsa-sha256'.
      *
      * @param string $hash 'rsa-sha1' or 'rsa-sha256'
      *
@@ -309,12 +317,17 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         switch ($hash) {
             case 'rsa-sha1':
                 $this->_hashAlgorithm = 'rsa-sha1';
+                $this->_bodyHashHandler = hash_init('sha1');
+                $this->_hashAlgorithmOpenssl = OPENSSL_ALGO_SHA1;
                 break;
             case 'rsa-sha256':
-                $this->_hashAlgorithm = 'rsa-sha256';
                 if (!defined('OPENSSL_ALGO_SHA256')) {
+                    // should be only thrown by php versions below 5.4.8
                     throw new Swift_SwiftException('Unable to set sha256 as it is not supported by OpenSSL.');
                 }
+                $this->_hashAlgorithm = 'rsa-sha256';
+                $this->_bodyHashHandler = hash_init('sha256');
+                $this->_hashAlgorithmOpenssl = OPENSSL_ALGO_SHA256;
                 break;
             default:
                 throw new Swift_SwiftException('Unable to set the hash algorithm, must be one of rsa-sha1 or rsa-sha256 (%s given).', $hash);
@@ -443,15 +456,8 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     public function startBody()
     {
-        // Init
-        switch ($this->_hashAlgorithm) {
-            case 'rsa-sha256':
-                $this->_bodyHashHandler = hash_init('sha256');
-                break;
-            case 'rsa-sha1':
-                $this->_bodyHashHandler = hash_init('sha1');
-                break;
-        }
+        // Init hash algorithm
+        $this->setHashAlgorithm($this->_hashAlgorithm);
         $this->_bodyCanonLine = '';
     }
 
@@ -692,14 +698,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     {
         $signature = '';
 
-        switch ($this->_hashAlgorithm) {
-            case 'rsa-sha1':
-                $algorithm = OPENSSL_ALGO_SHA1;
-                break;
-            case 'rsa-sha256':
-                $algorithm = OPENSSL_ALGO_SHA256;
-                break;
-        }
         // load private key
         $pkeyId = openssl_pkey_get_private($this->_privateKey);
         if ($pkeyId === false) {
@@ -713,9 +711,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
             throw new  Swift_SwiftException('DKIM Private Key must have at least 1024 bit or higher');
         }
         // sign
-        if (openssl_sign($this->_headerCanonData, $signature, $pkeyId, $algorithm)) {
-            return $signature;
+        if (!openssl_sign($this->_headerCanonData, $signature, $pkeyId, $this->_hashAlgorithmOpenssl)) {
+            throw new Swift_SwiftException('Unable to sign DKIM Hash ['.openssl_error_string().']');
         }
-        throw new Swift_SwiftException('Unable to sign DKIM Hash ['.openssl_error_string().']');
+        return $signature;
     }
 }
