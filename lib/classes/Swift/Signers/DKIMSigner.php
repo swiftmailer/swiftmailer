@@ -47,11 +47,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @var string
      */
     protected $_hashAlgorithm = 'rsa-sha256';
-    
+
     /**
      * Contains openssl representation of $_hashAlgorithm.
      * Is only set by setHashAlgorithm().
-     * 
+     *
      * @var int
      */
     protected $_hashAlgorithmOpenssl = -1;
@@ -72,7 +72,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
     /**
      * Headers not being signed.
-     * 
+     *
      * @see rfc6376 - 5.4.1. Recommended Signature Content
      *
      * @var array
@@ -81,7 +81,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                                        'received' => true, // rfc6376
                                        'comments' => true, // rfc6376
                                        'keywords' => true, // rfc6376
-                                       'authentication-results' => true // good practice recommendation
+                                       'authentication-results' => true, // good practice recommendation
     );
 
     /**
@@ -165,10 +165,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @var Swift_Mime_Headers_ParameterizedHeader
      */
     protected $_dkimHeader;
-    
+
     /**
      * Query methods used to retrieve the public key by validator.
-     * 
+     *
      * @var bool|string false if not used
      */
     private $_pkeyRequestMethod = false;
@@ -385,9 +385,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * Set the header canonicalization algorithm.
      *
      * @param string $canon
-     * 
+     *
      * @throws Swift_SwiftException
-     * 
+     *
      * @return $this
      */
     public function setHeaderCanon($canon)
@@ -450,7 +450,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * Timestamp in the future are not recommended.
      *
      * @param bool|int $time De-/Activate|A timestamp
-     *    
+     *
      * @throws Swift_SwiftException
      *
      * @return $this
@@ -458,7 +458,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     public function setSignatureTimestamp($time)
     {
         if (!(is_bool($time) || (is_int($time) && 0 < $time))) {
-            throw new Swift_SwiftException('Unable to set the signature timestamp (' . $time . ' given).');
+            throw new Swift_SwiftException('Unable to set the signature timestamp ('.$time.' given).');
         }
         if (!(is_bool($time) || $this->_signatureExpiration === false || ($this->_signatureExpiration !== false && $time < $this->_signatureExpiration))) {
             throw new Swift_SwiftException('Signature timestamp must be less than expiration timestamp.');
@@ -485,7 +485,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
             $time = time() + 60 * 60 * 24 * 30; // dkim signature for 30 days valid
         }
         if (!(is_bool($time) || (is_int($time) && 0 < $time))) {
-            throw new Swift_SwiftException('Unable to set the expiration timestamp (' . $time . ' given).');
+            throw new Swift_SwiftException('Unable to set the expiration timestamp ('.$time.' given).');
         }
         if (!(is_bool($time) || $this->_signatureTimestamp === false || ($this->_signatureTimestamp !== false && $this->_signatureTimestamp < $time))) {
             throw new Swift_SwiftException('Expiration timestamp must be grater than signature timestamp.');
@@ -494,7 +494,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
         return $this;
     }
-    
+
     /**
      * Set query methods used to retrieve the public key, actually only one method defined.
      *
@@ -507,14 +507,14 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     public function setPKeyQueryMethod($method)
     {
         if (!($method === false || $method === 'dns/txt')) {
-            throw new Swift_SwiftException('Unable to set query method (' . $method . ' given).');
+            throw new Swift_SwiftException('Unable to set query method ('.$method.' given).');
         }
-        
+
         $this->_pkeyRequestMethod = $method;
-        
+
         return $this;
     }
-    
+
     /**
      * Enable / disable the DebugHeaders.
      *
@@ -609,7 +609,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * Add the signature to the given Headers.
      *
      * @param Swift_Mime_HeaderSet $headers
+     *
      * @throws Swift_SwiftException
+     *
      * @return Swift_Signers_DKIMSigner
      */
     public function addSignature(Swift_Mime_HeaderSet $headers)
@@ -621,11 +623,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                         'd' => $this->_domainName, // required
                         'h' => implode(':', $this->_signedHeaders), // required
                         'i' => $this->_signerIdentity, // optional
-                        's' => $this->_selector // required
+                        's' => $this->_selector, // required
         );
         // optional, 'simple' is default, only if canon is different add parameter
         if ($this->_bodyCanon != 'simple') {
-            $params['c'] = $this->_headerCanon . '/' . $this->_bodyCanon;
+            $params['c'] = $this->_headerCanon.'/'.$this->_bodyCanon;
         } elseif ($this->_headerCanon != 'simple') {
             $params['c'] = $this->_headerCanon;
         }
@@ -661,7 +663,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         if ($this->_debugHeaders) {
             $params['z'] = implode('|', $this->_debugHeadersData);
         }
-        
+
         // concat signature
         $string = '';
         foreach ($params as $k => $v) {
@@ -819,6 +821,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         if (!openssl_sign($this->_headerCanonData, $signature, $pkeyId, $this->_hashAlgorithmOpenssl)) {
             throw new Swift_SwiftException('Unable to sign DKIM Hash ['.openssl_error_string().']');
         }
+
         return $signature;
     }
 }
