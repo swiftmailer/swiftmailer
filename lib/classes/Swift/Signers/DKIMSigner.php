@@ -774,6 +774,12 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         if (strlen($this->_bodyCanonLine) > 0) {
             $this->_addToBodyHash("\r\n");
         }
+        // TODO add a test for this case
+        // If body empty it still contains a CRLF in "simple" mode
+        // RFC6376 - 3.4.3. The "simple" Body Canonicalization Algorithm
+        if ($this->_bodyLen === 0 && $this->_bodyCanon == 'simple') {
+            $this->_addToBodyHash("\r\n");
+        }
         $this->_bodyHash = hash_final($this->_bodyHashHandler, true);
     }
 
