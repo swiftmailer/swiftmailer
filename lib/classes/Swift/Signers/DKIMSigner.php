@@ -51,7 +51,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * 
      * @var int
      */
-    private $_hashAlgorithmOpenssl = -1;
+    protected $_hashAlgorithmOpenssl = -1;
 
     /**
      * Body canon method.
@@ -78,7 +78,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                                        'received' => true, // rfc6376
                                        'comments' => true, // rfc6376
                                        'keywords' => true, // rfc6376
-                                       'authentication-results' => true // best practice recommendation
+                                       'authentication-results' => true // good practice recommendation
     );
 
     /**
@@ -110,17 +110,20 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     protected $_showLen = false;
 
     /**
-     * When the signature has been applied (true means time()), false means not embedded.
+     * When the signature has been applied.
+     * If integer is set, value is used.
+     * If false means no timestamp is embedded.
      *
-     * @var mixed
+     * @var bool|int
      */
     protected $_signatureTimestamp = true;
 
     /**
-     * When will the signature expires false means not embedded, if sigTimestamp is auto
-     * Expiration is relative, otherwise it's absolute.
+     * When the signature will expires.
+     * If integer is set, value is used.
+     * If false means no timestamp embedded.
      *
-     * @var int
+     * @var bool|int
      */
     protected $_signatureExpiration = false;
 
@@ -418,13 +421,24 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
     /**
      * Set the signature timestamp.
+     * If true actual time is used.
+     * If false no timestamp will be set.
+     * Timestamp in the future are not recommended.
      *
-     * @param int $time A timestamp
+     * @param bool|int $time De-/Activate|A timestamp
+     *    
+     * @throws Swift_SwiftException
      *
      * @return $this
      */
     public function setSignatureTimestamp($time)
     {
+        if (!(is_bool($time) || (is_int($time) && 0 < $time))) {
+            throw new Swift_SwiftException('Unable to set the signature timestamp (' . $time . ' given).');
+        }
+        if (!(is_bool($time) || $this->_signatureExpiration === false || ($this->_signatureExpiration !== false && $time < $this->_signatureExpiration))) {
+            throw new Swift_SwiftException('Signature timestamp must be less than expiration timestamp.');
+        }
         $this->_signatureTimestamp = $time;
 
         return $this;
@@ -432,13 +446,26 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
     /**
      * Set the signature expiration timestamp.
+     * If true actual time + delta is used.
+     * If false no timestamp will be set.
      *
-     * @param int $time A timestamp
+     * @param bool|int $time De-/Activate|A timestamp
+     *
+     * @throws Swift_SwiftException
      *
      * @return $this
      */
     public function setSignatureExpiration($time)
     {
+        if ($time === true) {
+            $time = time() + 60 * 60 * 24 * 30; // dkim signature for 30 days valid
+        }
+        if (!(is_bool($time) || (is_int($time) && 0 < $time))) {
+            throw new Swift_SwiftException('Unable to set the expiration timestamp (' . $time . ' given).');
+        }
+        if (!(is_bool($time) || $this->_signatureTimestamp === false || ($this->_signatureTimestamp !== false && $this->_signatureTimestamp < $time))) {
+            throw new Swift_SwiftException('Expiration timestamp must be grater than signature timestamp.');
+        }
         $this->_signatureExpiration = $time;
 
         return $this;
@@ -538,7 +565,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * Add the signature to the given Headers.
      *
      * @param Swift_Mime_HeaderSet $headers
-     *
+     * @throws Swift_SwiftException
      * @return Swift_Signers_DKIMSigner
      */
     public function addSignature(Swift_Mime_HeaderSet $headers)
@@ -559,22 +586,29 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         if ($this->_showLen) {
             $params['l'] = $this->_bodyLen;
         }
-        if ($this->_signatureTimestamp === true) {
-            $params['t'] = time();
-            if ($this->_signatureExpiration !== false) {
-                $params['x'] = $params['t'] + $this->_signatureExpiration;
-            }
-        } else {
-            if ($this->_signatureTimestamp !== false) {
+        if ($this->_signatureTimestamp !== false) {
+            if ($this->_signatureTimestamp === true) {
+                $params['t'] = time(); // actual time
+            } else {
                 $params['t'] = $this->_signatureTimestamp;
             }
-            if ($this->_signatureExpiration !== false) {
+        }
+        if ($this->_signatureExpiration !== false) {
+            if ($this->_signatureExpiration === true) {
+                $params['x'] = time() + 60 * 60 * 24 * 30; // dkim signature for 30 days valid
+            } else {
                 $params['x'] = $this->_signatureExpiration;
             }
+        }
+        // check timestamps
+        if (isset($params['t']) && isset($params['x']) && $params['t'] < $params['x']) {
+            throw new Swift_SwiftException('Expiration timestamp must be higher than signature timestamp');
         }
         if ($this->_debugHeaders) {
             $params['z'] = implode('|', $this->_debugHeadersData);
         }
+        
+        // concat signature
         $string = '';
         foreach ($params as $k => $v) {
             $string .= $k.'='.$v.'; ';
