@@ -10,8 +10,11 @@
 
 /**
  * DKIM Signer used to apply DKIM Signature to a message.
+ * DKIM is the further development of DomainKey. This class obsoletes DomainKeySigner.php.
+ * This class follows RFC6376.
  *
  * @author Xavier De Cock <xdecock@gmail.com>
+ * @author Ludwig Grill (www.rotzbua.de)
  */
 class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 {
@@ -184,7 +187,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Constructor.
      *
-     * @param string $privateKey
+     * @param string $privateKey RSA: >=1024bit
      * @param string $domainName
      * @param string $selector
      */
@@ -204,7 +207,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Instanciate DKIMSigner.
      *
-     * @param string $privateKey
+     * @param string $privateKey RSA: >=1024bit
      * @param string $domainName
      * @param string $selector
      *
