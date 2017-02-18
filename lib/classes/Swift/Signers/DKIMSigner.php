@@ -106,7 +106,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     protected $_maxLen = PHP_INT_MAX;
 
     /**
-     * Embbed bodyLen in signature.
+     * Embedded bodyLen in signature.
      *
      * @var bool
      */
@@ -165,6 +165,13 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @var Swift_Mime_Headers_ParameterizedHeader
      */
     protected $_dkimHeader;
+    
+    /**
+     * Query methods used to retrieve the public key by validator.
+     * 
+     * @var bool|string false if not used
+     */
+    private $_pkeyRequestMethod = false;
 
     private $_bodyHashHandler;
 
@@ -487,7 +494,27 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
         return $this;
     }
-
+    
+    /**
+     * Set query methods used to retrieve the public key, actually only one method defined.
+     *
+     * @param $method bool|string false or 'dns/txt'
+     *
+     * @throws Swift_SwiftException
+     *
+     * @return $this
+     */
+    public function setPKeyQueryMethod($method)
+    {
+        if (!($method === false || $method === 'dns/txt')) {
+            throw new Swift_SwiftException('Unable to set query method (' . $method . ' given).');
+        }
+        
+        $this->_pkeyRequestMethod = $method;
+        
+        return $this;
+    }
+    
     /**
      * Enable / disable the DebugHeaders.
      *
@@ -605,6 +632,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         // optional
         if ($this->_showLen) {
             $params['l'] = $this->_bodyLen;
+        }
+        // optional
+        if ($this->_pkeyRequestMethod !== false) {
+            $params['q'] = $this->_pkeyRequestMethod;
         }
         // optional
         if ($this->_signatureTimestamp !== false) {
