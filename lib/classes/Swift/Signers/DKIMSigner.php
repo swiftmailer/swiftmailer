@@ -354,14 +354,21 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param string $canon
      *
+     * @throws Swift_SwiftException
+     *
      * @return $this
      */
     public function setBodyCanon($canon)
     {
-        if ($canon == 'relaxed') {
-            $this->_bodyCanon = 'relaxed';
-        } else {
-            $this->_bodyCanon = 'simple';
+        switch ($canon) {
+            case 'simple':
+                $this->_bodyCanon = 'simple';
+                break;
+            case 'relaxed':
+                $this->_bodyCanon = 'relaxed';
+                break;
+            default:
+                throw new Swift_SwiftException('Unable to set the body canon, must be one of simple or relaxed (%s given).', $canon);
         }
 
         return $this;
@@ -371,15 +378,22 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * Set the header canonicalization algorithm.
      *
      * @param string $canon
-     *
+     * 
+     * @throws Swift_SwiftException
+     * 
      * @return $this
      */
     public function setHeaderCanon($canon)
     {
-        if ($canon == 'relaxed') {
-            $this->_headerCanon = 'relaxed';
-        } else {
-            $this->_headerCanon = 'simple';
+        switch ($canon) {
+            case 'simple':
+                $this->_headerCanon = 'simple';
+                break;
+            case 'relaxed':
+                $this->_headerCanon = 'relaxed';
+                break;
+            default:
+                throw new Swift_SwiftException('Unable to set the header canon, must be one of simple or relaxed (%s given).', $canon);
         }
 
         return $this;
@@ -574,21 +588,25 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     public function addSignature(Swift_Mime_HeaderSet $headers)
     {
         // Prepare the DKIM-Signature
-        $params = array('v' => '1', 
-                        'a' => $this->_hashAlgorithm, 
-                        'bh' => base64_encode($this->_bodyHash), 
-                        'd' => $this->_domainName,
-                        'h' => implode(':', $this->_signedHeaders),
-                        'i' => $this->_signerIdentity,
-                        's' => $this->_selector);
+        $params = array('v' => '1', // required
+                        'a' => $this->_hashAlgorithm, // required
+                        'bh' => base64_encode($this->_bodyHash), // required
+                        'd' => $this->_domainName, // required
+                        'h' => implode(':', $this->_signedHeaders), // required
+                        'i' => $this->_signerIdentity, // optional
+                        's' => $this->_selector // required
+        );
+        // optional, 'simple' is default, only if canon is different add parameter
         if ($this->_bodyCanon != 'simple') {
-            $params['c'] = $this->_headerCanon.'/'.$this->_bodyCanon;
+            $params['c'] = $this->_headerCanon . '/' . $this->_bodyCanon;
         } elseif ($this->_headerCanon != 'simple') {
             $params['c'] = $this->_headerCanon;
         }
+        // optional
         if ($this->_showLen) {
             $params['l'] = $this->_bodyLen;
         }
+        // optional
         if ($this->_signatureTimestamp !== false) {
             if ($this->_signatureTimestamp === true) {
                 $params['t'] = time(); // actual time
@@ -596,6 +614,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 $params['t'] = $this->_signatureTimestamp;
             }
         }
+        // optional
         if ($this->_signatureExpiration !== false) {
             if ($this->_signatureExpiration === true) {
                 $params['x'] = time() + 60 * 60 * 24 * 30; // dkim signature for 30 days valid
@@ -603,10 +622,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 $params['x'] = $this->_signatureExpiration;
             }
         }
-        // check timestamps
+        // check timestamps, expiration must be after signing
         if (isset($params['t']) && isset($params['x']) && $params['t'] < $params['x']) {
             throw new Swift_SwiftException('Expiration timestamp must be higher than signature timestamp');
         }
+        // optional
         if ($this->_debugHeaders) {
             $params['z'] = implode('|', $this->_debugHeadersData);
         }
@@ -636,6 +656,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     protected function _addHeader($header, $is_sig = false)
     {
         switch ($this->_headerCanon) {
+            case 'simple':
+                // Nothing to do
+                break;
             case 'relaxed':
                 // Prepare Header and cascade
                 $exploded = explode(':', $header, 2);
@@ -643,8 +666,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 $value = str_replace("\r\n", '', $exploded[1]);
                 $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
                 $header = $name.':'.trim($value).($is_sig ? '' : "\r\n");
-            case 'simple':
-                // Nothing to do
+                break;
         }
         $this->_addToHeaderHash($header);
     }
@@ -686,6 +708,8 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                     } else {
                         // Wooops Error
                         // todo handle it but should never happen
+                        // todo what is this error?
+                        throw new Swift_SwiftException('Error while canonicalizing Body');
                     }
                     break;
                 case ' ':
