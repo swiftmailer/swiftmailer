@@ -73,14 +73,14 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Headers not being signed.
      *
-     * @see rfc6376 - 5.4.1. Recommended Signature Content
+     * @see RFC6376 - 5.4.1. Recommended Signature Content
      *
      * @var array
      */
-    protected $_ignoredHeaders = array('return-path' => true, // rfc6376
-                                       'received' => true, // rfc6376
-                                       'comments' => true, // rfc6376
-                                       'keywords' => true, // rfc6376
+    protected $_ignoredHeaders = array('return-path' => true, // RFC6376
+                                       'received' => true, // RFC6376
+                                       'comments' => true, // RFC6376
+                                       'keywords' => true, // RFC6376
                                        'authentication-results' => true, // good practice recommendation
     );
 
@@ -818,10 +818,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         }
         // get details about key
         $pkeyId_details = openssl_pkey_get_details($pkeyId);
-        // security: dkim headers below 1024 bit will be ignored by google mail
-        // rfc6376 3.3.3. Key Sizes: The security constraint that keys smaller than 1024 bits are subject to off-line attacks
+        // Security: dkim headers below 1024 bit will be ignored by google mail
+        // RFC6376 3.3.3. Key Sizes: The security constraint that keys smaller than 1024 bits are subject to off-line attacks
+        // Vulnerability Note VU#268267 https://www.kb.cert.org/vuls/id/268267
         if (isset($pkeyId_details['type']) && $pkeyId_details['type'] == OPENSSL_KEYTYPE_RSA && isset($pkeyId_details['bits']) && $pkeyId_details['bits'] < 1024) {
-            throw new  Swift_SwiftException('DKIM Private Key must have at least 1024 bit or higher');
+            throw new  Swift_SwiftException('DKIM Private Key must have at least 1024 bit or higher. See VU#268267 https://www.kb.cert.org/vuls/id/268267');
         }
         // sign
         if (!openssl_sign($this->_headerCanonData, $signature, $pkeyId, $this->_hashAlgorithmOpenssl)) {
