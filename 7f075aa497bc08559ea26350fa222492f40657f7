@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2017-02-18T18:00:41Z
+
+Looks like tests pass, so we can move PHP 7.1 to supported.
+
+---------------------------------------------------------------------------
+
+by Rotzbua at 2017-02-24T19:33:49Z
+
+@fabpot  I updated my commit, now php7.1 must run without errors. Btw. I think (hard) support for php versions 5.3 and 5.4 can be dropped...
