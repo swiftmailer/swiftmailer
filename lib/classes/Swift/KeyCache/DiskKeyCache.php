@@ -46,13 +46,6 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     private $keys = array();
 
     /**
-     * Will be true if magic_quotes_runtime is turned on.
-     *
-     * @var bool
-     */
-    private $quotes = false;
-
-    /**
      * Create a new DiskKeyCache with the given $stream for cloning to make
      * InputByteStreams, and the given $path to save to.
      *
@@ -63,10 +56,6 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     {
         $this->stream = $stream;
         $this->path = $path;
-
-        if (function_exists('get_magic_quotes_runtime') && @get_magic_quotes_runtime() == 1) {
-            $this->quotes = true;
-        }
     }
 
     /**
@@ -176,15 +165,9 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
         $this->prepareCache($nsKey);
         if ($this->hasKey($nsKey, $itemKey)) {
             $fp = $this->getHandle($nsKey, $itemKey, self::POSITION_START);
-            if ($this->quotes) {
-                ini_set('magic_quotes_runtime', 0);
-            }
             $str = '';
             while (!feof($fp) && false !== $bytes = fread($fp, 8192)) {
                 $str .= $bytes;
-            }
-            if ($this->quotes) {
-                ini_set('magic_quotes_runtime', 1);
             }
             $this->freeHandle($nsKey, $itemKey);
 
@@ -203,14 +186,8 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
     {
         if ($this->hasKey($nsKey, $itemKey)) {
             $fp = $this->getHandle($nsKey, $itemKey, self::POSITION_START);
-            if ($this->quotes) {
-                ini_set('magic_quotes_runtime', 0);
-            }
             while (!feof($fp) && false !== $bytes = fread($fp, 8192)) {
                 $is->write($bytes);
-            }
-            if ($this->quotes) {
-                ini_set('magic_quotes_runtime', 1);
             }
             $this->freeHandle($nsKey, $itemKey);
         }

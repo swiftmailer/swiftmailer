@@ -30,9 +30,6 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
     /** A lazy-loaded resource handle for writing the file */
     private $writer;
 
-    /** If magic_quotes_runtime is on, this will be true */
-    private $quotes = false;
-
     /** If stream is seekable true/false, or null if not known */
     private $seekable = null;
 
@@ -49,10 +46,6 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
         }
         $this->path = $path;
         $this->mode = $writable ? 'w+b' : 'rb';
-
-        if (function_exists('get_magic_quotes_runtime') && @get_magic_quotes_runtime() == 1) {
-            $this->quotes = true;
-        }
     }
 
     /**
@@ -83,13 +76,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
     {
         $fp = $this->getReadHandle();
         if (!feof($fp)) {
-            if ($this->quotes) {
-                ini_set('magic_quotes_runtime', 0);
-            }
             $bytes = fread($fp, $length);
-            if ($this->quotes) {
-                ini_set('magic_quotes_runtime', 1);
-            }
             $this->offset = ftell($fp);
 
             // If we read one byte after reaching the end of the file
