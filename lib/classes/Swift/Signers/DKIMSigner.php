@@ -709,7 +709,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 $algorithm = OPENSSL_ALGO_SHA256;
                 break;
         }
-        $pkeyId = openssl_get_privatekey($this->_privateKey,$this->_passphrase);
+        $pkeyId = openssl_get_privatekey($this->_privateKey, $this->_passphrase);
         if (!$pkeyId) {
             throw new Swift_SwiftException('Unable to load DKIM Private Key ['.openssl_error_string().']');
         }
