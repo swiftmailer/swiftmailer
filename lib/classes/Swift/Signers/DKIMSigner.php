@@ -176,6 +176,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @param string $privateKey
      * @param string $domainName
      * @param string $selector
+     * @param string $passphrase
      */
     public function __construct($privateKey, $domainName, $selector, $passphrase = '')
     {
