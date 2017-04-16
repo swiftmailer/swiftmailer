@@ -670,6 +670,8 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         while (false !== $bytes = $os->read(8192)) {
             $string .= $bytes;
         }
+        
+        $os->setReadPointer(0);
 
         $os->setReadPointer(0);
 
