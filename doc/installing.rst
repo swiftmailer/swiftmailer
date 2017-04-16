@@ -62,7 +62,6 @@ OS X.
     $ cd swiftmailer/
     $ ls
     CHANGES LICENSE ...
-    $
 
 Troubleshooting
 ---------------
