@@ -1,6 +1,6 @@
 <?php
 
-class Swift_CharacterReader_GenericFixedWidthReaderTest extends \PHPUnit_Framework_TestCase
+class Swift_CharacterReader_GenericFixedWidthReaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testInitialByteSizeMatchesWidth()
     {

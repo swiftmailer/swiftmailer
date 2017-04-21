@@ -1,6 +1,6 @@
 <?php
 
-class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
+class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit\Framework\TestCase
 {
     private $key1 = 'key1';
     private $key2 = 'key2';

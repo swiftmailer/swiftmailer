@@ -1,6 +1,6 @@
 <?php
 
-class Swift_KeyCache_DiskKeyCacheAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_KeyCache_DiskKeyCacheAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     private $cache;
     private $key1;

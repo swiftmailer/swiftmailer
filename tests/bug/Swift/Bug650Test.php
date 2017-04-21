@@ -2,7 +2,7 @@
 
 use Egulias\EmailValidator\EmailValidator;
 
-class Swift_Bug650Test extends \PHPUnit_Framework_TestCase
+class Swift_Bug650Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider encodingDataProvider

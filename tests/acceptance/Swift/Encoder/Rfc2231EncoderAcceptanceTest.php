@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     private $samplesDir;
     private $factory;

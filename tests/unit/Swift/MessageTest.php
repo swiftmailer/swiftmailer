@@ -1,6 +1,6 @@
 <?php
 
-class Swift_MessageTest extends \PHPUnit_Framework_TestCase
+class Swift_MessageTest extends \PHPUnit\Framework\TestCase
 {
     public function testCloning()
     {

@@ -12,7 +12,7 @@ class One
     }
 }
 
-class Swift_DependencyContainerTest extends \PHPUnit_Framework_TestCase
+class Swift_DependencyContainerTest extends \PHPUnit\Framework\TestCase
 {
     private $container;
 

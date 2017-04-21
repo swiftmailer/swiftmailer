@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     protected function setUp()
     {

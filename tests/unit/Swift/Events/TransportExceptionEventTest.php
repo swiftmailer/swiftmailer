@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Events_TransportExceptionEventTest extends \PHPUnit_Framework_TestCase
+class Swift_Events_TransportExceptionEventTest extends \PHPUnit\Framework\TestCase
 {
     public function testExceptionCanBeFetchViaGetter()
     {

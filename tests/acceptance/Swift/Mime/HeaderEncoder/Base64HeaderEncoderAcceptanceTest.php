@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Mime_HeaderEncoder_Base64HeaderEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_HeaderEncoder_Base64HeaderEncoderAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     private $encoder;
 

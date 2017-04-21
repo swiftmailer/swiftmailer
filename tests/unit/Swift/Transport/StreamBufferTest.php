@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Transport_StreamBufferTest extends \PHPUnit_Framework_TestCase
+class Swift_Transport_StreamBufferTest extends \PHPUnit\Framework\TestCase
 {
     public function testSettingWriteTranslationsCreatesFilters()
     {

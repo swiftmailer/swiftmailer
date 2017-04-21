@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_TestCase
+class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit\Framework\TestCase
 {
     protected $buffer;
     protected $server;

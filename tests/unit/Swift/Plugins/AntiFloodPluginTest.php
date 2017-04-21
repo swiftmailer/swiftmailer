@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Plugins_AntiFloodPluginTest extends \PHPUnit_Framework_TestCase
+class Swift_Plugins_AntiFloodPluginTest extends \PHPUnit\Framework\TestCase
 {
     public function testThresholdCanBeSetAndFetched()
     {

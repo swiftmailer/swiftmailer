@@ -2,7 +2,7 @@
 
 use Egulias\EmailValidator\EmailValidator;
 
-class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testTypeIsIdHeader()
     {

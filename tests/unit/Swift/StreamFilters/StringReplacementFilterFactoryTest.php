@@ -1,6 +1,6 @@
 <?php
 
-class Swift_StreamFilters_StringReplacementFilterFactoryTest extends \PHPUnit_Framework_TestCase
+class Swift_StreamFilters_StringReplacementFilterFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testInstancesOfStringReplacementFilterAreCreated()
     {

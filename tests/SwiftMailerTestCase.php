@@ -5,7 +5,7 @@
  *
  * @author Rouven Weßling
  */
-class SwiftMailerTestCase extends \PHPUnit_Framework_TestCase
+class SwiftMailerTestCase extends \PHPUnit\Framework\TestCase
 {
     public static function regExp($pattern)
     {
@@ -13,7 +13,7 @@ class SwiftMailerTestCase extends \PHPUnit_Framework_TestCase
             throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string');
         }
 
-        return new PHPUnit_Framework_Constraint_PCREMatch($pattern);
+        return new \PHPUnit\Framework\Constraint\RegularExpression($pattern);
     }
 
     public function assertIdenticalBinary($expected, $actual, $message = '')
