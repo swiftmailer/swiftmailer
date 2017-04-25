@@ -64,7 +64,7 @@ class Swift_Encoder_Base64EncoderTest extends \PHPUnit\Framework\TestCase
        */
 
         for ($i = 0; $i < 30; ++$i) {
-            $input = pack('C', rand(0, 255));
+            $input = pack('C', random_int(0, 255));
             $this->assertRegExp(
                 '~^[a-zA-Z0-9/\+]{2}==$~', $this->encoder->encodeString($input),
                 '%s: A single byte should have 2 bytes of padding'
@@ -72,7 +72,7 @@ class Swift_Encoder_Base64EncoderTest extends \PHPUnit\Framework\TestCase
         }
 
         for ($i = 0; $i < 30; ++$i) {
-            $input = pack('C*', rand(0, 255), rand(0, 255));
+            $input = pack('C*', random_int(0, 255), random_int(0, 255));
             $this->assertRegExp(
                 '~^[a-zA-Z0-9/\+]{3}=$~', $this->encoder->encodeString($input),
                 '%s: Two bytes should have 1 byte of padding'
@@ -80,7 +80,7 @@ class Swift_Encoder_Base64EncoderTest extends \PHPUnit\Framework\TestCase
         }
 
         for ($i = 0; $i < 30; ++$i) {
-            $input = pack('C*', rand(0, 255), rand(0, 255), rand(0, 255));
+            $input = pack('C*', random_int(0, 255), random_int(0, 255), random_int(0, 255));
             $this->assertRegExp(
                 '~^[a-zA-Z0-9/\+]{4}$~', $this->encoder->encodeString($input),
                 '%s: Three bytes should have no padding'

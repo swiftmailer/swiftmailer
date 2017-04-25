@@ -804,6 +804,11 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
 
     /**
      * Adapted from Yay_Matchers_ReferenceMatcher.
+     *
+     * @param $ref1
+     * @param $ref2
+     *
+     * @return bool
      */
     public function varsAreReferences(&$ref1, &$ref2)
     {
@@ -815,7 +820,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         }
 
         $copy = $ref2;
-        $randomString = uniqid('yay');
+        $randomString = uniqid('yay', true);
         $ref2 = $randomString;
         $isRef = ($ref1 === $ref2);
         $ref2 = $copy;

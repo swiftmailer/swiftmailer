@@ -40,7 +40,7 @@ class Swift_Plugins_LoggerPluginTest extends \SwiftMailerTestCase
         $logger = $this->createLogger();
         $logger->expects($this->once())
                ->method('add')
-               ->with($this->regExp('~foo\r\n~'));
+               ->with(static::regExp('~foo\r\n~'));
 
         $plugin = $this->createPlugin($logger);
         $plugin->commandSent($evt);
@@ -52,7 +52,7 @@ class Swift_Plugins_LoggerPluginTest extends \SwiftMailerTestCase
         $logger = $this->createLogger();
         $logger->expects($this->once())
                ->method('add')
-               ->with($this->regExp('~354 Go ahead\r\n~'));
+               ->with(static::regExp('~354 Go ahead\r\n~'));
 
         $plugin = $this->createPlugin($logger);
         $plugin->responseReceived($evt);
