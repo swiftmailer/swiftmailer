@@ -20,14 +20,14 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
      *
      * @var mixed
      */
-    private $_recipient;
+    protected $_recipient;
 
     /**
      * List of regular expression for recipient whitelisting.
      *
      * @var array
      */
-    private $_whitelist = array();
+    protected $_whitelist = array();
 
     /**
      * Create a new RedirectingPlugin.
