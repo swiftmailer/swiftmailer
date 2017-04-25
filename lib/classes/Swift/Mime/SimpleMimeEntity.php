@@ -293,7 +293,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     public function setChildren(array $children, $compoundLevel = null)
     {
         // TODO: Try to refactor this logic
-        $compoundLevel = isset($compoundLevel) ? $compoundLevel : $this->getCompoundLevel($children);
+        $compoundLevel = $compoundLevel ?? $this->getCompoundLevel($children);
         $immediateChildren = array();
         $grandchildren = array();
         $newContentType = $this->userContentType;

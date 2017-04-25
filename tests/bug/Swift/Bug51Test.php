@@ -87,7 +87,7 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
         file_put_contents($file, '');
         $fp = fopen($file, 'wb');
         for ($i = 0; $i < $byteCount; ++$i) {
-            $byteVal = rand(0, 255);
+            $byteVal = random_int(0, 255);
             fwrite($fp, pack('i', $byteVal));
         }
         fclose($fp);

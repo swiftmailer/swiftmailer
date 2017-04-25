@@ -2,6 +2,10 @@
 
 abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
 {
+    /** Abstract test method
+     * @param $buf
+     * @return
+     */
     abstract protected function getTransport($buf);
 
     public function testStartAccepts220ServiceGreeting()
@@ -1250,7 +1254,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
     {
         return $this->getMockery('Swift_Mime_SimpleMessage')->shouldIgnoreMissing();
     }
-
+    /**
+     * @param $buf
+     */
     protected function finishBuffer($buf)
     {
         $buf->shouldReceive('readLine')
@@ -1260,7 +1266,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
             ->with('~^(EH|HE)LO .*?\r\n$~D')
-            ->andReturn($x = uniqid());
+            ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()
             ->with($x)
@@ -1268,7 +1274,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
             ->with('~^MAIL FROM:<.*?>\r\n$~D')
-            ->andReturn($x = uniqid());
+            ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()
             ->with($x)
@@ -1276,7 +1282,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
             ->with('~^RCPT TO:<.*?>\r\n$~D')
-            ->andReturn($x = uniqid());
+            ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()
             ->with($x)
@@ -1284,7 +1290,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
             ->with("DATA\r\n")
-            ->andReturn($x = uniqid());
+            ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()
             ->with($x)
@@ -1292,7 +1298,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
             ->with("\r\n.\r\n")
-            ->andReturn($x = uniqid());
+            ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()
             ->with($x)
@@ -1300,7 +1306,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
             ->with("RSET\r\n")
-            ->andReturn($x = uniqid());
+            ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()
             ->with($x)

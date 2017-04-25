@@ -128,7 +128,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      */
     public function getDelSp()
     {
-        return 'yes' == $this->getHeaderParameter('Content-Type', 'delsp') ? true : false;
+        return 'yes' === $this->getHeaderParameter('Content-Type', 'delsp');
     }
 
     /**
