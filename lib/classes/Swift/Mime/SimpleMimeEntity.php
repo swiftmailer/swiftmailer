@@ -799,7 +799,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
             $typePrefs[] = array_key_exists($type, $this->_alternativePartOrder) ? $this->_alternativePartOrder[$type] : max($this->_alternativePartOrder) + 1;
         }
 
-        return $typePrefs[0] >= $typePrefs[1] ? 1 : -1;
+        return $typePrefs[0] > $typePrefs[1] ? 1 : -1;
     }
 
     /**
