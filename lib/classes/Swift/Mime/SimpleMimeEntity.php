@@ -787,13 +787,13 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
         // Sort in order of preference, if there is one
         if ($shouldSort) {
             // Group the messages by order of preference
-            $sorted = [];
+            $sorted = array();
             foreach ($this->_immediateChildren as $child) {
                 $type = $child->getContentType();
                 $level = array_key_exists($type, $this->_alternativePartOrder) ? $this->_alternativePartOrder[$type] : max($this->_alternativePartOrder) + 1;
 
                 if (empty($sorted[$level])) {
-                    $sorted[$level] = [];
+                    $sorted[$level] = array();
                 }
 
                 $sorted[$level][] = $child;
@@ -801,7 +801,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
             ksort($sorted);
 
-            $this->_immediateChildren = array_reduce($sorted, 'array_merge', []);
+            $this->_immediateChildren = array_reduce($sorted, 'array_merge', array());
         }
     }
 
