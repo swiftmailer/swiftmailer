@@ -1,7 +1,7 @@
 Changelog
 =========
 
-5.4.8 (2017-XX-XX)
+5.4.8 (2017-05-01)
 ------------------
 
  * fixed encoding inheritance in addPart()
