@@ -1,0 +1,56 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2017-04-29T15:58:40Z
+
+Thanks for the fix. Can you add a test for that behavior?
+
+---------------------------------------------------------------------------
+
+by HansAdema at 2017-04-30T08:51:23Z
+
+Sure, I will add a test for it ASAP.
+
+---------------------------------------------------------------------------
+
+by HansAdema at 2017-04-30T13:15:36Z
+
+After adding my test, it turns out that this fix causes a regression for PHP 5.
+
+The reason for this is the ordering of the first and second argument of `usort` being different in PHP 5 and PHP 7.
+
+Given a simple proof of content:
+```
+<?php
+$array = ['one', 'two'];
+
+usort($array, function($a, $b) {
+	echo 'A: '.$a.' - B: '.$b;
+	return 0;
+});
+```
+
+The output for PHP 5.6 is:
+```
+A: two - B: one
+```
+
+But for PHP 7.0, the ouput is:
+```
+A: one - B: two
+```
+
+In other words, you can't make any assumptions about `$a` and `$b` regarding their position in the source array.
+
+Because of that, I rewrote the entire sorting function to not rely on `usort` anymore. This implementation groups the mime parts first, sorts those and then flattens the sorted groups. This is the only method I could think of which reliably works on all PHP versions.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2017-04-30T17:02:42Z
+
+Can you rebase? I've fixed Travis conf. Thanks
+
+---------------------------------------------------------------------------
+
+by HansAdema at 2017-04-30T17:42:35Z
+
+Thanks, I've rebased the branch and all tests are green now.
