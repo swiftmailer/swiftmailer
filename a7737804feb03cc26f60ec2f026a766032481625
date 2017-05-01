@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2017-02-28T04:33:01Z
+
+Can you add a test to avoid any future regressions? This closes #69 and #500.
