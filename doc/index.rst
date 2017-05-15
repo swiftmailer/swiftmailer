@@ -6,9 +6,6 @@ Swiftmailer
 
     introduction
     overview
-    installing
-    help-resources
-    including-the-files
     messages
     headers
     sending

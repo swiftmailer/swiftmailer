@@ -15,21 +15,6 @@ subsequent chapters of this book. You may choose to skip this chapter if you
 are fairly technically minded, though it is likely to save you some time in
 the long run if you at least read between the lines here.
 
-System Requirements
--------------------
-
-Swift Mailer operates on servers running PHP 7.0 or higher.
-
-Component Breakdown
--------------------
-
-Swift Mailer is made up of many classes. Each of these classes can be grouped
-into a general "component" group which describes the task it is designed to
-perform.
-
-We'll take a brief look at the components which form Swift Mailer in this
-section of the book.
-
 The Mailer
 ~~~~~~~~~~
 
