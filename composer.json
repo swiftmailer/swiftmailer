@@ -16,10 +16,11 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "egulias/email-validator": "~2.0"
+        "egulias/email-validator": "~2.0",
+        "dkarlovi/symfony-flex-docker": "^0.1"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9.1",
+        "mockery/mockery": "~1.0@dev",
         "symfony/phpunit-bridge": "~3.3@dev"
     },
     "autoload": {

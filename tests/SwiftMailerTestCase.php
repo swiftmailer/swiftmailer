@@ -1,5 +1,7 @@
 <?php
 
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+
 /**
  * A base test case with some custom expectations.
  *
@@ -7,6 +9,8 @@
  */
 class SwiftMailerTestCase extends \PHPUnit\Framework\TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public static function regExp($pattern)
     {
         if (!is_string($pattern)) {
