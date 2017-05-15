@@ -221,7 +221,7 @@ key-value parameters::
 
     $headers->addParameterizedHeader(
       'Header-Name', 'header value',
-      array('foo' => 'bar')
+      ['foo' => 'bar']
       );
 
 To change the text value of the header, call it's ``setValue()`` method just as
@@ -233,10 +233,10 @@ method or the ``setParameter()`` method (note the pluralization)::
     $type = $message->getHeaders()->get('Content-Type');
 
     // setParameters() takes an associative array
-    $type->setParameters(array(
+    $type->setParameters([
       'name' => 'file.txt',
       'charset' => 'iso-8859-1'
-      ));
+    ]);
 
     // setParameter() takes two args for $key and $value
     $type->setParameter('charset', 'iso-8859-1');
@@ -343,23 +343,23 @@ You add a new mailbox header to a HeaderSet by calling the HeaderSet's
 
     $headers = $message->getHeaders();
 
-    $headers->addMailboxHeader('Your-Header-Name', array(
-      'person1@example.org' => 'Person Name One',
-      'person2@example.org',
-      'person3@example.org',
-      'person4@example.org' => 'Another named person'
-      ));
+    $headers->addMailboxHeader('Your-Header-Name', [
+          'person1@example.org' => 'Person Name One',
+          'person2@example.org',
+          'person3@example.org',
+          'person4@example.org' => 'Another named person'
+    ]);
 
 Changing the value of an existing mailbox header is done by calling it's
 ``setNameAddresses()`` method::
 
     $to = $message->getHeaders()->get('To');
 
-    $to->setNameAddresses(array(
+    $to->setNameAddresses([
       'joe@example.org' => 'Joe Bloggs',
       'john@example.org' => 'John Doe',
       'no-name@example.org'
-      ));
+    ]);
 
 If you don't wish to concern yourself with the complicated accepted input
 formats accepted by ``setNameAddresses()`` as described in the previous chapter
@@ -368,11 +368,11 @@ use the ``setAddresses()`` method instead::
 
     $to = $message->getHeaders()->get('To');
 
-    $to->setAddresses(array(
+    $to->setAddresses([
       'joe@example.org',
       'john@example.org',
       'no-name@example.org'
-      ));
+    ]);
 
 .. note::
 
@@ -391,11 +391,11 @@ following::
 
     $to = $message->getHeaders()->get('To');
 
-    $to->setNameAddresses(array(
+    $to->setNameAddresses([
       'person1@example.org' => 'Name of Person',
       'person2@example.org',
       'person3@example.org' => 'Another Person'
-    ));
+    ]);
 
     echo $to->toString();
 
@@ -665,14 +665,14 @@ when the message is sent::
 
     // Change the To: header
     $to = $headers->get('To');
-    $to->setNameAddresses(array(
+    $to->setNameAddresses([
       'person@example.org' => 'Person',
       'thing@example.org'
-    ));
+    ]);
 
     // Using the setFieldBodyModel() just delegates to the correct method
     // So here to calls setNameAddresses()
-    $to->setFieldBodyModel(array(
+    $to->setFieldBodyModel([
       'person@example.org' => 'Person',
       'thing@example.org'
-    ));
+    ]);

@@ -259,12 +259,12 @@ you'll be sending the message to.
     type of syntax you choose, provided they match the placeholders in your
     email template::
 
-        $replacements = array();
+        $replacements = [];
         foreach ($users as $user) {
-          $replacements[$user['email']] = array(
+          $replacements[$user['email']] = [
             '{username}'=>$user['username'],
             '{password}'=>$user['password']
-          );
+          ];
         }
 
 Now create an instance of the Decorator plugin using this array of replacements
@@ -346,10 +346,10 @@ provide an implementation that does this. You need to create a small class::
         $result = mysql_query($sql);
 
         if ($row = mysql_fetch_assoc($result)) {
-          return array(
+          return [
             '{username}'=>$row['username'],
             '{password}'=>$row['password']
-          );
+          ];
         }
       }
     }

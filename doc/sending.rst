@@ -55,8 +55,8 @@ recipients are delivered to successfully then the value 5 will be returned::
 
     // Create a message
     $message = new Swift_Message('Wonderful Subject')
-      ->setFrom(array('john@doe.com' => 'John Doe'))
-      ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
+      ->setFrom(['john@doe.com' => 'John Doe'])
+      ->setTo(['receiver@domain.org', 'other@domain.org' => 'A name'])
       ->setBody('Here is the message itself')
       ;
 
@@ -394,8 +394,8 @@ recipients are delivered to successfully then the value 5 will be returned::
 
     // Create a message
     $message = new Swift_Message('Wonderful Subject')
-      ->setFrom(array('john@doe.com' => 'John Doe'))
-      ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
+      ->setFrom(['john@doe.com' => 'John Doe'])
+      ->setTo(['receiver@domain.org', 'other@domain.org' => 'A name'])
       ->setBody('Here is the message itself')
       ;
 
@@ -470,21 +470,21 @@ exception and stop the execution or your script early.
 
         // Create a message
         $message = new Swift_Message('Wonderful Subject')
-          ->setFrom(array('john@doe.com' => 'John Doe'))
+          ->setFrom(['john@doe.com' => 'John Doe'])
           ->setBody('Here is the message itself')
           ;
 
         // Send the message
-        $failedRecipients = array();
+        $failedRecipients = [];
         $numSent = 0;
-        $to = array('receiver@domain.org', 'other@domain.org' => 'A name');
+        $to = ['receiver@domain.org', 'other@domain.org' => 'A name'];
 
         foreach ($to as $address => $name)
         {
           if (is_int($address)) {
             $message->setTo($name);
           } else {
-            $message->setTo(array($address => $name));
+            $message->setTo([$address => $name]);
           }
 
           $numSent += $mailer->send($message, $failedRecipients);
@@ -531,7 +531,7 @@ added to the array provided by-reference.
 
         $message = (new Swift_Message( ... ))
           ->setFrom( ... )
-          ->setTo(array(
+          ->setTo([
             'receiver@bad-domain.org' => 'Receiver Name',
             'other@domain.org' => 'A name',
             'other-receiver@bad-domain.org' => 'Other Name'

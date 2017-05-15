@@ -5,8 +5,8 @@ Creating messages in Swift Mailer is done by making use of the various MIME
 entities provided with the library.  Complex messages can be quickly created
 with very little effort.
 
-Quick Reference for Creating a Message
----------------------------------------
+Quick Reference
+---------------
 
 You can think of creating a Message as being similar to the steps you perform
 when you click the Compose button in your mail client.  You give it a subject,
@@ -15,16 +15,16 @@ specify some recipients, add any attachments and write your message::
     require_once 'lib/swift_required.php';
 
     // Create the message
-    $message = new Swift_Message()
+    $message = (new Swift_Message())
 
       // Give the message a subject
       ->setSubject('Your subject')
 
       // Set the From address with an associative array
-      ->setFrom(array('john@doe.com' => 'John Doe'))
+      ->setFrom(['john@doe.com' => 'John Doe'])
 
       // Set the To addresses with an associative array (setTo/setCc/setBcc)
-      ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
+      ->setTo(['receiver@domain.org', 'other@domain.org' => 'A name'])
 
       // Give it a body
       ->setBody('Here is the message itself')
@@ -570,21 +570,21 @@ that validate. Another way would be to wrap your ``setTo()``, ``setCc()`` and
 
     If you want to include a name then you must use an associative array::
 
-         $message->setFrom(array('some@address.tld' => 'The Name'));
+         $message->setFrom(['some@address.tld' => 'The Name']);
 
     If you want to include multiple addresses then you must use an array::
 
-         $message->setTo(array('some@address.tld', 'other@address.tld'));
+         $message->setTo(['some@address.tld', 'other@address.tld']);
 
     You can mix personalized (addresses with a name) and non-personalized
     addresses in the same list by mixing the use of associative and
     non-associative array syntax::
 
-         $message->setTo(array(
+         $message->setTo([
            'recipient-with-name@example.org' => 'Recipient Name One',
            'no-name@example.org', // Note that this is not a key-value pair
            'named-recipient@example.org' => 'Recipient Name Two'
-         ));
+         ]);
 
 Setting ``To:`` Recipients
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -612,13 +612,13 @@ seen by the other recipients.
     recipients, use the ``addTo()`` method::
 
         // Using setTo() to set all recipients in one go
-        $message->setTo(array(
+        $message->setTo([
           'person1@example.org',
           'person2@otherdomain.org' => 'Person 2 Name',
           'person3@example.org',
           'person4@example.org',
           'person5@example.org' => 'Person 5 Name'
-        ));
+        ]);
 
         // Using addTo() to add recipients iteratively
         $message->addTo('person1@example.org');
@@ -650,13 +650,13 @@ seen by the other recipients.
     recipients, use the ``addCc()`` method::
 
         // Using setCc() to set all recipients in one go
-        $message->setCc(array(
+        $message->setCc([
           'person1@example.org',
           'person2@otherdomain.org' => 'Person 2 Name',
           'person3@example.org',
           'person4@example.org',
           'person5@example.org' => 'Person 5 Name'
-        ));
+        ]);
 
         // Using addCc() to add recipients iteratively
         $message->addCc('person1@example.org');
@@ -689,13 +689,13 @@ address.
     recipients, use the ``addBcc()`` method::
 
         // Using setBcc() to set all recipients in one go
-        $message->setBcc(array(
+        $message->setBcc([
           'person1@example.org',
           'person2@otherdomain.org' => 'Person 2 Name',
           'person3@example.org',
           'person4@example.org',
           'person5@example.org' => 'Person 5 Name'
-        ));
+        ]);
 
         // Using addBcc() to add recipients iteratively
         $message->addBcc('person1@example.org');
@@ -751,13 +751,13 @@ will be seen by the recipients.
         $message->setFrom('your@address.tld');
 
         // Set a From: address including a name
-        $message->setFrom(array('your@address.tld' => 'Your Name'));
+        $message->setFrom(['your@address.tld' => 'Your Name']);
 
         // Set multiple From: addresses if multiple people wrote the email
-        $message->setFrom(array(
+        $message->setFrom([
           'person1@example.org' => 'Sender One',
           'person2@example.org' => 'Sender Two'
-        ));
+        ]);
 
 Setting the ``Sender:`` Address
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -834,7 +834,7 @@ When the private key is secured using a passphrase use the following instead::
     $message = new Swift_Message();
 
     $smimeSigner = new Swift_Signers_SMimeSigner();
-    $smimeSigner->setSignCertificate('/path/to/certificate.pem', array('/path/to/private-key.pem', 'passphrase'));
+    $smimeSigner->setSignCertificate('/path/to/certificate.pem', ['/path/to/private-key.pem', 'passphrase']);
     $message->attachSigner($smimeSigner);
 
 By default the signature is added as attachment,
@@ -972,11 +972,11 @@ The priority of a message is an indication to the recipient what significance
 it has. Swift Mailer allows you to set the priority by calling the
 ``setPriority`` method. This method takes an integer value between 1 and 5:
 
-* `Swift_Mime_SimpleMessage::PRIORITY_HIGHEST`: 1
-* `Swift_Mime_SimpleMessage::PRIORITY_HIGH`: 2
-* `Swift_Mime_SimpleMessage::PRIORITY_NORMAL`: 3
-* `Swift_Mime_SimpleMessage::PRIORITY_LOW`: 4
-* `Swift_Mime_SimpleMessage::PRIORITY_LOWEST`: 5
+* ``Swift_Mime_SimpleMessage::PRIORITY_HIGHEST``: 1
+* ``Swift_Mime_SimpleMessage::PRIORITY_HIGH``: 2
+* ``Swift_Mime_SimpleMessage::PRIORITY_NORMAL``: 3
+* ``Swift_Mime_SimpleMessage::PRIORITY_LOW``: 4
+* ``Swift_Mime_SimpleMessage::PRIORITY_LOWEST``: 5
 
 To set the message priority:
 
