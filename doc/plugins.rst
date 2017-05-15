@@ -54,8 +54,6 @@ have been sent since the last re-connect. Once the number hits your specified
 threshold it will disconnect and re-connect, optionally pausing for a
 specified amount of time::
 
-    require_once 'lib/swift_required.php';
-
     // Create the Mailer using any Transport
     $mailer = new Swift_Mailer(
       new Swift_SmtpTransport('smtp.example.org', 25)
@@ -112,8 +110,6 @@ To use the Throttler plugin:
 When Swift Mailer sends messages it will keep track of the rate at which sending
 messages is occurring. If it realises that sending is happening too fast, it
 will cause your program to ``sleep()`` for enough time to average out the rate::
-
-    require_once 'lib/swift_required.php';
 
     // Create the Mailer using any Transport
     $mailer = new Swift_Mailer(
@@ -193,8 +189,6 @@ When Swift Mailer sends messages it will keep a log of all the interactions
 with the underlying Transport being used. Depending upon the Logger that has
 been used the behaviour will differ, but all implementations offer a way to
 get the contents of the log::
-
-    require_once 'lib/swift_required.php';
 
     // Create the Mailer using any Transport
     $mailer = new Swift_Mailer(

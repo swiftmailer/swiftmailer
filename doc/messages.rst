@@ -2,17 +2,15 @@ Creating Messages
 =================
 
 Creating messages in Swift Mailer is done by making use of the various MIME
-entities provided with the library.  Complex messages can be quickly created
+entities provided with the library. Complex messages can be quickly created
 with very little effort.
 
 Quick Reference
 ---------------
 
 You can think of creating a Message as being similar to the steps you perform
-when you click the Compose button in your mail client.  You give it a subject,
+when you click the Compose button in your mail client. You give it a subject,
 specify some recipients, add any attachments and write your message::
-
-    require_once 'lib/swift_required.php';
 
     // Create the message
     $message = (new Swift_Message())
@@ -66,19 +64,18 @@ Encoders and different Header types to generate the entity.
 The Structure of a Message
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Of all of the MIME entities, a message -- ``Swift_Message``
-is the largest and most complex. It has many properties that can be updated
-and it can contain other MIME entities -- attachments for example --
-nested inside it.
+Of all of the MIME entities, a message -- ``Swift_Message`` is the largest and
+most complex. It has many properties that can be updated and it can contain
+other MIME entities -- attachments for example -- nested inside it.
 
-A Message has a lot of different Headers which are there to present
-information about the message to the recipients' mail client. Most of these
-headers will be familiar to the majority of users, but we'll list the basic
-ones. Although it's possible to work directly with the Headers of a Message
-(or other MIME entity), the standard Headers have accessor methods provided to
-abstract away the complex details for you. For example, although the Date on a
-message is written with a strict format, you only need to pass a
-DateTimeInterface instance to ``setDate()``.
+A Message has a lot of different Headers which are there to present information
+about the message to the recipients' mail client. Most of these headers will be
+familiar to the majority of users, but we'll list the basic ones. Although it's
+possible to work directly with the Headers of a Message (or other MIME entity),
+the standard Headers have accessor methods provided to abstract away the
+complex details for you. For example, although the Date on a message is written
+with a strict format, you only need to pass a DateTimeInterface instance to
+``setDate()``.
 
 +-------------------------------+------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
 | Header                        | Description                                                                                                                        | Accessors                                   |
@@ -113,24 +110,15 @@ Working with a Message Object
 
 Although there are a lot of available methods on a message object, you only
 need to make use of a small subset of them. Usually you'll use
-``setSubject()``, ``setTo()`` and
-``setFrom()`` before setting the body of your message with
-``setBody()``.
-
-Calling methods is simple. You just call them like functions, but using the
-object operator "``->``" to do so. If you've created
-a message object and called it ``$message`` then you'd set a
-subject on it like so::
-
-    require_once 'lib/swift_required.php';
+``setSubject()``, ``setTo()`` and ``setFrom()`` before setting the body of your
+message with ``setBody()``::
 
     $message = new Swift_Message();
     $message->setSubject('My subject');
 
-All MIME entities (including a message) have a ``toString()``
-method that you can call if you want to take a look at what is going to be
-sent. For example, if you ``echo
-$message->toString();`` you would see something like this:
+All MIME entities (including a message) have a ``toString()`` method that you
+can call if you want to take a look at what is going to be sent. For example,
+if you ``echo $message->toString();`` you would see something like this:
 
 .. code-block:: text
 

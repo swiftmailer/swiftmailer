@@ -35,8 +35,6 @@ be returned, which equates to a boolean ``false``. If you set two ``To:``
 recipients and three ``Bcc:`` recipients in the message and all of the
 recipients are delivered to successfully then the value 5 will be returned::
 
-    require_once 'lib/swift_required.php';
-
     // Create the Transport
     $transport = (new Swift_SmtpTransport('smtp.example.org', 25))
       ->setUsername('your username')
@@ -127,8 +125,6 @@ To use the SMTP Transport:
 A connection to the SMTP server will be established upon the first call to
 ``send()``::
 
-    require_once 'lib/swift_required.php';
-
     // Create the Transport
     $transport = new Swift_SmtpTransport('smtp.example.org', 25);
 
@@ -167,8 +163,6 @@ settings.
     appropriate OpenSSL transports wrappers. You can check if "tls" and/or
     "ssl" are present in your PHP installation by using the PHP function
     ``stream_get_transports()``::
-
-        require_once 'lib/swift_required.php';
 
         // Create the Transport
         $transport = new Swift_SmtpTransport('smtp.example.org', 587, 'ssl');
@@ -209,8 +203,6 @@ be thrown.
     If you need to know early whether or not authentication has failed and an
     Exception is going to be thrown, call the ``start()`` method on the
     created Transport::
-
-        require_once 'lib/swift_required.php';
 
         // Create the Transport the call setUsername() and setPassword()
         $transport = new Swift_SmtpTransport('smtp.example.org', 25)
@@ -298,8 +290,6 @@ A sendmail process will be started upon the first call to ``send()``. If the
 process cannot be started successfully an Exception of type
 ``Swift_TransportException`` will be thrown::
 
-    require_once 'lib/swift_required.php';
-
     // Create the Transport
     $transport = new Swift_SendmailTransport('/usr/sbin/exim -bs');
 
@@ -384,8 +374,6 @@ returned, which equates to a boolean ``false``. If you set two
 ``To:`` recipients and three ``Bcc:`` recipients in the message and all of the
 recipients are delivered to successfully then the value 5 will be returned::
 
-    require_once 'lib/swift_required.php';
-
     // Create the Transport
     $transport = new Swift_SmtpTransport('localhost', 25);
 
@@ -459,8 +447,6 @@ exception and stop the execution or your script early.
     In the following example, two emails are sent. One to each of
     ``receiver@domain.org`` and ``other@domain.org``. These recipients will
     not be aware of each other::
-
-        require_once 'lib/swift_required.php';
 
         // Create the Transport
         $transport = new Swift_SmtpTransport('localhost', 25);
