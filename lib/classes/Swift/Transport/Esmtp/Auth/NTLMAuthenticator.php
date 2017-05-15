@@ -576,8 +576,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      */
     protected function desEncrypt($value, $key)
     {
-        // 1 == OPENSSL_RAW_DATA - but constant is only available as of PHP 5.4.
-        return substr(openssl_encrypt($value, 'DES-ECB', $key, 1), 0, 8);
+        return substr(openssl_encrypt($value, 'DES-ECB', $key, \OPENSSL_RAW_DATA), 0, 8);
     }
 
     /**
