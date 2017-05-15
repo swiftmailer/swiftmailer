@@ -9,6 +9,8 @@ class Swift_MessageTest extends \PHPUnit\Framework\TestCase
         $message1_clone = clone $message1;
 
         $this->recursiveObjectCloningCheck($message1, $message2, $message1_clone);
+        // the test above will fail if the two messages are not identical
+        $this->addToAssertionCount(1);
     }
 
     public function testCloningWithSigners()
@@ -22,6 +24,8 @@ class Swift_MessageTest extends \PHPUnit\Framework\TestCase
         $message1_clone = clone $message1;
 
         $this->recursiveObjectCloningCheck($message1, $message2, $message1_clone);
+        // the test above will fail if the two messages are not identical
+        $this->addToAssertionCount(1);
     }
 
     public function testBodySwap()

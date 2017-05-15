@@ -5,7 +5,8 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 {
     public function testNestingLevelIsSubpart()
     {
-        //Overridden
+        // not relevant
+        $this->addToAssertionCount(1);
     }
 
     public function testNestingLevelIsTop()

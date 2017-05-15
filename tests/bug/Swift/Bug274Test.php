@@ -1,21 +1,15 @@
 <?php
 
-// TODO update test
-
 class Swift_Bug274Test extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @expectedException \Swift_IoException
+     * @expectedMessageException The path cannot be empty
+     */
     public function testEmptyFileNameAsAttachment()
     {
         $message = new Swift_Message();
-        // TODO no longer supported by phpunit test must be modified
-        // $this->setExpectedException('Swift_IoException', 'The path cannot be empty');
-        try {
-            $message->attach(Swift_Attachment::fromPath(''));
-        } catch (Exception $e) {
-            if (!is_a($e, 'Swift_IoException')) {
-                $this->fail('Expected Swift_IoException - The path cannot be empty');
-            }
-        }
+        $message->attach(Swift_Attachment::fromPath(''));
     }
 
     public function testNonEmptyFileNameAsAttachment()
@@ -26,5 +20,6 @@ class Swift_Bug274Test extends \PHPUnit\Framework\TestCase
         } catch (Exception $e) {
             $this->fail('Path should not be empty');
         }
+        $this->addToAssertionCount(1);
     }
 }

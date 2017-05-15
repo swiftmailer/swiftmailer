@@ -99,16 +99,14 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
         $this->assertEquals('<a.b+&%$.c@d>', $header->getFieldBody());
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedMessageException "a b c" is not valid id-left
+     */
     public function testInvalidIdLeftThrowsException()
     {
-        try {
-            $header = $this->getHeader('References');
-            $header->setId('a b c@d');
-            $this->fail(
-                'Exception should be thrown since "a b c" is not valid id-left.'
-                );
-        } catch (Exception $e) {
-        }
+        $header = $this->getHeader('References');
+        $header->setId('a b c@d');
     }
 
     public function testIdRightCanBeDotAtom()
@@ -135,32 +133,27 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
         $this->assertEquals('<a@[1.2.3.4]>', $header->getFieldBody());
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedMessageException "b c d" is not valid id-right
+     */
     public function testInvalidIdRightThrowsException()
     {
-        try {
-            $header = $this->getHeader('References');
-            $header->setId('a@b c d');
-            $this->fail(
-                'Exception should be thrown since "b c d" is not valid id-right.'
-                );
-        } catch (Exception $e) {
-        }
+        $header = $this->getHeader('References');
+        $header->setId('a@b c d');
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedMessageException "abc" is does not contain @
+     */
     public function testMissingAtSignThrowsException()
     {
         /* -- RFC 2822, 3.6.4.
      msg-id          =       [CFWS] "<" id-left "@" id-right ">" [CFWS]
      */
-
-        try {
-            $header = $this->getHeader('References');
-            $header->setId('abc');
-            $this->fail(
-                'Exception should be thrown since "abc" is does not contain @.'
-                );
-        } catch (Exception $e) {
-        }
+        $header = $this->getHeader('References');
+        $header->setId('abc');
     }
 
     public function testSetBodyModel()

@@ -16,5 +16,7 @@ class Swift_DependencyContainerAcceptanceTest extends PHPUnit\Framework\TestCase
                 $this->fail($e->getMessage());
             }
         }
+        // previous loop would fail if there is an issue
+        $this->addToAssertionCount(1);
     }
 }
