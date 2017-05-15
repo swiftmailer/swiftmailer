@@ -43,13 +43,27 @@ recipients are delivered to successfully then the value 5 will be returned::
 Transport Types
 ~~~~~~~~~~~~~~~
 
-A Transport is the component which actually does the sending. You need to
-provide a Transport object to the Mailer class and there are several possible
-options.
+Transports are the classes in Swift Mailer that are responsible for
+communicating with a service in order to deliver a Message. There are several
+types of Transport in Swift Mailer, all of which implement the
+``Swift_Transport`` interface::
 
-Typically you will not need to know how a Transport works under-the-surface,
-you will only need to know how to create an instance of one, and which one to
-use for your environment.
+* ``Swift_SmtpTransport``: Sends messages over SMTP; Supports Authentication;
+  Supports Encryption. Very portable; Pleasingly predictable results; Provides
+  good feedback;
+
+* ``Swift_SendmailTransport``: Communicates with a locally installed
+  ``sendmail`` executable (Linux/UNIX). Quick time-to-run; Provides
+  less-accurate feedback than SMTP; Requires ``sendmail`` installation;
+
+* ``Swift_LoadBalancedTransport``: Cycles through a collection of the other
+  Transports to manage load-reduction. Provides graceful fallback if one
+  Transport fails (e.g. an SMTP server is down); Keeps the load on remote
+  services down by spreading the work;
+
+* ``Swift_FailoverTransport``: Works in conjunction with a collection of the
+  other Transports to provide high-availability. Provides graceful fallback if
+  one Transport fails (e.g. an SMTP server is down).
 
 The SMTP Transport
 ..................

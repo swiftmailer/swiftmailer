@@ -1,9 +1,18 @@
 Plugins
 =======
 
-Plugins are provided with Swift Mailer and can be used to extend the behavior
-of the library in situations where using simple class inheritance would be more
-complex.
+Plugins exist to extend, or modify the behaviour of Swift Mailer. They respond
+to Events that are fired within the Transports during sending.
+
+There are a number of Plugins provided as part of the base Swift Mailer package
+and they all follow a common interface to respond to Events fired within the
+library. Interfaces are provided to "listen" to each type of Event fired and to
+act as desired when a listened-to Event occurs.
+
+Although several plugins are provided with Swift Mailer out-of-the-box, the
+Events system has been specifically designed to make it easy for experienced
+object-oriented developers to write their own plugins in order to achieve
+goals that may not be possible with the base library.
 
 AntiFlood Plugin
 ----------------
