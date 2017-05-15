@@ -20,7 +20,7 @@
     },
     "require-dev": {
         "mockery/mockery": "~0.9.1",
-        "symfony/phpunit-bridge": "~3.2"
+        "symfony/phpunit-bridge": "~3.3@dev"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]
