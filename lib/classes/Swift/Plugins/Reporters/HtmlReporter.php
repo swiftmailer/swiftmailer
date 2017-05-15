@@ -18,11 +18,11 @@ class Swift_Plugins_Reporters_HtmlReporter implements Swift_Plugins_Reporter
     /**
      * Notifies this ReportNotifier that $address failed or succeeded.
      *
-     * @param Swift_Mime_Message $message
-     * @param string             $address
-     * @param int                $result  from {@see RESULT_PASS, RESULT_FAIL}
+     * @param Swift_Mime_SimpleMessage $message
+     * @param string                   $address
+     * @param int                      $result  from {@see RESULT_PASS, RESULT_FAIL}
      */
-    public function notify(Swift_Mime_Message $message, $address, $result)
+    public function notify(Swift_Mime_SimpleMessage $message, $address, $result)
     {
         if (self::RESULT_PASS == $result) {
             echo '<div style="color: #fff; background: #006600; padding: 2px; margin: 2px;">'.PHP_EOL;

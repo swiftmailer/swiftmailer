@@ -11,11 +11,11 @@
 /**
  * Handles Quoted Printable (QP) Transfer Encoding in Swift Mailer.
  *
- * @author Chris Corbyn
+ * @author     Chris Corbyn
  */
 class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder implements Swift_Mime_ContentEncoder
 {
-    protected $_dotEscape;
+    protected $dotEscape;
 
     /**
      * Creates a new QpContentEncoder for the given CharacterStream.
@@ -26,26 +26,26 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
      */
     public function __construct(Swift_CharacterStream $charStream, Swift_StreamFilter $filter = null, $dotEscape = false)
     {
-        $this->_dotEscape = $dotEscape;
+        $this->dotEscape = $dotEscape;
         parent::__construct($charStream, $filter);
     }
 
     public function __sleep()
     {
-        return array('_charStream', '_filter', '_dotEscape');
+        return array('charStream', 'filter', 'dotEscape');
     }
 
     protected function getSafeMapShareId()
     {
-        return get_class($this).($this->_dotEscape ? '.dotEscape' : '');
+        return get_class($this).($this->dotEscape ? '.dotEscape' : '');
     }
 
     protected function initSafeMap()
     {
         parent::initSafeMap();
-        if ($this->_dotEscape) {
+        if ($this->dotEscape) {
             /* Encode . as =2e for buggy remote servers */
-            unset($this->_safeMap[0x2e]);
+            unset($this->safeMap[0x2e]);
         }
     }
 
@@ -69,20 +69,20 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
 
         $thisLineLength = $maxLineLength - $firstLineOffset;
 
-        $this->_charStream->flushContents();
-        $this->_charStream->importByteStream($os);
+        $this->charStream->flushContents();
+        $this->charStream->importByteStream($os);
 
         $currentLine = '';
         $prepend = '';
         $size = $lineLen = 0;
 
-        while (false !== $bytes = $this->_nextSequence()) {
+        while (false !== $bytes = $this->nextSequence()) {
             // If we're filtering the input
-            if (isset($this->_filter)) {
+            if (isset($this->filter)) {
                 // If we can't filter because we need more bytes
-                while ($this->_filter->shouldBuffer($bytes)) {
+                while ($this->filter->shouldBuffer($bytes)) {
                     // Then collect bytes into the buffer
-                    if (false === $moreBytes = $this->_nextSequence(1)) {
+                    if (false === $moreBytes = $this->nextSequence(1)) {
                         break;
                     }
 
@@ -91,16 +91,16 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
                     }
                 }
                 // And filter them
-                $bytes = $this->_filter->filter($bytes);
+                $bytes = $this->filter->filter($bytes);
             }
 
-            $enc = $this->_encodeByteSequence($bytes, $size);
+            $enc = $this->encodeByteSequence($bytes, $size);
 
             $i = strpos($enc, '=0D=0A');
             $newLineLength = $lineLen + ($i === false ? $size : $i);
 
             if ($currentLine && $newLineLength >= $thisLineLength) {
-                $is->write($prepend.$this->_standardize($currentLine));
+                $is->write($prepend.$this->standardize($currentLine));
                 $currentLine = '';
                 $prepend = "=\r\n";
                 $thisLineLength = $maxLineLength;
@@ -117,7 +117,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
             }
         }
         if (strlen($currentLine)) {
-            $is->write($prepend.$this->_standardize($currentLine));
+            $is->write($prepend.$this->standardize($currentLine));
         }
     }
 

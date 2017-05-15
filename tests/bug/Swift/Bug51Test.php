@@ -2,41 +2,41 @@
 
 class Swift_Bug51Test extends \SwiftMailerTestCase
 {
-    private $_attachmentFile;
-    private $_outputFile;
+    private $attachmentFile;
+    private $outputFile;
 
     protected function setUp()
     {
-        $this->_attachmentFile = sys_get_temp_dir().'/attach.rand.bin';
-        file_put_contents($this->_attachmentFile, '');
+        $this->attachmentFile = sys_get_temp_dir().'/attach.rand.bin';
+        file_put_contents($this->attachmentFile, '');
 
-        $this->_outputFile = sys_get_temp_dir().'/attach.out.bin';
-        file_put_contents($this->_outputFile, '');
+        $this->outputFile = sys_get_temp_dir().'/attach.out.bin';
+        file_put_contents($this->outputFile, '');
     }
 
     protected function tearDown()
     {
-        unlink($this->_attachmentFile);
-        unlink($this->_outputFile);
+        unlink($this->attachmentFile);
+        unlink($this->outputFile);
     }
 
     public function testAttachmentsDoNotGetTruncatedUsingToByteStream()
     {
         //Run 100 times with 10KB attachments
         for ($i = 0; $i < 10; ++$i) {
-            $message = $this->_createMessageWithRandomAttachment(
-                10000, $this->_attachmentFile
+            $message = $this->createMessageWithRandomAttachment(
+                10000, $this->attachmentFile
             );
 
-            file_put_contents($this->_outputFile, '');
+            file_put_contents($this->outputFile, '');
             $message->toByteStream(
-                new Swift_ByteStream_FileByteStream($this->_outputFile, true)
+                new Swift_ByteStream_FileByteStream($this->outputFile, true)
             );
 
-            $emailSource = file_get_contents($this->_outputFile);
+            $emailSource = file_get_contents($this->outputFile);
 
             $this->assertAttachmentFromSourceMatches(
-                file_get_contents($this->_attachmentFile),
+                file_get_contents($this->attachmentFile),
                 $emailSource
             );
         }
@@ -46,14 +46,14 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
     {
         //Run 100 times with 10KB attachments
         for ($i = 0; $i < 10; ++$i) {
-            $message = $this->_createMessageWithRandomAttachment(
-                10000, $this->_attachmentFile
+            $message = $this->createMessageWithRandomAttachment(
+                10000, $this->attachmentFile
             );
 
             $emailSource = $message->toString();
 
             $this->assertAttachmentFromSourceMatches(
-                file_get_contents($this->_attachmentFile),
+                file_get_contents($this->attachmentFile),
                 $emailSource
             );
         }
@@ -79,7 +79,7 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
         $this->assertIdenticalBinary($attachmentData, base64_decode($attachmentBase64));
     }
 
-    private function _fillFileWithRandomBytes($byteCount, $file)
+    private function fillFileWithRandomBytes($byteCount, $file)
     {
         // I was going to use dd with if=/dev/random but this way seems more
         // cross platform even if a hella expensive!!
@@ -93,11 +93,11 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
         fclose($fp);
     }
 
-    private function _createMessageWithRandomAttachment($size, $attachmentPath)
+    private function createMessageWithRandomAttachment($size, $attachmentPath)
     {
-        $this->_fillFileWithRandomBytes($size, $attachmentPath);
+        $this->fillFileWithRandomBytes($size, $attachmentPath);
 
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('test')
             ->setBody('test')
             ->setFrom('a@b.c')

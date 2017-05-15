@@ -2,16 +2,16 @@
 
 class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTestCase
 {
-    private $_encoder;
+    private $encoder;
 
     protected function setUp()
     {
-        $this->_encoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
+        $this->encoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
     }
 
     public function testNameIsBase64()
     {
-        $this->assertEquals('base64', $this->_encoder->getName());
+        $this->assertEquals('base64', $this->encoder->getName());
     }
 
     /*
@@ -32,8 +32,8 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
          of which is translated into a single digit in the base64 alphabet.
          */
 
-        $os = $this->_createOutputByteStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -46,7 +46,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
            ->zeroOrMoreTimes()
            ->andReturn(false);
 
-        $this->_encoder->encodeByteStream($os, $is);
+        $this->encoder->encodeByteStream($os, $is);
         $this->assertEquals('MTIz', $collection->content);
     }
 
@@ -73,8 +73,8 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
        */
 
         for ($i = 0; $i < 30; ++$i) {
-            $os = $this->_createOutputByteStream();
-            $is = $this->_createInputByteStream();
+            $os = $this->createOutputByteStream();
+            $is = $this->createInputByteStream();
             $collection = new Swift_StreamCollector();
 
             $is->shouldReceive('write')
@@ -87,15 +87,15 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->zeroOrMoreTimes()
                ->andReturn(false);
 
-            $this->_encoder->encodeByteStream($os, $is);
+            $this->encoder->encodeByteStream($os, $is);
             $this->assertRegExp('~^[a-zA-Z0-9/\+]{2}==$~', $collection->content,
                 '%s: A single byte should have 2 bytes of padding'
                 );
         }
 
         for ($i = 0; $i < 30; ++$i) {
-            $os = $this->_createOutputByteStream();
-            $is = $this->_createInputByteStream();
+            $os = $this->createOutputByteStream();
+            $is = $this->createInputByteStream();
             $collection = new Swift_StreamCollector();
 
             $is->shouldReceive('write')
@@ -108,15 +108,15 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->zeroOrMoreTimes()
                ->andReturn(false);
 
-            $this->_encoder->encodeByteStream($os, $is);
+            $this->encoder->encodeByteStream($os, $is);
             $this->assertRegExp('~^[a-zA-Z0-9/\+]{3}=$~', $collection->content,
                 '%s: Two bytes should have 1 byte of padding'
                 );
         }
 
         for ($i = 0; $i < 30; ++$i) {
-            $os = $this->_createOutputByteStream();
-            $is = $this->_createInputByteStream();
+            $os = $this->createOutputByteStream();
+            $is = $this->createInputByteStream();
             $collection = new Swift_StreamCollector();
 
             $is->shouldReceive('write')
@@ -129,7 +129,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->zeroOrMoreTimes()
                ->andReturn(false);
 
-            $this->_encoder->encodeByteStream($os, $is);
+            $this->encoder->encodeByteStream($os, $is);
             $this->assertRegExp('~^[a-zA-Z0-9/\+]{4}$~', $collection->content,
                 '%s: Three bytes should have no padding'
                 );
@@ -144,8 +144,8 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
          found in Table 1 must be ignored by decoding software.
          */
 
-        $os = $this->_createOutputByteStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -176,7 +176,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
            ->zeroOrMoreTimes()
            ->andReturn(false);
 
-        $this->_encoder->encodeByteStream($os, $is);
+        $this->encoder->encodeByteStream($os, $is);
         $this->assertEquals(
             "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDREVGR0hJSktMTU5PUFFS\r\n".
             'U1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts',
@@ -186,8 +186,8 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
 
     public function testMaximumLineLengthCanBeDifferent()
     {
-        $os = $this->_createOutputByteStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -218,7 +218,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
            ->zeroOrMoreTimes()
            ->andReturn(false);
 
-        $this->_encoder->encodeByteStream($os, $is, 0, 50);
+        $this->encoder->encodeByteStream($os, $is, 0, 50);
         $this->assertEquals(
             "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3OD\r\n".
             "kwQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY3YWJj\r\n".
@@ -229,8 +229,8 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
 
     public function testMaximumLineLengthIsNeverMoreThan76Chars()
     {
-        $os = $this->_createOutputByteStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -261,7 +261,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
            ->zeroOrMoreTimes()
            ->andReturn(false);
 
-        $this->_encoder->encodeByteStream($os, $is, 0, 100);
+        $this->encoder->encodeByteStream($os, $is, 0, 100);
         $this->assertEquals(
             "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDREVGR0hJSktMTU5PUFFS\r\n".
             'U1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts',
@@ -271,8 +271,8 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
 
     public function testFirstLineLengthCanBeDifferent()
     {
-        $os = $this->_createOutputByteStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -303,7 +303,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
            ->zeroOrMoreTimes()
            ->andReturn(false);
 
-        $this->_encoder->encodeByteStream($os, $is, 19);
+        $this->encoder->encodeByteStream($os, $is, 19);
         $this->assertEquals(
             "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmMxMjM0NTY3ODkwQUJDR\r\n".
             'EVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts',
@@ -311,12 +311,12 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
             );
     }
 
-    private function _createOutputByteStream($stub = false)
+    private function createOutputByteStream($stub = false)
     {
         return $this->getMockery('Swift_OutputByteStream')->shouldIgnoreMissing();
     }
 
-    private function _createInputByteStream($stub = false)
+    private function createInputByteStream($stub = false)
     {
         return $this->getMockery('Swift_InputByteStream')->shouldIgnoreMissing();
     }

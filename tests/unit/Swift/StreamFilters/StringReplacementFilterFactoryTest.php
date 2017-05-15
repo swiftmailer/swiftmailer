@@ -4,7 +4,7 @@ class Swift_StreamFilters_StringReplacementFilterFactoryTest extends \PHPUnit_Fr
 {
     public function testInstancesOfStringReplacementFilterAreCreated()
     {
-        $factory = $this->_createFactory();
+        $factory = $this->createFactory();
         $this->assertInstanceOf(
             'Swift_StreamFilters_StringReplacementFilter',
             $factory->createFilter('a', 'b')
@@ -13,7 +13,7 @@ class Swift_StreamFilters_StringReplacementFilterFactoryTest extends \PHPUnit_Fr
 
     public function testSameInstancesAreCached()
     {
-        $factory = $this->_createFactory();
+        $factory = $this->createFactory();
         $filter1 = $factory->createFilter('a', 'b');
         $filter2 = $factory->createFilter('a', 'b');
         $this->assertSame($filter1, $filter2, '%s: Instances should be cached');
@@ -21,7 +21,7 @@ class Swift_StreamFilters_StringReplacementFilterFactoryTest extends \PHPUnit_Fr
 
     public function testDifferingInstancesAreNotCached()
     {
-        $factory = $this->_createFactory();
+        $factory = $this->createFactory();
         $filter1 = $factory->createFilter('a', 'b');
         $filter2 = $factory->createFilter('a', 'c');
         $this->assertNotEquals($filter1, $filter2,
@@ -29,7 +29,7 @@ class Swift_StreamFilters_StringReplacementFilterFactoryTest extends \PHPUnit_Fr
             );
     }
 
-    private function _createFactory()
+    private function createFactory()
     {
         return new Swift_StreamFilters_StringReplacementFilterFactory();
     }

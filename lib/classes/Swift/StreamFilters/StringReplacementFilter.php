@@ -16,10 +16,10 @@
 class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
 {
     /** The needle(s) to search for */
-    private $_search;
+    private $search;
 
     /** The replacement(s) to make */
-    private $_replace;
+    private $replace;
 
     /**
      * Create a new StringReplacementFilter with $search and $replace.
@@ -29,8 +29,8 @@ class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
      */
     public function __construct($search, $replace)
     {
-        $this->_search = $search;
-        $this->_replace = $replace;
+        $this->search = $search;
+        $this->replace = $replace;
     }
 
     /**
@@ -47,7 +47,7 @@ class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
         }
 
         $endOfBuffer = substr($buffer, -1);
-        foreach ((array) $this->_search as $needle) {
+        foreach ((array) $this->search as $needle) {
             if (false !== strpos($needle, $endOfBuffer)) {
                 return true;
             }
@@ -65,6 +65,6 @@ class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
      */
     public function filter($buffer)
     {
-        return str_replace($this->_search, $this->_replace, $buffer);
+        return str_replace($this->search, $this->replace, $buffer);
     }
 }

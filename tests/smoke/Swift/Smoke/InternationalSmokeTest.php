@@ -10,13 +10,13 @@ class Swift_Smoke_InternationalSmokeTest extends SwiftMailerSmokeTestCase
     protected function setUp()
     {
         parent::setup(); // For skip
-        $this->_attFile = __DIR__.'/../../../_samples/files/textfile.zip';
+        $this->attFile = __DIR__.'/../../../_samples/files/textfile.zip';
     }
 
     public function testAttachmentSending()
     {
-        $mailer = $this->_getMailer();
-        $message = Swift_Message::newInstance()
+        $mailer = $this->getMailer();
+        $message = (new Swift_Message())
             ->setCharset('utf-8')
             ->setSubject('[Swift Mailer] InternationalSmokeTest (διεθνής)')
             ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Χριστοφορου (Swift Mailer)'))
@@ -28,7 +28,7 @@ class Swift_Smoke_InternationalSmokeTest extends SwiftMailerSmokeTestCase
                 'Following is some arbitrary Greek text:'.PHP_EOL.
                 'Δεν βρέθηκαν λέξεις.'
                 )
-            ->attach(Swift_Attachment::fromPath($this->_attFile)
+            ->attach(Swift_Attachment::fromPath($this->attFile)
                 ->setContentType('application/zip')
                 ->setFilename('κείμενο, εδάφιο, θέμα.zip')
                 )

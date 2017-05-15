@@ -20,20 +20,18 @@ class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractH
      *
      * @var string
      */
-    private $_value;
+    private $value;
 
     /**
      * Creates a new SimpleHeader with $name.
      *
      * @param string                   $name
      * @param Swift_Mime_HeaderEncoder $encoder
-     * @param Swift_Mime_Grammar       $grammar
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Mime_Grammar $grammar)
+    public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);
-        parent::__construct($grammar);
     }
 
     /**
@@ -80,7 +78,7 @@ class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractH
      */
     public function getValue()
     {
-        return $this->_value;
+        return $this->value;
     }
 
     /**
@@ -90,8 +88,8 @@ class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractH
      */
     public function setValue($value)
     {
-        $this->clearCachedValueIf($this->_value != $value);
-        $this->_value = $value;
+        $this->clearCachedValueIf($this->value != $value);
+        $this->value = $value;
     }
 
     /**
@@ -103,7 +101,7 @@ class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractH
     {
         if (!$this->getCachedValue()) {
             $this->setCachedValue(
-                $this->encodeWords($this, $this->_value)
+                $this->encodeWords($this, $this->value)
                 );
         }
 

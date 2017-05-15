@@ -22,13 +22,13 @@ class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest extends Swift_Transpo
         parent::setUp();
     }
 
-    protected function _initializeBuffer()
+    protected function initializeBuffer()
     {
         $parts = explode(':', SWIFT_SSL_HOST);
         $host = $parts[0];
         $port = isset($parts[1]) ? $parts[1] : 25;
 
-        $this->_buffer->initialize(array(
+        $this->buffer->initialize(array(
             'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
             'host' => $host,
             'port' => $port,

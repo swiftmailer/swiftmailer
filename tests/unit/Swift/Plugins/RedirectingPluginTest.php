@@ -12,7 +12,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginChangesRecipients()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('...')
             ->setFrom(array('john@example.com' => 'John Doe'))
             ->setTo($to = array(
@@ -32,7 +32,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Swift_Plugins_RedirectingPlugin('god@example.com');
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $plugin->beforeSendPerformed($evt);
 
@@ -49,7 +49,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginRespectsUnsetToList()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('...')
             ->setFrom(array('john@example.com' => 'John Doe'))
             ->setCc($cc = array(
@@ -65,7 +65,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Swift_Plugins_RedirectingPlugin('god@example.com');
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $plugin->beforeSendPerformed($evt);
 
@@ -82,7 +82,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginRespectsAWhitelistOfPatterns()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('...')
             ->setFrom(array('john@example.com' => 'John Doe'))
             ->setTo($to = array(
@@ -111,7 +111,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($recipient, $plugin->getRecipient());
         $this->assertEquals($plugin->getWhitelist(), $patterns);
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $plugin->beforeSendPerformed($evt);
 
@@ -128,7 +128,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testArrayOfRecipientsCanBeExplicitlyDefined()
     {
-        $message = Swift_Message::newInstance()
+        $message = (new Swift_Message())
             ->setSubject('...')
             ->setFrom(array('john@example.com' => 'John Doe'))
             ->setTo(array(
@@ -154,7 +154,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
 
         $plugin = new Swift_Plugins_RedirectingPlugin($recipients, $patterns);
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         $plugin->beforeSendPerformed($evt);
 
@@ -169,7 +169,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($message->getBcc(), array('fabien@example.com' => 'Fabien'));
     }
 
-    private function _createSendEvent(Swift_Mime_Message $message)
+    private function createSendEvent(Swift_Mime_SimpleMessage $message)
     {
         $evt = $this->getMockBuilder('Swift_Events_SendEvent')
                     ->disableOriginalConstructor()

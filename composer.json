@@ -15,23 +15,22 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.5.0",
+        "egulias/email-validator": "~2.0"
     },
     "require-dev": {
         "mockery/mockery": "~0.9.1",
-        "symfony/phpunit-bridge": "~3.2"
+        "symfony/phpunit-bridge": "~3.3@dev"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]
     },
     "autoload-dev": {
-        "psr-0": {
-            "Swift_": "tests/unit"
-        }
+        "psr-0": { "Swift_": "tests/unit" }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "5.4-dev"
+            "dev-master": "6.0-dev"
         }
     }
 }

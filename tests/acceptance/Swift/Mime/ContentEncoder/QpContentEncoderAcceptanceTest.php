@@ -2,13 +2,13 @@
 
 class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
-    private $_samplesDir;
-    private $_factory;
+    private $samplesDir;
+    private $factory;
 
     protected function setUp()
     {
-        $this->_samplesDir = realpath(__DIR__.'/../../../../_samples/charsets');
-        $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
+        $this->samplesDir = realpath(__DIR__.'/../../../../_samples/charsets');
+        $this->factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     }
 
     protected function tearDown()
@@ -18,7 +18,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
 
     public function testEncodingAndDecodingSamples()
     {
-        $sampleFp = opendir($this->_samplesDir);
+        $sampleFp = opendir($this->samplesDir);
         while (false !== $encodingDir = readdir($sampleFp)) {
             if (substr($encodingDir, 0, 1) == '.') {
                 continue;
@@ -26,10 +26,10 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
 
             $encoding = $encodingDir;
             $charStream = new Swift_CharacterStream_NgCharacterStream(
-                $this->_factory, $encoding);
+                $this->factory, $encoding);
             $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
 
-            $sampleDir = $this->_samplesDir.'/'.$encodingDir;
+            $sampleDir = $this->samplesDir.'/'.$encodingDir;
 
             if (is_dir($sampleDir)) {
                 $fileFp = opendir($sampleDir);
@@ -65,16 +65,16 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
 
     public function testEncodingAndDecodingSamplesFromDiConfiguredInstance()
     {
-        $sampleFp = opendir($this->_samplesDir);
+        $sampleFp = opendir($this->samplesDir);
         while (false !== $encodingDir = readdir($sampleFp)) {
             if (substr($encodingDir, 0, 1) == '.') {
                 continue;
             }
 
             $encoding = $encodingDir;
-            $encoder = $this->_createEncoderFromContainer();
+            $encoder = $this->createEncoderFromContainer();
 
-            $sampleDir = $this->_samplesDir.'/'.$encodingDir;
+            $sampleDir = $this->samplesDir.'/'.$encodingDir;
 
             if (is_dir($sampleDir)) {
                 $fileFp = opendir($sampleDir);
@@ -110,25 +110,25 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
 
     public function testEncodingLFTextWithDiConfiguredInstance()
     {
-        $encoder = $this->_createEncoderFromContainer();
+        $encoder = $this->createEncoderFromContainer();
         $this->assertEquals("a\r\nb\r\nc", $encoder->encodeString("a\nb\nc"));
     }
 
     public function testEncodingCRTextWithDiConfiguredInstance()
     {
-        $encoder = $this->_createEncoderFromContainer();
+        $encoder = $this->createEncoderFromContainer();
         $this->assertEquals("a\r\nb\r\nc", $encoder->encodeString("a\rb\rc"));
     }
 
     public function testEncodingLFCRTextWithDiConfiguredInstance()
     {
-        $encoder = $this->_createEncoderFromContainer();
+        $encoder = $this->createEncoderFromContainer();
         $this->assertEquals("a\r\n\r\nb\r\n\r\nc", $encoder->encodeString("a\n\rb\n\rc"));
     }
 
     public function testEncodingCRLFTextWithDiConfiguredInstance()
     {
-        $encoder = $this->_createEncoderFromContainer();
+        $encoder = $this->createEncoderFromContainer();
         $this->assertEquals("a\r\nb\r\nc", $encoder->encodeString("a\r\nb\r\nc"));
     }
 
@@ -136,11 +136,11 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
     {
         // Enable DotEscaping
         Swift_Preferences::getInstance()->setQPDotEscape(true);
-        $encoder = $this->_createEncoderFromContainer();
+        $encoder = $this->createEncoderFromContainer();
         $this->assertEquals("a=2E\r\n=2E\r\n=2Eb\r\nc", $encoder->encodeString("a.\r\n.\r\n.b\r\nc"));
         // Return to default
         Swift_Preferences::getInstance()->setQPDotEscape(false);
-        $encoder = $this->_createEncoderFromContainer();
+        $encoder = $this->createEncoderFromContainer();
         $this->assertEquals("a.\r\n.\r\n.b\r\nc", $encoder->encodeString("a.\r\n.\r\n.b\r\nc"));
     }
 
@@ -151,7 +151,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
         $this->testEncodingAndDecodingSamplesFromDiConfiguredInstance();
     }
 
-    private function _createEncoderFromContainer()
+    private function createEncoderFromContainer()
     {
         return Swift_DependencyContainer::getInstance()
             ->lookup('mime.qpcontentencoder')

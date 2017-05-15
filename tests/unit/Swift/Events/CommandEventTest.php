@@ -4,30 +4,30 @@ class Swift_Events_CommandEventTest extends \PHPUnit_Framework_TestCase
 {
     public function testCommandCanBeFetchedByGetter()
     {
-        $evt = $this->_createEvent($this->_createTransport(), "FOO\r\n");
+        $evt = $this->createEvent($this->createTransport(), "FOO\r\n");
         $this->assertEquals("FOO\r\n", $evt->getCommand());
     }
 
     public function testSuccessCodesCanBeFetchedViaGetter()
     {
-        $evt = $this->_createEvent($this->_createTransport(), "FOO\r\n", array(250));
+        $evt = $this->createEvent($this->createTransport(), "FOO\r\n", array(250));
         $this->assertEquals(array(250), $evt->getSuccessCodes());
     }
 
     public function testSourceIsBuffer()
     {
-        $transport = $this->_createTransport();
-        $evt = $this->_createEvent($transport, "FOO\r\n");
+        $transport = $this->createTransport();
+        $evt = $this->createEvent($transport, "FOO\r\n");
         $ref = $evt->getSource();
         $this->assertEquals($transport, $ref);
     }
 
-    private function _createEvent(Swift_Transport $source, $command, $successCodes = array())
+    private function createEvent(Swift_Transport $source, $command, $successCodes = array())
     {
         return new Swift_Events_CommandEvent($source, $command, $successCodes);
     }
 
-    private function _createTransport()
+    private function createTransport()
     {
         return $this->getMockBuilder('Swift_Transport')->getMock();
     }

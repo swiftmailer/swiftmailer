@@ -14,7 +14,7 @@ specify some recipients, add any attachments and write your message.
 
 To create a Message:
 
-* Call the ``newInstance()`` method of ``Swift_Message``.
+* Create a new instance of ``Swift_Message``.
 
 * Set your sender address (``From:``) with ``setFrom()`` or ``setSender()``.
 
@@ -31,7 +31,7 @@ To create a Message:
     require_once 'lib/swift_required.php';
 
     // Create the message
-    $message = Swift_Message::newInstance()
+    $message = new Swift_Message()
 
       // Give the message a subject
       ->setSubject('Your subject')
@@ -93,8 +93,8 @@ headers will be familiar to the majority of users, but we'll list the basic
 ones. Although it's possible to work directly with the Headers of a Message
 (or other MIME entity), the standard Headers have accessor methods provided to
 abstract away the complex details for you. For example, although the Date on a
-message is written with a strict format, you only need to pass a UNIX
-timestamp to ``setDate()``.
+message is written with a strict format, you only need to pass a
+DateTimeInterface instance to ``setDate()``.
 
 +-------------------------------+------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------+
 | Header                        | Description                                                                                                                        | Accessors                                   |
@@ -142,7 +142,7 @@ subject on it like so:
 
     require_once 'lib/swift_required.php';
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
     $message->setSubject('My subject');
 
 All MIME entities (including a message) have a ``toString()``
@@ -177,7 +177,7 @@ Setting the Subject Line
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The subject line, displayed in the recipients' mail client can be set with the
-``setSubject()`` method, or as a parameter to ``Swift_Message::newInstance()``.
+``setSubject()`` method, or as a parameter to ``new Swift_Message()``.
 
 To set the subject of your Message:
 
@@ -187,7 +187,7 @@ To set the subject of your Message:
   .. code-block:: php
 
     // Pass it as a parameter when you create the message
-    $message = Swift_Message::newInstance('My amazing subject');
+    $message = new Swift_Message('My amazing subject');
 
     // Or set it after like this
     $message->setSubject('My amazing subject');
@@ -224,7 +224,7 @@ if you've included HTML.
 .. code-block:: php
 
     // Pass it as a parameter when you create the message
-    $message = Swift_Message::newInstance('Subject here', 'My amazing body');
+    $message = new Swift_Message('Subject here', 'My amazing body');
 
     // Or set it after like this
     $message->setBody('My <em>amazing</em> body', 'text/html');
@@ -322,13 +322,13 @@ Attaching Dynamic Content
 
 Files that are generated at runtime, such as PDF documents or images created
 via GD can be attached directly to a message without writing them out to disk.
-Use the standard ``Swift_Attachment::newInstance()`` method.
+Use the standard ``new Swift_Attachment()`` method.
 
 To attach dynamically created content:
 
 * Create your content as you normally would.
 
-* Create an attachment with ``Swift_Attachment::newInstance()``, specifying
+* Create an attachment with ``new Swift_Attachment()``, specifying
   the source data of your content along with a name and the content-type.
 
 * Add the attachment to the message with ``attach()``.
@@ -347,14 +347,14 @@ with the filename and content-type you specify.
         $data = create_my_pdf_data();
 
         // Create the attachment with your data
-        $attachment = Swift_Attachment::newInstance($data, 'my-file.pdf', 'application/pdf');
+        $attachment = new Swift_Attachment($data, 'my-file.pdf', 'application/pdf');
 
         // Attach it to the message
         $message->attach($attachment);
 
 
         // You can alternatively use method chaining to build the attachment
-        $attachment = Swift_Attachment::newInstance()
+        $attachment = (new Swift_Attachment())
           ->setFilename('my-file.pdf')
           ->setContentType('application/pdf')
           ->setBody($data)
@@ -432,7 +432,7 @@ You can embed files that exist locally, or if your PHP installation has
 
 To embed an existing file:
 
-* Create a message object with ``Swift_Message::newInstance()``.
+* Create a message object with ``new Swift_Message()``.
 
 * Set the body as HTML, and embed a file at the correct point in the message with ``embed()``.
 
@@ -452,7 +452,7 @@ is used as a ``src`` attribute.
     .. code-block:: php
 
         // Create the message
-        $message = Swift_Message::newInstance('My subject');
+        $message = new Swift_Message('My subject');
 
         // Set the body
         $message->setBody(
@@ -503,11 +503,11 @@ Embedding Dynamic Content
 
 Images that are generated at runtime, such as images created via GD can be
 embedded directly to a message without writing them out to disk. Use the
-standard ``Swift_Image::newInstance()`` method.
+standard ``new Swift_Image()`` method.
 
 To embed dynamically created content:
 
-* Create a message object with ``Swift_Message::newInstance()``.
+* Create a message object with ``new Swift_Message()``.
 
 * Set the body as HTML, and embed a file at the correct point in the message
   with ``embed()``. You will need to specify a filename and a content-type.
@@ -531,7 +531,7 @@ is used as a ``src`` attribute.
         $img_data = create_my_image_data();
 
         // Create the message
-        $message = Swift_Message::newInstance('My subject');
+        $message = new Swift_Message('My subject');
 
         // Set the body
         $message->setBody(
@@ -539,7 +539,7 @@ is used as a ``src`` attribute.
         ' <head></head>' .
         ' <body>' .
         '  Here is an image <img src="' . // Embed the file
-             $message->embed(Swift_Image::newInstance($img_data, 'image.jpg', 'image/jpeg')) .
+             $message->embed(new Swift_Image($img_data, 'image.jpg', 'image/jpeg')) .
            '" alt="Image" />' .
         '  Rest of message' .
         ' </body>' .
@@ -550,7 +550,7 @@ is used as a ``src`` attribute.
 
         // If placing the embed() code inline becomes cumbersome
         // it's easy to do this in two steps
-        $cid = $message->embed(Swift_Image::newInstance($img_data, 'image.jpg', 'image/jpeg'));
+        $cid = $message->embed(new Swift_Image($img_data, 'image.jpg', 'image/jpeg'));
 
         $message->setBody(
         '<html>' .
@@ -633,7 +633,7 @@ Setting ``To:`` Recipients
 ``setTo()`` or ``addTo()`` methods of the message.
 
 To set ``To:`` recipients, create the message object using either
-``new Swift_Message( ... )`` or ``Swift_Message::newInstance( ... )``,
+``new Swift_Message( ... )`` or ``new Swift_Message( ... )``,
 then call the ``setTo()`` method with a complete array of addresses, or use the
 ``addTo()`` method to iteratively add recipients.
 
@@ -673,7 +673,7 @@ Setting ``Cc:`` Recipients
 message.
 
 To set ``Cc:`` recipients, create the message object using either
-``new Swift_Message( ... )`` or ``Swift_Message::newInstance( ... )``, then call
+``new Swift_Message( ... )`` or ``new Swift_Message( ... )``, then call
 the ``setCc()`` method with a complete array of addresses, or use the
 ``addCc()`` method to iteratively add recipients.
 
@@ -713,7 +713,7 @@ Setting ``Bcc:`` Recipients
 it, and are set with the ``setBcc()`` or ``addBcc()`` methods of the message.
 
 To set ``Bcc:`` recipients, create the message object using either ``new
-Swift_Message( ... )`` or ``Swift_Message::newInstance( ... )``, then call the
+Swift_Message( ... )`` or ``new Swift_Message( ... )``, then call the
 ``setBcc()`` method with a complete array of addresses, or use
 the ``addBcc()`` method to iteratively add recipients.
 
@@ -878,9 +878,9 @@ When using OpenSSL this can done by the including the *-addtrust emailProtection
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
-    $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
+    $smimeSigner = new Swift_Signers_SMimeSigner();
     $smimeSigner->setSignCertificate('/path/to/certificate.pem', '/path/to/private-key.pem');
     $message->attachSigner($smimeSigner);
 
@@ -888,9 +888,9 @@ When the private key is secured using a passphrase use the following instead.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
-    $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
+    $smimeSigner = new Swift_Signers_SMimeSigner();
     $smimeSigner->setSignCertificate('/path/to/certificate.pem', array('/path/to/private-key.pem', 'passphrase'));
     $message->attachSigner($smimeSigner);
 
@@ -914,9 +914,9 @@ Using both signing and encrypting is also possible.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
-    $smimeSigner = Swift_Signers_SMimeSigner::newInstance();
+    $smimeSigner = new Swift_Signers_SMimeSigner();
     $smimeSigner->setSignCertificate('/path/to/sign-certificate.pem', '/path/to/private-key.pem');
     $smimeSigner->setEncryptCertificate('/path/to/encrypt-certificate.pem');
     $message->attachSigner($smimeSigner);
@@ -993,7 +993,7 @@ To set the character set of your Message:
     Swift_Preferences::getInstance()->setCharset('iso-8859-2');
 
     // Approach 2: Call the setCharset() method of the message
-    $message = Swift_Message::newInstance()
+    $message = new Swift_Message()
       ->setCharset('iso-8859-2');
 
     // Approach 3: Specify the charset when setting the body

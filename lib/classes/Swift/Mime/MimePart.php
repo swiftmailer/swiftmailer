@@ -16,29 +16,29 @@
 class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
 {
     /** The format parameter last specified by the user */
-    protected $_userFormat;
+    protected $userFormat;
 
     /** The charset last specified by the user */
-    protected $_userCharset;
+    protected $userCharset;
 
     /** The delsp parameter last specified by the user */
-    protected $_userDelSp;
+    protected $userDelSp;
 
     /** The nesting level of this MimePart */
-    private $_nestingLevel = self::LEVEL_ALTERNATIVE;
+    private $nestingLevel = self::LEVEL_ALTERNATIVE;
 
     /**
      * Create a new MimePart with $headers, $encoder and $cache.
      *
-     * @param Swift_Mime_HeaderSet      $headers
-     * @param Swift_Mime_ContentEncoder $encoder
-     * @param Swift_KeyCache            $cache
-     * @param Swift_Mime_Grammar        $grammar
-     * @param string                    $charset
+     * @param Swift_Mime_SimpleHeaderSet $headers
+     * @param Swift_Mime_ContentEncoder  $encoder
+     * @param Swift_KeyCache             $cache
+     * @param Swift_IdGenerator          $idGenerator
+     * @param string                     $charset
      */
-    public function __construct(Swift_Mime_HeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_Mime_Grammar $grammar, $charset = null)
+    public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $charset = null)
     {
-        parent::__construct($headers, $encoder, $cache, $grammar);
+        parent::__construct($headers, $encoder, $cache, $idGenerator);
         $this->setContentType('text/plain');
         if (null !== $charset) {
             $this->setCharset($charset);
@@ -60,7 +60,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
         if (isset($charset)) {
             $this->setCharset($charset);
         }
-        $body = $this->_convertString($body);
+        $body = $this->convertString($body);
 
         parent::setBody($body, $contentType);
 
@@ -74,7 +74,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      */
     public function getCharset()
     {
-        return $this->_getHeaderParameter('Content-Type', 'charset');
+        return $this->getHeaderParameter('Content-Type', 'charset');
     }
 
     /**
@@ -86,11 +86,11 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      */
     public function setCharset($charset)
     {
-        $this->_setHeaderParameter('Content-Type', 'charset', $charset);
-        if ($charset !== $this->_userCharset) {
-            $this->_clearCache();
+        $this->setHeaderParameter('Content-Type', 'charset', $charset);
+        if ($charset !== $this->userCharset) {
+            $this->clearCache();
         }
-        $this->_userCharset = $charset;
+        $this->userCharset = $charset;
         parent::charsetChanged($charset);
 
         return $this;
@@ -103,7 +103,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      */
     public function getFormat()
     {
-        return $this->_getHeaderParameter('Content-Type', 'format');
+        return $this->getHeaderParameter('Content-Type', 'format');
     }
 
     /**
@@ -115,8 +115,8 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      */
     public function setFormat($format)
     {
-        $this->_setHeaderParameter('Content-Type', 'format', $format);
-        $this->_userFormat = $format;
+        $this->setHeaderParameter('Content-Type', 'format', $format);
+        $this->userFormat = $format;
 
         return $this;
     }
@@ -128,7 +128,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      */
     public function getDelSp()
     {
-        return 'yes' == $this->_getHeaderParameter('Content-Type', 'delsp') ? true : false;
+        return 'yes' == $this->getHeaderParameter('Content-Type', 'delsp') ? true : false;
     }
 
     /**
@@ -140,8 +140,8 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      */
     public function setDelSp($delsp = true)
     {
-        $this->_setHeaderParameter('Content-Type', 'delsp', $delsp ? 'yes' : null);
-        $this->_userDelSp = $delsp;
+        $this->setHeaderParameter('Content-Type', 'delsp', $delsp ? 'yes' : null);
+        $this->userDelSp = $delsp;
 
         return $this;
     }
@@ -155,7 +155,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      */
     public function getNestingLevel()
     {
-        return $this->_nestingLevel;
+        return $this->nestingLevel;
     }
 
     /**
@@ -170,28 +170,28 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     }
 
     /** Fix the content-type and encoding of this entity */
-    protected function _fixHeaders()
+    protected function fixHeaders()
     {
-        parent::_fixHeaders();
+        parent::fixHeaders();
         if (count($this->getChildren())) {
-            $this->_setHeaderParameter('Content-Type', 'charset', null);
-            $this->_setHeaderParameter('Content-Type', 'format', null);
-            $this->_setHeaderParameter('Content-Type', 'delsp', null);
+            $this->setHeaderParameter('Content-Type', 'charset', null);
+            $this->setHeaderParameter('Content-Type', 'format', null);
+            $this->setHeaderParameter('Content-Type', 'delsp', null);
         } else {
-            $this->setCharset($this->_userCharset);
-            $this->setFormat($this->_userFormat);
-            $this->setDelSp($this->_userDelSp);
+            $this->setCharset($this->userCharset);
+            $this->setFormat($this->userFormat);
+            $this->setDelSp($this->userDelSp);
         }
     }
 
     /** Set the nesting level of this entity */
-    protected function _setNestingLevel($level)
+    protected function setNestingLevel($level)
     {
-        $this->_nestingLevel = $level;
+        $this->nestingLevel = $level;
     }
 
     /** Encode charset when charset is not utf-8 */
-    protected function _convertString($string)
+    protected function convertString($string)
     {
         $charset = strtolower($this->getCharset());
         if (!in_array($charset, array('utf-8', 'iso-8859-1', 'iso-8859-15', ''))) {

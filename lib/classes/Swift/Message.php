@@ -61,21 +61,6 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     }
 
     /**
-     * Create a new Message.
-     *
-     * @param string $subject
-     * @param string $body
-     * @param string $contentType
-     * @param string $charset
-     *
-     * @return $this
-     */
-    public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
-    {
-        return new self($subject, $body, $contentType, $charset);
-    }
-
-    /**
      * Add a MimePart to this Message.
      *
      * @param string|Swift_OutputByteStream $body
@@ -86,7 +71,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      */
     public function addPart($body, $contentType = null, $charset = null)
     {
-        return $this->attach(Swift_MimePart::newInstance($body, $contentType, $charset)->setEncoder($this->getEncoder()));
+        return $this->attach((new Swift_MimePart($body, $contentType, $charset))->setEncoder($this->getEncoder()));
     }
 
     /**
@@ -205,7 +190,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
             $signer->setHeaders($this->getHeaders());
 
             $signer->startBody();
-            $this->_bodyToByteStream($signer);
+            $this->bodyToByteStream($signer);
             $signer->endBody();
 
             $signer->addSignature($this->getHeaders());
@@ -221,7 +206,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
         $this->savedMessage['body'] = $this->getBody();
         $this->savedMessage['children'] = $this->getChildren();
         if (count($this->savedMessage['children']) > 0 && $this->getBody() != '') {
-            $this->setChildren(array_merge(array($this->_becomeMimePart()), $this->savedMessage['children']));
+            $this->setChildren(array_merge(array($this->becomeMimePart()), $this->savedMessage['children']));
             $this->setBody('');
         }
     }

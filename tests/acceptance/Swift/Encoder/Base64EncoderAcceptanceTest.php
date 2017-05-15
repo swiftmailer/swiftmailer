@@ -2,24 +2,24 @@
 
 class Swift_Encoder_Base64EncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
-    private $_samplesDir;
-    private $_encoder;
+    private $samplesDir;
+    private $encoder;
 
     protected function setUp()
     {
-        $this->_samplesDir = realpath(__DIR__.'/../../../_samples/charsets');
-        $this->_encoder = new Swift_Encoder_Base64Encoder();
+        $this->samplesDir = realpath(__DIR__.'/../../../_samples/charsets');
+        $this->encoder = new Swift_Encoder_Base64Encoder();
     }
 
     public function testEncodingAndDecodingSamples()
     {
-        $sampleFp = opendir($this->_samplesDir);
+        $sampleFp = opendir($this->samplesDir);
         while (false !== $encodingDir = readdir($sampleFp)) {
             if (substr($encodingDir, 0, 1) == '.') {
                 continue;
             }
 
-            $sampleDir = $this->_samplesDir.'/'.$encodingDir;
+            $sampleDir = $this->samplesDir.'/'.$encodingDir;
 
             if (is_dir($sampleDir)) {
                 $fileFp = opendir($sampleDir);
@@ -29,7 +29,7 @@ class Swift_Encoder_Base64EncoderAcceptanceTest extends \PHPUnit_Framework_TestC
                     }
 
                     $text = file_get_contents($sampleDir.'/'.$sampleFile);
-                    $encodedText = $this->_encoder->encodeString($text);
+                    $encodedText = $this->encoder->encodeString($text);
 
                     $this->assertEquals(
                         base64_decode($encodedText), $text,

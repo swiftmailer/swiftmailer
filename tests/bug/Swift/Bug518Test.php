@@ -2,7 +2,7 @@
 
 use Mockery as m;
 
-class Swift_Bug518Test extends \PHPUnit_Framework_TestCase
+class Swift_Bug518Test extends \SwiftMailerTestCase
 {
     public function testIfEmailChangesAfterQueued()
     {

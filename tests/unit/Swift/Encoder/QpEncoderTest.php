@@ -32,7 +32,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         foreach (array_merge(range(33, 60), range(62, 126)) as $ordinal) {
             $char = chr($ordinal);
 
-            $charStream = $this->_createCharStream();
+            $charStream = $this->createCharStream();
             $charStream->shouldReceive('flushContents')
                        ->once();
             $charStream->shouldReceive('importString')
@@ -82,7 +82,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         //HT
         $string = 'a'.$HT.$HT."\r\n".'b';
 
-        $charStream = $this->_createCharStream();
+        $charStream = $this->createCharStream();
         $charStream->shouldReceive('flushContents')
                     ->once();
         $charStream->shouldReceive('importString')
@@ -106,7 +106,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         //SPACE
         $string = 'a'.$SPACE.$SPACE."\r\n".'b';
 
-        $charStream = $this->_createCharStream();
+        $charStream = $this->createCharStream();
         $charStream->shouldReceive('flushContents')
                     ->once();
         $charStream->shouldReceive('importString')
@@ -159,7 +159,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
 
         $string = 'a'."\r\n".'b'."\r\n".'c'."\r\n";
 
-        $charStream = $this->_createCharStream();
+        $charStream = $this->createCharStream();
         $charStream->shouldReceive('flushContents')
                     ->once();
         $charStream->shouldReceive('importString')
@@ -195,7 +195,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
 
         $input = str_repeat('a', 140);
 
-        $charStream = $this->_createCharStream();
+        $charStream = $this->createCharStream();
         $charStream->shouldReceive('flushContents')
                     ->once();
         $charStream->shouldReceive('importString')
@@ -226,7 +226,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
     {
         $input = str_repeat('a', 100);
 
-        $charStream = $this->_createCharStream();
+        $charStream = $this->createCharStream();
         $charStream->shouldReceive('flushContents')
                     ->once();
         $charStream->shouldReceive('importString')
@@ -261,7 +261,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         foreach (range(0, 32) as $ordinal) {
             $char = chr($ordinal);
 
-            $charStream = $this->_createCharStream();
+            $charStream = $this->createCharStream();
             $charStream->shouldReceive('flushContents')
                        ->once();
             $charStream->shouldReceive('importString')
@@ -290,7 +290,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
 
         $char = '=';
 
-        $charStream = $this->_createCharStream();
+        $charStream = $this->createCharStream();
         $charStream->shouldReceive('flushContents')
                     ->once();
         $charStream->shouldReceive('importString')
@@ -317,7 +317,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         foreach (range(127, 255) as $ordinal) {
             $char = chr($ordinal);
 
-            $charStream = $this->_createCharStream();
+            $charStream = $this->createCharStream();
             $charStream->shouldReceive('flushContents')
                        ->once();
             $charStream->shouldReceive('importString')
@@ -342,7 +342,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
     {
         $input = str_repeat('a', 140);
 
-        $charStream = $this->_createCharStream();
+        $charStream = $this->createCharStream();
         $charStream->shouldReceive('flushContents')
                     ->once();
         $charStream->shouldReceive('importString')
@@ -385,7 +385,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
             );
     }
 
-    private function _createCharStream()
+    private function createCharStream()
     {
         return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();
     }

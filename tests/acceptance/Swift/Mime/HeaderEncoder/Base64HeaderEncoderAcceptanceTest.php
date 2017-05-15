@@ -2,11 +2,11 @@
 
 class Swift_Mime_HeaderEncoder_Base64HeaderEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
-    private $_encoder;
+    private $encoder;
 
     protected function setUp()
     {
-        $this->_encoder = new Swift_Mime_HeaderEncoder_Base64HeaderEncoder();
+        $this->encoder = new Swift_Mime_HeaderEncoder_Base64HeaderEncoder();
     }
 
     public function testEncodingJIS()
@@ -15,14 +15,14 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoderAcceptanceTest extends \PHPUni
             // base64_encode and split cannot handle long JIS text to fold
             $subject = '長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い長い件名';
 
-            $encodedWrapperLength = strlen('=?iso-2022-jp?'.$this->_encoder->getName().'??=');
+            $encodedWrapperLength = strlen('=?iso-2022-jp?'.$this->encoder->getName().'??=');
 
             $old = mb_internal_encoding();
             mb_internal_encoding('utf-8');
             $newstring = mb_encode_mimeheader($subject, 'iso-2022-jp', 'B', "\r\n");
             mb_internal_encoding($old);
 
-            $encoded = $this->_encoder->encodeString($subject, 0, 75 - $encodedWrapperLength, 'iso-2022-jp');
+            $encoded = $this->encoder->encodeString($subject, 0, 75 - $encodedWrapperLength, 'iso-2022-jp');
             $this->assertEquals(
                 $encoded, $newstring,
                 'Encoded string should decode back to original string for sample '

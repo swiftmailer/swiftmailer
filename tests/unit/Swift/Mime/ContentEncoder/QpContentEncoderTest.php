@@ -5,7 +5,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
     public function testNameIsQuotedPrintable()
     {
         $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder(
-            $this->_createCharacterStream(true)
+            $this->createCharacterStream(true)
             );
         $this->assertEquals('quoted-printable', $encoder->getName());
     }
@@ -40,9 +40,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         foreach (array_merge(range(33, 60), range(62, 126)) as $ordinal) {
             $char = chr($ordinal);
 
-            $os = $this->_createOutputByteStream(true);
-            $charStream = $this->_createCharacterStream();
-            $is = $this->_createInputByteStream();
+            $os = $this->createOutputByteStream(true);
+            $charStream = $this->createCharacterStream();
+            $is = $this->createInputByteStream();
             $collection = new Swift_StreamCollector();
 
             $is->shouldReceive('write')
@@ -95,9 +95,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         $SPACE = chr(0x20); //32
 
         //HT
-        $os = $this->_createOutputByteStream(true);
-        $charStream = $this->_createCharacterStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream(true);
+        $charStream = $this->createCharacterStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -136,9 +136,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         $this->assertEquals("a\t=09\r\nb", $collection->content);
 
         //SPACE
-        $os = $this->_createOutputByteStream(true);
-        $charStream = $this->_createCharacterStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream(true);
+        $charStream = $this->createCharacterStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -206,9 +206,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                     equivalent to performing the three steps separately.
                     */
 
-        $os = $this->_createOutputByteStream(true);
-        $charStream = $this->_createCharacterStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream(true);
+        $charStream = $this->createCharacterStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -267,9 +267,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                     line break in the encoded text.
                     */
 
-        $os = $this->_createOutputByteStream(true);
-        $charStream = $this->_createCharacterStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream(true);
+        $charStream = $this->createCharacterStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -297,9 +297,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
 
     public function testMaxLineLengthCanBeSpecified()
     {
-        $os = $this->_createOutputByteStream(true);
-        $charStream = $this->_createCharacterStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream(true);
+        $charStream = $this->createCharacterStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -334,9 +334,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         foreach (range(0, 32) as $ordinal) {
             $char = chr($ordinal);
 
-            $os = $this->_createOutputByteStream(true);
-            $charStream = $this->_createCharacterStream();
-            $is = $this->_createInputByteStream();
+            $os = $this->createOutputByteStream(true);
+            $charStream = $this->createCharacterStream();
+            $is = $this->createInputByteStream();
             $collection = new Swift_StreamCollector();
 
             $is->shouldReceive('write')
@@ -368,9 +368,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
 
         $char = chr(61);
 
-        $os = $this->_createOutputByteStream(true);
-        $charStream = $this->_createCharacterStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream(true);
+        $charStream = $this->createCharacterStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -402,9 +402,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         foreach (range(127, 255) as $ordinal) {
             $char = chr($ordinal);
 
-            $os = $this->_createOutputByteStream(true);
-            $charStream = $this->_createCharacterStream();
-            $is = $this->_createInputByteStream();
+            $os = $this->createOutputByteStream(true);
+            $charStream = $this->createCharacterStream();
+            $is = $this->createInputByteStream();
             $collection = new Swift_StreamCollector();
 
             $is->shouldReceive('write')
@@ -430,9 +430,9 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
 
     public function testFirstLineLengthCanBeDifferent()
     {
-        $os = $this->_createOutputByteStream(true);
-        $charStream = $this->_createCharacterStream();
-        $is = $this->_createInputByteStream();
+        $os = $this->createOutputByteStream(true);
+        $charStream = $this->createCharacterStream();
+        $is = $this->createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -463,7 +463,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
 
     public function testObserverInterfaceCanChangeCharset()
     {
-        $stream = $this->_createCharacterStream();
+        $stream = $this->createCharacterStream();
         $stream->shouldReceive('setCharacterSet')
                ->once()
                ->with('windows-1252');
@@ -491,7 +491,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
             );
     }
 
-    private function _createCharacterStream($stub = false)
+    private function createCharacterStream($stub = false)
     {
         return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();
     }
@@ -504,12 +504,12 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         return new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
     }
 
-    private function _createOutputByteStream($stub = false)
+    private function createOutputByteStream($stub = false)
     {
         return $this->getMockery('Swift_OutputByteStream')->shouldIgnoreMissing();
     }
 
-    private function _createInputByteStream($stub = false)
+    private function createInputByteStream($stub = false)
     {
         return $this->getMockery('Swift_InputByteStream')->shouldIgnoreMissing();
     }

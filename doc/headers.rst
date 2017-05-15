@@ -14,7 +14,7 @@ retrieved with the ``getHeaders()`` method.
 
 As mentioned in the previous chapter, everything that forms a part of a message
 in Swift Mailer is a MIME entity that is represented by an instance of
-``Swift_Mime_MimeEntity``. This includes -- most notably -- the message object
+``Swift_Mime_SimpleMimeEntity``. This includes -- most notably -- the message object
 itself, attachments, MIME parts and embedded images. Each of these MIME entities
 consists of a body and a set of headers that describe the body.
 
@@ -29,7 +29,7 @@ You fetch the HeaderSet from a MIME entity like so:
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     // Fetch the HeaderSet from a Message object
     $headers = $message->getHeaders();
@@ -165,7 +165,7 @@ HeaderSet's ``addTextHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -234,7 +234,7 @@ key-value parameters.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -288,7 +288,7 @@ encoded so that they can be transmitted safely.
 
 .. code-block:: php
 
-    $attachment = Swift_Attachment::newInstance();
+    $attachment = new Swift_Attachment();
 
     $disp = $attachment->getHeaders()->get('Content-Disposition');
 
@@ -310,10 +310,9 @@ Date headers contains an RFC 2822 formatted date (i.e. what PHP's ``date('r')``
 returns). They are used anywhere a date or time is needed to be presented as a
 message header.
 
-The data on which a date header is modeled is simply a UNIX timestamp such as
-that returned by ``time()`` or ``strtotime()``.  The timestamp is used to create
-a correctly structured RFC 2822 formatted date such as
-``Tue, 17 Feb 2009 22:26:31 +1100``.
+The data on which a date header is modeled as a DateTimeImmutable object.  The
+object is used to create a correctly structured RFC 2822 formatted date with
+timezone such as ``Tue, 17 Feb 2009 22:26:31 +1100``.
 
 The obvious place this header type is used is in the ``Date:`` header of the
 message itself.
@@ -323,20 +322,20 @@ the HeaderSet's ``addDateHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
-    $headers->addDateHeader('Your-Header-Name', strtotime('3 days ago'));
+    $headers->addDateHeader('Your-Header', new DateTimeImmutable('3 days ago'));
 
 Changing the value of an existing date header is done by calling it's
-``setTimestamp()`` method.
+``setDateTime()`` method.
 
 .. code-block:: php
 
     $date = $message->getHeaders()->get('Date');
 
-    $date->setTimestamp(time());
+    $date->setDateTime(new DateTimeImmutable());
 
 When output via ``toString()``, a date header produces something like the
 following:
@@ -373,7 +372,7 @@ You add a new mailbox header to a HeaderSet by calling the HeaderSet's
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -470,7 +469,7 @@ the HeaderSet's ``addIdHeader()`` method.
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -512,7 +511,7 @@ You add a new path header to a HeaderSet by calling the HeaderSet's
 
 .. code-block:: php
 
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
 
     $headers = $message->getHeaders();
 
@@ -569,7 +568,7 @@ The added header will appear in the message when it is sent.
 .. code-block:: php
 
     // Adding a custom header to a message
-    $message = Swift_Message::newInstance();
+    $message = new Swift_Message();
     $headers = $message->getHeaders();
     $headers->addTextHeader('X-Mine', 'something here');
 

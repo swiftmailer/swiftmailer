@@ -34,7 +34,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     protected $replacementFactory;
 
     /**
-     * @var Swift_Mime_HeaderFactory
+     * @var Swift_Mime_SimpleHeaderFactory
      */
     protected $headerFactory;
 
@@ -59,26 +59,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
             ->lookup('transport.replacementfactory');
 
         $this->signOptions = PKCS7_DETACHED;
-
-        // Supported since php5.4
-        if (defined('OPENSSL_CIPHER_AES_128_CBC')) {
-            $this->encryptCipher = OPENSSL_CIPHER_AES_128_CBC;
-        } else {
-            $this->encryptCipher = OPENSSL_CIPHER_RC2_128;
-        }
-    }
-
-    /**
-     * Returns an new Swift_Signers_SMimeSigner instance.
-     *
-     * @param string $certificate
-     * @param string $privateKey
-     *
-     * @return self
-     */
-    public static function newInstance($certificate = null, $privateKey = null)
-    {
-        return new self($certificate, $privateKey);
+        $this->encryptCipher = OPENSSL_CIPHER_AES_128_CBC;
     }
 
     /**

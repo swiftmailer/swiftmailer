@@ -4,8 +4,8 @@ class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
 {
     public function testBytesPerMinuteThrottling()
     {
-        $sleeper = $this->_createSleeper();
-        $timer = $this->_createTimer();
+        $sleeper = $this->createSleeper();
+        $timer = $this->createTimer();
 
         //10MB/min
         $plugin = new Swift_Plugins_ThrottlerPlugin(
@@ -25,9 +25,9 @@ class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
 
         // .: (10,000,000/100,000)/60 emails per second = 1.667 emais/sec
 
-        $message = $this->_createMessageWithByteCount(100000); //100KB
+        $message = $this->createMessageWithByteCount(100000); //100KB
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         for ($i = 0; $i < 5; ++$i) {
             $plugin->beforeSendPerformed($evt);
@@ -37,8 +37,8 @@ class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
 
     public function testMessagesPerMinuteThrottling()
     {
-        $sleeper = $this->_createSleeper();
-        $timer = $this->_createTimer();
+        $sleeper = $this->createSleeper();
+        $timer = $this->createTimer();
 
         //60/min
         $plugin = new Swift_Plugins_ThrottlerPlugin(
@@ -56,9 +56,9 @@ class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
         //60 messages per minute
         //1 message per second
 
-        $message = $this->_createMessageWithByteCount(10);
+        $message = $this->createMessageWithByteCount(10);
 
-        $evt = $this->_createSendEvent($message);
+        $evt = $this->createSendEvent($message);
 
         for ($i = 0; $i < 5; ++$i) {
             $plugin->beforeSendPerformed($evt);
@@ -66,19 +66,19 @@ class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
         }
     }
 
-    private function _createSleeper()
+    private function createSleeper()
     {
         return $this->getMockery('Swift_Plugins_Sleeper');
     }
 
-    private function _createTimer()
+    private function createTimer()
     {
         return $this->getMockery('Swift_Plugins_Timer');
     }
 
-    private function _createMessageWithByteCount($bytes)
+    private function createMessageWithByteCount($bytes)
     {
-        $msg = $this->getMockery('Swift_Mime_Message');
+        $msg = $this->getMockery('Swift_Mime_SimpleMessage');
         $msg->shouldReceive('toByteStream')
             ->zeroOrMoreTimes()
             ->andReturnUsing(function ($is) use ($bytes) {
@@ -90,7 +90,7 @@ class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
         return $msg;
     }
 
-    private function _createSendEvent($message)
+    private function createSendEvent($message)
     {
         $evt = $this->getMockery('Swift_Events_SendEvent');
         $evt->shouldReceive('getMessage')

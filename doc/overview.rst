@@ -21,11 +21,11 @@ System Requirements
 The basic requirements to operate Swift Mailer are extremely minimal and
 easily achieved. Historically, Swift Mailer has supported both PHP 4 and PHP 5
 by following a parallel development workflow. Now in it's fourth major
-version, and Swift Mailer operates on servers running PHP 5.3.3 or higher.
+version, and Swift Mailer operates on servers running PHP 5.5 or higher.
 
 The library aims to work with as many PHP 5 projects as possible:
 
-* PHP 5.3.3 or higher, with the SPL extension (standard)
+* PHP 5.5 or higher, with the SPL extension (standard)
 
 * Limited network access to connect to remote SMTP servers
 
@@ -117,7 +117,7 @@ standards defined by various RFC documents. Swift Mailer ensures that these
 specifications are followed by using various types of object, including
 Encoders and different Header types to generate the entity.
 
-Each MIME component implements the base ``Swift_Mime_MimeEntity`` interface,
+Each MIME component implements the base ``Swift_Mime_SimpleMimeEntity`` interface,
 which offers methods for retrieving Headers, adding new Headers, changing the
 Encoder, updating the body and so on!
 

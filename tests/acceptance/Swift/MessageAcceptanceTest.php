@@ -7,7 +7,7 @@ class Swift_MessageAcceptanceTest extends Swift_Mime_SimpleMessageAcceptanceTest
 {
     public function testAddPartWrapper()
     {
-        $message = $this->_createMessage();
+        $message = $this->createMessage();
         $message->setSubject('just a test subject');
         $message->setFrom(array(
             'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
@@ -21,7 +21,7 @@ class Swift_MessageAcceptanceTest extends Swift_Mime_SimpleMessageAcceptanceTest
 
         $this->assertEquals(
             'Message-ID: <'.$id.'>'."\r\n".
-            'Date: '.date('r', $date)."\r\n".
+            'Date: '.$date->format('r')."\r\n".
             'Subject: just a test subject'."\r\n".
             'From: Chris Corbyn <chris.corbyn@swiftmailer.org>'."\r\n".
             'MIME-Version: 1.0'."\r\n".
@@ -45,11 +45,11 @@ class Swift_MessageAcceptanceTest extends Swift_Mime_SimpleMessageAcceptanceTest
             );
     }
 
-    protected function _createMessage()
+    protected function createMessage()
     {
         Swift_DependencyContainer::getInstance()
             ->register('properties.charset')->asValue(null);
 
-        return Swift_Message::newInstance();
+        return new Swift_Message();
     }
 }

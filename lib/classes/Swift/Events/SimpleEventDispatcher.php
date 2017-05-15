@@ -16,20 +16,20 @@
 class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
 {
     /** A map of event types to their associated listener types */
-    private $_eventMap = array();
+    private $eventMap = array();
 
     /** Event listeners bound to this dispatcher */
-    private $_listeners = array();
+    private $listeners = array();
 
     /** Listeners queued to have an Event bubbled up the stack to them */
-    private $_bubbleQueue = array();
+    private $bubbleQueue = array();
 
     /**
      * Create a new EventDispatcher.
      */
     public function __construct()
     {
-        $this->_eventMap = array(
+        $this->eventMap = array(
             'Swift_Events_CommandEvent' => 'Swift_Events_CommandListener',
             'Swift_Events_ResponseEvent' => 'Swift_Events_ResponseListener',
             'Swift_Events_SendEvent' => 'Swift_Events_SendListener',
@@ -42,11 +42,11 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
      * Create a new SendEvent for $source and $message.
      *
      * @param Swift_Transport $source
-     * @param Swift_Mime_Message
+     * @param Swift_Mime_SimpleMessage
      *
      * @return Swift_Events_SendEvent
      */
-    public function createSendEvent(Swift_Transport $source, Swift_Mime_Message $message)
+    public function createSendEvent(Swift_Transport $source, Swift_Mime_SimpleMessage $message)
     {
         return new Swift_Events_SendEvent($source, $message);
     }
@@ -111,13 +111,13 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
      */
     public function bindEventListener(Swift_Events_EventListener $listener)
     {
-        foreach ($this->_listeners as $l) {
+        foreach ($this->listeners as $l) {
             // Already loaded
             if ($l === $listener) {
                 return;
             }
         }
-        $this->_listeners[] = $listener;
+        $this->listeners[] = $listener;
     }
 
     /**
@@ -128,29 +128,29 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
      */
     public function dispatchEvent(Swift_Events_EventObject $evt, $target)
     {
-        $this->_prepareBubbleQueue($evt);
-        $this->_bubble($evt, $target);
+        $this->prepareBubbleQueue($evt);
+        $this->bubble($evt, $target);
     }
 
     /** Queue listeners on a stack ready for $evt to be bubbled up it */
-    private function _prepareBubbleQueue(Swift_Events_EventObject $evt)
+    private function prepareBubbleQueue(Swift_Events_EventObject $evt)
     {
-        $this->_bubbleQueue = array();
+        $this->bubbleQueue = array();
         $evtClass = get_class($evt);
-        foreach ($this->_listeners as $listener) {
-            if (array_key_exists($evtClass, $this->_eventMap)
-                && ($listener instanceof $this->_eventMap[$evtClass])) {
-                $this->_bubbleQueue[] = $listener;
+        foreach ($this->listeners as $listener) {
+            if (array_key_exists($evtClass, $this->eventMap)
+                && ($listener instanceof $this->eventMap[$evtClass])) {
+                $this->bubbleQueue[] = $listener;
             }
         }
     }
 
     /** Bubble $evt up the stack calling $target() on each listener */
-    private function _bubble(Swift_Events_EventObject $evt, $target)
+    private function bubble(Swift_Events_EventObject $evt, $target)
     {
-        if (!$evt->bubbleCancelled() && $listener = array_shift($this->_bubbleQueue)) {
+        if (!$evt->bubbleCancelled() && $listener = array_shift($this->bubbleQueue)) {
             $listener->$target($evt);
-            $this->_bubble($evt, $target);
+            $this->bubble($evt, $target);
         }
     }
 }

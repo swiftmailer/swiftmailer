@@ -1,6 +1,6 @@
 <?php
 
-class MimeEntityFixture implements Swift_Mime_MimeEntity
+class MimeEntityFixture extends Swift_Mime_SimpleMimeEntity
 {
     private $level;
     private $string;
@@ -61,7 +61,7 @@ class MimeEntityFixture implements Swift_Mime_MimeEntity
     {
     }
 
-    public function setChildren(array $children)
+    public function setChildren(array $children, $compoundLevel = null)
     {
     }
 }

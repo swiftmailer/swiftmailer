@@ -9,12 +9,12 @@ class Swift_Bug35Test extends \PHPUnit_Framework_TestCase
 
     public function testHTMLPartAppearsLastEvenWhenAttachmentsAdded()
     {
-        $message = Swift_Message::newInstance();
+        $message = new Swift_Message();
         $message->setCharset('utf-8');
         $message->setSubject('test subject');
         $message->addPart('plain part', 'text/plain');
 
-        $attachment = Swift_Attachment::newInstance('<data>', 'image.gif', 'image/gif');
+        $attachment = new Swift_Attachment('<data>', 'image.gif', 'image/gif');
         $message->attach($attachment);
 
         $message->setBody('HTML part', 'text/html');
@@ -25,7 +25,7 @@ class Swift_Bug35Test extends \PHPUnit_Framework_TestCase
         $message->setSender(array('other@domain.tld' => 'Other'));
 
         $id = $message->getId();
-        $date = preg_quote(date('r', $message->getDate()), '~');
+        $date = preg_quote($message->getDate()->format('r'), '~');
         $boundary = $message->getBoundary();
 
         $this->assertRegExp(

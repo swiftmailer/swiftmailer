@@ -1,6 +1,20 @@
 Changelog
 =========
 
+6.0.0 (2017-XX-XX)
+------------------
+
+ * removed Swift_Mime_HeaderFactory, Swift_Mime_HeaderSet, Swift_Mime_Message, Swift_Mime_MimeEntity,
+   and Swift_Mime_ParameterizedHeader interfaces
+ * removed Swift_MailTransport and Swift_Transport_MailTransport
+ * removed Swift_Encoding
+ * removed the Swift_Transport_MailInvoker interface and Swift_Transport_SimpleMailInvoker class
+ * removed the Swift_SignedMessage class
+ * removed newInstance() methods everywhere
+ * methods operating on Date header now use DateTimeImmutable object instead of Unix timestamp;
+   Swift_Mime_Headers_DateHeader::getTimestamp()/setTimestamp() renamed to getDateTime()/setDateTime()
+ * bumped minimum version to PHP 5.5
+
 5.4.8 (2017-XX-XX)
 ------------------
 

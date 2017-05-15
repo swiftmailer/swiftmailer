@@ -16,7 +16,7 @@ class SwiftMailerSmokeTestCase extends SwiftMailerTestCase
         }
     }
 
-    protected function _getMailer()
+    protected function getMailer()
     {
         switch (SWIFT_SMOKE_TRANSPORT_TYPE) {
             case 'smtp':

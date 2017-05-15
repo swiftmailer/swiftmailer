@@ -2,19 +2,19 @@
 
 class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest extends \PHPUnit_Framework_TestCase
 {
-    private $_factory;
-    private $_prefix = 'Swift_CharacterReader_';
+    private $factory;
+    private $prefix = 'Swift_CharacterReader_';
 
     protected function setUp()
     {
-        $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
+        $this->factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     }
 
     public function testCreatingUtf8Reader()
     {
         foreach (array('utf8', 'utf-8', 'UTF-8', 'UTF8') as $utf8) {
-            $reader = $this->_factory->getReaderFor($utf8);
-            $this->assertInstanceOf($this->_prefix.'Utf8Reader', $reader);
+            $reader = $this->factory->getReaderFor($utf8);
+            $this->assertInstanceOf($this->prefix.'Utf8Reader', $reader);
         }
     }
 
@@ -31,8 +31,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
         }
 
         foreach ($charsets as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -48,8 +48,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
         }
 
         foreach ($charsets as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -73,8 +73,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
         }
 
         foreach ($charsets as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -82,8 +82,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingAnsiReader()
     {
         foreach (array('ansi', 'ANSI') as $ansi) {
-            $reader = $this->_factory->getReaderFor($ansi);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($ansi);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -91,8 +91,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingMacintoshReader()
     {
         foreach (array('macintosh', 'MACINTOSH') as $mac) {
-            $reader = $this->_factory->getReaderFor($mac);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($mac);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -108,8 +108,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
         }
 
         foreach ($charsets as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -117,8 +117,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingIsciiReaders()
     {
         foreach (array('iscii', 'ISCII', 'viscii', 'VISCII') as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -126,8 +126,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingMIKReader()
     {
         foreach (array('mik', 'MIK') as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -135,8 +135,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingCorkReader()
     {
         foreach (array('cork', 'CORK', 't1', 'T1') as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(1, $reader->getInitialByteSize());
         }
     }
@@ -144,8 +144,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingUcs2Reader()
     {
         foreach (array('ucs-2', 'UCS-2', 'ucs2', 'UCS2') as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(2, $reader->getInitialByteSize());
         }
     }
@@ -153,8 +153,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingUtf16Reader()
     {
         foreach (array('utf-16', 'UTF-16', 'utf16', 'UTF16') as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(2, $reader->getInitialByteSize());
         }
     }
@@ -162,8 +162,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingUcs4Reader()
     {
         foreach (array('ucs-4', 'UCS-4', 'ucs4', 'UCS4') as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(4, $reader->getInitialByteSize());
         }
     }
@@ -171,8 +171,8 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest ex
     public function testCreatingUtf32Reader()
     {
         foreach (array('utf-32', 'UTF-32', 'utf32', 'UTF32') as $charset) {
-            $reader = $this->_factory->getReaderFor($charset);
-            $this->assertInstanceOf($this->_prefix.'GenericFixedWidthReader', $reader);
+            $reader = $this->factory->getReaderFor($charset);
+            $this->assertInstanceOf($this->prefix.'GenericFixedWidthReader', $reader);
             $this->assertEquals(4, $reader->getInitialByteSize());
         }
     }

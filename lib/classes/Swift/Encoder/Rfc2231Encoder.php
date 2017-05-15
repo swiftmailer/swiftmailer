@@ -20,7 +20,7 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
      *
      * @var Swift_CharacterStream
      */
-    private $_charStream;
+    private $charStream;
 
     /**
      * Creates a new Rfc2231Encoder using the given character stream instance.
@@ -29,7 +29,7 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
      */
     public function __construct(Swift_CharacterStream $charStream)
     {
-        $this->_charStream = $charStream;
+        $this->charStream = $charStream;
     }
 
     /**
@@ -53,12 +53,12 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
             $maxLineLength = 75;
         }
 
-        $this->_charStream->flushContents();
-        $this->_charStream->importString($string);
+        $this->charStream->flushContents();
+        $this->charStream->importString($string);
 
         $thisLineLength = $maxLineLength - $firstLineOffset;
 
-        while (false !== $char = $this->_charStream->read(4)) {
+        while (false !== $char = $this->charStream->read(4)) {
             $encodedChar = rawurlencode($char);
             if (0 != strlen($currentLine)
                 && strlen($currentLine.$encodedChar) > $thisLineLength) {
@@ -79,7 +79,7 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
      */
     public function charsetChanged($charset)
     {
-        $this->_charStream->setCharacterSet($charset);
+        $this->charStream->setCharacterSet($charset);
     }
 
     /**
@@ -87,6 +87,6 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
      */
     public function __clone()
     {
-        $this->_charStream = clone $this->_charStream;
+        $this->charStream = clone $this->charStream;
     }
 }

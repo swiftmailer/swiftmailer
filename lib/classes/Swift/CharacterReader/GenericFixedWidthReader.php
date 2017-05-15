@@ -11,8 +11,8 @@
 /**
  * Provides fixed-width byte sizes for reading fixed-width character sets.
  *
- * @author Chris Corbyn
- * @author Xavier De Cock <xdecock@gmail.com>
+ * @author     Chris Corbyn
+ * @author     Xavier De Cock <xdecock@gmail.com>
  */
 class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterReader
 {
@@ -21,7 +21,7 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
      *
      * @var int
      */
-    private $_width;
+    private $width;
 
     /**
      * Creates a new GenericFixedWidthReader using $width bytes per character.
@@ -30,7 +30,7 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
      */
     public function __construct($width)
     {
-        $this->_width = $width;
+        $this->width = $width;
     }
 
     /**
@@ -47,11 +47,11 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
     {
         $strlen = strlen($string);
         // % and / are CPU intensive, so, maybe find a better way
-        $ignored = $strlen % $this->_width;
+        $ignored = $strlen % $this->width;
         $ignoredChars = $ignored ? substr($string, -$ignored) : '';
-        $currentMap = $this->_width;
+        $currentMap = $this->width;
 
-        return ($strlen - $ignored) / $this->_width;
+        return ($strlen - $ignored) / $this->width;
     }
 
     /**
@@ -80,7 +80,7 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
      */
     public function validateByteSequence($bytes, $size)
     {
-        $needed = $this->_width - $size;
+        $needed = $this->width - $size;
 
         return $needed > -1 ? $needed : -1;
     }
@@ -92,6 +92,6 @@ class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterRe
      */
     public function getInitialByteSize()
     {
-        return $this->_width;
+        return $this->width;
     }
 }

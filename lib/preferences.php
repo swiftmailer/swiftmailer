@@ -17,9 +17,3 @@ $preferences->setCharset('utf-8');
 if (@is_writable($tmpDir = sys_get_temp_dir())) {
     $preferences->setTempDir($tmpDir)->setCacheType('disk');
 }
-
-// this should only be done when Swiftmailer won't use the native QP content encoder
-// see mime_deps.php
-if (PHP_VERSION_ID < 50407) {
-    $preferences->setQPDotEscape(false);
-}
