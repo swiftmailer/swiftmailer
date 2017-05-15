@@ -111,7 +111,7 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
         try {
             $smtp->start();
         } catch (Exception $e) {
-            $this->fail('Starting Esmtp should send EHLO and accept 250 response');
+            $this->fail('Starting Esmtp should send EHLO and accept 250 response: '.$e->getMessage());
         }
     }
 
