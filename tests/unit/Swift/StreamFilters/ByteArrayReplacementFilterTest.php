@@ -1,6 +1,6 @@
 <?php
 
-class Swift_StreamFilters_ByteArrayReplacementFilterTest extends \PHPUnit_Framework_TestCase
+class Swift_StreamFilters_ByteArrayReplacementFilterTest extends \PHPUnit\Framework\TestCase
 {
     public function testBasicReplacementsAreMade()
     {

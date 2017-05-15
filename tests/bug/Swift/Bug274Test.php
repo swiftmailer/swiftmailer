@@ -1,11 +1,14 @@
 <?php
 
-class Swift_Bug274Test extends \PHPUnit_Framework_TestCase
+class Swift_Bug274Test extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @expectedException \Swift_IoException
+     * @expectedMessageException The path cannot be empty
+     */
     public function testEmptyFileNameAsAttachment()
     {
         $message = new Swift_Message();
-        $this->setExpectedException('Swift_IoException', 'The path cannot be empty');
         $message->attach(Swift_Attachment::fromPath(''));
     }
 
@@ -17,5 +20,6 @@ class Swift_Bug274Test extends \PHPUnit_Framework_TestCase
         } catch (Exception $e) {
             $this->fail('Path should not be empty');
         }
+        $this->addToAssertionCount(1);
     }
 }

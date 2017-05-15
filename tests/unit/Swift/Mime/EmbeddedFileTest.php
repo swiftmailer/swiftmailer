@@ -5,7 +5,8 @@ class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 {
     public function testNestingLevelIsAttachment()
     {
-        //Overridden
+        // previous loop would fail if there is an issue
+        $this->addToAssertionCount(1);
     }
 
     public function testNestingLevelIsEmbedded()

@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Bug35Test extends \PHPUnit_Framework_TestCase
+class Swift_Bug35Test extends \PHPUnit\Framework\TestCase
 {
     protected function setUp()
     {

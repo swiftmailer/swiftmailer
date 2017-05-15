@@ -1,6 +1,6 @@
 <?php
 
-class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit_Framework_TestCase
+class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit\Framework\TestCase
 {
     private $reader;
 

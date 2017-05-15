@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Plugins_Reporters_HitReporterTest extends \PHPUnit_Framework_TestCase
+class Swift_Plugins_Reporters_HitReporterTest extends \PHPUnit\Framework\TestCase
 {
     private $hitReporter;
     private $message;

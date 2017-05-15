@@ -49,7 +49,8 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
 
     public function testStartSendsHeloToInitiate()
     {
-        //Overridden for EHLO instead
+        // previous loop would fail if there is an issue
+        $this->addToAssertionCount(1);
     }
 
     public function testStartSendsEhloToInitiate()
@@ -110,7 +111,7 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
         try {
             $smtp->start();
         } catch (Exception $e) {
-            $this->fail('Starting Esmtp should send EHLO and accept 250 response');
+            $this->fail('Starting Esmtp should send EHLO and accept 250 response: '.$e->getMessage());
         }
     }
 

@@ -18,18 +18,7 @@ the long run if you at least read between the lines here.
 System Requirements
 -------------------
 
-The basic requirements to operate Swift Mailer are extremely minimal and
-easily achieved. Historically, Swift Mailer has supported both PHP 4 and PHP 5
-by following a parallel development workflow. Now in it's fourth major
-version, and Swift Mailer operates on servers running PHP 5.5 or higher.
-
-The library aims to work with as many PHP 5 projects as possible:
-
-* PHP 5.5 or higher, with the SPL extension (standard)
-
-* Limited network access to connect to remote SMTP servers
-
-* 8 MB or more memory limit (Swift Mailer uses around 2 MB)
+Swift Mailer operates on servers running PHP 7.0 or higher.
 
 Component Breakdown
 -------------------

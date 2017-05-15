@@ -1,6 +1,6 @@
 <?php
 
-class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_CharacterReaderFactory_SimpleCharacterReaderFactoryAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     private $factory;
     private $prefix = 'Swift_CharacterReader_';

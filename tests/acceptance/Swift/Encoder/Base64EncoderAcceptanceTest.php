@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Encoder_Base64EncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_Encoder_Base64EncoderAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     private $samplesDir;
     private $encoder;

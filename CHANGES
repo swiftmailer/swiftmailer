@@ -13,7 +13,7 @@ Changelog
  * removed newInstance() methods everywhere
  * methods operating on Date header now use DateTimeImmutable object instead of Unix timestamp;
    Swift_Mime_Headers_DateHeader::getTimestamp()/setTimestamp() renamed to getDateTime()/setDateTime()
- * bumped minimum version to PHP 5.5
+ * bumped minimum version to PHP 7.0
 
 5.4.8 (2017-XX-XX)
 ------------------

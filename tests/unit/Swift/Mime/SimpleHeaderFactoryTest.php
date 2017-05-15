@@ -2,7 +2,7 @@
 
 use Egulias\EmailValidator\EmailValidator;
 
-class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit\Framework\TestCase
 {
     private $factory;
 

@@ -11,12 +11,10 @@ before_script:
     - gem install mailcatcher
     - mailcatcher --smtp-port 4456
 
-script: ./vendor/bin/simple-phpunit
+script: SYMFONY_PHPUNIT_VERSION=6.1 ./vendor/bin/simple-phpunit
 
 matrix:
     include:
-        - php: 5.5
-        - php: 5.6
         - php: 7.0
         - php: 7.1
         - php: hhvm

@@ -1,6 +1,6 @@
 <?php
 
-class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit_Framework_TestCase
+class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
 {
     public function testReadingSingleBytesFromBaseInput()
     {

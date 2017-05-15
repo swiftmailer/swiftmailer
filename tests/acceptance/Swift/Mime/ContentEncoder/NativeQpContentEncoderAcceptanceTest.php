@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     protected $_samplesDir;
 

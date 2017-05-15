@@ -2,7 +2,7 @@
 
 use Egulias\EmailValidator\EmailValidator;
 
-class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     private $contentEncoder;
     private $cache;

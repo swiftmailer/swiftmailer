@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_SimpleHeaderSetTest extends \PHPUnit\Framework\TestCase
 {
     public function testAddMailboxHeaderDelegatesToFactory()
     {

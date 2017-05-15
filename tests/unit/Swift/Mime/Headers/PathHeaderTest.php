@@ -2,7 +2,7 @@
 
 use Egulias\EmailValidator\EmailValidator;
 
-class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit\Framework\TestCase
 {
     public function testTypeIsPathHeader()
     {
@@ -17,14 +17,13 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('chris@swiftmailer.org', $header->getAddress());
     }
 
+    /**
+     * @expectedException \Exception
+     */
     public function testAddressMustComplyWithRfc2822()
     {
-        try {
-            $header = $this->getHeader('Return-Path');
-            $header->setAddress('chr is@swiftmailer.org');
-            $this->fail('Addresses not valid according to RFC 2822 addr-spec grammar must be rejected.');
-        } catch (Exception $e) {
-        }
+        $header = $this->getHeader('Return-Path');
+        $header->setAddress('chr is@swiftmailer.org');
     }
 
     public function testValueIsAngleAddrWithValidAddress()

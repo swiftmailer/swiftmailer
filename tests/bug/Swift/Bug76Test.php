@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
+class Swift_Bug76Test extends \PHPUnit\Framework\TestCase
 {
     private $inputFile;
     private $outputFile;

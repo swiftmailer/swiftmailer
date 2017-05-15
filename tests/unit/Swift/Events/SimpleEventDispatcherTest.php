@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
+class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit\Framework\TestCase
 {
     private $dispatcher;
 

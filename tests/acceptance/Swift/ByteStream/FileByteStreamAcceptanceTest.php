@@ -1,6 +1,6 @@
 <?php
 
-class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_TestCase
+class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
     private $_testFile;
 

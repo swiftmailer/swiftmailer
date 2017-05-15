@@ -2,7 +2,6 @@
 
 abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
 {
-    /** Abstract test method */
     abstract protected function getTransport($buf);
 
     public function testStartAccepts220ServiceGreeting()

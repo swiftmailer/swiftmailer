@@ -1,6 +1,6 @@
 <?php
 
-class Swift_FileByteStreamConsecutiveReadCalls extends \PHPUnit_Framework_TestCase
+class Swift_FileByteStreamConsecutiveReadCalls extends \PHPUnit\Framework\TestCase
 {
     /**
      * @test

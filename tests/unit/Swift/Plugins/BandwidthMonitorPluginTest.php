@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit_Framework_TestCase
+class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit\Framework\TestCase
 {
     private $_monitor;
 

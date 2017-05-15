@@ -1,6 +1,6 @@
 <?php
 
-class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends \PHPUnit_Framework_TestCase
+class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends \PHPUnit\Framework\TestCase
 {
     private $nsKey = 'ns1';
 

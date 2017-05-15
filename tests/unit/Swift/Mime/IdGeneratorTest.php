@@ -3,7 +3,7 @@
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 
-class Swift_Mime_IdGeneratorTest extends \PHPUnit_Framework_TestCase
+class Swift_Mime_IdGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     protected $emailValidator;
     protected $originalServerName;
