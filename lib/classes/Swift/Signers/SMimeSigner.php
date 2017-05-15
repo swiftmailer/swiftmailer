@@ -34,7 +34,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     protected $replacementFactory;
 
     /**
-     * @var Swift_Mime_HeaderFactory
+     * @var Swift_Mime_SimpleHeaderFactory
      */
     protected $headerFactory;
 

@@ -13,7 +13,7 @@
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_UnstructuredHeader implements Swift_Mime_ParameterizedHeader
+class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_UnstructuredHeader
 {
     /**
      * RFC 2231's definition of a token.

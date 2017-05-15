@@ -83,13 +83,13 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Queues a message.
      *
-     * @param Swift_Mime_Message $message The message to store
+     * @param Swift_Mime_SimpleMessage $message The message to store
      *
      * @throws Swift_IoException
      *
      * @return bool
      */
-    public function queueMessage(Swift_Mime_Message $message)
+    public function queueMessage(Swift_Mime_SimpleMessage $message)
     {
         $ser = serialize($message);
         $fileName = $this->path.'/'.$this->getRandomString(10);

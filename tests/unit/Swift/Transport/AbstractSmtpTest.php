@@ -1181,7 +1181,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
 
     protected function createMessage()
     {
-        return $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
+        return $this->getMockery('Swift_Mime_SimpleMessage')->shouldIgnoreMissing();
     }
 
     protected function finishBuffer($buf)

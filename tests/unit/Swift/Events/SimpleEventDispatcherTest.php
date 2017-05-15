@@ -12,7 +12,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
     public function testSendEventCanBeCreated()
     {
         $transport = $this->getMockBuilder('Swift_Transport')->getMock();
-        $message = $this->getMockBuilder('Swift_Mime_Message')->getMock();
+        $message = $this->getMockBuilder('Swift_Mime_SimpleMessage')->disableOriginalConstructor()->getMock();
         $evt = $this->dispatcher->createSendEvent($transport, $message);
         $this->assertInstanceOf('Swift_Events_SendEvent', $evt);
         $this->assertSame($message, $evt->getMessage());
@@ -82,7 +82,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
     public function testListenersAreOnlyCalledIfImplementingCorrectInterface()
     {
         $transport = $this->getMockBuilder('Swift_Transport')->getMock();
-        $message = $this->getMockBuilder('Swift_Mime_Message')->getMock();
+        $message = $this->getMockBuilder('Swift_Mime_SimpleMessage')->disableOriginalConstructor()->getMock();
 
         $evt = $this->dispatcher->createSendEvent($transport, $message);
 
@@ -104,7 +104,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit_Framework_TestCase
     public function testListenersCanCancelBubblingOfEvent()
     {
         $transport = $this->getMockBuilder('Swift_Transport')->getMock();
-        $message = $this->getMockBuilder('Swift_Mime_Message')->getMock();
+        $message = $this->getMockBuilder('Swift_Mime_SimpleMessage')->disableOriginalConstructor()->getMock();
 
         $evt = $this->dispatcher->createSendEvent($transport, $message);
 

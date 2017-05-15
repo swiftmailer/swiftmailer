@@ -169,7 +169,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($message->getBcc(), array('fabien@example.com' => 'Fabien'));
     }
 
-    private function createSendEvent(Swift_Mime_Message $message)
+    private function createSendEvent(Swift_Mime_SimpleMessage $message)
     {
         $evt = $this->getMockBuilder('Swift_Events_SendEvent')
                     ->disableOriginalConstructor()

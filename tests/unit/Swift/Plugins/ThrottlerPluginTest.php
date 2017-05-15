@@ -78,7 +78,7 @@ class Swift_Plugins_ThrottlerPluginTest extends \SwiftMailerTestCase
 
     private function createMessageWithByteCount($bytes)
     {
-        $msg = $this->getMockery('Swift_Mime_Message');
+        $msg = $this->getMockery('Swift_Mime_SimpleMessage');
         $msg->shouldReceive('toByteStream')
             ->zeroOrMoreTimes()
             ->andReturnUsing(function ($is) use ($bytes) {

@@ -173,7 +173,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
     }
 
     /** Restore a changed message back to its original state */
-    private function restoreMessage(Swift_Mime_Message $message)
+    private function restoreMessage(Swift_Mime_SimpleMessage $message)
     {
         if ($this->lastMessage === $message) {
             if (isset($this->originalBody)) {

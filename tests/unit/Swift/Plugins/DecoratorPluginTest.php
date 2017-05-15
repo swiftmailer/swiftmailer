@@ -180,7 +180,7 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
     private function createMessage($headers, $to = array(), $from = null, $subject = null,
         $body = null)
     {
-        $message = $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
+        $message = $this->getMockery('Swift_Mime_SimpleMessage')->shouldIgnoreMissing();
         foreach ($to as $addr => $name) {
             $message->shouldReceive('getTo')
                     ->once()
@@ -212,7 +212,7 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
         return $this->getMockery('Swift_Plugins_Decorator_Replacements')->shouldIgnoreMissing();
     }
 
-    private function createSendEvent(Swift_Mime_Message $message)
+    private function createSendEvent(Swift_Mime_SimpleMessage $message)
     {
         $evt = $this->getMockery('Swift_Events_SendEvent')->shouldIgnoreMissing();
         $evt->shouldReceive('getMessage')
@@ -224,7 +224,7 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
 
     private function createPart($type, $body, $id)
     {
-        $part = $this->getMockery('Swift_Mime_MimeEntity')->shouldIgnoreMissing();
+        $part = $this->getMockery('Swift_Mime_SimpleMimeEntity')->shouldIgnoreMissing();
         $part->shouldReceive('getContentType')
              ->zeroOrMoreTimes()
              ->andReturn($type);
@@ -240,7 +240,7 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
 
     private function createHeaders($headers = array())
     {
-        $set = $this->getMockery('Swift_Mime_HeaderSet')->shouldIgnoreMissing();
+        $set = $this->getMockery('Swift_Mime_SimpleHeaderSet')->shouldIgnoreMissing();
         $set->shouldReceive('getAll')
             ->zeroOrMoreTimes()
             ->andReturn($headers);

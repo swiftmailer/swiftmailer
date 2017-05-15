@@ -475,11 +475,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Set the headers to sign.
      *
-     * @param Swift_Mime_HeaderSet $headers
+     * @param Swift_Mime_SimpleHeaderSet $headers
      *
      * @return Swift_Signers_DKIMSigner
      */
-    public function setHeaders(Swift_Mime_HeaderSet $headers)
+    public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
     {
         $this->headerCanonData = '';
         // Loop through Headers
@@ -505,11 +505,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Add the signature to the given Headers.
      *
-     * @param Swift_Mime_HeaderSet $headers
+     * @param Swift_Mime_SimpleHeaderSet $headers
      *
      * @return Swift_Signers_DKIMSigner
      */
-    public function addSignature(Swift_Mime_HeaderSet $headers)
+    public function addSignature(Swift_Mime_SimpleHeaderSet $headers)
     {
         // Prepare the DKIM-Signature
         $params = array('v' => '1', 'a' => $this->hashAlgorithm, 'bh' => base64_encode($this->bodyHash), 'd' => $this->domainName, 'h' => implode(': ', $this->signedHeaders), 'i' => $this->signerIdentity, 's' => $this->selector);
