@@ -742,13 +742,13 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
 
     public function testOrderingEqualContentTypesMaintainsOriginalOrdering()
     {
-        $firstChild = new MimeEntityFixture(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
+        $firstChild = new MimeEntityFixture(Swift_Mime_SimpleMimeEntity::LEVEL_ALTERNATIVE,
             "Content-Type: text/plain\r\n".
             "\r\n".
             'PART 1',
             'text/plain'
         );
-        $secondChild = new MimeEntityFixture(Swift_Mime_MimeEntity::LEVEL_ALTERNATIVE,
+        $secondChild = new MimeEntityFixture(Swift_Mime_SimpleMimeEntity::LEVEL_ALTERNATIVE,
             "Content-Type: text/plain\r\n".
             "\r\n".
             'PART 2',
