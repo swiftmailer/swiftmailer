@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by prisis at 2016-12-20T08:18:06Z
+
+Is it okay if i make a pr for psr-4?
+
+---------------------------------------------------------------------------
+
+by fabpot at 2016-12-20T08:18:55Z
+
+@prisis That won't work with the current architecture.
+
+---------------------------------------------------------------------------
+
+by prisis at 2016-12-20T08:52:35Z
+
+@fabpot Was hoping that the architecture get a refactoring too :)
