@@ -765,20 +765,23 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
 
         // Sort in order of preference, if there is one
         if ($shouldSort) {
-            usort($this->immediateChildren, array($this, 'childSortAlgorithm'));
+            // Group the messages by order of preference
+            $sorted = array();
+            foreach ($this->immediateChildren as $child) {
+                $type = $child->getContentType();
+                $level = array_key_exists($type, $this->alternativePartOrder) ? $this->alternativePartOrder[$type] : max($this->alternativePartOrder) + 1;
+
+                if (empty($sorted[$level])) {
+                    $sorted[$level] = array();
+                }
+
+                $sorted[$level][] = $child;
+            }
+
+            ksort($sorted);
+
+            $this->immediateChildren = array_reduce($sorted, 'array_merge', array());
         }
-    }
-
-    private function childSortAlgorithm($a, $b)
-    {
-        $typePrefs = array();
-        $types = array(strtolower($a->getContentType()), strtolower($b->getContentType()));
-
-        foreach ($types as $type) {
-            $typePrefs[] = array_key_exists($type, $this->alternativePartOrder) ? $this->alternativePartOrder[$type] : max($this->alternativePartOrder) + 1;
-        }
-
-        return $typePrefs[0] >= $typePrefs[1] ? 1 : -1;
     }
 
     /**

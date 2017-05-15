@@ -71,7 +71,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      */
     public function addPart($body, $contentType = null, $charset = null)
     {
-        return $this->attach(new Swift_MimePart($body, $contentType, $charset));
+        return $this->attach((new Swift_MimePart($body, $contentType, $charset))->setEncoder($this->getEncoder()));
     }
 
     /**
