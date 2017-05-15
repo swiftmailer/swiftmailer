@@ -52,9 +52,7 @@ To use the AntiFlood plugin:
 When Swift Mailer sends messages it will count the number of messages that
 have been sent since the last re-connect. Once the number hits your specified
 threshold it will disconnect and re-connect, optionally pausing for a
-specified amount of time.
-
-.. code-block:: php
+specified amount of time::
 
     require_once 'lib/swift_required.php';
 
@@ -113,9 +111,7 @@ To use the Throttler plugin:
 
 When Swift Mailer sends messages it will keep track of the rate at which sending
 messages is occurring. If it realises that sending is happening too fast, it
-will cause your program to ``sleep()`` for enough time to average out the rate.
-
-.. code-block:: php
+will cause your program to ``sleep()`` for enough time to average out the rate::
 
     require_once 'lib/swift_required.php';
 
@@ -196,9 +192,7 @@ To use the Logger plugin:
 When Swift Mailer sends messages it will keep a log of all the interactions
 with the underlying Transport being used. Depending upon the Logger that has
 been used the behaviour will differ, but all implementations offer a way to
-get the contents of the log.
-
-.. code-block:: php
+get the contents of the log::
 
     require_once 'lib/swift_required.php';
 
@@ -263,9 +257,7 @@ you'll be sending the message to.
     email addresses and whose values are an associative array of replacements
     for that email address. The curly braces used in this example can be any
     type of syntax you choose, provided they match the placeholders in your
-    email template.
-
-    .. code-block:: php
+    email template::
 
         $replacements = array();
         foreach ($users as $user) {
@@ -278,16 +270,14 @@ you'll be sending the message to.
 Now create an instance of the Decorator plugin using this array of replacements
 and then register it with the Mailer. Do this only once!
 
-.. code-block:: php
+::
 
     $decorator = new Swift_Plugins_DecoratorPlugin($replacements);
 
     $mailer->registerPlugin($decorator);
 
 When you create your message, replace elements in the body (and/or the subject
-line) with your placeholders.
-
-.. code-block:: php
+line) with your placeholders::
 
     $message = new Swift_Message()
       ->setSubject('Important notice for {username}')
@@ -344,9 +334,7 @@ The Replacements interface is very simple to implement since it has just one
 method: ``getReplacementsFor($address)``.
 
 Imagine you want to look up replacements from a database on-the-fly, you might
-provide an implementation that does this. You need to create a small class.
-
-.. code-block:: php
+provide an implementation that does this. You need to create a small class::
 
     class DbReplacements implements Swift_Plugins_Decorator_Replacements {
       public function getReplacementsFor($address) {
@@ -367,9 +355,7 @@ provide an implementation that does this. You need to create a small class.
     }
 
 Now all you need to do is pass an instance of your class into the Decorator
-plugin's constructor instead of passing an array.
-
-.. code-block:: php
+plugin's constructor instead of passing an array::
 
     $decorator = new Swift_Plugins_DecoratorPlugin(new DbReplacements());
 
