@@ -147,45 +147,32 @@ Setting the Subject Line
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The subject line, displayed in the recipients' mail client can be set with the
-``setSubject()`` method, or as a parameter to ``new Swift_Message()``.
+``setSubject()`` method, or as a parameter to ``new Swift_Message()``::
 
-To set the subject of your Message:
+    // Pass it as a parameter when you create the message
+    $message = new Swift_Message('My amazing subject');
 
-* Call the ``setSubject()`` method of the Message, or specify it at the time
-  you create the message::
-
-      // Pass it as a parameter when you create the message
-      $message = new Swift_Message('My amazing subject');
-
-      // Or set it after like this
-      $message->setSubject('My amazing subject');
+    // Or set it after like this
+    $message->setSubject('My amazing subject');
 
 Setting the Body Content
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The body of the message -- seen when the user opens the message --
-is specified by calling the ``setBody()`` method. If an alternative body is to
-be included ``addPart()`` can be used.
+The body of the message -- seen when the user opens the message -- is specified
+by calling the ``setBody()`` method. If an alternative body is to be included,
+``addPart()`` can be used.
 
 The body of a message is the main part that is read by the user. Often people
-want to send a message in HTML format (``text/html``), other
-times people want to send in plain text (``text/plain``), or
-sometimes people want to send both versions and allow the recipient to choose
-how they view the message.
+want to send a message in HTML format (``text/html``), other times people want
+to send in plain text (``text/plain``), or sometimes people want to send both
+versions and allow the recipient to choose how they view the message.
 
 As a rule of thumb, if you're going to send a HTML email, always include a
 plain-text equivalent of the same content so that users who prefer to read
 plain text can do so.
 
-To set the body of your Message:
-
-* Call the ``setBody()`` method of the Message, or specify it at the time you
-  create the message.
-
-* Add any alternative bodies with ``addPart()``.
-
 If the recipient's mail client offers preferences for displaying text vs. HTML
-then the mail client will present that part to the user where available.  In
+then the mail client will present that part to the user where available. In
 other cases the mail client will display the "best" part it can - usually HTML
 if you've included HTML::
 
@@ -201,25 +188,20 @@ if you've included HTML::
 Attaching Files
 ---------------
 
-Attachments are downloadable parts of a message and can be added by calling
-the ``attach()`` method on the message. You can add attachments that exist on
-disk, or you can create attachments on-the-fly.
-
-Attachments are actually an interesting area of Swift Mailer and something
-that could put a lot of power at your fingertips if you grasp the concept
-behind the way a message is held together.
+Attachments are downloadable parts of a message and can be added by calling the
+``attach()`` method on the message. You can add attachments that exist on disk,
+or you can create attachments on-the-fly.
 
 Although we refer to files sent over e-mails as "attachments" -- because
 they're attached to the message -- lots of other parts of the message are
 actually "attached" even if we don't refer to these parts as attachments.
 
-File attachments are created by the ``Swift_Attachment`` class
-and then attached to the message via the ``attach()`` method on
-it. For all of the "every day" MIME types such as all image formats, word
-documents, PDFs and spreadsheets you don't need to explicitly set the
-content-type of the attachment, though it would do no harm to do so. For less
-common formats you should set the content-type -- which we'll cover in a
-moment.
+File attachments are created by the ``Swift_Attachment`` class and then
+attached to the message via the ``attach()`` method on it. For all of the
+"every day" MIME types such as all image formats, word documents, PDFs and
+spreadsheets you don't need to explicitly set the content-type of the
+attachment, though it would do no harm to do so. For less common formats you
+should set the content-type -- which we'll cover in a moment.
 
 Attaching Existing Files
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -230,12 +212,6 @@ message with just one line of code, using ``Swift_Attachment::fromPath()``.
 You can attach files that exist locally, or if your PHP installation has
 ``allow_url_fopen`` turned on you can attach files from other
 websites.
-
-To attach an existing file:
-
-* Create an attachment with ``Swift_Attachment::fromPath()``.
-
-* Add the attachment to the message with ``attach()``.
 
 The attachment will be presented to the recipient as a downloadable file with
 the same filename as the one you attached::
@@ -262,10 +238,6 @@ Usually you don't need to explicitly set the filename of an attachment because
 the name of the attached file will be used by default, but if you want to set
 the filename you use the ``setFilename()`` method of the Attachment.
 
-To change the filename of an attachment:
-
-* Call its ``setFilename()`` method.
-
 The attachment will be attached in the normal way, but meta-data sent inside
 the email will rename the file to something else::
 
@@ -284,41 +256,32 @@ Attaching Dynamic Content
 
 Files that are generated at runtime, such as PDF documents or images created
 via GD can be attached directly to a message without writing them out to disk.
-Use the standard ``new Swift_Attachment()`` method.
-
-To attach dynamically created content:
-
-* Create your content as you normally would.
-
-* Create an attachment with ``new Swift_Attachment()``, specifying
-  the source data of your content along with a name and the content-type.
-
-* Add the attachment to the message with ``attach()``.
+Use ``Swift_Attachment`` directly.
 
 The attachment will be presented to the recipient as a downloadable file
-with the filename and content-type you specify.
+with the filename and content-type you specify::
+
+    // Create your file contents in the normal way, but don't write them to disk
+    $data = create_my_pdf_data();
+
+    // Create the attachment with your data
+    $attachment = new Swift_Attachment($data, 'my-file.pdf', 'application/pdf');
+
+    // Attach it to the message
+    $message->attach($attachment);
+
+
+    // You can alternatively use method chaining to build the attachment
+    $attachment = (new Swift_Attachment())
+      ->setFilename('my-file.pdf')
+      ->setContentType('application/pdf')
+      ->setBody($data)
+      ;
 
 .. note::
 
     If you would usually write the file to disk anyway you should just attach
-    it with ``Swift_Attachment::fromPath()`` since this will use less memory::
-
-        // Create your file contents in the normal way, but don't write them to disk
-        $data = create_my_pdf_data();
-
-        // Create the attachment with your data
-        $attachment = new Swift_Attachment($data, 'my-file.pdf', 'application/pdf');
-
-        // Attach it to the message
-        $message->attach($attachment);
-
-
-        // You can alternatively use method chaining to build the attachment
-        $attachment = (new Swift_Attachment())
-          ->setFilename('my-file.pdf')
-          ->setContentType('application/pdf')
-          ->setBody($data)
-          ;
+    it with ``Swift_Attachment::fromPath()`` since this will use less memory.
 
 Changing the Disposition
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -327,33 +290,29 @@ Attachments just appear as files that can be saved to the Desktop if desired.
 You can make attachment appear inline where possible by using the
 ``setDisposition()`` method of an attachment.
 
-To make an attachment appear inline:
-
-* Call its ``setDisposition()`` method.
-
 The attachment will be displayed within the email viewing window if the mail
-client knows how to display it.
+client knows how to display it::
+
+    // Create the attachment and call its setDisposition() method
+    $attachment = Swift_Attachment::fromPath('/path/to/image.jpg')
+      ->setDisposition('inline');
+
+
+    // Because there's a fluid interface, you can do this in one statement
+    $message->attach(
+      Swift_Attachment::fromPath('/path/to/image.jpg')->setDisposition('inline')
+    );
 
 .. note::
 
     If you try to create an inline attachment for a non-displayable file type
     such as a ZIP file, the mail client should just present the attachment as
-    normal::
-
-        // Create the attachment and call its setDisposition() method
-        $attachment = Swift_Attachment::fromPath('/path/to/image.jpg')
-          ->setDisposition('inline');
-
-
-        // Because there's a fluid interface, you can do this in one statement
-        $message->attach(
-          Swift_Attachment::fromPath('/path/to/image.jpg')->setDisposition('inline')
-        );
+    normal.
 
 Embedding Inline Media Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Often people want to include an image or other content inline with a HTML
+Often, people want to include an image or other content inline with a HTML
 message. It's easy to do this with HTML linking to remote resources, but this
 approach is usually blocked by mail clients. Swift Mailer allows you to embed
 your media directly into the message.
@@ -388,56 +347,47 @@ message with just one line of code, using ``Swift_EmbeddedFile::fromPath()``.
 You can embed files that exist locally, or if your PHP installation has
 ``allow_url_fopen`` turned on you can embed files from other websites.
 
-To embed an existing file:
-
-* Create a message object with ``new Swift_Message()``.
-
-* Set the body as HTML, and embed a file at the correct point in the message with ``embed()``.
-
 The file will be displayed with the message inline with the HTML wherever its ID
-is used as a ``src`` attribute.
+is used as a ``src`` attribute::
+
+    // Create the message
+    $message = new Swift_Message('My subject');
+
+    // Set the body
+    $message->setBody(
+    '<html>' .
+    ' <body>' .
+    '  Here is an image <img src="' . // Embed the file
+         $message->embed(Swift_Image::fromPath('image.png')) .
+       '" alt="Image" />' .
+    '  Rest of message' .
+    ' </body>' .
+    '</html>',
+      'text/html' // Mark the content-type as HTML
+    );
+
+    // You can embed files from a URL if allow_url_fopen is on in php.ini
+    $message->setBody(
+    '<html>' .
+    ' <body>' .
+    '  Here is an image <img src="' .
+         $message->embed(Swift_Image::fromPath('http://site.tld/logo.png')) .
+       '" alt="Image" />' .
+    '  Rest of message' .
+    ' </body>' .
+    '</html>',
+      'text/html'
+    );
 
 .. note::
 
-    ``Swift_Image`` and ``Swift_EmbeddedFile`` are just aliases of one
-    another. ``Swift_Image`` exists for semantic purposes.
+    ``Swift_Image`` and ``Swift_EmbeddedFile`` are just aliases of one another.
+    ``Swift_Image`` exists for semantic purposes.
 
 .. note::
 
     You can embed files in two stages if you prefer. Just capture the return
     value of ``embed()`` in a variable and use that as the ``src`` attribute::
-
-        // Create the message
-        $message = new Swift_Message('My subject');
-
-        // Set the body
-        $message->setBody(
-        '<html>' .
-        ' <head></head>' .
-        ' <body>' .
-        '  Here is an image <img src="' . // Embed the file
-             $message->embed(Swift_Image::fromPath('image.png')) .
-           '" alt="Image" />' .
-        '  Rest of message' .
-        ' </body>' .
-        '</html>',
-          'text/html' // Mark the content-type as HTML
-        );
-
-        // You can embed files from a URL if allow_url_fopen is on in php.ini
-        $message->setBody(
-        '<html>' .
-        ' <head></head>' .
-        ' <body>' .
-        '  Here is an image <img src="' .
-             $message->embed(Swift_Image::fromPath('http://site.tld/logo.png')) .
-           '" alt="Image" />' .
-        '  Rest of message' .
-        ' </body>' .
-        '</html>',
-          'text/html'
-        );
-
 
         // If placing the embed() code inline becomes cumbersome
         // it's easy to do this in two steps
@@ -445,7 +395,6 @@ is used as a ``src`` attribute.
 
         $message->setBody(
         '<html>' .
-        ' <head></head>' .
         ' <body>' .
         '  Here is an image <img src="' . $cid . '" alt="Image" />' .
         '  Rest of message' .
@@ -461,46 +410,37 @@ Images that are generated at runtime, such as images created via GD can be
 embedded directly to a message without writing them out to disk. Use the
 standard ``new Swift_Image()`` method.
 
-To embed dynamically created content:
-
-* Create a message object with ``new Swift_Message()``.
-
-* Set the body as HTML, and embed a file at the correct point in the message
-  with ``embed()``. You will need to specify a filename and a content-type.
-
 The file will be displayed with the message inline with the HTML wherever its ID
-is used as a ``src`` attribute.
+is used as a ``src`` attribute::
+
+    // Create your file contents in the normal way, but don't write them to disk
+    $img_data = create_my_image_data();
+
+    // Create the message
+    $message = new Swift_Message('My subject');
+
+    // Set the body
+    $message->setBody(
+    '<html>' .
+    ' <body>' .
+    '  Here is an image <img src="' . // Embed the file
+         $message->embed(new Swift_Image($img_data, 'image.jpg', 'image/jpeg')) .
+       '" alt="Image" />' .
+    '  Rest of message' .
+    ' </body>' .
+    '</html>',
+      'text/html' // Mark the content-type as HTML
+    );
 
 .. note::
 
-    ``Swift_Image`` and ``Swift_EmbeddedFile`` are just aliases of one
-    another. ``Swift_Image`` exists for semantic purposes.
+    ``Swift_Image`` and ``Swift_EmbeddedFile`` are just aliases of one another.
+    ``Swift_Image`` exists for semantic purposes.
 
 .. note::
 
     You can embed files in two stages if you prefer. Just capture the return
     value of ``embed()`` in a variable and use that as the ``src`` attribute::
-
-        // Create your file contents in the normal way, but don't write them to disk
-        $img_data = create_my_image_data();
-
-        // Create the message
-        $message = new Swift_Message('My subject');
-
-        // Set the body
-        $message->setBody(
-        '<html>' .
-        ' <head></head>' .
-        ' <body>' .
-        '  Here is an image <img src="' . // Embed the file
-             $message->embed(new Swift_Image($img_data, 'image.jpg', 'image/jpeg')) .
-           '" alt="Image" />' .
-        '  Rest of message' .
-        ' </body>' .
-        '</html>',
-          'text/html' // Mark the content-type as HTML
-        );
-
 
         // If placing the embed() code inline becomes cumbersome
         // it's easy to do this in two steps
@@ -508,7 +448,6 @@ is used as a ``src`` attribute.
 
         $message->setBody(
         '<html>' .
-        ' <head></head>' .
         ' <body>' .
         '  Here is an image <img src="' . $cid . '" alt="Image" />' .
         '  Rest of message' .
@@ -532,9 +471,9 @@ Message recipients are one of three types:
 
 * ``Bcc:`` recipients -- hidden from other recipients (optional)
 
-Each type can contain one, or several addresses. It's possible to list only
-the addresses of the recipients, or you can personalize the address by
-providing the real name of the recipient.
+Each type can contain one, or several addresses. It's possible to list only the
+addresses of the recipients, or you can personalize the address by providing
+the real name of the recipient.
 
 Make sure to add only valid email addresses as recipients. If you try to add an
 invalid email address with ``setTo()``, ``setCc()`` or ``setBcc()``, Swift
@@ -550,9 +489,7 @@ that validate. Another way would be to wrap your ``setTo()``, ``setCc()`` and
 .. sidebar:: Syntax for Addresses
 
     If you only wish to refer to a single email address (for example your
-    ``From:`` address) then you can just use a string.
-
-    .. code-block:: php
+    ``From:`` address) then you can just use a string::
 
           $message->setFrom('some@address.tld');
 
@@ -577,36 +514,36 @@ that validate. Another way would be to wrap your ``setTo()``, ``setCc()`` and
 Setting ``To:`` Recipients
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``To:`` recipients are required in a message and are set with the
-``setTo()`` or ``addTo()`` methods of the message.
+``To:`` recipients are required in a message and are set with the ``setTo()``
+or ``addTo()`` methods of the message.
 
-To set ``To:`` recipients, create the message object using either
-``new Swift_Message( ... )`` or ``new Swift_Message( ... )``,
-then call the ``setTo()`` method with a complete array of addresses, or use the
-``addTo()`` method to iteratively add recipients.
+To set ``To:`` recipients, create the message object using either ``new
+Swift_Message( ... )`` or ``new Swift_Message( ... )``, then call the
+``setTo()`` method with a complete array of addresses, or use the ``addTo()``
+method to iteratively add recipients.
 
 The ``setTo()`` method accepts input in various formats as described earlier in
 this chapter. The ``addTo()`` method takes either one or two parameters. The
 first being the email address and the second optional parameter being the name
 of the recipient.
 
-``To:`` recipients are visible in the message headers and will be
-seen by the other recipients.
+``To:`` recipients are visible in the message headers and will be seen by the
+other recipients::
+
+    // Using setTo() to set all recipients in one go
+    $message->setTo([
+      'person1@example.org',
+      'person2@otherdomain.org' => 'Person 2 Name',
+      'person3@example.org',
+      'person4@example.org',
+      'person5@example.org' => 'Person 5 Name'
+    ]);
 
 .. note::
 
     Multiple calls to ``setTo()`` will not add new recipients -- each
     call overrides the previous calls. If you want to iteratively add
     recipients, use the ``addTo()`` method::
-
-        // Using setTo() to set all recipients in one go
-        $message->setTo([
-          'person1@example.org',
-          'person2@otherdomain.org' => 'Person 2 Name',
-          'person3@example.org',
-          'person4@example.org',
-          'person5@example.org' => 'Person 5 Name'
-        ]);
 
         // Using addTo() to add recipients iteratively
         $message->addTo('person1@example.org');
@@ -618,33 +555,33 @@ Setting ``Cc:`` Recipients
 ``Cc:`` recipients are set with the ``setCc()`` or ``addCc()`` methods of the
 message.
 
-To set ``Cc:`` recipients, create the message object using either
-``new Swift_Message( ... )`` or ``new Swift_Message( ... )``, then call
-the ``setCc()`` method with a complete array of addresses, or use the
-``addCc()`` method to iteratively add recipients.
+To set ``Cc:`` recipients, create the message object using either ``new
+Swift_Message( ... )`` or ``new Swift_Message( ... )``, then call the
+``setCc()`` method with a complete array of addresses, or use the ``addCc()``
+method to iteratively add recipients.
 
 The ``setCc()`` method accepts input in various formats as described earlier in
 this chapter. The ``addCc()`` method takes either one or two parameters. The
 first being the email address and the second optional parameter being the name
 of the recipient.
 
-``Cc:`` recipients are visible in the message headers and will be
-seen by the other recipients.
+``Cc:`` recipients are visible in the message headers and will be seen by the
+other recipients::
+
+    // Using setTo() to set all recipients in one go
+    $message->setTo([
+      'person1@example.org',
+      'person2@otherdomain.org' => 'Person 2 Name',
+      'person3@example.org',
+      'person4@example.org',
+      'person5@example.org' => 'Person 5 Name'
+    ]);
 
 .. note::
 
-    Multiple calls to ``setCc()`` will not add new recipients -- each
-    call overrides the previous calls. If you want to iteratively add Cc:
+    Multiple calls to ``setCc()`` will not add new recipients -- each call
+    overrides the previous calls. If you want to iteratively add Cc:
     recipients, use the ``addCc()`` method::
-
-        // Using setCc() to set all recipients in one go
-        $message->setCc([
-          'person1@example.org',
-          'person2@otherdomain.org' => 'Person 2 Name',
-          'person3@example.org',
-          'person4@example.org',
-          'person5@example.org' => 'Person 5 Name'
-        ]);
 
         // Using addCc() to add recipients iteratively
         $message->addCc('person1@example.org');
@@ -658,32 +595,32 @@ it, and are set with the ``setBcc()`` or ``addBcc()`` methods of the message.
 
 To set ``Bcc:`` recipients, create the message object using either ``new
 Swift_Message( ... )`` or ``new Swift_Message( ... )``, then call the
-``setBcc()`` method with a complete array of addresses, or use
-the ``addBcc()`` method to iteratively add recipients.
+``setBcc()`` method with a complete array of addresses, or use the ``addBcc()``
+method to iteratively add recipients.
 
-The ``setBcc()`` method accepts input in various formats as described earlier in
-this chapter. The ``addBcc()`` method takes either one or two parameters. The
-first being the email address and the second optional parameter being the name
-of the recipient.
+The ``setBcc()`` method accepts input in various formats as described earlier
+in this chapter. The ``addBcc()`` method takes either one or two parameters.
+The first being the email address and the second optional parameter being the
+name of the recipient.
 
 Only the individual ``Bcc:`` recipient will see their address in the message
-headers. Other recipients (including other ``Bcc:`` recipients) will not see the
-address.
+headers. Other recipients (including other ``Bcc:`` recipients) will not see
+the address::
+
+    // Using setBcc() to set all recipients in one go
+    $message->setBcc([
+      'person1@example.org',
+      'person2@otherdomain.org' => 'Person 2 Name',
+      'person3@example.org',
+      'person4@example.org',
+      'person5@example.org' => 'Person 5 Name'
+    ]);
 
 .. note::
 
-    Multiple calls to ``setBcc()`` will not add new recipients -- each
-    call overrides the previous calls. If you want to iteratively add Bcc:
+    Multiple calls to ``setBcc()`` will not add new recipients -- each call
+    overrides the previous calls. If you want to iteratively add Bcc:
     recipients, use the ``addBcc()`` method::
-
-        // Using setBcc() to set all recipients in one go
-        $message->setBcc([
-          'person1@example.org',
-          'person2@otherdomain.org' => 'Person 2 Name',
-          'person3@example.org',
-          'person4@example.org',
-          'person5@example.org' => 'Person 5 Name'
-        ]);
 
         // Using addBcc() to add recipients iteratively
         $message->addBcc('person1@example.org');
@@ -692,8 +629,8 @@ address.
 Specifying Sender Details
 -------------------------
 
-An email must include information about who sent it. Usually this is managed
-by the ``From:`` address, however there are other options.
+An email must include information about who sent it. Usually this is managed by
+the ``From:`` address, however there are other options.
 
 The sender information is contained in three possible places:
 
@@ -717,45 +654,40 @@ Setting the ``From:`` Address
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A ``From:`` address is required and is set with the ``setFrom()`` method of the
-message. ``From:`` addresses specify who actually wrote the email, and usually who sent it.
+message. ``From:`` addresses specify who actually wrote the email, and usually
+who sent it.
 
-What most people probably don't realise is that you can have more than one
+What most people probably don't realize is that you can have more than one
 ``From:`` address if more than one person wrote the email -- for example if an
 email was put together by a committee.
 
-To set the ``From:`` address(es):
-
-* Call the ``setFrom()`` method on the Message.
-
-The ``From:`` address(es) are visible in the message headers and
-will be seen by the recipients.
+The ``From:`` address(es) are visible in the message headers and will be seen
+by the recipients.
 
 .. note::
 
     If you set multiple ``From:`` addresses then you absolutely must set a
-    ``Sender:`` address to indicate who physically sent the message::
+    ``Sender:`` address to indicate who physically sent the message.
 
-        // Set a single From: address
-        $message->setFrom('your@address.tld');
+::
 
-        // Set a From: address including a name
-        $message->setFrom(['your@address.tld' => 'Your Name']);
+    // Set a single From: address
+    $message->setFrom('your@address.tld');
 
-        // Set multiple From: addresses if multiple people wrote the email
-        $message->setFrom([
-          'person1@example.org' => 'Sender One',
-          'person2@example.org' => 'Sender Two'
-        ]);
+    // Set a From: address including a name
+    $message->setFrom(['your@address.tld' => 'Your Name']);
+
+    // Set multiple From: addresses if multiple people wrote the email
+    $message->setFrom([
+      'person1@example.org' => 'Sender One',
+      'person2@example.org' => 'Sender Two'
+    ]);
 
 Setting the ``Sender:`` Address
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A ``Sender:`` address specifies who sent the message and is set with the
 ``setSender()`` method of the message.
-
-To set the ``Sender:`` address:
-
-* Call the ``setSender()`` method on the Message.
 
 The ``Sender:`` address is visible in the message headers and will be seen by
 the recipients.
@@ -775,15 +707,10 @@ possible for more than one person to send a single message::
 Setting the ``Return-Path:`` (Bounce) Address
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``Return-Path:`` address specifies where bounce notifications should
-be sent and is set with the ``setReturnPath()`` method of the message.
+The ``Return-Path:`` address specifies where bounce notifications should be
+sent and is set with the ``setReturnPath()`` method of the message.
 
-You can only have one ``Return-Path:`` and it must not include
-a personal name.
-
-To set the ``Return-Path:`` address:
-
-* Call the ``setReturnPath()`` method on the Message.
+You can only have one ``Return-Path:`` and it must not include a personal name.
 
 Bounce notifications will be sent to this address::
 
@@ -800,16 +727,19 @@ S/MIME
 
 S/MIME can sign and/or encrypt a message using the OpenSSL extension.
 
-When signing a message, the signer creates a signature of the entire content of the message (including attachments).
+When signing a message, the signer creates a signature of the entire content of
+the message (including attachments).
 
-The certificate and private key must be PEM encoded, and can be either created using for example OpenSSL or
-obtained at an official Certificate Authority (CA).
+The certificate and private key must be PEM encoded, and can be either created
+using for example OpenSSL or obtained at an official Certificate Authority (CA).
 
-**The recipient must have the CA certificate in the list of trusted issuers in order to verify the signature.**
+**The recipient must have the CA certificate in the list of trusted issuers in
+order to verify the signature.**
 
 **Make sure the certificate supports emailProtection.**
 
-When using OpenSSL this can done by the including the *-addtrust emailProtection* parameter when creating the certificate::
+When using OpenSSL this can done by the including the *-addtrust
+emailProtection* parameter when creating the certificate::
 
     $message = new Swift_Message();
 
@@ -825,19 +755,22 @@ When the private key is secured using a passphrase use the following instead::
     $smimeSigner->setSignCertificate('/path/to/certificate.pem', ['/path/to/private-key.pem', 'passphrase']);
     $message->attachSigner($smimeSigner);
 
-By default the signature is added as attachment,
-making the message still readable for mailing agents not supporting signed messages.
+By default the signature is added as attachment, making the message still
+readable for mailing agents not supporting signed messages.
 
 Storing the message as binary is also possible but not recommended::
 
     $smimeSigner->setSignCertificate('/path/to/certificate.pem', '/path/to/private-key.pem', PKCS7_BINARY);
 
-When encrypting the message (also known as enveloping), the entire message (including attachments)
-is encrypted using a certificate, and the recipient can then decrypt the message using corresponding private key.
+When encrypting the message (also known as enveloping), the entire message
+(including attachments) is encrypted using a certificate, and the recipient can
+then decrypt the message using corresponding private key.
 
-Encrypting ensures nobody can read the contents of the message without the private key.
+Encrypting ensures nobody can read the contents of the message without the
+private key.
 
-Normally the recipient provides a certificate for encrypting and keeping the decryption key private.
+Normally the recipient provides a certificate for encrypting and keeping the
+decryption key private.
 
 Using both signing and encrypting is also possible::
 
@@ -848,15 +781,18 @@ Using both signing and encrypting is also possible::
     $smimeSigner->setEncryptCertificate('/path/to/encrypt-certificate.pem');
     $message->attachSigner($smimeSigner);
 
-The used encryption cipher can be set as the second parameter of setEncryptCertificate()
+The used encryption cipher can be set as the second parameter of
+setEncryptCertificate()
 
 See http://php.net/manual/openssl.ciphers for a list of supported ciphers.
 
-By default the message is first signed and then encrypted, this can be changed by adding::
+By default the message is first signed and then encrypted, this can be changed
+by adding::
 
     $smimeSigner->setSignThenEncrypt(false);
 
-**Changing this is not recommended as most mail agents don't support this none-standard way.**
+**Changing this is not recommended as most mail agents don't support this
+none-standard way.**
 
 Only when having trouble with sign then encrypt method, this should be changed.
 
@@ -865,22 +801,18 @@ Requesting a Read Receipt
 
 It is possible to request a read-receipt to be sent to an address when the
 email is opened. To request a read receipt set the address with
-``setReadReceiptTo()``.
+``setReadReceiptTo()``:
 
-To request a read receipt:
+    $message->setReadReceiptTo('your@address.tld');
 
-* Set the address you want the receipt to be sent to with the
-  ``setReadReceiptTo()`` method on the Message.
-
-When the email is opened, if the mail client supports it a notification will be sent to this address.
+When the email is opened, if the mail client supports it a notification will be
+sent to this address.
 
 .. note::
 
     Read receipts won't work for the majority of recipients since many mail
     clients auto-disable them. Those clients that will send a read receipt
-    will make the user aware that one has been requested::
-
-        $message->setReadReceiptTo('your@address.tld');
+    will make the user aware that one has been requested.
 
 Setting the Character Set
 -------------------------
@@ -926,16 +858,14 @@ To set the character set of your Message:
 Setting the Line Length
 -----------------------
 
-The length of lines in a message can be changed by using the ``setMaxLineLength()`` method on the message. It should be kept to less than
-1000 characters.
+The length of lines in a message can be changed by using the
+``setMaxLineLength()`` method on the message::
+
+    $message->setMaxLineLength(1000);
 
 Swift Mailer defaults to using 78 characters per line in a message. This is
 done for historical reasons and so that the message can be easily viewed in
-plain-text terminals.
-
-To change the maximum length of lines in your Message:
-
-* Call the ``setMaxLineLength()`` method on the Message.
+plain-text terminals
 
 Lines that are longer than the line length specified will be wrapped between
 words.
@@ -945,16 +875,17 @@ words.
     You should never set a maximum length longer than 1000 characters
     according to RFC 2822. Doing so could have unspecified side-effects such
     as truncating parts of your message when it is transported between SMTP
-    servers::
-
-        $message->setMaxLineLength(1000);
+    servers.
 
 Setting the Message Priority
 ----------------------------
 
 You can change the priority of the message with ``setPriority()``. Setting the
 priority will not change the way your email is sent -- it is purely an
-indicative setting for the recipient.
+indicative setting for the recipient::
+
+    // Indicate "High" priority
+    $message->setPriority(2);
 
 The priority of a message is an indication to the recipient what significance
 it has. Swift Mailer allows you to set the priority by calling the
@@ -966,13 +897,7 @@ it has. Swift Mailer allows you to set the priority by calling the
 * ``Swift_Mime_SimpleMessage::PRIORITY_LOW``: 4
 * ``Swift_Mime_SimpleMessage::PRIORITY_LOWEST``: 5
 
-To set the message priority:
-
-* Set the priority as an integer between 1 and 5 with the ``setPriority()``
-  method on the Message::
-
-    // Indicate "High" priority
-    $message->setPriority(2);
+::
 
     // Or use the constant to be more explicit
     $message->setPriority(Swift_Mime_SimpleMessage::PRIORITY_HIGH);

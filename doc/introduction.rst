@@ -15,19 +15,45 @@ The recommended way to install Swiftmailer is via Composer:
 
 .. code-block:: bash
 
-    $ composer require swiftmailer/swiftmailer
+    $ composer require "swiftmailer/swiftmailer:^6.0"
 
 .. note::
 
 Swift Mailer does not work when used with function overloading as implemented
 by ``mbstring`` (``mbstring.func_overload`` set to ``2``).
 
-Including Swift Mailer
-----------------------
+Basic Usage
+-----------
 
-Swift Mailer is automatically autoloaded by Composer::
+Here is the simplest way to send emails with Swift Mailer::
 
-    require 'vendor/autoload.php';
+    require_once '/path/to/vendor/autoload.php';
+
+    // Create the Transport
+    $transport = (new Swift_SmtpTransport('smtp.example.org', 25))
+      ->setUsername('your username')
+      ->setPassword('your password')
+    ;
+
+    /*
+    You could alternatively use a different transport such as Sendmail:
+
+    // Sendmail
+    $transport = new Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+    */
+
+    // Create the Mailer using your created Transport
+    $mailer = new Swift_Mailer($transport);
+
+    // Create a message
+    $message = new Swift_Message('Wonderful Subject')
+      ->setFrom(['john@doe.com' => 'John Doe'])
+      ->setTo(['receiver@domain.org', 'other@domain.org' => 'A name'])
+      ->setBody('Here is the message itself')
+      ;
+
+    // Send the message
+    $result = $mailer->send($message);
 
 Getting Help
 ------------
