@@ -754,13 +754,13 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             'PART 2',
             'text/plain'
         );
-        $headers = $this->_createHeaderSet(array(), false);
+        $headers = $this->createHeaderSet(array(), false);
         $headers->shouldReceive('toString')
             ->zeroOrMoreTimes()
             ->andReturn("Content-Type: multipart/alternative; boundary=\"xxx\"\r\n");
 
-        $entity = $this->_createEntity($headers, $this->_createEncoder(),
-            $this->_createCache()
+        $entity = $this->createEntity($headers, $this->createEncoder(),
+            $this->createCache()
         );
         $entity->setBoundary('xxx');
         $entity->setChildren(array($firstChild, $secondChild));
