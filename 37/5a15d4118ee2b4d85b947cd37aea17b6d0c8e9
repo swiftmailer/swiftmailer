@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2016-05-07T15:51:35Z
+
+> this change is backwards compatible and can be merged into the current release branch.
+
+This change is breaking because of the addition of a method to a public interface.
+
+You have also not targeted the current release branch, which is fine, since this is breaking.
+
+---------------------------------------------------------------------------
+
+by c960657 at 2016-05-07T16:14:40Z
+
+> This change is breaking because of the addition of a method to a public interface.
+
+True, but if the interface change is omitted, the rest can be merged without breaking BC.
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2016-05-07T16:23:13Z
+
+BC doesn't matter because you've sent this to 6.x anyway.
+
+---------------------------------------------------------------------------
+
+by c960657 at 2016-05-07T22:27:33Z
+
+What is the procedure for getting this feature (modulo the interface change) into 5.x? A separate PR after this one has been merged?
