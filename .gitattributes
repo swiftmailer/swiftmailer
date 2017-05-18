@@ -6,4 +6,4 @@
 *.txt -crlf
 
 # ignore /notes in the git-generated distributed .zip archive
-/notes export-ignore
+/doc/notes export-ignore
