@@ -4,6 +4,7 @@ Changelog
 6.0.0 (2017-XX-XX)
 ------------------
 
+ * added Swift_Transport::ping()
  * removed Swift_Mime_HeaderFactory, Swift_Mime_HeaderSet, Swift_Mime_Message, Swift_Mime_MimeEntity,
    and Swift_Mime_ParameterizedHeader interfaces
  * removed Swift_MailTransport and Swift_Transport_MailTransport
