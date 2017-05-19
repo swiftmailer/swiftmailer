@@ -16,7 +16,7 @@ Changelog
    Swift_Mime_Headers_DateHeader::getTimestamp()/setTimestamp() renamed to getDateTime()/setDateTime()
  * bumped minimum version to PHP 7.0
 
-5.4.8 (2017-XX-XX)
+5.4.9 (2017-XX-XX)
 ------------------
 
  * n/a
