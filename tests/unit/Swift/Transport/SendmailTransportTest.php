@@ -7,7 +7,7 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
         if (!$dispatcher) {
             $dispatcher = $this->createEventDispatcher();
         }
-        $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher);
+        $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher, 'example.org');
         $transport->setCommand($command);
 
         return $transport;
@@ -18,7 +18,7 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
         if (!$dispatcher) {
             $dispatcher = $this->createEventDispatcher();
         }
-        $sendmail = new Swift_Transport_SendmailTransport($buf, $dispatcher);
+        $sendmail = new Swift_Transport_SendmailTransport($buf, $dispatcher, 'example.org');
 
         return $sendmail;
     }

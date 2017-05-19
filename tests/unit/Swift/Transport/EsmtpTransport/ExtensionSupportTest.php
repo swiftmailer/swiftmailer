@@ -141,7 +141,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
     {
         $buf = $this->getBuffer();
         $dispatcher = $this->createEventDispatcher();
-        $smtp = new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher);
+        $smtp = new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher, 'example.org');
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
@@ -243,7 +243,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
     {
         $buf = $this->getBuffer();
         $dispatcher = $this->createEventDispatcher();
-        $smtp = new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher);
+        $smtp = new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher, 'example.org');
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();

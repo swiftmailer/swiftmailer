@@ -8,7 +8,7 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
             $dispatcher = $this->createEventDispatcher();
         }
 
-        return new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher);
+        return new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher, 'example.org');
     }
 
     public function testHostCanBeSetAndFetched()
