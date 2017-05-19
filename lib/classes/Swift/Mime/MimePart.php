@@ -70,7 +70,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     /**
      * Get the character set of this entity.
      *
-     * @return string
+     * @return string|null
      */
     public function getCharset()
     {
@@ -99,7 +99,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     /**
      * Get the format of this entity (i.e. flowed or fixed).
      *
-     * @return string
+     * @return string|null
      */
     public function getFormat()
     {

@@ -87,7 +87,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the subject of this message.
      *
-     * @return string
+     * @return string|null
      */
     public function getSubject()
     {
@@ -113,7 +113,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the date at which this message was created.
      *
-     * @return int
+     * @return int|null
      */
     public function getDate()
     {
@@ -139,7 +139,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the return-path (bounce address) of this message.
      *
-     * @return string
+     * @return string|null
      */
     public function getReturnPath()
     {
@@ -172,7 +172,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the sender of this message.
      *
-     * @return string
+     * @return string|null
      */
     public function getSender()
     {
@@ -191,7 +191,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function addFrom($address, $name = null)
     {
-        $current = $this->getFrom();
+        $current = is_null($this->getFrom()) ? $this->getForm() : array();
         $current[$address] = $name;
 
         return $this->setFrom($current);
@@ -226,7 +226,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the from address of this message.
      *
-     * @return mixed
+     * @return mixed|null
      */
     public function getFrom()
     {
@@ -245,7 +245,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function addReplyTo($address, $name = null)
     {
-        $current = $this->getReplyTo();
+        $current = is_null($this->getReplyTo()) ? $this->getReplyTo() : array();
         $current[$address] = $name;
 
         return $this->setReplyTo($current);
@@ -280,7 +280,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the reply-to address of this message.
      *
-     * @return string
+     * @return string|null
      */
     public function getReplyTo()
     {
@@ -339,7 +339,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function getTo()
     {
-        return $this->_getHeaderFieldModel('To');
+        return is_null($this->_getHeaderFieldModel('To')) ? $this->_getHeaderFieldModel('To') : array();
     }
 
     /**
@@ -391,7 +391,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function getCc()
     {
-        return $this->_getHeaderFieldModel('Cc');
+        return is_null($this->_getHeaderFieldModel('Cc')) ? $this->_getHeaderFieldModel('Cc') : array();
     }
 
     /**
@@ -443,7 +443,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function getBcc()
     {
-        return $this->_getHeaderFieldModel('Bcc');
+        return is_null($this->_getHeaderFieldModel('Bcc')) ? $this->_getHeaderFieldModel('Bcc') : array();
     }
 
     /**
@@ -489,11 +489,14 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
      */
     public function getPriority()
     {
-        list($priority) = sscanf($this->_getHeaderFieldModel('X-Priority'),
-            '%[1-5]'
+        $priority = 3;
+        if (!is_null($this->_getHeaderFieldModel('X-Priority'))) {
+            list($priority) = sscanf($this->_getHeaderFieldModel('X-Priority'),
+                '%[1-5]'
             );
-
-        return isset($priority) ? $priority : 3;
+        }
+        
+        return $priority;
     }
 
     /**
@@ -516,7 +519,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     /**
      * Get the addresses to which a read-receipt will be sent.
      *
-     * @return string
+     * @return string|null
      */
     public function getReadReceiptTo()
     {

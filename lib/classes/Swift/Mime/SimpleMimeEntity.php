@@ -149,7 +149,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
     /**
      * Get the Content-type of this entity.
      *
-     * @return string
+     * @return string|null
      */
     public function getContentType()
     {
@@ -182,9 +182,13 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      */
     public function getId()
     {
-        $tmp = (array) $this->_getHeaderFieldModel($this->_getIdField());
-
-        return $this->_headers->has($this->_getIdField()) ? current($tmp) : $this->_id;
+        $id = $this->_id;
+        if (!is_null($this->_getHeaderFieldModel($this->_getIdField()))) {
+            $tmp = (array) $this->_getHeaderFieldModel($this->_getIdField());
+            $id = current($tmp);
+        };
+        
+        return $id;
     }
 
     /**
@@ -209,7 +213,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_MimeEntity
      *
      * This value comes from the Content-Description header if set.
      *
-     * @return string
+     * @return string|null
      */
     public function getDescription()
     {
