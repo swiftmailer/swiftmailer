@@ -16,7 +16,7 @@
  */
 abstract class Swift
 {
-    const VERSION = '6.0.0-DEV';
+    const VERSION = '6.0.0';
 
     public static $initialized = false;
     public static $inits = array();
