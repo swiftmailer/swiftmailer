@@ -1,8 +1,15 @@
 /.php_cs.cache
 /.phpunit
-/build/*
-/composer.lock
 /phpunit.xml
+/build/*
+
+# ignore local test config
 /tests/acceptance.conf.php
 /tests/smoke.conf.php
+
+# ignore composer dependencies
 /vendor/
+/composer.lock
+
+# ignore phpstorm ide data
+/.idea/
