@@ -37,6 +37,13 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     protected $_selector;
 
     /**
+     * Passphrase.
+     *
+     * @var string
+     */
+    protected $_passphrase = '';
+
+    /**
      * Hash algorithm used.
      *
      * @see RFC6376 3.3: Signers MUST implement and SHOULD sign using rsa-sha256.
@@ -169,13 +176,15 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @param string $privateKey
      * @param string $domainName
      * @param string $selector
+     * @param string $passphrase
      */
-    public function __construct($privateKey, $domainName, $selector)
+    public function __construct($privateKey, $domainName, $selector, $passphrase = '')
     {
         $this->_privateKey = $privateKey;
         $this->_domainName = $domainName;
         $this->_signerIdentity = '@'.$domainName;
         $this->_selector = $selector;
+        $this->_passphrase = $passphrase;
 
         // keep fallback hash algorithm sha1 if php version is lower than 5.4.8
         if (PHP_VERSION_ID < 50408) {
@@ -700,7 +709,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 $algorithm = OPENSSL_ALGO_SHA256;
                 break;
         }
-        $pkeyId = openssl_get_privatekey($this->_privateKey);
+        $pkeyId = openssl_get_privatekey($this->_privateKey, $this->_passphrase);
         if (!$pkeyId) {
             throw new Swift_SwiftException('Unable to load DKIM Private Key ['.openssl_error_string().']');
         }
