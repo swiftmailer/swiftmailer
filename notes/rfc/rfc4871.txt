@@ -3,6 +3,7 @@
 
 
 
+
 Network Working Group                                          E. Allman
 Request for Comments: 4871                                Sendmail, Inc.
 Obsoletes: 4870                                                J. Callas
