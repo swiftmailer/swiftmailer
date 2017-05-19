@@ -23,7 +23,7 @@
  *
  * @deprecated since 5.4.5 (to be removed in 6.0)
  */
-class Swift_Transport_MailTransport implements Swift_Transport
+class Swift_Transport_MailTransport extends Swift_Transport_AbstractTransport implements Swift_Transport
 {
     /** Additional parameters to pass to mail() */
     private $_extraParams = '-f%s';
@@ -222,56 +222,6 @@ class Swift_Transport_MailTransport implements Swift_Transport
         } else {
             throw $e;
         }
-    }
-
-    /** Determine the best-use reverse path for this message */
-    private function _getReversePath(Swift_Mime_Message $message)
-    {
-        $return = $message->getReturnPath();
-        $sender = $message->getSender();
-        $from = $message->getFrom();
-        $path = null;
-        if (!empty($return)) {
-            $path = $return;
-        } elseif (!empty($sender)) {
-            $keys = array_keys($sender);
-            $path = array_shift($keys);
-        } elseif (!empty($from)) {
-            $keys = array_keys($from);
-            $path = array_shift($keys);
-        }
-
-        return $path;
-    }
-
-    /**
-     * Fix CVE-2016-10074 by disallowing potentially unsafe shell characters.
-     *
-     * Note that escapeshellarg and escapeshellcmd are inadequate for our purposes, especially on Windows.
-     *
-     * @param string $string The string to be validated
-     *
-     * @return bool
-     */
-    private function _isShellSafe($string)
-    {
-        // Future-proof
-        if (escapeshellcmd($string) !== $string || !in_array(escapeshellarg($string), array("'$string'", "\"$string\""))) {
-            return false;
-        }
-
-        $length = strlen($string);
-        for ($i = 0; $i < $length; ++$i) {
-            $c = $string[$i];
-            // All other characters have a special meaning in at least one common shell, including = and +.
-            // Full stop (.) has a special meaning in cmd.exe, but its impact should be negligible here.
-            // Note that this does permit non-Latin alphanumeric characters based on the current locale.
-            if (!ctype_alnum($c) && strpos('@_-.', $c) === false) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
