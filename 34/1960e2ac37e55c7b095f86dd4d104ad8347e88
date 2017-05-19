@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by dariogz at 2017-03-21T20:53:52Z
+
+Is there a problem with Travis and PHPUnit on PHP>7?
+
+`PHP Fatal error:  Class 'PHPUnit_Framework_Constraint' not found in /home/travis/build/swiftmailer/swiftmailer/tests/IdenticalBinaryConstraint.php on line 8`
+
+---------------------------------------------------------------------------
+
+by Rotzbua at 2017-03-24T14:27:26Z
+
+@dariogz Seems that a newer phpunit is used under php7x https://github.com/sebastianbergmann/phpunit/wiki/Release-Announcement-for-PHPUnit-6.0.0
