@@ -84,6 +84,10 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
     public function write($bytes)
     {
         $this->_writeBuffer .= $bytes;
+        if (empty($this->_writeBuffer)) {
+            return;
+        }
+
         foreach ($this->_filters as $filter) {
             if ($filter->shouldBuffer($this->_writeBuffer)) {
                 return;
