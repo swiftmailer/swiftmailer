@@ -23,6 +23,8 @@ matrix:
         - php: 7.1
         - php: hhvm
     allow_failures:
+        - php: 7.0
+        - php: 7.1
         - php: hhvm
     fast_finish: true
 
