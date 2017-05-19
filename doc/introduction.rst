@@ -47,7 +47,7 @@ Here is the simplest way to send emails with Swift Mailer::
     // Send the message
     $result = $mailer->send($message);
 
-You can also use Sendmail as a transport:
+You can also use Sendmail as a transport::
 
     // Sendmail
     $transport = new Swift_SendmailTransport('/usr/sbin/sendmail -bs');
