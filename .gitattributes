@@ -5,5 +5,6 @@
 *.priv -crlf
 *.txt -crlf
 
-# ignore /notes in the git-generated distributed .zip archive
+# ignore /notes & /tests in the git-generated distributed .zip archive
 /notes export-ignore
+/tests export-ignore
