@@ -489,10 +489,6 @@ OEL;
 
     /**
      * Strips of the sender headers and Mime-Version.
-     *
-     * @param $content
-     *
-     * @return string
      */
     protected function cleanMessage($content)
     {

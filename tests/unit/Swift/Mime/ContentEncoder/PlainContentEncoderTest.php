@@ -125,9 +125,6 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
 
     /**
      * @dataProvider crlfProvider
-     *
-     * @param $test
-     * @param $expected
      */
     public function testCanonicEncodeByteStreamGeneratesCorrectCrlf($test, $expected)
     {

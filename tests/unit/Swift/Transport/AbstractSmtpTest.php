@@ -2,11 +2,6 @@
 
 abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
 {
-    /** Abstract test method
-     * @param $buf
-     *
-     * @return
-     */
     abstract protected function getTransport($buf);
 
     public function testStartAccepts220ServiceGreeting()
@@ -1256,9 +1251,6 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         return $this->getMockery('Swift_Mime_SimpleMessage')->shouldIgnoreMissing();
     }
 
-    /**
-     * @param $buf
-     */
     protected function finishBuffer($buf)
     {
         $buf->shouldReceive('readLine')

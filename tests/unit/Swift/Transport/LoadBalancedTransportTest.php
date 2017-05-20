@@ -804,11 +804,6 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
 
     /**
      * Adapted from Yay_Matchers_ReferenceMatcher.
-     *
-     * @param $ref1
-     * @param $ref2
-     *
-     * @return bool
      */
     public function varsAreReferences(&$ref1, &$ref2)
     {

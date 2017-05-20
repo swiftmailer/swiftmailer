@@ -164,7 +164,6 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
 
             /* We try a rename, it's an atomic operation, and avoid locking the file */
             if (rename($file, $file.'.sending')) {
-                // TODO SECURITY
                 $message = unserialize(file_get_contents($file.'.sending'));
 
                 $count += $transport->send($message, $failedRecipients);
