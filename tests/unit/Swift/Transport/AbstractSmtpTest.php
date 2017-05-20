@@ -4,6 +4,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
 {
     /** Abstract test method
      * @param $buf
+     *
      * @return
      */
     abstract protected function getTransport($buf);
@@ -1254,6 +1255,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
     {
         return $this->getMockery('Swift_Mime_SimpleMessage')->shouldIgnoreMissing();
     }
+
     /**
      * @param $buf
      */

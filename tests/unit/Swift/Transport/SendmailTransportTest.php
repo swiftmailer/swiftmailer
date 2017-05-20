@@ -18,6 +18,7 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
         if (!$dispatcher) {
             $dispatcher = $this->createEventDispatcher();
         }
+
         return new Swift_Transport_SendmailTransport($buf, $dispatcher);
     }
 
