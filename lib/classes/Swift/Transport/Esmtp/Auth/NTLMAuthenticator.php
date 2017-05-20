@@ -56,7 +56,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
 
             // extra parameters for our unit cases
             $timestamp = func_num_args() > 3 ? func_get_arg(3) : $this->getCorrectTimestamp(bcmul(microtime(true), '1000'));
-            $client = func_num_args() > 4 ? func_get_arg(4) : $this->getRandomBytes(8);
+            $client = func_num_args() > 4 ? func_get_arg(4) : random_bytes(8);
 
             // Message 3 response
             $this->sendMessage3($response, $username, $password, $timestamp, $client, $agent);
@@ -544,24 +544,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
         }
 
         return $byte;
-    }
-
-    /**
-     * Create random bytes.
-     *
-     * @param $length
-     *
-     * @return string
-     */
-    protected function getRandomBytes($length) : string 
-    {
-        $bytes = openssl_random_pseudo_bytes($length, $strong);
-
-        if (false !== $bytes && true === $strong) {
-            return $bytes;
-        }
-
-        throw new RuntimeException('OpenSSL did not produce a secure random number.');
     }
 
     /** ENCRYPTION ALGORITHMS */
