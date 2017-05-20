@@ -82,7 +82,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->andReturnUsing($collection);
             $os->shouldReceive('read')
                ->once()
-               ->andReturn(pack('C', rand(0, 255)));
+               ->andReturn(pack('C', random_int(0, 255)));
             $os->shouldReceive('read')
                ->zeroOrMoreTimes()
                ->andReturn(false);
@@ -103,7 +103,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->andReturnUsing($collection);
             $os->shouldReceive('read')
                ->once()
-               ->andReturn(pack('C*', rand(0, 255), rand(0, 255)));
+               ->andReturn(pack('C*', random_int(0, 255), random_int(0, 255)));
             $os->shouldReceive('read')
                ->zeroOrMoreTimes()
                ->andReturn(false);
@@ -124,7 +124,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->andReturnUsing($collection);
             $os->shouldReceive('read')
                ->once()
-               ->andReturn(pack('C*', rand(0, 255), rand(0, 255), rand(0, 255)));
+               ->andReturn(pack('C*', random_int(0, 255), random_int(0, 255), random_int(0, 255)));
             $os->shouldReceive('read')
                ->zeroOrMoreTimes()
                ->andReturn(false);
