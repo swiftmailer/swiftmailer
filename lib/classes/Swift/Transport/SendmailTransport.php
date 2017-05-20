@@ -38,7 +38,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
      * @param Swift_Events_EventDispatcher $dispatcher
      * @param string                       $localDomain
      */
-    public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher, $localDomain)
+    public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher, $localDomain = '127.0.0.1')
     {
         parent::__construct($buf, $dispatcher, $localDomain);
     }
