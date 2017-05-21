@@ -30,7 +30,7 @@ interface Swift_Spool
      *
      * @return bool
      */
-    public function isStarted();
+    public function isStarted(): bool;
 
     /**
      * Queues a message.
@@ -39,7 +39,7 @@ interface Swift_Spool
      *
      * @return bool Whether the operation has succeeded
      */
-    public function queueMessage(Swift_Mime_SimpleMessage $message);
+    public function queueMessage(Swift_Mime_SimpleMessage $message): bool;
 
     /**
      * Sends messages using the given transport instance.
@@ -49,5 +49,5 @@ interface Swift_Spool
      *
      * @return int The number of sent emails
      */
-    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null);
+    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null): int;
 }

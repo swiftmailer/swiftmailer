@@ -19,24 +19,22 @@ class Swift_MemorySpool implements Swift_Spool
     private $flushRetries = 3;
 
     /**
-     * Tests if this Transport mechanism has started.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isStarted()
+    public function isStarted(): bool
     {
         return true;
     }
 
     /**
-     * Starts this Transport mechanism.
+     * {@inheritdoc}
      */
     public function start()
     {
     }
 
     /**
-     * Stops this Transport mechanism.
+     * {@inheritdoc}
      */
     public function stop()
     {
@@ -57,7 +55,7 @@ class Swift_MemorySpool implements Swift_Spool
      *
      * @return bool Whether the operation has succeeded
      */
-    public function queueMessage(Swift_Mime_SimpleMessage $message)
+    public function queueMessage(Swift_Mime_SimpleMessage $message): bool
     {
         //clone the message to make sure it is not changed while in the queue
         $this->messages[] = clone $message;
@@ -66,14 +64,9 @@ class Swift_MemorySpool implements Swift_Spool
     }
 
     /**
-     * Sends messages using the given transport instance.
-     *
-     * @param Swift_Transport $transport        A transport instance
-     * @param string[]        $failedRecipients An array of failures by-reference
-     *
-     * @return int The number of sent emails
+     * {@inheritdoc}
      */
-    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
+    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null): int
     {
         if (!$this->messages) {
             return 0;

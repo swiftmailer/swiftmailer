@@ -45,24 +45,22 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     }
 
     /**
-     * Tests if this Spool mechanism has started.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isStarted()
+    public function isStarted(): bool
     {
         return true;
     }
 
     /**
-     * Starts this Spool mechanism.
+     * {@inheritdoc}
      */
     public function start()
     {
     }
 
     /**
-     * Stops this Spool mechanism.
+     * {@inheritdoc}
      */
     public function stop()
     {
@@ -89,7 +87,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      *
      * @return bool
      */
-    public function queueMessage(Swift_Mime_SimpleMessage $message)
+    public function queueMessage(Swift_Mime_SimpleMessage $message): bool
     {
         $ser = serialize($message);
         $fileName = $this->path.'/'.$this->getRandomString(10);
@@ -138,7 +136,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      *
      * @return int The number of sent e-mail's
      */
-    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
+    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null): int
     {
         $directoryIterator = new DirectoryIterator($this->path);
 
@@ -193,7 +191,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      *
      * @return string
      */
-    protected function getRandomString($count)
+    protected function getRandomString($count): string
     {
         // This string MUST stay FS safe, avoid special chars
         $base = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-';
