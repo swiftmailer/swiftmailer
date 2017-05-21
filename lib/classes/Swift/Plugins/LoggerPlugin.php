@@ -29,17 +29,15 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     }
 
     /**
-     * Add a log entry.
-     *
-     * @param string $entry
+     * {@inheritdoc}
      */
-    public function add($entry)
+    public function add(String $entry)
     {
         $this->logger->add($entry);
     }
 
     /**
-     * Clear the log contents.
+     * {@inheritdoc}
      */
     public function clear()
     {
@@ -47,11 +45,9 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
     }
 
     /**
-     * Get this log as a string.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function dump()
+    public function dump(): String
     {
         return $this->logger->dump();
     }
@@ -126,6 +122,7 @@ class Swift_Plugins_LoggerPlugin implements Swift_Events_CommandListener, Swift_
      * Invoked as a TransportException is thrown in the Transport system.
      *
      * @param Swift_Events_TransportExceptionEvent $evt
+     * @throws \Swift_TransportException
      */
     public function exceptionThrown(Swift_Events_TransportExceptionEvent $evt)
     {

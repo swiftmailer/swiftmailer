@@ -40,11 +40,9 @@ class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger
     }
 
     /**
-     * Add a log entry.
-     *
-     * @param string $entry
+     * {@inheritdoc}
      */
-    public function add($entry)
+    public function add(String $entry)
     {
         $this->log[] = $entry;
         while (count($this->log) > $this->size) {
@@ -53,7 +51,7 @@ class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger
     }
 
     /**
-     * Clear the log contents.
+     * {@inheritdoc}
      */
     public function clear()
     {
@@ -61,11 +59,9 @@ class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger
     }
 
     /**
-     * Get this log as a string.
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function dump()
+    public function dump(): string
     {
         return implode(PHP_EOL, $this->log);
     }

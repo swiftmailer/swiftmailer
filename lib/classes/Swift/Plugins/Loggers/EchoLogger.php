@@ -29,11 +29,9 @@ class Swift_Plugins_Loggers_EchoLogger implements Swift_Plugins_Logger
     }
 
     /**
-     * Add a log entry.
-     *
-     * @param string $entry
+     * {@inheritdoc}
      */
-    public function add($entry)
+    public function add(String $entry)
     {
         if ($this->isHtml) {
             printf('%s%s%s', htmlspecialchars($entry, ENT_QUOTES), '<br />', PHP_EOL);
@@ -52,7 +50,8 @@ class Swift_Plugins_Loggers_EchoLogger implements Swift_Plugins_Logger
     /**
      * Not implemented.
      */
-    public function dump()
+    public function dump(): string
     {
+        return '';
     }
 }
