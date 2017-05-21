@@ -143,23 +143,15 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      *
      * @return bool
      */
-    public function isStarted()
+    public function isStarted(): bool
     {
         return $this->started;
     }
 
     /**
-     * Send the given Message.
-     *
-     * Recipient/sender data will be retrieved from the Message API.
-     * The return value is the number of recipients who were accepted for delivery.
-     *
-     * @param Swift_Mime_SimpleMessage $message
-     * @param string[]           $failedRecipients An array of failures by-reference
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null): int
     {
         $sent = 0;
         $failedRecipients = (array) $failedRecipients;
@@ -246,7 +238,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /**
      * {@inheritdoc}
      */
-    public function ping()
+    public function ping(): bool 
     {
         try {
             if (!$this->isStarted()) {

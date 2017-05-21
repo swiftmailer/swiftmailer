@@ -130,7 +130,7 @@ class Swift_MailerTest extends \SwiftMailerTestCase
 
     private function createTransport()
     {
-        return $this->getMockery('Swift_Transport')->shouldIgnoreMissing();
+        return $this->getMockery('Swift_Transport')->shouldIgnoreMissing(0);
     }
 
     private function createMessage()

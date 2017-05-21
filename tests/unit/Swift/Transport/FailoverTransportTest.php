@@ -479,6 +479,7 @@ class Swift_Transport_FailoverTransportTest extends \SwiftMailerTestCase
                if ($connectionState) {
                    return 1;
                }
+               return 0;
            });
 
         $transport = $this->getTransport(array($t1));

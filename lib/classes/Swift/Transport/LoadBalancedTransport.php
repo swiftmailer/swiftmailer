@@ -73,11 +73,9 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     }
 
     /**
-     * Test if this Transport mechanism has started.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isStarted()
+    public function isStarted(): bool
     {
         return count($this->transports) > 0;
     }
@@ -103,7 +101,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     /**
      * {@inheritdoc}
      */
-    public function ping()
+    public function ping(): bool
     {
         foreach ($this->transports as $transport) {
             if (!$transport->ping()) {
@@ -115,17 +113,9 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     }
 
     /**
-     * Send the given Message.
-     *
-     * Recipient/sender data will be retrieved from the Message API.
-     * The return value is the number of recipients who were accepted for delivery.
-     *
-     * @param Swift_Mime_SimpleMessage $message
-     * @param string[]           $failedRecipients An array of failures by-reference
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null): int
     {
         $maxTransports = count($this->transports);
         $sent = 0;

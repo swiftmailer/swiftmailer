@@ -27,24 +27,22 @@ class Swift_Transport_NullTransport implements Swift_Transport
     }
 
     /**
-     * Tests if this Transport mechanism has started.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isStarted()
+    public function isStarted(): bool
     {
         return true;
     }
 
     /**
-     * Starts this Transport mechanism.
+     * {@inheritdoc}
      */
     public function start()
     {
     }
 
     /**
-     * Stops this Transport mechanism.
+     * {@inheritdoc}
      */
     public function stop()
     {
@@ -53,7 +51,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
     /**
      * {@inheritdoc}
      */
-    public function ping()
+    public function ping(): bool
     {
         return true;
     }
@@ -66,7 +64,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
      *
      * @return int The number of sent emails
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null): int
     {
         if ($evt = $this->eventDispatcher->createSendEvent($this, $message)) {
             $this->eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');

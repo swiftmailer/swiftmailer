@@ -20,7 +20,7 @@ interface Swift_Transport
      *
      * @return bool
      */
-    public function isStarted();
+    public function isStarted(): bool;
 
     /**
      * Start this Transport mechanism.
@@ -53,7 +53,7 @@ interface Swift_Transport
      *
      * @return bool TRUE if the transport is alive
      */
-    public function ping();
+    public function ping(): bool;
 
     /**
      * Send the given Message.
@@ -66,7 +66,7 @@ interface Swift_Transport
      *
      * @return int
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null);
+    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null): int;
 
     /**
      * Register a plugin in the Transport.
