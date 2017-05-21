@@ -18,5 +18,5 @@ interface Swift_IdGenerator
      *
      * @return string
      */
-    public function generateId();
+    public function generateId(): string;
 }

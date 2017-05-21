@@ -13,10 +13,12 @@
  */
 class Swift_Mime_IdGenerator implements Swift_IdGenerator
 {
+    private $idRight;
+
     /**
      * @param string $idRight
      */
-    public function __construct($idRight)
+    public function __construct(String $idRight)
     {
         $this->idRight = $idRight;
     }
@@ -26,7 +28,7 @@ class Swift_Mime_IdGenerator implements Swift_IdGenerator
      *
      * @return string
      */
-    public function getIdRight()
+    public function getIdRight(): string
     {
         return $this->idRight;
     }
@@ -36,15 +38,15 @@ class Swift_Mime_IdGenerator implements Swift_IdGenerator
      *
      * @param string $idRight
      */
-    public function setIdRight($idRight)
+    public function setIdRight(String $idRight)
     {
         $this->idRight = $idRight;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function generateId()
+    public function generateId(): string
     {
         $idLeft = md5(getmypid().'.'.time().'.'.uniqid(mt_rand(), true));
 
