@@ -156,7 +156,7 @@ Some servers require authentication. You can provide a username and password
 with ``setUsername()`` and ``setPassword()`` methods::
 
     // Create the Transport the call setUsername() and setPassword()
-    $transport = new Swift_SmtpTransport('smtp.example.org', 25)
+    $transport = (new Swift_SmtpTransport('smtp.example.org', 25))
       ->setUsername('username')
       ->setPassword('password')
       ;
