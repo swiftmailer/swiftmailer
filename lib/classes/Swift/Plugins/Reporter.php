@@ -28,5 +28,5 @@ interface Swift_Plugins_Reporter
      * @param string                   $address
      * @param int                      $result  from {@link RESULT_PASS, RESULT_FAIL}
      */
-    public function notify(Swift_Mime_SimpleMessage $message, $address, $result);
+    public function notify(Swift_Mime_SimpleMessage $message, string $address, int $result);
 }
