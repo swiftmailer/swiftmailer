@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by pYr0x at 2017-05-21T10:35:38Z
+
+On some other places around the docs the brackets are missing too.  E.g. http://swiftmailer.org/docs/sending.html#smtp-with-a-username-and-password
+
+---------------------------------------------------------------------------
+
+by chshanovskiy at 2017-05-22T09:10:18Z
+
+@pYr0x, thank you. Created another PR here https://github.com/swiftmailer/swiftmailer/pull/931
