@@ -391,7 +391,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
             }
         }
 
-        return implode("\r\n ", $encodedTextLines);
+        return implode("\n ", $encodedTextLines);
     }
 
     /**

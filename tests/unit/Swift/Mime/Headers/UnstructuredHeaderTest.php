@@ -236,8 +236,8 @@ class Swift_Mime_Headers_UnstructuredHeaderTest extends \SwiftMailerTestCase
         $header->setValue($nonAsciiChar);
 
         $this->assertEquals(
-            'X-Test: =?'.$this->_charset.'?Q?line_one_here?='."\r\n".
-            ' =?'.$this->_charset.'?Q?line_two_here?='."\r\n",
+            'X-Test: =?'.$this->_charset.'?Q?line_one_here?='."\n".
+            ' =?'.$this->_charset.'?Q?line_two_here?='."\n",
             $header->toString()
             );
     }
