@@ -29,6 +29,14 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
     }
 
     /**
+     * Creates a new FailoverTransport.		
+     */		
+    public function __construct()		
+    {		
+        parent::__construct();		
+    }
+
+    /**
      * Send the given Message.
      *
      * Recipient/sender data will be retrieved from the Message API.
