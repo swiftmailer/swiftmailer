@@ -77,7 +77,7 @@ class Swift_MailerTest extends \SwiftMailerTestCase
 
     public function testFailedRecipientReferenceIsPassedToTransport()
     {
-        $failures = array();
+        $failures = [];
 
         $transport = $this->createTransport();
         $message = $this->createMessage();
@@ -92,14 +92,14 @@ class Swift_MailerTest extends \SwiftMailerTestCase
 
     public function testSendRecordsRfcComplianceExceptionAsEntireSendFailure()
     {
-        $failures = array();
+        $failures = [];
 
         $rfcException = new Swift_RfcComplianceException('test');
         $transport = $this->createTransport();
         $message = $this->createMessage();
         $message->shouldReceive('getTo')
                   ->once()
-                  ->andReturn(array('foo&invalid' => 'Foo', 'bar@valid.tld' => 'Bar'));
+                  ->andReturn(['foo&invalid' => 'Foo', 'bar@valid.tld' => 'Bar']);
         $transport->shouldReceive('send')
                   ->once()
                   ->with($message, $failures)
@@ -107,7 +107,7 @@ class Swift_MailerTest extends \SwiftMailerTestCase
 
         $mailer = $this->createMailer($transport);
         $this->assertEquals(0, $mailer->send($message, $failures), '%s: Should return 0');
-        $this->assertEquals(array('foo&invalid', 'bar@valid.tld'), $failures, '%s: Failures should contain all addresses since the entire message failed to compile');
+        $this->assertEquals(['foo&invalid', 'bar@valid.tld'], $failures, '%s: Failures should contain all addresses since the entire message failed to compile');
     }
 
     public function testRegisterPluginDelegatesToTransport()

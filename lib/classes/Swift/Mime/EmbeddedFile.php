@@ -18,13 +18,9 @@ class Swift_Mime_EmbeddedFile extends Swift_Mime_Attachment
     /**
      * Creates a new Attachment with $headers and $encoder.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headers
-     * @param Swift_Mime_ContentEncoder  $encoder
-     * @param Swift_KeyCache             $cache
-     * @param Swift_IdGenerator          $idGenerator
-     * @param array                      $mimeTypes   optional
+     * @param array $mimeTypes optional
      */
-    public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $mimeTypes = array())
+    public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $mimeTypes = [])
     {
         parent::__construct($headers, $encoder, $cache, $idGenerator, $mimeTypes);
         $this->setDisposition('inline');

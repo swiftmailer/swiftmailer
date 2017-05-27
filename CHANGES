@@ -1,10 +1,11 @@
 Changelog
 =========
 
-6.0.3 (2017-XX-XX)
+6.1.0 (2018-XX-XX)
 ------------------
 
- * n/a
+ * added support for IDN domains in email addresses
+ * fixed startTLS only allowed tls1.0, now allowed: tls1.0, tls1.1, tls1.2
 
 6.0.2 (2017-09-30)
 ------------------
@@ -33,10 +34,10 @@ Changelog
  * bumped minimum version to PHP 7.0
  * removed Swift_Validate and replaced by egulias/email-validator
 
-5.4.9 (2017-XX-XX)
+5.4.9 (2018-01-23)
 ------------------
 
- * n/a
+ * no changes, last version of the 5.x series
 
 5.4.8 (2017-05-01)
 ------------------

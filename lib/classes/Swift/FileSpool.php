@@ -121,7 +121,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         foreach (new DirectoryIterator($this->path) as $file) {
             $file = $file->getRealPath();
 
-            if (substr($file, -16) == '.message.sending') {
+            if ('.message.sending' == substr($file, -16)) {
                 $lockedtime = filectime($file);
                 if ((time() - $lockedtime) > $timeout) {
                     rename($file, substr($file, 0, -8));
@@ -145,7 +145,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         /* Start the transport only if there are queued files to send */
         if (!$transport->isStarted()) {
             foreach ($directoryIterator as $file) {
-                if (substr($file->getRealPath(), -8) == '.message') {
+                if ('.message' == substr($file->getRealPath(), -8)) {
                     $transport->start();
                     break;
                 }
@@ -158,7 +158,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         foreach ($directoryIterator as $file) {
             $file = $file->getRealPath();
 
-            if (substr($file, -8) != '.message') {
+            if ('.message' != substr($file, -8)) {
                 continue;
             }
 

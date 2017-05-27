@@ -33,8 +33,6 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
     /**
      * Sets the spool object.
      *
-     * @param Swift_Spool $spool
-     *
      * @return $this
      */
     public function setSpool(Swift_Spool $spool)
@@ -89,8 +87,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
     /**
      * Sends the given message.
      *
-     * @param Swift_Mime_SimpleMessage $message
-     * @param string[]           $failedRecipients An array of failures by-reference
+     * @param string[] $failedRecipients An array of failures by-reference
      *
      * @return int The number of sent e-mail's
      */
@@ -115,8 +112,6 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
 
     /**
      * Register a plugin.
-     *
-     * @param Swift_Events_EventListener $plugin
      */
     public function registerPlugin(Swift_Events_EventListener $plugin)
     {

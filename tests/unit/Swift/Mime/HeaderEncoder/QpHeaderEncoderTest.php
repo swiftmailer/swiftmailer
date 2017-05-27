@@ -24,7 +24,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
         $charStream = $this->createCharacterStream();
         $charStream->shouldReceive('readBytes')
                    ->atLeast()->times(6)
-                   ->andReturn(array(ord('a')), array(0x20), array(0x09), array(0x20), array(ord('b')), false);
+                   ->andReturn([ord('a')], [0x20], [0x09], [0x20], [ord('b')], false);
 
         $encoder = $this->createEncoder($charStream);
         $this->assertNotRegExp('~[ \t]~', $encoder->encodeString("a \t b"),
@@ -46,13 +46,13 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
         $charStream = $this->createCharacterStream();
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(ord('a')));
+                   ->andReturn([ord('a')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(0x20));
+                   ->andReturn([0x20]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(ord('b')));
+                   ->andReturn([ord('b')]);
         $charStream->shouldReceive('readBytes')
                    ->zeroOrMoreTimes()
                    ->andReturn(false);
@@ -75,13 +75,13 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
         $charStream = $this->createCharacterStream();
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(ord('=')));
+                   ->andReturn([ord('=')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(ord('?')));
+                   ->andReturn([ord('?')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(ord('_')));
+                   ->andReturn([ord('_')]);
         $charStream->shouldReceive('readBytes')
                    ->zeroOrMoreTimes()
                    ->andReturn(false);
@@ -102,13 +102,13 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
         $charStream = $this->createCharacterStream();
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(ord('(')));
+                   ->andReturn([ord('(')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(ord('"')));
+                   ->andReturn([ord('"')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array(ord(')')));
+                   ->andReturn([ord(')')]);
         $charStream->shouldReceive('readBytes')
                    ->zeroOrMoreTimes()
                    ->andReturn(false);
@@ -139,7 +139,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
         $allowedBytes = array_merge(
             range(ord('a'), ord('z')), range(ord('A'), ord('Z')),
             range(ord('0'), ord('9')),
-            array(ord('!'), ord('*'), ord('+'), ord('-'), ord('/'))
+            [ord('!'), ord('*'), ord('+'), ord('-'), ord('/')]
             );
 
         foreach (range(0x00, 0xFF) as $byte) {
@@ -148,7 +148,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
             $charStream = $this->createCharacterStream();
             $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn(array($byte));
+                   ->andReturn([$byte]);
             $charStream->shouldReceive('readBytes')
                    ->zeroOrMoreTimes()
                    ->andReturn(false);
@@ -193,7 +193,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
         for (; $seq < 140; ++$seq) {
             $charStream->shouldReceive('readBytes')
                        ->once()
-                       ->andReturn(array(ord('a')));
+                       ->andReturn([ord('a')]);
 
             if (75 == $seq) {
                 $output .= "\r\n"; // =\r\n

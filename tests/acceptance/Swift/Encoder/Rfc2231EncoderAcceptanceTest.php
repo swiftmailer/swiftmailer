@@ -15,7 +15,7 @@ class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends \PHPUnit\Framework\Test
     {
         $sampleFp = opendir($this->samplesDir);
         while (false !== $encodingDir = readdir($sampleFp)) {
-            if (substr($encodingDir, 0, 1) == '.') {
+            if ('.' == substr($encodingDir, 0, 1)) {
                 continue;
             }
 
@@ -29,7 +29,7 @@ class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends \PHPUnit\Framework\Test
             if (is_dir($sampleDir)) {
                 $fileFp = opendir($sampleDir);
                 while (false !== $sampleFile = readdir($fileFp)) {
-                    if (substr($sampleFile, 0, 1) == '.') {
+                    if ('.' == substr($sampleFile, 0, 1)) {
                         continue;
                     }
 

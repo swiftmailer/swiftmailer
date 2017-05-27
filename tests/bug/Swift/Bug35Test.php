@@ -19,10 +19,10 @@ class Swift_Bug35Test extends \PHPUnit\Framework\TestCase
 
         $message->setBody('HTML part', 'text/html');
 
-        $message->setTo(array('user@domain.tld' => 'User'));
+        $message->setTo(['user@domain.tld' => 'User']);
 
-        $message->setFrom(array('other@domain.tld' => 'Other'));
-        $message->setSender(array('other@domain.tld' => 'Other'));
+        $message->setFrom(['other@domain.tld' => 'Other']);
+        $message->setSender(['other@domain.tld' => 'Other']);
 
         $id = $message->getId();
         $date = preg_quote($message->getDate()->format('r'), '~');

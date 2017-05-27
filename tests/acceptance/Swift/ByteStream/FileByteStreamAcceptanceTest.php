@@ -58,7 +58,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit\Framework\T
     public function testWritingToFileWithCanonicalization()
     {
         $file = $this->createFileStream($this->testFile, true);
-        $file->addFilter($this->createFilter(array("\r\n", "\r"), "\n"), 'allToLF');
+        $file->addFilter($this->createFilter(["\r\n", "\r"], "\n"), 'allToLF');
         $file->write("foo\r\nbar\r");
         $file->write("\nzip\r\ntest\r");
         $file->flushBuffers();
@@ -68,7 +68,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit\Framework\T
     public function testWritingWithFulleMessageLengthOfAMultipleOf8192()
     {
         $file = $this->createFileStream($this->testFile, true);
-        $file->addFilter($this->createFilter(array("\r\n", "\r"), "\n"), 'allToLF');
+        $file->addFilter($this->createFilter(["\r\n", "\r"], "\n"), 'allToLF');
         $file->write('');
         $file->flushBuffers();
         $this->assertEquals('', file_get_contents($this->testFile));

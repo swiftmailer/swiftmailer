@@ -8,10 +8,10 @@ class Swift_Transport_StreamBufferTest extends \PHPUnit\Framework\TestCase
         $factory->expects($this->once())
                 ->method('createFilter')
                 ->with('a', 'b')
-                ->will($this->returnCallback(array($this, 'createFilter')));
+                ->will($this->returnCallback([$this, 'createFilter']));
 
         $buffer = $this->createBuffer($factory);
-        $buffer->setWriteTranslations(array('a' => 'b'));
+        $buffer->setWriteTranslations(['a' => 'b']);
     }
 
     public function testOverridingTranslationsOnlyAddsNeededFilters()
@@ -19,11 +19,11 @@ class Swift_Transport_StreamBufferTest extends \PHPUnit\Framework\TestCase
         $factory = $this->createFactory();
         $factory->expects($this->exactly(2))
                 ->method('createFilter')
-                ->will($this->returnCallback(array($this, 'createFilter')));
+                ->will($this->returnCallback([$this, 'createFilter']));
 
         $buffer = $this->createBuffer($factory);
-        $buffer->setWriteTranslations(array('a' => 'b'));
-        $buffer->setWriteTranslations(array('x' => 'y', 'a' => 'b'));
+        $buffer->setWriteTranslations(['a' => 'b']);
+        $buffer->setWriteTranslations(['x' => 'y', 'a' => 'b']);
     }
 
     private function createBuffer($replacementFactory)

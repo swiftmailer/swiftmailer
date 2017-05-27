@@ -11,7 +11,6 @@
 /**
  * MIME Message Signer used to apply S/MIME Signature/Encryption to a message.
  *
- *
  * @author Romain-Geissler
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Jan Flora <jf@penneo.com>
@@ -109,7 +108,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     public function setEncryptCertificate($recipientCerts, $cipher = null)
     {
         if (is_array($recipientCerts)) {
-            $this->encryptCert = array();
+            $this->encryptCert = [];
 
             foreach ($recipientCerts as $cert) {
                 $this->encryptCert[] = 'file://'.str_replace('\\', '/', realpath($cert));
@@ -200,8 +199,6 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * Change the Swift_Message to apply the signing.
      *
-     * @param Swift_Message $message
-     *
      * @return $this
      */
     public function signMessage(Swift_Message $message)
@@ -226,13 +223,11 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      */
     public function getAlteredHeaders()
     {
-        return array('Content-Type', 'Content-Transfer-Encoding', 'Content-Disposition');
+        return ['Content-Type', 'Content-Transfer-Encoding', 'Content-Disposition'];
     }
 
     /**
      * Sign a Swift message.
-     *
-     * @param Swift_Message $message
      */
     protected function smimeSignMessage(Swift_Message $message)
     {
@@ -255,11 +250,11 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
             $this->copyHeaders(
                 $message,
                 $signMessage,
-                array(
+                [
                     'Content-Type',
                     'Content-Transfer-Encoding',
                     'Content-Disposition',
-                )
+                ]
             );
         }
 
@@ -275,7 +270,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
                 $signedMessageStream->getPath(),
                 $this->signCertificate,
                 $this->signPrivateKey,
-                array(),
+                [],
                 $this->signOptions,
                 $this->extraCerts
             )
@@ -290,8 +285,6 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
     /**
      * Encrypt a Swift message.
-     *
-     * @param Swift_Message $message
      */
     protected function smimeEncryptMessage(Swift_Message $message)
     {
@@ -314,11 +307,11 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
             $this->copyHeaders(
                 $message,
                 $encryptMessage,
-                array(
+                [
                     'Content-Type',
                     'Content-Transfer-Encoding',
                     'Content-Disposition',
-                )
+                ]
             );
         }
 
@@ -334,7 +327,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
                 $messageStream->getPath(),
                 $encryptedMessageStream->getPath(),
                 $this->encryptCert,
-                array(),
+                [],
                 0,
                 $this->encryptCipher
             )
@@ -349,15 +342,11 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
     /**
      * Copy named headers from one Swift message to another.
-     *
-     * @param Swift_Message $fromMessage
-     * @param Swift_Message $toMessage
-     * @param array         $headers
      */
     protected function copyHeaders(
         Swift_Message $fromMessage,
         Swift_Message $toMessage,
-        array $headers = array()
+        array $headers = []
     ) {
         foreach ($headers as $header) {
             $this->copyHeader($fromMessage, $toMessage, $header);
@@ -367,9 +356,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * Copy a single header from one Swift message to another.
      *
-     * @param Swift_Message $fromMessage
-     * @param Swift_Message $toMessage
-     * @param string        $headerName
+     * @param string $headerName
      */
     protected function copyHeader(Swift_Message $fromMessage, Swift_Message $toMessage, $headerName)
     {
@@ -394,10 +381,6 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
     /**
      * Remove all headers from a Swift message.
-     *
-     * @param Swift_Message $fromMessage
-     * @param Swift_Message $toMessage
-     * @param string        $headerName
      */
     protected function clearAllHeaders(Swift_Message $message)
     {
@@ -409,8 +392,6 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
     /**
      * Wraps a Swift_Message in a message/rfc822 MIME part.
-     *
-     * @param Swift_Message $message
      *
      * @return Swift_MimePart
      */
@@ -438,9 +419,6 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
     /**
      * Merges an OutputByteStream from OpenSSL to a Swift_Message.
-     *
-     * @param Swift_OutputByteStream $fromStream
-     * @param Swift_Message          $message
      */
     protected function streamToMime(Swift_OutputByteStream $fromStream, Swift_Message $message)
     {
@@ -475,7 +453,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
         // Copy over the body from the stream using the content type dictated
         // by the stream content
-        $message->setChildren(array());
+        $message->setChildren([]);
         $message->setBody($messageStream, $headers['content-type']);
     }
 
@@ -483,9 +461,6 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * This message will parse the headers of a MIME email byte stream
      * and return an array that contains the headers as an associative
      * array and the email body as a string.
-     *
-     * @param Swift_OutputByteStream $emailStream
-     * @param Swift_InputByteStream  $toStream
      *
      * @return array
      */
@@ -514,7 +489,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         $headerLines = explode("\r\n", $headerData);
         unset($headerData);
 
-        $headers = array();
+        $headers = [];
         $currentHeaderName = '';
 
         // Transform header lines into an associative array
@@ -542,13 +517,9 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
         $bodyStream->commit();
 
-        return array($headers, $bodyStream);
+        return [$headers, $bodyStream];
     }
 
-    /**
-     * @param Swift_OutputByteStream $fromStream
-     * @param Swift_InputByteStream  $toStream
-     */
     protected function copyFromOpenSSLOutput(Swift_OutputByteStream $fromStream, Swift_InputByteStream $toStream)
     {
         $bufferLength = 4096;
