@@ -135,7 +135,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      */
     public static function newInstance($privateKey, $domainName, $selector)
     {
-        return new static($privateKey, $domainName, $selector);
+        return new self($privateKey, $domainName, $selector);
     }
 
     /**
