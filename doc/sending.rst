@@ -365,7 +365,7 @@ exception and stop the execution or your script early.
         $mailer = new Swift_Mailer($transport);
 
         // Create a message
-        $message = new Swift_Message('Wonderful Subject')
+        $message = (new Swift_Message('Wonderful Subject'))
           ->setFrom(['john@doe.com' => 'John Doe'])
           ->setBody('Here is the message itself')
           ;
