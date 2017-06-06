@@ -846,7 +846,7 @@ To set the character set of your Message:
     Swift_Preferences::getInstance()->setCharset('iso-8859-2');
 
     // Approach 2: Call the setCharset() method of the message
-    $message = new Swift_Message()
+    $message = (new Swift_Message())
       ->setCharset('iso-8859-2');
 
     // Approach 3: Specify the charset when setting the body

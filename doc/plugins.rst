@@ -244,7 +244,7 @@ and then register it with the Mailer. Do this only once!
 When you create your message, replace elements in the body (and/or the subject
 line) with your placeholders::
 
-    $message = new Swift_Message()
+    $message = (new Swift_Message())
       ->setSubject('Important notice for {username}')
       ->setBody(
         "Hello {username}, we have reset your password to {password}\n" .
