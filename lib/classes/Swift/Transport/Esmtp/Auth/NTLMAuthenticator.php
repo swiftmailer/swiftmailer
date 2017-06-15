@@ -38,10 +38,12 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      * @param string                    $password
      *
      * @return bool
+     *
+     * @throws \LogicException
      */
     public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
     {
-        if (!function_exists('openssl_random_pseudo_bytes') || !function_exists('openssl_encrypt')) {
+        if (!function_exists('openssl_encrypt')) {
             throw new LogicException('The OpenSSL extension must be enabled to use the NTLM authenticator.');
         }
 
