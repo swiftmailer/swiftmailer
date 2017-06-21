@@ -55,7 +55,7 @@ You can also use Sendmail as a transport::
 Getting Help
 ------------
 
+For general support, use `Stack Overflow <https://stackoverflow.com>`_.
+
 For bug reports and feature requests, create a new ticket in `GitHub
 <https://github.com/swiftmailer/swiftmailer/issues>`_.
-
-For general support, use Stack Overflow.
