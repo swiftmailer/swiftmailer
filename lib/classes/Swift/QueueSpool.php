@@ -1,4 +1,5 @@
 <?php
+
 use Interop\Queue\ExceptionInterface as PsrException;
 use Interop\Queue\PsrContext;
 use Interop\Queue\PsrQueue;
@@ -16,7 +17,7 @@ class Swift_QueueSpool extends \Swift_ConfigurableSpool
     private $queue;
 
     /**
-     * @param PsrContext $context
+     * @param PsrContext      $context
      * @param PsrQueue|string $queue
      */
     public function __construct(PsrContext $context, $queue = 'swiftmailer_spool')
@@ -63,7 +64,6 @@ class Swift_QueueSpool extends \Swift_ConfigurableSpool
                     $transport->start();
                     $isTransportStarted = true;
                 }
-
 
                 $message = unserialize($psrMessage->getBody());
 
