@@ -228,7 +228,7 @@ you'll be sending the message to.
         foreach ($users as $user) {
           $replacements[$user['email']] = [
             '{username}'=>$user['username'],
-            '{password}'=>$user['password']
+            '{resetcode}'=>$user['resetcode']
           ];
         }
 
@@ -247,8 +247,8 @@ line) with your placeholders::
     $message = (new Swift_Message())
       ->setSubject('Important notice for {username}')
       ->setBody(
-        "Hello {username}, we have reset your password to {password}\n" .
-        "Please log in and change it at your earliest convenience."
+        "Hello {username}, you requested to reset your password.\n" .
+        "Please visit https://example.com/pwreset and use the reset code {resetcode} to set a new password."
       )
       ;
 
@@ -265,8 +265,8 @@ this to one user:
 
     Subject: Important notice for smilingsunshine2009
 
-    Hello smilingsunshine2009, we have reset your password to rainyDays
-    Please log in and change it at your earliest convenience.
+    Hello smilingsunshine2009,you requested to reset your password.
+    Please visit https://example.com/pwreset and use the reset code 183457 to set a new password.
 
 While another use may receive the message as:
 
@@ -274,8 +274,8 @@ While another use may receive the message as:
 
     Subject: Important notice for billy-bo-bob
 
-    Hello billy-bo-bob, we have reset your password to dancingOctopus
-    Please log in and change it at your earliest convenience.
+    Hello billy-bo-bob, you requested to reset your password.
+    Please visit https://example.com/pwreset and use the reset code 539127 to set a new password.
 
 While the decorator plugin provides a means to solve this problem, there are
 various ways you could tackle this problem without the need for a plugin. We're
@@ -314,7 +314,7 @@ provide an implementation that does this. You need to create a small class::
         if ($row = mysql_fetch_assoc($result)) {
           return [
             '{username}'=>$row['username'],
-            '{password}'=>$row['password']
+            '{resetcode}'=>$row['resetcode']
           ];
         }
       }
