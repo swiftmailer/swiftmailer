@@ -420,7 +420,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     public function getBoundary()
     {
         if (!isset($this->boundary)) {
-            $this->boundary = '_=_swift_v4_'.time().'_'.md5(getmypid().mt_rand().uniqid('', true)).'_=_';
+            $this->boundary = '_=_swift_'.time().'_'.md5(getmypid().mt_rand().uniqid('', true)).'_=_';
         }
 
         return $this->boundary;

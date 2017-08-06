@@ -23,7 +23,7 @@ class Swift_Smoke_InternationalSmokeTest extends SwiftMailerSmokeTestCase
             ->setTo(SWIFT_SMOKE_EMAIL_ADDRESS)
             ->setBody('This message should contain an attached ZIP file (named "κείμενο, εδάφιο, θέμα.zip").'.PHP_EOL.
                 'When unzipped, the archive should produce a text file which reads:'.PHP_EOL.
-                '"This is part of a Swift Mailer v4 smoke test."'.PHP_EOL.
+                '"This is part of a Swift Mailer smoke test."'.PHP_EOL.
                 PHP_EOL.
                 'Following is some arbitrary Greek text:'.PHP_EOL.
                 'Δεν βρέθηκαν λέξεις.'
