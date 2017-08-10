@@ -476,10 +476,8 @@ the HeaderSet's ``addIdHeader()`` method.
 
     $headers->addIdHeader('Your-Header-Name', '123456.unqiue@example.org');
 
-Changing the value of an existing date header is done by calling its
-``setId()`` method.
-
-.. code-block:: php
+Changing the value of an existing ID header is done by calling its
+``setId()`` method::
 
     $msgId = $message->getHeaders()->get('Message-ID');
 
