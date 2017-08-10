@@ -407,8 +407,8 @@ HeaderSet's ``addIdHeader()`` method::
     $headers = $message->getHeaders();
     $headers->addIdHeader('Your-Header-Name', '123456.unqiue@example.org');
 
-Changing the value of an existing date header is done by calling its
-``setId()`` method::
+Changing the value of an existing ID header is done by calling its ``setId()``
+method::
 
     $msgId = $message->getHeaders()->get('Message-ID');
     $msgId->setId(time() . '.' . uniqid('thing') . '@example.org');
