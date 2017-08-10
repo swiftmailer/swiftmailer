@@ -92,7 +92,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
      */
     public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator)
     {
-        $this->cacheKey = md5(uniqid(getmypid().mt_rand(), true));
+        $this->cacheKey = bin2hex(random_bytes(16)); // set 32 hex values
         $this->cache = $cache;
         $this->headers = $headers;
         $this->idGenerator = $idGenerator;
@@ -420,7 +420,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     public function getBoundary()
     {
         if (!isset($this->boundary)) {
-            $this->boundary = '_=_swift_'.time().'_'.md5(getmypid().mt_rand().uniqid('', true)).'_=_';
+            $this->boundary = '_=_swift_'.time().'_'.bin2hex(random_bytes(16)).'_=_';
         }
 
         return $this->boundary;
@@ -813,7 +813,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     {
         $this->headers = clone $this->headers;
         $this->encoder = clone $this->encoder;
-        $this->cacheKey = md5(uniqid(getmypid().mt_rand(), true));
+        $this->cacheKey = bin2hex(random_bytes(16)); // set 32 hex values
         $children = array();
         foreach ($this->children as $pos => $child) {
             $children[$pos] = clone $child;
