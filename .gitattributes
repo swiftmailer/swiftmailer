@@ -7,3 +7,4 @@
 
 # ignore /notes in the git-generated distributed .zip archive
 /doc/notes export-ignore
+/tests export-ignore
