@@ -155,7 +155,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * The return value is the number of recipients who were accepted for delivery.
      *
      * @param Swift_Mime_SimpleMessage $message
-     * @param string[]           $failedRecipients An array of failures by-reference
+     * @param string[]                 $failedRecipients An array of failures by-reference
      *
      * @return int
      */
@@ -183,7 +183,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         $tos = array_merge($to, $cc);
         $bcc = (array) $message->getBcc();
 
-        $message->setBcc(array());
+        $message->setBcc([]);
 
         try {
             $sent += $this->sendTo($message, $reversePath, $tos, $failedRecipients);
@@ -226,7 +226,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
             }
 
             try {
-                $this->executeCommand("QUIT\r\n", array(221));
+                $this->executeCommand("QUIT\r\n", [221]);
             } catch (Swift_TransportException $e) {
             }
 
@@ -253,7 +253,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
                 $this->start();
             }
 
-            $this->executeCommand("NOOP\r\n", array(250));
+            $this->executeCommand("NOOP\r\n", [250]);
         } catch (Swift_TransportException $e) {
             try {
                 $this->stop();
@@ -281,7 +281,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      */
     public function reset()
     {
-        $this->executeCommand("RSET\r\n", array(250));
+        $this->executeCommand("RSET\r\n", [250]);
     }
 
     /**
@@ -306,7 +306,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      *
      * @return string
      */
-    public function executeCommand($command, $codes = array(), &$failures = null)
+    public function executeCommand($command, $codes = [], &$failures = null)
     {
         $failures = (array) $failures;
         $seq = $this->buffer->write($command);
@@ -322,14 +322,14 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /** Read the opening SMTP greeting */
     protected function readGreeting()
     {
-        $this->assertResponseCode($this->getFullResponse(0), array(220));
+        $this->assertResponseCode($this->getFullResponse(0), [220]);
     }
 
     /** Send the HELO welcome */
     protected function doHeloCommand()
     {
         $this->executeCommand(
-            sprintf("HELO %s\r\n", $this->domain), array(250)
+            sprintf("HELO %s\r\n", $this->domain), [250]
             );
     }
 
@@ -337,7 +337,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     protected function doMailFromCommand($address)
     {
         $this->executeCommand(
-            sprintf("MAIL FROM:<%s>\r\n", $address), array(250)
+            sprintf("MAIL FROM:<%s>\r\n", $address), [250]
             );
     }
 
@@ -345,28 +345,28 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     protected function doRcptToCommand($address)
     {
         $this->executeCommand(
-            sprintf("RCPT TO:<%s>\r\n", $address), array(250, 251, 252)
+            sprintf("RCPT TO:<%s>\r\n", $address), [250, 251, 252]
             );
     }
 
     /** Send the DATA command */
     protected function doDataCommand()
     {
-        $this->executeCommand("DATA\r\n", array(354));
+        $this->executeCommand("DATA\r\n", [354]);
     }
 
     /** Stream the contents of the message over the buffer */
     protected function streamMessage(Swift_Mime_SimpleMessage $message)
     {
-        $this->buffer->setWriteTranslations(array("\r\n." => "\r\n.."));
+        $this->buffer->setWriteTranslations(["\r\n." => "\r\n.."]);
         try {
             $message->toByteStream($this->buffer);
             $this->buffer->flushBuffers();
         } catch (Swift_TransportException $e) {
             $this->throwException($e);
         }
-        $this->buffer->setWriteTranslations(array());
-        $this->executeCommand("\r\n.\r\n", array(250));
+        $this->buffer->setWriteTranslations([]);
+        $this->executeCommand("\r\n.\r\n", [250]);
     }
 
     /** Determine the best-use reverse path for this message */
@@ -485,9 +485,9 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     {
         $sent = 0;
         foreach ($bcc as $forwardPath => $name) {
-            $message->setBcc(array($forwardPath => $name));
+            $message->setBcc([$forwardPath => $name]);
             $sent += $this->doMailTransaction(
-                $message, $reversePath, array($forwardPath), $failedRecipients
+                $message, $reversePath, [$forwardPath], $failedRecipients
                 );
         }
 

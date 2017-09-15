@@ -34,8 +34,8 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn(-1);
         $this->finishBuffer($buf);
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2));
-        $this->assertEquals(array($ext2, $ext1), $smtp->getExtensionHandlers());
+        $smtp->setExtensionHandlers([$ext1, $ext2]);
+        $this->assertEquals([$ext2, $ext1], $smtp->getExtensionHandlers());
     }
 
     public function testHandlersAreNotifiedOfParams()
@@ -71,16 +71,16 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('AUTH');
         $ext1->shouldReceive('setKeywordParams')
              ->once()
-             ->with(array('PLAIN', 'LOGIN'));
+             ->with(['PLAIN', 'LOGIN']);
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
              ->andReturn('SIZE');
         $ext2->shouldReceive('setKeywordParams')
              ->zeroOrMoreTimes()
-             ->with(array('123456'));
+             ->with(['123456']);
         $this->finishBuffer($buf);
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2));
+        $smtp->setExtensionHandlers([$ext1, $ext2]);
         $smtp->start();
     }
 
@@ -133,7 +133,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->with($smtp);
         $this->finishBuffer($buf);
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+        $smtp->setExtensionHandlers([$ext1, $ext2, $ext3]);
         $smtp->start();
     }
 
@@ -141,7 +141,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
     {
         $buf = $this->getBuffer();
         $dispatcher = $this->createEventDispatcher();
-        $smtp = new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher, 'example.org');
+        $smtp = new Swift_Transport_EsmtpTransport($buf, [], $dispatcher, 'example.org');
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
@@ -149,10 +149,10 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('me@domain' => 'Me'));
+                ->andReturn(['me@domain' => 'Me']);
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar' => null));
+                ->andReturn(['foo@bar' => null]);
 
         $buf->shouldReceive('readLine')
             ->once()
@@ -234,7 +234,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->with('SIZE')
              ->andReturn(-1);
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+        $smtp->setExtensionHandlers([$ext1, $ext2, $ext3]);
         $smtp->start();
         $smtp->send($message);
     }
@@ -243,7 +243,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
     {
         $buf = $this->getBuffer();
         $dispatcher = $this->createEventDispatcher();
-        $smtp = new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher, 'example.org');
+        $smtp = new Swift_Transport_EsmtpTransport($buf, [], $dispatcher, 'example.org');
         $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
@@ -251,10 +251,10 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
 
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('me@domain' => 'Me'));
+                ->andReturn(['me@domain' => 'Me']);
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar' => null));
+                ->andReturn(['foo@bar' => null]);
 
         $buf->shouldReceive('readLine')
             ->once()
@@ -336,7 +336,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->with('SIZE')
              ->andReturn(-1);
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+        $smtp->setExtensionHandlers([$ext1, $ext2, $ext3]);
         $smtp->start();
         $smtp->send($message);
     }
@@ -384,13 +384,13 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('AUTH');
         $ext1->shouldReceive('onCommand')
              ->once()
-             ->with($smtp, "FOO\r\n", array(250, 251), \Mockery::any(), \Mockery::any());
+             ->with($smtp, "FOO\r\n", [250, 251], \Mockery::any(), \Mockery::any());
         $ext2->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
              ->andReturn('SIZE');
         $ext2->shouldReceive('onCommand')
              ->once()
-             ->with($smtp, "FOO\r\n", array(250, 251), \Mockery::any(), \Mockery::any());
+             ->with($smtp, "FOO\r\n", [250, 251], \Mockery::any(), \Mockery::any());
         $ext3->shouldReceive('getHandledKeyword')
              ->zeroOrMoreTimes()
              ->andReturn('STARTTLS');
@@ -398,9 +398,9 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->never()
              ->with(\Mockery::any(), \Mockery::any(), \Mockery::any(), \Mockery::any(), \Mockery::any());
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+        $smtp->setExtensionHandlers([$ext1, $ext2, $ext3]);
         $smtp->start();
-        $smtp->executeCommand("FOO\r\n", array(250, 251));
+        $smtp->executeCommand("FOO\r\n", [250, 251]);
     }
 
     public function testChainOfCommandAlgorithmWhenNotifyingExtensions()
@@ -441,7 +441,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('AUTH');
         $ext1->shouldReceive('onCommand')
              ->once()
-             ->with($smtp, "FOO\r\n", array(250, 251), \Mockery::any(), \Mockery::any())
+             ->with($smtp, "FOO\r\n", [250, 251], \Mockery::any(), \Mockery::any())
              ->andReturnUsing(function ($a, $b, $c, $d, &$e) {
                  $e = true;
 
@@ -461,9 +461,9 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->never()
              ->with(\Mockery::any(), \Mockery::any(), \Mockery::any(), \Mockery::any());
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2, $ext3));
+        $smtp->setExtensionHandlers([$ext1, $ext2, $ext3]);
         $smtp->start();
-        $smtp->executeCommand("FOO\r\n", array(250, 251));
+        $smtp->executeCommand("FOO\r\n", [250, 251]);
     }
 
     public function testExtensionsCanExposeMixinMethods()
@@ -478,7 +478,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('AUTH');
         $ext1->shouldReceive('exposeMixinMethods')
              ->zeroOrMoreTimes()
-             ->andReturn(array('setUsername', 'setPassword'));
+             ->andReturn(['setUsername', 'setPassword']);
         $ext1->shouldReceive('setUsername')
              ->once()
              ->with('mick');
@@ -490,7 +490,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('STARTTLS');
         $this->finishBuffer($buf);
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2));
+        $smtp->setExtensionHandlers([$ext1, $ext2]);
         $smtp->setUsername('mick');
         $smtp->setPassword('pass');
     }
@@ -507,7 +507,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('AUTH');
         $ext1->shouldReceive('exposeMixinMethods')
              ->zeroOrMoreTimes()
-             ->andReturn(array('setUsername', 'setPassword'));
+             ->andReturn(['setUsername', 'setPassword']);
         $ext1->shouldReceive('setUsername')
              ->once()
              ->with('mick')
@@ -521,7 +521,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('STARTTLS');
         $this->finishBuffer($buf);
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2));
+        $smtp->setExtensionHandlers([$ext1, $ext2]);
         $ret = $smtp->setUsername('mick');
         $this->assertEquals($smtp, $ret);
         $ret = $smtp->setPassword('pass');
@@ -540,7 +540,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('AUTH');
         $ext1->shouldReceive('exposeMixinMethods')
              ->zeroOrMoreTimes()
-             ->andReturn(array('setUsername', 'setPassword'));
+             ->andReturn(['setUsername', 'setPassword']);
         $ext1->shouldReceive('setUsername')
              ->once()
              ->with('mick')
@@ -554,7 +554,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
              ->andReturn('STARTTLS');
         $this->finishBuffer($buf);
 
-        $smtp->setExtensionHandlers(array($ext1, $ext2));
+        $smtp->setExtensionHandlers([$ext1, $ext2]);
         $this->assertEquals('x', $smtp->setUsername('mick'));
         $this->assertEquals('x', $smtp->setPassword('pass'));
     }

@@ -20,21 +20,21 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      *
      * @var Swift_Transport_EsmtpHandler[]
      */
-    private $handlers = array();
+    private $handlers = [];
 
     /**
      * ESMTP capabilities.
      *
      * @var string[]
      */
-    private $capabilities = array();
+    private $capabilities = [];
 
     /**
      * Connection buffer parameters.
      *
      * @var array
      */
-    private $params = array(
+    private $params = [
         'protocol' => 'tcp',
         'host' => 'localhost',
         'port' => 25,
@@ -42,8 +42,8 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         'blocking' => 1,
         'tls' => false,
         'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
-        'stream_context_options' => array(),
-        );
+        'stream_context_options' => [],
+        ];
 
     /**
      * Creates a new EsmtpTransport using the given I/O buffer.
@@ -220,7 +220,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      */
     public function setExtensionHandlers(array $handlers)
     {
-        $assoc = array();
+        $assoc = [];
         foreach ($handlers as $handler) {
             $assoc[$handler->getHandledKeyword()] = $handler;
         }
@@ -255,7 +255,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      *
      * @return string
      */
-    public function executeCommand($command, $codes = array(), &$failures = null)
+    public function executeCommand($command, $codes = [], &$failures = null)
     {
         $failures = (array) $failures;
         $stopSignal = false;
@@ -279,7 +279,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
             if (in_array(strtolower($method),
                 array_map('strtolower', (array) $handler->exposeMixinMethods())
                 )) {
-                $return = call_user_func_array(array($handler, $method), $args);
+                $return = call_user_func_array([$handler, $method], $args);
                 // Allow fluid method calls
                 if (null === $return && substr($method, 0, 3) == 'set') {
                     return $this;
@@ -302,7 +302,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     {
         try {
             $response = $this->executeCommand(
-                sprintf("EHLO %s\r\n", $this->domain), array(250)
+                sprintf("EHLO %s\r\n", $this->domain), [250]
                 );
         } catch (Swift_TransportException $e) {
             return parent::doHeloCommand();
@@ -310,7 +310,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
 
         if ($this->params['tls']) {
             try {
-                $this->executeCommand("STARTTLS\r\n", array(220));
+                $this->executeCommand("STARTTLS\r\n", [220]);
 
                 if (!$this->buffer->startTLS()) {
                     throw new Swift_TransportException('Unable to connect with TLS encryption');
@@ -318,7 +318,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
 
                 try {
                     $response = $this->executeCommand(
-                        sprintf("EHLO %s\r\n", $this->domain), array(250)
+                        sprintf("EHLO %s\r\n", $this->domain), [250]
                         );
                 } catch (Swift_TransportException $e) {
                     return parent::doHeloCommand();
@@ -339,13 +339,13 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     protected function doMailFromCommand($address)
     {
         $handlers = $this->getActiveHandlers();
-        $params = array();
+        $params = [];
         foreach ($handlers as $handler) {
             $params = array_merge($params, (array) $handler->getMailParams());
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("MAIL FROM:<%s>%s\r\n", $address, $paramStr), array(250)
+            sprintf("MAIL FROM:<%s>%s\r\n", $address, $paramStr), [250]
             );
     }
 
@@ -353,20 +353,20 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     protected function doRcptToCommand($address)
     {
         $handlers = $this->getActiveHandlers();
-        $params = array();
+        $params = [];
         foreach ($handlers as $handler) {
             $params = array_merge($params, (array) $handler->getRcptParams());
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), array(250, 251, 252)
+            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), [250, 251, 252]
             );
     }
 
     /** Determine ESMTP capabilities by function group */
     private function getCapabilities($ehloResponse)
     {
-        $capabilities = array();
+        $capabilities = [];
         $ehloResponse = trim($ehloResponse);
         $lines = explode("\r\n", $ehloResponse);
         array_shift($lines);
@@ -374,7 +374,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
             if (preg_match('/^[0-9]{3}[ -]([A-Z0-9-]+)((?:[ =].*)?)$/Di', $line, $matches)) {
                 $keyword = strtoupper($matches[1]);
                 $paramStr = strtoupper(ltrim($matches[2], ' ='));
-                $params = !empty($paramStr) ? explode(' ', $paramStr) : array();
+                $params = !empty($paramStr) ? explode(' ', $paramStr) : [];
                 $capabilities[$keyword] = $params;
             }
         }
@@ -395,7 +395,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /** Get ESMTP handlers which are currently ok to use */
     private function getActiveHandlers()
     {
-        $handlers = array();
+        $handlers = [];
         foreach ($this->handlers as $keyword => $handler) {
             if (array_key_exists($keyword, $this->capabilities)) {
                 $handlers[] = $handler;

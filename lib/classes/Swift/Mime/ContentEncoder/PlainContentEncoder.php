@@ -121,7 +121,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
 
         $originalLines = explode($le, $string);
 
-        $lines = array();
+        $lines = [];
         $lineCount = 0;
 
         foreach ($originalLines as $originalLine) {
@@ -154,8 +154,8 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
     private function canonicalize($string)
     {
         return str_replace(
-            array("\r\n", "\r", "\n"),
-            array("\n", "\n", "\r\n"),
+            ["\r\n", "\r", "\n"],
+            ["\n", "\n", "\r\n"],
             $string
             );
     }

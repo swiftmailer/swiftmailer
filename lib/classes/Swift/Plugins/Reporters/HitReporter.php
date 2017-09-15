@@ -20,9 +20,9 @@ class Swift_Plugins_Reporters_HitReporter implements Swift_Plugins_Reporter
      *
      * @var array
      */
-    private $failures = array();
+    private $failures = [];
 
-    private $failures_cache = array();
+    private $failures_cache = [];
 
     /**
      * Notifies this ReportNotifier that $address failed or succeeded.
@@ -54,6 +54,6 @@ class Swift_Plugins_Reporters_HitReporter implements Swift_Plugins_Reporter
      */
     public function clear()
     {
-        $this->failures = $this->failures_cache = array();
+        $this->failures = $this->failures_cache = [];
     }
 }

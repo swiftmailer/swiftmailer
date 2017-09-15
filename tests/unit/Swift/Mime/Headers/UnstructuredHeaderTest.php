@@ -130,7 +130,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest extends \SwiftMailerTestCase
     {
         //SPACE and TAB permitted
         $nonPrintableBytes = array_merge(
-            range(0x00, 0x08), range(0x10, 0x19), array(0x7F)
+            range(0x00, 0x08), range(0x10, 0x19), [0x7F]
             );
 
         foreach ($nonPrintableBytes as $byte) {

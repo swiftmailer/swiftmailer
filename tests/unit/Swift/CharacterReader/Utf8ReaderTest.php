@@ -13,7 +13,7 @@ class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit\Framework\TestCase
     {
         for ($ordinal = 0x00; $ordinal <= 0x7F; ++$ordinal) {
             $this->assertSame(
-                0, $this->reader->validateByteSequence(array($ordinal), 1)
+                0, $this->reader->validateByteSequence([$ordinal], 1)
                 );
         }
     }
@@ -22,7 +22,7 @@ class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit\Framework\TestCase
     {
         for ($octet = 0xC0; $octet <= 0xDF; ++$octet) {
             $this->assertSame(
-                1, $this->reader->validateByteSequence(array($octet), 1)
+                1, $this->reader->validateByteSequence([$octet], 1)
                 );
         }
     }
@@ -31,7 +31,7 @@ class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit\Framework\TestCase
     {
         for ($octet = 0xE0; $octet <= 0xEF; ++$octet) {
             $this->assertSame(
-                2, $this->reader->validateByteSequence(array($octet), 1)
+                2, $this->reader->validateByteSequence([$octet], 1)
                 );
         }
     }
@@ -40,7 +40,7 @@ class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit\Framework\TestCase
     {
         for ($octet = 0xF0; $octet <= 0xF7; ++$octet) {
             $this->assertSame(
-                3, $this->reader->validateByteSequence(array($octet), 1)
+                3, $this->reader->validateByteSequence([$octet], 1)
                 );
         }
     }
@@ -49,7 +49,7 @@ class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit\Framework\TestCase
     {
         for ($octet = 0xF8; $octet <= 0xFB; ++$octet) {
             $this->assertSame(
-                4, $this->reader->validateByteSequence(array($octet), 1)
+                4, $this->reader->validateByteSequence([$octet], 1)
                 );
         }
     }
@@ -58,7 +58,7 @@ class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit\Framework\TestCase
     {
         for ($octet = 0xFC; $octet <= 0xFD; ++$octet) {
             $this->assertSame(
-                5, $this->reader->validateByteSequence(array($octet), 1)
+                5, $this->reader->validateByteSequence([$octet], 1)
                 );
         }
     }

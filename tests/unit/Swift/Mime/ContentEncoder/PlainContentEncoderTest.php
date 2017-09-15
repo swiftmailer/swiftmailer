@@ -49,7 +49,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
     {
         $encoder = $this->getEncoder('7bit');
 
-        $chars = array();
+        $chars = [];
         for ($i = 0; $i < 50; ++$i) {
             $chars[] = 'a';
         }
@@ -114,13 +114,13 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
 
     public function crlfProvider()
     {
-        return array(
-            array("\r", "a\r\nb"),
-            array("\n", "a\r\nb"),
-            array("\n\r", "a\r\n\r\nb"),
-            array("\n\n", "a\r\n\r\nb"),
-            array("\r\r", "a\r\n\r\nb"),
-        );
+        return [
+            ["\r", "a\r\nb"],
+            ["\n", "a\r\nb"],
+            ["\n\r", "a\r\n\r\nb"],
+            ["\n\n", "a\r\n\r\nb"],
+            ["\r\r", "a\r\n\r\nb"],
+        ];
     }
 
     /**
