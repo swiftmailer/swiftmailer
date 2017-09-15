@@ -34,7 +34,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
      *
      * @var string[]
      */
-    private $params = array();
+    private $params = [];
 
     /**
      * Creates a new ParameterizedHeader with $name.
@@ -83,7 +83,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
      */
     public function setParameter($parameter, $value)
     {
-        $this->setParameters(array_merge($this->getParameters(), array($parameter => $value)));
+        $this->setParameters(array_merge($this->getParameters(), [$parameter => $value]));
     }
 
     /**
@@ -211,11 +211,11 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
             }
         }
 
-        $valueLines = isset($this->paramEncoder) ? explode("\r\n", $value) : array($value);
+        $valueLines = isset($this->paramEncoder) ? explode("\r\n", $value) : [$value];
 
         // Need to add indices
         if (count($valueLines) > 1) {
-            $paramLines = array();
+            $paramLines = [];
             foreach ($valueLines as $i => $line) {
                 $paramLines[] = $name.'*'.$i.
                     $this->getEndOfParameterValue($line, true, $i == 0);

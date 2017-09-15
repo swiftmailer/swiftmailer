@@ -25,13 +25,13 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     private $out;
 
     /** Buffer initialization parameters */
-    private $params = array();
+    private $params = [];
 
     /** The ReplacementFilterFactory */
     private $replacementFactory;
 
     /** Translations performed on data being streamed into the buffer */
-    private $translations = array();
+    private $translations = [];
 
     /**
      * Create a new StreamBuffer using $replacementFactory for transformations.
@@ -255,7 +255,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
         if (!empty($this->params['timeout'])) {
             $timeout = $this->params['timeout'];
         }
-        $options = array();
+        $options = [];
         if (!empty($this->params['sourceIp'])) {
             $options['socket']['bindto'] = $this->params['sourceIp'].':0';
         }
@@ -287,12 +287,12 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     private function establishProcessConnection()
     {
         $command = $this->params['command'];
-        $descriptorSpec = array(
-            0 => array('pipe', 'r'),
-            1 => array('pipe', 'w'),
-            2 => array('pipe', 'w'),
-            );
-        $pipes = array();
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+            ];
+        $pipes = [];
         $this->stream = proc_open($command, $descriptorSpec, $pipes);
         stream_set_blocking($pipes[2], 0);
         if ($err = stream_get_contents($pipes[2])) {

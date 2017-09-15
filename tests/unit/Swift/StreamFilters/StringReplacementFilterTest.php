@@ -19,13 +19,13 @@ class Swift_StreamFilters_StringReplacementFilterTest extends \PHPUnit\Framework
 
     public function testFilterCanMakeMultipleReplacements()
     {
-        $filter = $this->createFilter(array('a', 'b'), 'foo');
+        $filter = $this->createFilter(['a', 'b'], 'foo');
         $this->assertEquals('XfooYfooZ', $filter->filter('XaYbZ'));
     }
 
     public function testMultipleReplacementsCanBeDifferent()
     {
-        $filter = $this->createFilter(array('a', 'b'), array('foo', 'zip'));
+        $filter = $this->createFilter(['a', 'b'], ['foo', 'zip']);
         $this->assertEquals('XfooYzipZ', $filter->filter('XaYbZ'));
     }
 
@@ -39,7 +39,7 @@ class Swift_StreamFilters_StringReplacementFilterTest extends \PHPUnit\Framework
 
     public function testShouldBufferReturnsTrueIfAnyOfMultipleMatchesAtEndOfString()
     {
-        $filter = $this->createFilter(array('foo', 'zip'), 'bar');
+        $filter = $this->createFilter(['foo', 'zip'], 'bar');
         $this->assertTrue($filter->shouldBuffer('XfooYzi'),
             '%s: Filter should buffer since "zip" is a needle and the ending '.
             '"zi" could be from "zip"'

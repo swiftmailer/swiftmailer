@@ -45,8 +45,8 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
     public function testMultipleIdsCanBeSet()
     {
         $header = $this->getHeader('References');
-        $header->setIds(array('a@b', 'x@y'));
-        $this->assertEquals(array('a@b', 'x@y'), $header->getIds());
+        $header->setIds(['a@b', 'x@y']);
+        $this->assertEquals(['a@b', 'x@y'], $header->getIds());
     }
 
     public function testSettingMultipleIdsProducesAListValue()
@@ -63,7 +63,7 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
      */
 
         $header = $this->getHeader('References');
-        $header->setIds(array('a@b', 'x@y'));
+        $header->setIds(['a@b', 'x@y']);
         $this->assertEquals('<a@b> <x@y>', $header->getFieldBody());
     }
 
@@ -160,20 +160,20 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
     {
         $header = $this->getHeader('Message-ID');
         $header->setFieldBodyModel('a@b');
-        $this->assertEquals(array('a@b'), $header->getIds());
+        $this->assertEquals(['a@b'], $header->getIds());
     }
 
     public function testGetBodyModel()
     {
         $header = $this->getHeader('Message-ID');
         $header->setId('a@b');
-        $this->assertEquals(array('a@b'), $header->getFieldBodyModel());
+        $this->assertEquals(['a@b'], $header->getFieldBodyModel());
     }
 
     public function testStringValue()
     {
         $header = $this->getHeader('References');
-        $header->setIds(array('a@b', 'x@y'));
+        $header->setIds(['a@b', 'x@y']);
         $this->assertEquals('References: <a@b> <x@y>'."\r\n", $header->toString());
     }
 

@@ -33,7 +33,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $charset = null)
     {
         parent::__construct($headers, $encoder, $cache, $idGenerator, $charset);
-        $this->getHeaders()->defineOrdering(array(
+        $this->getHeaders()->defineOrdering([
             'Return-Path',
             'Received',
             'DKIM-Signature',
@@ -50,8 +50,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
             'MIME-Version',
             'Content-Type',
             'Content-Transfer-Encoding',
-            ));
-        $this->getHeaders()->setAlwaysDisplayed(array('Date', 'Message-ID', 'From'));
+            ]);
+        $this->getHeaders()->setAlwaysDisplayed(['Date', 'Message-ID', 'From']);
         $this->getHeaders()->addTextHeader('MIME-Version', '1.0');
         $this->setDate(new DateTimeImmutable());
         $this->setId($this->getId());
@@ -159,7 +159,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function setSender($address, $name = null)
     {
         if (!is_array($address) && isset($name)) {
-            $address = array($address => $name);
+            $address = [$address => $name];
         }
 
         if (!$this->setHeaderFieldModel('Sender', (array) $address)) {
@@ -213,7 +213,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function setFrom($addresses, $name = null)
     {
         if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
+            $addresses = [$addresses => $name];
         }
 
         if (!$this->setHeaderFieldModel('From', (array) $addresses)) {
@@ -267,7 +267,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function setReplyTo($addresses, $name = null)
     {
         if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
+            $addresses = [$addresses => $name];
         }
 
         if (!$this->setHeaderFieldModel('Reply-To', (array) $addresses)) {
@@ -322,7 +322,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function setTo($addresses, $name = null)
     {
         if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
+            $addresses = [$addresses => $name];
         }
 
         if (!$this->setHeaderFieldModel('To', (array) $addresses)) {
@@ -374,7 +374,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function setCc($addresses, $name = null)
     {
         if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
+            $addresses = [$addresses => $name];
         }
 
         if (!$this->setHeaderFieldModel('Cc', (array) $addresses)) {
@@ -426,7 +426,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function setBcc($addresses, $name = null)
     {
         if (!is_array($addresses) && isset($name)) {
-            $addresses = array($addresses => $name);
+            $addresses = [$addresses => $name];
         }
 
         if (!$this->setHeaderFieldModel('Bcc', (array) $addresses)) {
@@ -457,13 +457,13 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function setPriority($priority)
     {
-        $priorityMap = array(
+        $priorityMap = [
             self::PRIORITY_HIGHEST => 'Highest',
             self::PRIORITY_HIGH => 'High',
             self::PRIORITY_NORMAL => 'Normal',
             self::PRIORITY_LOW => 'Low',
             self::PRIORITY_LOWEST => 'Lowest',
-            );
+            ];
         $pMapKeys = array_keys($priorityMap);
         if ($priority > max($pMapKeys)) {
             $priority = max($pMapKeys);
@@ -532,7 +532,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function attach(Swift_Mime_SimpleMimeEntity $entity)
     {
-        $this->setChildren(array_merge($this->getChildren(), array($entity)));
+        $this->setChildren(array_merge($this->getChildren(), [$entity]));
 
         return $this;
     }
@@ -546,7 +546,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function detach(Swift_Mime_SimpleMimeEntity $entity)
     {
-        $newChildren = array();
+        $newChildren = [];
         foreach ($this->getChildren() as $child) {
             if ($entity !== $child) {
                 $newChildren[] = $child;
@@ -580,7 +580,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function toString()
     {
         if (count($children = $this->getChildren()) > 0 && $this->getBody() != '') {
-            $this->setChildren(array_merge(array($this->becomeMimePart()), $children));
+            $this->setChildren(array_merge([$this->becomeMimePart()], $children));
             $string = parent::toString();
             $this->setChildren($children);
         } else {
@@ -610,7 +610,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     public function toByteStream(Swift_InputByteStream $is)
     {
         if (count($children = $this->getChildren()) > 0 && $this->getBody() != '') {
-            $this->setChildren(array_merge(array($this->becomeMimePart()), $children));
+            $this->setChildren(array_merge([$this->becomeMimePart()], $children));
             parent::toByteStream($is);
             $this->setChildren($children);
         } else {

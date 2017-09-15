@@ -20,7 +20,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
      *
      * @var string[]
      */
-    private $array = array();
+    private $array = [];
 
     /**
      * The size of the stack.
@@ -41,7 +41,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
      *
      * @var Swift_InputByteStream[]
      */
-    private $mirrors = array();
+    private $mirrors = [];
 
     /**
      * Create a new ArrayByteStream.
@@ -58,7 +58,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
         } elseif (is_string($stack)) {
             $this->write($stack);
         } else {
-            $this->array = array();
+            $this->array = [];
         }
     }
 
@@ -172,7 +172,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
     public function flushBuffers()
     {
         $this->offset = 0;
-        $this->array = array();
+        $this->array = [];
         $this->arraySize = 0;
 
         foreach ($this->mirrors as $stream) {

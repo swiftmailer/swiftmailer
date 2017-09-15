@@ -109,7 +109,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     public function setEncryptCertificate($recipientCerts, $cipher = null)
     {
         if (is_array($recipientCerts)) {
-            $this->encryptCert = array();
+            $this->encryptCert = [];
 
             foreach ($recipientCerts as $cert) {
                 $this->encryptCert[] = 'file://'.str_replace('\\', '/', realpath($cert));
@@ -199,7 +199,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         $this->toSMimeByteStream($messageStream, $message);
         $message->setEncoder(Swift_DependencyContainer::getInstance()->lookup('mime.rawcontentencoder'));
 
-        $message->setChildren(array());
+        $message->setChildren([]);
         $this->streamToMime($messageStream, $message);
     }
 
@@ -210,7 +210,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      */
     public function getAlteredHeaders()
     {
-        return array('Content-Type', 'Content-Transfer-Encoding', 'Content-Disposition');
+        return ['Content-Type', 'Content-Transfer-Encoding', 'Content-Disposition'];
     }
 
     /**
@@ -273,7 +273,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     {
         $signedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
 
-        $args = array($outputStream->getPath(), $signedMessageStream->getPath(), $this->signCertificate, $this->signPrivateKey, array(), $this->signOptions);
+        $args = [$outputStream->getPath(), $signedMessageStream->getPath(), $this->signCertificate, $this->signPrivateKey, [], $this->signOptions];
         if (null !== $this->extraCerts) {
             $args[] = $this->extraCerts;
         }
@@ -295,7 +295,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     {
         $encryptedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
 
-        if (!openssl_pkcs7_encrypt($outputStream->getPath(), $encryptedMessageStream->getPath(), $this->encryptCert, array(), 0, $this->encryptCipher)) {
+        if (!openssl_pkcs7_encrypt($outputStream->getPath(), $encryptedMessageStream->getPath(), $this->encryptCert, [], 0, $this->encryptCipher)) {
             throw new Swift_IoException(sprintf('Failed to encrypt S/Mime message. Error: "%s".', openssl_error_string()));
         }
 
@@ -353,7 +353,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         $headerLines = explode("\r\n", $headerData);
         unset($headerData);
 
-        $headers = array();
+        $headers = [];
         $currentHeaderName = '';
 
         foreach ($headerLines as $headerLine) {

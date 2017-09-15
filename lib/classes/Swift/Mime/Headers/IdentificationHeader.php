@@ -25,7 +25,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @var string[]
      */
-    private $ids = array();
+    private $ids = [];
 
     /**
      * The strict EmailValidator.
@@ -94,7 +94,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     public function setId($id)
     {
-        $this->setIds(is_array($id) ? $id : array($id));
+        $this->setIds(is_array($id) ? $id : [$id]);
     }
 
     /**
@@ -120,7 +120,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     public function setIds(array $ids)
     {
-        $actualIds = array();
+        $actualIds = [];
 
         foreach ($ids as $id) {
             $this->assertValidId($id);
@@ -156,7 +156,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     public function getFieldBody()
     {
         if (!$this->getCachedValue()) {
-            $angleAddrs = array();
+            $angleAddrs = [];
 
             foreach ($this->ids as $id) {
                 $angleAddrs[] = '<'.$id.'>';

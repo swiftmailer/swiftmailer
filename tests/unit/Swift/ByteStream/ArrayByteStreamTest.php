@@ -4,9 +4,9 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
 {
     public function testReadingSingleBytesFromBaseInput()
     {
-        $input = array('a', 'b', 'c');
+        $input = ['a', 'b', 'c'];
         $bs = $this->createArrayStream($input);
-        $output = array();
+        $output = [];
         while (false !== $bytes = $bs->read(1)) {
             $output[] = $bytes;
         }
@@ -17,33 +17,33 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
 
     public function testReadingMultipleBytesFromBaseInput()
     {
-        $input = array('a', 'b', 'c', 'd');
+        $input = ['a', 'b', 'c', 'd'];
         $bs = $this->createArrayStream($input);
-        $output = array();
+        $output = [];
         while (false !== $bytes = $bs->read(2)) {
             $output[] = $bytes;
         }
-        $this->assertEquals(array('ab', 'cd'), $output,
+        $this->assertEquals(['ab', 'cd'], $output,
             '%s: Bytes read from stream should be in pairs'
             );
     }
 
     public function testReadingOddOffsetOnLastByte()
     {
-        $input = array('a', 'b', 'c', 'd', 'e');
+        $input = ['a', 'b', 'c', 'd', 'e'];
         $bs = $this->createArrayStream($input);
-        $output = array();
+        $output = [];
         while (false !== $bytes = $bs->read(2)) {
             $output[] = $bytes;
         }
-        $this->assertEquals(array('ab', 'cd', 'e'), $output,
+        $this->assertEquals(['ab', 'cd', 'e'], $output,
             '%s: Bytes read from stream should be in pairs except final read'
             );
     }
 
     public function testSettingPointerPartway()
     {
-        $input = array('a', 'b', 'c');
+        $input = ['a', 'b', 'c'];
         $bs = $this->createArrayStream($input);
         $bs->setReadPointer(1);
         $this->assertEquals('b', $bs->read(1),
@@ -53,7 +53,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
 
     public function testResettingPointerAfterExhaustion()
     {
-        $input = array('a', 'b', 'c');
+        $input = ['a', 'b', 'c'];
 
         $bs = $this->createArrayStream($input);
         while (false !== $bs->read(1));
@@ -66,7 +66,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
 
     public function testPointerNeverSetsBelowZero()
     {
-        $input = array('a', 'b', 'c');
+        $input = ['a', 'b', 'c'];
         $bs = $this->createArrayStream($input);
 
         $bs->setReadPointer(-1);
@@ -77,7 +77,7 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
 
     public function testPointerNeverSetsAboveStackSize()
     {
-        $input = array('a', 'b', 'c');
+        $input = ['a', 'b', 'c'];
         $bs = $this->createArrayStream($input);
 
         $bs->setReadPointer(3);
@@ -88,23 +88,23 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
 
     public function testBytesCanBeWrittenToStream()
     {
-        $input = array('a', 'b', 'c');
+        $input = ['a', 'b', 'c'];
         $bs = $this->createArrayStream($input);
 
         $bs->write('de');
 
-        $output = array();
+        $output = [];
         while (false !== $bytes = $bs->read(1)) {
             $output[] = $bytes;
         }
-        $this->assertEquals(array('a', 'b', 'c', 'd', 'e'), $output,
+        $this->assertEquals(['a', 'b', 'c', 'd', 'e'], $output,
             '%s: Bytes read from stream should be from initial stack + written'
             );
     }
 
     public function testContentsCanBeFlushed()
     {
-        $input = array('a', 'b', 'c');
+        $input = ['a', 'b', 'c'];
         $bs = $this->createArrayStream($input);
 
         $bs->flushBuffers();
@@ -117,11 +117,11 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
     public function testConstructorCanTakeStringArgument()
     {
         $bs = $this->createArrayStream('abc');
-        $output = array();
+        $output = [];
         while (false !== $bytes = $bs->read(1)) {
             $output[] = $bytes;
         }
-        $this->assertEquals(array('a', 'b', 'c'), $output,
+        $this->assertEquals(['a', 'b', 'c'], $output,
             '%s: Bytes read from stream should be the same as bytes in constructor'
             );
     }

@@ -32,7 +32,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
 
     public function __sleep()
     {
-        return array('charStream', 'filter', 'dotEscape');
+        return ['charStream', 'filter', 'dotEscape'];
     }
 
     protected function getSafeMapShareId()

@@ -22,7 +22,7 @@ class Swift_Plugins_MessageLogger implements Swift_Events_SendListener
 
     public function __construct()
     {
-        $this->messages = array();
+        $this->messages = [];
     }
 
     /**
@@ -50,7 +50,7 @@ class Swift_Plugins_MessageLogger implements Swift_Events_SendListener
      */
     public function clear()
     {
-        $this->messages = array();
+        $this->messages = [];
     }
 
     /**

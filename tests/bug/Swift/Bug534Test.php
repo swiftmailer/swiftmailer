@@ -25,7 +25,7 @@ class Swift_Bug534Test extends \SwiftMailerTestCase
             return true;
         };
 
-        $failedRecipients = array();
+        $failedRecipients = [];
 
         $transport = m::mock('Swift_Transport');
         $transport->shouldReceive('isStarted')->andReturn(true);
