@@ -111,7 +111,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
                             $count = 1;
                         }
                     }
-                } else {
+                } elseif (is_string($body)) {
                     $bodyReplaced = str_replace($search, $replace, $body, $count);
                 }
 
