@@ -177,6 +177,23 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
         $plugin->sendPerformed($evt);
     }
 
+    public function testReplacementsWithAMessageWithImmutableDate()
+    {
+        $message = (new Swift_Message('subject foo'))
+            ->setBody('body foo')
+            ->addTo('somebody@hostname.tld')
+            ->addFrom('somebody@hostname.tld');
+
+        $evt = $this->createSendEvent($message);
+
+        $plugin = $this->createPlugin(array('somebody@hostname.tld' => array('foo' => 'bar')));
+
+        $plugin->beforeSendPerformed($evt);
+
+        $this->assertEquals('subject bar', $message->getSubject());
+        $this->assertEquals('body bar', $message->getBody());
+    }
+
     private function createMessage($headers, $to = array(), $from = null, $subject = null,
         $body = null)
     {
