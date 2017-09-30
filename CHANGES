@@ -1,9 +1,10 @@
 Changelog
 =========
 
-6.0.2 (2017-XX-XX)
+6.0.2 (2017-09-30)
 ------------------
 
+ * fixed DecoratorPlugin
  * removed usage of getmypid()
 
 6.0.1 (2017-05-20)
