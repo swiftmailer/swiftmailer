@@ -186,7 +186,7 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
 
         $evt = $this->createSendEvent($message);
 
-        $plugin = $this->createPlugin(['somebody@hostname.tld' => ['foo' => 'bar']]);
+        $plugin = $this->createPlugin(array('somebody@hostname.tld' => array('foo' => 'bar')));
 
         $plugin->beforeSendPerformed($evt);
 
