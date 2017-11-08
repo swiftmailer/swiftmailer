@@ -103,9 +103,6 @@ function generateUpToDateMimeArray()
             $valid_mime_types[$extension] = "'{$extension}' => '{$mime_type}'";
         }
 
-        // collect extensions
-        $valid_extensions = array();
-
         // all extensions from second match
         foreach ($matches[2] as $i => $extensions) {
             // explode multiple extensions from string
@@ -122,9 +119,6 @@ function generateUpToDateMimeArray()
 
                 // check if string length lower than 10
                 if (strlen($extension) < 10) {
-                    // add extension
-                    $valid_extensions[] = $extension;
-
                     if (!isset($valid_mime_types[$mime_type])) {
                         // generate array for mimetype to extension resolver (only first match)
                         $valid_mime_types[$extension] = "'{$extension}' => '{$mime_type}'";
@@ -152,11 +146,6 @@ function generateUpToDateMimeArray()
             // remove get only last part
             $extension = explode('.', strtolower($extension));
             $extension = end($extension);
-
-            // maximum length in database column
-            if (strlen($extension) <= 9) {
-                $valid_extensions[] = $extension;
-            }
         }
 
         if (isset($node->glob['pattern'][0])) {

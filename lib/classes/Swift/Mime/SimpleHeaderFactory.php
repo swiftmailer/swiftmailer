@@ -23,9 +23,6 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
     /** The Encoder used by parameters */
     private $paramEncoder;
 
-    /** The Grammar */
-    private $grammar;
-
     /** Strict EmailValidator */
     private $emailValidator;
 
