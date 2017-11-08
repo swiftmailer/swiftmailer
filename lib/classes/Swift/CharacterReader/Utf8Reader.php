@@ -100,7 +100,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
                 $invalid = true;
                 continue;
             } else {
-                if ($invalid == true) {
+                if ($invalid === true) {
                     /* We mark the chars as invalid and start a new char */
                     $currentMap['p'][$charPos + $foundChars] = $startOffset + $i;
                     $currentMap['i'][$charPos + $foundChars] = true;

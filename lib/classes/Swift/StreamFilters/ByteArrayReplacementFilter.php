@@ -17,9 +17,6 @@
  */
 class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilter
 {
-    /** The needle(s) to search for */
-    private $search;
-
     /** The replacement(s) to make */
     private $replace;
 
@@ -42,7 +39,6 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
      */
     public function __construct($search, $replace)
     {
-        $this->search = $search;
         $this->index = array();
         $this->tree = array();
         $this->replace = array();

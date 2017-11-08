@@ -93,8 +93,6 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      */
     private $hashHandler;
 
-    private $hash;
-
     private $canonData = '';
 
     private $bodyCanonEmptyCounter = 0;
@@ -131,7 +129,6 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      */
     public function reset()
     {
-        $this->hash = null;
         $this->hashHandler = null;
         $this->bodyCanonIgnoreStart = 2;
         $this->bodyCanonEmptyCounter = 0;
@@ -472,7 +469,6 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
         if (strlen($this->bodyCanonLine) > 0) {
             $this->addToHash("\r\n");
         }
-        $this->hash = hash_final($this->hashHandler, true);
     }
 
     private function addToHash($string)
