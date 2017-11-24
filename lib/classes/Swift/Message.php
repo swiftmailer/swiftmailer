@@ -123,6 +123,19 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     }
 
     /**
+     * Clear all signature handlers attached to the message.
+     *
+     * @return $this
+     */
+    public function clearSigners()
+    {
+        $this->headerSigners = [];
+        $this->bodySigners = [];
+
+        return $this;
+    }
+
+    /**
      * Get this message as a complete string.
      *
      * @return string
