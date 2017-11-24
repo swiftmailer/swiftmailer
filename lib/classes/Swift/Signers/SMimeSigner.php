@@ -483,7 +483,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * This message will parse the headers of a MIME email byte stream
      * and return an array that contains the headers as an associative
      * array and the email body as a string.
-     * 
+     *
      * @param Swift_OutputByteStream $emailStream
      * @param Swift_InputByteStream  $toStream
      *

@@ -129,8 +129,8 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      */
     public function clearSigners()
     {
-        $this->headerSigners = [];
-        $this->bodySigners = [];
+        $this->headerSigners = array();
+        $this->bodySigners = array();
 
         return $this;
     }
@@ -218,7 +218,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
         $this->savedMessage = array('headers' => array());
         $this->savedMessage['body'] = $this->getBody();
         $this->savedMessage['children'] = $this->getChildren();
-        if (count($this->savedMessage['children']) > 0 && $this->getBody() != '') {
+        if (count($this->savedMessage['children']) > 0 && '' != $this->getBody()) {
             $this->setChildren(array_merge(array($this->becomeMimePart()), $this->savedMessage['children']));
             $this->setBody('');
         }
