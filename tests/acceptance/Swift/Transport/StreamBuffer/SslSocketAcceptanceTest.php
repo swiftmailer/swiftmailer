@@ -26,7 +26,7 @@ class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest extends Swift_Transpo
     {
         $parts = explode(':', SWIFT_SSL_HOST);
         $host = $parts[0];
-        $port = isset($parts[1]) ? $parts[1] : 25;
+        $port = $parts[1] ?? 25;
 
         $this->buffer->initialize(array(
             'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
