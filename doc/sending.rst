@@ -149,6 +149,11 @@ settings.
     "ssl" are present in your PHP installation by using the PHP function
     ``stream_get_transports()``.
 
+.. note::
+    If you are using Mailcatcher_, make sure you do not set the encryption
+    for the ``Swift_SmtpTransport``, since Mailcatcher does not support encryption.
+.. _Mailcatcher: https://mailcatcher.me/
+
 SMTP with a Username and Password
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
