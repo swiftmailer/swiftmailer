@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+
+by Rotzbua at 2017-11-25T15:29:13Z
+
+@janflora Hi, can you add some comments to the code which reference to the according rfc? It is a little bit hard to review the code if I always have to search the definition ;) Thanks.
+
+---------------------------------------------------------------------------
+
+by janflora at 2017-11-27T09:31:55Z
+
+@Rotzbua I already did here: https://github.com/swiftmailer/swiftmailer/pull/1023/files#diff-459e6d445d75ee83376d20ec2381b158R183
+Right now it goes in the description of the method that toggles the functionality. Should I move it somewhere else?
+
+---------------------------------------------------------------------------
+
+by janflora at 2017-12-05T10:14:49Z
+
+@Rotzbua Any news on this? I'll be happy to explain the changes I did in even more detail if that will help with the code review.
+
+---------------------------------------------------------------------------
+
+by janflora at 2017-12-15T21:38:32Z
+
+@Rotzbua @fabpot Could you please let me know what you want me to do in order to get this change merged? I actually think that I made a valuable contribution and I would really like to help out others by getting these changes into the master branch. If you let too much time pass here, I'll forget the details of the implementation and it will take me a lot of time to get back into it if changes has to be made. Thanks.
