@@ -22,6 +22,12 @@
         "mockery/mockery": "~0.9.1",
         "symfony/phpunit-bridge": "~3.3@dev"
     },
+    "suggest": {
+        "ext-openssl": "required for encrypted connections, dkim, smime, NTLMAuthenticator, ...",
+        "ext-bcmath": "required for NTLMAuthenticator",
+        "ext-mbstring": "mbstring or iconv required for multi byte support",
+        "ext-iconv": "mbstring or iconv required for multi byte support, iconv is required for NTLMAuthenticator"
+    },
     "autoload": {
         "files": ["lib/swift_required.php"]
     },
