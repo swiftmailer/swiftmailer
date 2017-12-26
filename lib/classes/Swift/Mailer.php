@@ -17,15 +17,17 @@ class Swift_Mailer
 {
     /** The Transport used to send messages */
     private $transport;
+    private $twig;
 
     /**
      * Create a new Mailer using $transport for delivery.
      *
      * @param Swift_Transport $transport
      */
-    public function __construct(Swift_Transport $transport)
+    public function __construct(Swift_Transport $transport, Twig_Environment $twig = null)
     {
         $this->transport = $transport;
+        $this->twig = $twig;
     }
 
     /**
@@ -78,6 +80,33 @@ class Swift_Mailer
         }
 
         return $sent;
+    }
+
+    public function renderAndSend($templatePath, array $params = array())
+    {
+        $message = new Swift_Message();
+        $messageParts = array();
+        $template = $this->twig->load($templatePath);
+
+        foreach (array('from', 'to', 'cc', 'bcc', 'subject', 'body', 'body_txt') as $blockName) {
+            if ($template->hasBlock($blockName)) {
+                $messageParts[$blockName] = $this->twig->renderBlock($blockName, $params);
+            } elseif (isset($params[$blockName])) {
+                $messageParts[$blockName] = $params[$blockName];
+            }
+        }
+
+        foreach ($messageParts as $key => $value) {
+            if ('body' === $key) {
+                $message->setBody($value, 'text/html');
+            } elseif ('body_txt' === $key) {
+                $message->addPart($value, 'text/plain');
+            } else {
+                $message->{'set'.ucfirst($blockName)}($value);
+            }
+        }
+
+        return $this->send($message);
     }
 
     /**
