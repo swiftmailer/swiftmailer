@@ -439,7 +439,6 @@ You add a new path header to a HeaderSet by calling the HeaderSet's
     $headers = $message->getHeaders();
     $headers->addPathHeader('Your-Header-Name', 'person@example.org');
 
-
 Changing the value of an existing path header is done by calling its
 ``setAddress()`` method::
 
