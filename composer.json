@@ -21,13 +21,15 @@
     "require-dev": {
         "mockery/mockery": "~0.9.1",
         "queue-interop/queue-interop": "^0.5|^0.6",
+        "queue-interop/amqp-interop": "^0.7",
         "symfony/phpunit-bridge": "~3.3@dev"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]
     },
     "suggest": {
-        "queue-interop/queue-interop": "^0.5|^0.6. If you want to spool emails to a message queue."
+        "queue-interop/queue-interop": "^0.5|^0.6. If you want to spool emails to a message queue.",
+        "queue-interop/amqp-interop": "^0.7. If you want to spool emails to a AMQP message queue."
     },
     "autoload-dev": {
         "psr-0": { "Swift_": "tests/unit" }
