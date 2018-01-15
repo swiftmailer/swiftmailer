@@ -4,6 +4,11 @@ use Interop\Queue\ExceptionInterface as PsrException;
 use Interop\Queue\PsrContext;
 use Interop\Queue\PsrQueue;
 
+/**
+ * The class spools emails to the message queue via queue interop compatible transport.
+ *
+ * @author Max Kotliar
+ */
 class Swift_QueueSpool extends \Swift_ConfigurableSpool
 {
     /**
@@ -22,12 +27,11 @@ class Swift_QueueSpool extends \Swift_ConfigurableSpool
      */
     public function __construct(PsrContext $context, $queue = 'swiftmailer_spool')
     {
-        $this->context = $context;
-
-        if (false == $queue instanceof PsrQueue) {
+        if (false === $queue instanceof PsrQueue) {
             $queue = $this->context->createQueue($queue);
         }
 
+        $this->context = $context;
         $this->queue = $queue;
     }
 
