@@ -2,7 +2,6 @@
 
 class Swift_Plugins_DefaultSenderPluginTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testPluginChangesSenderEmail()
     {
         $message = Swift_Message::newInstance()
@@ -46,8 +45,6 @@ class Swift_Plugins_DefaultSenderPluginTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($message->getFrom(), array());
     }
-
-    // -- Creation Methods
 
     private function createSendEvent(Swift_Mime_Message $message)
     {

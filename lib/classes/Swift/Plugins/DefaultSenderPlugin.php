@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of SwiftMailer.
  * (c) 2009 Fabien Potencier
@@ -8,43 +9,21 @@
  */
 
 /**
- * Sets the sender of a message if none is set
+ * Sets the sender of a message if none is set.
  *
- * @author     Adam Zielinski
+ * @author Adam Zielinski
  */
 class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
 {
-
-    /**
-     * Email of sender to use in all messages that are sent
-     * without any sender information.
-     *
-     * @var string
-     */
     private $defaultSenderEmail;
 
-    /**
-     * Name of sender to use in all messages that are sent
-     * without any sender information.
-     *
-     * @var string
-     */
     private $defaultSenderName;
 
-    /**
-     * List if IDs of messages which got sender information set
-     * by this plugin.
-     *
-     * @var string[]
-     */
     private $handledMessageIds = array();
 
     /**
-     * Create a new DefaultSenderPlugin to use a $defaultSenderEmail and $defaultSenderName
-     * for all messages that are sent without any sender information.
-     *
-     * @param string $defaultSenderEmail
-     * @param string $defaultSenderName
+     * @param string $defaultSenderEmail Email of sender to use in all messages that are sent without any sender information.
+     * @param string $defaultSenderName Name of sender to use in all messages that are sent without any sender information.
      */
     public function __construct($defaultSenderEmail, $defaultSenderName = '')
     {
@@ -53,14 +32,11 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
     }
 
     /**
-     * Invoked immediately before the Message is sent.
-     *
-     * @param Swift_Events_SendEvent $evt
+     * @{inheritdoc}
      */
     public function beforeSendPerformed(Swift_Events_SendEvent $evt)
     {
         $message = $evt->getMessage();
-        $headers = $message->getHeaders();
 
         // replace sender
         if (!count($message->getFrom())) {
@@ -70,9 +46,7 @@ class Swift_Plugins_DefaultSenderPlugin implements Swift_Events_SendListener
     }
 
     /**
-     * Invoked immediately after the Message is sent.
-     *
-     * @param Swift_Events_SendEvent $evt
+     * @{inheritdoc}
      */
     public function sendPerformed(Swift_Events_SendEvent $evt)
     {
