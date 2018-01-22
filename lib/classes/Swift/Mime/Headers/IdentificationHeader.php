@@ -35,15 +35,23 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     private $emailValidator;
 
     /**
+     * The address encoder.
+     *
+     * @var Swift_AddressEncoder
+     */
+    private $addressEncoder;
+
+    /**
      * Creates a new IdentificationHeader with the given $name and $id.
      *
      * @param string         $name
      * @param EmailValidator $emailValidator
      */
-    public function __construct($name, EmailValidator $emailValidator)
+    public function __construct($name, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
     {
         $this->setFieldName($name);
         $this->emailValidator = $emailValidator;
+        $this->addressEncoder = $addressEncoder ?? new Swift_AddressEncoder_IdnAddressEncoder();
     }
 
     /**
@@ -159,7 +167,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
             $angleAddrs = array();
 
             foreach ($this->ids as $id) {
-                $angleAddrs[] = '<'.$id.'>';
+                $angleAddrs[] = '<'.$this->addressEncoder->encodeString($id).'>';
             }
 
             $this->setCachedValue(implode(' ', $angleAddrs));

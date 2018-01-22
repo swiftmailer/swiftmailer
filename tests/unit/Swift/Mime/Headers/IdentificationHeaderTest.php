@@ -133,6 +133,14 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
         $this->assertEquals('<a@[1.2.3.4]>', $header->getFieldBody());
     }
 
+    public function testIdRigthIsIdnEncoded()
+    {
+        $header = $this->getHeader('References');
+        $header->setId('a@ä');
+        $this->assertEquals('a@ä', $header->getId());
+        $this->assertEquals('<a@xn--4ca>', $header->getFieldBody());
+    }
+
     /**
      * @expectedException \Exception
      * @expectedMessageException "b c d" is not valid id-right
@@ -179,6 +187,6 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
 
     private function getHeader($name)
     {
-        return new Swift_Mime_Headers_IdentificationHeader($name, new EmailValidator());
+        return new Swift_Mime_Headers_IdentificationHeader($name, new EmailValidator(), new Swift_AddressEncoder_IdnAddressEncoder());
     }
 }
