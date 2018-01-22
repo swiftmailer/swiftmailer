@@ -50,7 +50,7 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
     protected function idnToAscii($string)
     {
         if (function_exists('idn_to_ascii')) {
-            return idn_to_ascii($string);
+            return idn_to_ascii($string, INTL_IDNA_VARIANT_UTS46);
         }
 
         if (class_exists('TrueBV\Punycode')) {
