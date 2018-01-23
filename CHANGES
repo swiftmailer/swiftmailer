@@ -33,10 +33,10 @@ Changelog
  * bumped minimum version to PHP 7.0
  * removed Swift_Validate and replaced by egulias/email-validator
 
-5.4.9 (2017-XX-XX)
+5.4.9 (2018-01-23)
 ------------------
 
- * n/a
+ * no changes, last version of the 5.x series
 
 5.4.8 (2017-05-01)
 ------------------
