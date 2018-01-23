@@ -42,8 +42,9 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
     /**
      * Creates a new PathHeader with the given $name.
      *
-     * @param string         $name
-     * @param EmailValidator $emailValidator
+     * @param string               $name
+     * @param EmailValidator       $emailValidator
+     * @param Swift_AddressEncoder $addressEncoder
      */
     public function __construct($name, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
     {

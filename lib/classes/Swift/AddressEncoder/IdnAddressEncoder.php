@@ -24,7 +24,7 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
      *
      * @throws Swift_AddressEncoderException If local-part contains non-ASCII characters
      */
-    public function encodeString($address)
+    public function encodeString(string $address): string
     {
         $i = strrpos($address, '@');
         if (false !== $i) {
@@ -45,12 +45,13 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
      * IDN-encodes a UTF-8 string to ASCII.
      *
      * @param  string $string
+     *
      * @return string
      */
-    protected function idnToAscii($string)
+    protected function idnToAscii(string $string): string
     {
         if (function_exists('idn_to_ascii')) {
-            return idn_to_ascii($string, INTL_IDNA_VARIANT_UTS46);
+            return idn_to_ascii($string, 0, INTL_IDNA_VARIANT_UTS46);
         }
 
         if (class_exists('TrueBV\Punycode')) {

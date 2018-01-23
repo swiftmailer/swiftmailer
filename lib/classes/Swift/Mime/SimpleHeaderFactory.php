@@ -36,6 +36,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
      * @param Swift_Encoder            $paramEncoder
      * @param EmailValidator           $emailValidator
      * @param string|null              $charset
+     * @param Swift_AddressEncoder     $addressEncoder
      */
     public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, EmailValidator $emailValidator, $charset = null, Swift_AddressEncoder $addressEncoder = null)
     {

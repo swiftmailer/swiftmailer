@@ -24,7 +24,7 @@ class Swift_AddressEncoderException extends Swift_RfcComplianceException
      *
      * @param string $message
      */
-    public function __construct($address, $message)
+    public function __construct(string $address, string $message)
     {
         parent::__construct($message);
     }
