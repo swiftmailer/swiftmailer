@@ -18,10 +18,6 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
     /**
      * Encodes the domain part of an address using IDN.
      *
-     * @param string $address
-     *
-     * @return string
-     *
      * @throws Swift_AddressEncoderException If local-part contains non-ASCII characters
      */
     public function encodeString(string $address): string
@@ -62,4 +58,3 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
         throw new Swift_SwiftException('No IDN encoder found (install the intl extension or the true/punycode package');
     }
 }
-

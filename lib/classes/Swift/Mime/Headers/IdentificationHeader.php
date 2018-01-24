@@ -34,11 +34,6 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     private $emailValidator;
 
-    /**
-     * The address encoder.
-     *
-     * @var Swift_AddressEncoder
-     */
     private $addressEncoder;
 
     /**

@@ -11,20 +11,15 @@
 /**
  * Email address encoder.
  *
- * @author Chris Corbyn
+ * @author Christian Schmidt
  */
 interface Swift_AddressEncoder
 {
     /**
      * Encodes an email address.
      *
-     * @param string $address
-     *
-     * @return string
-     *
      * @throws Swift_AddressEncoderException If the email cannot be represented in
      *                                       the encoding implemented by this class.
      */
     public function encodeString(string $address): string;
 }
-

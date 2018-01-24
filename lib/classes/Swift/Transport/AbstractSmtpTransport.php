@@ -27,7 +27,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /** The event dispatching layer */
     protected $eventDispatcher;
 
-    /** The address encoder */
     protected $addressEncoder;
 
     /** Source Ip */
