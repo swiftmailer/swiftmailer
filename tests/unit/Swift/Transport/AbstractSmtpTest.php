@@ -427,6 +427,36 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         }
     }
 
+    public function testUtf8Address()
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
+        $message = $this->createMessage();
+
+        $message->shouldReceive('getFrom')
+                ->once()
+                ->andReturn(array('me@dömain.com' => 'Me'));
+        $message->shouldReceive('getTo')
+                ->once()
+                ->andReturn(array('foo@bär' => null));
+        $buf->shouldReceive('write')
+            ->once()
+            ->with("MAIL FROM:<me@xn--dmain-jua.com>\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('write')
+            ->once()
+            ->with("RCPT TO:<foo@xn--br-via>\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250 OK'."\r\n");
+
+        $this->finishBuffer($buf);
+        $smtp->start();
+        $smtp->send($message);
+    }
+
     public function testMailFromCommandIsOnlySentOncePerMessage()
     {
         $buf = $this->getBuffer();

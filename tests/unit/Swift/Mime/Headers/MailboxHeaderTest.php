@@ -71,6 +71,30 @@ class Swift_Mime_Headers_MailboxHeaderTest extends \SwiftMailerTestCase
             );
     }
 
+    public function testUtf8CharsInDomainAreIdnEncoded()
+    {
+        $header = $this->getHeader('From', $this->getEncoder('Q', true));
+        $header->setNameAddresses(array(
+            'chris@swïftmailer.org' => 'Chris Corbyn',
+            ));
+        $this->assertEquals(
+            array('Chris Corbyn <chris@xn--swftmailer-78a.org>'),
+            $header->getNameAddressStrings()
+            );
+    }
+
+    /**
+     * @expectedException \Swift_AddressEncoderException
+     */
+    public function testUtf8CharsInLocalPartThrows()
+    {
+        $header = $this->getHeader('From', $this->getEncoder('Q', true));
+        $header->setNameAddresses(array(
+            'chrïs@swiftmailer.org' => 'Chris Corbyn',
+            ));
+        $header->getNameAddressStrings();
+    }
+
     public function testGetMailboxesReturnsNameValuePairs()
     {
         $header = $this->getHeader('From', $this->getEncoder('Q', true));
@@ -311,7 +335,7 @@ class Swift_Mime_Headers_MailboxHeaderTest extends \SwiftMailerTestCase
 
     private function getHeader($name, $encoder)
     {
-        $header = new Swift_Mime_Headers_MailboxHeader($name, $encoder, new EmailValidator());
+        $header = new Swift_Mime_Headers_MailboxHeader($name, $encoder, new EmailValidator(), new Swift_AddressEncoder_IdnAddressEncoder());
         $header->setCharset($this->charset);
 
         return $header;

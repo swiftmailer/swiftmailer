@@ -52,10 +52,11 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      * @param Swift_Transport_EsmtpHandler[] $extensionHandlers
      * @param Swift_Events_EventDispatcher   $dispatcher
      * @param string                         $localDomain
+     * @param Swift_AddressEncoder           $addressEncoder
      */
-    public function __construct(Swift_Transport_IoBuffer $buf, array $extensionHandlers, Swift_Events_EventDispatcher $dispatcher, $localDomain = '127.0.0.1')
+    public function __construct(Swift_Transport_IoBuffer $buf, array $extensionHandlers, Swift_Events_EventDispatcher $dispatcher, $localDomain = '127.0.0.1', Swift_AddressEncoder $addressEncoder = null)
     {
-        parent::__construct($buf, $dispatcher, $localDomain);
+        parent::__construct($buf, $dispatcher, $localDomain, $addressEncoder);
         $this->setExtensionHandlers($extensionHandlers);
     }
 
@@ -338,6 +339,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /** Overridden to add Extension support */
     protected function doMailFromCommand($address)
     {
+        $address = $this->addressEncoder->encodeString($address);
         $handlers = $this->getActiveHandlers();
         $params = array();
         foreach ($handlers as $handler) {
@@ -352,6 +354,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /** Overridden to add Extension support */
     protected function doRcptToCommand($address)
     {
+        $address = $this->addressEncoder->encodeString($address);
         $handlers = $this->getActiveHandlers();
         $params = array();
         foreach ($handlers as $handler) {

@@ -383,6 +383,19 @@ following::
 
     */
 
+Internationalized domains are automatically converted to IDN encoding::
+
+    $to = $message->getHeaders()->get('To');
+    $to->setAddresses('joe@ëxämple.org');
+
+    echo $to->toString();
+
+    /*
+
+    To: joe@xn--xmple-gra1c.org
+
+    */
+
 ID Headers
 ~~~~~~~~~~
 

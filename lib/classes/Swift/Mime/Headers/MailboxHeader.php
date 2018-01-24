@@ -32,18 +32,22 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      */
     private $emailValidator;
 
+    private $addressEncoder;
+
     /**
      * Creates a new MailboxHeader with $name.
      *
      * @param string                   $name           of Header
      * @param Swift_Mime_HeaderEncoder $encoder
      * @param EmailValidator           $emailValidator
+     * @param Swift_AddressEncoder     $addressEncoder
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, EmailValidator $emailValidator)
+    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);
         $this->emailValidator = $emailValidator;
+        $this->addressEncoder = $addressEncoder ?? new Swift_AddressEncoder_IdnAddressEncoder();
     }
 
     /**
@@ -330,7 +334,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         $strings = array();
 
         foreach ($mailboxes as $email => $name) {
-            $mailboxStr = $email;
+            $mailboxStr = $this->addressEncoder->encodeString($email);
             if (null !== $name) {
                 $nameStr = $this->createDisplayNameString($name, empty($strings));
                 $mailboxStr = $nameStr.' <'.$mailboxStr.'>';
