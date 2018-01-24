@@ -43,7 +43,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
      *
      * @var array
      */
-    private $keys = array();
+    private $keys = [];
 
     /**
      * Create a new DiskKeyCache with the given $stream for cloning to make
@@ -247,7 +247,7 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
             if (!mkdir($cacheDir)) {
                 throw new Swift_IoException('Failed to create cache directory '.$cacheDir);
             }
-            $this->keys[$nsKey] = array();
+            $this->keys[$nsKey] = [];
         }
     }
 

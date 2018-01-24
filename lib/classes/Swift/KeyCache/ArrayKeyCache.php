@@ -20,7 +20,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      *
      * @var array
      */
-    private $contents = array();
+    private $contents = [];
 
     /**
      * An InputStream for cloning.
@@ -197,7 +197,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
     private function prepareCache($nsKey)
     {
         if (!array_key_exists($nsKey, $this->contents)) {
-            $this->contents[$nsKey] = array();
+            $this->contents[$nsKey] = [];
         }
     }
 }

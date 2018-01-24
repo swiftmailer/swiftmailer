@@ -37,11 +37,11 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticator implements Swift_Transport_E
     {
         try {
             $message = base64_encode($username.chr(0).$username.chr(0).$password);
-            $agent->executeCommand(sprintf("AUTH PLAIN %s\r\n", $message), array(235));
+            $agent->executeCommand(sprintf("AUTH PLAIN %s\r\n", $message), [235]);
 
             return true;
         } catch (Swift_TransportException $e) {
-            $agent->executeCommand("RSET\r\n", array(250));
+            $agent->executeCommand("RSET\r\n", [250]);
 
             return false;
         }

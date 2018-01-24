@@ -247,7 +247,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
         if (!isset($this->charReader)) {
             $this->charReader = $this->charReaderFactory->getReaderFor(
                 $this->charset);
-            $this->map = array();
+            $this->map = [];
             $this->mapType = $this->charReader->getMapType();
         }
         $ignored = '';

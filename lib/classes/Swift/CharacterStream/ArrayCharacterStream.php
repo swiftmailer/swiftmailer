@@ -31,10 +31,10 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
     private $charset;
 
     /** Array of characters */
-    private $array = array();
+    private $array = [];
 
     /** Size of the array of character */
-    private $array_size = array();
+    private $array_size = [];
 
     /** The current character offset in the stream */
     private $offset = 0;
@@ -85,7 +85,7 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
 
         $startLength = $this->charReader->getInitialByteSize();
         while (false !== $bytes = $os->read($startLength)) {
-            $c = array();
+            $c = [];
             for ($i = 0, $len = strlen($bytes); $i < $len; ++$i) {
                 $c[] = self::$byteMap[$bytes[$i]];
             }
@@ -130,7 +130,7 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
         }
 
         // Don't use array slice
-        $arrays = array();
+        $arrays = [];
         $end = $length + $this->offset;
         for ($i = $this->offset; $i < $end; ++$i) {
             if (!isset($this->array[$i])) {
@@ -160,7 +160,7 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
         if ($this->offset == $this->array_size) {
             return false;
         }
-        $arrays = array();
+        $arrays = [];
         $end = $length + $this->offset;
         for ($i = $this->offset; $i < $end; ++$i) {
             if (!isset($this->array[$i])) {
@@ -192,12 +192,12 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
         unset($chars);
         fseek($fp, 0, SEEK_SET);
 
-        $buffer = array(0);
+        $buffer = [0];
         $buf_pos = 1;
         $buf_len = 1;
         $has_datas = true;
         do {
-            $bytes = array();
+            $bytes = [];
             // Buffer Filing
             if ($buf_len - $buf_pos < $startLength) {
                 $buf = array_splice($buffer, $buf_pos);
@@ -260,14 +260,14 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
     public function flushContents()
     {
         $this->offset = 0;
-        $this->array = array();
+        $this->array = [];
         $this->array_size = 0;
     }
 
     private function reloadBuffer($fp, $len)
     {
         if (!feof($fp) && false !== ($bytes = fread($fp, $len))) {
-            $buf = array();
+            $buf = [];
             for ($i = 0, $len = strlen($bytes); $i < $len; ++$i) {
                 $buf[] = self::$byteMap[$bytes[$i]];
             }
@@ -281,7 +281,7 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
     private static function initializeMaps()
     {
         if (!isset(self::$charMap)) {
-            self::$charMap = array();
+            self::$charMap = [];
             for ($byte = 0; $byte < 256; ++$byte) {
                 self::$charMap[$byte] = chr($byte);
             }

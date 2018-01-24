@@ -20,14 +20,14 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
      *
      * @var Swift_Transport[]
      */
-    private $deadTransports = array();
+    private $deadTransports = [];
 
     /**
      * The Transports which are used in rotation.
      *
      * @var Swift_Transport[]
      */
-    protected $transports = array();
+    protected $transports = [];
 
     /**
      * The Transport used in the last successful send operation.
@@ -49,7 +49,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     public function setTransports(array $transports)
     {
         $this->transports = $transports;
-        $this->deadTransports = array();
+        $this->deadTransports = [];
     }
 
     /**

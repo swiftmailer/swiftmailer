@@ -24,12 +24,12 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
      *
      * @var array
      */
-    private $params = array(
+    private $params = [
         'timeout' => 30,
         'blocking' => 1,
         'command' => '/usr/sbin/sendmail -bs',
         'type' => Swift_Transport_IoBuffer::TYPE_PROCESS,
-        );
+        ];
 
     /**
      * Create a new SendmailTransport with $buf for I/O.
@@ -114,12 +114,12 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
                 $command .= ' -f'.escapeshellarg($this->getReversePath($message));
             }
 
-            $buffer->initialize(array_merge($this->params, array('command' => $command)));
+            $buffer->initialize(array_merge($this->params, ['command' => $command]));
 
             if (false === strpos($command, ' -i') && false === strpos($command, ' -oi')) {
-                $buffer->setWriteTranslations(array("\r\n" => "\n", "\n." => "\n.."));
+                $buffer->setWriteTranslations(["\r\n" => "\n", "\n." => "\n.."]);
             } else {
-                $buffer->setWriteTranslations(array("\r\n" => "\n"));
+                $buffer->setWriteTranslations(["\r\n" => "\n"]);
             }
 
             $count = count((array) $message->getTo())
@@ -128,7 +128,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
                 ;
             $message->toByteStream($buffer);
             $buffer->flushBuffers();
-            $buffer->setWriteTranslations(array());
+            $buffer->setWriteTranslations([]);
             $buffer->terminate();
 
             if ($evt) {

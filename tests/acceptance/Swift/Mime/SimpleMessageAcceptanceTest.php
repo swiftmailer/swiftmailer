@@ -185,7 +185,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris Corbyn'));
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris Corbyn']);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -204,10 +204,10 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
+        $message->setFrom([
             'chris.corbyn@swiftmailer.org' => 'Chris Corbyn',
             'mark@swiftmailer.org',
-            ));
+            ]);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -227,8 +227,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -249,8 +249,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -290,7 +290,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setSender(array('chris.corbyn@swiftmailer.org' => 'Chris'));
+        $message->setSender(['chris.corbyn@swiftmailer.org' => 'Chris']);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -310,8 +310,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris'));
-        $message->setReplyTo(array('chris@w3style.co.uk' => 'Myself'));
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris']);
+        $message->setReplyTo(['chris@w3style.co.uk' => 'Myself']);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -331,11 +331,11 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris'));
-        $message->setReplyTo(array(
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris']);
+        $message->setReplyTo([
             'chris@w3style.co.uk' => 'Myself',
             'my.other@address.com' => 'Me',
-            ));
+            ]);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -355,11 +355,11 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris'));
-        $message->setReplyTo(array(
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris']);
+        $message->setReplyTo([
             'chris@w3style.co.uk' => 'Myself',
             'my.other@address.com' => 'Me',
-            ));
+            ]);
         $message->setTo('mark@swiftmailer.org');
         $id = $message->getId();
         $date = $message->getDate();
@@ -381,14 +381,14 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris'));
-        $message->setReplyTo(array(
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris']);
+        $message->setReplyTo([
             'chris@w3style.co.uk' => 'Myself',
             'my.other@address.com' => 'Me',
-            ));
-        $message->setTo(array(
+            ]);
+        $message->setTo([
             'mark@swiftmailer.org', 'chris@swiftmailer.org' => 'Chris Corbyn',
-            ));
+            ]);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -409,14 +409,14 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris'));
-        $message->setReplyTo(array(
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris']);
+        $message->setReplyTo([
             'chris@w3style.co.uk' => 'Myself',
             'my.other@address.com' => 'Me',
-            ));
-        $message->setTo(array(
+            ]);
+        $message->setTo([
             'mark@swiftmailer.org', 'chris@swiftmailer.org' => 'Chris Corbyn',
-            ));
+            ]);
         $message->setCc('john@some-site.com');
         $id = $message->getId();
         $date = $message->getDate();
@@ -439,18 +439,18 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
     {
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris'));
-        $message->setReplyTo(array(
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris']);
+        $message->setReplyTo([
             'chris@w3style.co.uk' => 'Myself',
             'my.other@address.com' => 'Me',
-            ));
-        $message->setTo(array(
+            ]);
+        $message->setTo([
             'mark@swiftmailer.org', 'chris@swiftmailer.org' => 'Chris Corbyn',
-            ));
-        $message->setCc(array(
+            ]);
+        $message->setCc([
             'john@some-site.com' => 'John West',
             'fred@another-site.co.uk' => 'Big Fred',
-            ));
+            ]);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -474,18 +474,18 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         // separately in accordance with RFC 2822/2821
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris'));
-        $message->setReplyTo(array(
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris']);
+        $message->setReplyTo([
             'chris@w3style.co.uk' => 'Myself',
             'my.other@address.com' => 'Me',
-            ));
-        $message->setTo(array(
+            ]);
+        $message->setTo([
             'mark@swiftmailer.org', 'chris@swiftmailer.org' => 'Chris Corbyn',
-            ));
-        $message->setCc(array(
+            ]);
+        $message->setCc([
             'john@some-site.com' => 'John West',
             'fred@another-site.co.uk' => 'Big Fred',
-            ));
+            ]);
         $message->setBcc('x@alphabet.tld');
         $id = $message->getId();
         $date = $message->getDate();
@@ -511,19 +511,19 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         // separately in accordance with RFC 2822/2821
         $message = $this->createMessage();
         $message->setSubject('just a test subject');
-        $message->setFrom(array('chris.corbyn@swiftmailer.org' => 'Chris'));
-        $message->setReplyTo(array(
+        $message->setFrom(['chris.corbyn@swiftmailer.org' => 'Chris']);
+        $message->setReplyTo([
             'chris@w3style.co.uk' => 'Myself',
             'my.other@address.com' => 'Me',
-            ));
-        $message->setTo(array(
+            ]);
+        $message->setTo([
             'mark@swiftmailer.org', 'chris@swiftmailer.org' => 'Chris Corbyn',
-            ));
-        $message->setCc(array(
+            ]);
+        $message->setCc([
             'john@some-site.com' => 'John West',
             'fred@another-site.co.uk' => 'Big Fred',
-            ));
-        $message->setBcc(array('x@alphabet.tld', 'a@alphabet.tld' => 'A'));
+            ]);
+        $message->setBcc(['x@alphabet.tld', 'a@alphabet.tld' => 'A']);
         $id = $message->getId();
         $date = $message->getDate();
         $this->assertEquals(
@@ -547,8 +547,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
         $message->setBody(
             'just a test body'."\r\n".
             'with a new line'
@@ -576,8 +576,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
         $message->setBody(
             'Just s'.pack('C*', 0xC2, 0x01, 0x01).'me multi-'."\r\n".
             'line message!'
@@ -605,8 +605,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
 
         $id = $message->getId();
         $date = $message->getDate();
@@ -658,8 +658,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
 
         $id = $message->getId();
         $date = preg_quote($message->getDate()->format('r'), '~');
@@ -720,8 +720,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
 
         $id = $message->getId();
         $date = preg_quote($message->getDate()->format('r'), '~');
@@ -806,8 +806,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
 
         $id = $message->getId();
         $date = preg_quote($message->getDate()->format('r'), '~');
@@ -883,8 +883,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
 
         $id = $message->getId();
         $date = preg_quote($message->getDate()->format('r'), '~');
@@ -958,8 +958,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
 
         $id = $message->getId();
         $date = $message->getDate();
@@ -1001,8 +1001,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
         $message->setCharset('utf-8');
         $message->setFormat('flowed');
         $message->setDelSp(true);
@@ -1057,8 +1057,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
         $message->setContentType('text/html');
         $message->setCharset('iso-8859-1');
         $message->setBody('foo');
@@ -1107,8 +1107,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
 
         $id = $message->getId();
         $date = $message->getDate()->format('r');
@@ -1157,8 +1157,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
         $message->setContentType('text/html');
         $message->setBody('foo');
 
@@ -1204,8 +1204,8 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
         $message = $this->createMessage();
         $message->setReturnPath('chris@w3style.co.uk');
         $message->setSubject('just a test subject');
-        $message->setFrom(array(
-            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ));
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn', ]);
         $message->setBody(
             'just a test body'."\n".
             'with a new line'

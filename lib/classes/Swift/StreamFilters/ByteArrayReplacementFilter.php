@@ -24,7 +24,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
     private $index;
 
     /** The Search Tree */
-    private $tree = array();
+    private $tree = [];
 
     /**  Gives the size of the largest search */
     private $treeMaxLen = 0;
@@ -39,10 +39,10 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
      */
     public function __construct($search, $replace)
     {
-        $this->index = array();
-        $this->tree = array();
-        $this->replace = array();
-        $this->repSize = array();
+        $this->index = [];
+        $this->tree = [];
+        $this->replace = [];
+        $this->repSize = [];
 
         $tree = null;
         $i = null;
@@ -57,7 +57,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
                 foreach ($search_element as $k => $char) {
                     $this->index[$char] = true;
                     if (!isset($tree[$char])) {
-                        $tree[$char] = array();
+                        $tree[$char] = [];
                     }
                     $tree = &$tree[$char];
                 }
@@ -66,7 +66,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
             } else {
                 $last_size = 1;
                 if (!isset($tree[$search_element])) {
-                    $tree[$search_element] = array();
+                    $tree[$search_element] = [];
                 }
                 $tree = &$tree[$search_element];
                 $size = max($last_size, $size);
@@ -80,7 +80,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
         }
         foreach ($replace as $rep) {
             if (!is_array($rep)) {
-                $rep = array($rep);
+                $rep = [$rep];
             }
             $this->replace[] = $rep;
         }
@@ -118,7 +118,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
             return $buffer;
         }
 
-        $newBuffer = array();
+        $newBuffer = [];
         $buf_size = count($buffer);
         $last_size = 0;
         for ($i = 0; $i < $buf_size; ++$i) {

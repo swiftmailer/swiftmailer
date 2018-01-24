@@ -111,7 +111,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit\Framework\TestCa
         $msg = $this->getMockBuilder('Swift_Mime_SimpleMessage')->disableOriginalConstructor()->getMock();
         $msg->expects($this->any())
             ->method('toByteStream')
-            ->will($this->returnCallback(array($this, 'write')));
+            ->will($this->returnCallback([$this, 'write']));
         /*  $this->checking(Expectations::create()
               -> ignoring($msg)->toByteStream(any()) -> calls(array($this, 'write'))
           ); */
