@@ -37,9 +37,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     /**
      * Creates a new MailboxHeader with $name.
      *
-     * @param string                   $name           of Header
-     * @param Swift_Mime_HeaderEncoder $encoder
-     * @param EmailValidator           $emailValidator
+     * @param string $name of Header
      */
     public function __construct($name, Swift_Mime_HeaderEncoder $encoder, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
     {

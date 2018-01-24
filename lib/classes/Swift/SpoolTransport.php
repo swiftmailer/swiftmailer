@@ -17,8 +17,6 @@ class Swift_SpoolTransport extends Swift_Transport_SpoolTransport
 {
     /**
      * Create a new SpoolTransport.
-     *
-     * @param Swift_Spool $spool
      */
     public function __construct(Swift_Spool $spool)
     {

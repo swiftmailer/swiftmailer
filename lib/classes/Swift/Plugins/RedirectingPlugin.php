@@ -33,7 +33,6 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
      * Create a new RedirectingPlugin.
      *
      * @param mixed $recipient
-     * @param array $whitelist
      */
     public function __construct($recipient, array $whitelist = array())
     {
@@ -63,8 +62,6 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
     /**
      * Set a list of regular expressions to whitelist certain recipients.
-     *
-     * @param array $whitelist
      */
     public function setWhitelist(array $whitelist)
     {
@@ -83,8 +80,6 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
     /**
      * Invoked immediately before the Message is sent.
-     *
-     * @param Swift_Events_SendEvent $evt
      */
     public function beforeSendPerformed(Swift_Events_SendEvent $evt)
     {
@@ -126,8 +121,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Filter header set against a whitelist of regular expressions.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headerSet
-     * @param string                     $type
+     * @param string $type
      */
     private function filterHeaderSet(Swift_Mime_SimpleHeaderSet $headerSet, $type)
     {
@@ -138,8 +132,6 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
     /**
      * Filtered list of addresses => name pairs.
-     *
-     * @param array $recipients
      *
      * @return array
      */
@@ -158,8 +150,6 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
     /**
      * Matches address against whitelist of regular expressions.
-     *
-     * @param $recipient
      *
      * @return bool
      */
@@ -180,8 +170,6 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
 
     /**
      * Invoked immediately after the Message is sent.
-     *
-     * @param Swift_Events_SendEvent $evt
      */
     public function sendPerformed(Swift_Events_SendEvent $evt)
     {

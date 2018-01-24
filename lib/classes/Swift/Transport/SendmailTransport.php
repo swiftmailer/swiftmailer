@@ -34,9 +34,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
     /**
      * Create a new SendmailTransport with $buf for I/O.
      *
-     * @param Swift_Transport_IoBuffer     $buf
-     * @param Swift_Events_EventDispatcher $dispatcher
-     * @param string                       $localDomain
+     * @param string $localDomain
      */
     public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher, $localDomain = '127.0.0.1')
     {
@@ -93,8 +91,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
      * NOTE: If using 'sendmail -t' you will not be aware of any failures until
      * they bounce (i.e. send() will always return 100% success).
      *
-     * @param Swift_Mime_SimpleMessage $message
-     * @param string[]           $failedRecipients An array of failures by-reference
+     * @param string[] $failedRecipients An array of failures by-reference
      *
      * @return int
      */

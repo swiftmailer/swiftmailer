@@ -33,8 +33,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     /**
      * Create a new SimpleHeaderSet with the given $factory.
      *
-     * @param Swift_Mime_SimpleHeaderFactory $factory
-     * @param string                         $charset
+     * @param string $charset
      */
     public function __construct(Swift_Mime_SimpleHeaderFactory $factory, $charset = null)
     {
@@ -76,8 +75,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     /**
      * Add a new Date header using $dateTime.
      *
-     * @param string            $name
-     * @param DateTimeInterface $dateTime
+     * @param string $name
      */
     public function addDateHeader($name, DateTimeInterface $dateTime = null)
     {
@@ -166,8 +164,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      * If $index is specified, the header will be inserted into the set at this
      * offset.
      *
-     * @param Swift_Mime_Header $header
-     * @param int               $index
+     * @param int $index
      */
     public function set(Swift_Mime_Header $header, $index = 0)
     {
@@ -272,8 +269,6 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      * Define a list of Header names as an array in the correct order.
      *
      * These Headers will be output in the given order where present.
-     *
-     * @param array $sequence
      */
     public function defineOrdering(array $sequence)
     {
@@ -284,8 +279,6 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      * Set a list of header names which must always be displayed when set.
      *
      * Usually headers without a field value won't be output unless set here.
-     *
-     * @param array $names
      */
     public function setAlwaysDisplayed(array $names)
     {

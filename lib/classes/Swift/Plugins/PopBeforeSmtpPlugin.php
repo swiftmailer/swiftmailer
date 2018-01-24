@@ -59,8 +59,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Set a Pop3Connection to delegate to instead of connecting directly.
      *
-     * @param Swift_Plugins_Pop_Pop3Connection $connection
-     *
      * @return $this
      */
     public function setConnection(Swift_Plugins_Pop_Pop3Connection $connection)
@@ -72,8 +70,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
 
     /**
      * Bind this plugin to a specific SMTP transport instance.
-     *
-     * @param Swift_Transport
      */
     public function bindSmtp(Swift_Transport $smtp)
     {
@@ -177,8 +173,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
 
     /**
      * Invoked just before a Transport is started.
-     *
-     * @param Swift_Events_TransportChangeEvent $evt
      */
     public function beforeTransportStarted(Swift_Events_TransportChangeEvent $evt)
     {

@@ -236,10 +236,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
     /**
      * Attach $is to this stream.
+     *
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
-     *
-     * @param Swift_InputByteStream $is
      */
     public function bind(Swift_InputByteStream $is)
     {
@@ -251,11 +250,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
     /**
      * Remove an already bound stream.
+     *
      * If $is is not bound, no errors will be raised.
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
-     *
-     * @param Swift_InputByteStream $is
      */
     public function unbind(Swift_InputByteStream $is)
     {
@@ -479,8 +477,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Set the headers to sign.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headers
-     *
      * @return Swift_Signers_DKIMSigner
      */
     public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
@@ -508,8 +504,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
 
     /**
      * Add the signature to the given Headers.
-     *
-     * @param Swift_Mime_SimpleHeaderSet $headers
      *
      * @return Swift_Signers_DKIMSigner
      */

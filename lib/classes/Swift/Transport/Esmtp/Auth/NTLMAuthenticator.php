@@ -33,9 +33,8 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     /**
      * Try to authenticate the user with $username and $password.
      *
-     * @param Swift_Transport_SmtpAgent $agent
-     * @param string                    $username
-     * @param string                    $password
+     * @param string $username
+     * @param string $password
      *
      * @return bool
      *
@@ -100,8 +99,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     /**
      * Send our auth message and returns the response.
      *
-     * @param Swift_Transport_SmtpAgent $agent
-     *
      * @return string SMTP Response
      */
     protected function sendMessage1(Swift_Transport_SmtpAgent $agent)
@@ -148,8 +145,6 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     /**
      * Read the blob information in from message2.
      *
-     * @param $block
-     *
      * @return array
      */
     protected function readSubBlock($block)
@@ -180,13 +175,12 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     /**
      * Send our final message with all our data.
      *
-     * @param string                    $response  Message 1 response (message 2)
-     * @param string                    $username
-     * @param string                    $password
-     * @param string                    $timestamp
-     * @param string                    $client
-     * @param Swift_Transport_SmtpAgent $agent
-     * @param bool                      $v2        Use version2 of the protocol
+     * @param string $response  Message 1 response (message 2)
+     * @param string $username
+     * @param string $password
+     * @param string $timestamp
+     * @param string $client
+     * @param bool   $v2        Use version2 of the protocol
      *
      * @return string
      */

@@ -84,11 +84,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
 
     /**
      * Create a new SimpleMimeEntity with $headers, $encoder and $cache.
-     *
-     * @param Swift_Mime_SimpleHeaderSet $headers
-     * @param Swift_Mime_ContentEncoder  $encoder
-     * @param Swift_KeyCache             $cache
-     * @param Swift_IdGenerator          $idGenerator
      */
     public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator)
     {
@@ -395,8 +390,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Set the encoder used for the body of this entity.
      *
-     * @param Swift_Mime_ContentEncoder $encoder
-     *
      * @return $this
      */
     public function setEncoder(Swift_Mime_ContentEncoder $encoder)
@@ -457,8 +450,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Receive notification that the encoder of this entity or a parent entity
      * has changed.
-     *
-     * @param Swift_Mime_ContentEncoder $encoder
      */
     public function encoderChanged(Swift_Mime_ContentEncoder $encoder)
     {
@@ -522,8 +513,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
 
     /**
      * Write this entire entity to a {@see Swift_InputByteStream}.
-     *
-     * @param Swift_InputByteStream
      */
     public function toByteStream(Swift_InputByteStream $is)
     {
@@ -535,8 +524,6 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
 
     /**
      * Write this entire entity to a {@link Swift_InputByteStream}.
-     *
-     * @param Swift_InputByteStream
      */
     protected function bodyToByteStream(Swift_InputByteStream $is)
     {

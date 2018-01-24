@@ -35,8 +35,6 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
 
     /**
      * Create a new StreamBuffer using $replacementFactory for transformations.
-     *
-     * @param Swift_ReplacementFilterFactory $replacementFactory
      */
     public function __construct(Swift_ReplacementFilterFactory $replacementFactory)
     {
@@ -47,8 +45,6 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      * Perform any initialization needed, using the given $params.
      *
      * Parameters will vary depending upon the type of IoBuffer used.
-     *
-     * @param array $params
      */
     public function initialize(array $params)
     {

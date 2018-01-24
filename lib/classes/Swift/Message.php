@@ -77,8 +77,6 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     /**
      * Detach a signature handler from a message.
      *
-     * @param Swift_Signer $signer
-     *
      * @return $this
      */
     public function attachSigner(Swift_Signer $signer)
@@ -94,8 +92,6 @@ class Swift_Message extends Swift_Mime_SimpleMessage
 
     /**
      * Attach a new signature handler to the message.
-     *
-     * @param Swift_Signer $signer
      *
      * @return $this
      */
@@ -159,8 +155,6 @@ class Swift_Message extends Swift_Mime_SimpleMessage
 
     /**
      * Write this message to a {@link Swift_InputByteStream}.
-     *
-     * @param Swift_InputByteStream $is
      */
     public function toByteStream(Swift_InputByteStream $is)
     {
@@ -226,8 +220,6 @@ class Swift_Message extends Swift_Mime_SimpleMessage
 
     /**
      * save the original headers.
-     *
-     * @param array $altered
      */
     protected function saveHeaders(array $altered)
     {

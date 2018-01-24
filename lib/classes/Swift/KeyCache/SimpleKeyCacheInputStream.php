@@ -29,8 +29,6 @@ class Swift_KeyCache_SimpleKeyCacheInputStream implements Swift_KeyCache_KeyCach
 
     /**
      * Set the KeyCache to wrap.
-     *
-     * @param Swift_KeyCache $keyCache
      */
     public function setKeyCache(Swift_KeyCache $keyCache)
     {
@@ -39,8 +37,6 @@ class Swift_KeyCache_SimpleKeyCacheInputStream implements Swift_KeyCache_KeyCach
 
     /**
      * Specify a stream to write through for each write().
-     *
-     * @param Swift_InputByteStream $is
      */
     public function setWriteThroughStream(Swift_InputByteStream $is)
     {

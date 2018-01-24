@@ -65,8 +65,6 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
 
     /**
      * Set the CharacterReaderFactory for multi charset support.
-     *
-     * @param Swift_CharacterReaderFactory $factory
      */
     public function setCharacterReaderFactory(Swift_CharacterReaderFactory $factory)
     {

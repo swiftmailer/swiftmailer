@@ -24,11 +24,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Create a new SimpleMessage with $headers, $encoder and $cache.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headers
-     * @param Swift_Mime_ContentEncoder  $encoder
-     * @param Swift_KeyCache             $cache
-     * @param Swift_IdGenerator          $idGenerator
-     * @param string                     $charset
+     * @param string $charset
      */
     public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $charset = null)
     {
@@ -96,8 +92,6 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
 
     /**
      * Set the date at which this message was created.
-     *
-     * @param DateTimeInterface $dateTime
      *
      * @return $this
      */
@@ -526,8 +520,6 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Attach a {@link Swift_Mime_SimpleMimeEntity} such as an Attachment or MimePart.
      *
-     * @param Swift_Mime_SimpleMimeEntity $entity
-     *
      * @return $this
      */
     public function attach(Swift_Mime_SimpleMimeEntity $entity)
@@ -539,8 +531,6 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
 
     /**
      * Remove an already attached entity.
-     *
-     * @param Swift_Mime_SimpleMimeEntity $entity
      *
      * @return $this
      */
@@ -559,9 +549,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
 
     /**
      * Attach a {@link Swift_Mime_SimpleMimeEntity} and return it's CID source.
-     * This method should be used when embedding images or other data in a message.
      *
-     * @param Swift_Mime_SimpleMimeEntity $entity
+     * This method should be used when embedding images or other data in a message.
      *
      * @return string
      */
@@ -604,8 +593,6 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
 
     /**
      * Write this message to a {@link Swift_InputByteStream}.
-     *
-     * @param Swift_InputByteStream $is
      */
     public function toByteStream(Swift_InputByteStream $is)
     {

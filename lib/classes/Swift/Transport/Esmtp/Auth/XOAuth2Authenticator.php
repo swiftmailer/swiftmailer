@@ -38,9 +38,8 @@ class Swift_Transport_Esmtp_Auth_XOAuth2Authenticator implements Swift_Transport
     /**
      * Try to authenticate the user with $email and $token.
      *
-     * @param Swift_Transport_SmtpAgent $agent
-     * @param string                    $email
-     * @param string                    $token
+     * @param string $email
+     * @param string $token
      *
      * @return bool
      */

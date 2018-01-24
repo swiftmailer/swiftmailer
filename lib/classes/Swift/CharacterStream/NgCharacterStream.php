@@ -81,8 +81,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * Constructor.
      *
-     * @param Swift_CharacterReaderFactory $factory
-     * @param string                       $charset
+     * @param string $charset
      */
     public function __construct(Swift_CharacterReaderFactory $factory, $charset)
     {
@@ -106,8 +105,6 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
 
     /**
      * Set the CharacterReaderFactory for multi charset support.
-     *
-     * @param Swift_CharacterReaderFactory $factory
      */
     public function setCharacterReaderFactory(Swift_CharacterReaderFactory $factory)
     {
@@ -128,8 +125,6 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
 
     /**
      * @see Swift_CharacterStream::importByteStream()
-     *
-     * @param Swift_OutputByteStream $os
      */
     public function importByteStream(Swift_OutputByteStream $os)
     {

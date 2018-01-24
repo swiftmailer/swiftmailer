@@ -234,8 +234,6 @@ class Swift_DependencyContainer
      *
      * @see addConstructorValue(), addConstructorLookup()
      *
-     * @param array $lookups
-     *
      * @return $this
      */
     public function withDependencies(array $lookups)

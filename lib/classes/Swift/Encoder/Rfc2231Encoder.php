@@ -24,8 +24,6 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
 
     /**
      * Creates a new Rfc2231Encoder using the given character stream instance.
-     *
-     * @param Swift_CharacterStream
      */
     public function __construct(Swift_CharacterStream $charStream)
     {

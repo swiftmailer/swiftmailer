@@ -153,9 +153,9 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
      * If the first line needs to be shorter, indicate the difference with
      * $firstLineOffset.
      *
-     * @param string $string           to encode
-     * @param int    $firstLineOffset, optional
-     * @param int    $maxLineLength,   optional 0 indicates the default of 76 chars
+     * @param string $string to encode
+     * @param int    $firstLineOffset optional
+     * @param int    $maxLineLength   optional 0 indicates the default of 76 chars
      *
      * @return string
      */
