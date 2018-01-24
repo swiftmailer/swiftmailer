@@ -11,33 +11,6 @@ interface Swift_Transport_EsmtpHandlerMixin extends Swift_Transport_EsmtpHandler
 
 class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transport_EsmtpTransportTest
 {
-    public function testExtensionHandlersAreSortedAsNeeded()
-    {
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
-        $ext1 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
-        $ext2 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
-
-        $ext1->shouldReceive('getHandledKeyword')
-             ->zeroOrMoreTimes()
-             ->andReturn('AUTH');
-        $ext1->shouldReceive('getPriorityOver')
-             ->zeroOrMoreTimes()
-             ->with('STARTTLS')
-             ->andReturn(1);
-        $ext2->shouldReceive('getHandledKeyword')
-             ->zeroOrMoreTimes()
-             ->andReturn('STARTTLS');
-        $ext2->shouldReceive('getPriorityOver')
-             ->zeroOrMoreTimes()
-             ->with('AUTH')
-             ->andReturn(-1);
-        $this->finishBuffer($buf);
-
-        $smtp->setExtensionHandlers([$ext1, $ext2]);
-        $this->assertEquals([$ext2, $ext1], $smtp->getExtensionHandlers());
-    }
-
     public function testHandlersAreNotifiedOfParams()
     {
         $buf = $this->getBuffer();

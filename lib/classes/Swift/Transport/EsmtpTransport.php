@@ -212,6 +212,8 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set ESMTP extension handlers.
      *
+     * The handlers will be invoked in the order they are provided.
+     *
      * @param Swift_Transport_EsmtpHandler[] $handlers
      *
      * @return $this
@@ -222,9 +224,6 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         foreach ($handlers as $handler) {
             $assoc[$handler->getHandledKeyword()] = $handler;
         }
-        uasort($assoc, function ($a, $b) {
-            return $a->getPriorityOver($b->getHandledKeyword());
-        });
         $this->handlers = $assoc;
         $this->setHandlerParams();
 
