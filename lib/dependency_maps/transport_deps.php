@@ -14,6 +14,7 @@ Swift_DependencyContainer::getInstance()
         array('transport.authhandler'),
         'transport.eventdispatcher',
         'transport.localdomain',
+        'transport.addressencoder',
     ))
 
     ->register('transport.sendmail')
@@ -71,6 +72,9 @@ Swift_DependencyContainer::getInstance()
 
     ->register('transport.eventdispatcher')
     ->asNewInstanceOf('Swift_Events_SimpleEventDispatcher')
+
+    ->register('transport.addressencoder')
+    ->asNewInstanceOf('Swift_AddressEncoder_IdnAddressEncoder')
 
     ->register('transport.replacementfactory')
     ->asSharedInstanceOf('Swift_StreamFilters_StringReplacementFilterFactory')

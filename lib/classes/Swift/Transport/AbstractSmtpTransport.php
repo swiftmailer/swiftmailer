@@ -27,6 +27,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /** The event dispatching layer */
     protected $eventDispatcher;
 
+    protected $addressEncoder;
+
     /** Source Ip */
     protected $sourceIp;
 
@@ -39,11 +41,13 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * @param Swift_Transport_IoBuffer     $buf
      * @param Swift_Events_EventDispatcher $dispatcher
      * @param string                       $localDomain
+     * @param Swift_AddressEncoder         $addressEncoder
      */
-    public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher, $localDomain = '127.0.0.1')
+    public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher, $localDomain = '127.0.0.1', Swift_AddressEncoder $addressEncoder = null)
     {
-        $this->eventDispatcher = $dispatcher;
         $this->buffer = $buf;
+        $this->eventDispatcher = $dispatcher;
+        $this->addressEncoder = $addressEncoder ?? new Swift_AddressEncoder_IdnAddressEncoder();
         $this->setLocalDomain($localDomain);
     }
 
@@ -336,6 +340,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /** Send the MAIL FROM command */
     protected function doMailFromCommand($address)
     {
+        $address = $this->addressEncoder->encodeString($address);
         $this->executeCommand(
             sprintf("MAIL FROM:<%s>\r\n", $address), array(250)
             );
@@ -344,6 +349,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /** Send the RCPT TO command */
     protected function doRcptToCommand($address)
     {
+        $address = $this->addressEncoder->encodeString($address);
         $this->executeCommand(
             sprintf("RCPT TO:<%s>\r\n", $address), array(250, 251, 252)
             );

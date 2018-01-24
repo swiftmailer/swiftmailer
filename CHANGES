@@ -1,10 +1,10 @@
 Changelog
 =========
 
-6.0.3 (2017-XX-XX)
+6.1.0 (2017-XX-XX)
 ------------------
 
- * n/a
+ * added support for IDN domains in email addresses
 
 6.0.2 (2017-09-30)
 ------------------
