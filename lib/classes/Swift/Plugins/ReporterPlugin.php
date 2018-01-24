@@ -24,8 +24,6 @@ class Swift_Plugins_ReporterPlugin implements Swift_Events_SendListener
 
     /**
      * Create a new ReporterPlugin using $reporter.
-     *
-     * @param Swift_Plugins_Reporter $reporter
      */
     public function __construct(Swift_Plugins_Reporter $reporter)
     {
@@ -41,8 +39,6 @@ class Swift_Plugins_ReporterPlugin implements Swift_Events_SendListener
 
     /**
      * Invoked immediately after the Message is sent.
-     *
-     * @param Swift_Events_SendEvent $evt
      */
     public function sendPerformed(Swift_Events_SendEvent $evt)
     {

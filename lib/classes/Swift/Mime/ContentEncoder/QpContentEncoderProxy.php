@@ -35,9 +35,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderProxy implements Swift_Mime_Cont
     /**
      * Constructor.
      *
-     * @param Swift_Mime_ContentEncoder_QpContentEncoder       $safeEncoder
-     * @param Swift_Mime_ContentEncoder_NativeQpContentEncoder $nativeEncoder
-     * @param string|null                                      $charset
+     * @param string|null $charset
      */
     public function __construct(Swift_Mime_ContentEncoder_QpContentEncoder $safeEncoder, Swift_Mime_ContentEncoder_NativeQpContentEncoder $nativeEncoder, $charset)
     {

@@ -41,7 +41,7 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar' => 'Foobar', 'zip@button' => 'Zippy'));
+                ->andReturn(['foo@bar' => 'Foobar', 'zip@button' => 'Zippy']);
         $message->shouldReceive('toByteStream')
                 ->once()
                 ->with($buf);
@@ -51,10 +51,10 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
             ->once();
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array("\r\n" => "\n", "\n." => "\n.."));
+            ->with(["\r\n" => "\n", "\n." => "\n.."]);
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array());
+            ->with([]);
 
         $sendmail->setCommand('/usr/sbin/sendmail -t');
         $this->assertEquals(2, $sendmail->send($message));
@@ -68,7 +68,7 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar' => 'Foobar', 'zip@button' => 'Zippy'));
+                ->andReturn(['foo@bar' => 'Foobar', 'zip@button' => 'Zippy']);
         $message->shouldReceive('toByteStream')
                 ->once()
                 ->with($buf);
@@ -78,10 +78,10 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
             ->once();
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array("\r\n" => "\n"));
+            ->with(["\r\n" => "\n"]);
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array());
+            ->with([]);
 
         $sendmail->setCommand('/usr/sbin/sendmail -i -t');
         $this->assertEquals(2, $sendmail->send($message));
@@ -95,7 +95,7 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar' => 'Foobar', 'zip@button' => 'Zippy'));
+                ->andReturn(['foo@bar' => 'Foobar', 'zip@button' => 'Zippy']);
         $message->shouldReceive('toByteStream')
                 ->once()
                 ->with($buf);
@@ -105,10 +105,10 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
             ->once();
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array("\r\n" => "\n"));
+            ->with(["\r\n" => "\n"]);
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array());
+            ->with([]);
 
         $sendmail->setCommand('/usr/sbin/sendmail -oi -t');
         $this->assertEquals(2, $sendmail->send($message));
@@ -122,7 +122,7 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
-                ->andReturn(array('foo@bar' => 'Foobar', 'zip@button' => 'Zippy'));
+                ->andReturn(['foo@bar' => 'Foobar', 'zip@button' => 'Zippy']);
         $message->shouldReceive('generateId');
         $buf->shouldReceive('initialize')
             ->once();
@@ -130,10 +130,10 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
             ->once();
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array("\r\n" => "\n", "\n." => "\n.."));
+            ->with(["\r\n" => "\n", "\n." => "\n.."]);
         $buf->shouldReceive('setWriteTranslations')
             ->once()
-            ->with(array());
+            ->with([]);
 
         $sendmail->setCommand('/usr/sbin/sendmail -t');
         $this->assertEquals(2, $sendmail->send($message));

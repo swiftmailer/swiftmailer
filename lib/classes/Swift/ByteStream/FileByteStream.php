@@ -81,7 +81,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
 
             // If we read one byte after reaching the end of the file
             // feof() will return false and an empty string is returned
-            if ($bytes === '' && feof($fp)) {
+            if ('' === $bytes && feof($fp)) {
                 $this->resetReadHandle();
 
                 return false;
@@ -131,7 +131,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
                 throw new Swift_IoException('Unable to open file for reading ['.$this->path.']');
             }
             $this->reader = $pointer;
-            if ($this->offset != 0) {
+            if (0 != $this->offset) {
                 $this->getReadStreamSeekableStatus();
                 $this->seekReadStreamToPosition($this->offset);
             }
@@ -173,10 +173,10 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
     /** Streams in a readOnly stream ensuring copy if needed */
     private function seekReadStreamToPosition($offset)
     {
-        if ($this->seekable === null) {
+        if (null === $this->seekable) {
             $this->getReadStreamSeekableStatus();
         }
-        if ($this->seekable === false) {
+        if (false === $this->seekable) {
             $currentPos = ftell($this->reader);
             if ($currentPos < $offset) {
                 $toDiscard = $offset - $currentPos;

@@ -50,10 +50,8 @@ class Swift_Mime_ContentEncoder_NullContentEncoder implements Swift_Mime_Content
     /**
      * Encode stream $in to stream $out.
      *
-     * @param Swift_OutputByteStream $in
-     * @param Swift_InputByteStream  $out
-     * @param int                    $firstLineOffset ignored
-     * @param int                    $maxLineLength   ignored
+     * @param int $firstLineOffset ignored
+     * @param int $maxLineLength   ignored
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {

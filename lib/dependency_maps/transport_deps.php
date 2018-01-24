@@ -5,24 +5,25 @@ Swift_DependencyContainer::getInstance()
     // As SERVER_NAME can come from the user in certain configurations, check that
     // it does not contain forbidden characters (see RFC 952 and RFC 2181). Use
     // preg_replace() instead of preg_match() to prevent DoS attacks with long host names.
-    ->asValue(!empty($_SERVER['SERVER_NAME']) && preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $_SERVER['SERVER_NAME']) === '' ? trim($_SERVER['SERVER_NAME'], '[]') : '127.0.0.1')
+    ->asValue(!empty($_SERVER['SERVER_NAME']) && '' === preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $_SERVER['SERVER_NAME']) ? trim($_SERVER['SERVER_NAME'], '[]') : '127.0.0.1')
 
     ->register('transport.smtp')
     ->asNewInstanceOf('Swift_Transport_EsmtpTransport')
-    ->withDependencies(array(
+    ->withDependencies([
         'transport.buffer',
-        array('transport.authhandler'),
+        ['transport.authhandler'],
         'transport.eventdispatcher',
         'transport.localdomain',
-    ))
+        'transport.addressencoder',
+    ])
 
     ->register('transport.sendmail')
     ->asNewInstanceOf('Swift_Transport_SendmailTransport')
-    ->withDependencies(array(
+    ->withDependencies([
         'transport.buffer',
         'transport.eventdispatcher',
         'transport.localdomain',
-    ))
+    ])
 
     ->register('transport.loadbalanced')
     ->asNewInstanceOf('Swift_Transport_LoadBalancedTransport')
@@ -32,27 +33,27 @@ Swift_DependencyContainer::getInstance()
 
     ->register('transport.spool')
     ->asNewInstanceOf('Swift_Transport_SpoolTransport')
-    ->withDependencies(array('transport.eventdispatcher'))
+    ->withDependencies(['transport.eventdispatcher'])
 
     ->register('transport.null')
     ->asNewInstanceOf('Swift_Transport_NullTransport')
-    ->withDependencies(array('transport.eventdispatcher'))
+    ->withDependencies(['transport.eventdispatcher'])
 
     ->register('transport.buffer')
     ->asNewInstanceOf('Swift_Transport_StreamBuffer')
-    ->withDependencies(array('transport.replacementfactory'))
+    ->withDependencies(['transport.replacementfactory'])
 
     ->register('transport.authhandler')
     ->asNewInstanceOf('Swift_Transport_Esmtp_AuthHandler')
-    ->withDependencies(array(
-        array(
+    ->withDependencies([
+        [
             'transport.crammd5auth',
             'transport.loginauth',
             'transport.plainauth',
             'transport.ntlmauth',
             'transport.xoauth2auth',
-        ),
-    ))
+        ],
+    ])
 
     ->register('transport.crammd5auth')
     ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_CramMd5Authenticator')
@@ -71,6 +72,9 @@ Swift_DependencyContainer::getInstance()
 
     ->register('transport.eventdispatcher')
     ->asNewInstanceOf('Swift_Events_SimpleEventDispatcher')
+
+    ->register('transport.addressencoder')
+    ->asNewInstanceOf('Swift_AddressEncoder_IdnAddressEncoder')
 
     ->register('transport.replacementfactory')
     ->asSharedInstanceOf('Swift_StreamFilters_StringReplacementFilterFactory')

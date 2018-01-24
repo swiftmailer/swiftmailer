@@ -52,7 +52,7 @@ interface Swift_InputByteStream
      *
      * @param Swift_InputByteStream $is
      */
-    public function bind(Swift_InputByteStream $is);
+    public function bind(self $is);
 
     /**
      * Remove an already bound stream.
@@ -63,7 +63,7 @@ interface Swift_InputByteStream
      *
      * @param Swift_InputByteStream $is
      */
-    public function unbind(Swift_InputByteStream $is);
+    public function unbind(self $is);
 
     /**
      * Flush the contents of the stream (empty it) and set the internal pointer
