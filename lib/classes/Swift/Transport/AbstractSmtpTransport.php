@@ -41,7 +41,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * @param Swift_Transport_IoBuffer     $buf
      * @param Swift_Events_EventDispatcher $dispatcher
      * @param string                       $localDomain
-     * @param Swift_AddressEncoder         $addressEncoder
      */
     public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher, $localDomain = '127.0.0.1', Swift_AddressEncoder $addressEncoder = null)
     {

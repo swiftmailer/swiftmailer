@@ -39,9 +39,8 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     /**
      * Creates a new IdentificationHeader with the given $name and $id.
      *
-     * @param string               $name
-     * @param emailValidator       $emailValidator
-     * @param Swift_AddressEncoder $addressEncoder
+     * @param string        $name
+     * @param emailValidator$emailValidator
      */
     public function __construct($name, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
     {

@@ -39,10 +39,6 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
 
     /**
      * IDN-encodes a UTF-8 string to ASCII.
-     *
-     * @param  string $string
-     *
-     * @return string
      */
     protected function idnToAscii(string $string): string
     {
