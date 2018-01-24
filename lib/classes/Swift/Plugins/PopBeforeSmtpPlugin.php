@@ -228,7 +228,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
 
     private function assertOk($response)
     {
-        if (substr($response, 0, 3) != '+OK') {
+        if ('+OK' != substr($response, 0, 3)) {
             throw new Swift_Plugins_Pop_Pop3Exception(
                 sprintf('POP3 command failed [%s]', trim($response))
             );

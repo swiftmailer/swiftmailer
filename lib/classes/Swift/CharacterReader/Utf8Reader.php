@@ -95,12 +95,12 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
         for ($i = 0; $i < $strlen; ++$i) {
             $char = $string[$i];
             $size = self::$s_length_map[$char];
-            if ($size == 0) {
+            if (0 == $size) {
                 /* char is invalid, we must wait for a resync */
                 $invalid = true;
                 continue;
             } else {
-                if ($invalid === true) {
+                if (true === $invalid) {
                     /* We mark the chars as invalid and start a new char */
                     $currentMap['p'][$charPos + $foundChars] = $startOffset + $i;
                     $currentMap['i'][$charPos + $foundChars] = true;

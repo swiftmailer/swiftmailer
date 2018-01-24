@@ -48,7 +48,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
         $i = null;
         $last_size = $size = 0;
         foreach ($search as $i => $search_element) {
-            if ($tree !== null) {
+            if (null !== $tree) {
                 $tree[-1] = min(count($replace) - 1, $i - 1);
                 $tree[-2] = $last_size;
             }
@@ -73,7 +73,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
                 $this->index[$search_element] = true;
             }
         }
-        if ($i !== null) {
+        if (null !== $i) {
             $tree[-1] = min(count($replace) - 1, $i);
             $tree[-2] = $last_size;
             $this->treeMaxLen = $size;
@@ -114,7 +114,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
      */
     public function filter($buffer, $minReplaces = -1)
     {
-        if ($this->treeMaxLen == 0) {
+        if (0 == $this->treeMaxLen) {
             return $buffer;
         }
 
@@ -137,7 +137,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
                     }
                 }
                 // We got a complete pattern
-                elseif ($last_found !== PHP_INT_MAX) {
+                elseif (PHP_INT_MAX !== $last_found) {
                     // Adding replacement datas to output buffer
                     $rep_size = $this->repSize[$last_found];
                     for ($j = 0; $j < $rep_size; ++$j) {

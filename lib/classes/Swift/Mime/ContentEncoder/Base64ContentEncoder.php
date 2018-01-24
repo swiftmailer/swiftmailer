@@ -38,7 +38,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoder extends Swift_Encoder_Base6
         // When the OutputStream is empty, we must flush any remainder bytes.
         while (true) {
             $readBytes = $os->read(8192);
-            $atEOF = ($readBytes === false);
+            $atEOF = (false === $readBytes);
 
             if ($atEOF) {
                 $streamTheseBytes = $base64ReadBufferRemainderBytes;
@@ -48,7 +48,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoder extends Swift_Encoder_Base6
             $base64ReadBufferRemainderBytes = null;
             $bytesLength = strlen($streamTheseBytes);
 
-            if ($bytesLength === 0) { // no data left to encode
+            if (0 === $bytesLength) { // no data left to encode
                 break;
             }
 
@@ -56,7 +56,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoder extends Swift_Encoder_Base6
             // and carry over remainder 1-2 bytes to the next loop iteration
             if (!$atEOF) {
                 $excessBytes = $bytesLength % 3;
-                if ($excessBytes !== 0) {
+                if (0 !== $excessBytes) {
                     $base64ReadBufferRemainderBytes = substr($streamTheseBytes, -$excessBytes);
                     $streamTheseBytes = substr($streamTheseBytes, 0, $bytesLength - $excessBytes);
                 }

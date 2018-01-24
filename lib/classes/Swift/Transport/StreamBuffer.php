@@ -156,7 +156,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     {
         if (isset($this->out) && !feof($this->out)) {
             $line = fgets($this->out);
-            if (strlen($line) == 0) {
+            if (0 == strlen($line)) {
                 $metas = stream_get_meta_data($this->out);
                 if ($metas['timed_out']) {
                     throw new Swift_IoException(
@@ -188,7 +188,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     {
         if (isset($this->out) && !feof($this->out)) {
             $ret = fread($this->out, $length);
-            if (strlen($ret) == 0) {
+            if (0 == strlen($ret)) {
                 $metas = stream_get_meta_data($this->out);
                 if ($metas['timed_out']) {
                     throw new Swift_IoException(

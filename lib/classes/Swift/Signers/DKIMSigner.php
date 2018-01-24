@@ -315,7 +315,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     public function setBodyCanon($canon)
     {
-        if ($canon == 'relaxed') {
+        if ('relaxed' == $canon) {
             $this->bodyCanon = 'relaxed';
         } else {
             $this->bodyCanon = 'simple';
@@ -333,7 +333,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     public function setHeaderCanon($canon)
     {
-        if ($canon == 'relaxed') {
+        if ('relaxed' == $canon) {
             $this->headerCanon = 'relaxed';
         } else {
             $this->headerCanon = 'simple';
@@ -365,10 +365,10 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     public function setBodySignedLen($len)
     {
-        if ($len === true) {
+        if (true === $len) {
             $this->showLen = true;
             $this->maxLen = PHP_INT_MAX;
-        } elseif ($len === false) {
+        } elseif (false === $len) {
             $this->showLen = false;
             $this->maxLen = PHP_INT_MAX;
         } else {
@@ -490,7 +490,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 if ($headers->has($hName)) {
                     $tmp = $headers->getAll($hName);
                     foreach ($tmp as $header) {
-                        if ($header->getFieldBody() != '') {
+                        if ('' != $header->getFieldBody()) {
                             $this->addHeader($header->toString());
                             $this->signedHeaders[] = $header->getFieldName();
                         }
@@ -511,24 +511,24 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     {
         // Prepare the DKIM-Signature
         $params = array('v' => '1', 'a' => $this->hashAlgorithm, 'bh' => base64_encode($this->bodyHash), 'd' => $this->domainName, 'h' => implode(': ', $this->signedHeaders), 'i' => $this->signerIdentity, 's' => $this->selector);
-        if ($this->bodyCanon != 'simple') {
+        if ('simple' != $this->bodyCanon) {
             $params['c'] = $this->headerCanon.'/'.$this->bodyCanon;
-        } elseif ($this->headerCanon != 'simple') {
+        } elseif ('simple' != $this->headerCanon) {
             $params['c'] = $this->headerCanon;
         }
         if ($this->showLen) {
             $params['l'] = $this->bodyLen;
         }
-        if ($this->signatureTimestamp === true) {
+        if (true === $this->signatureTimestamp) {
             $params['t'] = time();
-            if ($this->signatureExpiration !== false) {
+            if (false !== $this->signatureExpiration) {
                 $params['x'] = $params['t'] + $this->signatureExpiration;
             }
         } else {
-            if ($this->signatureTimestamp !== false) {
+            if (false !== $this->signatureTimestamp) {
                 $params['t'] = $this->signatureTimestamp;
             }
-            if ($this->signatureExpiration !== false) {
+            if (false !== $this->signatureExpiration) {
                 $params['x'] = $this->signatureExpiration;
             }
         }
@@ -565,6 +565,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                 $value = str_replace("\r\n", '', $exploded[1]);
                 $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
                 $header = $name.':'.trim($value).($is_sig ? '' : "\r\n");
+                // no break
             case 'simple':
                 // Nothing to do
         }
@@ -575,7 +576,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     {
         $len = strlen($string);
         $canon = '';
-        $method = ($this->bodyCanon == 'relaxed');
+        $method = ('relaxed' == $this->bodyCanon);
         for ($i = 0; $i < $len; ++$i) {
             if ($this->bodyCanonIgnoreStart > 0) {
                 --$this->bodyCanonIgnoreStart;
@@ -586,11 +587,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                     $this->bodyCanonLastChar = "\r";
                     break;
                 case "\n":
-                    if ($this->bodyCanonLastChar == "\r") {
+                    if ("\r" == $this->bodyCanonLastChar) {
                         if ($method) {
                             $this->bodyCanonSpace = false;
                         }
-                        if ($this->bodyCanonLine == '') {
+                        if ('' == $this->bodyCanonLine) {
                             ++$this->bodyCanonEmptyCounter;
                         } else {
                             $this->bodyCanonLine = '';
@@ -607,6 +608,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
                         $this->bodyCanonSpace = true;
                         break;
                     }
+                    // no break
                 default:
                     if ($this->bodyCanonEmptyCounter > 0) {
                         $canon .= str_repeat("\r\n", $this->bodyCanonEmptyCounter);

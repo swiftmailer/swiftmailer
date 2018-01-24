@@ -50,7 +50,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
      */
     public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
-        if ($this->charset !== 'utf-8') {
+        if ('utf-8' !== $this->charset) {
             throw new RuntimeException(
                 sprintf('Charset "%s" not supported. NativeQpContentEncoder only supports "utf-8"', $this->charset));
         }
@@ -87,7 +87,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
      */
     public function encodeString($string, $firstLineOffset = 0, $maxLineLength = 0)
     {
-        if ($this->charset !== 'utf-8') {
+        if ('utf-8' !== $this->charset) {
             throw new RuntimeException(
                 sprintf('Charset "%s" not supported. NativeQpContentEncoder only supports "utf-8"', $this->charset));
         }

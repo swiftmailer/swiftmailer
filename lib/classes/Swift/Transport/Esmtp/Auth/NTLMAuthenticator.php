@@ -162,7 +162,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
             $offset += $blockLength * 2;
         }
 
-        if (count($data) == 3) {
+        if (3 == count($data)) {
             $data[] = $data[2];
             $data[2] = '';
         }
@@ -288,7 +288,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      */
     protected function getDomainAndUsername($name)
     {
-        if (strpos($name, '\\') !== false) {
+        if (false !== strpos($name, '\\')) {
             return explode('\\', $name);
         }
 
@@ -442,9 +442,9 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
         // odd parity
         foreach ($material as $k => $v) {
             $b = $this->castToByte(hexdec($v));
-            $needsParity = (($this->uRShift($b, 7) ^ $this->uRShift($b, 6) ^ $this->uRShift($b, 5)
+            $needsParity = 0 == (($this->uRShift($b, 7) ^ $this->uRShift($b, 6) ^ $this->uRShift($b, 5)
                         ^ $this->uRShift($b, 4) ^ $this->uRShift($b, 3) ^ $this->uRShift($b, 2)
-                        ^ $this->uRShift($b, 1)) & 0x01) == 0;
+                        ^ $this->uRShift($b, 1)) & 0x01);
 
             list($high, $low) = str_split($v);
             if ($needsParity) {
@@ -515,7 +515,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      */
     protected function uRShift($a, $b)
     {
-        if ($b == 0) {
+        if (0 == $b) {
             return $a;
         }
 
@@ -617,7 +617,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
         echo substr($message, 0, 16)." NTLMSSP Signature<br />\n";
         echo $messageId." Type Indicator<br />\n";
 
-        if ($messageId == '02000000') {
+        if ('02000000' == $messageId) {
             $map = array(
                 'Challenge',
                 'Context',
@@ -636,7 +636,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
             foreach ($map as $key => $value) {
                 echo bin2hex($data[$key]).' - '.$data[$key].' ||| '.$value."<br />\n";
             }
-        } elseif ($messageId == '03000000') {
+        } elseif ('03000000' == $messageId) {
             $i = 0;
             $data[$i++] = substr($message, 24, 16);
             list($lmLength, $lmOffset) = $this->readSecurityBuffer($data[$i - 1]);

@@ -153,7 +153,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
      * If the first line needs to be shorter, indicate the difference with
      * $firstLineOffset.
      *
-     * @param string $string to encode
+     * @param string $string          to encode
      * @param int    $firstLineOffset optional
      * @param int    $maxLineLength   optional 0 indicates the default of 76 chars
      *
@@ -200,7 +200,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
             $enc = $this->encodeByteSequence($bytes, $size);
 
             $i = strpos($enc, '=0D=0A');
-            $newLineLength = $lineLen + ($i === false ? $size : $i);
+            $newLineLength = $lineLen + (false === $i ? $size : $i);
 
             if ($currentLine && $newLineLength >= $thisLineLength) {
                 $lines[$lNo] = '';
@@ -211,7 +211,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 
             $currentLine .= $enc;
 
-            if ($i === false) {
+            if (false === $i) {
                 $lineLen += $size;
             } else {
                 // 6 is the length of '=0D=0A'.

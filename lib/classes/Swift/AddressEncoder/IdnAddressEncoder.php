@@ -48,6 +48,7 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
 
         if (class_exists('TrueBV\Punycode')) {
             $punycode = new \TrueBV\Punycode();
+
             return $punycode->encode($string);
         }
 

@@ -13,7 +13,7 @@ Swift_DependencyContainer::getInstance()
     // As SERVER_NAME can come from the user in certain configurations, check that
     // it does not contain forbidden characters (see RFC 952 and RFC 2181). Use
     // preg_replace() instead of preg_match() to prevent DoS attacks with long host names.
-    ->asValue(!empty($_SERVER['SERVER_NAME']) && preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $_SERVER['SERVER_NAME']) === '' ? $_SERVER['SERVER_NAME'] : 'swift.generated')
+    ->asValue(!empty($_SERVER['SERVER_NAME']) && '' === preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'swift.generated')
 
     ->register('mime.idgenerator')
     ->asSharedInstanceOf('Swift_Mime_IdGenerator')

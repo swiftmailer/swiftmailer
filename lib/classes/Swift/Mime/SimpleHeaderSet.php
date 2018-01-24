@@ -309,7 +309,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
         }
         foreach ($headers as $collection) {
             foreach ($collection as $header) {
-                if ($this->isDisplayed($header) || $header->getFieldBody() != '') {
+                if ($this->isDisplayed($header) || '' != $header->getFieldBody()) {
                     $string .= $header->toString();
                 }
             }

@@ -49,7 +49,7 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @expectedException Swift_AddressEncoderException
+     * @expectedException \Swift_AddressEncoderException
      */
     public function testAddressMustBeEncodable()
     {

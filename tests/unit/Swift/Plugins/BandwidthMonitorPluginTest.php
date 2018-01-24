@@ -112,9 +112,9 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit\Framework\TestCa
         $msg->expects($this->any())
             ->method('toByteStream')
             ->will($this->returnCallback(array($this, 'write')));
-      /*  $this->checking(Expectations::create()
-            -> ignoring($msg)->toByteStream(any()) -> calls(array($this, 'write'))
-        ); */
+        /*  $this->checking(Expectations::create()
+              -> ignoring($msg)->toByteStream(any()) -> calls(array($this, 'write'))
+          ); */
 
         return $msg;
     }

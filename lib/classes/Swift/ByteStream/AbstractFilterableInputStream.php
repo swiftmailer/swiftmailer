@@ -126,7 +126,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
     {
         foreach ($this->mirrors as $k => $stream) {
             if ($is === $stream) {
-                if ($this->writeBuffer !== '') {
+                if ('' !== $this->writeBuffer) {
                     $stream->write($this->writeBuffer);
                 }
                 unset($this->mirrors[$k]);
@@ -142,7 +142,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      */
     public function flushBuffers()
     {
-        if ($this->writeBuffer !== '') {
+        if ('' !== $this->writeBuffer) {
             $this->doWrite($this->writeBuffer);
         }
         $this->flush();

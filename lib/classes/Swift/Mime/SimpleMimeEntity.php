@@ -756,7 +756,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
         $shouldSort = false;
         foreach ($this->immediateChildren as $child) {
             // NOTE: This include alternative parts moved into a related part
-            if ($child->getNestingLevel() == self::LEVEL_ALTERNATIVE) {
+            if (self::LEVEL_ALTERNATIVE == $child->getNestingLevel()) {
                 $shouldSort = true;
                 break;
             }

@@ -266,7 +266,7 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
 
     private function reloadBuffer($fp, $len)
     {
-        if (!feof($fp) && ($bytes = fread($fp, $len)) !== false) {
+        if (!feof($fp) && false !== ($bytes = fread($fp, $len))) {
             $buf = array();
             for ($i = 0, $len = strlen($bytes); $i < $len; ++$i) {
                 $buf[] = self::$byteMap[$bytes[$i]];

@@ -257,7 +257,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      */
     public function setCanon($canon)
     {
-        if ($canon == 'nofws') {
+        if ('nofws' == $canon) {
             $this->canon = 'nofws';
         } else {
             $this->canon = 'simple';
@@ -354,7 +354,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                 if ($headers->has($hName)) {
                     $tmp = $headers->getAll($hName);
                     foreach ($tmp as $header) {
-                        if ($header->getFieldBody() != '') {
+                        if ('' != $header->getFieldBody()) {
                             $this->addHeader($header->toString());
                             $this->signedHeaders[] = $header->getFieldName();
                         }
@@ -398,6 +398,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                 $value = str_replace("\r\n", '', $exploded[1]);
                 $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
                 $header = $name.':'.trim($value)."\r\n";
+                // no break
             case 'simple':
                 // Nothing to do
         }
@@ -413,7 +414,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     {
         $len = strlen($string);
         $canon = '';
-        $nofws = ($this->canon == 'nofws');
+        $nofws = ('nofws' == $this->canon);
         for ($i = 0; $i < $len; ++$i) {
             if ($this->bodyCanonIgnoreStart > 0) {
                 --$this->bodyCanonIgnoreStart;
@@ -424,11 +425,11 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                     $this->bodyCanonLastChar = "\r";
                     break;
                 case "\n":
-                    if ($this->bodyCanonLastChar == "\r") {
+                    if ("\r" == $this->bodyCanonLastChar) {
                         if ($nofws) {
                             $this->bodyCanonSpace = false;
                         }
-                        if ($this->bodyCanonLine == '') {
+                        if ('' == $this->bodyCanonLine) {
                             ++$this->bodyCanonEmptyCounter;
                         } else {
                             $this->bodyCanonLine = '';
@@ -446,6 +447,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                         $this->bodyCanonSpace = true;
                         break;
                     }
+                    // no break
                 default:
                     if ($this->bodyCanonEmptyCounter > 0) {
                         $canon .= str_repeat("\r\n", $this->bodyCanonEmptyCounter);

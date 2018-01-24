@@ -64,7 +64,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      */
     public function setLocalDomain($domain)
     {
-        if (substr($domain, 0, 1) !== '[') {
+        if ('[' !== substr($domain, 0, 1)) {
             if (filter_var($domain, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                 $domain = '['.$domain.']';
             } elseif (filter_var($domain, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
@@ -459,7 +459,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
             }
         }
 
-        if ($sent != 0) {
+        if (0 != $sent) {
             $this->doDataCommand();
             $this->streamMessage($message);
         } else {

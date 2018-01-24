@@ -215,7 +215,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     public function readBytes($length)
     {
         $read = $this->read($length);
-        if ($read !== false) {
+        if (false !== $read) {
             $ret = array_map('ord', str_split($read, 1));
 
             return $ret;
@@ -253,7 +253,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
         $ignored = '';
         $this->datas .= $chars;
         $this->charCount += $this->charReader->getCharPositions(substr($this->datas, $this->datasSize), $this->datasSize, $this->map, $ignored);
-        if ($ignored !== false) {
+        if (false !== $ignored) {
             $this->datasSize = strlen($this->datas) - strlen($ignored);
         } else {
             $this->datasSize = strlen($this->datas);
