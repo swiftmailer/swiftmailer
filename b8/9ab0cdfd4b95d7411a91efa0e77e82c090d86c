@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by c960657 at 2018-01-24T17:53:35Z
+
+I have removed some redundant PHPdocs, swapped the parameter order for `Swift_AddressEncoderException`, and added a changelog entry.
