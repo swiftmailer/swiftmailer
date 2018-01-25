@@ -78,6 +78,12 @@ class Swift_DependencyContainerTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($a, $b);
     }
 
+    public function testRegisterAndLookupArray()
+    {
+        $this->container->register('One')->asArray();
+        $this->assertSame([], $this->container->lookup('One'));
+    }
+
     public function testNewInstanceWithDependencies()
     {
         $this->container->register('foo')->asValue('FOO');
@@ -154,6 +160,15 @@ class Swift_DependencyContainerTest extends \PHPUnit\Framework\TestCase
         $obj = $this->container->lookup('two');
         $this->assertEquals([$this->container->lookup('one'), 'FOO'], $obj->arg1);
         $this->assertSame('FOO', $obj->arg2);
+    }
+
+    public function testArrayWithDependencies()
+    {
+        $this->container->register('foo')->asValue('FOO');
+        $this->container->register('bar')->asValue(42);
+        $this->container->register('one')->asArray('One')
+            ->withDependencies(['foo', 'bar']);
+        $this->assertSame(['FOO', 42], $this->container->lookup('one'));
     }
 
     public function testAliasCanBeSet()

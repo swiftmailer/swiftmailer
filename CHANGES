@@ -5,6 +5,7 @@ Changelog
 ------------------
 
  * added support for IDN domains in email addresses
+ * introduced new dependencies: transport.smtphandlers and transport.authhandlers
 
 6.0.2 (2017-09-30)
 ------------------
