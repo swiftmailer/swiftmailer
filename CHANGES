@@ -1,6 +1,11 @@
 Changelog
 =========
 
+7.0.0 (2018-XX-XX)
+------------------
+
+ * removed Swift_Transport_AbstractSmtpTransport::getSourceIp() and setSourceIp()
+
 6.1.0 (2018-XX-XX)
 ------------------
 

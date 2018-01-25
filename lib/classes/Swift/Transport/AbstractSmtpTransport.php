@@ -35,9 +35,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /** The pipelined commands waiting for response */
     protected $pipeline = [];
 
-    /** Source Ip */
-    protected $sourceIp;
-
     /** Return an array of params for the Buffer */
     abstract protected function getBufferParams();
 
@@ -94,26 +91,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     public function getLocalDomain()
     {
         return $this->domain;
-    }
-
-    /**
-     * Sets the source IP.
-     *
-     * @param string $source
-     */
-    public function setSourceIp($source)
-    {
-        $this->sourceIp = $source;
-    }
-
-    /**
-     * Returns the IP used to connect to the destination.
-     *
-     * @return string
-     */
-    public function getSourceIp()
-    {
-        return $this->sourceIp;
     }
 
     public function setAddressEncoder(Swift_AddressEncoder $addressEncoder)
