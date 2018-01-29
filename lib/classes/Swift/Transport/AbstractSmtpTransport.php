@@ -456,6 +456,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
                 ++$sent;
             } catch (Swift_TransportException $e) {
                 $failedRecipients[] = $forwardPath;
+            } catch (Swift_AddressEncoderException $e) {
+                $failedRecipients[] = $forwardPath;
             }
         }
 

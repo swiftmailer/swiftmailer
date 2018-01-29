@@ -51,7 +51,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             $this->assertFalse($smtp->isStarted(), '%s: SMTP should begin non-started');
             $smtp->start();
             $this->fail('554 greeting indicates an error and should cause an exception');
-        } catch (Exception $e) {
+        } catch (Swift_TransportException $e) {
             $this->assertFalse($smtp->isStarted(), '%s: start() should have failed');
         }
     }
@@ -143,7 +143,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             $this->assertFalse($smtp->isStarted(), '%s: SMTP should begin non-started');
             $smtp->start();
             $this->fail('Non 250 HELO response should raise Exception');
-        } catch (Exception $e) {
+        } catch (Swift_TransportException $e) {
             $this->assertFalse($smtp->isStarted(), '%s: SMTP start() should have failed');
         }
     }
@@ -276,7 +276,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             $smtp->start();
             $smtp->send($message);
             $this->fail('MAIL FROM should accept a 250 response');
-        } catch (Exception $e) {
+        } catch (Swift_TransportException $e) {
         }
     }
 
@@ -427,7 +427,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         }
     }
 
-    public function testUtf8Address()
+    public function testUtf8AddressWithIdnEncoder()
     {
         $buf = $this->getBuffer();
         $smtp = $this->getTransport($buf);
@@ -455,6 +455,29 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $this->finishBuffer($buf);
         $smtp->start();
         $smtp->send($message);
+    }
+
+    public function testNonEncodableSenderCausesException()
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
+        $message = $this->createMessage();
+
+        $message->shouldReceive('getFrom')
+                ->once()
+                ->andReturn(['më@domain.com' => 'Me']);
+        $message->shouldReceive('getTo')
+                ->once()
+                ->andReturn(['foo@bar' => null]);
+
+        $this->finishBuffer($buf);
+        try {
+            $smtp->start();
+            $smtp->send($message);
+            $this->fail('më@domain.com cannot be encoded (not observed)');
+        } catch (Swift_AddressEncoderException $e) {
+            $this->assertEquals('më@domain.com', $e->getAddress());
+        }
     }
 
     public function testMailFromCommandIsOnlySentOncePerMessage()
@@ -509,6 +532,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
                     'foo@bar' => null,
                     'zip@button' => 'Zip Button',
                     'test@domain' => 'Test user',
+                    'tëst@domain' => 'Test user',
                 ]);
         $buf->shouldReceive('write')
             ->once()
@@ -774,7 +798,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             $smtp->start();
             $smtp->send($message);
             $this->fail('354 is the expected response to DATA (not observed)');
-        } catch (Exception $e) {
+        } catch (Swift_TransportException $e) {
         }
     }
 
@@ -846,7 +870,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             $smtp->start();
             $smtp->send($message);
             $this->fail('250 is the expected response after a DATA transmission (not observed)');
-        } catch (Exception $e) {
+        } catch (Swift_TransportException $e) {
         }
     }
 
@@ -1019,7 +1043,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         try {
             $smtp->send($message);
             $this->fail('A bad response was given so exception is expected');
-        } catch (Exception $e) {
+        } catch (Swift_TransportException $e) {
         }
     }
 
@@ -1115,7 +1139,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         try {
             $smtp->executeCommand("FOO\r\n", [250, 251]);
             $this->fail('A 250 or 251 response was needed but 551 was returned.');
-        } catch (Exception $e) {
+        } catch (Swift_TransportException $e) {
         }
     }
 

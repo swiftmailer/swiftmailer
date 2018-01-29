@@ -2,12 +2,12 @@
 
 class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtpEventSupportTest
 {
-    protected function getTransport($buf, $dispatcher = null, $command = '/usr/sbin/sendmail -bs')
+    protected function getTransport($buf, $dispatcher = null, $addressEncoder = null, $command = '/usr/sbin/sendmail -bs')
     {
         if (!$dispatcher) {
             $dispatcher = $this->createEventDispatcher();
         }
-        $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher, 'example.org');
+        $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher, 'example.org', $addressEncoder);
         $transport->setCommand($command);
 
         return $transport;
