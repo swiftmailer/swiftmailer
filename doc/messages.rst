@@ -628,6 +628,26 @@ the address::
         $message->addBcc('person1@example.org');
         $message->addBcc('person2@example.org', 'Person 2 Name');
 
+.. sidebar:: Internationalized Email Addresses
+
+    Traditionally only ASCII characters have been allowed in email addresses.
+    With the introduction of internationalized domain names (IDNs), non-ASCII
+    characters may appear in the domain name. By default, Swiftmailer encodes
+    such domain names in Punycode (e.g. xn--xample-ova.invalid). This is
+    compatible with all mail servers.
+
+    RFC 6531 introduced an SMTP extension, SMTPUTF8, that allows non-ASCII
+    characters in email addresses on both sides of the @ sign. To send to such
+    addresses, your outbound SMTP server must support the SMTPUTF8 extension.
+    You should use the ``Swift_AddressEncoder_Utf8AddressEncoder`` address
+    encoder and enable the ``Swift_Transport_Esmtp_SmtpUtf8Handler`` SMTP
+    extension handler::
+
+        $smtpUtf8 = new Swift_Transport_Esmtp_SmtpUtf8Handler();
+        $transport->setExtensionHandlers([$smtpUtf8]);
+        $utf8Encoder = new Swift_AddressEncoder_Utf8AddressEncoder();
+        $transport->setAddressEncoder($utf8Encoder);
+
 Specifying Sender Details
 -------------------------
 
