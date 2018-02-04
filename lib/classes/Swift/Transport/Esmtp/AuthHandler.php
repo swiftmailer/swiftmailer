@@ -9,7 +9,7 @@
  */
 
 /**
- * An ESMTP handler for AUTH support.
+ * An ESMTP handler for AUTH support (RFC 5248).
  *
  * @author Chris Corbyn
  */
@@ -143,7 +143,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     /**
      * Get the name of the ESMTP extension this handles.
      *
-     * @return bool
+     * @return string
      */
     public function getHandledKeyword()
     {
