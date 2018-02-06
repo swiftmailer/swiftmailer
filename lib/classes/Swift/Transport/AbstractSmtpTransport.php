@@ -110,6 +110,16 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         return $this->sourceIp;
     }
 
+    public function setAddressEncoder(Swift_AddressEncoder $addressEncoder)
+    {
+        $this->addressEncoder = $addressEncoder;
+    }
+
+    public function getAddressEncoder()
+    {
+        return $this->addressEncoder;
+    }
+
     /**
      * Start the SMTP connection.
      */
