@@ -16,16 +16,19 @@
 class Swift_DependencyContainer
 {
     /** Constant for literal value types */
-    const TYPE_VALUE = 0x0001;
+    const TYPE_VALUE = 0x00001;
 
     /** Constant for new instance types */
-    const TYPE_INSTANCE = 0x0010;
+    const TYPE_INSTANCE = 0x00010;
 
     /** Constant for shared instance types */
-    const TYPE_SHARED = 0x0100;
+    const TYPE_SHARED = 0x00100;
 
     /** Constant for aliases */
-    const TYPE_ALIAS = 0x1000;
+    const TYPE_ALIAS = 0x01000;
+
+    /** Constant for arrays */
+    const TYPE_ARRAY = 0x10000;
 
     /** Singleton instance */
     private static $instance = null;
@@ -112,6 +115,8 @@ class Swift_DependencyContainer
                 return $this->createNewInstance($itemName);
             case self::TYPE_SHARED:
                 return $this->createSharedInstance($itemName);
+            case self::TYPE_ARRAY:
+                return $this->createDependenciesFor($itemName);
         }
     }
 
@@ -223,6 +228,21 @@ class Swift_DependencyContainer
         $endPoint = &$this->getEndPoint();
         $endPoint['lookupType'] = self::TYPE_SHARED;
         $endPoint['className'] = $className;
+
+        return $this;
+    }
+
+    /**
+     * Specify the previously registered item as array of dependencies.
+     *
+     * {@link register()} must be called before this will work.
+     *
+     * @return $this
+     */
+    public function asArray()
+    {
+        $endPoint = &$this->getEndPoint();
+        $endPoint['lookupType'] = self::TYPE_ARRAY;
 
         return $this;
     }
