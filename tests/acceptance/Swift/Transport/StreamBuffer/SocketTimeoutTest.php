@@ -34,14 +34,14 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit\Framework\
         $host = '127.0.0.1';
         $port = $this->randomHighPort;
 
-        $this->buffer->initialize(array(
+        $this->buffer->initialize([
             'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
             'host' => $host,
             'port' => $port,
             'protocol' => 'tcp',
             'blocking' => 1,
             'timeout' => 1,
-        ));
+        ]);
     }
 
     public function testTimeoutException()

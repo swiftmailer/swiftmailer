@@ -19,7 +19,7 @@ class Swift_Smoke_InternationalSmokeTest extends SwiftMailerSmokeTestCase
         $message = (new Swift_Message())
             ->setCharset('utf-8')
             ->setSubject('[Swift Mailer] InternationalSmokeTest (διεθνής)')
-            ->setFrom(array(SWIFT_SMOKE_EMAIL_ADDRESS => 'Χριστοφορου (Swift Mailer)'))
+            ->setFrom([SWIFT_SMOKE_EMAIL_ADDRESS => 'Χριστοφορου (Swift Mailer)'])
             ->setTo(SWIFT_SMOKE_EMAIL_ADDRESS)
             ->setBody('This message should contain an attached ZIP file (named "κείμενο, εδάφιο, θέμα.zip").'.PHP_EOL.
                 'When unzipped, the archive should produce a text file which reads:'.PHP_EOL.

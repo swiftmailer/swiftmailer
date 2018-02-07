@@ -57,9 +57,9 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         if (is_bool($bodyLen)) {
             $bodyLen = -1;
         }
-        $hash = $this->hashAlgorithm == 'rsa-sha1' ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
-        $bodyCanon = $this->bodyCanon == 'simple' ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
-        $headerCanon = $this->headerCanon == 'simple' ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
+        $hash = 'rsa-sha1' == $this->hashAlgorithm ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
+        $bodyCanon = 'simple' == $this->bodyCanon ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
+        $headerCanon = 'simple' == $this->headerCanon ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
         $this->dkimHandler = new OpenDKIMSign($this->privateKey, $this->selector, $this->domainName, $headerCanon, $bodyCanon, $hash, $bodyLen);
         // Hardcode signature Margin for now
         $this->dkimHandler->setMargin(78);
@@ -81,7 +81,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
                 $tmp = $headers->getAll($hName);
                 if ($headers->has($hName)) {
                     foreach ($tmp as $header) {
-                        if ($header->getFieldBody() != '') {
+                        if ('' != $header->getFieldBody()) {
                             $htosign = $header->toString();
                             $this->dkimHandler->header($htosign);
                             $this->signedHeaders[] = $header->getFieldName();
@@ -172,8 +172,8 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         if (!$this->peclLoaded) {
             return parent::canonicalizeBody($string);
         }
-        if (false && $this->dropFirstLF === true) {
-            if ($string[0] == "\r" && $string[1] == "\n") {
+        if (false && true === $this->dropFirstLF) {
+            if ("\r" == $string[0] && "\n" == $string[1]) {
                 $string = substr($string, 2);
             }
         }

@@ -25,12 +25,12 @@ function generateUpToDateMimeArray()
     $mime_xml = @file_get_contents(FREEDESKTOP_XML_URL);
 
     // prepare valid mime types
-    $valid_mime_types = array();
+    $valid_mime_types = [];
 
     // split mime type and extensions eg. "video/x-matroska        mkv mk3d mks"
-    if (preg_match_all('/^#?([a-z0-9\-\+\/\.]+)[\t]+(.*)$/miu', $mime_types, $matches) !== false) {
+    if (false !== preg_match_all('/^#?([a-z0-9\-\+\/\.]+)[\t]+(.*)$/miu', $mime_types, $matches)) {
         // collection of predefined mimetypes (bugfix for wrong resolved or missing mime types)
-        $valid_mime_types_preset = array(
+        $valid_mime_types_preset = [
             'php' => 'application/x-php',
             'php3' => 'application/x-php',
             'php4' => 'application/x-php',
@@ -95,7 +95,7 @@ function generateUpToDateMimeArray()
             'xls' => 'application/vnd.ms-excel',
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'xml' => 'application/xml',
-        );
+        ];
 
         // wrap array for generating file
         foreach ($valid_mime_types_preset as $extension => $mime_type) {
@@ -110,7 +110,7 @@ function generateUpToDateMimeArray()
 
             // force array for foreach
             if (!is_array($extensions)) {
-                $extensions = array($extensions);
+                $extensions = [$extensions];
             }
 
             foreach ($extensions as $extension) {
@@ -139,7 +139,7 @@ function generateUpToDateMimeArray()
         // get all matching extensions from match
         foreach ((array) $node->glob['pattern'] as $extension) {
             // skip none glob extensions
-            if (strpos($extension, '.') === false) {
+            if (false === strpos($extension, '.')) {
                 continue;
             }
 
@@ -156,7 +156,7 @@ function generateUpToDateMimeArray()
             $extension = strtolower(trim($node->glob['ddpattern'][0], '*.'));
 
             // skip none glob extensions and check if string length between 1 and 10
-            if (strpos($extension, '.') !== false || strlen($extension) < 1 || strlen($extension) > 9) {
+            if (false !== strpos($extension, '.') || strlen($extension) < 1 || strlen($extension) > 9) {
                 continue;
             }
 

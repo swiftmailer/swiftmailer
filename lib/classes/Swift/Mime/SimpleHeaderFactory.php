@@ -32,17 +32,15 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
     /**
      * Creates a new SimpleHeaderFactory using $encoder and $paramEncoder.
      *
-     * @param Swift_Mime_HeaderEncoder $encoder
-     * @param Swift_Encoder            $paramEncoder
-     * @param EmailValidator           $emailValidator
-     * @param string|null              $charset
+     * @param string|null $charset
      */
-    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, EmailValidator $emailValidator, $charset = null)
+    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, EmailValidator $emailValidator, $charset = null, Swift_AddressEncoder $addressEncoder = null)
     {
         $this->encoder = $encoder;
         $this->paramEncoder = $paramEncoder;
         $this->emailValidator = $emailValidator;
         $this->charset = $charset;
+        $this->addressEncoder = $addressEncoder ?? new Swift_AddressEncoder_IdnAddressEncoder();
     }
 
     /**
@@ -55,7 +53,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
      */
     public function createMailboxHeader($name, $addresses = null)
     {
-        $header = new Swift_Mime_Headers_MailboxHeader($name, $this->encoder, $this->emailValidator);
+        $header = new Swift_Mime_Headers_MailboxHeader($name, $this->encoder, $this->emailValidator, $this->addressEncoder);
         if (isset($addresses)) {
             $header->setFieldBodyModel($addresses);
         }
@@ -111,9 +109,9 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
      *
      * @return Swift_Mime_Headers_ParameterizedHeader
      */
-    public function createParameterizedHeader($name, $value = null, $params = array())
+    public function createParameterizedHeader($name, $value = null, $params = [])
     {
-        $header = new Swift_Mime_Headers_ParameterizedHeader($name, $this->encoder, (strtolower($name) == 'content-disposition') ? $this->paramEncoder : null);
+        $header = new Swift_Mime_Headers_ParameterizedHeader($name, $this->encoder, ('content-disposition' == strtolower($name)) ? $this->paramEncoder : null);
         if (isset($value)) {
             $header->setFieldBodyModel($value);
         }

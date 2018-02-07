@@ -2,13 +2,12 @@
 
 class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEventSupportTest
 {
-    protected function getTransport($buf, $dispatcher = null)
+    protected function getTransport($buf, $dispatcher = null, $addressEncoder = null)
     {
-        if (!$dispatcher) {
-            $dispatcher = $this->createEventDispatcher();
-        }
+        $dispatcher = $dispatcher ?? $this->createEventDispatcher();
+        $addressEncoder = $addressEncoder ?? new Swift_AddressEncoder_IdnAddressEncoder();
 
-        return new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher, 'example.org');
+        return new Swift_Transport_EsmtpTransport($buf, [], $dispatcher, 'example.org', $addressEncoder);
     }
 
     public function testHostCanBeSetAndFetched()

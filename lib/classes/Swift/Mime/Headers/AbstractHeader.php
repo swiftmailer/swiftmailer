@@ -109,8 +109,6 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
     /**
      * Set the encoder used for encoding the header.
-     *
-     * @param Swift_Mime_HeaderEncoder $encoder
      */
     public function setEncoder(Swift_Mime_HeaderEncoder $encoder)
     {
@@ -196,11 +194,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Produces a compliant, formatted RFC 2822 'phrase' based on the string given.
      *
-     * @param Swift_Mime_Header        $header
-     * @param string                   $string  as displayed
-     * @param string                   $charset of the text
-     * @param Swift_Mime_HeaderEncoder $encoder
-     * @param bool                     $shorten the first line to make remove for header name
+     * @param string $string  as displayed
+     * @param string $charset of the text
+     * @param bool   $shorten the first line to make remove for header name
      *
      * @return string
      */
@@ -214,7 +210,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
             // .. but it is just ascii text, try escaping some characters
             // and make it a quoted-string
             if (preg_match('/^[\x00-\x08\x0B\x0C\x0E-\x7F]*$/D', $phraseStr)) {
-                $phraseStr = $this->escapeSpecials($phraseStr, array('"'));
+                $phraseStr = $this->escapeSpecials($phraseStr, ['"']);
                 $phraseStr = '"'.$phraseStr.'"';
             } else {
                 // ... otherwise it needs encoding
@@ -239,9 +235,9 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      *
      * @return string
      */
-    private function escapeSpecials($token, $include = array())
+    private function escapeSpecials($token, $include = [])
     {
-        foreach (array_merge(array('\\'), $include) as $char) {
+        foreach (array_merge(['\\'], $include) as $char) {
             $token = str_replace($char, '\\'.$char, $token);
         }
 
@@ -251,9 +247,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     /**
      * Encode needed word tokens within a string of input.
      *
-     * @param Swift_Mime_Header $header
-     * @param string            $input
-     * @param string            $usedLength optional
+     * @param string $input
+     * @param string $usedLength optional
      *
      * @return string
      */
@@ -310,7 +305,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     protected function getEncodableWordTokens($string)
     {
-        $tokens = array();
+        $tokens = [];
 
         $encodedToken = '';
         // Split at all whitespace boundaries
@@ -362,7 +357,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
                 )
         );
 
-        if (strtolower($this->charset) !== 'iso-2022-jp') {
+        if ('iso-2022-jp' !== strtolower($this->charset)) {
             // special encoding for iso-2022-jp using mb_encode_mimeheader
             foreach ($encodedTextLines as $lineNum => $line) {
                 $encodedTextLines[$lineNum] = '=?'.$charsetDecl.
@@ -431,7 +426,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
             $string = $this->getFieldBody();
         }
 
-        $tokens = array();
+        $tokens = [];
 
         // Generate atoms; split at all invisible boundaries followed by WSP
         foreach (preg_split('~(?=[ \t])~', $string) as $token) {
@@ -455,7 +450,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
     private function tokensToString(array $tokens)
     {
         $lineCount = 0;
-        $headerLines = array();
+        $headerLines = [];
         $headerLines[] = $this->name.': ';
         $currentLine = &$headerLines[$lineCount++];
 

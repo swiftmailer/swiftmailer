@@ -32,9 +32,8 @@ class Swift_Events_ResponseEvent extends Swift_Events_EventObject
     /**
      * Create a new ResponseEvent for $source and $response.
      *
-     * @param Swift_Transport $source
-     * @param string          $response
-     * @param bool            $valid
+     * @param string $response
+     * @param bool   $valid
      */
     public function __construct(Swift_Transport $source, $response, $valid = false)
     {
