@@ -11,10 +11,10 @@ Swift_DependencyContainer::getInstance()
     ->asNewInstanceOf('Swift_Transport_EsmtpTransport')
     ->withDependencies([
         'transport.buffer',
-        ['transport.authhandler'],
+        ['transport.authhandler', 'transport.smtputf8handler'],
         'transport.eventdispatcher',
         'transport.localdomain',
-        'transport.addressencoder',
+        'address.idnaddressencoder',
     ])
 
     ->register('transport.sendmail')
@@ -55,6 +55,9 @@ Swift_DependencyContainer::getInstance()
         ],
     ])
 
+    ->register('transport.smtputf8handler')
+    ->asNewInstanceOf('Swift_Transport_Esmtp_SmtpUtf8Handler')
+
     ->register('transport.crammd5auth')
     ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_CramMd5Authenticator')
 
@@ -73,9 +76,12 @@ Swift_DependencyContainer::getInstance()
     ->register('transport.eventdispatcher')
     ->asNewInstanceOf('Swift_Events_SimpleEventDispatcher')
 
-    ->register('transport.addressencoder')
-    ->asNewInstanceOf('Swift_AddressEncoder_IdnAddressEncoder')
-
     ->register('transport.replacementfactory')
     ->asSharedInstanceOf('Swift_StreamFilters_StringReplacementFilterFactory')
+
+    ->register('address.idnaddressencoder')
+    ->asNewInstanceOf('Swift_AddressEncoder_IdnAddressEncoder')
+
+    ->register('address.utf8addressencoder')
+    ->asNewInstanceOf('Swift_AddressEncoder_Utf8AddressEncoder')
 ;
