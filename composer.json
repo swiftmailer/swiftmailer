@@ -26,7 +26,7 @@
         "ext-openssl": "required for encrypted connections, dkim, smime, NTLMAuthenticator, ...",
         "ext-bcmath": "required for NTLMAuthenticator",
         "ext-mbstring": "mbstring or iconv required for multi byte support",
-        "ext-iconv": "mbstring or iconv required for multi byte support, iconv is required for NTLMAuthenticator"
+        "ext-iconv": "mbstring or iconv required for multi byte support, iconv is required for NTLMAuthenticator",
         "ext-intl": "Needed to support internationalized email addresses",
         "true/punycode": "Needed to support internationalized email addresses, if ext-intl is not installed"
     },
