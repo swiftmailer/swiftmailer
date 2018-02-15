@@ -457,6 +457,36 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp->send($message);
     }
 
+    public function testUtf8AddressWithUtf8Encoder()
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf, null, new Swift_AddressEncoder_Utf8AddressEncoder());
+        $message = $this->createMessage();
+
+        $message->shouldReceive('getFrom')
+                ->once()
+                ->andReturn(['më@dömain.com' => 'Me']);
+        $message->shouldReceive('getTo')
+                ->once()
+                ->andReturn(['föö@bär' => null]);
+        $buf->shouldReceive('write')
+            ->once()
+            ->with("MAIL FROM:<më@dömain.com>\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('write')
+            ->once()
+            ->with("RCPT TO:<föö@bär>\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250 OK'."\r\n");
+
+        $this->finishBuffer($buf);
+        $smtp->start();
+        $smtp->send($message);
+    }
+
     public function testNonEncodableSenderCausesException()
     {
         $buf = $this->getBuffer();

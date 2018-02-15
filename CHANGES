@@ -4,7 +4,7 @@ Changelog
 6.1.0 (2018-XX-XX)
 ------------------
 
- * added support for IDN domains in email addresses
+ * added support for non-ASCII email addresses
  * added suggestions to composer.json
 
 6.0.2 (2017-09-30)

@@ -68,7 +68,7 @@ Swift_DependencyContainer::getInstance()
             'mime.rfc2231encoder',
             'email.validator',
             'properties.charset',
-            'mime.addressencoder',
+            'address.idnaddressencoder',
         ])
 
     ->register('mime.headerset')
@@ -126,9 +126,6 @@ Swift_DependencyContainer::getInstance()
     ->register('mime.rfc2231encoder')
     ->asNewInstanceOf('Swift_Encoder_Rfc2231Encoder')
     ->withDependencies(['mime.charstream'])
-
-    ->register('mime.addressencoder')
-    ->asNewInstanceOf('Swift_AddressEncoder_IdnAddressEncoder')
 ;
 
 unset($swift_mime_types);
