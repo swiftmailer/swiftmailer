@@ -8,17 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
 /**
  * Listens for Transports to send commands to the server.
  *
  * @author Chris Corbyn
  */
-interface Swift_Events_CommandListener extends Swift_Events_EventListener
+interface CommandListener extends EventListener
 {
     /**
      * Invoked immediately following a command being sent.
      *
-     * @param Swift_Events_CommandEvent $evt
+     * @param CommandEvent $evt
      */
-    public function commandSent(Swift_Events_CommandEvent $evt);
+    public function commandSent(CommandEvent $evt);
 }

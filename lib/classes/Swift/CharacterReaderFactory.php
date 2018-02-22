@@ -8,19 +8,21 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * A factory for creating CharacterReaders.
  *
  * @author Chris Corbyn
  */
-interface Swift_CharacterReaderFactory
+interface CharacterReaderFactory
 {
     /**
      * Returns a CharacterReader suitable for the charset applied.
      *
      * @param string $charset
      *
-     * @return Swift_CharacterReader
+     * @return \Swift\CharacterReader
      */
     public function getReaderFor($charset);
 }

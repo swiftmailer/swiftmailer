@@ -8,17 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
 /**
  * Listens for responses from a remote SMTP server.
  *
  * @author Chris Corbyn
  */
-interface Swift_Events_ResponseListener extends Swift_Events_EventListener
+interface ResponseListener extends EventListener
 {
     /**
      * Invoked immediately following a response coming back.
      *
-     * @param Swift_Events_ResponseEvent $evt
+     * @param \Swift\Events\ResponseEvent $evt
      */
-    public function responseReceived(Swift_Events_ResponseEvent $evt);
+    public function responseReceived(ResponseEvent $evt);
 }

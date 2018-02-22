@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\CharacterReaderFactory;
+
+use Swift\CharacterReaderFactory as CharacterReaderFactoryInterface;
+
 /**
  * Standard factory for creating CharacterReaders.
  *
  * @author Chris Corbyn
  */
-class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory implements Swift_CharacterReaderFactory
+class SimpleCharacterReaderFactory implements CharacterReaderFactoryInterface
 {
     /**
      * A map of charset patterns to their implementation classes.

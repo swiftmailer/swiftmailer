@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
+use Swift\Transport;
+
 /**
  * Generated when a command is sent over an SMTP connection.
  *
  * @author Chris Corbyn
  */
-class Swift_Events_CommandEvent extends Swift_Events_EventObject
+class CommandEvent extends EventObject
 {
     /**
      * The command sent to the server.
@@ -35,7 +39,7 @@ class Swift_Events_CommandEvent extends Swift_Events_EventObject
      * @param string $command
      * @param array  $successCodes
      */
-    public function __construct(Swift_Transport $source, $command, $successCodes = [])
+    public function __construct(Transport $source, $command, $successCodes = [])
     {
         parent::__construct($source);
         $this->command = $command;

@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * An OutputByteStream which specifically reads from a file.
  *
  * @author Chris Corbyn
  */
-interface Swift_FileStream extends Swift_OutputByteStream
+interface FileStream extends OutputByteStream
 {
     /**
      * Get the complete path to the file.

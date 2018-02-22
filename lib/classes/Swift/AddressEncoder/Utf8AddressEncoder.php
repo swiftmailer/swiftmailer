@@ -7,6 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace Swift\AddressEncoder;
+
+use Swift\AddressEncoder as AddressEncoderInterface;
 
 /**
  * A UTF-8 email address encoder.
@@ -24,7 +27,7 @@
  *
  * @author Christian Schmidt
  */
-class Swift_AddressEncoder_Utf8AddressEncoder implements Swift_AddressEncoder
+class Utf8AddressEncoder implements AddressEncoderInterface
 {
     /**
      * Returns the address verbatimly.

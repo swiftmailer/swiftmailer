@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
 /**
  * The minimum interface for an Event.
  *
  * @author Chris Corbyn
  */
-interface Swift_Events_Event
+interface Event
 {
     /**
      * Get the source object of this event.

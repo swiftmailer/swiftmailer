@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * An abstract means of writing data.
  *
@@ -16,7 +18,7 @@
  *
  * @author Chris Corbyn
  */
-interface Swift_InputByteStream
+interface InputByteStream
 {
     /**
      * Writes $bytes to the end of the stream.
@@ -30,7 +32,7 @@ interface Swift_InputByteStream
      *
      * @param string $bytes
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      *
      * @return int
      */
@@ -40,7 +42,7 @@ interface Swift_InputByteStream
      * For any bytes that are currently buffered inside the stream, force them
      * off the buffer.
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      */
     public function commit();
 
@@ -50,7 +52,7 @@ interface Swift_InputByteStream
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
      *
-     * @param Swift_InputByteStream $is
+     * @param \Swift\InputByteStream $is
      */
     public function bind(self $is);
 
@@ -61,7 +63,7 @@ interface Swift_InputByteStream
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
      *
-     * @param Swift_InputByteStream $is
+     * @param \Swift\InputByteStream $is
      */
     public function unbind(self $is);
 
@@ -69,7 +71,7 @@ interface Swift_InputByteStream
      * Flush the contents of the stream (empty it) and set the internal pointer
      * to the beginning.
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      */
     public function flushBuffers();
 }

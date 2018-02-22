@@ -8,6 +8,12 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\AddressEncoder;
+
+use Swift\AddressEncoder as AddressEncoderInterface;
+use Swift\AddressEncoderException;
+use Swift\SwiftException;
+
 /**
  * An IDN email address encoder.
  *
@@ -22,7 +28,7 @@
  *
  * @author Christian Schmidt
  */
-class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
+class IdnAddressEncoder implements AddressEncoderInterface
 {
     /**
      * Encodes the domain part of an address using IDN.
@@ -37,7 +43,7 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
             $domain = substr($address, $i + 1);
 
             if (preg_match('/[^\x00-\x7F]/', $local)) {
-                throw new Swift_AddressEncoderException('Non-ASCII characters not supported in local-part', $address);
+                throw new AddressEncoderException('Non-ASCII characters not supported in local-part', $address);
             }
 
             $address = sprintf('%s@%s', $local, $this->idnToAscii($domain));
@@ -61,6 +67,6 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
             return $punycode->encode($string);
         }
 
-        throw new Swift_SwiftException('No IDN encoder found (install the intl extension or the true/punycode package');
+        throw new SwiftException('No IDN encoder found (install the intl extension or the true/punycode package');
     }
 }

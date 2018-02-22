@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\CharacterStream;
+
+use Swift\CharacterStream as CharacterStreamInterface;
+use Swift\CharacterReaderFactory;
+use Swift\OutputByteStream;
+
 /**
  * A CharacterStream implementation which stores characters in an internal array.
  *
  * @author Chris Corbyn
  */
-class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStream
+class ArrayCharacterStream implements CharacterStreamInterface
 {
     /** A map of byte values and their respective characters */
     private static $charMap;
@@ -42,10 +48,10 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
     /**
      * Create a new CharacterStream with the given $chars, if set.
      *
-     * @param Swift_CharacterReaderFactory $factory for loading validators
+     * @param CharacterReaderFactory $factory for loading validators
      * @param string                       $charset used in the stream
      */
-    public function __construct(Swift_CharacterReaderFactory $factory, $charset)
+    public function __construct(CharacterReaderFactory $factory, $charset)
     {
         self::initializeMaps();
         $this->setCharacterReaderFactory($factory);
@@ -66,7 +72,7 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
     /**
      * Set the CharacterReaderFactory for multi charset support.
      */
-    public function setCharacterReaderFactory(Swift_CharacterReaderFactory $factory)
+    public function setCharacterReaderFactory(CharacterReaderFactory $factory)
     {
         $this->charReaderFactory = $factory;
     }
@@ -74,9 +80,9 @@ class Swift_CharacterStream_ArrayCharacterStream implements Swift_CharacterStrea
     /**
      * Overwrite this character stream using the byte sequence in the byte stream.
      *
-     * @param Swift_OutputByteStream $os output stream to read from
+     * @param OutputByteStream $os output stream to read from
      */
-    public function importByteStream(Swift_OutputByteStream $os)
+    public function importByteStream(OutputByteStream $os)
     {
         if (!isset($this->charReader)) {
             $this->charReader = $this->charReaderFactory

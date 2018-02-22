@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Sends Messages via an abstract Transport subsystem.
  *
  * @author Chris Corbyn
  */
-interface Swift_Transport
+interface Transport
 {
     /**
      * Test if this Transport mechanism has started.

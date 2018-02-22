@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\ByteStream;
+
+use Swift\InputByteStream;
+use Swift\OutputByteStream;
+
 /**
  * Allows reading and writing of bytes to and from an array.
  *
  * @author     Chris Corbyn
  */
-class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_OutputByteStream
+class ArrayByteStream implements InputByteStream, OutputByteStream
 {
     /**
      * The internal stack of bytes.
@@ -122,7 +127,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
      */
-    public function bind(Swift_InputByteStream $is)
+    public function bind(InputByteStream $is)
     {
         $this->mirrors[] = $is;
     }
@@ -134,7 +139,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
      */
-    public function unbind(Swift_InputByteStream $is)
+    public function unbind(InputByteStream $is)
     {
         foreach ($this->mirrors as $k => $stream) {
             if ($is === $stream) {

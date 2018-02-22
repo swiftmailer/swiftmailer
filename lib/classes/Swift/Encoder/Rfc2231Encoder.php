@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Encoder;
+
+use Swift\Encoder as EncoderInterface;
+use Swift\CharacterStream;
+
 /**
  * Handles RFC 2231 specified Encoding in Swift Mailer.
  *
  * @author Chris Corbyn
  */
-class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
+class Rfc2231Encoder implements EncoderInterface
 {
     /**
      * A character stream to use when reading a string as characters instead of bytes.
@@ -25,7 +30,7 @@ class Swift_Encoder_Rfc2231Encoder implements Swift_Encoder
     /**
      * Creates a new Rfc2231Encoder using the given character stream instance.
      */
-    public function __construct(Swift_CharacterStream $charStream)
+    public function __construct(CharacterStream $charStream)
     {
         $this->charStream = $charStream;
     }

@@ -8,20 +8,22 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Allows StreamFilters to operate on a stream.
  *
  * @author Chris Corbyn
  */
-interface Swift_Filterable
+interface Filterable
 {
     /**
      * Add a new StreamFilter, referenced by $key.
      *
-     * @param Swift_StreamFilter $filter
+     * @param \Swift\StreamFilter $filter
      * @param string             $key
      */
-    public function addFilter(Swift_StreamFilter $filter, $key);
+    public function addFilter(StreamFilter $filter, $key);
 
     /**
      * Remove an existing filter using $key.

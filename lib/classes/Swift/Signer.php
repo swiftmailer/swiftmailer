@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Base Class of Signer Infrastructure.
  *
  * @author Xavier De Cock <xdecock@gmail.com>
  */
-interface Swift_Signer
+interface Signer
 {
     public function reset();
 }

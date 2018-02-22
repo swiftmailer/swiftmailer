@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Mime\SimpleMessage;
+use Swift\Events\EventListener;
+
 /**
  * Swift Mailer class.
  *
  * @author Chris Corbyn
  */
-class Swift_Mailer
+class Mailer
 {
     /** The Transport used to send messages */
     private $transport;
@@ -21,7 +26,7 @@ class Swift_Mailer
     /**
      * Create a new Mailer using $transport for delivery.
      */
-    public function __construct(Swift_Transport $transport)
+    public function __construct(Transport $transport)
     {
         $this->transport = $transport;
     }
@@ -37,7 +42,7 @@ class Swift_Mailer
      */
     public function createMessage($service = 'message')
     {
-        return Swift_DependencyContainer::getInstance()
+        return DependencyContainer::getInstance()
             ->lookup('message.'.$service);
     }
 
@@ -56,7 +61,7 @@ class Swift_Mailer
      *
      * @return int The number of successful recipients. Can be 0 which indicates failure
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(SimpleMessage $message, &$failedRecipients = null)
     {
         $failedRecipients = (array) $failedRecipients;
 
@@ -68,7 +73,7 @@ class Swift_Mailer
 
         try {
             $sent = $this->transport->send($message, $failedRecipients);
-        } catch (Swift_RfcComplianceException $e) {
+        } catch (RfcComplianceException $e) {
             foreach ($message->getTo() as $address => $name) {
                 $failedRecipients[] = $address;
             }
@@ -80,7 +85,7 @@ class Swift_Mailer
     /**
      * Register a plugin using a known unique key (e.g. myPlugin).
      */
-    public function registerPlugin(Swift_Events_EventListener $plugin)
+    public function registerPlugin(EventListener $plugin)
     {
         $this->transport->registerPlugin($plugin);
     }
@@ -88,7 +93,7 @@ class Swift_Mailer
     /**
      * The Transport used to send messages.
      *
-     * @return Swift_Transport
+     * @return \Swift\Transport
      */
     public function getTransport()
     {

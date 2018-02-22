@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Base class for Spools (implements time and message limits).
  *
  * @author Fabien Potencier
  */
-abstract class Swift_ConfigurableSpool implements Swift_Spool
+abstract class ConfigurableSpool implements Spool
 {
     /** The maximum number of messages to send per flush */
     private $message_limit;

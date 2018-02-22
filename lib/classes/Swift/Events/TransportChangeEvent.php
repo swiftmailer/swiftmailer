@@ -8,17 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
 /**
  * Generated when the state of a Transport is changed (i.e. stopped/started).
  *
  * @author Chris Corbyn
  */
-class Swift_Events_TransportChangeEvent extends Swift_Events_EventObject
+class TransportChangeEvent extends EventObject
 {
     /**
      * Get the Transport.
      *
-     * @return Swift_Transport
+     * @return \Swift\Transport
      */
     public function getTransport()
     {

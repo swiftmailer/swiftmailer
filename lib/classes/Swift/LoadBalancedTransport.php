@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Transport\LoadBalancedTransport as BaseLoadBalancedTransport;
+
 /**
  * Redundantly and rotationally uses several Transport implementations when sending.
  *
  * @author Chris Corbyn
  */
-class Swift_LoadBalancedTransport extends Swift_Transport_LoadBalancedTransport
+class LoadBalancedTransport extends BaseLoadBalancedTransport
 {
     /**
      * Creates a new LoadBalancedTransport with $transports.
@@ -23,8 +27,8 @@ class Swift_LoadBalancedTransport extends Swift_Transport_LoadBalancedTransport
     public function __construct($transports = [])
     {
         call_user_func_array(
-            [$this, 'Swift_Transport_LoadBalancedTransport::__construct'],
-            Swift_DependencyContainer::getInstance()
+            [$this, '\\Swift\\Transport\\LoadBalancedTransport::__construct'],
+            DependencyContainer::getInstance()
                 ->createDependenciesFor('transport.loadbalanced')
             );
 

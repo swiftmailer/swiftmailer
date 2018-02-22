@@ -8,11 +8,13 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
 /**
  * An identity interface which all EventListeners must extend.
  *
  * @author Chris Corbyn
  */
-interface Swift_Events_EventListener
+interface EventListener
 {
 }

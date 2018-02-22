@@ -8,21 +8,26 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Signers;
+
+use Swift\Signer;
+use Swift\Message;
+
 /**
  * Body Signer Interface used to apply Body-Based Signature to a message.
  *
  * @author Xavier De Cock <xdecock@gmail.com>
  */
-interface Swift_Signers_BodySigner extends Swift_Signer
+interface BodySigner extends Signer
 {
     /**
-     * Change the Swift_Signed_Message to apply the singing.
+     * Change the \Swift\Signed\Message to apply the singing.
      *
-     * @param Swift_Message $message
+     * @param \Swift\Message $message
      *
      * @return self
      */
-    public function signMessage(Swift_Message $message);
+    public function signMessage(Message $message);
 
     /**
      * Return the list of header a signer might tamper.

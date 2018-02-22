@@ -8,17 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Email address encoder.
  *
  * @author Christian Schmidt
  */
-interface Swift_AddressEncoder
+interface AddressEncoder
 {
     /**
      * Encodes an email address.
      *
-     * @throws Swift_AddressEncoderException If the email cannot be represented in
+     * @throws \Swift\AddressEncoderException If the email cannot be represented in
      *                                       the encoding implemented by this class.
      */
     public function encodeString(string $address): string;

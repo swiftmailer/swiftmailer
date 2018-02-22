@@ -8,13 +8,15 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * AddressEncoderException when the specified email address is in a format that
  * cannot be encoded by a given address encoder.
  *
  * @author Christian Schmidt
  */
-class Swift_AddressEncoderException extends Swift_RfcComplianceException
+class AddressEncoderException extends RfcComplianceException
 {
     protected $address;
 

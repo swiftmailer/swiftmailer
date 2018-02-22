@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mailer;
+
 /**
  * Wraps a standard PHP array in an iterator.
  *
  * @author Chris Corbyn
  */
-class Swift_Mailer_ArrayRecipientIterator implements Swift_Mailer_RecipientIterator
+class ArrayRecipientIterator implements RecipientIterator
 {
     /**
      * The list of recipients.

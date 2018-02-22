@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * An abstract means of reading and writing data in terms of characters as opposed
  * to bytes.
@@ -17,7 +19,7 @@
  *
  * @author Chris Corbyn
  */
-interface Swift_CharacterStream
+interface CharacterStream
 {
     /**
      * Set the character set used in this CharacterStream.
@@ -29,16 +31,16 @@ interface Swift_CharacterStream
     /**
      * Set the CharacterReaderFactory for multi charset support.
      *
-     * @param Swift_CharacterReaderFactory $factory
+     * @param CharacterReaderFactory $factory
      */
-    public function setCharacterReaderFactory(Swift_CharacterReaderFactory $factory);
+    public function setCharacterReaderFactory(CharacterReaderFactory $factory);
 
     /**
      * Overwrite this character stream using the byte sequence in the byte stream.
      *
-     * @param Swift_OutputByteStream $os output stream to read from
+     * @param OutputByteStream $os output stream to read from
      */
-    public function importByteStream(Swift_OutputByteStream $os);
+    public function importByteStream(OutputByteStream $os);
 
     /**
      * Import a string a bytes into this CharacterStream, overwriting any existing

@@ -8,19 +8,23 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\ByteStream\FileByteStream;
+
 /**
  * An image, embedded in a multipart message.
  *
  * @author Chris Corbyn
  */
-class Swift_Image extends Swift_EmbeddedFile
+class Image extends EmbeddedFile
 {
     /**
      * Create a new EmbeddedFile.
      *
      * Details may be optionally provided to the constructor.
      *
-     * @param string|Swift_OutputByteStream $data
+     * @param string|\Swift\OutputByteStream $data
      * @param string                        $filename
      * @param string                        $contentType
      */
@@ -38,6 +42,6 @@ class Swift_Image extends Swift_EmbeddedFile
      */
     public static function fromPath($path)
     {
-        return (new self())->setFile(new Swift_ByteStream_FileByteStream($path));
+        return (new self())->setFile(new FileByteStream($path));
     }
 }

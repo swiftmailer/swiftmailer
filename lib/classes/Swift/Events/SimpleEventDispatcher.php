@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
+use Swift\Transport;
+use Swift\Mime\SimpleMessage;
+use Swift\TransportException;
+
 /**
  * The EventDispatcher which handles the event dispatching layer.
  *
  * @author Chris Corbyn
  */
-class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
+class SimpleEventDispatcher implements EventDispatcher
 {
     /** A map of event types to their associated listener types */
     private $eventMap = [];
@@ -30,22 +36,22 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
     public function __construct()
     {
         $this->eventMap = [
-            'Swift_Events_CommandEvent' => 'Swift_Events_CommandListener',
-            'Swift_Events_ResponseEvent' => 'Swift_Events_ResponseListener',
-            'Swift_Events_SendEvent' => 'Swift_Events_SendListener',
-            'Swift_Events_TransportChangeEvent' => 'Swift_Events_TransportChangeListener',
-            'Swift_Events_TransportExceptionEvent' => 'Swift_Events_TransportExceptionListener',
-            ];
+            CommandEvent::class => CommandListener::class,
+            ResponseEvent::class => ResponseListener::class,
+            SendEvent::class => SendListener::class,
+            TransportChangeEvent::class => TransportChangeListener::class,
+            TransportExceptionEvent::class => TransportExceptionListener::class,
+        ];
     }
 
     /**
      * Create a new SendEvent for $source and $message.
      *
-     * @return Swift_Events_SendEvent
+     * @return \Swift\Events\SendEvent
      */
-    public function createSendEvent(Swift_Transport $source, Swift_Mime_SimpleMessage $message)
+    public function createSendEvent(Transport $source, SimpleMessage $message)
     {
-        return new Swift_Events_SendEvent($source, $message);
+        return new SendEvent($source, $message);
     }
 
     /**
@@ -54,11 +60,11 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
      * @param string $command      That will be executed
      * @param array  $successCodes That are needed
      *
-     * @return Swift_Events_CommandEvent
+     * @return \Swift\Events\CommandEvent
      */
-    public function createCommandEvent(Swift_Transport $source, $command, $successCodes = [])
+    public function createCommandEvent(Transport $source, $command, $successCodes = [])
     {
-        return new Swift_Events_CommandEvent($source, $command, $successCodes);
+        return new CommandEvent($source, $command, $successCodes);
     }
 
     /**
@@ -67,37 +73,37 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
      * @param string $response
      * @param bool   $valid    If the response is valid
      *
-     * @return Swift_Events_ResponseEvent
+     * @return \Swift\Events\ResponseEvent
      */
-    public function createResponseEvent(Swift_Transport $source, $response, $valid)
+    public function createResponseEvent(Transport $source, $response, $valid)
     {
-        return new Swift_Events_ResponseEvent($source, $response, $valid);
+        return new ResponseEvent($source, $response, $valid);
     }
 
     /**
      * Create a new TransportChangeEvent for $source.
      *
-     * @return Swift_Events_TransportChangeEvent
+     * @return \Swift\Events\TransportChangeEvent
      */
-    public function createTransportChangeEvent(Swift_Transport $source)
+    public function createTransportChangeEvent(Transport $source)
     {
-        return new Swift_Events_TransportChangeEvent($source);
+        return new TransportChangeEvent($source);
     }
 
     /**
      * Create a new TransportExceptionEvent for $source.
      *
-     * @return Swift_Events_TransportExceptionEvent
+     * @return \Swift\Events\TransportExceptionEvent
      */
-    public function createTransportExceptionEvent(Swift_Transport $source, Swift_TransportException $ex)
+    public function createTransportExceptionEvent(Transport $source, TransportException $ex)
     {
-        return new Swift_Events_TransportExceptionEvent($source, $ex);
+        return new TransportExceptionEvent($source, $ex);
     }
 
     /**
      * Bind an event listener to this dispatcher.
      */
-    public function bindEventListener(Swift_Events_EventListener $listener)
+    public function bindEventListener(EventListener $listener)
     {
         foreach ($this->listeners as $l) {
             // Already loaded
@@ -113,14 +119,14 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
      *
      * @param string $target method
      */
-    public function dispatchEvent(Swift_Events_EventObject $evt, $target)
+    public function dispatchEvent(EventObject $evt, $target)
     {
         $this->prepareBubbleQueue($evt);
         $this->bubble($evt, $target);
     }
 
     /** Queue listeners on a stack ready for $evt to be bubbled up it */
-    private function prepareBubbleQueue(Swift_Events_EventObject $evt)
+    private function prepareBubbleQueue(EventObject $evt)
     {
         $this->bubbleQueue = [];
         $evtClass = get_class($evt);
@@ -133,7 +139,7 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
     }
 
     /** Bubble $evt up the stack calling $target() on each listener */
-    private function bubble(Swift_Events_EventObject $evt, $target)
+    private function bubble(EventObject $evt, $target)
     {
         if (!$evt->bubbleCancelled() && $listener = array_shift($this->bubbleQueue)) {
             $listener->$target($evt);

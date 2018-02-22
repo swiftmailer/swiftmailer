@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\CharacterStream;
+
+use Swift\CharacterStream as CharacterStreamInterface;
+use Swift\CharacterReaderFactory;
+use Swift\OutputByteStream;
+
 /**
  * A CharacterStream implementation which stores characters in an internal array.
  *
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
-class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
+class NgCharacterStream implements CharacterStreamInterface
 {
     /**
      * The char reader (lazy-loaded) for the current charset.
@@ -83,7 +89,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
      *
      * @param string $charset
      */
-    public function __construct(Swift_CharacterReaderFactory $factory, $charset)
+    public function __construct(CharacterReaderFactory $factory, $charset)
     {
         $this->setCharacterReaderFactory($factory);
         $this->setCharacterSet($charset);
@@ -106,7 +112,7 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /**
      * Set the CharacterReaderFactory for multi charset support.
      */
-    public function setCharacterReaderFactory(Swift_CharacterReaderFactory $factory)
+    public function setCharacterReaderFactory(CharacterReaderFactory $factory)
     {
         $this->charReaderFactory = $factory;
     }
@@ -124,9 +130,9 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     }
 
     /**
-     * @see Swift_CharacterStream::importByteStream()
+     * @see CharacterStream::importByteStream()
      */
-    public function importByteStream(Swift_OutputByteStream $os)
+    public function importByteStream(OutputByteStream $os)
     {
         $this->flushContents();
         $blocks = 512;

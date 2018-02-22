@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\KeyCache;
+
+use Swift\SwiftException;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+
 /**
  * A basic KeyCache backed by an array.
  *
  * @author Chris Corbyn
  */
-class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
+class ArrayKeyCache implements KeyCache
 {
     /**
      * Cache contents.
@@ -25,7 +31,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
     /**
      * An InputStream for cloning.
      *
-     * @var Swift_KeyCache_KeyCacheInputStream
+     * @var \Swift\KeyCache\KeyCacheInputStream
      */
     private $stream;
 
@@ -33,7 +39,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      * Create a new ArrayKeyCache with the given $stream for cloning to make
      * InputByteStreams.
      */
-    public function __construct(Swift_KeyCache_KeyCacheInputStream $stream)
+    public function __construct(KeyCacheInputStream $stream)
     {
         $this->stream = $stream;
     }
@@ -62,7 +68,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
                 $this->contents[$nsKey][$itemKey] .= $string;
                 break;
             default:
-                throw new Swift_SwiftException(
+                throw new SwiftException(
                     'Invalid mode ['.$mode.'] used to set nsKey='.
                     $nsKey.', itemKey='.$itemKey
                     );
@@ -78,7 +84,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      * @param string $itemKey
      * @param int    $mode
      */
-    public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os, $mode)
+    public function importFromByteStream($nsKey, $itemKey, OutputByteStream $os, $mode)
     {
         $this->prepareCache($nsKey);
         switch ($mode) {
@@ -94,7 +100,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
                 }
                 break;
             default:
-                throw new Swift_SwiftException(
+                throw new SwiftException(
                     'Invalid mode ['.$mode.'] used to set nsKey='.
                     $nsKey.', itemKey='.$itemKey
                     );
@@ -111,7 +117,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      *
      * @return Swift_InputByteStream
      */
-    public function getInputByteStream($nsKey, $itemKey, Swift_InputByteStream $writeThrough = null)
+    public function getInputByteStream($nsKey, $itemKey, InputByteStream $writeThrough = null)
     {
         $is = clone $this->stream;
         $is->setKeyCache($this);
@@ -145,9 +151,9 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      *
      * @param string                $nsKey
      * @param string                $itemKey
-     * @param Swift_InputByteStream $is      to write the data to
+     * @param \Swift\InputByteStream $is      to write the data to
      */
-    public function exportToByteStream($nsKey, $itemKey, Swift_InputByteStream $is)
+    public function exportToByteStream($nsKey, $itemKey, InputByteStream $is)
     {
         $this->prepareCache($nsKey);
         $is->write($this->getString($nsKey, $itemKey));

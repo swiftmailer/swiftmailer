@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Signers;
+
+use Swift\Signer;
+use Swift\InputByteStream;
+use Swift\Mime\SimpleHeaderSet;
+
 /**
  * Header Signer Interface used to apply Header-Based Signature to a message.
  *
  * @author Xavier De Cock <xdecock@gmail.com>
  */
-interface Swift_Signers_HeaderSigner extends Swift_Signer, Swift_InputByteStream
+interface HeaderSigner extends Signer, InputByteStream
 {
     /**
      * Exclude an header from the signed headers.
@@ -41,20 +47,20 @@ interface Swift_Signers_HeaderSigner extends Swift_Signer, Swift_InputByteStream
     /**
      * Give the headers already given.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headers
+     * @param \Swift\Mime\SimpleHeaderSet $headers
      *
      * @return self
      */
-    public function setHeaders(Swift_Mime_SimpleHeaderSet $headers);
+    public function setHeaders(SimpleHeaderSet $headers);
 
     /**
      * Add the header(s) to the headerSet.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headers
+     * @param \Swift\Mime\SimpleHeaderSet $headers
      *
      * @return self
      */
-    public function addSignature(Swift_Mime_SimpleHeaderSet $headers);
+    public function addSignature(SimpleHeaderSet $headers);
 
     /**
      * Return the list of header a signer might tamper.

@@ -8,12 +8,20 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Signers;
+
+use Swift\Signer;
+use Swift\Message;
+use Swift\InputByteStream;
+use Swift\SwiftException;
+use Swift\Mime\SimpleHeaderSet;
+
 /**
  * DKIM Signer used to apply DKIM Signature to a message.
  *
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
-class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
+class DKIMSigner implements HeaderSigner
 {
     /**
      * PrivateKey.
@@ -213,7 +221,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @return int
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      */
     // TODO fix return
     public function write($bytes)
@@ -240,7 +248,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
      */
-    public function bind(Swift_InputByteStream $is)
+    public function bind(InputByteStream $is)
     {
         // Don't have to mirror anything
         $this->bound[] = $is;
@@ -255,7 +263,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
      */
-    public function unbind(Swift_InputByteStream $is)
+    public function unbind(InputByteStream $is)
     {
         // Don't have to mirror anything
         foreach ($this->bound as $k => $stream) {
@@ -271,7 +279,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * Flush the contents of the stream (empty it) and set the internal pointer
      * to the beginning.
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      */
     public function flushBuffers()
     {
@@ -283,7 +291,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param string $hash 'rsa-sha1' or 'rsa-sha256'
      *
-     * @throws Swift_SwiftException
+     * @throws \Swift\SwiftException
      *
      * @return $this
      */
@@ -296,11 +304,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
             case 'rsa-sha256':
                 $this->hashAlgorithm = 'rsa-sha256';
                 if (!defined('OPENSSL_ALGO_SHA256')) {
-                    throw new Swift_SwiftException('Unable to set sha256 as it is not supported by OpenSSL.');
+                    throw new SwiftException('Unable to set sha256 as it is not supported by OpenSSL.');
                 }
                 break;
             default:
-                throw new Swift_SwiftException('Unable to set the hash algorithm, must be one of rsa-sha1 or rsa-sha256 (%s given).', $hash);
+                throw new SwiftException('Unable to set the hash algorithm, must be one of rsa-sha1 or rsa-sha256 (%s given).', $hash);
         }
 
         return $this;
@@ -412,7 +420,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param bool $debug
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return \Swift\Signers\DKIMSigner
      */
     public function setDebugHeaders($debug)
     {
@@ -465,7 +473,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      *
      * @param string $header_name
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return \Swift\Signers\DKIMSigner
      */
     public function ignoreHeader($header_name)
     {
@@ -477,9 +485,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Set the headers to sign.
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return \Swift\Signers\DKIMSigner
      */
-    public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
+    public function setHeaders(SimpleHeaderSet $headers)
     {
         $this->headerCanonData = '';
         // Loop through Headers
@@ -505,9 +513,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * Add the signature to the given Headers.
      *
-     * @return Swift_Signers_DKIMSigner
+     * @return \Swift\Signers\DKIMSigner
      */
-    public function addSignature(Swift_Mime_SimpleHeaderSet $headers)
+    public function addSignature(SimpleHeaderSet $headers)
     {
         // Prepare the DKIM-Signature
         $params = ['v' => '1', 'a' => $this->hashAlgorithm, 'bh' => base64_encode($this->bodyHash), 'd' => $this->domainName, 'h' => implode(': ', $this->signedHeaders), 'i' => $this->signerIdentity, 's' => $this->selector];
@@ -655,7 +663,7 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * @throws Swift_SwiftException
+     * @throws \Swift\SwiftException
      *
      * @return string
      */
@@ -672,11 +680,11 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         }
         $pkeyId = openssl_get_privatekey($this->privateKey, $this->passphrase);
         if (!$pkeyId) {
-            throw new Swift_SwiftException('Unable to load DKIM Private Key ['.openssl_error_string().']');
+            throw new SwiftException('Unable to load DKIM Private Key ['.openssl_error_string().']');
         }
         if (openssl_sign($this->headerCanonData, $signature, $pkeyId, $algorithm)) {
             return $signature;
         }
-        throw new Swift_SwiftException('Unable to sign DKIM Hash ['.openssl_error_string().']');
+        throw new SwiftException('Unable to sign DKIM Hash ['.openssl_error_string().']');
     }
 }

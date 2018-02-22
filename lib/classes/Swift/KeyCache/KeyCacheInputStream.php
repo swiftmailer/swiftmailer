@@ -8,19 +8,24 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\KeyCache;
+
+use Swift\InputByteStream;
+use Swift\KeyCache as KeyCacheInterface;
+
 /**
  * Writes data to a KeyCache using a stream.
  *
  * @author Chris Corbyn
  */
-interface Swift_KeyCache_KeyCacheInputStream extends Swift_InputByteStream
+interface KeyCacheInputStream extends InputByteStream
 {
     /**
      * Set the KeyCache to wrap.
      *
-     * @param Swift_KeyCache $keyCache
+     * @param \Swift\KeyCache $keyCache
      */
-    public function setKeyCache(Swift_KeyCache $keyCache);
+    public function setKeyCache(KeyCacheInterface $keyCache);
 
     /**
      * Set the nsKey which will be written to.
@@ -39,9 +44,9 @@ interface Swift_KeyCache_KeyCacheInputStream extends Swift_InputByteStream
     /**
      * Specify a stream to write through for each write().
      *
-     * @param Swift_InputByteStream $is
+     * @param \Swift\InputByteStream $is
      */
-    public function setWriteThroughStream(Swift_InputByteStream $is);
+    public function setWriteThroughStream(InputByteStream $is);
 
     /**
      * Any implementation should be cloneable, allowing the clone to access a

@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Transport\SendmailTransport as BaseSendmailTransport;
+
 /**
  * SendmailTransport for sending mail through a Sendmail/Postfix (etc..) binary.
  *
  * @author Chris Corbyn
  */
-class Swift_SendmailTransport extends Swift_Transport_SendmailTransport
+class SendmailTransport extends BaseSendmailTransport
 {
     /**
      * Create a new SendmailTransport, optionally using $command for sending.
@@ -23,8 +27,8 @@ class Swift_SendmailTransport extends Swift_Transport_SendmailTransport
     public function __construct($command = '/usr/sbin/sendmail -bs')
     {
         call_user_func_array(
-            [$this, 'Swift_Transport_SendmailTransport::__construct'],
-            Swift_DependencyContainer::getInstance()
+            [$this, '\\Swift\\Transport\\SendmailTransport::__construct'],
+            DependencyContainer::getInstance()
                 ->createDependenciesFor('transport.sendmail')
             );
 

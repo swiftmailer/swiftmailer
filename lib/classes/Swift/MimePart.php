@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Mime\MimePart as BaseMimePart;
+
 /**
  * A MIME part, in a multipart message.
  *
  * @author Chris Corbyn
  */
-class Swift_MimePart extends Swift_Mime_MimePart
+class MimePart extends BaseMimePart
 {
     /**
      * Create a new MimePart.
@@ -27,13 +31,13 @@ class Swift_MimePart extends Swift_Mime_MimePart
     public function __construct($body = null, $contentType = null, $charset = null)
     {
         call_user_func_array(
-            [$this, 'Swift_Mime_MimePart::__construct'],
-            Swift_DependencyContainer::getInstance()
+            [$this, '\\Swift\\Mime\\MimePart::__construct'],
+            DependencyContainer::getInstance()
                 ->createDependenciesFor('mime.part')
             );
 
         if (!isset($charset)) {
-            $charset = Swift_DependencyContainer::getInstance()
+            $charset = DependencyContainer::getInstance()
                 ->lookup('properties.charset');
         }
         $this->setBody($body);
