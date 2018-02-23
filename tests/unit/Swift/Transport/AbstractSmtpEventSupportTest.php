@@ -25,9 +25,9 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $smtp = $this->getTransport($buf, $dispatcher);
         $evt = $this->getMockery('Swift_Events_SendEvent')->shouldIgnoreMissing();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['chris@swiftmailer.org' => null]);
+                ->andReturn('chris@swiftmailer.org');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['mark@swiftmailer.org' => 'Mark']);
@@ -56,9 +56,9 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $smtp = $this->getTransport($buf, $dispatcher);
         $evt = $this->getMockery('Swift_Events_SendEvent')->shouldIgnoreMissing();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['chris@swiftmailer.org' => null]);
+                ->andReturn('chris@swiftmailer.org');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['mark@swiftmailer.org' => 'Mark']);
@@ -87,9 +87,9 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $smtp = $this->getTransport($buf, $dispatcher);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['chris@swiftmailer.org' => null]);
+                ->andReturn('chris@swiftmailer.org');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['mark@swiftmailer.org' => 'Mark']);
@@ -138,9 +138,9 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $smtp = $this->getTransport($buf, $dispatcher);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['chris@swiftmailer.org' => null]);
+                ->andReturn('chris@swiftmailer.org');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['mark@swiftmailer.org' => 'Mark']);
@@ -189,9 +189,9 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $smtp = $this->getTransport($buf, $dispatcher);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['chris@swiftmailer.org' => null]);
+                ->andReturn('chris@swiftmailer.org');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn([
@@ -243,9 +243,9 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $smtp = $this->getTransport($buf, $dispatcher);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['chris@swiftmailer.org' => null]);
+                ->andReturn('chris@swiftmailer.org');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn([
@@ -281,9 +281,9 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $smtp = $this->getTransport($buf, $dispatcher);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['chris@swiftmailer.org' => null]);
+                ->andReturn('chris@swiftmailer.org');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['mark@swiftmailer.org' => 'Mark']);

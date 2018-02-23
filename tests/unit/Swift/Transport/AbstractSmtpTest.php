@@ -224,9 +224,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf = $this->getBuffer();
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -256,9 +256,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -278,67 +278,6 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             $this->fail('MAIL FROM should accept a 250 response');
         } catch (Swift_TransportException $e) {
         }
-    }
-
-    public function testSenderIsPreferredOverFrom()
-    {
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
-        $message = $this->createMessage();
-
-        $message->shouldReceive('getFrom')
-                ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
-        $message->shouldReceive('getSender')
-                ->once()
-                ->andReturn(['another@domain.com' => 'Someone']);
-        $message->shouldReceive('getTo')
-                ->once()
-                ->andReturn(['foo@bar' => null]);
-        $buf->shouldReceive('write')
-            ->once()
-            ->with("MAIL FROM:<another@domain.com>\r\n")
-            ->andReturn(1);
-        $buf->shouldReceive('readLine')
-            ->once()
-            ->with(1)
-            ->andReturn('250 OK'."\r\n");
-
-        $this->finishBuffer($buf);
-        $smtp->start();
-        $smtp->send($message);
-    }
-
-    public function testReturnPathIsPreferredOverSender()
-    {
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
-        $message = $this->createMessage();
-
-        $message->shouldReceive('getFrom')
-                ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
-        $message->shouldReceive('getSender')
-                ->once()
-                ->andReturn(['another@domain.com' => 'Someone']);
-        $message->shouldReceive('getReturnPath')
-                ->once()
-                ->andReturn('more@domain.com');
-        $message->shouldReceive('getTo')
-                ->once()
-                ->andReturn(['foo@bar' => null]);
-        $buf->shouldReceive('write')
-            ->once()
-            ->with("MAIL FROM:<more@domain.com>\r\n")
-            ->andReturn(1);
-        $buf->shouldReceive('readLine')
-            ->once()
-            ->with(1)
-            ->andReturn('250 OK'."\r\n");
-
-        $this->finishBuffer($buf);
-        $smtp->start();
-        $smtp->send($message);
     }
 
     public function testSuccessfulRcptCommandWith250Response()
@@ -395,9 +334,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -433,9 +372,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@dömain.com' => 'Me']);
+                ->andReturn('me@dömain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bär' => null]);
@@ -463,9 +402,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf, null, new Swift_AddressEncoder_Utf8AddressEncoder());
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['më@dömain.com' => 'Me']);
+                ->andReturn('më@dömain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['föö@bär' => null]);
@@ -493,9 +432,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['më@domain.com' => 'Me']);
+                ->andReturn('më@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -516,9 +455,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -553,9 +492,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn([
@@ -600,9 +539,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -648,9 +587,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -712,9 +651,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -778,9 +717,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -808,9 +747,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -838,9 +777,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -872,9 +811,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->once()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->once()
                 ->andReturn(['foo@bar' => null]);
@@ -926,9 +865,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf = $this->getBuffer();
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);
@@ -955,9 +894,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);
@@ -1021,9 +960,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);
@@ -1179,9 +1118,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);
@@ -1243,9 +1182,9 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         $buf = $this->getBuffer();
         $smtp = $this->getTransport($buf);
         $message = $this->createMessage();
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);

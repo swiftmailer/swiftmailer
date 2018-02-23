@@ -639,6 +639,42 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $message->setBcc('bcc@domain', 'Name');
     }
 
+    public function testReversePathReturnsFrom()
+    {
+        $from = $this->createHeader('From', ['me@domain.com' => 'Me']);
+
+        $message = $this->createMessage(
+            $this->createHeaderSet(['From' => $from]),
+            $this->createEncoder(), $this->createCache()
+            );
+        $this->assertEquals('me@domain.com', $message->getReversePath());
+    }
+
+    public function testSenderIsPreferredOverFrom()
+    {
+        $from = $this->createHeader('From', ['me@domain.com' => 'Me']);
+        $sender = $this->createHeader('Sender', ['another@domain.com' => 'Someone']);
+
+        $message = $this->createMessage(
+            $this->createHeaderSet(['From' => $from, 'Sender' => $sender]),
+            $this->createEncoder(), $this->createCache()
+            );
+        $this->assertEquals('another@domain.com', $message->getReversePath());
+    }
+
+    public function testReturnPathIsPreferredOverSender()
+    {
+        $from = $this->createHeader('From', ['me@domain.com' => 'Me']);
+        $sender = $this->createHeader('Sender', ['another@domain.com' => 'Someone']);
+        $returnPath = $this->createHeader('Return-Path', 'more@domain.com');
+
+        $message = $this->createMessage(
+            $this->createHeaderSet(['From' => $from, 'Sender' => $sender, 'Return-Path' => $returnPath]),
+            $this->createEncoder(), $this->createCache()
+            );
+        $this->assertEquals('more@domain.com', $message->getReversePath());
+    }
+
     public function testPriorityIsReadFromHeader()
     {
         $prio = $this->createHeader('X-Priority', '2 (High)');

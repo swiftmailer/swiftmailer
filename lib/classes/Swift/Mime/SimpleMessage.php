@@ -441,6 +441,35 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     }
 
     /**
+     * Get the reverse path for this message.
+     *
+     * @return string
+     */
+    public function getReversePath()
+    {
+        $returnPath = $this->getReturnPath();
+        if ($returnPath) {
+            return $returnPath;
+        }
+
+        $sender = $this->getSender();
+        if ($sender) {
+            // Don't use array_keys
+            reset($sender); // Reset Pointer to first pos
+            return key($sender); // Get key
+        }
+
+        $from = $this->getFrom();
+        if ($from) {
+            // Don't use array_keys
+            reset($from); // Reset Pointer to first pos
+            return key($from); // Get key
+        }
+
+        return null;
+    }
+
+    /**
      * Set the priority of this message.
      *
      * The value is an integer where 1 is the highest priority and 5 is the lowest.

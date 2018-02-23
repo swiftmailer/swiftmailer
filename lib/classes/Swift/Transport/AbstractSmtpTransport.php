@@ -191,7 +191,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
             }
         }
 
-        if (!$reversePath = $this->getReversePath($message)) {
+        if (!$reversePath = $message->getReversePath()) {
             $this->throwException(new Swift_TransportException('Cannot send message without a sender address'));
         }
 
@@ -402,27 +402,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
         $this->buffer->setWriteTranslations([]);
         $this->executeCommand("\r\n.\r\n", [250]);
-    }
-
-    /** Determine the best-use reverse path for this message */
-    protected function getReversePath(Swift_Mime_SimpleMessage $message)
-    {
-        $return = $message->getReturnPath();
-        $sender = $message->getSender();
-        $from = $message->getFrom();
-        $path = null;
-        if (!empty($return)) {
-            $path = $return;
-        } elseif (!empty($sender)) {
-            // Don't use array_keys
-            reset($sender); // Reset Pointer to first pos
-            $path = key($sender); // Get key
-        } elseif (!empty($from)) {
-            reset($from); // Reset Pointer to first pos
-            $path = key($from); // Get key
-        }
-
-        return $path;
     }
 
     /** Throw a TransportException, first sending it to any listeners */

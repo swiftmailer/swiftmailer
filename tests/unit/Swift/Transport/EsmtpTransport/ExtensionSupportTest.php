@@ -147,9 +147,9 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain' => 'Me']);
+                ->andReturn('me@domain');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);
@@ -249,9 +249,9 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
         $ext3 = $this->getMockery('Swift_Transport_EsmtpHandler')->shouldIgnoreMissing();
         $message = $this->createMessage();
 
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain' => 'Me']);
+                ->andReturn('me@domain');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);
