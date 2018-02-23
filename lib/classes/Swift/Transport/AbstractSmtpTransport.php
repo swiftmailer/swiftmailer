@@ -177,11 +177,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      */
     public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
-        if (!$this->isStarted()) {
-            $this->start();
-        }
-
-        $sent = 0;
         $failedRecipients = (array) $failedRecipients;
 
         if ($evt = $this->eventDispatcher->createSendEvent($this, $message)) {
@@ -200,17 +195,12 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         $tos = array_merge($to, $cc);
         $bcc = (array) $message->getBcc();
 
-        $message->setBcc([]);
+        $sent = $this->sendCopy($message, $reversePath, $tos, $bcc, $failedRecipients);
 
-        try {
-            $sent += $this->sendTo($message, $reversePath, $tos, $failedRecipients);
-            $sent += $this->sendBcc($message, $reversePath, $bcc, $failedRecipients);
-        } finally {
-            $message->setBcc($bcc);
-        }
+        $message->generateId(); //Make sure a new Message ID is used
 
         if ($evt) {
-            if ($sent == count($to) + count($cc) + count($bcc)) {
+            if ($sent == count($tos) + count($bcc)) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
             } elseif ($sent > 0) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_TENTATIVE);
@@ -221,7 +211,34 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
             $this->eventDispatcher->dispatchEvent($evt, 'sendPerformed');
         }
 
-        $message->generateId(); //Make sure a new Message ID is used
+        return $sent;
+    }
+
+    /**
+     * Send a copy of the given Message.
+     *
+     * The return value is the number of recipients who were accepted for delivery.
+     *
+     * @param string[] $failedRecipients An array of failures by-reference
+     *
+     * @return int
+     */
+    public function sendCopy(Swift_Mime_SimpleMessage $message, string $reversePath, array $tos, array $bcc, array &$failedRecipients = null)
+    {
+        $sent = 0;
+        $failedRecipients = (array) $failedRecipients;
+
+        $message->setBcc([]);
+
+        try {
+            $sent += $this->sendTo($message, $reversePath, $tos, $failedRecipients);
+            $sent += $this->sendBcc($message, $reversePath, $bcc, $failedRecipients);
+        } catch (Exception $e) {
+            $message->setBcc($bcc);
+            throw $e;
+        }
+
+        $message->setBcc($bcc);
 
         return $sent;
     }
