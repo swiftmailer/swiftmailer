@@ -116,8 +116,6 @@ class Swift_Transport_DirectEsmtpTransport implements Swift_Transport
 
     protected function sendGroup(Swift_Mime_SimpleMessage $message, string $reversePath, array $group, array &$failedRecipients)
     {
-        $sent = 0;
-
         foreach ($group['hosts'] as $host) {
             $transport = $this->getEsmtpTransport($host);
             try {
@@ -134,10 +132,9 @@ class Swift_Transport_DirectEsmtpTransport implements Swift_Transport
             }
         }
 
-        $this->throwException(new Swift_TransportException(
-            'Error sending to domains '.implode(', ', $group['domains'])
-            )
-        );
+        $failedRecipients = array_merge($failedRecipients, $group['tos'], $group['bcc']);
+
+        return 0;
     }
 
     /**
@@ -148,15 +145,23 @@ class Swift_Transport_DirectEsmtpTransport implements Swift_Transport
         $this->eventDispatcher->bindEventListener($plugin);
     }
 
+    /**
+     * @return array Array of MX hostnames, sorted by priority.
+     */
     protected function getMxHosts(string $domain): array
     {
-        if (!getmxrr($domain, $hosts, $weights)) {
+        if (!$this->getmxrr($domain, $hosts, $weights)) {
             $hosts = [$domain];
             $weights = [0];
         }
         array_multisort($weights, SORT_NUMERIC, $hosts, SORT_STRING);
 
         return $hosts;
+    }
+
+    protected function getmxrr(string $domain, &$hosts, &$weights): bool
+    {
+        return getmxrr($domain, $hosts, $weights);
     }
 
     protected function groupRecipientsByMxHosts(array $tos, array $bcc): array
@@ -180,15 +185,10 @@ class Swift_Transport_DirectEsmtpTransport implements Swift_Transport
                         'tos' => [],
                         'bcc' => [],
                         'hosts' => $hostsByDomain[$domain],
-                        'domains' => [$domain],
                     ];
                 }
 
                 $groups[$key][$type][$address] = $name;
-
-                if (!in_array($domain, $groups[$key]['domains'])) {
-                    $groups[$key]['domains'][] = $domain;
-                }
             }
         }
 

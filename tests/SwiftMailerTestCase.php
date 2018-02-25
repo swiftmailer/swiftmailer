@@ -31,8 +31,8 @@ class SwiftMailerTestCase extends \PHPUnit\Framework\TestCase
         \Mockery::close();
     }
 
-    protected function getMockery($class)
+    protected function getMockery($class, ...$args)
     {
-        return \Mockery::mock($class);
+        return \Mockery::mock($class, ...$args);
     }
 }
