@@ -52,6 +52,10 @@ types of Transport in Swift Mailer, all of which implement the
   Supports Encryption. Very portable; Pleasingly predictable results; Provides
   good feedback;
 
+* ``Swift_DirectSmtpTransport``: Sends messages over SMTP directly to the
+  recipient's inbound mail server. No local mail server required; Instant
+  feedback on delivery errors; Fails if remote mail server is temporarily down.
+
 * ``Swift_SendmailTransport``: Communicates with a locally installed
   ``sendmail`` executable (Linux/UNIX). Quick time-to-run; Provides
   less-accurate feedback than SMTP; Requires ``sendmail`` installation;
@@ -179,6 +183,27 @@ be thrown.
     If you need to know early whether or not authentication has failed and an
     Exception is going to be thrown, call the ``start()`` method on the
     created Transport.
+
+The Direct SMTP Transport
+.........................
+
+Mail clients usually delivers all messages to an outbound mail server using the
+SMTP protocol. The outbound server spools the messages and, in turn, delivers
+them to the recipients' inbound mail servers, also using SMTP. If a remote mail
+server is temporarily down, the outbound server will spool the message and try
+again later, usually for several days.
+
+The Direct SMTP Transport, ``Swift_DirectSmtpTransport``, skips the outbound
+mail server and connects directly to the recipients' inbound mail servers. This
+approach is less resilient to remote servers being down or just slow, but it may
+be useful if you don't have access to an outbound SMTP server. It can also be
+used, if you need instant feedback on delivery problems.
+
+The Direct SMTP Transport looks up the recipients' inbound mail servers in DNS.
+The actual SMTP communication is delegated to a regular SMTP Transport instance.
+Some configuration of this instance, such as local domain and timeout may be
+adjusted, while other settings, e.g. port number, username and password, must
+use the default values when connecting to remote inbound servers.
 
 The Sendmail Transport
 ......................
@@ -319,6 +344,7 @@ recipients are delivered to successfully then the value 5 will be returned::
     }
 
     */
+
 
 Sending Emails in Batch
 .......................
