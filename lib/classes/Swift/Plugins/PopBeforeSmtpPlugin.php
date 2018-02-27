@@ -45,7 +45,8 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Create a new PopBeforeSmtpPlugin for $host and $port.
      *
-     * @param string $host
+     * @param string $host Hostname or IP. Literal IPv6 addresses should be
+     *                     wrapped in square brackets.
      * @param int    $port
      * @param string $crypto as "tls" or "ssl"
      */
