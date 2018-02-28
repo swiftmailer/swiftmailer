@@ -60,6 +60,8 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     /**
      * Set the host to connect to.
      *
+     * Literal IPv6 addresses should be wrapped in square brackets.
+     *
      * @param string $host
      *
      * @return $this
@@ -187,6 +189,8 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
 
     /**
      * Sets the source IP.
+     *
+     * IPv6 addresses should be wrapped in square brackets.
      *
      * @param string $source
      *
