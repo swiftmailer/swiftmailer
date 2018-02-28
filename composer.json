@@ -19,7 +19,7 @@
         "egulias/email-validator": "~2.0"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9.1",
+        "mockery/mockery": "~1.0",
         "symfony/phpunit-bridge": "~3.3@dev"
     },
     "suggest": {
