@@ -254,10 +254,11 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      * @param string   $command
      * @param int[]    $codes
      * @param string[] $failures An array of failures by-reference
+     * @param bool     $pipeline Do not wait for response
      *
      * @return string
      */
-    public function executeCommand($command, $codes = [], &$failures = null)
+    public function executeCommand($command, $codes = [], &$failures = null, $pipeline = false)
     {
         $failures = (array) $failures;
         $stopSignal = false;
@@ -271,7 +272,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
             }
         }
 
-        return parent::executeCommand($command, $codes, $failures);
+        return parent::executeCommand($command, $codes, $failures, $pipeline);
     }
 
     /** Mixin handling method for ESMTP handlers */
@@ -331,6 +332,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
 
         $this->capabilities = $this->getCapabilities($response);
+        $this->pipelining = isset($this->capabilities['PIPELINING']);
         $this->setHandlerParams();
         foreach ($this->getActiveHandlers() as $handler) {
             $handler->afterEhlo($this);
@@ -348,7 +350,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("MAIL FROM:<%s>%s\r\n", $address, $paramStr), [250]
+            sprintf("MAIL FROM:<%s>%s\r\n", $address, $paramStr), [250], $failures, true
             );
     }
 
@@ -363,7 +365,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), [250, 251, 252]
+            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), [250, 251, 252], $failures, true
             );
     }
 
