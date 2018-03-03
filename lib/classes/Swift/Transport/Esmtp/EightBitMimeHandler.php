@@ -28,7 +28,7 @@ class Swift_Transport_Esmtp_EightBitMimeHandler implements Swift_Transport_Esmtp
      * @param string $encoding The parameter so send with the MAIL FROM command;
      *                         either "8BITMIME" or "7BIT"
      */
-    public function __construct($encoding = '8BITMIME')
+    public function __construct(string $encoding = '8BITMIME')
     {
         $this->encoding = $encoding;
     }
