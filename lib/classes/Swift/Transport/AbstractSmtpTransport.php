@@ -29,6 +29,12 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 
     protected $addressEncoder;
 
+    /** Whether the PIPELINING SMTP extension is enabled (RFC 2920) */
+    protected $pipelining = null;
+
+    /** The pipelined commands waiting for response */
+    protected $pipeline = [];
+
     /** Source Ip */
     protected $sourceIp;
 
@@ -289,7 +295,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      */
     public function reset()
     {
-        $this->executeCommand("RSET\r\n", [250]);
+        $this->executeCommand("RSET\r\n", [250], $failures, true);
     }
 
     /**
@@ -311,18 +317,28 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * @param string   $command
      * @param int[]    $codes
      * @param string[] $failures An array of failures by-reference
+     * @param bool     $pipeline Do not wait for response
      *
-     * @return string
+     * @return string|null The server response, or null if pipelining is enabled
      */
-    public function executeCommand($command, $codes = [], &$failures = null)
+    public function executeCommand($command, $codes = [], &$failures = null, $pipeline = false)
     {
         $failures = (array) $failures;
         $seq = $this->buffer->write($command);
-        $response = $this->getFullResponse($seq);
         if ($evt = $this->eventDispatcher->createCommandEvent($this, $command, $codes)) {
             $this->eventDispatcher->dispatchEvent($evt, 'commandSent');
         }
-        $this->assertResponseCode($response, $codes);
+
+        $this->pipeline[] = [$command, $seq, $codes];
+        if ($pipeline && $this->pipelining) {
+            $response = null;
+        } else {
+            while ($this->pipeline) {
+                list($command, $seq, $codes) = array_shift($this->pipeline);
+                $response = $this->getFullResponse($seq);
+                $this->assertResponseCode($response, $codes);
+            }
+        }
 
         return $response;
     }
@@ -346,7 +362,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     {
         $address = $this->addressEncoder->encodeString($address);
         $this->executeCommand(
-            sprintf("MAIL FROM:<%s>\r\n", $address), [250]
+            sprintf("MAIL FROM:<%s>\r\n", $address), [250], $failures, true
             );
     }
 
@@ -355,7 +371,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     {
         $address = $this->addressEncoder->encodeString($address);
         $this->executeCommand(
-            sprintf("RCPT TO:<%s>\r\n", $address), [250, 251, 252]
+            sprintf("RCPT TO:<%s>\r\n", $address), [250, 251, 252], $failures, true
             );
     }
 
