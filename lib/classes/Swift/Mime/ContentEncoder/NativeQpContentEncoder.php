@@ -8,12 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\ContentEncoder;
+
+use Swift\Mime\ContentEncoder;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+use RuntimeException;
+
 /**
  * Handles Quoted Printable (QP) Transfer Encoding in Swift Mailer using the PHP core function.
  *
  * @author Lars Strojny
  */
-class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_ContentEncoder
+class NativeQpContentEncoder implements ContentEncoder
 {
     /**
      * @var null|string
@@ -41,14 +48,14 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
     /**
      * Encode $in to $out.
      *
-     * @param Swift_OutputByteStream $os              to read from
-     * @param Swift_InputByteStream  $is              to write to
+     * @param OutputByteStream $os              to read from
+     * @param InputByteStream  $is              to write to
      * @param int                    $firstLineOffset
      * @param int                    $maxLineLength   0 indicates the default length for this encoding
      *
      * @throws RuntimeException
      */
-    public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
+    public function encodeByteStream(OutputByteStream $os, InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
         if ('utf-8' !== $this->charset) {
             throw new RuntimeException(

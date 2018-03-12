@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\ContentEncoder;
+
+use Swift\Mime\ContentEncoder;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+
 /**
  * Handles raw Transfer Encoding in Swift Mailer.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-class Swift_Mime_ContentEncoder_RawContentEncoder implements Swift_Mime_ContentEncoder
+class RawContentEncoder implements ContentEncoder
 {
     /**
      * Encode a given string to produce an encoded string.
@@ -35,7 +41,7 @@ class Swift_Mime_ContentEncoder_RawContentEncoder implements Swift_Mime_ContentE
      * @param int $firstLineOffset ignored
      * @param int $maxLineLength   ignored
      */
-    public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
+    public function encodeByteStream(OutputByteStream $os, InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
         while (false !== ($bytes = $os->read(8192))) {
             $is->write($bytes);

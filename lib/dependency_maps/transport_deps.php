@@ -1,6 +1,6 @@
 <?php
 
-Swift_DependencyContainer::getInstance()
+\Swift\DependencyContainer::getInstance()
     ->register('transport.localdomain')
     // As SERVER_NAME can come from the user in certain configurations, check that
     // it does not contain forbidden characters (see RFC 952 and RFC 2181). Use

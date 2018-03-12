@@ -8,12 +8,20 @@
  * file that was distributed with this source code.
  */
 
+
+namespace Swift\Transport;
+
+use Swift\ByteStream\AbstractFilterableInputStream;
+use Swift\ReplacementFilterFactory;
+use Swift\IoException;
+use Swift\TransportException;
+
 /**
  * A generic IoBuffer implementation supporting remote sockets and local processes.
  *
  * @author     Chris Corbyn
  */
-class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableInputStream implements Swift_Transport_IoBuffer
+class StreamBuffer extends AbstractFilterableInputStream implements IoBuffer
 {
     /** A primary socket */
     private $stream;
@@ -36,7 +44,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     /**
      * Create a new StreamBuffer using $replacementFactory for transformations.
      */
-    public function __construct(Swift_ReplacementFilterFactory $replacementFactory)
+    public function __construct(ReplacementFilterFactory $replacementFactory)
     {
         $this->replacementFactory = $replacementFactory;
     }
@@ -150,7 +158,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      *
      * @return string
      *
-     * @throws Swift_IoException
+     * @throws IoException
      */
     public function readLine($sequence)
     {
@@ -159,7 +167,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             if (0 == strlen($line)) {
                 $metas = stream_get_meta_data($this->out);
                 if ($metas['timed_out']) {
-                    throw new Swift_IoException(
+                    throw new IoException(
                         'Connection to '.
                             $this->getReadConnectionDescription().
                         ' Timed Out'
@@ -182,7 +190,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      *
      * @return string|bool
      *
-     * @throws Swift_IoException
+     * @throws IoException
      */
     public function read($length)
     {
@@ -191,7 +199,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             if (0 == strlen($ret)) {
                 $metas = stream_get_meta_data($this->out);
                 if ($metas['timed_out']) {
-                    throw new Swift_IoException(
+                    throw new IoException(
                         'Connection to '.
                             $this->getReadConnectionDescription().
                         ' Timed Out'
@@ -262,7 +270,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
         $streamContext = stream_context_create($options);
         $this->stream = @stream_socket_client($host.':'.$this->params['port'], $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT, $streamContext);
         if (false === $this->stream) {
-            throw new Swift_TransportException(
+            throw new TransportException(
                 'Connection could not be established with host '.$this->params['host'].
                 ' ['.$errstr.' #'.$errno.']'
                 );
@@ -292,7 +300,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
         $this->stream = proc_open($command, $descriptorSpec, $pipes);
         stream_set_blocking($pipes[2], 0);
         if ($err = stream_get_contents($pipes[2])) {
-            throw new Swift_TransportException(
+            throw new TransportException(
                 'Process could not be started ['.$err.']'
                 );
         }

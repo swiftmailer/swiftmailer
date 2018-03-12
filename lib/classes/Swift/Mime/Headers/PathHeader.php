@@ -8,6 +8,11 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\Headers;
+
+use Swift\AddressEncoder;
+use Swift\AddressEncoder\IdnAddressEncoder;
+use Swift\RfcComplianceException;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 
@@ -16,7 +21,7 @@ use Egulias\EmailValidator\Validation\RFCValidation;
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
+class PathHeader extends AbstractHeader
 {
     /**
      * The address in this Header (if specified).
@@ -39,11 +44,11 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $name
      */
-    public function __construct($name, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
+    public function __construct($name, EmailValidator $emailValidator, AddressEncoder $addressEncoder = null)
     {
         $this->setFieldName($name);
         $this->emailValidator = $emailValidator;
-        $this->addressEncoder = $addressEncoder ?? new Swift_AddressEncoder_IdnAddressEncoder();
+        $this->addressEncoder = $addressEncoder ?? new IdnAddressEncoder();
     }
 
     /**
@@ -65,7 +70,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $model
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     public function setFieldBodyModel($model)
     {
@@ -88,7 +93,7 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $address
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     public function setAddress($address)
     {
@@ -142,12 +147,12 @@ class Swift_Mime_Headers_PathHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $address
      *
-     * @throws Swift_RfcComplianceException If address is invalid
+     * @throws RfcComplianceException If address is invalid
      */
     private function assertValidAddress($address)
     {
         if (!$this->emailValidator->isValid($address, new RFCValidation())) {
-            throw new Swift_RfcComplianceException(
+            throw new RfcComplianceException(
                 'Address set in PathHeader does not comply with addr-spec of RFC 2822.'
             );
         }

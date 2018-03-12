@@ -2,7 +2,7 @@
 
 require __DIR__.'/../mime_types.php';
 
-Swift_DependencyContainer::getInstance()
+\Swift\DependencyContainer::getInstance()
     ->register('properties.charset')
     ->asValue('utf-8')
 

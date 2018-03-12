@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
 /**
  * Sleeps for a duration of time.
  *
  * @author Chris Corbyn
  */
-interface Swift_Plugins_Sleeper
+interface Sleeper
 {
     /**
      * Sleep for $seconds.

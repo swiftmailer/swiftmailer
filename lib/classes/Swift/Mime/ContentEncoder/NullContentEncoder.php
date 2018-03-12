@@ -8,13 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\ContentEncoder;
+
+use Swift\Mime\ContentEncoder;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+
 /**
  * Handles the case where the email body is already encoded and you just need specify the correct
  * encoding without actually changing the encoding of the body.
  *
  * @author Jan Flora <jf@penneo.com>
  */
-class Swift_Mime_ContentEncoder_NullContentEncoder implements Swift_Mime_ContentEncoder
+class NullContentEncoder implements ContentEncoder
 {
     /**
      * The name of this encoding scheme (probably 7bit or 8bit).
@@ -53,7 +59,7 @@ class Swift_Mime_ContentEncoder_NullContentEncoder implements Swift_Mime_Content
      * @param int $firstLineOffset ignored
      * @param int $maxLineLength   ignored
      */
-    public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
+    public function encodeByteStream(OutputByteStream $os, InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
         while (false !== ($bytes = $os->read(8192))) {
             $is->write($bytes);

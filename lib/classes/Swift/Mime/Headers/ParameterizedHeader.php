@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\Headers;
+
+use Swift\Encoder;
+use Swift\Mime\HeaderEncoder;
+
 /**
  * An abstract base MIME Header.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_UnstructuredHeader
+class ParameterizedHeader extends UnstructuredHeader
 {
     /**
      * RFC 2231's definition of a token.
@@ -25,7 +30,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
     /**
      * The Encoder used to encode the parameters.
      *
-     * @var Swift_Encoder
+     * @var Encoder
      */
     private $paramEncoder;
 
@@ -41,7 +46,7 @@ class Swift_Mime_Headers_ParameterizedHeader extends Swift_Mime_Headers_Unstruct
      *
      * @param string $name
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder = null)
+    public function __construct($name, HeaderEncoder $encoder, Encoder $paramEncoder = null)
     {
         parent::__construct($name, $encoder);
         $this->paramEncoder = $paramEncoder;

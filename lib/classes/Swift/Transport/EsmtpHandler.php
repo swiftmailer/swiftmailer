@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
 /**
  * An ESMTP handler.
  *
  * @author Chris Corbyn
  */
-interface Swift_Transport_EsmtpHandler
+interface EsmtpHandler
 {
     /**
      * Get the name of the ESMTP extension this handles.
@@ -32,9 +34,9 @@ interface Swift_Transport_EsmtpHandler
     /**
      * Runs immediately after a EHLO has been issued.
      *
-     * @param Swift_Transport_SmtpAgent $agent to read/write
+     * @param SmtpAgent $agent to read/write
      */
-    public function afterEhlo(Swift_Transport_SmtpAgent $agent);
+    public function afterEhlo(SmtpAgent $agent);
 
     /**
      * Get params which are appended to MAIL FROM:<>.
@@ -53,13 +55,13 @@ interface Swift_Transport_EsmtpHandler
     /**
      * Runs when a command is due to be sent.
      *
-     * @param Swift_Transport_SmtpAgent $agent            to read/write
+     * @param SmtpAgent $agent            to read/write
      * @param string                    $command          to send
      * @param int[]                     $codes            expected in response
      * @param string[]                  $failedRecipients to collect failures
      * @param bool                      $stop             to be set true  by-reference if the command is now sent
      */
-    public function onCommand(Swift_Transport_SmtpAgent $agent, $command, $codes = [], &$failedRecipients = null, &$stop = false);
+    public function onCommand(SmtpAgent $agent, $command, $codes = [], &$failedRecipients = null, &$stop = false);
 
     /**
      * Returns +1, -1 or 0 according to the rules for usort().

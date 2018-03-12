@@ -8,12 +8,20 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
+use Swift\Transport as BaseTransport;
+use Swift\Events\EventDispatcher;
+use Swift\Mime\SimpleMessage;
+use Swift\Events\EventListener;
+use Swift\Events\SendEvent;
+
 /**
  * Pretends messages have been sent, but just ignores them.
  *
  * @author Fabien Potencier
  */
-class Swift_Transport_NullTransport implements Swift_Transport
+class NullTransport implements BaseTransport
 {
     /** The event dispatcher from the plugin API */
     private $eventDispatcher;
@@ -21,7 +29,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
     /**
      * Constructor.
      */
-    public function __construct(Swift_Events_EventDispatcher $eventDispatcher)
+    public function __construct(EventDispatcher $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -65,7 +73,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
      *
      * @return int The number of sent emails
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(SimpleMessage $message, &$failedRecipients = null)
     {
         if ($evt = $this->eventDispatcher->createSendEvent($this, $message)) {
             $this->eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
@@ -75,7 +83,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
         }
 
         if ($evt) {
-            $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
+            $evt->setResult(SendEvent::RESULT_SUCCESS);
             $this->eventDispatcher->dispatchEvent($evt, 'sendPerformed');
         }
 
@@ -91,7 +99,7 @@ class Swift_Transport_NullTransport implements Swift_Transport
     /**
      * Register a plugin.
      */
-    public function registerPlugin(Swift_Events_EventListener $plugin)
+    public function registerPlugin(EventListener $plugin)
     {
         $this->eventDispatcher->bindEventListener($plugin);
     }

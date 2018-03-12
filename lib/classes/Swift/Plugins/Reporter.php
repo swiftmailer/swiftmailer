@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Mime\SimpleMessage;
+
 /**
  * The Reporter plugin sends pass/fail notification to a Reporter.
  *
  * @author Chris Corbyn
  */
-interface Swift_Plugins_Reporter
+interface Reporter
 {
     /** The recipient was accepted for delivery */
     const RESULT_PASS = 0x01;
@@ -24,9 +28,9 @@ interface Swift_Plugins_Reporter
     /**
      * Notifies this ReportNotifier that $address failed or succeeded.
      *
-     * @param Swift_Mime_SimpleMessage $message
+     * @param SimpleMessage $message
      * @param string                   $address
      * @param int                      $result  from {@link RESULT_PASS, RESULT_FAIL}
      */
-    public function notify(Swift_Mime_SimpleMessage $message, $address, $result);
+    public function notify(SimpleMessage $message, $address, $result);
 }

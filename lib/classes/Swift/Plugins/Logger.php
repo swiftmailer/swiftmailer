@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
 /**
  * Logs events in the Transport system.
  *
  * @author Chris Corbyn
  */
-interface Swift_Plugins_Logger
+interface Logger
 {
     /**
      * Add a log entry.

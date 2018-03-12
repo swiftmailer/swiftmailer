@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins\Loggers;
+
+use Swift\Plugins\Logger;
+
 /**
  * Logs to an Array backend.
  *
  * @author Chris Corbyn
  */
-class Swift_Plugins_Loggers_ArrayLogger implements Swift_Plugins_Logger
+class ArrayLogger implements Logger
 {
     /**
      * The log contents.

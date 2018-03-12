@@ -8,12 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime;
+
+use Swift\KeyCache;
+use Swift\IdGenerator;
+use Swift\OutputByteStream;
+use Swift\SwiftException;
+
 /**
  * A MIME part, in a multipart message.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
+class MimePart extends SimpleMimeEntity
 {
     /** The format parameter last specified by the user */
     protected $userFormat;
@@ -32,7 +39,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
      *
      * @param string $charset
      */
-    public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $charset = null)
+    public function __construct(SimpleHeaderSet $headers, ContentEncoder $encoder, KeyCache $cache, IdGenerator $idGenerator, $charset = null)
     {
         parent::__construct($headers, $encoder, $cache, $idGenerator);
         $this->setContentType('text/plain');
@@ -43,7 +50,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
 
     /**
      * Set the body of this entity, either as a string, or as an instance of
-     * {@link Swift_OutputByteStream}.
+     * {@link OutputByteStream}.
      *
      * @param mixed  $body
      * @param string $contentType optional
@@ -197,7 +204,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
             } elseif (function_exists('iconv')) {
                 $string = iconv('utf-8//TRANSLIT//IGNORE', $charset, $string);
             } else {
-                throw new Swift_SwiftException('No suitable convert encoding function (use UTF-8 as your charset or install the mbstring or iconv extension).');
+                throw new SwiftException('No suitable convert encoding function (use UTF-8 as your charset or install the mbstring or iconv extension).');
             }
 
             return $string;

@@ -8,19 +8,25 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\HeaderEncoder;
+
+use Swift\Encoder\QpEncoder;
+use Swift\Mime\HeaderEncoder;
+use Swift\CharacterStream;
+
 /**
  * Handles Quoted Printable (Q) Header Encoding in Swift Mailer.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_HeaderEncoder_QpHeaderEncoder extends Swift_Encoder_QpEncoder implements Swift_Mime_HeaderEncoder
+class QpHeaderEncoder extends QpEncoder implements HeaderEncoder
 {
     /**
      * Creates a new QpHeaderEncoder for the given CharacterStream.
      *
-     * @param Swift_CharacterStream $charStream to use for reading characters
+     * @param CharacterStream $charStream to use for reading characters
      */
-    public function __construct(Swift_CharacterStream $charStream)
+    public function __construct(CharacterStream $charStream)
     {
         parent::__construct($charStream);
     }

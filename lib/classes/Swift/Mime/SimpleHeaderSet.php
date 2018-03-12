@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime;
+
+use DateTimeInterface;
+
 /**
  * A collection of MIME headers.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
+class SimpleHeaderSet implements CharsetObserver
 {
     /** HeaderFactory */
     private $factory;
@@ -35,7 +39,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      *
      * @param string $charset
      */
-    public function __construct(Swift_Mime_SimpleHeaderFactory $factory, $charset = null)
+    public function __construct(SimpleHeaderFactory $factory, $charset = null)
     {
         $this->factory = $factory;
         if (isset($charset)) {
@@ -166,7 +170,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      *
      * @param int $index
      */
-    public function set(Swift_Mime_Header $header, $index = 0)
+    public function set(Header $header, $index = 0)
     {
         $this->storeHeader($header->getFieldName(), $header, $index);
     }
@@ -180,7 +184,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      * @param string $name
      * @param int    $index
      *
-     * @return Swift_Mime_Header
+     * @return Header
      */
     public function get($name, $index = 0)
     {
@@ -331,7 +335,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     }
 
     /** Save a Header to the internal collection */
-    private function storeHeader($name, Swift_Mime_Header $header, $offset = null)
+    private function storeHeader($name, Header $header, $offset = null)
     {
         if (!isset($this->headers[strtolower($name)])) {
             $this->headers[strtolower($name)] = [];
@@ -372,7 +376,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     }
 
     /** Test if the given Header is always displayed */
-    private function isDisplayed(Swift_Mime_Header $header)
+    private function isDisplayed(Header $header)
     {
         return array_key_exists(strtolower($header->getFieldName()), $this->required);
     }

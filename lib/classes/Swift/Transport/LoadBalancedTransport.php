@@ -8,31 +8,39 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
+use Swift\Transport;
+use Swift\TransportException;
+use Swift\Mime\SimpleMessage;
+use Swift\Events\EventListener;
+use Exception;
+
 /**
  * Redundantly and rotationally uses several Transports when sending.
  *
  * @author Chris Corbyn
  */
-class Swift_Transport_LoadBalancedTransport implements Swift_Transport
+class LoadBalancedTransport implements Transport
 {
     /**
      * Transports which are deemed useless.
      *
-     * @var Swift_Transport[]
+     * @var Transport[]
      */
     private $deadTransports = [];
 
     /**
      * The Transports which are used in rotation.
      *
-     * @var Swift_Transport[]
+     * @var Transport[]
      */
     protected $transports = [];
 
     /**
      * The Transport used in the last successful send operation.
      *
-     * @var Swift_Transport
+     * @var Transport
      */
     protected $lastUsedTransport = null;
 
@@ -44,7 +52,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     /**
      * Set $transports to delegate to.
      *
-     * @param Swift_Transport[] $transports
+     * @param Transport[] $transports
      */
     public function setTransports(array $transports)
     {
@@ -55,7 +63,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     /**
      * Get $transports to delegate to.
      *
-     * @return Swift_Transport[]
+     * @return Transport[]
      */
     public function getTransports()
     {
@@ -65,7 +73,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     /**
      * Get the Transport used in the last successful send operation.
      *
-     * @return Swift_Transport
+     * @return Transport
      */
     public function getLastUsedTransport()
     {
@@ -124,7 +132,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
      *
      * @return int
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(SimpleMessage $message, &$failedRecipients = null)
     {
         $maxTransports = count($this->transports);
         $sent = 0;
@@ -140,13 +148,13 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
                     $this->lastUsedTransport = $transport;
                     break;
                 }
-            } catch (Swift_TransportException $e) {
+            } catch (TransportException $e) {
                 $this->killCurrentTransport();
             }
         }
 
         if (0 == count($this->transports)) {
-            throw new Swift_TransportException(
+            throw new TransportException(
                 'All Transports in LoadBalancedTransport failed, or no Transports available'
                 );
         }
@@ -157,7 +165,7 @@ class Swift_Transport_LoadBalancedTransport implements Swift_Transport
     /**
      * Register a plugin.
      */
-    public function registerPlugin(Swift_Events_EventListener $plugin)
+    public function registerPlugin(EventListener $plugin)
     {
         foreach ($this->transports as $transport) {
             $transport->registerPlugin($plugin);

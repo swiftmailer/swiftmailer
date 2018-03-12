@@ -8,10 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime;
+
+use Swift\IdGenerator as BaseIdGenerator;
+
 /**
  * Message ID generator.
  */
-class Swift_Mime_IdGenerator implements Swift_IdGenerator
+class IdGenerator implements BaseIdGenerator
 {
     /**
      * @param string $idRight

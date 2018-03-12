@@ -8,12 +8,20 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Events\TransportChangeEvent;
+use Swift\Events\TransportChangeListener;
+use Swift\Plugins\Pop\Pop3Connection;
+use Swift\Plugins\Pop\Pop3Exception;
+use Swift\Transport;
+
 /**
  * Makes sure a connection to a POP3 host has been established prior to connecting to SMTP.
  *
  * @author     Chris Corbyn
  */
-class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeListener, Swift_Plugins_Pop_Pop3Connection
+class PopBeforeSmtpPlugin implements TransportChangeListener, Pop3Connection
 {
     /** A delegate connection to use (mostly a test hook) */
     private $connection;
@@ -62,7 +70,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      *
      * @return $this
      */
-    public function setConnection(Swift_Plugins_Pop_Pop3Connection $connection)
+    public function setConnection(Pop3Connection $connection)
     {
         $this->connection = $connection;
 
@@ -72,7 +80,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Bind this plugin to a specific SMTP transport instance.
      */
-    public function bindSmtp(Swift_Transport $smtp)
+    public function bindSmtp(Transport $smtp)
     {
         $this->transport = $smtp;
     }
@@ -122,7 +130,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Connect to the POP3 host and authenticate.
      *
-     * @throws Swift_Plugins_Pop_Pop3Exception if connection fails
+     * @throws Pop3Exception if connection fails
      */
     public function connect()
     {
@@ -132,14 +140,14 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
             if (!isset($this->socket)) {
                 if (!$socket = fsockopen(
                     $this->getHostString(), $this->port, $errno, $errstr, $this->timeout)) {
-                    throw new Swift_Plugins_Pop_Pop3Exception(
+                    throw new Pop3Exception(
                         sprintf('Failed to connect to POP3 host [%s]: %s', $this->host, $errstr)
                     );
                 }
                 $this->socket = $socket;
 
                 if (false === $greeting = fgets($this->socket)) {
-                    throw new Swift_Plugins_Pop_Pop3Exception(
+                    throw new Pop3Exception(
                         sprintf('Failed to connect to POP3 host [%s]', trim($greeting))
                     );
                 }
@@ -164,7 +172,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
         } else {
             $this->command("QUIT\r\n");
             if (!fclose($this->socket)) {
-                throw new Swift_Plugins_Pop_Pop3Exception(
+                throw new Pop3Exception(
                     sprintf('POP3 host [%s] connection could not be stopped', $this->host)
                 );
             }
@@ -175,7 +183,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Invoked just before a Transport is started.
      */
-    public function beforeTransportStarted(Swift_Events_TransportChangeEvent $evt)
+    public function beforeTransportStarted(TransportChangeEvent $evt)
     {
         if (isset($this->transport)) {
             if ($this->transport !== $evt->getTransport()) {
@@ -190,34 +198,34 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Not used.
      */
-    public function transportStarted(Swift_Events_TransportChangeEvent $evt)
+    public function transportStarted(TransportChangeEvent $evt)
     {
     }
 
     /**
      * Not used.
      */
-    public function beforeTransportStopped(Swift_Events_TransportChangeEvent $evt)
+    public function beforeTransportStopped(TransportChangeEvent $evt)
     {
     }
 
     /**
      * Not used.
      */
-    public function transportStopped(Swift_Events_TransportChangeEvent $evt)
+    public function transportStopped(TransportChangeEvent $evt)
     {
     }
 
     private function command($command)
     {
         if (!fwrite($this->socket, $command)) {
-            throw new Swift_Plugins_Pop_Pop3Exception(
+            throw new Pop3Exception(
                 sprintf('Failed to write command [%s] to POP3 host', trim($command))
             );
         }
 
         if (false === $response = fgets($this->socket)) {
-            throw new Swift_Plugins_Pop_Pop3Exception(
+            throw new Pop3Exception(
                 sprintf('Failed to read from POP3 host after command [%s]', trim($command))
             );
         }
@@ -230,7 +238,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     private function assertOk($response)
     {
         if ('+OK' != substr($response, 0, 3)) {
-            throw new Swift_Plugins_Pop_Pop3Exception(
+            throw new Pop3Exception(
                 sprintf('POP3 command failed [%s]', trim($response))
             );
         }

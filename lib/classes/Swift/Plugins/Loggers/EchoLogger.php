@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins\Loggers;
+
+use Swift\Plugins\Logger;
+
 /**
  * Prints all log messages in real time.
  *
  * @author Chris Corbyn
  */
-class Swift_Plugins_Loggers_EchoLogger implements Swift_Plugins_Logger
+class EchoLogger implements Logger
 {
     /** Whether or not HTML should be output */
     private $isHtml;

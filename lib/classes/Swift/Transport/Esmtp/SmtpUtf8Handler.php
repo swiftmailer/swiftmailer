@@ -8,6 +8,11 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport\Esmtp;
+
+use Swift\Transport\EsmtpHandler;
+use Swift\Transport\SmtpAgent;
+
 /**
  * An ESMTP handler for SMTPUTF8 support (RFC 6531).
  *
@@ -21,7 +26,7 @@
  *
  * @author Christian Schmidt
  */
-class Swift_Transport_Esmtp_SmtpUtf8Handler implements Swift_Transport_EsmtpHandler
+class SmtpUtf8Handler implements EsmtpHandler
 {
     public function __construct()
     {
@@ -47,7 +52,7 @@ class Swift_Transport_Esmtp_SmtpUtf8Handler implements Swift_Transport_EsmtpHand
     /**
      * Not used.
      */
-    public function afterEhlo(Swift_Transport_SmtpAgent $agent)
+    public function afterEhlo(SmtpAgent $agent)
     {
     }
 
@@ -72,7 +77,7 @@ class Swift_Transport_Esmtp_SmtpUtf8Handler implements Swift_Transport_EsmtpHand
     /**
      * Not used.
      */
-    public function onCommand(Swift_Transport_SmtpAgent $agent, $command, $codes = array(), &$failedRecipients = null, &$stop = false)
+    public function onCommand(SmtpAgent $agent, $command, $codes = array(), &$failedRecipients = null, &$stop = false)
     {
     }
 

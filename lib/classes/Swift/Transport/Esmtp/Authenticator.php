@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport\Esmtp;
+
+use Swift\Transport\SmtpAgent;
+
 /**
  * An Authentication mechanism.
  *
  * @author Chris Corbyn
  */
-interface Swift_Transport_Esmtp_Authenticator
+interface Authenticator
 {
     /**
      * Get the name of the AUTH mechanism this Authenticator handles.
@@ -25,11 +29,11 @@ interface Swift_Transport_Esmtp_Authenticator
     /**
      * Try to authenticate the user with $username and $password.
      *
-     * @param Swift_Transport_SmtpAgent $agent
-     * @param string                    $username
-     * @param string                    $password
+     * @param SmtpAgent $agent
+     * @param string    $username
+     * @param string    $password
      *
      * @return bool
      */
-    public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password);
+    public function authenticate(SmtpAgent $agent, $username, $password);
 }

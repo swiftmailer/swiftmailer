@@ -8,15 +8,21 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Events\SendListener;
+use Swift\Events\SendEvent;
+use Swift\Mime\SimpleMessage;
+
 /**
  * Stores all sent emails for further usage.
  *
  * @author Fabien Potencier
  */
-class Swift_Plugins_MessageLogger implements Swift_Events_SendListener
+class MessageLogger implements SendListener
 {
     /**
-     * @var Swift_Mime_Message[]
+     * @var SimpleMessage[]
      */
     private $messages;
 
@@ -28,7 +34,7 @@ class Swift_Plugins_MessageLogger implements Swift_Events_SendListener
     /**
      * Get the message list.
      *
-     * @return Swift_Mime_Message[]
+     * @return SimpleMessage[]
      */
     public function getMessages()
     {
@@ -56,7 +62,7 @@ class Swift_Plugins_MessageLogger implements Swift_Events_SendListener
     /**
      * Invoked immediately before the Message is sent.
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(SendEvent $evt)
     {
         $this->messages[] = clone $evt->getMessage();
     }
@@ -64,7 +70,7 @@ class Swift_Plugins_MessageLogger implements Swift_Events_SendListener
     /**
      * Invoked immediately after the Message is sent.
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(SendEvent $evt)
     {
     }
 }

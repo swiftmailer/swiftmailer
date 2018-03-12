@@ -8,12 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Events\SendListener;
+use Swift\Events\SendEvent;
+use Swift\Mime\SimpleHeaderSet;
+use Swift\Mime\SimpleMessage;
+
 /**
  * Redirects all email to a single recipient.
  *
  * @author     Fabien Potencier
  */
-class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
+class RedirectingPlugin implements SendListener
 {
     /**
      * The recipient who will receive all messages.
@@ -81,7 +88,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Invoked immediately before the Message is sent.
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(SendEvent $evt)
     {
         $message = $evt->getMessage();
         $headers = $message->getHeaders();
@@ -123,7 +130,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
      *
      * @param string $type
      */
-    private function filterHeaderSet(Swift_Mime_SimpleHeaderSet $headerSet, $type)
+    private function filterHeaderSet(SimpleHeaderSet $headerSet, $type)
     {
         foreach ($headerSet->getAll($type) as $headers) {
             $headers->setNameAddresses($this->filterNameAddresses($headers->getNameAddresses()));
@@ -171,12 +178,12 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
     /**
      * Invoked immediately after the Message is sent.
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(SendEvent $evt)
     {
         $this->restoreMessage($evt->getMessage());
     }
 
-    private function restoreMessage(Swift_Mime_SimpleMessage $message)
+    private function restoreMessage(SimpleMessage $message)
     {
         // restore original headers
         $headers = $message->getHeaders();

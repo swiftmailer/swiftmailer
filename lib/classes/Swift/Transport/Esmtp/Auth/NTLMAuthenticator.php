@@ -10,12 +10,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport\Esmtp\Auth;
+
+use Swift\Transport\Esmtp\Authenticator;
+use Swift\Transport\SmtpAgent;
+use Swift\TransportException;
+use LogicException;
+
 /**
  * Handles NTLM authentication.
  *
  * @author     Ward Peeters <ward@coding-tech.com>
  */
-class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Esmtp_Authenticator
+class NTLMAuthenticator implements Authenticator
 {
     const NTLMSIG = "NTLMSSP\x00";
     const DESCONST = 'KGS!@#$%';
@@ -40,7 +47,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      *
      * @throws \LogicException
      */
-    public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
+    public function authenticate(SmtpAgent $agent, $username, $password)
     {
         if (!function_exists('openssl_encrypt')) {
             throw new LogicException('The OpenSSL extension must be enabled to use the NTLM authenticator.');
@@ -63,7 +70,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
             $this->sendMessage3($response, $username, $password, $timestamp, $client, $agent);
 
             return true;
-        } catch (Swift_TransportException $e) {
+        } catch (TransportException $e) {
             $agent->executeCommand("RSET\r\n", [250]);
 
             return false;
@@ -101,7 +108,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      *
      * @return string SMTP Response
      */
-    protected function sendMessage1(Swift_Transport_SmtpAgent $agent)
+    protected function sendMessage1(SmtpAgent $agent)
     {
         $message = $this->createMessage1();
 
@@ -184,7 +191,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      *
      * @return string
      */
-    protected function sendMessage3($response, $username, $password, $timestamp, $client, Swift_Transport_SmtpAgent $agent, $v2 = true)
+    protected function sendMessage3($response, $username, $password, $timestamp, $client, SmtpAgent $agent, $v2 = true)
     {
         list($domain, $username) = $this->getDomainAndUsername($username);
         //$challenge, $context, $targetInfoH, $targetName, $domainName, $workstation, $DNSDomainName, $DNSServerName, $blob, $ter

@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
 /**
  * Sends Messages over SMTP with ESMTP support.
  *
  * @author Chris Corbyn
  */
-class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTransport implements Swift_Transport_SmtpAgent
+class EsmtpTransport extends AbstractSmtpTransport implements SmtpAgent
 {
     /**
      * ESMTP extension handlers.
