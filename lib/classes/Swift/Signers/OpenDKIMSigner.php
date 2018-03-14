@@ -42,7 +42,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     {
         $header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
         $headerVal = $this->dkimHandler->getSignatureHeader();
-        if (!$headerVal) {
+        if ($headerVal === false || is_int($headerVal)) {
             throw new Swift_SwiftException('OpenDKIM Error: '.$this->dkimHandler->getError());
         }
         $header->setValue($headerVal);
@@ -53,14 +53,10 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
     {
-        $bodyLen = $this->bodyLen;
-        if (is_bool($bodyLen)) {
-            $bodyLen = -1;
-        }
         $hash = 'rsa-sha1' == $this->hashAlgorithm ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
         $bodyCanon = 'simple' == $this->bodyCanon ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
         $headerCanon = 'simple' == $this->headerCanon ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
-        $this->dkimHandler = new OpenDKIMSign($this->privateKey, $this->selector, $this->domainName, $headerCanon, $bodyCanon, $hash, $bodyLen);
+        $this->dkimHandler = new OpenDKIMSign($this->privateKey, $this->selector, $this->domainName, $headerCanon, $bodyCanon, $hash, -1);
         // Hardcode signature Margin for now
         $this->dkimHandler->setMargin(78);
 
@@ -172,7 +168,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         if (!$this->peclLoaded) {
             return parent::canonicalizeBody($string);
         }
-        if (false && true === $this->dropFirstLF) {
+        if (true === $this->dropFirstLF) {
             if ("\r" == $string[0] && "\n" == $string[1]) {
                 $string = substr($string, 2);
             }
