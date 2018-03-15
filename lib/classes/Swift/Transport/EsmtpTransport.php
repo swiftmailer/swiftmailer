@@ -214,6 +214,35 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     }
 
     /**
+     * Sets whether SMTP pipelining is enabled.
+     *
+     * By default, support is auto-detected using the PIPELINING SMTP extension.
+     * Use this function to override that in the unlikely event of compatibility
+     * issues.
+     *
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setPipelining($enabled)
+    {
+        $this->pipelining = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Returns whether SMTP pipelining is enabled.
+     *
+     * @return bool|null a boolean if pipelining is explicitly enabled or disabled,
+     *                   or null if support is auto-detected.
+     */
+    public function getPipelining()
+    {
+        return $this->pipelining;
+    }
+
+    /**
      * Set ESMTP extension handlers.
      *
      * @param Swift_Transport_EsmtpHandler[] $handlers
@@ -254,10 +283,11 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      * @param string   $command
      * @param int[]    $codes
      * @param string[] $failures An array of failures by-reference
+     * @param bool     $pipeline Do not wait for response
      *
      * @return string
      */
-    public function executeCommand($command, $codes = [], &$failures = null)
+    public function executeCommand($command, $codes = [], &$failures = null, $pipeline = false)
     {
         $failures = (array) $failures;
         $stopSignal = false;
@@ -271,7 +301,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
             }
         }
 
-        return parent::executeCommand($command, $codes, $failures);
+        return parent::executeCommand($command, $codes, $failures, $pipeline);
     }
 
     /** Mixin handling method for ESMTP handlers */
@@ -331,6 +361,10 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
 
         $this->capabilities = $this->getCapabilities($response);
+        if (!isset($this->pipelining)) {
+            $this->pipelining = isset($this->capabilities['PIPELINING']);
+        }
+
         $this->setHandlerParams();
         foreach ($this->getActiveHandlers() as $handler) {
             $handler->afterEhlo($this);
@@ -348,7 +382,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("MAIL FROM:<%s>%s\r\n", $address, $paramStr), [250]
+            sprintf("MAIL FROM:<%s>%s\r\n", $address, $paramStr), [250], $failures, true
             );
     }
 
@@ -363,7 +397,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), [250, 251, 252]
+            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), [250, 251, 252], $failures, true
             );
     }
 
