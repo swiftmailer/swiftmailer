@@ -45,7 +45,11 @@ Swift_DependencyContainer::getInstance()
 
     ->register('transport.smtphandlers')
     ->asArray()
-    ->withDependencies(['transport.authhandler', 'transport.smtputf8handler'])
+    ->withDependencies([
+        'transport.authhandler',
+        'transport.8bitmimehandler',
+        'transport.smtputf8handler',
+    ])
 
     ->register('transport.authhandler')
     ->asNewInstanceOf('Swift_Transport_Esmtp_AuthHandler')
