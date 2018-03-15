@@ -13,6 +13,8 @@
  * Takes advantage of pecl extension.
  *
  * @author     Xavier De Cock <xdecock@gmail.com>
+ *
+ * @deprecated since SwiftMailer 6.1.0; use Swift_Signers_DKIMSigner instead.
  */
 class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 {

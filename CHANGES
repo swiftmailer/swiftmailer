@@ -6,6 +6,7 @@ Changelog
 
  * added support for non-ASCII email addresses
  * introduced new dependencies: transport.smtphandlers and transport.authhandlers
+ * deprecated Swift_Signers_OpenDKIMSigner; use Swift_Signers_DKIMSigner instead
 
 6.0.2 (2017-09-30)
 ------------------
