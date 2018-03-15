@@ -11,7 +11,7 @@ Swift_DependencyContainer::getInstance()
     ->asNewInstanceOf('Swift_Transport_EsmtpTransport')
     ->withDependencies([
         'transport.buffer',
-        ['transport.authhandler', 'transport.smtputf8handler'],
+        'transport.smtphandlers',
         'transport.eventdispatcher',
         'transport.localdomain',
         'address.idnaddressencoder',
@@ -43,16 +43,22 @@ Swift_DependencyContainer::getInstance()
     ->asNewInstanceOf('Swift_Transport_StreamBuffer')
     ->withDependencies(['transport.replacementfactory'])
 
+    ->register('transport.smtphandlers')
+    ->asArray()
+    ->withDependencies(['transport.authhandler', 'transport.smtputf8handler'])
+
     ->register('transport.authhandler')
     ->asNewInstanceOf('Swift_Transport_Esmtp_AuthHandler')
+    ->withDependencies(['transport.authhandlers'])
+
+    ->register('transport.authhandlers')
+    ->asArray()
     ->withDependencies([
-        [
-            'transport.crammd5auth',
-            'transport.loginauth',
-            'transport.plainauth',
-            'transport.ntlmauth',
-            'transport.xoauth2auth',
-        ],
+        'transport.crammd5auth',
+        'transport.loginauth',
+        'transport.plainauth',
+        'transport.ntlmauth',
+        'transport.xoauth2auth',
     ])
 
     ->register('transport.smtputf8handler')

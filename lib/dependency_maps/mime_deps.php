@@ -64,12 +64,12 @@ Swift_DependencyContainer::getInstance()
     ->register('mime.headerfactory')
     ->asNewInstanceOf('Swift_Mime_SimpleHeaderFactory')
     ->withDependencies([
-            'mime.qpheaderencoder',
-            'mime.rfc2231encoder',
-            'email.validator',
-            'properties.charset',
-            'address.idnaddressencoder',
-        ])
+        'mime.qpheaderencoder',
+        'mime.rfc2231encoder',
+        'email.validator',
+        'properties.charset',
+        'address.idnaddressencoder',
+    ])
 
     ->register('mime.headerset')
     ->asNewInstanceOf('Swift_Mime_SimpleHeaderSet')
