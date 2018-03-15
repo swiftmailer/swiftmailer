@@ -30,7 +30,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     protected $addressEncoder;
 
     /** Whether the PIPELINING SMTP extension is enabled (RFC 2920) */
-    protected $pipelining = false;
+    protected $pipelining = null;
 
     /** The pipelined commands waiting for response */
     protected $pipeline = [];

@@ -278,10 +278,12 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
         $smtp->start();
     }
 
-    public function testPipelining()
+    public function testPipelining2()
     {
         $buf = $this->getBuffer();
         $smtp = $this->getTransport($buf);
+        $this->assertNull($smtp->getPipelining());
+
         $message = $this->createMessage();
         $message->shouldReceive('getFrom')
                 ->zeroOrMoreTimes()
@@ -339,6 +341,63 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
         $this->finishBuffer($buf);
         $smtp->start();
         $smtp->send($message);
+
+        $this->assertTrue($smtp->getPipelining());
+    }
+
+    public function providerPipeliningOverride()
+    {
+        return [
+            [null, true, true],
+            [null, false, false],
+            [true, false, true],
+            [true, true, true],
+            [false, false, false],
+            [false, true, false],
+        ];
+    }
+
+    /**
+     * @dataProvider providerPipeliningOverride
+     */
+    public function testPipeliningOverride($enabled, bool $supported, bool $expected)
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
+        $this->assertNull($smtp->getPipelining());
+
+        $smtp->setPipelining($enabled);
+        $this->assertSame($enabled, $smtp->getPipelining());
+
+        $message = $this->createMessage();
+        $message->shouldReceive('getFrom')
+                ->zeroOrMoreTimes()
+                ->andReturn(['me@domain.com' => 'Me']);
+
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^EHLO .+?\r\n$~D')
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250-ServerName'."\r\n");
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250 '.($supported ? 'PIPELINING' : 'FOOBAR')."\r\n");
+
+        $this->finishBuffer($buf);
+        $smtp->start();
+        $smtp->send($message);
+
+        $this->assertSame($expected, $smtp->getPipelining());
     }
 
     public function testFluidInterface()
@@ -354,6 +413,7 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
             ->setPort(25)
             ->setEncryption('tls')
             ->setTimeout(30)
+            ->setPipelining(false)
             ;
         $this->assertEquals($ref, $smtp);
     }

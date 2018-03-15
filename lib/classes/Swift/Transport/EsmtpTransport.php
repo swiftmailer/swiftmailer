@@ -214,6 +214,35 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
     }
 
     /**
+     * Sets whether SMTP pipelining is enabled.
+     *
+     * By default, support is auto-detected using the PIPELINING SMTP extension.
+     * Use this function to override that in the unlikely event of compatibility
+     * issues.
+     *
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setPipelining($enabled)
+    {
+        $this->pipelining = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Returns whether SMTP pipelining is enabled.
+     *
+     * @return bool|null a boolean if pipelining is explicitly enabled or disabled,
+     *                   or null if support is auto-detected.
+     */
+    public function getPipelining()
+    {
+        return $this->pipelining;
+    }
+
+    /**
      * Set ESMTP extension handlers.
      *
      * @param Swift_Transport_EsmtpHandler[] $handlers
@@ -332,7 +361,10 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
 
         $this->capabilities = $this->getCapabilities($response);
-        $this->pipelining = isset($this->capabilities['PIPELINING']);
+        if (!isset($this->pipelining)) {
+            $this->pipelining = isset($this->capabilities['PIPELINING']);
+        }
+
         $this->setHandlerParams();
         foreach ($this->getActiveHandlers() as $handler) {
             $handler->afterEhlo($this);
