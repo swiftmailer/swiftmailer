@@ -13,6 +13,7 @@ namespace Swift\KeyCache;
 use Swift\SwiftException;
 use Swift\OutputByteStream;
 use Swift\InputByteStream;
+use Swift\KeyCache;
 
 /**
  * A basic KeyCache backed by an array.

@@ -10,7 +10,6 @@
 
 require __DIR__.'/classes/Swift.php';
 
-var_dump("KIFLAAAAA");
 Swift::registerAutoload(function () {
     // Load in dependency maps
     require __DIR__.'/dependency_maps/cache_deps.php';

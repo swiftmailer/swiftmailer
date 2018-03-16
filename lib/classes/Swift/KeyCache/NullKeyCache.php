@@ -10,7 +10,7 @@
 
 namespace Swift\KeyCache;
 
-use Swift\KeyCache as KeyCacheInterface;
+use Swift\KeyCache;
 use Swift\OutputByteStream;
 use Swift\InputByteStream;
 
@@ -19,7 +19,7 @@ use Swift\InputByteStream;
  *
  * @author Chris Corbyn
  */
-class NullKeyCache implements KeyCacheInterface
+class NullKeyCache implements KeyCache
 {
     /**
      * Set a string into the cache under $itemKey for the namespace $nsKey.
@@ -56,7 +56,7 @@ class NullKeyCache implements KeyCacheInterface
      * @param string $nsKey
      * @param string $itemKey
      *
-     * @return Swift_InputByteStream
+     * @return InputByteStream
      */
     public function getInputByteStream($nsKey, $itemKey, InputByteStream $writeThrough = null)
     {

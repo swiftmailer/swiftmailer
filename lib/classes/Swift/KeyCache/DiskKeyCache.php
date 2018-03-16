@@ -14,6 +14,7 @@ use Swift\SwiftException;
 use Swift\IoException;
 use Swift\OutputByteStream;
 use Swift\InputByteStream;
+use Swift\KeyCache;
 
 /**
  * A KeyCache which streams to and from disk.
@@ -34,7 +35,7 @@ class DiskKeyCache implements KeyCache
     /**
      * An InputStream for cloning.
      *
-     * @var Swift_KeyCache_KeyCacheInputStream
+     * @var KeyCacheInputStream
      */
     private $stream;
 

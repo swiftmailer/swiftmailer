@@ -1,9 +1,12 @@
 <?php
 
+use Swift\Message;
+use Swift\MimePart;
+
 \Swift\DependencyContainer::getInstance()
     ->register('message.message')
-    ->asNewInstanceOf('Swift_Message')
+    ->asNewInstanceOf(Message::class)
 
     ->register('message.mimepart')
-    ->asNewInstanceOf('Swift_MimePart')
+    ->asNewInstanceOf(MimePart::class)
 ;

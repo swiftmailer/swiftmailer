@@ -8,7 +8,7 @@
     ->asValue(!empty($_SERVER['SERVER_NAME']) && '' === preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $_SERVER['SERVER_NAME']) ? trim($_SERVER['SERVER_NAME'], '[]') : '127.0.0.1')
 
     ->register('transport.smtp')
-    ->asNewInstanceOf('Swift_Transport_EsmtpTransport')
+    ->asNewInstanceOf(\Swift\Transport\EsmtpTransport::class)
     ->withDependencies([
         'transport.buffer',
         'transport.smtphandlers',
@@ -18,7 +18,7 @@
     ])
 
     ->register('transport.sendmail')
-    ->asNewInstanceOf('Swift_Transport_SendmailTransport')
+    ->asNewInstanceOf(\Swift\Transport\SendmailTransport::class)
     ->withDependencies([
         'transport.buffer',
         'transport.eventdispatcher',
@@ -26,21 +26,21 @@
     ])
 
     ->register('transport.loadbalanced')
-    ->asNewInstanceOf('Swift_Transport_LoadBalancedTransport')
+    ->asNewInstanceOf(\Swift\Transport\LoadBalancedTransport::class)
 
     ->register('transport.failover')
-    ->asNewInstanceOf('Swift_Transport_FailoverTransport')
+    ->asNewInstanceOf(\Swift\Transport\FailoverTransport::class)
 
     ->register('transport.spool')
-    ->asNewInstanceOf('Swift_Transport_SpoolTransport')
+    ->asNewInstanceOf(\Swift\Transport\SpoolTransport::class)
     ->withDependencies(['transport.eventdispatcher'])
 
     ->register('transport.null')
-    ->asNewInstanceOf('Swift_Transport_NullTransport')
+    ->asNewInstanceOf(\Swift\Transport\NullTransport::class)
     ->withDependencies(['transport.eventdispatcher'])
 
     ->register('transport.buffer')
-    ->asNewInstanceOf('Swift_Transport_StreamBuffer')
+    ->asNewInstanceOf(\Swift\Transport\StreamBuffer::class)
     ->withDependencies(['transport.replacementfactory'])
 
     ->register('transport.smtphandlers')
@@ -48,11 +48,13 @@
     ->withDependencies(['transport.authhandler', 'transport.smtputf8handler'])
 
     ->register('transport.authhandler')
-    ->asNewInstanceOf('Swift_Transport_Esmtp_AuthHandler')
+
+    ->asNewInstanceOf(\Swift\Transport\Esmtp\AuthHandler::class)
     ->withDependencies(['transport.authhandlers'])
 
     ->register('transport.authhandlers')
     ->asArray()
+
     ->withDependencies([
         'transport.crammd5auth',
         'transport.loginauth',
@@ -62,32 +64,32 @@
     ])
 
     ->register('transport.smtputf8handler')
-    ->asNewInstanceOf('Swift_Transport_Esmtp_SmtpUtf8Handler')
+    ->asNewInstanceOf(\Swift\Transport\Esmtp\SmtpUtf8Handler::class)
 
     ->register('transport.crammd5auth')
-    ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_CramMd5Authenticator')
+    ->asNewInstanceOf(\Swift\Transport\Esmtp\Auth\CramMd5Authenticator::class)
 
     ->register('transport.loginauth')
-    ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_LoginAuthenticator')
+    ->asNewInstanceOf(\Swift\Transport\Esmtp\Auth\LoginAuthenticator::class)
 
     ->register('transport.plainauth')
-    ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_PlainAuthenticator')
+    ->asNewInstanceOf(\Swift\Transport\Esmtp\Auth\PlainAuthenticator::class)
 
     ->register('transport.xoauth2auth')
-    ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_XOAuth2Authenticator')
+    ->asNewInstanceOf(\Swift\Transport\Esmtp\Auth\XOAuth2Authenticator::class)
 
     ->register('transport.ntlmauth')
-    ->asNewInstanceOf('Swift_Transport_Esmtp_Auth_NTLMAuthenticator')
+    ->asNewInstanceOf(\Swift\Transport\Esmtp\Auth\NTLMAuthenticator::class)
 
     ->register('transport.eventdispatcher')
-    ->asNewInstanceOf('Swift_Events_SimpleEventDispatcher')
+    ->asNewInstanceOf(\Swift\Events\SimpleEventDispatcher::class)
 
     ->register('transport.replacementfactory')
-    ->asSharedInstanceOf('Swift_StreamFilters_StringReplacementFilterFactory')
+    ->asSharedInstanceOf(\Swift\StreamFilters\StringReplacementFilterFactory::class)
 
     ->register('address.idnaddressencoder')
-    ->asNewInstanceOf('Swift_AddressEncoder_IdnAddressEncoder')
+    ->asNewInstanceOf(\Swift\AddressEncoder\IdnAddressEncoder::class)
 
     ->register('address.utf8addressencoder')
-    ->asNewInstanceOf('Swift_AddressEncoder_Utf8AddressEncoder')
+    ->asNewInstanceOf(\Swift\AddressEncoder\Utf8AddressEncoder::class)
 ;
