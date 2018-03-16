@@ -8,24 +8,29 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Events\SendListener;
+use Swift\Events\SendEvent;
+
 /**
  * Does real time reporting of pass/fail for each recipient.
  *
  * @author Chris Corbyn
  */
-class Swift_Plugins_ReporterPlugin implements Swift_Events_SendListener
+class ReporterPlugin implements SendListener
 {
     /**
      * The reporter backend which takes notifications.
      *
-     * @var Swift_Plugins_Reporter
+     * @var Reporter
      */
     private $reporter;
 
     /**
      * Create a new ReporterPlugin using $reporter.
      */
-    public function __construct(Swift_Plugins_Reporter $reporter)
+    public function __construct(Reporter $reporter)
     {
         $this->reporter = $reporter;
     }
@@ -33,25 +38,25 @@ class Swift_Plugins_ReporterPlugin implements Swift_Events_SendListener
     /**
      * Not used.
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(SendEvent $evt)
     {
     }
 
     /**
      * Invoked immediately after the Message is sent.
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(SendEvent $evt)
     {
         $message = $evt->getMessage();
         $failures = array_flip($evt->getFailedRecipients());
         foreach ((array) $message->getTo() as $address => $null) {
-            $this->reporter->notify($message, $address, (array_key_exists($address, $failures) ? Swift_Plugins_Reporter::RESULT_FAIL : Swift_Plugins_Reporter::RESULT_PASS));
+            $this->reporter->notify($message, $address, (array_key_exists($address, $failures) ? Reporter::RESULT_FAIL : Reporter::RESULT_PASS));
         }
         foreach ((array) $message->getCc() as $address => $null) {
-            $this->reporter->notify($message, $address, (array_key_exists($address, $failures) ? Swift_Plugins_Reporter::RESULT_FAIL : Swift_Plugins_Reporter::RESULT_PASS));
+            $this->reporter->notify($message, $address, (array_key_exists($address, $failures) ? Reporter::RESULT_FAIL : Reporter::RESULT_PASS));
         }
         foreach ((array) $message->getBcc() as $address => $null) {
-            $this->reporter->notify($message, $address, (array_key_exists($address, $failures) ? Swift_Plugins_Reporter::RESULT_FAIL : Swift_Plugins_Reporter::RESULT_PASS));
+            $this->reporter->notify($message, $address, (array_key_exists($address, $failures) ? Reporter::RESULT_FAIL : Reporter::RESULT_PASS));
         }
     }
 }

@@ -8,6 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
+use Swift\Events\EventDispatcher;
+use Swift\AddressEncoder;
+use Swift\Mime\SimpleMessage;
+use Swift\TransportException;
+use Swift\Events\SendEvent;
+
 /**
  * SendmailTransport for sending mail through a Sendmail/Postfix (etc..) binary.
  *
@@ -17,7 +25,7 @@
  *
  * @author Chris Corbyn
  */
-class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTransport
+class SendmailTransport extends AbstractSmtpTransport
 {
     /**
      * Connection buffer parameters.
@@ -28,7 +36,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
         'timeout' => 30,
         'blocking' => 1,
         'command' => '/usr/sbin/sendmail -bs',
-        'type' => Swift_Transport_IoBuffer::TYPE_PROCESS,
+        'type' => IoBuffer::TYPE_PROCESS,
         ];
 
     /**
@@ -36,7 +44,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
      *
      * @param string $localDomain
      */
-    public function __construct(Swift_Transport_IoBuffer $buf, Swift_Events_EventDispatcher $dispatcher, $localDomain = '127.0.0.1', Swift_AddressEncoder $addressEncoder = null)
+    public function __construct(IoBuffer $buf, EventDispatcher $dispatcher, $localDomain = '127.0.0.1', AddressEncoder $addressEncoder = null)
     {
         parent::__construct($buf, $dispatcher, $localDomain, $addressEncoder);
     }
@@ -95,7 +103,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
      *
      * @return int
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(SimpleMessage $message, &$failedRecipients = null)
     {
         $failedRecipients = (array) $failedRecipients;
         $command = $this->getCommand();
@@ -132,7 +140,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
             $buffer->terminate();
 
             if ($evt) {
-                $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
+                $evt->setResult(SendEvent::RESULT_SUCCESS);
                 $evt->setFailedRecipients($failedRecipients);
                 $this->eventDispatcher->dispatchEvent($evt, 'sendPerformed');
             }
@@ -141,7 +149,7 @@ class Swift_Transport_SendmailTransport extends Swift_Transport_AbstractSmtpTran
         } elseif (false !== strpos($command, ' -bs')) {
             $count = parent::send($message, $failedRecipients);
         } else {
-            $this->throwException(new Swift_TransportException(
+            $this->throwException(new TransportException(
                 'Unsupported sendmail command flags ['.$command.']. '.
                 'Must be one of "-bs" or "-t" but can include additional flags.'
                 ));

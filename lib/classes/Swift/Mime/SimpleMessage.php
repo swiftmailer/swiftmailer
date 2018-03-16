@@ -8,12 +8,20 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime;
+
+use Swift\InputByteStream;
+use Swift\KeyCache;
+use Swift\IdGenerator;
+use DateTimeInterface;
+use DateTimeImmutable;
+
 /**
  * The default email message class.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
+class SimpleMessage extends MimePart
 {
     const PRIORITY_HIGHEST = 1;
     const PRIORITY_HIGH = 2;
@@ -26,7 +34,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      *
      * @param string $charset
      */
-    public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $charset = null)
+    public function __construct(SimpleHeaderSet $headers, ContentEncoder $encoder, KeyCache $cache, IdGenerator $idGenerator, $charset = null)
     {
         parent::__construct($headers, $encoder, $cache, $idGenerator, $charset);
         $this->getHeaders()->defineOrdering([
@@ -522,7 +530,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      *
      * @return $this
      */
-    public function attach(Swift_Mime_SimpleMimeEntity $entity)
+    public function attach(SimpleMimeEntity $entity)
     {
         $this->setChildren(array_merge($this->getChildren(), [$entity]));
 
@@ -534,7 +542,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      *
      * @return $this
      */
-    public function detach(Swift_Mime_SimpleMimeEntity $entity)
+    public function detach(SimpleMimeEntity $entity)
     {
         $newChildren = [];
         foreach ($this->getChildren() as $child) {
@@ -548,13 +556,13 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     }
 
     /**
-     * Attach a {@link Swift_Mime_SimpleMimeEntity} and return it's CID source.
+     * Attach a {@link SimpleMimeEntity} and return it's CID source.
      *
      * This method should be used when embedding images or other data in a message.
      *
      * @return string
      */
-    public function embed(Swift_Mime_SimpleMimeEntity $entity)
+    public function embed(SimpleMimeEntity $entity)
     {
         $this->attach($entity);
 
@@ -592,9 +600,9 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     }
 
     /**
-     * Write this message to a {@link Swift_InputByteStream}.
+     * Write this message to a {@link InputByteStream}.
      */
-    public function toByteStream(Swift_InputByteStream $is)
+    public function toByteStream(InputByteStream $is)
     {
         if (count($children = $this->getChildren()) > 0 && '' != $this->getBody()) {
             $this->setChildren(array_merge([$this->becomeMimePart()], $children));
@@ -605,7 +613,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
         }
     }
 
-    /** @see Swift_Mime_SimpleMimeEntity::getIdField() */
+    /** @see SimpleMimeEntity::getIdField() */
     protected function getIdField()
     {
         return 'Message-ID';

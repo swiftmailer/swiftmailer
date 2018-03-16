@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins\Decorator;
+
 /**
  * Allows customization of Messages on-the-fly.
  *
  * @author Chris Corbyn
  */
-interface Swift_Plugins_Decorator_Replacements
+interface Replacements
 {
     /**
      * Return the array of replacements for $address.

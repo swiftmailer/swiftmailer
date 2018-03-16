@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
+use Swift\Transport;
+
 /**
  * Generated when a response is received on a SMTP connection.
  *
  * @author Chris Corbyn
  */
-class Swift_Events_ResponseEvent extends Swift_Events_EventObject
+class ResponseEvent extends EventObject
 {
     /**
      * The overall result.
@@ -35,7 +39,7 @@ class Swift_Events_ResponseEvent extends Swift_Events_EventObject
      * @param string $response
      * @param bool   $valid
      */
-    public function __construct(Swift_Transport $source, $response, $valid = false)
+    public function __construct(Transport $source, $response, $valid = false)
     {
         parent::__construct($source);
         $this->response = $response;

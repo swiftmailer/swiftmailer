@@ -8,6 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Signers;
+
+use Swift\Message;
+use Swift\ByteStream\TemporaryFileByteStream;
+use Swift\IoException;
+use Swift\Mime\Header;
+use Swift\MimePart;
+use Swift\Mime\ContentEncoder\PlainContentEncoder;
+use Swift\InputByteStream;
+use Swift\OutputByteStream;
+use Swift\Mime\ContentEncoder\NullContentEncoder;
+
 /**
  * MIME Message Signer used to apply S/MIME Signature/Encryption to a message.
  *
@@ -15,7 +27,7 @@
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  * @author Jan Flora <jf@penneo.com>
  */
-class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
+class SMimeSigner implements BodySigner
 {
     protected $signCertificate;
     protected $signPrivateKey;
@@ -197,11 +209,11 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     }
 
     /**
-     * Change the Swift_Message to apply the signing.
+     * Change the \Swift\Message to apply the signing.
      *
      * @return $this
      */
-    public function signMessage(Swift_Message $message)
+    public function signMessage(Message $message)
     {
         if (null === $this->signCertificate && null === $this->encryptCert) {
             return $this;
@@ -229,7 +241,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * Sign a Swift message.
      */
-    protected function smimeSignMessage(Swift_Message $message)
+    protected function smimeSignMessage(Message $message)
     {
         // If we don't have a certificate we can't sign the message
         if (null === $this->signCertificate) {
@@ -259,10 +271,10 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         }
 
         // Copy the cloned message into a temporary file stream
-        $messageStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $messageStream = new TemporaryFileByteStream();
         $signMessage->toByteStream($messageStream);
         $messageStream->commit();
-        $signedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $signedMessageStream = new TemporaryFileByteStream();
 
         // Sign the message using openssl
         if (!openssl_pkcs7_sign(
@@ -275,7 +287,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
                 $this->extraCerts
             )
         ) {
-            throw new Swift_IoException(sprintf('Failed to sign S/Mime message. Error: "%s".', openssl_error_string()));
+            throw new IoException(sprintf('Failed to sign S/Mime message. Error: "%s".', openssl_error_string()));
         }
 
         // Parse the resulting signed message content back into the Swift message
@@ -286,7 +298,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * Encrypt a Swift message.
      */
-    protected function smimeEncryptMessage(Swift_Message $message)
+    protected function smimeEncryptMessage(Message $message)
     {
         // If we don't have a certificate we can't encrypt the message
         if (null === $this->encryptCert) {
@@ -317,10 +329,10 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
         // Convert the message content (including headers) to a string
         // and place it in a temporary file
-        $messageStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $messageStream = new TemporaryFileByteStream();
         $encryptMessage->toByteStream($messageStream);
         $messageStream->commit();
-        $encryptedMessageStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $encryptedMessageStream = new TemporaryFileByteStream();
 
         // Encrypt the message
         if (!openssl_pkcs7_encrypt(
@@ -332,7 +344,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
                 $this->encryptCipher
             )
         ) {
-            throw new Swift_IoException(sprintf('Failed to encrypt S/Mime message. Error: "%s".', openssl_error_string()));
+            throw new IoException(sprintf('Failed to encrypt S/Mime message. Error: "%s".', openssl_error_string()));
         }
 
         // Parse the resulting signed message content back into the Swift message
@@ -344,8 +356,8 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      * Copy named headers from one Swift message to another.
      */
     protected function copyHeaders(
-        Swift_Message $fromMessage,
-        Swift_Message $toMessage,
+        Message $fromMessage,
+        Message $toMessage,
         array $headers = []
     ) {
         foreach ($headers as $header) {
@@ -358,7 +370,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      *
      * @param string $headerName
      */
-    protected function copyHeader(Swift_Message $fromMessage, Swift_Message $toMessage, $headerName)
+    protected function copyHeader(Message $fromMessage, Message $toMessage, $headerName)
     {
         $header = $fromMessage->getHeaders()->get($headerName);
         if (!$header) {
@@ -366,10 +378,10 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         }
         $headers = $toMessage->getHeaders();
         switch ($header->getFieldType()) {
-            case Swift_Mime_Header::TYPE_TEXT:
+            case Header::TYPE_TEXT:
                 $headers->addTextHeader($header->getFieldName(), $header->getValue());
                 break;
-            case Swift_Mime_Header::TYPE_PARAMETERIZED:
+            case Header::TYPE_PARAMETERIZED:
                 $headers->addParameterizedHeader(
                     $header->getFieldName(),
                     $header->getValue(),
@@ -382,7 +394,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * Remove all headers from a Swift message.
      */
-    protected function clearAllHeaders(Swift_Message $message)
+    protected function clearAllHeaders(Message $message)
     {
         $headers = $message->getHeaders();
         foreach ($headers->listAll() as $header) {
@@ -391,27 +403,27 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     }
 
     /**
-     * Wraps a Swift_Message in a message/rfc822 MIME part.
+     * Wraps a \Swift\Message in a message/rfc822 MIME part.
      *
-     * @return Swift_MimePart
+     * @return \Swift\MimePart
      */
-    protected function wrapMimeMessage(Swift_Message $message)
+    protected function wrapMimeMessage(Message $message)
     {
         // Start by copying the original message into a message stream
-        $messageStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $messageStream = new TemporaryFileByteStream();
         $message->toByteStream($messageStream);
         $messageStream->commit();
 
         // Create a new MIME part that wraps the original stream
-        $wrappedMessage = new Swift_MimePart($messageStream, 'message/rfc822');
-        $wrappedMessage->setEncoder(new Swift_Mime_ContentEncoder_PlainContentEncoder('7bit'));
+        $wrappedMessage = new MimePart($messageStream, 'message/rfc822');
+        $wrappedMessage->setEncoder(new PlainContentEncoder('7bit'));
 
         return $wrappedMessage;
     }
 
-    protected function parseSSLOutput(Swift_InputByteStream $inputStream, Swift_Message $message)
+    protected function parseSSLOutput(InputByteStream $inputStream, Message $message)
     {
-        $messageStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $messageStream = new TemporaryFileByteStream();
         $this->copyFromOpenSSLOutput($inputStream, $messageStream);
 
         $this->streamToMime($messageStream, $message);
@@ -420,7 +432,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     /**
      * Merges an OutputByteStream from OpenSSL to a Swift_Message.
      */
-    protected function streamToMime(Swift_OutputByteStream $fromStream, Swift_Message $message)
+    protected function streamToMime(OutputByteStream $fromStream, Message $message)
     {
         // Parse the stream into headers and body
         list($headers, $messageStream) = $this->parseStream($fromStream);
@@ -444,7 +456,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
 
         // We use the null content encoder, since the body is already encoded
         // according to the transfer encoding specified in the stream
-        $message->setEncoder(new Swift_Mime_ContentEncoder_NullContentEncoder($encoding));
+        $message->setEncoder(new NullContentEncoder($encoding));
 
         // Set the disposition, if present
         if (isset($headers['content-disposition'])) {
@@ -464,7 +476,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
      *
      * @return array
      */
-    protected function parseStream(Swift_OutputByteStream $emailStream)
+    protected function parseStream(OutputByteStream $emailStream)
     {
         $bufferLength = 78;
         $headerData = '';
@@ -506,7 +518,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         }
 
         // Read the entire email body into a byte stream
-        $bodyStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $bodyStream = new TemporaryFileByteStream();
 
         // Skip the header and separator and point to the body
         $emailStream->setReadPointer($headersPosEnd + strlen($headerBodySeparator));
@@ -520,10 +532,10 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         return [$headers, $bodyStream];
     }
 
-    protected function copyFromOpenSSLOutput(Swift_OutputByteStream $fromStream, Swift_InputByteStream $toStream)
+    protected function copyFromOpenSSLOutput(OutputByteStream $fromStream, InputByteStream $toStream)
     {
         $bufferLength = 4096;
-        $filteredStream = new Swift_ByteStream_TemporaryFileByteStream();
+        $filteredStream = new TemporaryFileByteStream();
         $filteredStream->addFilter($this->replacementFactory->createFilter("\r\n", "\n"), 'CRLF to LF');
         $filteredStream->addFilter($this->replacementFactory->createFilter("\n", "\r\n"), 'LF to CRLF');
 

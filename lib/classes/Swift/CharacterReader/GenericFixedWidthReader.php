@@ -8,13 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\CharacterReader;
+
+use Swift\CharacterReader as CharacterReaderInterface;
+
 /**
  * Provides fixed-width byte sizes for reading fixed-width character sets.
  *
  * @author     Chris Corbyn
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
-class Swift_CharacterReader_GenericFixedWidthReader implements Swift_CharacterReader
+class GenericFixedWidthReader implements CharacterReaderInterface
 {
     /**
      * The number of bytes in a single character.

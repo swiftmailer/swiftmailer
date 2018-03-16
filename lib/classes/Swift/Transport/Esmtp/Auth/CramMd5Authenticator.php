@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport\Esmtp\Auth;
+
+use Swift\Transport\Esmtp\Authenticator;
+use Swift\Transport\SmtpAgent;
+use Swift\TransportException;
+
 /**
  * Handles CRAM-MD5 authentication.
  *
  * @author Chris Corbyn
  */
-class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport_Esmtp_Authenticator
+class CramMd5Authenticator implements Authenticator
 {
     /**
      * Get the name of the AUTH mechanism this Authenticator handles.
@@ -33,7 +39,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport
      *
      * @return bool
      */
-    public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
+    public function authenticate(SmtpAgent $agent, $username, $password)
     {
         try {
             $challenge = $agent->executeCommand("AUTH CRAM-MD5\r\n", [334]);
@@ -44,7 +50,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport
             $agent->executeCommand(sprintf("%s\r\n", $message), [235]);
 
             return true;
-        } catch (Swift_TransportException $e) {
+        } catch (TransportException $e) {
             $agent->executeCommand("RSET\r\n", [250]);
 
             return false;

@@ -8,12 +8,20 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
+use Swift\Spool;
+use Swift\Events\EventDispatcher;
+use Swift\Mime\SimpleMessage;
+use Swift\Events\SendEvent;
+use Swift\Events\EventListener;
+
 /**
  * Stores Messages in a queue.
  *
  * @author Fabien Potencier
  */
-class Swift_Transport_SpoolTransport implements Swift_Transport
+class SpoolTransport implements Transport
 {
     /** The spool instance */
     private $spool;
@@ -24,7 +32,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
     /**
      * Constructor.
      */
-    public function __construct(Swift_Events_EventDispatcher $eventDispatcher, Swift_Spool $spool = null)
+    public function __construct(EventDispatcher $eventDispatcher, Spool $spool = null)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->spool = $spool;
@@ -35,7 +43,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
      *
      * @return $this
      */
-    public function setSpool(Swift_Spool $spool)
+    public function setSpool(Spool $spool)
     {
         $this->spool = $spool;
 
@@ -45,7 +53,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
     /**
      * Get the spool object.
      *
-     * @return Swift_Spool
+     * @return Spool
      */
     public function getSpool()
     {
@@ -91,7 +99,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
      *
      * @return int The number of sent e-mail's
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(SimpleMessage $message, &$failedRecipients = null)
     {
         if ($evt = $this->eventDispatcher->createSendEvent($this, $message)) {
             $this->eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
@@ -103,7 +111,7 @@ class Swift_Transport_SpoolTransport implements Swift_Transport
         $success = $this->spool->queueMessage($message);
 
         if ($evt) {
-            $evt->setResult($success ? Swift_Events_SendEvent::RESULT_SPOOLED : Swift_Events_SendEvent::RESULT_FAILED);
+            $evt->setResult($success ? SendEvent::RESULT_SPOOLED : SendEvent::RESULT_FAILED);
             $this->eventDispatcher->dispatchEvent($evt, 'sendPerformed');
         }
 

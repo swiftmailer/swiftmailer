@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
+use Swift\InputByteStream;
+use Swift\OutputByteStream;
+
 /**
  * Buffers input and output to a resource.
  *
  * @author Chris Corbyn
  */
-interface Swift_Transport_IoBuffer extends Swift_InputByteStream, Swift_OutputByteStream
+interface IoBuffer extends InputByteStream, OutputByteStream
 {
     /** A socket buffer over TCP */
     const TYPE_SOCKET = 0x0001;

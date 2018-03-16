@@ -8,6 +8,12 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\Headers;
+
+use Swift\Mime\HeaderEncoder;
+use Swift\AddressEncoder;
+use Swift\AddressEncoder\IdnAddressEncoder;
+use Swift\RfcComplianceException;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 
@@ -16,7 +22,7 @@ use Egulias\EmailValidator\Validation\RFCValidation;
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
+class MailboxHeader extends AbstractHeader
 {
     /**
      * The mailboxes used in this Header.
@@ -39,12 +45,12 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $name of Header
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
+    public function __construct($name, HeaderEncoder $encoder, EmailValidator $emailValidator, AddressEncoder $addressEncoder = null)
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);
         $this->emailValidator = $emailValidator;
-        $this->addressEncoder = $addressEncoder ?? new Swift_AddressEncoder_IdnAddressEncoder();
+        $this->addressEncoder = $addressEncoder ?? new IdnAddressEncoder();
     }
 
     /**
@@ -67,7 +73,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param mixed $model
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     public function setFieldBodyModel($model)
     {
@@ -79,7 +85,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * This method returns an associative array like {@link getNameAddresses()}
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      *
      * @return array
      */
@@ -110,7 +116,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string|string[] $mailboxes
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     public function setNameAddresses($mailboxes)
     {
@@ -139,7 +145,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      * @see getNameAddresses()
      * @see toString()
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      *
      * @return string[]
      */
@@ -195,7 +201,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string[] $addresses
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     public function setAddresses($addresses)
     {
@@ -235,7 +241,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @see toString()
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      *
      * @return string
      */
@@ -294,7 +300,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string[] $mailboxes
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      *
      * @return string
      */
@@ -347,12 +353,12 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $address
      *
-     * @throws Swift_RfcComplianceException If invalid.
+     * @throws RfcComplianceException If invalid.
      */
     private function assertValidAddress($address)
     {
         if (!$this->emailValidator->isValid($address, new RFCValidation())) {
-            throw new Swift_RfcComplianceException(
+            throw new RfcComplianceException(
                 'Address in mailbox given ['.$address.'] does not comply with RFC 2822, 3.6.2.'
             );
         }

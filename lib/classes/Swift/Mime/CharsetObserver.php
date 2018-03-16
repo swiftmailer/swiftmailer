@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime;
+
 /**
  * Observes changes in an Mime entity's character set.
  *
  * @author Chris Corbyn
  */
-interface Swift_Mime_CharsetObserver
+interface CharsetObserver
 {
     /**
      * Notify this observer that the entity's charset has changed.

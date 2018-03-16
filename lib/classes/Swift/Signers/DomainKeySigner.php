@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Signers;
+
+use Swift\InputByteStream;
+use Swift\Mime\SimpleHeaderSet;
+use Swift\SwiftException;
+
 /**
  * DomainKey Signer used to apply DomainKeys Signature to a message.
  *
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
-class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
+class DomainKeySigner implements HeaderSigner
 {
     /**
      * PrivateKey.
@@ -82,7 +88,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     /**
      * Stores the signature header.
      *
-     * @var Swift_Mime_Headers_ParameterizedHeader
+     * @var \Swift\Mime\Headers\ParameterizedHeader
      */
     protected $domainKeyHeader;
 
@@ -152,7 +158,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @return int
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      *
      * @return $this
      */
@@ -170,7 +176,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      * For any bytes that are currently buffered inside the stream, force them
      * off the buffer.
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      *
      * @return $this
      */
@@ -188,7 +194,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @return $this
      */
-    public function bind(Swift_InputByteStream $is)
+    public function bind(InputByteStream $is)
     {
         // Don't have to mirror anything
         $this->bound[] = $is;
@@ -205,7 +211,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @return $this
      */
-    public function unbind(Swift_InputByteStream $is)
+    public function unbind(InputByteStream $is)
     {
         // Don't have to mirror anything
         foreach ($this->bound as $k => $stream) {
@@ -223,7 +229,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      * Flush the contents of the stream (empty it) and set the internal pointer
      * to the beginning.
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      *
      * @return $this
      */
@@ -342,7 +348,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @return $this
      */
-    public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
+    public function setHeaders(SimpleHeaderSet $headers)
     {
         $this->startHash();
         $this->canonData = '';
@@ -372,7 +378,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
      *
      * @return $this
      */
-    public function addSignature(Swift_Mime_SimpleHeaderSet $headers)
+    public function addSignature(SimpleHeaderSet $headers)
     {
         // Prepare the DomainKey-Signature Header
         $params = ['a' => $this->hashAlgorithm, 'b' => chunk_split(base64_encode($this->getEncryptedHash()), 73, ' '), 'c' => $this->canon, 'd' => $this->domainName, 'h' => implode(': ', $this->signedHeaders), 'q' => 'dns', 's' => $this->selector];
@@ -437,7 +443,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
                         }
                     } else {
                         // Wooops Error
-                        throw new Swift_SwiftException('Invalid new line sequence in mail found \n without preceding \r');
+                        throw new SwiftException('Invalid new line sequence in mail found \n without preceding \r');
                     }
                     break;
                 case ' ':
@@ -485,7 +491,7 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * @throws Swift_SwiftException
+     * @throws \Swift\SwiftException
      *
      * @return string
      */
@@ -494,11 +500,11 @@ class Swift_Signers_DomainKeySigner implements Swift_Signers_HeaderSigner
         $signature = '';
         $pkeyId = openssl_get_privatekey($this->privateKey);
         if (!$pkeyId) {
-            throw new Swift_SwiftException('Unable to load DomainKey Private Key ['.openssl_error_string().']');
+            throw new SwiftException('Unable to load DomainKey Private Key ['.openssl_error_string().']');
         }
         if (openssl_sign($this->canonData, $signature, $pkeyId, OPENSSL_ALGO_SHA1)) {
             return $signature;
         }
-        throw new Swift_SwiftException('Unable to sign DomainKey Hash  ['.openssl_error_string().']');
+        throw new SwiftException('Unable to sign DomainKey Hash  ['.openssl_error_string().']');
     }
 }

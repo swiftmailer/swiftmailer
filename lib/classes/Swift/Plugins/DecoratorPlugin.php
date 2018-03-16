@@ -8,13 +8,20 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Events\SendListener;
+use Swift\Events\SendEvent;
+use Swift\Plugins\Decorator\Replacements;
+use Swift\Mime\SimpleMessage;
+
 /**
  * Allows customization of Messages on-the-fly.
  *
  * @author Chris Corbyn
  * @author Fabien Potencier
  */
-class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_Plugins_Decorator_Replacements
+class DecoratorPlugin implements SendListener, Replacements
 {
     /** The replacement map */
     private $replacements;
@@ -65,7 +72,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
      */
     public function setReplacements($replacements)
     {
-        if (!($replacements instanceof Swift_Plugins_Decorator_Replacements)) {
+        if (!($replacements instanceof Replacements)) {
             $this->replacements = (array) $replacements;
         } else {
             $this->replacements = $replacements;
@@ -75,7 +82,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
     /**
      * Invoked immediately before the Message is sent.
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(SendEvent $evt)
     {
         $message = $evt->getMessage();
         $this->restoreMessage($message);
@@ -153,7 +160,7 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
      */
     public function getReplacementsFor($address)
     {
-        if ($this->replacements instanceof Swift_Plugins_Decorator_Replacements) {
+        if ($this->replacements instanceof Replacements) {
             return $this->replacements->getReplacementsFor($address);
         }
 
@@ -163,13 +170,13 @@ class Swift_Plugins_DecoratorPlugin implements Swift_Events_SendListener, Swift_
     /**
      * Invoked immediately after the Message is sent.
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(SendEvent $evt)
     {
         $this->restoreMessage($evt->getMessage());
     }
 
     /** Restore a changed message back to its original state */
-    private function restoreMessage(Swift_Mime_SimpleMessage $message)
+    private function restoreMessage(SimpleMessage $message)
     {
         if ($this->lastMessage === $message) {
             if (isset($this->originalBody)) {

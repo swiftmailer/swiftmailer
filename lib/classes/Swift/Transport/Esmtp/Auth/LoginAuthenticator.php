@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport\Esmtp\Auth;
+
+use Swift\Transport\Esmtp\Authenticator;
+use Swift\Transport\SmtpAgent;
+use Swift\TransportException;
+
 /**
  * Handles LOGIN authentication.
  *
  * @author Chris Corbyn
  */
-class Swift_Transport_Esmtp_Auth_LoginAuthenticator implements Swift_Transport_Esmtp_Authenticator
+class LoginAuthenticator implements Authenticator
 {
     /**
      * Get the name of the AUTH mechanism this Authenticator handles.
@@ -33,7 +39,7 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticator implements Swift_Transport_E
      *
      * @return bool
      */
-    public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
+    public function authenticate(SmtpAgent $agent, $username, $password)
     {
         try {
             $agent->executeCommand("AUTH LOGIN\r\n", [334]);
@@ -41,7 +47,7 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticator implements Swift_Transport_E
             $agent->executeCommand(sprintf("%s\r\n", base64_encode($password)), [235]);
 
             return true;
-        } catch (Swift_TransportException $e) {
+        } catch (TransportException $e) {
             $agent->executeCommand("RSET\r\n", [250]);
 
             return false;

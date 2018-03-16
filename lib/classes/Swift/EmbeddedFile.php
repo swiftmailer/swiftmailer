@@ -8,27 +8,32 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Mime\EmbeddedFile as BaseEmbeddedFile;
+use Swift\ByteStream\FileByteStream;
+
 /**
  * An embedded file, in a multipart message.
  *
  * @author Chris Corbyn
  */
-class Swift_EmbeddedFile extends Swift_Mime_EmbeddedFile
+class EmbeddedFile extends BaseEmbeddedFile
 {
     /**
      * Create a new EmbeddedFile.
      *
      * Details may be optionally provided to the constructor.
      *
-     * @param string|Swift_OutputByteStream $data
+     * @param string|\Swift\OutputByteStream $data
      * @param string                        $filename
      * @param string                        $contentType
      */
     public function __construct($data = null, $filename = null, $contentType = null)
     {
         call_user_func_array(
-            [$this, 'Swift_Mime_EmbeddedFile::__construct'],
-            Swift_DependencyContainer::getInstance()
+            [$this, '\\Swift\\Mime\\EmbeddedFile::__construct'],
+            DependencyContainer::getInstance()
                 ->createDependenciesFor('mime.embeddedfile')
             );
 
@@ -44,10 +49,10 @@ class Swift_EmbeddedFile extends Swift_Mime_EmbeddedFile
      *
      * @param string $path
      *
-     * @return Swift_Mime_EmbeddedFile
+     * @return \Swift\Mime\EmbeddedFile
      */
     public static function fromPath($path)
     {
-        return (new self())->setFile(new Swift_ByteStream_FileByteStream($path));
+        return (new self())->setFile(new FileByteStream($path));
     }
 }

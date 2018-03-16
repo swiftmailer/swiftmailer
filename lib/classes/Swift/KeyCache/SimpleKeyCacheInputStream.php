@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\KeyCache;
+
+use Swift\KeyCache as KeyCacheInterface;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+
 /**
  * Writes data to a KeyCache using a stream.
  *
  * @author Chris Corbyn
  */
-class Swift_KeyCache_SimpleKeyCacheInputStream implements Swift_KeyCache_KeyCacheInputStream
+class SimpleKeyCacheInputStream implements KeyCacheInputStream
 {
     /** The KeyCache being written to */
     private $keyCache;
@@ -30,7 +36,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStream implements Swift_KeyCache_KeyCach
     /**
      * Set the KeyCache to wrap.
      */
-    public function setKeyCache(Swift_KeyCache $keyCache)
+    public function setKeyCache(KeyCacheInterface $keyCache)
     {
         $this->keyCache = $keyCache;
     }
@@ -38,7 +44,7 @@ class Swift_KeyCache_SimpleKeyCacheInputStream implements Swift_KeyCache_KeyCach
     /**
      * Specify a stream to write through for each write().
      */
-    public function setWriteThroughStream(Swift_InputByteStream $is)
+    public function setWriteThroughStream(InputByteStream $is)
     {
         $this->writeThrough = $is;
     }
@@ -47,9 +53,9 @@ class Swift_KeyCache_SimpleKeyCacheInputStream implements Swift_KeyCache_KeyCach
      * Writes $bytes to the end of the stream.
      *
      * @param string                $bytes
-     * @param Swift_InputByteStream $is    optional
+     * @param \Swift\InputByteStream $is    optional
      */
-    public function write($bytes, Swift_InputByteStream $is = null)
+    public function write($bytes, InputByteStream $is = null)
     {
         $this->keyCache->setString(
             $this->nsKey, $this->itemKey, $bytes, Swift_KeyCache::MODE_APPEND
@@ -72,14 +78,14 @@ class Swift_KeyCache_SimpleKeyCacheInputStream implements Swift_KeyCache_KeyCach
     /**
      * Not used.
      */
-    public function bind(Swift_InputByteStream $is)
+    public function bind(InputByteStream $is)
     {
     }
 
     /**
      * Not used.
      */
-    public function unbind(Swift_InputByteStream $is)
+    public function unbind(InputByteStream $is)
     {
     }
 

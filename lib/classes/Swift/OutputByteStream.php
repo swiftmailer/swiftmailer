@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * An abstract means of reading data.
  *
@@ -16,7 +18,7 @@
  *
  * @author Chris Corbyn
  */
-interface Swift_OutputByteStream
+interface OutputByteStream
 {
     /**
      * Reads $length bytes from the stream into a string and moves the pointer
@@ -27,7 +29,7 @@ interface Swift_OutputByteStream
      *
      * @param int $length
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      *
      * @return string|bool
      */
@@ -38,7 +40,7 @@ interface Swift_OutputByteStream
      *
      * @param int $byteOffset
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      *
      * @return bool
      */

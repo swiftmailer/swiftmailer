@@ -8,13 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Mime\SimpleMessage;
+use DirectoryIterator;
+
 /**
  * Stores Messages on the filesystem.
  *
  * @author Fabien Potencier
  * @author Xavier De Cock <xdecock@gmail.com>
  */
-class Swift_FileSpool extends Swift_ConfigurableSpool
+class FileSpool extends ConfigurableSpool
 {
     /** The spool directory */
     private $path;
@@ -31,7 +36,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      *
      * @param string $path
      *
-     * @throws Swift_IoException
+     * @throws \Swift\IoException
      */
     public function __construct($path)
     {
@@ -39,7 +44,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
 
         if (!file_exists($this->path)) {
             if (!mkdir($this->path, 0777, true)) {
-                throw new Swift_IoException(sprintf('Unable to create path "%s".', $this->path));
+                throw new IoException(sprintf('Unable to create path "%s".', $this->path));
             }
         }
     }
@@ -83,13 +88,13 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Queues a message.
      *
-     * @param Swift_Mime_SimpleMessage $message The message to store
+     * @param \Swift\Mime\SimpleMessage $message The message to store
      *
      * @throws Swift_IoException
      *
      * @return bool
      */
-    public function queueMessage(Swift_Mime_SimpleMessage $message)
+    public function queueMessage(SimpleMessage $message)
     {
         $ser = serialize($message);
         $fileName = $this->path.'/'.$this->getRandomString(10);
@@ -108,7 +113,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
             }
         }
 
-        throw new Swift_IoException(sprintf('Unable to create a file for enqueuing Message in "%s".', $this->path));
+        throw new IoException(sprintf('Unable to create a file for enqueuing Message in "%s".', $this->path));
     }
 
     /**
@@ -133,12 +138,12 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Sends messages using the given transport instance.
      *
-     * @param Swift_Transport $transport        A transport instance
+     * @param \Swift\Transport $transport        A transport instance
      * @param string[]        $failedRecipients An array of failures by-reference
      *
      * @return int The number of sent e-mail's
      */
-    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
+    public function flushQueue(Transport $transport, &$failedRecipients = null)
     {
         $directoryIterator = new DirectoryIterator($this->path);
 

@@ -8,6 +8,10 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\StreamFilters;
+
+use Swift\StreamFilter;
+
 /**
  * Processes bytes as they pass through a buffer and replaces sequences in it.
  *
@@ -15,7 +19,7 @@
  *
  * @author  Chris Corbyn
  */
-class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilter
+class ByteArrayReplacementFilter implements StreamFilter
 {
     /** The replacement(s) to make */
     private $replace;

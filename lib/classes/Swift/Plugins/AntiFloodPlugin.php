@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Events\SendListener;
+use Swift\Events\SendEvent;
+
 /**
  * Reduces network flooding when sending large amounts of mail.
  *
  * @author Chris Corbyn
  */
-class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_Plugins_Sleeper
+class AntiFloodPlugin implements SendListener, Sleeper
 {
     /**
      * The number of emails to send before restarting Transport.
@@ -39,7 +44,7 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
     /**
      * The Sleeper instance for sleeping.
      *
-     * @var Swift_Plugins_Sleeper
+     * @var Sleeper
      */
     private $sleeper;
 
@@ -48,9 +53,9 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
      *
      * @param int                   $threshold
      * @param int                   $sleep     time
-     * @param Swift_Plugins_Sleeper $sleeper   (not needed really)
+     * @param Sleeper $sleeper   (not needed really)
      */
-    public function __construct($threshold = 99, $sleep = 0, Swift_Plugins_Sleeper $sleeper = null)
+    public function __construct($threshold = 99, $sleep = 0, Sleeper $sleeper = null)
     {
         $this->setThreshold($threshold);
         $this->setSleepTime($sleep);
@@ -100,14 +105,14 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
     /**
      * Invoked immediately before the Message is sent.
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(SendEvent $evt)
     {
     }
 
     /**
      * Invoked immediately after the Message is sent.
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(SendEvent $evt)
     {
         ++$this->counter;
         if ($this->counter >= $this->threshold) {

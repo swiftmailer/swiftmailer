@@ -8,23 +8,27 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Transport\FailoverTransport as BaseFailoverTransport;
+
 /**
  * Contains a list of redundant Transports so when one fails, the next is used.
  *
  * @author Chris Corbyn
  */
-class Swift_FailoverTransport extends Swift_Transport_FailoverTransport
+class FailoverTransport extends BaseFailoverTransport
 {
     /**
      * Creates a new FailoverTransport with $transports.
      *
-     * @param Swift_Transport[] $transports
+     * @param \Swift\Transport[] $transports
      */
     public function __construct($transports = [])
     {
         call_user_func_array(
-            [$this, 'Swift_Transport_FailoverTransport::__construct'],
-            Swift_DependencyContainer::getInstance()
+            [$this, '\\Swift\\Transport\\FailoverTransport::__construct'],
+            DependencyContainer::getInstance()
                 ->createDependenciesFor('transport.failover')
             );
 

@@ -8,13 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Signers;
+
+use Swift\SwiftException;
+use Swift\Mime\SimpleHeaderSet;
+use Swift\Mime\Headers\OpenDKIMHeader;
+
 /**
  * DKIM Signer used to apply DKIM Signature to a message
  * Takes advantage of pecl extension.
  *
  * @author     Xavier De Cock <xdecock@gmail.com>
  */
-class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
+class OpenDKIMSigner extends DKIMSigner
 {
     private $peclLoaded = false;
 
@@ -30,7 +36,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     public function __construct($privateKey, $domainName, $selector)
     {
         if (!extension_loaded('opendkim')) {
-            throw new Swift_SwiftException('php-opendkim extension not found');
+            throw new SwiftException('php-opendkim extension not found');
         }
 
         $this->peclLoaded = true;
@@ -38,9 +44,9 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         parent::__construct($privateKey, $domainName, $selector);
     }
 
-    public function addSignature(Swift_Mime_SimpleHeaderSet $headers)
+    public function addSignature(SimpleHeaderSet $headers)
     {
-        $header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
+        $header = new OpenDKIMHeader('DKIM-Signature');
         $headerVal = $this->dkimHandler->getSignatureHeader();
         if ($headerVal === false || is_int($headerVal)) {
             throw new Swift_SwiftException('OpenDKIM Error: '.$this->dkimHandler->getError());
@@ -51,7 +57,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         return $this;
     }
 
-    public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
+    public function setHeaders(SimpleHeaderSet $headers)
     {
         $hash = 'rsa-sha1' == $this->hashAlgorithm ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
         $bodyCanon = 'simple' == $this->bodyCanon ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
@@ -64,7 +70,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
             OpenDKIM::setOption(OpenDKIM::OPTS_FIXEDTIME, time());
         } else {
             if (!OpenDKIM::setOption(OpenDKIM::OPTS_FIXEDTIME, $this->signatureTimestamp)) {
-                throw new Swift_SwiftException('Unable to force signature timestamp ['.openssl_error_string().']');
+                throw new SwiftException('Unable to force signature timestamp ['.openssl_error_string().']');
             }
         }
         if (isset($this->signerIdentity)) {

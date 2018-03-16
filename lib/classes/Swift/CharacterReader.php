@@ -8,13 +8,15 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Analyzes characters for a specific character set.
  *
  * @author Chris Corbyn
  * @author Xavier De Cock <xdecock@gmail.com>
  */
-interface Swift_CharacterReader
+interface CharacterReader
 {
     const MAP_TYPE_INVALID = 0x01;
     const MAP_TYPE_FIXED_LEN = 0x02;

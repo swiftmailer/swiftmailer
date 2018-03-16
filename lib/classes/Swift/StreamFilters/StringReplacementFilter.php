@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\StreamFilters;
+
+use Swift\StreamFilter;
+
 /**
  * Processes bytes as they pass through a buffer and replaces sequences in it.
  *
  * @author Chris Corbyn
  */
-class Swift_StreamFilters_StringReplacementFilter implements Swift_StreamFilter
+class StringReplacementFilter implements StreamFilter
 {
     /** The needle(s) to search for */
     private $search;

@@ -8,20 +8,26 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Mime\SimpleMessage;
+use Swift\Signers\HeaderSigner;
+use Swift\Signers\BodySigner;
+
 /**
  * The Message class for building emails.
  *
  * @author Chris Corbyn
  */
-class Swift_Message extends Swift_Mime_SimpleMessage
+class Message extends SimpleMessage
 {
     /**
-     * @var Swift_Signers_HeaderSigner[]
+     * @var \Swift\Signers\HeaderSigner[]
      */
     private $headerSigners = [];
 
     /**
-     * @var Swift_Signers_BodySigner[]
+     * @var \Swift\Signers\BodySigner[]
      */
     private $bodySigners = [];
 
@@ -43,13 +49,13 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     public function __construct($subject = null, $body = null, $contentType = null, $charset = null)
     {
         call_user_func_array(
-            [$this, 'Swift_Mime_SimpleMessage::__construct'],
-            Swift_DependencyContainer::getInstance()
+            [$this, '\\Swift\\Mime\\SimpleMessage::__construct'],
+            DependencyContainer::getInstance()
                 ->createDependenciesFor('mime.message')
             );
 
         if (!isset($charset)) {
-            $charset = Swift_DependencyContainer::getInstance()
+            $charset = DependencyContainer::getInstance()
                 ->lookup('properties.charset');
         }
         $this->setSubject($subject);
@@ -63,7 +69,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     /**
      * Add a MimePart to this Message.
      *
-     * @param string|Swift_OutputByteStream $body
+     * @param string|\Swift\OutputByteStream $body
      * @param string                        $contentType
      * @param string                        $charset
      *
@@ -71,7 +77,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      */
     public function addPart($body, $contentType = null, $charset = null)
     {
-        return $this->attach((new Swift_MimePart($body, $contentType, $charset))->setEncoder($this->getEncoder()));
+        return $this->attach((new MimePart($body, $contentType, $charset))->setEncoder($this->getEncoder()));
     }
 
     /**
@@ -79,11 +85,11 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      *
      * @return $this
      */
-    public function attachSigner(Swift_Signer $signer)
+    public function attachSigner(Signer $signer)
     {
-        if ($signer instanceof Swift_Signers_HeaderSigner) {
+        if ($signer instanceof HeaderSigner) {
             $this->headerSigners[] = $signer;
-        } elseif ($signer instanceof Swift_Signers_BodySigner) {
+        } elseif ($signer instanceof BodySigner) {
             $this->bodySigners[] = $signer;
         }
 
@@ -95,9 +101,9 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      *
      * @return $this
      */
-    public function detachSigner(Swift_Signer $signer)
+    public function detachSigner(Signer $signer)
     {
-        if ($signer instanceof Swift_Signers_HeaderSigner) {
+        if ($signer instanceof HeaderSigner) {
             foreach ($this->headerSigners as $k => $headerSigner) {
                 if ($headerSigner === $signer) {
                     unset($this->headerSigners[$k]);
@@ -105,7 +111,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
                     return $this;
                 }
             }
-        } elseif ($signer instanceof Swift_Signers_BodySigner) {
+        } elseif ($signer instanceof BodySigner) {
             foreach ($this->bodySigners as $k => $bodySigner) {
                 if ($bodySigner === $signer) {
                     unset($this->bodySigners[$k]);
@@ -154,9 +160,9 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     }
 
     /**
-     * Write this message to a {@link Swift_InputByteStream}.
+     * Write this message to a {@link \Swift\InputByteStream}.
      */
-    public function toByteStream(Swift_InputByteStream $is)
+    public function toByteStream(InputByteStream $is)
     {
         if (empty($this->headerSigners) && empty($this->bodySigners)) {
             parent::toByteStream($is);
@@ -175,7 +181,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
 
     public function __wakeup()
     {
-        Swift_DependencyContainer::getInstance()->createDependenciesFor('mime.message');
+        DependencyContainer::getInstance()->createDependenciesFor('mime.message');
     }
 
     /**
@@ -263,7 +269,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     /**
      * Clone Message Signers.
      *
-     * @see Swift_Mime_SimpleMimeEntity::__clone()
+     * @see \Swift\Mime\SimpleMimeEntity::__clone()
      */
     public function __clone()
     {

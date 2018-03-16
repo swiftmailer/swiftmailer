@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\HeaderEncoder;
+
+use Swift\Encoder\Base64Encoder;
+use Swift\Mime\HeaderEncoder;
+
 /**
  * Handles Base64 (B) Header Encoding in Swift Mailer.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_HeaderEncoder_Base64HeaderEncoder extends Swift_Encoder_Base64Encoder implements Swift_Mime_HeaderEncoder
+class Base64HeaderEncoder extends Base64Encoder implements HeaderEncoder
 {
     /**
      * Get the name of this encoding scheme.

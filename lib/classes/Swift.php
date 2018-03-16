@@ -40,13 +40,16 @@ abstract class Swift
      */
     public static function autoload($class)
     {
+        var_dump("KIFLAA@");
+        var_dump($class);
+        var_dump(strpos($class, 'Swift\\'));
         // Don't interfere with other autoloaders
-        if (0 !== strpos($class, 'Swift_')) {
+        if (0 !== strpos($class, 'Swift\\')) {
             return;
         }
-
-        $path = __DIR__.'/'.str_replace('_', '/', $class).'.php';
-
+        var_dump("WEEEEEEEEE");
+        $path = __DIR__.'/'.str_replace('\\', '/', $class).'.php';
+        var_dump($path);
         if (!file_exists($path)) {
             return;
         }

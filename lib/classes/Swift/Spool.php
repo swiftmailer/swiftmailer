@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Mime\SimpleMessage;
+
 /**
  * Interface for spools.
  *
  * @author Fabien Potencier
  */
-interface Swift_Spool
+interface Spool
 {
     /**
      * Starts this Spool mechanism.
@@ -35,11 +39,11 @@ interface Swift_Spool
     /**
      * Queues a message.
      *
-     * @param Swift_Mime_SimpleMessage $message The message to store
+     * @param SimpleMessage $message The message to store
      *
      * @return bool Whether the operation has succeeded
      */
-    public function queueMessage(Swift_Mime_SimpleMessage $message);
+    public function queueMessage(SimpleMessage $message);
 
     /**
      * Sends messages using the given transport instance.
@@ -49,5 +53,5 @@ interface Swift_Spool
      *
      * @return int The number of sent emails
      */
-    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null);
+    public function flushQueue(Transport $transport, &$failedRecipients = null);
 }

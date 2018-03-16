@@ -8,10 +8,12 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Message ID generator.
  */
-interface Swift_IdGenerator
+interface IdGenerator
 {
     /**
      * Returns a globally unique string to use for Message-ID or Content-ID.

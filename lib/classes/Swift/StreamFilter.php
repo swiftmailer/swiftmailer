@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Processes bytes as they pass through a stream and performs filtering.
  *
  * @author Chris Corbyn
  */
-interface Swift_StreamFilter
+interface StreamFilter
 {
     /**
      * Based on the buffer given, this returns true if more buffering is needed.

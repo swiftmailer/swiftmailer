@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\Headers;
+
+use DateTimeImmutable;
+use DateTimeInterface;
+use DateTime;
+
 /**
  * A Date MIME Header for Swift Mailer.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
+class DateHeader extends AbstractHeader
 {
     /**
      * Date-time value of this Header.

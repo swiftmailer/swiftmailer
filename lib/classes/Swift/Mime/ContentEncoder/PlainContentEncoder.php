@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\ContentEncoder;
+
+use Swift\Mime\ContentEncoder;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+
 /**
  * Handles binary/7/8-bit Transfer Encoding in Swift Mailer.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_ContentEncoder
+class PlainContentEncoder implements ContentEncoder
 {
     /**
      * The name of this encoding scheme (probably 7bit or 8bit).
@@ -65,7 +71,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
      * @param int $firstLineOffset ignored
      * @param int $maxLineLength   optional, 0 means no wrapping will occur
      */
-    public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
+    public function encodeByteStream(OutputByteStream $os, InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
         $leftOver = '';
         while (false !== $bytes = $os->read(8192)) {

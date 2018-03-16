@@ -8,27 +8,32 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Mime\Attachment as BaseAttachment;
+use Swift\ByteStream\FileByteStream;
+
 /**
- * Attachment class for attaching files to a {@link Swift_Mime_SimpleMessage}.
+ * Attachment class for attaching files to a {@link \Swift\Mime\SimpleMessage}.
  *
  * @author Chris Corbyn
  */
-class Swift_Attachment extends Swift_Mime_Attachment
+class Attachment extends BaseAttachment
 {
     /**
      * Create a new Attachment.
      *
      * Details may be optionally provided to the constructor.
      *
-     * @param string|Swift_OutputByteStream $data
+     * @param string|\Swift\OutputByteStream $data
      * @param string                        $filename
      * @param string                        $contentType
      */
     public function __construct($data = null, $filename = null, $contentType = null)
     {
         call_user_func_array(
-            [$this, 'Swift_Mime_Attachment::__construct'],
-            Swift_DependencyContainer::getInstance()
+            [$this, '\\Swift\\Mime\\Attachment::__construct'],
+            DependencyContainer::getInstance()
                 ->createDependenciesFor('mime.attachment')
             );
 
@@ -45,12 +50,12 @@ class Swift_Attachment extends Swift_Mime_Attachment
      * @param string $path
      * @param string $contentType optional
      *
-     * @return Swift_Mime_Attachment
+     * @return \Swift\Mime\Attachment
      */
     public static function fromPath($path, $contentType = null)
     {
         return (new self())->setFile(
-            new Swift_ByteStream_FileByteStream($path),
+            new FileByteStream($path),
             $contentType
         );
     }

@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mailer;
+
 /**
  * Provides an abstract way of specifying recipients for batch sending.
  *
  * @author Chris Corbyn
  */
-interface Swift_Mailer_RecipientIterator
+interface RecipientIterator
 {
     /**
      * Returns true only if there are more recipients to send to.

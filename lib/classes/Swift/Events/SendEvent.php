@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
+use Swift\Transport;
+use Swift\Mime\SimpleMessage;
+
 /**
  * Generated when a message is being sent.
  *
  * @author Chris Corbyn
  */
-class Swift_Events_SendEvent extends Swift_Events_EventObject
+class SendEvent extends EventObject
 {
     /** Sending has yet to occur */
     const RESULT_PENDING = 0x0001;
@@ -54,7 +59,7 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
     /**
      * Create a new SendEvent for $source and $message.
      */
-    public function __construct(Swift_Transport $source, Swift_Mime_SimpleMessage $message)
+    public function __construct(Transport $source, SimpleMessage $message)
     {
         parent::__construct($source);
         $this->message = $message;
@@ -64,7 +69,7 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
     /**
      * Get the Transport used to send the Message.
      *
-     * @return Swift_Transport
+     * @return \Swift\Transport
      */
     public function getTransport()
     {
@@ -74,7 +79,7 @@ class Swift_Events_SendEvent extends Swift_Events_EventObject
     /**
      * Get the Message being sent.
      *
-     * @return Swift_Mime_SimpleMessage
+     * @return \Swift\Mime\SimpleMessage
      */
     public function getMessage()
     {

@@ -8,18 +8,22 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Transport\NullTransport as BaseNullTransport;
+
 /**
  * Pretends messages have been sent, but just ignores them.
  *
  * @author Fabien Potencier
  */
-class Swift_NullTransport extends Swift_Transport_NullTransport
+class NullTransport extends BaseNullTransport
 {
     public function __construct()
     {
         call_user_func_array(
-            [$this, 'Swift_Transport_NullTransport::__construct'],
-            Swift_DependencyContainer::getInstance()
+            [$this, '\\Swift\\Transport\\NullTransport::__construct'],
+            DependencyContainer::getInstance()
                 ->createDependenciesFor('transport.null')
         );
     }

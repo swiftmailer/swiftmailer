@@ -6,7 +6,7 @@
 /*                                                                          */
 /****************************************************************************/
 
-$preferences = Swift_Preferences::getInstance();
+$preferences = \Swift\Preferences::getInstance();
 
 // Sets the default charset so that setCharset() is not needed elsewhere
 $preferences->setCharset('utf-8');

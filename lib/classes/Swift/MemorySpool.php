@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Mime\SimpleMessage;
+
 /**
  * Stores Messages in memory.
  *
  * @author Fabien Potencier
  */
-class Swift_MemorySpool implements Swift_Spool
+class MemorySpool implements Spool
 {
     protected $messages = [];
     private $flushRetries = 3;
@@ -53,11 +57,11 @@ class Swift_MemorySpool implements Swift_Spool
     /**
      * Stores a message in the queue.
      *
-     * @param Swift_Mime_SimpleMessage $message The message to store
+     * @param \Swift\Mime\SimpleMessage $message The message to store
      *
      * @return bool Whether the operation has succeeded
      */
-    public function queueMessage(Swift_Mime_SimpleMessage $message)
+    public function queueMessage(SimpleMessage $message)
     {
         //clone the message to make sure it is not changed while in the queue
         $this->messages[] = clone $message;
@@ -68,12 +72,12 @@ class Swift_MemorySpool implements Swift_Spool
     /**
      * Sends messages using the given transport instance.
      *
-     * @param Swift_Transport $transport        A transport instance
+     * @param \Swift\Transport $transport        A transport instance
      * @param string[]        $failedRecipients An array of failures by-reference
      *
      * @return int The number of sent emails
      */
-    public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
+    public function flushQueue(Transport $transport, &$failedRecipients = null)
     {
         if (!$this->messages) {
             return 0;
@@ -90,7 +94,7 @@ class Swift_MemorySpool implements Swift_Spool
                 while ($message = array_pop($this->messages)) {
                     $count += $transport->send($message, $failedRecipients);
                 }
-            } catch (Swift_TransportException $exception) {
+            } catch (TransportException $exception) {
                 if ($retries) {
                     // re-queue the message at the end of the queue to give a chance
                     // to the other messages to be sent, in case the failure was due to

@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\Headers;
+
+use Swift\Mime\HeaderEncoder;
+
 /**
  * A Simple MIME Header.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractHeader
+class UnstructuredHeader extends AbstractHeader
 {
     /**
      * The value of this Header.
@@ -27,7 +31,7 @@ class Swift_Mime_Headers_UnstructuredHeader extends Swift_Mime_Headers_AbstractH
      *
      * @param string $name
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder)
+    public function __construct($name, HeaderEncoder $encoder)
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);

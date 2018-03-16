@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Exception;
+
 /**
  * I/O Exception class.
  *
  * @author Chris Corbyn
  */
-class Swift_IoException extends Swift_SwiftException
+class IoException extends SwiftException
 {
     /**
      * Create a new IoException with $message.

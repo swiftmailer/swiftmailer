@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use ReflectionClass;
+use BadMethodCallException;
+
 /**
  * Dependency Injection container.
  *
  * @author  Chris Corbyn
  */
-class Swift_DependencyContainer
+class DependencyContainer
 {
     /** Constant for literal value types */
     const TYPE_VALUE = 0x00001;
@@ -96,12 +101,12 @@ class Swift_DependencyContainer
      *
      * @return mixed
      *
-     * @throws Swift_DependencyException If the dependency is not found
+     * @throws \Swift\DependencyException If the dependency is not found
      */
     public function lookup($itemName)
     {
         if (!$this->has($itemName)) {
-            throw new Swift_DependencyException(
+            throw new DependencyException(
                 'Cannot lookup dependency "'.$itemName.'" since it is not registered.'
                 );
         }

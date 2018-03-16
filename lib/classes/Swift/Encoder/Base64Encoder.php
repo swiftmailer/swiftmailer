@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Encoder;
+
+use Swift\Encoder as EncoderInterface;
+
 /**
  * Handles Base 64 Encoding in Swift Mailer.
  *
  * @author Chris Corbyn
  */
-class Swift_Encoder_Base64Encoder implements Swift_Encoder
+class Base64Encoder implements EncoderInterface
 {
     /**
      * Takes an unencoded string and produces a Base64 encoded string from it.

@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\StreamFilters;
+
+use Swift\ReplacementFilterFactory;
+
 /**
  * Creates filters for replacing needles in a string buffer.
  *
  * @author Chris Corbyn
  */
-class Swift_StreamFilters_StringReplacementFilterFactory implements Swift_ReplacementFilterFactory
+class StringReplacementFilterFactory implements ReplacementFilterFactory
 {
     /** Lazy-loaded filters */
     private $filters = [];
@@ -37,7 +41,7 @@ class Swift_StreamFilters_StringReplacementFilterFactory implements Swift_Replac
                 $this->filters[$search][$replace] = [];
             }
 
-            $this->filters[$search][$replace] = new Swift_StreamFilters_StringReplacementFilter($search, $replace);
+            $this->filters[$search][$replace] = new StringReplacementFilter($search, $replace);
         }
 
         return $this->filters[$search][$replace];

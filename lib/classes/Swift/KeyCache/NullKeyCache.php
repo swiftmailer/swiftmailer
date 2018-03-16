@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\KeyCache;
+
+use Swift\KeyCache;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+
 /**
  * A null KeyCache that does not cache at all.
  *
  * @author Chris Corbyn
  */
-class Swift_KeyCache_NullKeyCache implements Swift_KeyCache
+class NullKeyCache implements KeyCache
 {
     /**
      * Set a string into the cache under $itemKey for the namespace $nsKey.
@@ -38,7 +44,7 @@ class Swift_KeyCache_NullKeyCache implements Swift_KeyCache
      * @param string $itemKey
      * @param int    $mode
      */
-    public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os, $mode)
+    public function importFromByteStream($nsKey, $itemKey, OutputByteStream $os, $mode)
     {
     }
 
@@ -50,9 +56,9 @@ class Swift_KeyCache_NullKeyCache implements Swift_KeyCache
      * @param string $nsKey
      * @param string $itemKey
      *
-     * @return Swift_InputByteStream
+     * @return InputByteStream
      */
-    public function getInputByteStream($nsKey, $itemKey, Swift_InputByteStream $writeThrough = null)
+    public function getInputByteStream($nsKey, $itemKey, InputByteStream $writeThrough = null)
     {
     }
 
@@ -73,9 +79,9 @@ class Swift_KeyCache_NullKeyCache implements Swift_KeyCache
      *
      * @param string                $nsKey
      * @param string                $itemKey
-     * @param Swift_InputByteStream $is      to write the data to
+     * @param InputByteStream $is      to write the data to
      */
-    public function exportToByteStream($nsKey, $itemKey, Swift_InputByteStream $is)
+    public function exportToByteStream($nsKey, $itemKey, InputByteStream $is)
     {
     }
 

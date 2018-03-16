@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
 /**
  * Provides timestamp data.
  *
  * @author Chris Corbyn
  */
-interface Swift_Plugins_Timer
+interface Timer
 {
     /**
      * Get the current UNIX timestamp.

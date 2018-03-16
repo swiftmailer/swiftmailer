@@ -8,12 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\ByteStream;
+
+use Swift\InputByteStream;
+use Swift\OutputByteStream;
+use Swift\FileStream;
+use Swift\IoException;
+
 /**
  * Allows reading and writing of bytes to and from a file.
  *
  * @author     Chris Corbyn
  */
-class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterableInputStream implements Swift_FileStream
+class FileByteStream extends AbstractFilterableInputStream implements FileStream
 {
     /** The internal pointer offset */
     private $offset = 0;
@@ -42,7 +49,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
     public function __construct($path, $writable = false)
     {
         if (empty($path)) {
-            throw new Swift_IoException('The path cannot be empty');
+            throw new IoException('The path cannot be empty');
         }
         $this->path = $path;
         $this->mode = $writable ? 'w+b' : 'rb';
@@ -128,7 +135,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
         if (!isset($this->reader)) {
             $pointer = @fopen($this->path, 'rb');
             if (!$pointer) {
-                throw new Swift_IoException('Unable to open file for reading ['.$this->path.']');
+                throw new IoException('Unable to open file for reading ['.$this->path.']');
             }
             $this->reader = $pointer;
             if (0 != $this->offset) {
@@ -197,13 +204,13 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
         } elseif (function_exists('sys_get_temp_dir') && is_writable(sys_get_temp_dir()) && ($tmpFile = tmpfile())) {
             /* We have opened a tmpfile */
         } else {
-            throw new Swift_IoException('Unable to copy the file to make it seekable, sys_temp_dir is not writable, php://memory not available');
+            throw new IoException('Unable to copy the file to make it seekable, sys_temp_dir is not writable, php://memory not available');
         }
         $currentPos = ftell($this->reader);
         fclose($this->reader);
         $source = fopen($this->path, 'rb');
         if (!$source) {
-            throw new Swift_IoException('Unable to open file for copying ['.$this->path.']');
+            throw new IoException('Unable to open file for copying ['.$this->path.']');
         }
         fseek($tmpFile, 0, SEEK_SET);
         while (!feof($source)) {

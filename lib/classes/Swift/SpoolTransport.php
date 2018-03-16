@@ -8,17 +8,21 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Transport\SpoolTransport as TransportSpoolTransport;
+
 /**
  * Stores Messages in a queue.
  *
  * @author Fabien Potencier
  */
-class Swift_SpoolTransport extends Swift_Transport_SpoolTransport
+class SpoolTransport extends TransportSpoolTransport
 {
     /**
      * Create a new SpoolTransport.
      */
-    public function __construct(Swift_Spool $spool)
+    public function __construct(Spool $spool)
     {
         $arguments = Swift_DependencyContainer::getInstance()
             ->createDependenciesFor('transport.spool');

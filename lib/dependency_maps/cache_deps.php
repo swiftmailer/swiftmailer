@@ -1,6 +1,11 @@
 <?php
 
-Swift_DependencyContainer::getInstance()
+use Swift\KeyCache\NullKeyCache;
+use Swift\KeyCache\ArrayKeyCache;
+use Swift\KeyCache\DiskKeyCache;
+use Swift\KeyCache\SimpleKeyCacheInputStream;
+
+\Swift\DependencyContainer::getInstance()
     ->register('cache')
     ->asAliasOf('cache.array')
 
@@ -8,16 +13,16 @@ Swift_DependencyContainer::getInstance()
     ->asValue('/tmp')
 
     ->register('cache.null')
-    ->asSharedInstanceOf('Swift_KeyCache_NullKeyCache')
+    ->asSharedInstanceOf(NullKeyCache::class)
 
     ->register('cache.array')
-    ->asSharedInstanceOf('Swift_KeyCache_ArrayKeyCache')
+    ->asSharedInstanceOf(ArrayKeyCache::class)
     ->withDependencies(['cache.inputstream'])
 
     ->register('cache.disk')
-    ->asSharedInstanceOf('Swift_KeyCache_DiskKeyCache')
+    ->asSharedInstanceOf(DiskKeyCache::class)
     ->withDependencies(['cache.inputstream', 'tempdir'])
 
     ->register('cache.inputstream')
-    ->asNewInstanceOf('Swift_KeyCache_SimpleKeyCacheInputStream')
+    ->asNewInstanceOf(SimpleKeyCacheInputStream::class)
 ;

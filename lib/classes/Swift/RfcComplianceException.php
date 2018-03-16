@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * RFC Compliance Exception class.
  *
  * @author Chris Corbyn
  */
-class Swift_RfcComplianceException extends Swift_SwiftException
+class RfcComplianceException extends SwiftException
 {
     /**
      * Create a new RfcComplianceException with $message.

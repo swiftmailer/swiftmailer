@@ -8,17 +8,23 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
+use Swift\Transport;
+use Swift\Mime\SimpleMessage;
+use Swift\TransportException;
+
 /**
  * Contains a list of redundant Transports so when one fails, the next is used.
  *
  * @author Chris Corbyn
  */
-class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTransport
+class FailoverTransport extends LoadBalancedTransport
 {
     /**
      * Registered transport currently used.
      *
-     * @var Swift_Transport
+     * @var Transport
      */
     private $currentTransport;
 
@@ -56,7 +62,7 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
      *
      * @return int
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(SimpleMessage $message, &$failedRecipients = null)
     {
         $maxTransports = count($this->transports);
         $sent = 0;
@@ -74,13 +80,13 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
 
                     return $sent;
                 }
-            } catch (Swift_TransportException $e) {
+            } catch (TransportException $e) {
                 $this->killCurrentTransport();
             }
         }
 
         if (0 == count($this->transports)) {
-            throw new Swift_TransportException(
+            throw new TransportException(
                 'All Transports in FailoverTransport failed, or no Transports available'
                 );
         }

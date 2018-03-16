@@ -8,12 +8,20 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime;
+
+use Swift\KeyCache;
+use Swift\IdGenerator;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+use Swift\RfcComplianceException;
+
 /**
  * A MIME entity, in a multipart message.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_Mime_EncodingObserver
+class SimpleMimeEntity implements CharsetObserver, EncodingObserver
 {
     /** Main message document; there can only be one of these */
     const LEVEL_TOP = 16;
@@ -85,7 +93,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Create a new SimpleMimeEntity with $headers, $encoder and $cache.
      */
-    public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator)
+    public function __construct(SimpleHeaderSet $headers, ContentEncoder $encoder, KeyCache $cache, IdGenerator $idGenerator)
     {
         $this->cacheKey = bin2hex(random_bytes(16)); // set 32 hex values
         $this->cache = $cache;
@@ -134,7 +142,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Get the {@link Swift_Mime_SimpleHeaderSet} for this entity.
      *
-     * @return Swift_Mime_SimpleHeaderSet
+     * @return SimpleHeaderSet
      */
     public function getHeaders()
     {
@@ -270,7 +278,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Get all children added to this entity.
      *
-     * @return Swift_Mime_SimpleMimeEntity[]
+     * @return SimpleMimeEntity[]
      */
     public function getChildren()
     {
@@ -280,7 +288,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Set all children of this entity.
      *
-     * @param Swift_Mime_SimpleMimeEntity[] $children
+     * @param SimpleMimeEntity[] $children
      * @param int                           $compoundLevel For internal use only
      *
      * @return $this
@@ -351,12 +359,12 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
      */
     public function getBody()
     {
-        return $this->body instanceof Swift_OutputByteStream ? $this->readStream($this->body) : $this->body;
+        return $this->body instanceof OutputByteStream ? $this->readStream($this->body) : $this->body;
     }
 
     /**
      * Set the body of this entity, either as a string, or as an instance of
-     * {@link Swift_OutputByteStream}.
+     * {@link OutputByteStream}.
      *
      * @param mixed  $body
      * @param string $contentType optional
@@ -380,7 +388,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Get the encoder used for the body of this entity.
      *
-     * @return Swift_Mime_ContentEncoder
+     * @return ContentEncoder
      */
     public function getEncoder()
     {
@@ -392,7 +400,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
      *
      * @return $this
      */
-    public function setEncoder(Swift_Mime_ContentEncoder $encoder)
+    public function setEncoder(ContentEncoder $encoder)
     {
         if ($encoder !== $this->encoder) {
             $this->clearCache();
@@ -424,7 +432,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
      *
      * @param string $boundary
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      *
      * @return $this
      */
@@ -451,7 +459,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
      * Receive notification that the encoder of this entity or a parent entity
      * has changed.
      */
-    public function encoderChanged(Swift_Mime_ContentEncoder $encoder)
+    public function encoderChanged(ContentEncoder $encoder)
     {
         $this->notifyEncoderChanged($encoder);
     }
@@ -483,7 +491,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
                 $body = $this->cache->getString($this->cacheKey, 'body');
             } else {
                 $body = "\r\n".$this->encoder->encodeString($this->getBody(), 0, $this->getMaxLineLength());
-                $this->cache->setString($this->cacheKey, 'body', $body, Swift_KeyCache::MODE_WRITE);
+                $this->cache->setString($this->cacheKey, 'body', $body, KeyCache::MODE_WRITE);
             }
             $string .= $body;
         }
@@ -514,7 +522,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Write this entire entity to a {@see Swift_InputByteStream}.
      */
-    public function toByteStream(Swift_InputByteStream $is)
+    public function toByteStream(InputByteStream $is)
     {
         $is->write($this->headers->toString());
         $is->commit();
@@ -525,7 +533,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Write this entire entity to a {@link Swift_InputByteStream}.
      */
-    protected function bodyToByteStream(Swift_InputByteStream $is)
+    protected function bodyToByteStream(InputByteStream $is)
     {
         if (empty($this->immediateChildren)) {
             if (isset($this->body)) {
@@ -539,7 +547,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
 
                     $is->write("\r\n");
 
-                    if ($this->body instanceof Swift_OutputByteStream) {
+                    if ($this->body instanceof OutputByteStream) {
                         $this->body->setReadPointer(0);
 
                         $this->encoder->encodeByteStream($this->body, $is, 0, $this->getMaxLineLength());
@@ -638,7 +646,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Get the KeyCache used in this entity.
      *
-     * @return Swift_KeyCache
+     * @return KeyCache
      */
     protected function getCache()
     {
@@ -648,7 +656,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Get the ID generator.
      *
-     * @return Swift_IdGenerator
+     * @return IdGenerator
      */
     protected function getIdGenerator()
     {
@@ -663,7 +671,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
         $this->cache->clearKey($this->cacheKey, 'body');
     }
 
-    private function readStream(Swift_OutputByteStream $os)
+    private function readStream(OutputByteStream $os)
     {
         $string = '';
         while (false !== $bytes = $os->read(8192)) {
@@ -685,7 +693,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     private function assertValidBoundary($boundary)
     {
         if (!preg_match('/^[a-z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-z0-9\'\(\)\+_\-,\.\/:=\?]$/Di', $boundary)) {
-            throw new Swift_RfcComplianceException('Mime boundary set is not RFC 2046 compliant.');
+            throw new RfcComplianceException('Mime boundary set is not RFC 2046 compliant.');
         }
     }
 
@@ -735,7 +743,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
         return new self($this->headers->newInstance(), $this->encoder, $this->cache, $this->idGenerator);
     }
 
-    private function notifyEncoderChanged(Swift_Mime_ContentEncoder $encoder)
+    private function notifyEncoderChanged(ContentEncoder $encoder)
     {
         foreach ($this->immediateChildren as $child) {
             $child->encoderChanged($encoder);
@@ -788,7 +796,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
      */
     public function __destruct()
     {
-        if ($this->cache instanceof Swift_KeyCache) {
+        if ($this->cache instanceof KeyCache) {
             $this->cache->clearAll($this->cacheKey);
         }
     }

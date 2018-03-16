@@ -8,12 +8,22 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Events\SendListener;
+use Swift\Events\SendEvent;
+use Swift\Events\CommandEvent;
+use Swift\Events\ResponseEvent;
+use Swift\Events\CommandListener;
+use Swift\Events\ResponseListener;
+use Swift\InputByteStream;
+
 /**
  * Reduces network flooding when sending large amounts of mail.
  *
  * @author Chris Corbyn
  */
-class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener, Swift_Events_CommandListener, Swift_Events_ResponseListener, Swift_InputByteStream
+class BandwidthMonitorPlugin implements SendListener, CommandListener, ResponseListener, InputByteStream
 {
     /**
      * The outgoing traffic counter.
@@ -35,14 +45,14 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
     /**
      * Not used.
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(SendEvent $evt)
     {
     }
 
     /**
      * Invoked immediately after the Message is sent.
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(SendEvent $evt)
     {
         $message = $evt->getMessage();
         $message->toByteStream($this);
@@ -51,7 +61,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
     /**
      * Invoked immediately following a command being sent.
      */
-    public function commandSent(Swift_Events_CommandEvent $evt)
+    public function commandSent(CommandEvent $evt)
     {
         $command = $evt->getCommand();
         $this->out += strlen($command);
@@ -60,7 +70,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
     /**
      * Invoked immediately following a response coming back.
      */
-    public function responseReceived(Swift_Events_ResponseEvent $evt)
+    public function responseReceived(ResponseEvent $evt)
     {
         $response = $evt->getResponse();
         $this->in += strlen($response);
@@ -92,7 +102,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
      */
-    public function bind(Swift_InputByteStream $is)
+    public function bind(InputByteStream $is)
     {
         $this->mirrors[] = $is;
     }
@@ -104,7 +114,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
      */
-    public function unbind(Swift_InputByteStream $is)
+    public function unbind(InputByteStream $is)
     {
         foreach ($this->mirrors as $k => $stream) {
             if ($is === $stream) {

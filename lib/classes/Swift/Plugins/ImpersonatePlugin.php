@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins;
+
+use Swift\Events\SendListener;
+use Swift\Events\SendEvent;
+
 /**
  * Replaces the sender of a message.
  *
  * @author Arjen Brouwer
  */
-class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener
+class ImpersonatePlugin implements SendListener
 {
     /**
      * The sender to impersonate.
@@ -35,7 +40,7 @@ class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener
     /**
      * Invoked immediately before the Message is sent.
      */
-    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(SendEvent $evt)
     {
         $message = $evt->getMessage();
         $headers = $message->getHeaders();
@@ -50,7 +55,7 @@ class Swift_Plugins_ImpersonatePlugin implements Swift_Events_SendListener
     /**
      * Invoked immediately after the Message is sent.
      */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
+    public function sendPerformed(SendEvent $evt)
     {
         $message = $evt->getMessage();
 

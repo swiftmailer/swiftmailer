@@ -8,18 +8,23 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Exception;
+
 /**
  * TransportException thrown when an error occurs in the Transport subsystem.
  *
  * @author Chris Corbyn
  */
-class Swift_TransportException extends Swift_IoException
+class TransportException extends IoException
 {
     /**
      * Create a new TransportException with $message.
      *
      * @param string $message
-     * @param int    $code
+     * @param int $code
+     * @param Exception|null $previous
      */
     public function __construct($message, $code = 0, Exception $previous = null)
     {

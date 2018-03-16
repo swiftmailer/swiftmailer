@@ -8,17 +8,21 @@
 * file that was distributed with this source code.
 */
 
+namespace Swift\ByteStream;
+
+use Swift\IoException;
+
 /**
  * @author Romain-Geissler
  */
-class Swift_ByteStream_TemporaryFileByteStream extends Swift_ByteStream_FileByteStream
+class TemporaryFileByteStream extends FileByteStream
 {
     public function __construct()
     {
         $filePath = tempnam(sys_get_temp_dir(), 'FileByteStream');
 
         if (false === $filePath) {
-            throw new Swift_IoException('Failed to retrieve temporary file name.');
+            throw new IoException('Failed to retrieve temporary file name.');
         }
 
         parent::__construct($filePath, true);
@@ -27,7 +31,7 @@ class Swift_ByteStream_TemporaryFileByteStream extends Swift_ByteStream_FileByte
     public function getContent()
     {
         if (false === ($content = file_get_contents($this->getPath()))) {
-            throw new Swift_IoException('Failed to get temporary file content.');
+            throw new IoException('Failed to get temporary file content.');
         }
 
         return $content;

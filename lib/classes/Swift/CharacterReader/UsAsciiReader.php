@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\CharacterReader;
+
+use Swift\CharacterReader as CharacterReaderInterface;
+
 /**
  * Analyzes US-ASCII characters.
  *
  * @author Chris Corbyn
  */
-class Swift_CharacterReader_UsAsciiReader implements Swift_CharacterReader
+class UsAsciiReader implements CharacterReaderInterface
 {
     /**
      * Returns the complete character map.

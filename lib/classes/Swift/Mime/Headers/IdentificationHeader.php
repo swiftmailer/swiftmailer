@@ -8,6 +8,11 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\Headers;
+
+use Swift\AddressEncoder;
+use Swift\AddressEncoder\IdnAddressEncoder;
+use Swift\RfcComplianceException;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 
@@ -16,7 +21,7 @@ use Egulias\EmailValidator\Validation\RFCValidation;
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_AbstractHeader
+class IdentificationHeader extends AbstractHeader
 {
     /**
      * The IDs used in the value of this Header.
@@ -41,11 +46,11 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @param string $name
      */
-    public function __construct($name, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
+    public function __construct($name, EmailValidator $emailValidator, AddressEncoder $addressEncoder = null)
     {
         $this->setFieldName($name);
         $this->emailValidator = $emailValidator;
-        $this->addressEncoder = $addressEncoder ?? new Swift_AddressEncoder_IdnAddressEncoder();
+        $this->addressEncoder = $addressEncoder ?? new IdnAddressEncoder();
     }
 
     /**
@@ -68,7 +73,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @param mixed $model
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     public function setFieldBodyModel($model)
     {
@@ -92,7 +97,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @param string|array $id
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     public function setId($id)
     {
@@ -118,7 +123,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @param string[] $ids
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     public function setIds(array $ids)
     {
@@ -151,7 +156,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @see toString()
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      *
      * @return string
      */
@@ -175,12 +180,12 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @param string $id
      *
-     * @throws Swift_RfcComplianceException
+     * @throws RfcComplianceException
      */
     private function assertValidId($id)
     {
         if (!$this->emailValidator->isValid($id, new RFCValidation())) {
-            throw new Swift_RfcComplianceException('Invalid ID given <'.$id.'>');
+            throw new RfcComplianceException('Invalid ID given <'.$id.'>');
         }
     }
 }

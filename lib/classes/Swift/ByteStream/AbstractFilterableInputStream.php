@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\ByteStream;
+
+use Swift\InputByteStream;
+use Swift\Filterable;
+use Swift\StreamFilter;
+
 /**
  * Provides the base functionality for an InputStream supporting filters.
  *
  * @author Chris Corbyn
  */
-abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_InputByteStream, Swift_Filterable
+abstract class AbstractFilterableInputStream implements InputByteStream, Filterable
 {
     /**
      * Write sequence.
@@ -56,7 +62,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      *
      * @param string $key
      */
-    public function addFilter(Swift_StreamFilter $filter, $key)
+    public function addFilter(StreamFilter $filter, $key)
     {
         $this->filters[$key] = $filter;
     }
@@ -110,7 +116,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
      */
-    public function bind(Swift_InputByteStream $is)
+    public function bind(InputByteStream $is)
     {
         $this->mirrors[] = $is;
     }
@@ -122,7 +128,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
      */
-    public function unbind(Swift_InputByteStream $is)
+    public function unbind(InputByteStream $is)
     {
         foreach ($this->mirrors as $k => $stream) {
             if ($is === $stream) {

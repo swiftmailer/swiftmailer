@@ -8,6 +8,12 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport\Esmtp\Auth;
+
+use Swift\Transport\Esmtp\Authenticator;
+use Swift\Transport\SmtpAgent;
+use Swift\TransportException;
+
 /**
  * Handles XOAUTH2 authentication.
  *
@@ -23,7 +29,7 @@
  *
  * @see        https://developers.google.com/google-apps/gmail/xoauth2_protocol
  */
-class Swift_Transport_Esmtp_Auth_XOAuth2Authenticator implements Swift_Transport_Esmtp_Authenticator
+class XOAuth2Authenticator implements Authenticator
 {
     /**
      * Get the name of the AUTH mechanism this Authenticator handles.
@@ -43,14 +49,14 @@ class Swift_Transport_Esmtp_Auth_XOAuth2Authenticator implements Swift_Transport
      *
      * @return bool
      */
-    public function authenticate(Swift_Transport_SmtpAgent $agent, $email, $token)
+    public function authenticate(SmtpAgent $agent, $email, $token)
     {
         try {
             $param = $this->constructXOAuth2Params($email, $token);
             $agent->executeCommand('AUTH XOAUTH2 '.$param."\r\n", [235]);
 
             return true;
-        } catch (Swift_TransportException $e) {
+        } catch (TransportException $e) {
             $agent->executeCommand("RSET\r\n", [250]);
 
             return false;

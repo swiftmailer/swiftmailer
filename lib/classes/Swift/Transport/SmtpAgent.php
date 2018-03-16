@@ -8,17 +8,19 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport;
+
 /**
  * Wraps an IoBuffer to send/receive SMTP commands/responses.
  *
  * @author Chris Corbyn
  */
-interface Swift_Transport_SmtpAgent
+interface SmtpAgent
 {
     /**
      * Get the IoBuffer where read/writes are occurring.
      *
-     * @return Swift_Transport_IoBuffer
+     * @return IoBuffer
      */
     public function getBuffer();
 

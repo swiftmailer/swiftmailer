@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Changes some global preference settings in Swift Mailer.
  *
  * @author Chris Corbyn
  */
-class Swift_Preferences
+class Preferences
 {
     /** Singleton instance */
     private static $instance = null;
@@ -46,7 +48,7 @@ class Swift_Preferences
      */
     public function setCharset($charset)
     {
-        Swift_DependencyContainer::getInstance()->register('properties.charset')->asValue($charset);
+        DependencyContainer::getInstance()->register('properties.charset')->asValue($charset);
 
         return $this;
     }
@@ -60,7 +62,7 @@ class Swift_Preferences
      */
     public function setTempDir($dir)
     {
-        Swift_DependencyContainer::getInstance()->register('tempdir')->asValue($dir);
+        DependencyContainer::getInstance()->register('tempdir')->asValue($dir);
 
         return $this;
     }
@@ -74,7 +76,7 @@ class Swift_Preferences
      */
     public function setCacheType($type)
     {
-        Swift_DependencyContainer::getInstance()->register('cache')->asAliasOf(sprintf('cache.%s', $type));
+        DependencyContainer::getInstance()->register('cache')->asAliasOf(sprintf('cache.%s', $type));
 
         return $this;
     }
@@ -89,9 +91,9 @@ class Swift_Preferences
     public function setQPDotEscape($dotEscape)
     {
         $dotEscape = !empty($dotEscape);
-        Swift_DependencyContainer::getInstance()
+        DependencyContainer::getInstance()
             ->register('mime.qpcontentencoder')
-            ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
+            ->asNewInstanceOf('\\Swift\\Mime\\ContentEncoder\\QpContentEncoder')
             ->withDependencies(['mime.charstream', 'mime.bytecanonicalizer'])
             ->addConstructorValue($dotEscape);
 

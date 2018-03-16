@@ -8,24 +8,29 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
+use Swift\Transport;
+use Swift\TransportException;
+
 /**
  * Generated when a TransportException is thrown from the Transport system.
  *
  * @author Chris Corbyn
  */
-class Swift_Events_TransportExceptionEvent extends Swift_Events_EventObject
+class TransportExceptionEvent extends EventObject
 {
     /**
      * The Exception thrown.
      *
-     * @var Swift_TransportException
+     * @var \Swift\TransportException
      */
     private $exception;
 
     /**
      * Create a new TransportExceptionEvent for $transport.
      */
-    public function __construct(Swift_Transport $transport, Swift_TransportException $ex)
+    public function __construct(Transport $transport, TransportException $ex)
     {
         parent::__construct($transport);
         $this->exception = $ex;
@@ -34,7 +39,7 @@ class Swift_Events_TransportExceptionEvent extends Swift_Events_EventObject
     /**
      * Get the TransportException thrown.
      *
-     * @return Swift_TransportException
+     * @return \Swift\TransportException
      */
     public function getException()
     {

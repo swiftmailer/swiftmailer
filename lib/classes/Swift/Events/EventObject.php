@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Events;
+
 /**
  * A base Event which all Event classes inherit from.
  *
  * @author Chris Corbyn
  */
-class Swift_Events_EventObject implements Swift_Events_Event
+class EventObject implements Event
 {
     /** The source of this Event */
     private $source;

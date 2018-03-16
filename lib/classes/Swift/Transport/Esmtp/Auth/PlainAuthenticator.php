@@ -8,12 +8,18 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport\Esmtp\Auth;
+
+use Swift\Transport\Esmtp\Authenticator;
+use Swift\Transport\SmtpAgent;
+use Swift\TransportException;
+
 /**
  * Handles PLAIN authentication.
  *
  * @author Chris Corbyn
  */
-class Swift_Transport_Esmtp_Auth_PlainAuthenticator implements Swift_Transport_Esmtp_Authenticator
+class PlainAuthenticator implements Authenticator
 {
     /**
      * Get the name of the AUTH mechanism this Authenticator handles.
@@ -33,14 +39,14 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticator implements Swift_Transport_E
      *
      * @return bool
      */
-    public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
+    public function authenticate(SmtpAgent $agent, $username, $password)
     {
         try {
             $message = base64_encode($username.chr(0).$username.chr(0).$password);
             $agent->executeCommand(sprintf("AUTH PLAIN %s\r\n", $message), [235]);
 
             return true;
-        } catch (Swift_TransportException $e) {
+        } catch (TransportException $e) {
             $agent->executeCommand("RSET\r\n", [250]);
 
             return false;

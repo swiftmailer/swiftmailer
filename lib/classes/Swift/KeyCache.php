@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
 /**
  * Provides a mechanism for storing data using two keys.
  *
  * @author Chris Corbyn
  */
-interface Swift_KeyCache
+interface KeyCache
 {
     /** Mode for replacing existing cached data */
     const MODE_WRITE = 1;
@@ -40,10 +42,10 @@ interface Swift_KeyCache
      *
      * @param string                 $nsKey
      * @param string                 $itemKey
-     * @param Swift_OutputByteStream $os
+     * @param \Swift\OutputByteStream $os
      * @param int                    $mode
      */
-    public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os, $mode);
+    public function importFromByteStream($nsKey, $itemKey, OutputByteStream $os, $mode);
 
     /**
      * Provides a ByteStream which when written to, writes data to $itemKey.
@@ -53,11 +55,11 @@ interface Swift_KeyCache
      *
      * @param string                $nsKey
      * @param string                $itemKey
-     * @param Swift_InputByteStream $is      optional input stream
+     * @param \Swift\InputByteStream $is      optional input stream
      *
-     * @return Swift_InputByteStream
+     * @return \Swift\InputByteStream
      */
-    public function getInputByteStream($nsKey, $itemKey, Swift_InputByteStream $is = null);
+    public function getInputByteStream($nsKey, $itemKey, InputByteStream $is = null);
 
     /**
      * Get data back out of the cache as a string.
@@ -74,9 +76,9 @@ interface Swift_KeyCache
      *
      * @param string                $nsKey
      * @param string                $itemKey
-     * @param Swift_InputByteStream $is      stream to write the data to
+     * @param \Swift\InputByteStream $is      stream to write the data to
      */
-    public function exportToByteStream($nsKey, $itemKey, Swift_InputByteStream $is);
+    public function exportToByteStream($nsKey, $itemKey, InputByteStream $is);
 
     /**
      * Check if the given $itemKey exists in the namespace $nsKey.

@@ -8,17 +8,23 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Transport\Esmtp;
+
+use Swift\Transport\EsmtpHandler;
+use Swift\Transport\SmtpAgent;
+use Swift\TransportException;
+
 /**
  * An ESMTP handler for AUTH support (RFC 5248).
  *
  * @author Chris Corbyn
  */
-class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
+class AuthHandler implements EsmtpHandler
 {
     /**
      * Authenticators available to process the request.
      *
-     * @var Swift_Transport_Esmtp_Authenticator[]
+     * @var Authenticator[]
      */
     private $authenticators = [];
 
@@ -53,7 +59,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     /**
      * Create a new AuthHandler with $authenticators for support.
      *
-     * @param Swift_Transport_Esmtp_Authenticator[] $authenticators
+     * @param Authenticator[] $authenticators
      */
     public function __construct(array $authenticators)
     {
@@ -63,7 +69,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     /**
      * Set the Authenticators which can process a login request.
      *
-     * @param Swift_Transport_Esmtp_Authenticator[] $authenticators
+     * @param Authenticator[] $authenticators
      */
     public function setAuthenticators(array $authenticators)
     {
@@ -73,7 +79,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     /**
      * Get the Authenticators which can process a login request.
      *
-     * @return Swift_Transport_Esmtp_Authenticator[]
+     * @return Authenticator[]
      */
     public function getAuthenticators()
     {
@@ -163,9 +169,9 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     /**
      * Runs immediately after a EHLO has been issued.
      *
-     * @param Swift_Transport_SmtpAgent $agent to read/write
+     * @param SmtpAgent $agent to read/write
      */
-    public function afterEhlo(Swift_Transport_SmtpAgent $agent)
+    public function afterEhlo(SmtpAgent $agent)
     {
         if ($this->username) {
             $count = 0;
@@ -178,7 +184,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
                     }
                 }
             }
-            throw new Swift_TransportException(
+            throw new TransportException(
                 'Failed to authenticate on SMTP server with username "'.
                 $this->username.'" using '.$count.' possible authenticators'
                 );
@@ -204,7 +210,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
     /**
      * Not used.
      */
-    public function onCommand(Swift_Transport_SmtpAgent $agent, $command, $codes = [], &$failedRecipients = null, &$stop = false)
+    public function onCommand(SmtpAgent $agent, $command, $codes = [], &$failedRecipients = null, &$stop = false)
     {
     }
 
@@ -256,6 +262,6 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
             }
         }
 
-        throw new Swift_TransportException('Auth mode '.$mode.' is invalid');
+        throw new TransportException('Auth mode '.$mode.' is invalid');
     }
 }

@@ -8,12 +8,14 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime;
+
 /**
  * A MIME Header.
  *
  * @author Chris Corbyn
  */
-interface Swift_Mime_Header
+interface Header
 {
     /** Text headers */
     const TYPE_TEXT = 2;

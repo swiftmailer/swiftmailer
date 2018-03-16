@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins\Reporters;
+
+use Swift\Plugins\Reporter;
+use Swift\Mime\SimpleMessage;
+
 /**
  * A reporter which "collects" failures for the Reporter plugin.
  *
  * @author Chris Corbyn
  */
-class Swift_Plugins_Reporters_HitReporter implements Swift_Plugins_Reporter
+class HitReporter implements Reporter
 {
     /**
      * The list of failures.
@@ -30,7 +35,7 @@ class Swift_Plugins_Reporters_HitReporter implements Swift_Plugins_Reporter
      * @param string $address
      * @param int    $result  from {@link RESULT_PASS, RESULT_FAIL}
      */
-    public function notify(Swift_Mime_SimpleMessage $message, $address, $result)
+    public function notify(SimpleMessage $message, $address, $result)
     {
         if (self::RESULT_FAIL == $result && !isset($this->failures_cache[$address])) {
             $this->failures[] = $address;

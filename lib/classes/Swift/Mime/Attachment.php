@@ -8,12 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime;
+
+use Swift\KeyCache;
+use Swift\IdGenerator;
+
 /**
  * An attachment, in a multipart message.
  *
  * @author Chris Corbyn
  */
-class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
+class Attachment extends SimpleMimeEntity
 {
     /** Recognized MIME types */
     private $mimeTypes = [];
@@ -23,7 +28,7 @@ class Swift_Mime_Attachment extends Swift_Mime_SimpleMimeEntity
      *
      * @param array $mimeTypes
      */
-    public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $mimeTypes = [])
+    public function __construct(SimpleHeaderSet $headers, ContentEncoder $encoder, KeyCache $cache, IdGenerator $idGenerator, $mimeTypes = [])
     {
         parent::__construct($headers, $encoder, $cache, $idGenerator);
         $this->setDisposition('attachment');

@@ -8,6 +8,10 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift;
+
+use Swift\Transport\EsmtpTransport;
+
 /**
  * Sends Messages over SMTP with ESMTP support.
  *
@@ -20,7 +24,7 @@
  * @method Swift_SmtpTransport setAuthMode(string $mode)     Set the auth mode to use to authenticate.
  * @method string              getAuthMode()                 Get the auth mode to use to authenticate.
  */
-class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
+class SmtpTransport extends EsmtpTransport
 {
     /**
      * Create a new SmtpTransport, optionally with $host, $port and $security.

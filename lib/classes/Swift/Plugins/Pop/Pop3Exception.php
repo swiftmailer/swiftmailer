@@ -8,12 +8,16 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Plugins\Pop;
+
+use Swift\IoException;
+
 /**
  * Pop3Exception thrown when an error occurs connecting to a POP3 host.
  *
  * @author Chris Corbyn
  */
-class Swift_Plugins_Pop_Pop3Exception extends Swift_IoException
+class Pop3Exception extends IoException
 {
     /**
      * Create a new Pop3Exception with $message.

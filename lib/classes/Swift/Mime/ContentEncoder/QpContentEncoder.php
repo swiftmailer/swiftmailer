@@ -8,23 +8,32 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Mime\ContentEncoder;
+
+use Swift\Mime\ContentEncoder;
+use Swift\Encoder\QpEncoder;
+use Swift\CharacterStream;
+use Swift\StreamFilter;
+use Swift\OutputByteStream;
+use Swift\InputByteStream;
+
 /**
  * Handles Quoted Printable (QP) Transfer Encoding in Swift Mailer.
  *
  * @author     Chris Corbyn
  */
-class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder implements Swift_Mime_ContentEncoder
+class QpContentEncoder extends QpEncoder implements ContentEncoder
 {
     protected $dotEscape;
 
     /**
      * Creates a new QpContentEncoder for the given CharacterStream.
      *
-     * @param Swift_CharacterStream $charStream to use for reading characters
-     * @param Swift_StreamFilter    $filter     if canonicalization should occur
+     * @param CharacterStream $charStream to use for reading characters
+     * @param StreamFilter    $filter     if canonicalization should occur
      * @param bool                  $dotEscape  if dot stuffing workaround must be enabled
      */
-    public function __construct(Swift_CharacterStream $charStream, Swift_StreamFilter $filter = null, $dotEscape = false)
+    public function __construct(CharacterStream $charStream, StreamFilter $filter = null, $dotEscape = false)
     {
         $this->dotEscape = $dotEscape;
         parent::__construct($charStream, $filter);
@@ -56,12 +65,12 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
      * If the first line needs to be shorter, indicate the difference with
      * $firstLineOffset.
      *
-     * @param Swift_OutputByteStream $os              output stream
-     * @param Swift_InputByteStream  $is              input stream
+     * @param OutputByteStream $os              output stream
+     * @param InputByteStream  $is              input stream
      * @param int                    $firstLineOffset
      * @param int                    $maxLineLength
      */
-    public function encodeByteStream(Swift_OutputByteStream $os, Swift_InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
+    public function encodeByteStream(OutputByteStream $os, InputByteStream $is, $firstLineOffset = 0, $maxLineLength = 0)
     {
         if ($maxLineLength > 76 || $maxLineLength <= 0) {
             $maxLineLength = 76;

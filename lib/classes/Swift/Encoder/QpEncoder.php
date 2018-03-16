@@ -8,6 +8,12 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\Encoder;
+
+use Swift\Encoder as EncoderInterface;
+use Swift\CharacterStream;
+use Swift\StreamFilter;
+
 /**
  * Handles Quoted Printable (QP) Encoding in Swift Mailer.
  *
@@ -15,19 +21,19 @@
  *
  * @author     Chris Corbyn
  */
-class Swift_Encoder_QpEncoder implements Swift_Encoder
+class QpEncoder implements EncoderInterface
 {
     /**
      * The CharacterStream used for reading characters (as opposed to bytes).
      *
-     * @var Swift_CharacterStream
+     * @var \Swift\CharacterStream
      */
     protected $charStream;
 
     /**
      * A filter used if input should be canonicalized.
      *
-     * @var Swift_StreamFilter
+     * @var \Swift\StreamFilter
      */
     protected $filter;
 
@@ -103,10 +109,10 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     /**
      * Creates a new QpEncoder for the given CharacterStream.
      *
-     * @param Swift_CharacterStream $charStream to use for reading characters
-     * @param Swift_StreamFilter    $filter     if input should be canonicalized
+     * @param CharacterStream $charStream to use for reading characters
+     * @param StreamFilter    $filter     if input should be canonicalized
      */
-    public function __construct(Swift_CharacterStream $charStream, Swift_StreamFilter $filter = null)
+    public function __construct(CharacterStream $charStream, StreamFilter $filter = null)
     {
         $this->charStream = $charStream;
         if (!isset(self::$safeMapShare[$this->getSafeMapShareId()])) {

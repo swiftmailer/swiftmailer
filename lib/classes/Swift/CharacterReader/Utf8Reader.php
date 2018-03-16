@@ -8,13 +8,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Swift\CharacterReader;
+
+use Swift\CharacterReader as CharacterReaderInterface;
+
 /**
  * Analyzes UTF-8 characters.
  *
  * @author Chris Corbyn
  * @author Xavier De Cock <xdecock@gmail.com>
  */
-class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
+class Utf8Reader implements CharacterReaderInterface
 {
     /** Pre-computed for optimization */
     private static $length_map = [
