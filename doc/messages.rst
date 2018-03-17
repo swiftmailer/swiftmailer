@@ -839,7 +839,7 @@ sent to this address.
 Setting the Character Set
 -------------------------
 
-The character set of the message (and it's MIME parts) is set with the
+The character set of the message (and its MIME parts) is set with the
 ``setCharset()`` method. You can also change the global default of UTF-8 by
 working with the ``Swift_Preferences`` class.
 
@@ -876,6 +876,31 @@ To set the character set of your Message:
 
     // Approach 4: Specify the charset for each part added
     $message->addPart('My part', 'text/plain', 'iso-8859-2');
+
+Setting the Encoding
+--------------------
+
+The body of each MIME part needs to be encoded. Binary attachments are encoded
+in base64 using the ``Swift_Mime_ContentEncoder_Base64ContentEncoder``. Text
+parts are traditionally encoded in quoted-printable using
+``Swift_Mime_ContentEncoder_QpContentEncoder`` or
+``Swift_Mime_ContentEncoder_NativeQpContentEncoder``.
+
+The encoder of the message or MIME part is set with the ``setEncoder()`` method.
+
+Quoted-printable is the safe choice, because it converts 8-bit text as 7-bit.
+Most modern SMTP servers support 8-bit text. This is advertised via the 8BITMIME
+SMTP extension. If your outbound SMTP server supports this SMTP extension, and
+it supports downgrading the message (e.g converting to quoted-printable on the
+fly) when delivering to a downstream server that does not support the extension,
+you may wish to use ``Swift_Mime_ContentEncoder_PlainContentEncoder`` in
+``8bit`` mode instead. This has the advantage that the source data is slightly
+more readable and compact, especially for non-Western languages.
+
+        $eightBitMime = new Swift_Transport_Esmtp_EightBitMimeHandler();
+        $transport->setExtensionHandlers([$eightBitMime]);
+        $plainEncoder = new Swift_Mime_ContentEncoder_PlainContentEncoder('8bit');
+        $message->setEncoder($plainEncoder);
 
 Setting the Line Length
 -----------------------

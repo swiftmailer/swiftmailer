@@ -8,6 +8,7 @@ Changelog
  * introduced new dependencies: transport.smtphandlers and transport.authhandlers
  * deprecated Swift_Signers_OpenDKIMSigner; use Swift_Signers_DKIMSigner instead
  * added support for SMTP pipelining
+ * added Swift_Transport_Esmtp_EightBitMimeHandler
 
 6.0.2 (2017-09-30)
 ------------------
