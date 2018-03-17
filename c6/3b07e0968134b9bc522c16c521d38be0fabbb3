@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2018-03-15T00:16:26Z
+
+Looks interesting. Can you add docs for this new feature?
+
+---------------------------------------------------------------------------
+
+by c960657 at 2018-03-15T21:49:05Z
+
+I have added some documentation.
+
+Also, I introduced a new alias, `mime.textcontentencoder`, to make it easier to switch the encoder.
+
+I have added `transport.8bitmimehandler` as default SMTP handlers. I must admit that I don't know the full impact of adding this (and `transport.smtputf8handler`). Not all SMTP servers support transcoding, if a message is received from Swift Mailer using these extensions and should be delivered to a downstream server that does not support these. However, as long as the email itself does not contain 8-bit characters in the body and address, respectively, the server should be able to just ignore the presence of these extensions. But I don't know if some servers might simply reject the message (the RFC allows that).
+
+So I guess the conservative position for a library such as Swift Mailer should be to omit these from the default configuration, so people can enable them explicitly, if their outbound SMTP server supports them including downgrading. Do you agree? In that case, I'll remove them.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2018-03-16T23:45:38Z
+
+I agree that we should be on the conservative side of things.
+
+---------------------------------------------------------------------------
+
+by c960657 at 2018-03-17T08:11:22Z
+
+Done.
