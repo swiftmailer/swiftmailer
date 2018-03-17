@@ -11,6 +11,10 @@
 /**
  * Handles binary/7/8-bit Transfer Encoding in Swift Mailer.
  *
+ * When sending 8-bit content over SMTP, you should use
+ * Swift_Transport_Esmtp_EightBitMimeHandler to enable the 8BITMIME SMTP
+ * extension.
+ *
  * @author Chris Corbyn
  */
 class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_ContentEncoder

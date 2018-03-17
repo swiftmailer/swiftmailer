@@ -25,7 +25,7 @@ Swift_DependencyContainer::getInstance()
     ->asNewInstanceOf('Swift_Mime_SimpleMessage')
     ->withDependencies([
         'mime.headerset',
-        'mime.qpcontentencoder',
+        'mime.textcontentencoder',
         'cache',
         'mime.idgenerator',
         'properties.charset',
@@ -35,7 +35,7 @@ Swift_DependencyContainer::getInstance()
     ->asNewInstanceOf('Swift_Mime_MimePart')
     ->withDependencies([
         'mime.headerset',
-        'mime.qpcontentencoder',
+        'mime.textcontentencoder',
         'cache',
         'mime.idgenerator',
         'properties.charset',
@@ -94,6 +94,9 @@ Swift_DependencyContainer::getInstance()
 
     ->register('mime.characterreaderfactory')
     ->asSharedInstanceOf('Swift_CharacterReaderFactory_SimpleCharacterReaderFactory')
+
+    ->register('mime.textcontentencoder')
+    ->asAliasOf('mime.qpcontentencoder')
 
     ->register('mime.safeqpcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
