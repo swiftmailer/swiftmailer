@@ -202,7 +202,9 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         $message->setBcc([]);
 
         try {
+            $bccContentType = $message->getContentType();
             $sent += $this->sendTo($message, $reversePath, $tos, $failedRecipients);
+            $message->setContentType($bccContentType);
             $sent += $this->sendBcc($message, $reversePath, $bcc, $failedRecipients);
         } catch (Exception $e) {
             $message->setBcc($bcc);
