@@ -205,6 +205,11 @@ Some configuration of this instance, such as local domain and timeout may be
 adjusted, while other settings, e.g. port number, username and password, must
 use the default values when connecting to remote inbound servers.
 
+SMTP always uses port 25. Note that many ISPs and firewalls block port 25 as an
+anti-spam measure, so the Direct SMTP Transport may not work when running on a
+personal computer on a home or office network rather than on a server in a
+hosting facility.
+
 The Sendmail Transport
 ......................
 
@@ -344,7 +349,6 @@ recipients are delivered to successfully then the value 5 will be returned::
     }
 
     */
-
 
 Sending Emails in Batch
 .......................
