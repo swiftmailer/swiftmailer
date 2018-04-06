@@ -198,7 +198,6 @@ class Swift_Transport_DirectEsmtpTransport implements Swift_Transport
     protected function getEsmtpTransport(string $host): Swift_Transport_EsmtpTransport
     {
         $this->transport->setHost($host);
-        $this->transport->setPort(587);
         return $this->transport;
     }
 
