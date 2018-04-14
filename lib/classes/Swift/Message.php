@@ -75,7 +75,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     }
 
     /**
-     * Detach a signature handler from a message.
+     * Attach a new signature handler to the message.
      *
      * @return $this
      */
@@ -91,7 +91,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
     }
 
     /**
-     * Attach a new signature handler to the message.
+     * Detach a signature handler from a message.
      *
      * @return $this
      */
