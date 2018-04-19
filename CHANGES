@@ -9,6 +9,7 @@ Changelog
  * deprecated Swift_Signers_OpenDKIMSigner; use Swift_Signers_DKIMSigner instead
  * added support for SMTP pipelining
  * added Swift_Transport_Esmtp_EightBitMimeHandler
+ * fixed startTLS only allowed tls1.0, now allowed: tls1.0, tls1.1, tls1.2
 
 6.0.2 (2017-09-30)
 ------------------
