@@ -806,7 +806,7 @@ Using both signing and encrypting is also possible::
 The used encryption cipher can be set as the second parameter of
 setEncryptCertificate()
 
-See http://php.net/manual/openssl.ciphers for a list of supported ciphers.
+See https://secure.php.net/manual/openssl.ciphers for a list of supported ciphers.
 
 By default the message is first signed and then encrypted, this can be changed
 by adding::

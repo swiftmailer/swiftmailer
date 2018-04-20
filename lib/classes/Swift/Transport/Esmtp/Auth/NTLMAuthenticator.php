@@ -586,7 +586,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
      *
      * @return string
      *
-     * @see http://php.net/manual/en/ref.hash.php
+     * @see https://secure.php.net/manual/en/ref.hash.php
      */
     protected function md4Encrypt($input)
     {
