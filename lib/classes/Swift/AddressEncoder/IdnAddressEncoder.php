@@ -52,12 +52,12 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
     protected function idnToAscii(string $string): string
     {
         if (function_exists('idn_to_ascii')) {
-			if (defined('INTL_IDNA_VARIANT_UTS46')) {
-				return idn_to_ascii($string, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
-			} else {
-				return idn_to_ascii($string);
-			}
-		}
+            if (defined('INTL_IDNA_VARIANT_UTS46')) {
+                return idn_to_ascii($string, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+            } else {
+                return idn_to_ascii($string);
+            }
+        }
 
         if (class_exists('TrueBV\Punycode')) {
             $punycode = new \TrueBV\Punycode();
