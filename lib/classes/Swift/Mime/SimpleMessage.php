@@ -166,7 +166,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Get the sender of this message.
      *
-     * @return string
+     * @return array
      */
     public function getSender()
     {
@@ -220,7 +220,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Get the from address of this message.
      *
-     * @return mixed
+     * @return array
      */
     public function getFrom()
     {
@@ -274,7 +274,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Get the reply-to address of this message.
      *
-     * @return string
+     * @return array
      */
     public function getReplyTo()
     {
@@ -510,7 +510,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Get the addresses to which a read-receipt will be sent.
      *
-     * @return string
+     * @return array
      */
     public function getReadReceiptTo()
     {
