@@ -574,11 +574,12 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     /**
      * Get the model data (usually an array or a string) for $field.
      */
-    protected function getHeaderFieldModel($field)
+    protected function getHeaderFieldModel($field, $default = null)
     {
         if ($this->headers->has($field)) {
             return $this->headers->get($field)->getFieldBodyModel();
         }
+        return $default;
     }
 
     /**

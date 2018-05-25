@@ -218,6 +218,15 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(['sender@domain' => 'Name'], $message->getSender());
     }
 
+    public function testEmptySenderIsReturnedFromHeader()
+    {
+        $message = $this->createMessage(
+            $this->createHeaderSet([]),
+            $this->createEncoder(), $this->createCache()
+        );
+        $this->assertEquals([], $message->getSender());
+    }
+
     public function testSenderIsSetInHeader()
     {
         $sender = $this->createHeader('Sender', ['sender@domain' => 'Name'],
@@ -275,6 +284,15 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->createEncoder(), $this->createCache()
             );
         $this->assertEquals(['from@domain' => 'Name'], $message->getFrom());
+    }
+
+    public function testEmptyFromIsReturnedFromHeader()
+    {
+        $message = $this->createMessage(
+            $this->createHeaderSet([]),
+            $this->createEncoder(), $this->createCache()
+        );
+        $this->assertEquals([], $message->getFrom());
     }
 
     public function testFromIsSetInHeader()
@@ -352,6 +370,15 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(['reply@domain' => 'Name'], $message->getReplyTo());
     }
 
+    public function testEmptyReplyToIsReturnedFromHeader()
+    {
+        $message = $this->createMessage(
+            $this->createHeaderSet([]),
+            $this->createEncoder(), $this->createCache()
+        );
+        $this->assertEquals([], $message->getReplyTo());
+    }
+
     public function testReplyToIsSetInHeader()
     {
         $reply = $this->createHeader('Reply-To', ['reply@domain' => 'Name'],
@@ -425,6 +452,15 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->createEncoder(), $this->createCache()
             );
         $this->assertEquals(['to@domain' => 'Name'], $message->getTo());
+    }
+
+    public function testEmptyToIsReturnedFromHeader()
+    {
+        $message = $this->createMessage(
+            $this->createHeaderSet([]),
+            $this->createEncoder(), $this->createCache()
+        );
+        $this->assertEquals([], $message->getTo());
     }
 
     public function testToIsSetInHeader()
@@ -502,6 +538,15 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(['cc@domain' => 'Name'], $message->getCc());
     }
 
+    public function testEmptyCcIsReturnedFromHeader()
+    {
+        $message = $this->createMessage(
+            $this->createHeaderSet([]),
+            $this->createEncoder(), $this->createCache()
+        );
+        $this->assertEquals([], $message->getCc());
+    }
+
     public function testCcIsSetInHeader()
     {
         $cc = $this->createHeader('Cc', ['cc@domain' => 'Name'],
@@ -575,6 +620,15 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             $this->createEncoder(), $this->createCache()
             );
         $this->assertEquals(['bcc@domain' => 'Name'], $message->getBcc());
+    }
+
+    public function testEmptyBccIsReturnedFromHeader()
+    {
+        $message = $this->createMessage(
+            $this->createHeaderSet([]),
+            $this->createEncoder(), $this->createCache()
+        );
+        $this->assertEquals([], $message->getBcc());
     }
 
     public function testBccIsSetInHeader()
@@ -690,6 +744,15 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals(['chris@swiftmailer.org' => 'Chris'],
             $message->getReadReceiptTo()
             );
+    }
+
+    public function testEmptyReadReceiptAddressReadFromHeader()
+    {
+        $message = $this->createMessage(
+            $this->createHeaderSet([]),
+            $this->createEncoder(), $this->createCache()
+        );
+        $this->assertEquals([], $message->getReadReceiptTo());
     }
 
     public function testReadReceiptIsSetInHeader()

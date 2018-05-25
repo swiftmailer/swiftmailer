@@ -170,7 +170,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function getSender()
     {
-        return $this->getHeaderFieldModel('Sender');
+        return $this->getHeaderFieldModel('Sender', []);
     }
 
     /**
@@ -224,7 +224,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function getFrom()
     {
-        return $this->getHeaderFieldModel('From');
+        return $this->getHeaderFieldModel('From', []);
     }
 
     /**
@@ -278,7 +278,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function getReplyTo()
     {
-        return $this->getHeaderFieldModel('Reply-To');
+        return $this->getHeaderFieldModel('Reply-To', []);
     }
 
     /**
@@ -333,7 +333,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function getTo()
     {
-        return $this->getHeaderFieldModel('To');
+        return $this->getHeaderFieldModel('To', []);
     }
 
     /**
@@ -385,7 +385,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function getCc()
     {
-        return $this->getHeaderFieldModel('Cc');
+        return $this->getHeaderFieldModel('Cc', []);
     }
 
     /**
@@ -437,7 +437,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function getBcc()
     {
-        return $this->getHeaderFieldModel('Bcc');
+        return $this->getHeaderFieldModel('Bcc', []);
     }
 
     /**
@@ -514,7 +514,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function getReadReceiptTo()
     {
-        return $this->getHeaderFieldModel('Disposition-Notification-To');
+        return $this->getHeaderFieldModel('Disposition-Notification-To', []);
     }
 
     /**
