@@ -72,7 +72,7 @@ class Swift_Transport_Esmtp_SmtpUtf8Handler implements Swift_Transport_EsmtpHand
     /**
      * Not used.
      */
-    public function onCommand(Swift_Transport_SmtpAgent $agent, $command, $codes = array(), &$failedRecipients = null, &$stop = false)
+    public function onCommand(Swift_Transport_SmtpAgent $agent, $command, $codes = [], &$failedRecipients = null, &$stop = false)
     {
     }
 

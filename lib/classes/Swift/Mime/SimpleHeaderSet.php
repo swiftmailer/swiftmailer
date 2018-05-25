@@ -79,8 +79,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      */
     public function addDateHeader($name, DateTimeInterface $dateTime = null)
     {
-        $this->storeHeader($name,
-        $this->factory->createDateHeader($name, $dateTime));
+        $this->storeHeader($name, $this->factory->createDateHeader($name, $dateTime));
     }
 
     /**
@@ -91,8 +90,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      */
     public function addTextHeader($name, $value = null)
     {
-        $this->storeHeader($name,
-        $this->factory->createTextHeader($name, $value));
+        $this->storeHeader($name, $this->factory->createTextHeader($name, $value));
     }
 
     /**
