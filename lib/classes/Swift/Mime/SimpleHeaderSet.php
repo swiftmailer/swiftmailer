@@ -68,8 +68,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      */
     public function addMailboxHeader($name, $addresses = null)
     {
-        $this->storeHeader($name,
-        $this->factory->createMailboxHeader($name, $addresses));
+        $this->storeHeader($name, $this->factory->createMailboxHeader($name, $addresses));
     }
 
     /**
