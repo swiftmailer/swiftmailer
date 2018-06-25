@@ -41,7 +41,10 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
             );
     }
 
-    public function testAuthenticationFailureSendRsetAndReturnFalse()
+    /**
+     * @expectedException Swift_TransportException
+     */
+    public function testAuthenticationFailureSendRset()
     {
         $plain = $this->getAuthenticator();
 
@@ -55,9 +58,7 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
              ->once()
              ->with("RSET\r\n", [250]);
 
-        $this->assertFalse($plain->authenticate($this->agent, 'jack', 'pass'),
-            '%s: Authentication fails, so RSET should be sent'
-            );
+        $plain->authenticate($this->agent, 'jack', 'pass');
     }
 
     private function getAuthenticator()

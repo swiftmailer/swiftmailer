@@ -26,12 +26,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport
     }
 
     /**
-     * Try to authenticate the user with $username and $password.
-     *
-     * @param string $username
-     * @param string $password
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
     {
@@ -47,7 +42,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport
         } catch (Swift_TransportException $e) {
             $agent->executeCommand("RSET\r\n", [250]);
 
-            return false;
+            throw $e;
         }
     }
 
