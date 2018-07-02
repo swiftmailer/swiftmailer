@@ -36,12 +36,7 @@ class Swift_Transport_Esmtp_Auth_XOAuth2Authenticator implements Swift_Transport
     }
 
     /**
-     * Try to authenticate the user with $email and $token.
-     *
-     * @param string $email
-     * @param string $token
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function authenticate(Swift_Transport_SmtpAgent $agent, $email, $token)
     {
@@ -53,7 +48,7 @@ class Swift_Transport_Esmtp_Auth_XOAuth2Authenticator implements Swift_Transport
         } catch (Swift_TransportException $e) {
             $agent->executeCommand("RSET\r\n", [250]);
 
-            return false;
+            throw $e;
         }
     }
 

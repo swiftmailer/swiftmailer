@@ -160,7 +160,10 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
         $this->assertTrue($ntlm->authenticate($agent, $username.'@'.$domain, $secret, hex2bin('30fa7e3c677bc301'), hex2bin('f5ce3d2401c8f6e9')), '%s: The buffer accepted all commands authentication should succeed');
     }
 
-    public function testAuthenticationFailureSendRsetAndReturnFalse()
+    /**
+     * @expectedException Swift_TransportException
+     */
+    public function testAuthenticationFailureSendRset()
     {
         $domain = 'TESTNT';
         $username = 'test';
@@ -178,7 +181,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
               ->once()
               ->with("RSET\r\n", [250]);
 
-        $this->assertFalse($ntlm->authenticate($agent, $username.'@'.$domain, $secret, hex2bin('30fa7e3c677bc301'), hex2bin('f5ce3d2401c8f6e9')), '%s: Authentication fails, so RSET should be sent');
+        $ntlm->authenticate($agent, $username.'@'.$domain, $secret, hex2bin('30fa7e3c677bc301'), hex2bin('f5ce3d2401c8f6e9'));
     }
 
     private function getAuthenticator()

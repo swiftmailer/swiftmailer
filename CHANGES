@@ -4,6 +4,7 @@ Changelog
 6.1.0 (2018-XX-XX)
 ------------------
 
+ * added support for bubbling up authenticator error messages
  * added support for non-ASCII email addresses
  * introduced new dependencies: transport.smtphandlers and transport.authhandlers
  * deprecated Swift_Signers_OpenDKIMSigner; use Swift_Signers_DKIMSigner instead
