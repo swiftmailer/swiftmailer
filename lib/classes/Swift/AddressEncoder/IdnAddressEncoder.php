@@ -27,7 +27,8 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
     /**
      * Encodes the domain part of an address using IDN.
      *
-     * @throws Swift_AddressEncoderException If local-part contains non-ASCII characters
+     * @throws Swift_AddressEncoderException If local-part contains non-ASCII characters,
+     *                                       or if no suitable IDN encoder is installed.
      */
     public function encodeString(string $address): string
     {
@@ -40,7 +41,9 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
                 throw new Swift_AddressEncoderException('Non-ASCII characters not supported in local-part', $address);
             }
 
-            $address = sprintf('%s@%s', $local, $this->idnToAscii($domain));
+            if (preg_match('/[^\x00-\x7F]/', $domain)) {
+                $address = sprintf('%s@%s', $local, $this->idnToAscii($domain));
+            }
         }
 
         return $address;
@@ -61,6 +64,10 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
             return $punycode->encode($string);
         }
 
-        throw new Swift_SwiftException('No IDN encoder found (install the intl extension or the true/punycode package');
+        throw new Swift_AddressEncoderException(
+            'Non-ASCII characters in address, but no IDN encoder found ' .
+            '(install the intl extension or the true/punycode package)',
+            $address
+            );
     }
 }
