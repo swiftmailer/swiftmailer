@@ -4,7 +4,7 @@ Changelog
 6.1.1 (2018-XX-XX)
 ------------------
 
- * n/a
+ * removed hard dependency on an IDN encoder
 
 6.1.0 (2018-07-02)
 ------------------
