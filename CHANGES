@@ -1,7 +1,7 @@
 Changelog
 =========
 
-6.1.1 (2018-XX-XX)
+6.1.1 (2018-07-04)
 ------------------
 
  * removed hard dependency on an IDN encoder
