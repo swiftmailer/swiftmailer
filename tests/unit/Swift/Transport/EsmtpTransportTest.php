@@ -278,7 +278,7 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
         $smtp->start();
     }
 
-    public function testPipelining2()
+    public function testPipelining()
     {
         $buf = $this->getBuffer();
         $smtp = $this->getTransport($buf);
@@ -340,9 +340,240 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
 
         $this->finishBuffer($buf);
         $smtp->start();
-        $smtp->send($message);
+        $sent = $smtp->send($message, $failedRecipients);
+
+        $this->assertEquals(1, $sent);
+        $this->assertEmpty($failedRecipients);
 
         $this->assertTrue($smtp->getPipelining());
+    }
+
+    public function testPipeliningWithRecipientFailure()
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
+        $this->assertNull($smtp->getPipelining());
+
+        $message = $this->createMessage();
+        $message->shouldReceive('getFrom')
+                ->zeroOrMoreTimes()
+                ->andReturn(['me@domain.com' => 'Me']);
+        $message->shouldReceive('getTo')
+                ->zeroOrMoreTimes()
+                ->andReturn([
+                    'good@foo' => null,
+                    'bad@foo' => null,
+                    'good@bar' => null,
+                ]);
+
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^EHLO .+?\r\n$~D')
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250-ServerName'."\r\n");
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250 PIPELINING'."\r\n");
+
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("MAIL FROM:<me@domain.com>\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("RCPT TO:<good@foo>\r\n")
+            ->andReturn(2);
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("RCPT TO:<bad@foo>\r\n")
+            ->andReturn(3);
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("RCPT TO:<good@bar>\r\n")
+            ->andReturn(4);
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("DATA\r\n")
+            ->andReturn(5);
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(1)
+            ->andReturn("250 OK\r\n");
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(2)
+            ->andReturn("250 OK\r\n");
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(3)
+            ->andReturn("450 Unknown address bad@foo\r\n");
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(4)
+            ->andReturn("250 OK\r\n");
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(5)
+            ->andReturn("354 OK\r\n");
+
+        $this->finishBuffer($buf);
+        $smtp->start();
+        $sent = $smtp->send($message, $failedRecipients);
+
+        $this->assertEquals(2, $sent);
+        $this->assertEquals(['bad@foo'], $failedRecipients);
+
+        $this->assertTrue($smtp->getPipelining());
+    }
+
+    public function testPipeliningWithSenderFailure()
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
+        $this->assertNull($smtp->getPipelining());
+
+        $message = $this->createMessage();
+        $message->shouldReceive('getFrom')
+                ->zeroOrMoreTimes()
+                ->andReturn(['me@domain.com' => 'Me']);
+        $message->shouldReceive('getTo')
+                ->zeroOrMoreTimes()
+                ->andReturn(['foo@bar' => null]);
+
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^EHLO .+?\r\n$~D')
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250-ServerName'."\r\n");
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250 PIPELINING'."\r\n");
+
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("MAIL FROM:<me@domain.com>\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("RCPT TO:<foo@bar>\r\n")
+            ->andReturn(2);
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("DATA\r\n")->andReturn(3);
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(1)
+            ->andReturn("550 Unknown address me@domain.com\r\n");
+
+        $smtp->start();
+
+        $this->expectException('Swift_TransportException');
+        $this->expectExceptionMessage('Expected response code 250 but got code "550"');
+        $smtp->send($message, $failedRecipients);
+    }
+
+    public function testPipeliningWithDataFailure()
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
+        $this->assertNull($smtp->getPipelining());
+
+        $message = $this->createMessage();
+        $message->shouldReceive('getFrom')
+                ->zeroOrMoreTimes()
+                ->andReturn(['me@domain.com' => 'Me']);
+        $message->shouldReceive('getTo')
+                ->zeroOrMoreTimes()
+                ->andReturn(['foo@bar' => null]);
+
+        $buf->shouldReceive('initialize')
+            ->once();
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(0)
+            ->andReturn("220 some.server.tld bleh\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with('~^EHLO .+?\r\n$~D')
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250-ServerName'."\r\n");
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('250 PIPELINING'."\r\n");
+
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("MAIL FROM:<me@domain.com>\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("RCPT TO:<foo@bar>\r\n")
+            ->andReturn(2);
+        $buf->shouldReceive('write')
+            ->ordered()
+            ->once()
+            ->with("DATA\r\n")->andReturn(3);
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(1)
+            ->andReturn("250 OK\r\n");
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(2)
+            ->andReturn("250 OK\r\n");
+        $buf->shouldReceive('readLine')
+            ->ordered()
+            ->once()
+            ->with(3)
+            ->andReturn("452 Insufficient system storage\r\n");
+
+        $smtp->start();
+
+        $this->expectException('Swift_TransportException');
+        $this->expectExceptionMessage('Expected response code 354 but got code "452"');
+        $smtp->send($message, $failedRecipients);
     }
 
     public function providerPipeliningOverride()
