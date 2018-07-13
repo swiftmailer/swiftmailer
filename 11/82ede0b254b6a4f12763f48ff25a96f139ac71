@@ -1,0 +1,11 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2018-07-10T07:35:07Z
+
+Thanks for working on this. I would prefer to find a fix and do a patch release instead of reverting the feature. If you are not confident enough, reverting is also an option of course. Let me know.
+
+---------------------------------------------------------------------------
+
+by c960657 at 2018-07-12T20:39:02Z
+
+Ok, I have looked it through again, and I think it's ready to fly.
