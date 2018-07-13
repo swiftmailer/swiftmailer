@@ -1,7 +1,7 @@
 Changelog
 =========
 
-6.1.2 (2018-XX-XX)
+6.1.2 (2018-07-13)
 ------------------
 
  * handled recipient errors when pipelining
