@@ -284,10 +284,11 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
      * @param int[]    $codes
      * @param string[] $failures An array of failures by-reference
      * @param bool     $pipeline Do not wait for response
+     * @param string   $address  The address, if command is RCPT TO.
      *
-     * @return string
+     * @return string|null The server response, or null if pipelining is enabled
      */
-    public function executeCommand($command, $codes = [], &$failures = null, $pipeline = false)
+    public function executeCommand($command, $codes = [], &$failures = null, $pipeline = false, $address = null)
     {
         $failures = (array) $failures;
         $stopSignal = false;
@@ -301,7 +302,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
             }
         }
 
-        return parent::executeCommand($command, $codes, $failures, $pipeline);
+        return parent::executeCommand($command, $codes, $failures, $pipeline, $address);
     }
 
     /** Mixin handling method for ESMTP handlers */
@@ -397,7 +398,7 @@ class Swift_Transport_EsmtpTransport extends Swift_Transport_AbstractSmtpTranspo
         }
         $paramStr = !empty($params) ? ' '.implode(' ', $params) : '';
         $this->executeCommand(
-            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), [250, 251, 252], $failures, true
+            sprintf("RCPT TO:<%s>%s\r\n", $address, $paramStr), [250, 251, 252], $failures, true, $address
             );
     }
 
