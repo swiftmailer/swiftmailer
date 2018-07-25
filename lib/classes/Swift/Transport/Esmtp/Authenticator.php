@@ -29,7 +29,9 @@ interface Swift_Transport_Esmtp_Authenticator
      * @param string                    $username
      * @param string                    $password
      *
-     * @return bool
+     * @return bool true if authentication worked (returning false is deprecated, throw a Swift_TransportException instead)
+     *
+     * @throws Swift_TransportException Allows the message to bubble up when authentication was not successful
      */
     public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password);
 }

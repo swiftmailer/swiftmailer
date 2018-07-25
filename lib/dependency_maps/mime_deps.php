@@ -13,101 +13,105 @@ Swift_DependencyContainer::getInstance()
     // As SERVER_NAME can come from the user in certain configurations, check that
     // it does not contain forbidden characters (see RFC 952 and RFC 2181). Use
     // preg_replace() instead of preg_match() to prevent DoS attacks with long host names.
-    ->asValue(!empty($_SERVER['SERVER_NAME']) && preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $_SERVER['SERVER_NAME']) === '' ? $_SERVER['SERVER_NAME'] : 'swift.generated')
+    ->asValue(!empty($_SERVER['SERVER_NAME']) && '' === preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'swift.generated')
 
     ->register('mime.idgenerator')
     ->asSharedInstanceOf('Swift_Mime_IdGenerator')
-    ->withDependencies(array(
+    ->withDependencies([
         'mime.idgenerator.idright',
-    ))
+    ])
 
     ->register('mime.message')
     ->asNewInstanceOf('Swift_Mime_SimpleMessage')
-    ->withDependencies(array(
+    ->withDependencies([
         'mime.headerset',
-        'mime.qpcontentencoder',
+        'mime.textcontentencoder',
         'cache',
         'mime.idgenerator',
         'properties.charset',
-    ))
+    ])
 
     ->register('mime.part')
     ->asNewInstanceOf('Swift_Mime_MimePart')
-    ->withDependencies(array(
+    ->withDependencies([
         'mime.headerset',
-        'mime.qpcontentencoder',
+        'mime.textcontentencoder',
         'cache',
         'mime.idgenerator',
         'properties.charset',
-    ))
+    ])
 
     ->register('mime.attachment')
     ->asNewInstanceOf('Swift_Mime_Attachment')
-    ->withDependencies(array(
+    ->withDependencies([
         'mime.headerset',
         'mime.base64contentencoder',
         'cache',
         'mime.idgenerator',
-    ))
+    ])
     ->addConstructorValue($swift_mime_types)
 
     ->register('mime.embeddedfile')
     ->asNewInstanceOf('Swift_Mime_EmbeddedFile')
-    ->withDependencies(array(
+    ->withDependencies([
         'mime.headerset',
         'mime.base64contentencoder',
         'cache',
         'mime.idgenerator',
-    ))
+    ])
     ->addConstructorValue($swift_mime_types)
 
     ->register('mime.headerfactory')
     ->asNewInstanceOf('Swift_Mime_SimpleHeaderFactory')
-    ->withDependencies(array(
-            'mime.qpheaderencoder',
-            'mime.rfc2231encoder',
-            'email.validator',
-            'properties.charset',
-        ))
+    ->withDependencies([
+        'mime.qpheaderencoder',
+        'mime.rfc2231encoder',
+        'email.validator',
+        'properties.charset',
+        'address.idnaddressencoder',
+    ])
 
     ->register('mime.headerset')
     ->asNewInstanceOf('Swift_Mime_SimpleHeaderSet')
-    ->withDependencies(array('mime.headerfactory', 'properties.charset'))
+    ->withDependencies(['mime.headerfactory', 'properties.charset'])
 
     ->register('mime.qpheaderencoder')
     ->asNewInstanceOf('Swift_Mime_HeaderEncoder_QpHeaderEncoder')
-    ->withDependencies(array('mime.charstream'))
+    ->withDependencies(['mime.charstream'])
 
     ->register('mime.base64headerencoder')
     ->asNewInstanceOf('Swift_Mime_HeaderEncoder_Base64HeaderEncoder')
-    ->withDependencies(array('mime.charstream'))
+    ->withDependencies(['mime.charstream'])
 
     ->register('mime.charstream')
     ->asNewInstanceOf('Swift_CharacterStream_NgCharacterStream')
-    ->withDependencies(array('mime.characterreaderfactory', 'properties.charset'))
+    ->withDependencies(['mime.characterreaderfactory', 'properties.charset'])
 
     ->register('mime.bytecanonicalizer')
     ->asSharedInstanceOf('Swift_StreamFilters_ByteArrayReplacementFilter')
-    ->addConstructorValue(array(array(0x0D, 0x0A), array(0x0D), array(0x0A)))
-    ->addConstructorValue(array(array(0x0A), array(0x0A), array(0x0D, 0x0A)))
+    ->addConstructorValue([[0x0D, 0x0A], [0x0D], [0x0A]])
+    ->addConstructorValue([[0x0A], [0x0A], [0x0D, 0x0A]])
 
     ->register('mime.characterreaderfactory')
     ->asSharedInstanceOf('Swift_CharacterReaderFactory_SimpleCharacterReaderFactory')
 
+    ->register('mime.textcontentencoder')
+    ->asAliasOf('mime.qpcontentencoder')
+
     ->register('mime.safeqpcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
-    ->withDependencies(array('mime.charstream', 'mime.bytecanonicalizer'))
+    ->withDependencies(['mime.charstream', 'mime.bytecanonicalizer'])
 
     ->register('mime.rawcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_RawContentEncoder')
 
     ->register('mime.nativeqpcontentencoder')
-    ->withDependencies(array('properties.charset'))
+    ->withDependencies(['properties.charset'])
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_NativeQpContentEncoder')
 
     ->register('mime.qpcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoderProxy')
-    ->withDependencies(array('mime.safeqpcontentencoder', 'mime.nativeqpcontentencoder', 'properties.charset'))
+    ->withDependencies(['mime.safeqpcontentencoder', 'mime.nativeqpcontentencoder', 'properties.charset'])
 
     ->register('mime.7bitcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_PlainContentEncoder')
@@ -124,7 +128,7 @@ Swift_DependencyContainer::getInstance()
 
     ->register('mime.rfc2231encoder')
     ->asNewInstanceOf('Swift_Encoder_Rfc2231Encoder')
-    ->withDependencies(array('mime.charstream'))
+    ->withDependencies(['mime.charstream'])
 ;
 
 unset($swift_mime_types);

@@ -17,7 +17,7 @@
 class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
 {
     /** Pre-computed for optimization */
-    private static $length_map = array(
+    private static $length_map = [
         // N=0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 0x0N
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 0x1N
@@ -35,9 +35,9 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, // 0xDN
         3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, // 0xEN
         4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 0, 0,  // 0xFN
-    );
+    ];
 
-    private static $s_length_map = array(
+    private static $s_length_map = [
         "\x00" => 1, "\x01" => 1, "\x02" => 1, "\x03" => 1, "\x04" => 1, "\x05" => 1, "\x06" => 1, "\x07" => 1,
         "\x08" => 1, "\x09" => 1, "\x0a" => 1, "\x0b" => 1, "\x0c" => 1, "\x0d" => 1, "\x0e" => 1, "\x0f" => 1,
         "\x10" => 1, "\x11" => 1, "\x12" => 1, "\x13" => 1, "\x14" => 1, "\x15" => 1, "\x16" => 1, "\x17" => 1,
@@ -70,7 +70,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
         "\xe8" => 3, "\xe9" => 3, "\xea" => 3, "\xeb" => 3, "\xec" => 3, "\xed" => 3, "\xee" => 3, "\xef" => 3,
         "\xf0" => 4, "\xf1" => 4, "\xf2" => 4, "\xf3" => 4, "\xf4" => 4, "\xf5" => 4, "\xf6" => 4, "\xf7" => 4,
         "\xf8" => 5, "\xf9" => 5, "\xfa" => 5, "\xfb" => 5, "\xfc" => 6, "\xfd" => 6, "\xfe" => 0, "\xff" => 0,
-     );
+     ];
 
     /**
      * Returns the complete character map.
@@ -85,7 +85,7 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
     public function getCharPositions($string, $startOffset, &$currentMap, &$ignoredChars)
     {
         if (!isset($currentMap['i']) || !isset($currentMap['p'])) {
-            $currentMap['p'] = $currentMap['i'] = array();
+            $currentMap['p'] = $currentMap['i'] = [];
         }
 
         $strlen = strlen($string);
@@ -95,12 +95,12 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
         for ($i = 0; $i < $strlen; ++$i) {
             $char = $string[$i];
             $size = self::$s_length_map[$char];
-            if ($size == 0) {
+            if (0 == $size) {
                 /* char is invalid, we must wait for a resync */
                 $invalid = true;
                 continue;
             } else {
-                if ($invalid == true) {
+                if (true === $invalid) {
                     /* We mark the chars as invalid and start a new char */
                     $currentMap['p'][$charPos + $foundChars] = $startOffset + $i;
                     $currentMap['i'][$charPos + $foundChars] = true;

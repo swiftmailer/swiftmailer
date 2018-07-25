@@ -149,6 +149,10 @@ settings.
     "ssl" are present in your PHP installation by using the PHP function
     ``stream_get_transports()``.
 
+.. note::
+    If you are using Mailcatcher_, make sure you do not set the encryption
+    for the ``Swift_SmtpTransport``, since Mailcatcher does not support encryption.
+
 SMTP with a Username and Password
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -343,10 +347,11 @@ Mailer will throw a ``Swift_RfcComplianceException``.
 
 If you add recipients automatically based on a data source that may contain
 invalid email addresses, you can prevent possible exceptions by validating the
-addresses using ``Swift_Validate::email($email)`` and only adding addresses
-that validate. Another way would be to wrap your ``setTo()``, ``setCc()`` and
-``setBcc()`` calls in a try-catch block and handle the
-``Swift_RfcComplianceException`` in the catch block.
+addresses using ``Egulias\EmailValidator\EmailValidator`` (a dependency that is
+installed with Swift Mailer) and only adding addresses that validate. Another
+way would be to wrap your ``setTo()``, ``setCc()`` and ``setBcc()`` calls in a
+try-catch block and handle the ``Swift_RfcComplianceException`` in the catch
+block.
 
 Handling invalid addresses properly is especially important when sending emails
 in large batches since a single invalid address might cause an unhandled
@@ -444,3 +449,5 @@ added to the array provided by-reference.
     empty array and then failures will be added to that array. If the variable
     already exists it will be type-cast to an array and failures will be added
     to it.
+
+.. _Mailcatcher: https://mailcatcher.me/

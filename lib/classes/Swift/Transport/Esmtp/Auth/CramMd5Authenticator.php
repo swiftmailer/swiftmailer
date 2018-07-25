@@ -26,29 +26,23 @@ class Swift_Transport_Esmtp_Auth_CramMd5Authenticator implements Swift_Transport
     }
 
     /**
-     * Try to authenticate the user with $username and $password.
-     *
-     * @param Swift_Transport_SmtpAgent $agent
-     * @param string                    $username
-     * @param string                    $password
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function authenticate(Swift_Transport_SmtpAgent $agent, $username, $password)
     {
         try {
-            $challenge = $agent->executeCommand("AUTH CRAM-MD5\r\n", array(334));
+            $challenge = $agent->executeCommand("AUTH CRAM-MD5\r\n", [334]);
             $challenge = base64_decode(substr($challenge, 4));
             $message = base64_encode(
                 $username.' '.$this->getResponse($password, $challenge)
                 );
-            $agent->executeCommand(sprintf("%s\r\n", $message), array(235));
+            $agent->executeCommand(sprintf("%s\r\n", $message), [235]);
 
             return true;
         } catch (Swift_TransportException $e) {
-            $agent->executeCommand("RSET\r\n", array(250));
+            $agent->executeCommand("RSET\r\n", [250]);
 
-            return false;
+            throw $e;
         }
     }
 

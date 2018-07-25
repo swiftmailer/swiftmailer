@@ -63,9 +63,9 @@ class Swift_Events_SendEventTest extends \PHPUnit\Framework\TestCase
 
         $evt = $this->createEvent($transport, $message);
 
-        $evt->setFailedRecipients(array('foo@bar', 'zip@button'));
+        $evt->setFailedRecipients(['foo@bar', 'zip@button']);
 
-        $this->assertEquals(array('foo@bar', 'zip@button'), $evt->getFailedRecipients(),
+        $this->assertEquals(['foo@bar', 'zip@button'], $evt->getFailedRecipients(),
             '%s: FailedRecipients should be returned from getter'
             );
     }
@@ -76,7 +76,7 @@ class Swift_Events_SendEventTest extends \PHPUnit\Framework\TestCase
         $transport = $this->createTransport();
 
         $evt = $this->createEvent($transport, $message);
-        $this->assertEquals(array(), $evt->getFailedRecipients());
+        $this->assertEquals([], $evt->getFailedRecipients());
     }
 
     private function createEvent(Swift_Transport $source, Swift_Mime_SimpleMessage $message)

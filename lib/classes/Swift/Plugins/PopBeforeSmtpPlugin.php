@@ -45,7 +45,8 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Create a new PopBeforeSmtpPlugin for $host and $port.
      *
-     * @param string $host
+     * @param string $host   Hostname or IP. Literal IPv6 addresses should be
+     *                       wrapped in square brackets.
      * @param int    $port
      * @param string $crypto as "tls" or "ssl"
      */
@@ -59,8 +60,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     /**
      * Set a Pop3Connection to delegate to instead of connecting directly.
      *
-     * @param Swift_Plugins_Pop_Pop3Connection $connection
-     *
      * @return $this
      */
     public function setConnection(Swift_Plugins_Pop_Pop3Connection $connection)
@@ -72,8 +71,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
 
     /**
      * Bind this plugin to a specific SMTP transport instance.
-     *
-     * @param Swift_Transport
      */
     public function bindSmtp(Swift_Transport $smtp)
     {
@@ -177,8 +174,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
 
     /**
      * Invoked just before a Transport is started.
-     *
-     * @param Swift_Events_TransportChangeEvent $evt
      */
     public function beforeTransportStarted(Swift_Events_TransportChangeEvent $evt)
     {
@@ -234,7 +229,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
 
     private function assertOk($response)
     {
-        if (substr($response, 0, 3) != '+OK') {
+        if ('+OK' != substr($response, 0, 3)) {
             throw new Swift_Plugins_Pop_Pop3Exception(
                 sprintf('POP3 command failed [%s]', trim($response))
             );

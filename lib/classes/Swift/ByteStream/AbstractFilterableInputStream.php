@@ -25,7 +25,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      *
      * @var Swift_StreamFilter[]
      */
-    private $filters = array();
+    private $filters = [];
 
     /**
      * A buffer for writing.
@@ -37,7 +37,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      *
      * @var Swift_InputByteStream[]
      */
-    private $mirrors = array();
+    private $mirrors = [];
 
     /**
      * Commit the given bytes to the storage medium immediately.
@@ -54,8 +54,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
     /**
      * Add a StreamFilter to this InputByteStream.
      *
-     * @param Swift_StreamFilter $filter
-     * @param string             $key
+     * @param string $key
      */
     public function addFilter(Swift_StreamFilter $filter, $key)
     {
@@ -110,8 +109,6 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      *
      * The stream acts as an observer, receiving all data that is written.
      * All {@link write()} and {@link flushBuffers()} operations will be mirrored.
-     *
-     * @param Swift_InputByteStream $is
      */
     public function bind(Swift_InputByteStream $is)
     {
@@ -124,14 +121,12 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      * If $is is not bound, no errors will be raised.
      * If the stream currently has any buffered data it will be written to $is
      * before unbinding occurs.
-     *
-     * @param Swift_InputByteStream $is
      */
     public function unbind(Swift_InputByteStream $is)
     {
         foreach ($this->mirrors as $k => $stream) {
             if ($is === $stream) {
-                if ($this->writeBuffer !== '') {
+                if ('' !== $this->writeBuffer) {
                     $stream->write($this->writeBuffer);
                 }
                 unset($this->mirrors[$k]);
@@ -147,7 +142,7 @@ abstract class Swift_ByteStream_AbstractFilterableInputStream implements Swift_I
      */
     public function flushBuffers()
     {
-        if ($this->writeBuffer !== '') {
+        if ('' !== $this->writeBuffer) {
             $this->doWrite($this->writeBuffer);
         }
         $this->flush();

@@ -13,6 +13,8 @@
  * Takes advantage of pecl extension.
  *
  * @author     Xavier De Cock <xdecock@gmail.com>
+ *
+ * @deprecated since SwiftMailer 6.1.0; use Swift_Signers_DKIMSigner instead.
  */
 class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 {
@@ -42,7 +44,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     {
         $header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
         $headerVal = $this->dkimHandler->getSignatureHeader();
-        if (!$headerVal) {
+        if (false === $headerVal || is_int($headerVal)) {
             throw new Swift_SwiftException('OpenDKIM Error: '.$this->dkimHandler->getError());
         }
         $header->setValue($headerVal);
@@ -53,14 +55,10 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     public function setHeaders(Swift_Mime_SimpleHeaderSet $headers)
     {
-        $bodyLen = $this->bodyLen;
-        if (is_bool($bodyLen)) {
-            $bodyLen = -1;
-        }
-        $hash = $this->hashAlgorithm == 'rsa-sha1' ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
-        $bodyCanon = $this->bodyCanon == 'simple' ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
-        $headerCanon = $this->headerCanon == 'simple' ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
-        $this->dkimHandler = new OpenDKIMSign($this->privateKey, $this->selector, $this->domainName, $headerCanon, $bodyCanon, $hash, $bodyLen);
+        $hash = 'rsa-sha1' == $this->hashAlgorithm ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
+        $bodyCanon = 'simple' == $this->bodyCanon ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
+        $headerCanon = 'simple' == $this->headerCanon ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
+        $this->dkimHandler = new OpenDKIMSign($this->privateKey, $this->selector, $this->domainName, $headerCanon, $bodyCanon, $hash, -1);
         // Hardcode signature Margin for now
         $this->dkimHandler->setMargin(78);
 
@@ -81,7 +79,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
                 $tmp = $headers->getAll($hName);
                 if ($headers->has($hName)) {
                     foreach ($tmp as $header) {
-                        if ($header->getFieldBody() != '') {
+                        if ('' != $header->getFieldBody()) {
                             $htosign = $header->toString();
                             $this->dkimHandler->header($htosign);
                             $this->signedHeaders[] = $header->getFieldName();
@@ -172,8 +170,8 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         if (!$this->peclLoaded) {
             return parent::canonicalizeBody($string);
         }
-        if (false && $this->dropFirstLF === true) {
-            if ($string[0] == "\r" && $string[1] == "\n") {
+        if (true === $this->dropFirstLF) {
+            if ("\r" == $string[0] && "\n" == $string[1]) {
                 $string = substr($string, 2);
             }
         }

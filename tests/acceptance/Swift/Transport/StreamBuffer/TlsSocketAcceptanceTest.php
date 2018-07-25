@@ -25,15 +25,15 @@ class Swift_Transport_StreamBuffer_TlsSocketAcceptanceTest extends Swift_Transpo
     {
         $parts = explode(':', SWIFT_TLS_HOST);
         $host = $parts[0];
-        $port = isset($parts[1]) ? $parts[1] : 25;
+        $port = $parts[1] ?? 25;
 
-        $this->buffer->initialize(array(
+        $this->buffer->initialize([
             'type' => Swift_Transport_IoBuffer::TYPE_SOCKET,
             'host' => $host,
             'port' => $port,
             'protocol' => 'tls',
             'blocking' => 1,
             'timeout' => 15,
-            ));
+            ]);
     }
 }

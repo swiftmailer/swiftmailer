@@ -25,18 +25,16 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     private $out;
 
     /** Buffer initialization parameters */
-    private $params = array();
+    private $params = [];
 
     /** The ReplacementFilterFactory */
     private $replacementFactory;
 
     /** Translations performed on data being streamed into the buffer */
-    private $translations = array();
+    private $translations = [];
 
     /**
      * Create a new StreamBuffer using $replacementFactory for transformations.
-     *
-     * @param Swift_ReplacementFilterFactory $replacementFactory
      */
     public function __construct(Swift_ReplacementFilterFactory $replacementFactory)
     {
@@ -47,8 +45,6 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
      * Perform any initialization needed, using the given $params.
      *
      * Parameters will vary depending upon the type of IoBuffer used.
-     *
-     * @param array $params
      */
     public function initialize(array $params)
     {
@@ -91,7 +87,11 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
 
     public function startTLS()
     {
-        return stream_socket_enable_crypto($this->stream, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+        // STREAM_CRYPTO_METHOD_TLS_CLIENT only allow tls1.0 connections (some php versions)
+        // To support modern tls we allow explicit tls1.0, tls1.1, tls1.2
+        // Ssl3 and older are not allowed because they are vulnerable
+        // @TODO make tls arguments configurable
+        return stream_socket_enable_crypto($this->stream, true, STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT);
     }
 
     /**
@@ -160,7 +160,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     {
         if (isset($this->out) && !feof($this->out)) {
             $line = fgets($this->out);
-            if (strlen($line) == 0) {
+            if (0 == strlen($line)) {
                 $metas = stream_get_meta_data($this->out);
                 if ($metas['timed_out']) {
                     throw new Swift_IoException(
@@ -192,7 +192,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     {
         if (isset($this->out) && !feof($this->out)) {
             $ret = fread($this->out, $length);
-            if (strlen($ret) == 0) {
+            if (0 == strlen($ret)) {
                 $metas = stream_get_meta_data($this->out);
                 if ($metas['timed_out']) {
                     throw new Swift_IoException(
@@ -255,7 +255,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
         if (!empty($this->params['timeout'])) {
             $timeout = $this->params['timeout'];
         }
-        $options = array();
+        $options = [];
         if (!empty($this->params['sourceIp'])) {
             $options['socket']['bindto'] = $this->params['sourceIp'].':0';
         }
@@ -287,12 +287,12 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
     private function establishProcessConnection()
     {
         $command = $this->params['command'];
-        $descriptorSpec = array(
-            0 => array('pipe', 'r'),
-            1 => array('pipe', 'w'),
-            2 => array('pipe', 'w'),
-            );
-        $pipes = array();
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+            ];
+        $pipes = [];
         $this->stream = proc_open($command, $descriptorSpec, $pipes);
         stream_set_blocking($pipes[2], 0);
         if ($err = stream_get_contents($pipes[2])) {

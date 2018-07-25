@@ -30,11 +30,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     /**
      * Create a new MimePart with $headers, $encoder and $cache.
      *
-     * @param Swift_Mime_SimpleHeaderSet $headers
-     * @param Swift_Mime_ContentEncoder  $encoder
-     * @param Swift_KeyCache             $cache
-     * @param Swift_IdGenerator          $idGenerator
-     * @param string                     $charset
+     * @param string $charset
      */
     public function __construct(Swift_Mime_SimpleHeaderSet $headers, Swift_Mime_ContentEncoder $encoder, Swift_KeyCache $cache, Swift_IdGenerator $idGenerator, $charset = null)
     {
@@ -194,7 +190,7 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     protected function convertString($string)
     {
         $charset = strtolower($this->getCharset());
-        if (!in_array($charset, array('utf-8', 'iso-8859-1', 'iso-8859-15', ''))) {
+        if (!in_array($charset, ['utf-8', 'iso-8859-1', 'iso-8859-15', ''])) {
             // mb_convert_encoding must be the first one to check, since iconv cannot convert some words.
             if (function_exists('mb_convert_encoding')) {
                 $string = mb_convert_encoding($string, $charset, 'utf-8');

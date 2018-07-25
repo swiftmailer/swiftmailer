@@ -12,6 +12,8 @@
  * An OpenDKIM Specific Header using only raw header datas without encoding.
  *
  * @author De Cock Xavier <xdecock@gmail.com>
+ *
+ * @deprecated since SwiftMailer 6.1.0; use Swift_Signers_DKIMSigner instead.
  */
 class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
 {
@@ -111,7 +113,7 @@ class Swift_Mime_Headers_OpenDKIMHeader implements Swift_Mime_Header
      */
     public function toString()
     {
-        return $this->fieldName.': '.$this->value;
+        return $this->fieldName.': '.$this->value."\r\n";
     }
 
     /**

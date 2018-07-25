@@ -12,11 +12,11 @@ Swift_DependencyContainer::getInstance()
 
     ->register('cache.array')
     ->asSharedInstanceOf('Swift_KeyCache_ArrayKeyCache')
-    ->withDependencies(array('cache.inputstream'))
+    ->withDependencies(['cache.inputstream'])
 
     ->register('cache.disk')
     ->asSharedInstanceOf('Swift_KeyCache_DiskKeyCache')
-    ->withDependencies(array('cache.inputstream', 'tempdir'))
+    ->withDependencies(['cache.inputstream', 'tempdir'])
 
     ->register('cache.inputstream')
     ->asNewInstanceOf('Swift_KeyCache_SimpleKeyCacheInputStream')
