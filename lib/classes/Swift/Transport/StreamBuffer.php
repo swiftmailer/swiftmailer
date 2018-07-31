@@ -95,9 +95,12 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
         // To support modern tls we allow explicit tls1.0, tls1.1, tls1.2
         // Ssl3 and older are not allowed because they are vulnerable
         // @TODO make tls arguments configurable
-	// To Support more php versions
-	$supportTls = PHP_VERSION > '5.6' ? STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT : STREAM_CRYPTO_METHOD_TLS_CLIENT;
-        return stream_socket_enable_crypto($this->stream, true, $supportTls);
+        $cryptoType = STREAM_CRYPTO_METHOD_TLS_CLIENT;
+        if (PHP_VERSION_ID >= 50600) {
+            $cryptoType = STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+        }
+
+        return stream_socket_enable_crypto($this->stream, true, $cryptoType);
     }
 
     /**
