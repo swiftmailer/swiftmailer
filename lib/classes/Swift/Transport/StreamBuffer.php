@@ -100,7 +100,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             $cryptoType = STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
         }
 
-        return stream_socket_enable_crypto($this->stream, true, $cryptoType);
+        return stream_socket_enable_crypto($this->_stream, true, $cryptoType);
     }
 
     /**
