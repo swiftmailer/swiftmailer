@@ -64,6 +64,6 @@ class Swift_AddressEncoder_IdnAddressEncoder implements Swift_AddressEncoder
             return $punycode->encode($string);
         }
 
-        throw new Swift_AddressEncoderException('Non-ASCII characters in address, but no IDN encoder found (install the intl extension or the true/punycode package)', $address);
+        throw new Swift_AddressEncoderException('Non-ASCII characters in address, but no IDN encoder found (install the intl extension or the true/punycode package)', $string);
     }
 }
