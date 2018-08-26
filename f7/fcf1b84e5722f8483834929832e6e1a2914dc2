@@ -1,0 +1,29 @@
+---------------------------------------------------------------------------
+
+by yareckon at 2017-05-30T00:28:01Z
+
+would fix #736
+
+---------------------------------------------------------------------------
+
+by fmarchalemisys at 2017-11-28T17:58:03Z
+
+I could really use this patch right now. Any reason why such a simple patch has not been merged yet?
+
+---------------------------------------------------------------------------
+
+by yareckon at 2018-01-24T10:47:13Z
+
+ping :)
+
+---------------------------------------------------------------------------
+
+by LucWollants at 2018-06-21T14:16:31Z
+
+What is the status on this? I would like to use this method in a unit test. I have a html and plain text alternative and wan't to make sure both are present.
+
+---------------------------------------------------------------------------
+
+by tremby at 2018-08-25T04:03:53Z
+
+This patch seems to add some trailing whitespace to a couple of lines (170, 180). I think if that were the reason it would have been said by now, but maybe worth tidying it up just in case?
