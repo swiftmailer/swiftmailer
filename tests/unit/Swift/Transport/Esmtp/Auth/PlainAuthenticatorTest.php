@@ -42,7 +42,7 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
     }
 
     /**
-     * @expectedException Swift_TransportException
+     * @expectedException \Swift_TransportException
      */
     public function testAuthenticationFailureSendRset()
     {

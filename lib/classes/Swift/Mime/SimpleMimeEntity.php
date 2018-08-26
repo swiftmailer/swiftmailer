@@ -162,7 +162,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     {
         return $this->getHeaderFieldModel('Content-Type');
     }
-    
+
     /**
      * Get the Body Content-type of this entity.
      *
@@ -172,7 +172,7 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     {
         return $this->userContentType;
     }
-    
+
     /**
      * Set the Content-type of this entity.
      *

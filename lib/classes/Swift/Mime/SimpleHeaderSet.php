@@ -359,9 +359,9 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
             return $a > $b ? -1 : 1;
         }
 
-        if ($aPos == -1) {
+        if (-1 == $aPos) {
             return 1;
-        } elseif ($bPos == -1) {
+        } elseif (-1 == $bPos) {
             return -1;
         }
 

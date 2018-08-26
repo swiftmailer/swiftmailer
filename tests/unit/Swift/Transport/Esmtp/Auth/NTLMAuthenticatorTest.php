@@ -161,7 +161,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
     }
 
     /**
-     * @expectedException Swift_TransportException
+     * @expectedException \Swift_TransportException
      */
     public function testAuthenticationFailureSendRset()
     {
