@@ -61,6 +61,8 @@ interface Swift_Transport
      * Recipient/sender data will be retrieved from the Message API.
      * The return value is the number of recipients who were accepted for delivery.
      *
+     * This is the responsibility of the send method to start the transport if needed.
+     *
      * @param Swift_Mime_SimpleMessage $message
      * @param string[]                 $failedRecipients An array of failures by-reference
      *

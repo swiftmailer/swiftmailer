@@ -177,6 +177,10 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      */
     public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
+        if (!$this->isStarted()) {
+            $this->start();
+        }
+
         $sent = 0;
         $failedRecipients = (array) $failedRecipients;
 
