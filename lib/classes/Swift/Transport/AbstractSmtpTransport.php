@@ -204,12 +204,9 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         try {
             $sent += $this->sendTo($message, $reversePath, $tos, $failedRecipients);
             $sent += $this->sendBcc($message, $reversePath, $bcc, $failedRecipients);
-        } catch (Exception $e) {
+        } finally {
             $message->setBcc($bcc);
-            throw $e;
         }
-
-        $message->setBcc($bcc);
 
         if ($evt) {
             if ($sent == count($to) + count($cc) + count($bcc)) {
