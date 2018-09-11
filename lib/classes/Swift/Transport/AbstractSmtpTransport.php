@@ -188,10 +188,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
 
         if (!$reversePath = $this->getReversePath($message)) {
-            $this->throwException(new Swift_TransportException(
-                'Cannot send message without a sender address'
-                )
-            );
+            $this->throwException(new Swift_TransportException('Cannot send message without a sender address'));
         }
 
         $to = (array) $message->getTo();
@@ -440,6 +437,10 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
     /** Throws an Exception if a response code is incorrect */
     protected function assertResponseCode($response, $wanted)
     {
+        if (!$response) {
+            $this->throwException(new Swift_TransportException('Expected response code '.implode('/', $wanted).' but got an empty response'));
+        }
+
         list($code) = sscanf($response, '%3d');
         $valid = (empty($wanted) || in_array($code, $wanted));
 
@@ -449,12 +450,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
 
         if (!$valid) {
-            $this->throwException(
-                new Swift_TransportException(
-                    'Expected response code '.implode('/', $wanted).' but got code '.
-                    '"'.$code.'", with message "'.$response.'"',
-                    $code)
-                );
+            $this->throwException(new Swift_TransportException('Expected response code '.implode('/', $wanted).' but got code "'.$code.'", with message "'.$response.'"', $code));
         }
     }
 
@@ -470,10 +466,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         } catch (Swift_TransportException $e) {
             $this->throwException($e);
         } catch (Swift_IoException $e) {
-            $this->throwException(
-                new Swift_TransportException(
-                    $e->getMessage())
-                );
+            $this->throwException(new Swift_TransportException($e->getMessage(), 0, $e));
         }
 
         return $response;
