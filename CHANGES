@@ -4,7 +4,13 @@ Changelog
 6.1.3 (2018-XX-XX)
 ------------------
 
- * n/a
+ * added auto-start to the SMTP transport when sending a message
+ * tweaked error message when the response from an SMTP server is empty
+ * fixed missing property in Swift_Mime_IdGenerator
+ * exposed original body content type with Swift_Mime_SimpleMimeEntity::getBodyContentType()
+ * fixed typo in variable name in Swift_AddressEncoder_IdnAddressEncoder
+ * fixed return type in MessageLogger
+ * fixed missing property addressEncoder in SimpleHeaderFactory class
 
 6.1.2 (2018-07-13)
 ------------------
