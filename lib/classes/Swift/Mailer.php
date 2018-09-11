@@ -60,6 +60,7 @@ class Swift_Mailer
     {
         $failedRecipients = (array) $failedRecipients;
 
+        // FIXME: to be removed in 7.0 (as transport must now start itself on send)
         if (!$this->transport->isStarted()) {
             $this->transport->start();
         }
