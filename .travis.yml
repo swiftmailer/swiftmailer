@@ -5,6 +5,8 @@ sudo: false
 before_script:
     - cp tests/acceptance.conf.php.default tests/acceptance.conf.php
     - cp tests/smoke.conf.php.default tests/smoke.conf.php
+    - sudo apt-get install -y libgpgme11-dev
+    - pecl install gnupg
     - composer self-update
     - composer update --no-interaction --prefer-source
     - gem install mime-types -v 2.99.1
