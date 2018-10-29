@@ -228,7 +228,7 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             $totalBytesWritten = 0;
 
             while ($totalBytesWritten < $bytesToWrite) {
-                $bytesWritten = fwrite($this->in, substr($bytes, $totalBytesWritten));
+                $bytesWritten = @fwrite($this->in, substr($bytes, $totalBytesWritten));
                 if (false === $bytesWritten || 0 === $bytesWritten) {
                     break;
                 }
