@@ -274,7 +274,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Get the reply-to address of this message.
      *
-     * @return string
+     * @return array
      */
     public function getReplyTo()
     {
