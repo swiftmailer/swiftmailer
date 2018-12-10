@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by Rotzbua at 2018-11-01T09:49:02Z
+
+Job for php 7.3 should be allowed to fail, because 7.3 is still not released. (edit: now it is released)
+
+---------------------------------------------------------------------------
+
+by carusogabriel at 2018-11-22T16:53:24Z
+
+@Rotzbua We are less than a month from the release and if this package is passing the RC PHP 7.3, let's keep it passing :)
+
+---------------------------------------------------------------------------
+
+by gmponos at 2018-12-09T19:41:34Z
+
+ping 7.3 is released.
