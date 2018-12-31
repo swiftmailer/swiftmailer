@@ -315,6 +315,8 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * If codes are given, an exception will be thrown on an invalid response.
      * If the command is RCPT TO, and the pipeline is non-empty, no exception
      * will be thrown; instead the failing address is added to $failures.
+     * If the command is DATA and all prior RCPT TO in the pipeline failed, no
+     * exception will be thrown.
      *
      * @param string   $command
      * @param int[]    $codes
@@ -336,14 +338,21 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         if ($pipeline && $this->pipelining) {
             $response = null;
         } else {
+            $addresses = 0;
             while ($this->pipeline) {
                 list($command, $seq, $codes, $address) = array_shift($this->pipeline);
+                if ($address) {
+                    $addresses++;
+                }
                 $response = $this->getFullResponse($seq);
                 try {
                     $this->assertResponseCode($response, $codes);
                 } catch (Swift_TransportException $e) {
                     if ($this->pipeline && $address) {
                         $failures[] = $address;
+                    } elseif (!$this->pipeline && $addresses && count($failures) === $addresses) {
+                        // All RCPT TO commands in the pipeline failed, so DATA
+                        // is expected to fail also.
                     } else {
                         $this->throwException($e);
                     }
@@ -498,13 +507,17 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
             }
         }
 
-        if (0 != $sent) {
+        if ($sent) {
             $sent += count($failedRecipients);
             $this->doDataCommand($failedRecipients);
             $sent -= count($failedRecipients);
 
-            $this->streamMessage($message);
-        } else {
+            if ($sent) {
+                $this->streamMessage($message);
+            }
+        }
+
+        if (!$sent) {
             $this->reset();
         }
 
