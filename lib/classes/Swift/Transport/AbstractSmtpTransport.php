@@ -177,6 +177,10 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      */
     public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
+        if (!$this->isStarted()) {
+            $this->start();
+        }
+
         $failedRecipients = (array) $failedRecipients;
 
         if ($evt = $this->eventDispatcher->createSendEvent($this, $message)) {
@@ -233,8 +237,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         try {
             $sent += $this->sendTo($message, $reversePath, $tos, $failedRecipients);
             $sent += $this->sendBcc($message, $reversePath, $bcc, $failedRecipients);
-        } catch (Exception $e) {
-            throw $e;
         } finally {
             $message->setBcc($bcc);
         }

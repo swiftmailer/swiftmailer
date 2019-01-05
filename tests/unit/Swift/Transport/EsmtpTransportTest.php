@@ -355,9 +355,9 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
         $this->assertNull($smtp->getPipelining());
 
         $message = $this->createMessage();
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn([
@@ -453,9 +453,9 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
         $this->assertNull($smtp->getPipelining());
 
         $message = $this->createMessage();
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);
@@ -513,9 +513,9 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
         $this->assertNull($smtp->getPipelining());
 
         $message = $this->createMessage();
-        $message->shouldReceive('getFrom')
+        $message->shouldReceive('getReversePath')
                 ->zeroOrMoreTimes()
-                ->andReturn(['me@domain.com' => 'Me']);
+                ->andReturn('me@domain.com');
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
                 ->andReturn(['foo@bar' => null]);
