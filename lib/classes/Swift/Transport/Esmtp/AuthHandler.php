@@ -179,7 +179,7 @@ class Swift_Transport_Esmtp_AuthHandler implements Swift_Transport_EsmtpHandler
                         }
                     } catch (Swift_TransportException $e) {
                         // keep the error message, but tries the other authenticators
-                        $errors[] = [$authenticator->getAuthKeyword(), $e];
+                        $errors[] = [$authenticator->getAuthKeyword(), $e->getMessage()];
                     }
                 }
             }
