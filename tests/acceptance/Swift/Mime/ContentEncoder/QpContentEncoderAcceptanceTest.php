@@ -11,11 +11,6 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit\
         $this->factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
     }
 
-    protected function tearDown()
-    {
-        Swift_Preferences::getInstance()->setQPDotEscape(false);
-    }
-
     public function testEncodingAndDecodingSamples()
     {
         $sampleFp = opendir($this->samplesDir);
@@ -130,25 +125,6 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit\
     {
         $encoder = $this->createEncoderFromContainer();
         $this->assertEquals("a\r\nb\r\nc", $encoder->encodeString("a\r\nb\r\nc"));
-    }
-
-    public function testEncodingDotStuffingWithDiConfiguredInstance()
-    {
-        // Enable DotEscaping
-        Swift_Preferences::getInstance()->setQPDotEscape(true);
-        $encoder = $this->createEncoderFromContainer();
-        $this->assertEquals("a=2E\r\n=2E\r\n=2Eb\r\nc", $encoder->encodeString("a.\r\n.\r\n.b\r\nc"));
-        // Return to default
-        Swift_Preferences::getInstance()->setQPDotEscape(false);
-        $encoder = $this->createEncoderFromContainer();
-        $this->assertEquals("a.\r\n.\r\n.b\r\nc", $encoder->encodeString("a.\r\n.\r\n.b\r\nc"));
-    }
-
-    public function testDotStuffingEncodingAndDecodingSamplesFromDiConfiguredInstance()
-    {
-        // Enable DotEscaping
-        Swift_Preferences::getInstance()->setQPDotEscape(true);
-        $this->testEncodingAndDecodingSamplesFromDiConfiguredInstance();
     }
 
     private function createEncoderFromContainer()

@@ -85,15 +85,12 @@ class Swift_Preferences
      * @param bool $dotEscape
      *
      * @return $this
+     *
+     * @deprecated since Swiftmailer 6.2
      */
     public function setQPDotEscape($dotEscape)
     {
-        $dotEscape = !empty($dotEscape);
-        Swift_DependencyContainer::getInstance()
-            ->register('mime.qpcontentencoder')
-            ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
-            ->withDependencies(['mime.charstream', 'mime.bytecanonicalizer'])
-            ->addConstructorValue($dotEscape);
+        @trigger_error(sprintf('The "%s" method is deprecated since Swiftmailer 6.2.', __METHOD__), E_USER_DEPRECATED);
 
         return $this;
     }

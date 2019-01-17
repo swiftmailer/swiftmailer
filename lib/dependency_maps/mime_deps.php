@@ -98,20 +98,11 @@ Swift_DependencyContainer::getInstance()
     ->register('mime.textcontentencoder')
     ->asAliasOf('mime.qpcontentencoder')
 
-    ->register('mime.safeqpcontentencoder')
-    ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
-    ->withDependencies(['mime.charstream', 'mime.bytecanonicalizer'])
-
     ->register('mime.rawcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_RawContentEncoder')
 
-    ->register('mime.nativeqpcontentencoder')
-    ->withDependencies(['properties.charset'])
-    ->asNewInstanceOf('Swift_Mime_ContentEncoder_NativeQpContentEncoder')
-
     ->register('mime.qpcontentencoder')
-    ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoderProxy')
-    ->withDependencies(['mime.safeqpcontentencoder', 'mime.nativeqpcontentencoder', 'properties.charset'])
+    ->asNewInstanceOf('Swift_Mime_ContentEncoder_QpContentEncoder')
 
     ->register('mime.7bitcontentencoder')
     ->asNewInstanceOf('Swift_Mime_ContentEncoder_PlainContentEncoder')
