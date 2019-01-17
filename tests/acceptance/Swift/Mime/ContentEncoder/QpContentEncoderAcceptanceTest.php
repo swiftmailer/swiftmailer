@@ -25,7 +25,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit\
             }
 
             $encoding = $encodingDir;
-            $charStream = new Swift_CharacterStream_NgCharacterStream(
+            $charStream = new Swift_CharacterStream_CharacterStream(
                 $this->factory, $encoding);
             $encoder = new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
 

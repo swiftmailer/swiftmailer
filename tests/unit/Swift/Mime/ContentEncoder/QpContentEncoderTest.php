@@ -499,7 +499,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
     private function createEncoder()
     {
         $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
-        $charStream = new Swift_CharacterStream_NgCharacterStream($factory, 'utf-8');
+        $charStream = new Swift_CharacterStream_CharacterStream($factory, 'utf-8');
 
         return new Swift_Mime_ContentEncoder_QpContentEncoder($charStream);
     }

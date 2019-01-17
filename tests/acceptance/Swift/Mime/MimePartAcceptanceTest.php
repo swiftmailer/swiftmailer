@@ -16,7 +16,7 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit\Framework\TestCase
             );
         $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
         $this->contentEncoder = new Swift_Mime_ContentEncoder_QpContentEncoder(
-            new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'),
+            new Swift_CharacterStream_CharacterStream($factory, 'utf-8'),
             new Swift_StreamFilters_ByteArrayReplacementFilter(
                 [[0x0D, 0x0A], [0x0D], [0x0A]],
                 [[0x0A], [0x0A], [0x0D, 0x0A]]
@@ -24,10 +24,10 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit\Framework\TestCase
             );
 
         $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
-            new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+            new Swift_CharacterStream_CharacterStream($factory, 'utf-8')
             );
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
-            new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
+            new Swift_CharacterStream_CharacterStream($factory, 'utf-8')
             );
         $this->emailValidator = new EmailValidator();
         $this->idGenerator = new Swift_Mime_IdGenerator('example.com');
