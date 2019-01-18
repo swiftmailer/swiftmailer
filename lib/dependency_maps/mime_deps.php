@@ -84,7 +84,7 @@ Swift_DependencyContainer::getInstance()
     ->withDependencies(['mime.charstream'])
 
     ->register('mime.charstream')
-    ->asNewInstanceOf('Swift_CharacterStream_NgCharacterStream')
+    ->asNewInstanceOf('Swift_CharacterStream_CharacterStream')
     ->withDependencies(['mime.characterreaderfactory', 'properties.charset'])
 
     ->register('mime.bytecanonicalizer')

@@ -20,7 +20,7 @@ class Swift_Encoder_Rfc2231EncoderAcceptanceTest extends \PHPUnit\Framework\Test
             }
 
             $encoding = $encodingDir;
-            $charStream = new Swift_CharacterStream_ArrayCharacterStream(
+            $charStream = new Swift_CharacterStream_CharacterStream(
                 $this->factory, $encoding);
             $encoder = new Swift_Encoder_Rfc2231Encoder($charStream);
 
