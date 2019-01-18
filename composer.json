@@ -16,7 +16,8 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "egulias/email-validator": "~2.0"
+        "egulias/email-validator": "~2.0",
+        "symfony/polyfill-intl-idn": "^1.10"
     },
     "require-dev": {
         "mockery/mockery": "~0.9.1",
