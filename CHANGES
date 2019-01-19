@@ -4,6 +4,7 @@ Changelog
 6.2.0 (2010-XX-XX)
 ------------------
 
+ * added support for symfony/polyfill-intl-dn
  * deprecated Swift_CharacterStream_ArrayCharacterStream and Swift_CharacterStream_NgCharacterStream in favor of Swift_CharacterStream_CharacterStream
 
 6.1.3 (2018-09-11)
