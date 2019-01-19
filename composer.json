@@ -17,6 +17,7 @@
     "require": {
         "php": ">=7.0.0",
         "egulias/email-validator": "~2.0",
+        "symfony/polyfill-iconv": "^1.0",
         "symfony/polyfill-mbstring": "^1.0",
         "symfony/polyfill-intl-idn": "^1.10"
     },
