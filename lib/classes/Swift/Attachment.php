@@ -42,7 +42,7 @@ class Swift_Attachment extends Swift_Mime_Attachment
      * @param string $path
      * @param string $contentType optional
      *
-     * @return Swift_Mime_Attachment
+     * @return self
      */
     public static function fromPath($path, $contentType = null)
     {
