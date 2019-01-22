@@ -11,6 +11,7 @@
 require __DIR__.'/classes/Swift.php';
 
 Swift::registerAutoload(function () {
+    defined('SWIFT_ADDRESSENCODER') or define ('SWIFT_ADDRESSENCODER', 'idn');
     // Load in dependency maps
     require __DIR__.'/dependency_maps/cache_deps.php';
     require __DIR__.'/dependency_maps/mime_deps.php';

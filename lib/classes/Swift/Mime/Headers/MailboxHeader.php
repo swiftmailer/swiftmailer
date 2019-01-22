@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
-
 /**
  * A Mailbox Address MIME Header for something like From or Sender.
  *
@@ -26,7 +23,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     private $mailboxes = [];
 
     /**
-     * The strict EmailValidator.
+     * Swift_EmailValidator
      *
      * @var EmailValidator
      */
@@ -39,7 +36,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $name of Header
      */
-    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
+    public function __construct($name, Swift_Mime_HeaderEncoder $encoder, Swift_EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
     {
         $this->setFieldName($name);
         $this->setEncoder($encoder);
@@ -343,7 +340,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
     }
 
     /**
-     * Throws an Exception if the address passed does not comply with RFC 2822.
+     * Throws an Exception if the address passed does not comply with applicable RFC.
      *
      * @param string $address
      *
@@ -351,9 +348,9 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      */
     private function assertValidAddress($address)
     {
-        if (!$this->emailValidator->isValid($address, new RFCValidation())) {
+        if (!$this->emailValidator->isValid($address)) {
             throw new Swift_RfcComplianceException(
-                'Address in mailbox given ['.$address.'] does not comply with RFC 2822, 3.6.2.'
+                'Address in mailbox given ['.$address.'] does not comply with applicable RFC.'
             );
         }
     }

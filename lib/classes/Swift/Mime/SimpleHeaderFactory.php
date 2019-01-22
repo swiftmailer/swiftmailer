@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use Egulias\EmailValidator\EmailValidator;
-
 /**
  * Creates MIME headers.
  *
@@ -23,7 +21,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
     /** The Encoder used by parameters */
     private $paramEncoder;
 
-    /** Strict EmailValidator */
+    /** Swift_EmailValidator */
     private $emailValidator;
 
     /** The charset of created Headers */
@@ -37,7 +35,7 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
      *
      * @param string|null $charset
      */
-    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, EmailValidator $emailValidator, $charset = null, Swift_AddressEncoder $addressEncoder = null)
+    public function __construct(Swift_Mime_HeaderEncoder $encoder, Swift_Encoder $paramEncoder, Swift_EmailValidator $emailValidator, $charset = null, Swift_AddressEncoder $addressEncoder = null)
     {
         $this->encoder = $encoder;
         $this->paramEncoder = $paramEncoder;

@@ -8,9 +8,6 @@
  * file that was distributed with this source code.
  */
 
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
-
 /**
  * An ID MIME Header for something like Message-ID or Content-ID.
  *
@@ -28,7 +25,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
     private $ids = [];
 
     /**
-     * The strict EmailValidator.
+     * Swift_EmailValidator.
      *
      * @var EmailValidator
      */
@@ -41,7 +38,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      *
      * @param string $name
      */
-    public function __construct($name, EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
+    public function __construct($name, Swift_EmailValidator $emailValidator, Swift_AddressEncoder $addressEncoder = null)
     {
         $this->setFieldName($name);
         $this->emailValidator = $emailValidator;
@@ -179,7 +176,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     private function assertValidId($id)
     {
-        if (!$this->emailValidator->isValid($id, new RFCValidation())) {
+        if (!$this->emailValidator->isValid($id)) {
             throw new Swift_RfcComplianceException('Invalid ID given <'.$id.'>');
         }
     }
