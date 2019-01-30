@@ -129,9 +129,9 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     /**
      * If debugHeaders is set store debugData here.
      *
-     * @var string
+     * @var string[]
      */
-    private $debugHeadersData = '';
+    private $debugHeadersData = [];
 
     /**
      * Stores the bodyHash.
