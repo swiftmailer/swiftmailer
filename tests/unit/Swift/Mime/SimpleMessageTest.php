@@ -782,6 +782,22 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals('cid:foo@bar', $message->embed($child));
     }
 
+    public function testDuplicateAttachmentId()
+    {
+        $message = $this->createMessage(
+            $this->createHeaderSet(),
+            $this->createEncoder(),
+            $this->createCache()
+        );
+
+        $child = $this->createChild(null, '', true, ['Content-ID' => 'foo@bar']);
+
+        $message->attach($child);
+        $message->attach($child);
+
+        $this->assertCount(1, $message->getChildren());
+    }
+
     public function testFluidInterface()
     {
         $child = $this->createChild();

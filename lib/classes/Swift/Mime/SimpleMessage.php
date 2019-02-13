@@ -524,6 +524,10 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function attach(Swift_Mime_SimpleMimeEntity $entity)
     {
+        if ($entity->getHeaders()->has('Content-ID')) {
+            $this->detach($entity);
+        }
+
         $this->setChildren(array_merge($this->getChildren(), [$entity]));
 
         return $this;

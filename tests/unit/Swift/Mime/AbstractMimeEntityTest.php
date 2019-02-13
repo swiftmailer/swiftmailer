@@ -990,7 +990,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
 
     abstract protected function createEntity($headers, $encoder, $cache);
 
-    protected function createChild($level = null, $string = '', $stub = true)
+    protected function createChild($level = null, $string = '', $stub = true, $headers = [])
     {
         $child = $this->getMockery('Swift_Mime_SimpleMimeEntity')->shouldIgnoreMissing();
         if (isset($level)) {
@@ -1001,6 +1001,9 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $child->shouldReceive('toString')
               ->zeroOrMoreTimes()
               ->andReturn($string);
+        $child->shouldReceive('getHeaders')
+              ->zeroOrMoreTimes()
+              ->andReturn($this->createHeaderSet($headers));
 
         return $child;
     }

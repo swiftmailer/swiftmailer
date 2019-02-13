@@ -801,6 +801,55 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
             );
     }
 
+    public function testAttachmentBeingAttachedDuplicate()
+    {
+        $message = $this->createMessage();
+        $message->setReturnPath('chris@w3style.co.uk');
+        $message->setSubject('just a test subject');
+        $message->setFrom([
+            'chris.corbyn@swiftmailer.org' => 'Chris Corbyn',
+        ]);
+
+        $id = $message->getId();
+        $date = preg_quote($message->getDate()->format('r'), '~');
+        $boundary = $message->getBoundary();
+
+        $part = $this->createMimePart();
+        $part->setContentType('text/plain');
+        $part->setCharset('iso-8859-1');
+        $part->setBody('foo');
+        $cid = $part->getId();
+        $part->setId($cid);
+
+        $message->attach($part);
+        $message->attach($part);
+        $message->attach($part);
+
+        $this->assertRegExp(
+            '~^'.
+            'Return-Path: <chris@w3style.co.uk>'."\r\n".
+            'Message-ID: <'.$id.'>'."\r\n".
+            'Date: '.$date."\r\n".
+            'Subject: just a test subject'."\r\n".
+            'From: Chris Corbyn <chris.corbyn@swiftmailer.org>'."\r\n".
+            'MIME-Version: 1.0'."\r\n".
+            'Content-Type: multipart/alternative;'."\r\n".
+            ' boundary="'.$boundary.'"'."\r\n".
+            'Content-Transfer-Encoding: quoted-printable'."\r\n".
+            "\r\n\r\n".
+            '--'.$boundary."\r\n".
+            'Content-Type: text/plain; charset=iso-8859-1'."\r\n".
+            'Content-Transfer-Encoding: quoted-printable'."\r\n".
+            'Content-ID: <'.$cid.'>'."\r\n".
+            "\r\n".
+            'foo'.
+            "\r\n\r\n".
+            '--'.$boundary.'--'."\r\n".
+            '$~D',
+            $message->toString()
+            );
+    }
+
     public function testComplexEmbeddingOfContent()
     {
         $message = $this->createMessage();
