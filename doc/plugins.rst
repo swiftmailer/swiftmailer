@@ -265,7 +265,7 @@ this to one user:
 
     Subject: Important notice for smilingsunshine2009
 
-    Hello smilingsunshine2009,you requested to reset your password.
+    Hello smilingsunshine2009, you requested to reset your password.
     Please visit https://example.com/pwreset and use the reset code 183457 to set a new password.
 
 While another use may receive the message as:
