@@ -1,7 +1,7 @@
 Changelog
 =========
 
-6.2.0 (2010-XX-XX)
+6.2.0 (2019-03-10)
 ------------------
 
  * added support for symfony/polyfill-intl-dn
