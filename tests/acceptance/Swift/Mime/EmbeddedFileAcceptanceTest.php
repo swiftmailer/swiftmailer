@@ -18,10 +18,10 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit\Framework\TestCase
         $this->contentEncoder = new Swift_Mime_ContentEncoder_Base64ContentEncoder();
 
         $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
-            new Swift_CharacterStream_CharacterStream($factory, 'utf-8')
+            new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
             );
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
-            new Swift_CharacterStream_CharacterStream($factory, 'utf-8')
+            new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
             );
         $this->emailValidator = new EmailValidator();
         $this->idGenerator = new Swift_Mime_IdGenerator('example.com');

@@ -10,10 +10,10 @@ class Swift_Bug206Test extends \PHPUnit\Framework\TestCase
     {
         $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
         $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(
-            new Swift_CharacterStream_CharacterStream($factory, 'utf-8')
+            new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
         );
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(
-            new Swift_CharacterStream_CharacterStream($factory, 'utf-8')
+            new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8')
         );
         $emailValidator = new EmailValidator();
         $this->factory = new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $emailValidator);

@@ -20,7 +20,7 @@ class Swift_Encoder_QpEncoderAcceptanceTest extends \PHPUnit\Framework\TestCase
             }
 
             $encoding = $encodingDir;
-            $charStream = new Swift_CharacterStream_CharacterStream(
+            $charStream = new Swift_CharacterStream_ArrayCharacterStream(
                 $this->factory, $encoding);
             $encoder = new Swift_Encoder_QpEncoder($charStream);
 

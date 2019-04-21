@@ -4,7 +4,7 @@ Changelog
 6.2.1 (2019-XX-XX)
 ------------------
 
- * n/a
+ * reverted "deprecated Swift_CharacterStream_ArrayCharacterStream and Swift_CharacterStream_NgCharacterStream in favor of Swift_CharacterStream_CharacterStream"
 
 6.2.0 (2019-03-10)
 ------------------

@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-@trigger_error(sprintf('The "%s" class is deprecated since Swiftmailer 6.2; use "%s" instead.', Swift_CharacterStream_ArrayCharacterStream::class, Swift_CharacterStream_CharacterStream::class), E_USER_DEPRECATED);
-
 /**
  * A CharacterStream implementation which stores characters in an internal array.
  *

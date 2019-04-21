@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group legacy
- */
 class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCase
 {
     public function testValidatorAlgorithmOnImportString()
