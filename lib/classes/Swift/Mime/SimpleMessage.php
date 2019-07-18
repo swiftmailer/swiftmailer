@@ -493,7 +493,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Ask for a delivery receipt from the recipient to be sent to $addresses.
      *
-     * @param array $addresses
+     * @param string|array $addresses
      *
      * @return $this
      */
@@ -510,7 +510,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
     /**
      * Get the addresses to which a read-receipt will be sent.
      *
-     * @return string
+     * @return string|array
      */
     public function getReadReceiptTo()
     {
