@@ -95,6 +95,15 @@ within your application and adjust the settings accordingly if the code is
 moved or if the SMTP server is changed.
 
 Some SMTP servers -- Google for example -- use encryption for security reasons.
+If you want to use Gmail, you need to add the encryption like this : 
+    // Create the Transport
+    $transport = (new Swift_SmtpTransport('smtp.example.org', 25))
+      ->setUsername('your username')
+      ->setPassword('your password')
+      //don't forget to add this line to define encryption, like tls or ssl
+      ->setEncryption('your encryption')
+      ;
+
 Swift Mailer supports using both SSL and TLS encryption settings.
 
 Using the SMTP Transport
