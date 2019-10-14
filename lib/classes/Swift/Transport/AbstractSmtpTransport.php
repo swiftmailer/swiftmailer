@@ -331,20 +331,23 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
 
         $this->pipeline[] = [$command, $seq, $codes, $address];
+
         if ($pipeline && $this->pipelining) {
-            $response = null;
-        } else {
-            while ($this->pipeline) {
-                list($command, $seq, $codes, $address) = array_shift($this->pipeline);
-                $response = $this->getFullResponse($seq);
-                try {
-                    $this->assertResponseCode($response, $codes);
-                } catch (Swift_TransportException $e) {
-                    if ($this->pipeline && $address) {
-                        $failures[] = $address;
-                    } else {
-                        $this->throwException($e);
-                    }
+            return null;
+        }
+
+        $response = null;
+
+        while ($this->pipeline) {
+            list($command, $seq, $codes, $address) = array_shift($this->pipeline);
+            $response = $this->getFullResponse($seq);
+            try {
+                $this->assertResponseCode($response, $codes);
+            } catch (Swift_TransportException $e) {
+                if ($this->pipeline && $address) {
+                    $failures[] = $address;
+                } else {
+                    $this->throwException($e);
                 }
             }
         }
