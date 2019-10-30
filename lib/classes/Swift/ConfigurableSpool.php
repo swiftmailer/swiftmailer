@@ -21,6 +21,9 @@ abstract class Swift_ConfigurableSpool implements Swift_Spool
     /** The time limit per flush */
     private $time_limit;
 
+    /** The maximum attempts to resend the message in case of failures */
+    private $resend_attempts = 30;
+
     /**
      * Sets the maximum number of messages to send per flush.
      *
@@ -59,5 +62,25 @@ abstract class Swift_ConfigurableSpool implements Swift_Spool
     public function getTimeLimit()
     {
         return $this->time_limit;
+    }
+
+    /**
+     * Gets the maximum send attempts for a single message in case of errors.
+     *
+     * @return int Max attempts
+     */
+    public function getResendAttempts()
+    {
+        return $this->resend_attempts;
+    }
+
+    /**
+     * Sets the maximum send attempts for a single message in case of errors.
+     *
+     * @param int $attempts Max attempts
+     */
+    public function setResendAttempts($attempts)
+    {
+        $this->resend_attempts = (int) $attempts;
     }
 }

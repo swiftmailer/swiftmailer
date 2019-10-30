@@ -11,6 +11,12 @@
 /**
  * Stores Messages on the filesystem.
  *
+ * The file name is in the following format [random string].[attempt].message{.sending}
+ *   * `random string` just a random string to make the filename unique
+ *   * `attempt` is the current resend attempt with 0 meaning the initial send attempt
+ *   * `.sending` an optional suffix, when present means that message is either actively being sent or has failed
+ *
+ *
  * @author Fabien Potencier
  * @author Xavier De Cock <xdecock@gmail.com>
  */
@@ -18,6 +24,9 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
 {
     /** The spool directory */
     private $path;
+
+    /** @var string The path to expired place expired messages in */
+    private $expiredPath;
 
     /**
      * File WriteRetry Limit.
@@ -36,11 +45,16 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     public function __construct($path)
     {
         $this->path = $path;
+        $this->expiredPath = $path.'/expired';
 
-        if (!file_exists($this->path)) {
-            if (!mkdir($this->path, 0777, true)) {
-                throw new Swift_IoException(sprintf('Unable to create path "%s".', $this->path));
-            }
+        // check is_dir after mkdir since another process might have created the dir while this one was calling mkdir
+
+        if (!file_exists($this->path) && !mkdir($this->path, 0777, true) && !is_dir($this->path)) {
+            throw new Swift_IoException(sprintf('Unable to create path "%s".', $this->path));
+        }
+
+        if (!file_exists($this->expiredPath) && !mkdir($this->expiredPath) && !is_dir($this->expiredPath)) {
+            throw new Swift_IoException(sprintf('Unable to create path "%s".', $this->expiredPath));
         }
     }
 
@@ -95,7 +109,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         $fileName = $this->path.'/'.$this->getRandomString(10);
         for ($i = 0; $i < $this->retryLimit; ++$i) {
             /* We try an exclusive creation of the file. This is an atomic operation, it avoid locking mechanism */
-            $fp = @fopen($fileName.'.message', 'xb');
+            $fp = @fopen($fileName.'.0.message', 'xb');
             if (false !== $fp) {
                 if (false === fwrite($fp, $ser)) {
                     return false;
@@ -114,6 +128,8 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
     /**
      * Execute a recovery if for any reason a process is sending for too long.
      *
+     * If resend attempts have been exceeded the message moved to expired directory
+     *
      * @param int $timeout in second Defaults is for very slow smtp responses
      */
     public function recover($timeout = 900)
@@ -121,12 +137,26 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         foreach (new DirectoryIterator($this->path) as $file) {
             $file = $file->getRealPath();
 
-            if ('.message.sending' == substr($file, -16)) {
-                $lockedtime = filectime($file);
-                if ((time() - $lockedtime) > $timeout) {
-                    rename($file, substr($file, 0, -8));
-                }
+            if (!preg_match('/\.(\d+)\.message\.sending$/i', $file, $matches)) {
+                continue;
             }
+
+            $lockedtime = filectime($file);
+            if ($timeout > (time() - $lockedtime)) {
+                // timeout not reached yet for this file
+                continue;
+            }
+
+            $currentAttempt = $matches[1];
+            if ($this->getResendAttempts() <= $currentAttempt) {
+                // maximum retry attempts reached, delete the message
+                rename($file, $this->expiredPath.'/'.basename($file, '.sending'));
+                continue;
+            }
+
+            // still have attempts remaining rename file to .$attempt.message to retry sending
+            $newName = sprintf('%s.%d.message', substr($file, 0, -strlen($matches[0])), $currentAttempt + 1);
+            rename($file, $newName);
         }
     }
 
