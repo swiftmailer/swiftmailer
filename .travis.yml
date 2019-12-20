@@ -1,7 +1,5 @@
 language: php
 
-sudo: false
-
 before_script:
     - cp tests/acceptance.conf.php.default tests/acceptance.conf.php
     - cp tests/smoke.conf.php.default tests/smoke.conf.php
@@ -16,9 +14,15 @@ script: SYMFONY_PHPUNIT_VERSION=6.1 ./vendor/bin/simple-phpunit
 matrix:
     include:
         - php: 7.0
+          dist: xenial
         - php: 7.1
+          dist: bionic
         - php: 7.2
+          dist: bionic
         - php: 7.3
+          dist: bionic
+        - php: 7.4
+          dist: bionic
     fast_finish: true
 
 cache:
