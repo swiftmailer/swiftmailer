@@ -26,8 +26,7 @@
         "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
     },
     "suggest": {
-        "ext-intl": "Needed to support internationalized email addresses",
-        "true/punycode": "Needed to support internationalized email addresses, if ext-intl is not installed"
+        "ext-intl": "Needed to support internationalized email addresses"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]
