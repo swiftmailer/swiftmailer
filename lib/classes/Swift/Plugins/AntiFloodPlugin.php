@@ -131,7 +131,9 @@ class Swift_Plugins_AntiFloodPlugin implements Swift_Events_SendListener, Swift_
         if (isset($this->sleeper)) {
             $this->sleeper->sleep($seconds);
         } else {
-            sleep($seconds);
+            do {
+                $seconds = sleep($seconds);
+            } while ($seconds > 0);
         }
     }
 }

@@ -134,7 +134,9 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
         if (isset($this->sleeper)) {
             $this->sleeper->sleep($seconds);
         } else {
-            sleep($seconds);
+            do {
+                $seconds = sleep($seconds);
+            } while ($seconds > 0);
         }
     }
 
