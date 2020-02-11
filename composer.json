@@ -22,7 +22,7 @@
         "symfony/polyfill-intl-idn": "^1.10"
     },
     "require-dev": {
-        "mockery/mockery": "~0.9.1",
+        "mockery/mockery": "^1.0",
         "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
     },
     "suggest": {
