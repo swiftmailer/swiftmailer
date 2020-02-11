@@ -135,7 +135,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
 
     protected function getSafeMapShareId()
     {
-        return get_class($this);
+        return static::class;
     }
 
     protected function initSafeMap()

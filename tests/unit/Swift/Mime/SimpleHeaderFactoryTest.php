@@ -6,7 +6,7 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit\Framework\TestCase
 {
     private $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = $this->createFactory();
     }
@@ -150,9 +150,9 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit\Framework\TestCase
     {
         return new Swift_Mime_SimpleHeaderFactory(
             $encoder
-                ? $encoder : $this->createHeaderEncoder(),
+                ?: $this->createHeaderEncoder(),
             $paramEncoder
-                ? $paramEncoder : $this->createParamEncoder(),
+                ?: $this->createParamEncoder(),
             new EmailValidator()
             );
     }

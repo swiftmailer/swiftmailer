@@ -7,7 +7,6 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
          bootstrap="tests/bootstrap.php"
 >
     <php>
@@ -34,5 +33,6 @@
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <listener class="Mockery\Adapter\Phpunit\TestListener" />
     </listeners>
 </phpunit>

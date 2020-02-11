@@ -4,7 +4,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTe
 {
     private $agent;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->agent = $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
     }
@@ -36,11 +36,10 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTe
             );
     }
 
-    /**
-     * @expectedException \Swift_TransportException
-     */
     public function testAuthenticationFailureSendRset()
     {
+        $this->expectException(\Swift_TransportException::class);
+
         $cram = $this->getAuthenticator();
 
         $this->agent->shouldReceive('executeCommand')

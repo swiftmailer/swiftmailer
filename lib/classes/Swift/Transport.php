@@ -63,8 +63,7 @@ interface Swift_Transport
      *
      * This is the responsibility of the send method to start the transport if needed.
      *
-     * @param Swift_Mime_SimpleMessage $message
-     * @param string[]                 $failedRecipients An array of failures by-reference
+     * @param string[] $failedRecipients An array of failures by-reference
      *
      * @return int
      */
@@ -72,8 +71,6 @@ interface Swift_Transport
 
     /**
      * Register a plugin in the Transport.
-     *
-     * @param Swift_Events_EventListener $plugin
      */
     public function registerPlugin(Swift_Events_EventListener $plugin);
 }

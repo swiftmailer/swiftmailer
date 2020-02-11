@@ -1,6 +1,5 @@
 <?php
 
-
 class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 {
     public function testNestingLevelIsSubpart()
@@ -116,7 +115,7 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $headers = $this->createHeaderSet([], false);
         $headers->shouldReceive('addIdHeader')
                 ->once()
-                ->with('Message-ID', '/^.*?@.*?$/D');
+                ->with('Message-ID', \Mockery::pattern('/^.*?@.*?$/D'));
 
         $message = $this->createMessage($headers, $this->createEncoder(),
             $this->createCache()

@@ -176,7 +176,7 @@ class Swift_Plugins_RedirectingPluginTest extends \PHPUnit\Framework\TestCase
                     ->getMock();
         $evt->expects($this->any())
             ->method('getMessage')
-            ->will($this->returnValue($message));
+            ->willReturn($message);
 
         return $evt;
     }

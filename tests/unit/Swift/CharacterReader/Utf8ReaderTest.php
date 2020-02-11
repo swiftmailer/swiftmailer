@@ -4,7 +4,7 @@ class Swift_CharacterReader_Utf8ReaderTest extends \PHPUnit\Framework\TestCase
 {
     private $reader;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->reader = new Swift_CharacterReader_Utf8Reader();
     }

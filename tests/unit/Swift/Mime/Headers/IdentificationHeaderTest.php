@@ -99,12 +99,11 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
         $this->assertEquals('<a.b+&%$.c@d>', $header->getFieldBody());
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedMessageException "a b c" is not valid id-left
-     */
     public function testInvalidIdLeftThrowsException()
     {
+        $this->expectException(\Swift_RfcComplianceException::class);
+        $this->expectExceptionMessage('Invalid ID given <a b c@d>');
+
         $header = $this->getHeader('References');
         $header->setId('a b c@d');
     }
@@ -141,22 +140,20 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
         $this->assertEquals('<a@xn--4ca>', $header->getFieldBody());
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedMessageException "b c d" is not valid id-right
-     */
     public function testInvalidIdRightThrowsException()
     {
+        $this->expectException(\Swift_RfcComplianceException::class);
+        $this->expectExceptionMessage('Invalid ID given <a@b c d>');
+
         $header = $this->getHeader('References');
         $header->setId('a@b c d');
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedMessageException "abc" is does not contain @
-     */
     public function testMissingAtSignThrowsException()
     {
+        $this->expectException(\Swift_RfcComplianceException::class);
+        $this->expectExceptionMessage('Invalid ID given <abc>');
+
         /* -- RFC 2822, 3.6.4.
      msg-id          =       [CFWS] "<" id-left "@" id-right ">" [CFWS]
      */

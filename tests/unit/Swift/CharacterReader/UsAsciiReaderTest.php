@@ -18,7 +18,7 @@ class Swift_CharacterReader_UsAsciiReaderTest extends \PHPUnit\Framework\TestCas
 
     private $reader;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->reader = new Swift_CharacterReader_UsAsciiReader();
     }

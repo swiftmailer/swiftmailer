@@ -4,7 +4,7 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTest
 {
     private $agent;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->agent = $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
     }
@@ -34,11 +34,10 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTest
             );
     }
 
-    /**
-     * @expectedException \Swift_TransportException
-     */
     public function testAuthenticationFailureSendRset()
     {
+        $this->expectException(\Swift_TransportException::class);
+
         $login = $this->getAuthenticator();
 
         $this->agent->shouldReceive('executeCommand')

@@ -81,10 +81,10 @@ class Swift_Plugins_PopBeforeSmtpPluginTest extends \PHPUnit\Framework\TestCase
                     ->getMock();
         $evt->expects($this->any())
             ->method('getSource')
-            ->will($this->returnValue($transport));
+            ->willReturn($transport);
         $evt->expects($this->any())
             ->method('getTransport')
-            ->will($this->returnValue($transport));
+            ->willReturn($transport);
 
         return $evt;
     }

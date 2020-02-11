@@ -6,7 +6,7 @@ Swift Mailer is a for sending e-mails from PHP applications.
 System Requirements
 -------------------
 
-Swift Mailer requires PHP 7.0 or higher (``proc_*`` functions must be
+Swift Mailer requires PHP 7.2 or higher (``proc_*`` functions must be
 available).
 
 Swift Mailer does not work when used with function overloading as implemented

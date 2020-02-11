@@ -83,11 +83,10 @@ class Swift_Mime_Headers_MailboxHeaderTest extends \SwiftMailerTestCase
             );
     }
 
-    /**
-     * @expectedException \Swift_AddressEncoderException
-     */
     public function testUtf8CharsInLocalPartThrows()
     {
+        $this->expectException(\Swift_AddressEncoderException::class);
+
         $header = $this->getHeader('From');
         $header->setNameAddresses([
             'chrïs@swiftmailer.org' => 'Chris Corbyn',

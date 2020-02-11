@@ -28,7 +28,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderProxy implements Swift_Mime_Cont
     private $nativeEncoder;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $charset;
 

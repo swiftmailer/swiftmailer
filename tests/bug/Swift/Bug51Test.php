@@ -5,7 +5,7 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
     private $attachmentFile;
     private $outputFile;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->attachmentFile = sys_get_temp_dir().'/attach.rand.bin';
         file_put_contents($this->attachmentFile, '');
@@ -14,7 +14,7 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
         file_put_contents($this->outputFile, '');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unlink($this->attachmentFile);
         unlink($this->outputFile);

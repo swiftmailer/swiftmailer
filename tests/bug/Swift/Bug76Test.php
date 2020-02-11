@@ -6,7 +6,7 @@ class Swift_Bug76Test extends \PHPUnit\Framework\TestCase
     private $outputFile;
     private $encoder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->inputFile = sys_get_temp_dir().'/in.bin';
         file_put_contents($this->inputFile, '');
@@ -17,7 +17,7 @@ class Swift_Bug76Test extends \PHPUnit\Framework\TestCase
         $this->encoder = $this->createEncoder();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unlink($this->inputFile);
         unlink($this->outputFile);

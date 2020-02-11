@@ -1,6 +1,5 @@
 <?php
 
-
 class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 {
     public function testNestingLevelIsAttachment()
@@ -24,7 +23,7 @@ class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
         $headers = $this->createHeaderSet([], false);
         $headers->shouldReceive('addIdHeader')
                 ->once()
-                ->with('Content-ID', '/^.*?@.*?$/D');
+                ->with('Content-ID', \Mockery::pattern('/^.*?@.*?$/D'));
 
         $file = $this->createEmbeddedFile($headers, $this->createEncoder(),
             $this->createCache()

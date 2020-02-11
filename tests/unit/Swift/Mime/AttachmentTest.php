@@ -1,6 +1,5 @@
 <?php
 
-
 class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
 {
     public function testNestingLevelIsAttachment()

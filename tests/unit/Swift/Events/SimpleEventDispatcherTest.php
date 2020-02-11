@@ -4,7 +4,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit\Framework\TestCase
 {
     private $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->dispatcher = new Swift_Events_SimpleEventDispatcher();
     }
@@ -117,9 +117,9 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit\Framework\TestCase
         $listenerA->expects($this->once())
                   ->method('sendPerformed')
                   ->with($evt)
-                  ->will($this->returnCallback(function ($object) {
+                  ->willReturnCallback(function ($object) {
                       $object->cancelBubble(true);
-                  }));
+                  });
         $listenerB->expects($this->never())
                   ->method('sendPerformed');
 
