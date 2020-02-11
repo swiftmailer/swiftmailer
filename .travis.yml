@@ -1,7 +1,5 @@
 language: php
 
-sudo: false
-
 before_script:
     - cp tests/acceptance.conf.php.default tests/acceptance.conf.php
     - cp tests/smoke.conf.php.default tests/smoke.conf.php
@@ -17,6 +15,7 @@ matrix:
     include:
         - php: 7.2
         - php: 7.3
+        - php: 7.4
     fast_finish: true
 
 cache:
