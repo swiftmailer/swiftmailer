@@ -18,7 +18,7 @@ class Swift_Plugins_LoggerPluginTest extends \SwiftMailerTestCase
         $logger = $this->createLogger();
         $logger->expects($this->once())
                ->method('dump')
-               ->will($this->returnValue('foobar'));
+               ->willReturn('foobar');
 
         $plugin = $this->createPlugin($logger);
         $this->assertEquals('foobar', $plugin->dump());
@@ -140,7 +140,7 @@ class Swift_Plugins_LoggerPluginTest extends \SwiftMailerTestCase
                     ->getMock();
         $evt->expects($this->any())
             ->method('getCommand')
-            ->will($this->returnValue($command));
+            ->willReturn($command);
 
         return $evt;
     }
@@ -152,7 +152,7 @@ class Swift_Plugins_LoggerPluginTest extends \SwiftMailerTestCase
                     ->getMock();
         $evt->expects($this->any())
             ->method('getResponse')
-            ->will($this->returnValue($response));
+            ->willReturn($response);
 
         return $evt;
     }
@@ -169,7 +169,7 @@ class Swift_Plugins_LoggerPluginTest extends \SwiftMailerTestCase
                     ->getMock();
         $evt->expects($this->any())
             ->method('getSource')
-            ->will($this->returnValue($this->createTransport()));
+            ->willReturn($this->createTransport());
 
         return $evt;
     }
@@ -181,7 +181,7 @@ class Swift_Plugins_LoggerPluginTest extends \SwiftMailerTestCase
                     ->getMock();
         $evt->expects($this->any())
             ->method('getException')
-            ->will($this->returnValue(new Swift_TransportException('')));
+            ->willReturn(new Swift_TransportException(''));
 
         return $evt;
     }

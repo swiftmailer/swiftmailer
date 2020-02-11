@@ -1010,14 +1010,14 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $encoder = $this->getMockBuilder('Swift_Mime_ContentEncoder')->getMock();
         $encoder->expects($this->any())
                 ->method('getName')
-                ->will($this->returnValue($name));
+                ->willReturn($name);
         $encoder->expects($this->any())
                 ->method('encodeString')
-                ->will($this->returnCallback(function () {
+                ->willReturnCallback(function () {
                     $args = func_get_args();
 
                     return array_shift($args);
-                }));
+                });
 
         return $encoder;
     }

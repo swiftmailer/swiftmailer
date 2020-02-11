@@ -80,9 +80,7 @@ class Swift_Transport_FailoverTransport extends Swift_Transport_LoadBalancedTran
         }
 
         if (0 == count($this->transports)) {
-            throw new Swift_TransportException(
-                'All Transports in FailoverTransport failed, or no Transports available'
-                );
+            throw new Swift_TransportException('All Transports in FailoverTransport failed, or no Transports available');
         }
 
         return $sent;

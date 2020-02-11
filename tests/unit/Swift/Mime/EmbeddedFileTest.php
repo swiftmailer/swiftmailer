@@ -1,6 +1,5 @@
 <?php
 
-
 class Swift_Mime_EmbeddedFileTest extends Swift_Mime_AttachmentTest
 {
     public function testNestingLevelIsAttachment()

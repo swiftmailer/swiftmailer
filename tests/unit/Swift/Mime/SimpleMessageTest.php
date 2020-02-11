@@ -1,6 +1,5 @@
 <?php
 
-
 class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
 {
     public function testNestingLevelIsSubpart()

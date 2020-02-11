@@ -38,10 +38,9 @@ interface Swift_KeyCache
      *
      * @see MODE_WRITE, MODE_APPEND
      *
-     * @param string                 $nsKey
-     * @param string                 $itemKey
-     * @param Swift_OutputByteStream $os
-     * @param int                    $mode
+     * @param string $nsKey
+     * @param string $itemKey
+     * @param int    $mode
      */
     public function importFromByteStream($nsKey, $itemKey, Swift_OutputByteStream $os, $mode);
 

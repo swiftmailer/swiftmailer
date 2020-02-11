@@ -28,8 +28,6 @@ interface Swift_CharacterStream
 
     /**
      * Set the CharacterReaderFactory for multi charset support.
-     *
-     * @param Swift_CharacterReaderFactory $factory
      */
     public function setCharacterReaderFactory(Swift_CharacterReaderFactory $factory);
 

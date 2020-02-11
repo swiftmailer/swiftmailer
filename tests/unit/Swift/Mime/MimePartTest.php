@@ -1,6 +1,5 @@
 <?php
 
-
 class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
 {
     public function testNestingLevelIsSubpart()

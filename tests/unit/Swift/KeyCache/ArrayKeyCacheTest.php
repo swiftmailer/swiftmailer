@@ -89,13 +89,13 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit\Framework\TestCase
         $os = $this->createOutputStream();
         $os->expects($this->at(0))
            ->method('read')
-           ->will($this->returnValue('abc'));
+           ->willReturn('abc');
         $os->expects($this->at(1))
            ->method('read')
-           ->will($this->returnValue('def'));
+           ->willReturn('def');
         $os->expects($this->at(2))
            ->method('read')
-           ->will($this->returnValue(false));
+           ->willReturn(false);
 
         $is = $this->createKeyCacheInputStream();
         $cache = $this->createCache($is);
@@ -110,24 +110,24 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit\Framework\TestCase
         $os1 = $this->createOutputStream();
         $os1->expects($this->at(0))
             ->method('read')
-            ->will($this->returnValue('abc'));
+            ->willReturn('abc');
         $os1->expects($this->at(1))
             ->method('read')
-            ->will($this->returnValue('def'));
+            ->willReturn('def');
         $os1->expects($this->at(2))
             ->method('read')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $os2 = $this->createOutputStream();
         $os2->expects($this->at(0))
             ->method('read')
-            ->will($this->returnValue('xyz'));
+            ->willReturn('xyz');
         $os2->expects($this->at(1))
             ->method('read')
-            ->will($this->returnValue('uvw'));
+            ->willReturn('uvw');
         $os2->expects($this->at(2))
             ->method('read')
-            ->will($this->returnValue(false));
+            ->willReturn(false);
 
         $is = $this->createKeyCacheInputStream(true);
 
@@ -148,13 +148,13 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit\Framework\TestCase
         $os = $this->createOutputStream();
         $os->expects($this->at(0))
            ->method('read')
-           ->will($this->returnValue('abc'));
+           ->willReturn('abc');
         $os->expects($this->at(1))
            ->method('read')
-           ->will($this->returnValue('def'));
+           ->willReturn('def');
         $os->expects($this->at(2))
            ->method('read')
-           ->will($this->returnValue(false));
+           ->willReturn(false);
 
         $is = $this->createKeyCacheInputStream(true);
 
