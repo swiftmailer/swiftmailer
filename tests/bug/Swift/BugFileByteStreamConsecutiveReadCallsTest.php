@@ -2,7 +2,7 @@
 
 class Swift_FileByteStreamConsecutiveReadCalls extends \PHPUnit\Framework\TestCase
 {
-    public function shouldThrowExceptionOnConsecutiveRead()
+    public function testShouldThrowExceptionOnConsecutiveRead()
     {
         $this->expectException(\Swift_IoException::class);
 
