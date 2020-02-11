@@ -5,7 +5,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderAcceptanceTest extends \PHPUn
     private $samplesDir;
     private $encoder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->samplesDir = realpath(__DIR__.'/../../../../_samples/charsets');
         $this->encoder = new Swift_Mime_ContentEncoder_PlainContentEncoder('8bit');

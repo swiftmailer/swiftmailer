@@ -26,7 +26,7 @@ class SwiftMailerTestCase extends \PHPUnit\Framework\TestCase
         self::assertThat($actual, $constraint, $message);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         \Mockery::close();
     }

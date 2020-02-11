@@ -6,7 +6,7 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
 
     abstract protected function initializeBuffer();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (true == getenv('TRAVIS')) {
             $this->markTestSkipped(

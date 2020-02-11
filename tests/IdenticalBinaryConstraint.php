@@ -22,7 +22,7 @@ class IdenticalBinaryConstraint extends \PHPUnit\Framework\Constraint\Constraint
      *
      * @return bool
      */
-    public function matches($other)
+    public function matches($other): bool
     {
         $aHex = $this->asHexString($this->value);
         $bHex = $this->asHexString($other);
@@ -35,7 +35,7 @@ class IdenticalBinaryConstraint extends \PHPUnit\Framework\Constraint\Constraint
      *
      * @return string
      */
-    public function toString()
+    public function toString(): string
     {
         return 'identical binary';
     }
