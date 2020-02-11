@@ -15,8 +15,6 @@ script: SYMFONY_PHPUNIT_VERSION=6.1 ./vendor/bin/simple-phpunit
 
 matrix:
     include:
-        - php: 7.0
-        - php: 7.1
         - php: 7.2
         - php: 7.3
     fast_finish: true
