@@ -103,7 +103,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn("220 some.server.tld bleh\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^HELO example.org\r\n$~D')
+            ->with(Mockery::pattern('~^HELO example.org\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -131,7 +131,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn("220 some.server.tld bleh\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^HELO example.org\r\n$~D')
+            ->with(Mockery::pattern('~^HELO example.org\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -1270,7 +1270,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn("220 some.server.tld bleh\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^NOOP\r\n$~D')
+            ->with(Mockery::pattern('~^NOOP\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -1294,7 +1294,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn("220 some.server.tld bleh\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^NOOP\r\n$~D')
+            ->with(Mockery::pattern('~^NOOP\r\n$~D'))
             ->andThrow('Swift_TransportException');
 
         $this->finishBuffer($buf);
@@ -1343,7 +1343,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn('220 server.com foo'."\r\n");
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
-            ->with('~^(EH|HE)LO .*?\r\n$~D')
+            ->with(Mockery::pattern('~^(EH|HE)LO .*?\r\n$~D'))
             ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()
@@ -1351,7 +1351,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn('250 ServerName'."\r\n");
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
-            ->with('~^MAIL FROM:<.*?>\r\n$~D')
+            ->with(Mockery::pattern('~^MAIL FROM:<.*?>\r\n$~D'))
             ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()
@@ -1359,7 +1359,7 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
             ->andReturn("250 OK\r\n");
         $buf->shouldReceive('write')
             ->zeroOrMoreTimes()
-            ->with('~^RCPT TO:<.*?>\r\n$~D')
+            ->with(Mockery::pattern('~^RCPT TO:<.*?>\r\n$~D'))
             ->andReturn($x = uniqid('', true));
         $buf->shouldReceive('readLine')
             ->zeroOrMoreTimes()

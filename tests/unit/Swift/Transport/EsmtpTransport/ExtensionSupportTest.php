@@ -51,7 +51,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
             ->andReturn("220 server.com foo\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^EHLO .*?\r\n$~D')
+            ->with(Mockery::pattern('~^EHLO .*?\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -98,7 +98,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
             ->andReturn("220 server.com foo\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^EHLO .*?\r\n$~D')
+            ->with(Mockery::pattern('~^EHLO .*?\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -160,7 +160,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
             ->andReturn("220 server.com foo\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^EHLO .*?\r\n$~D')
+            ->with(Mockery::pattern('~^EHLO .*?\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -262,7 +262,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
             ->andReturn("220 server.com foo\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^EHLO .+?\r\n$~D')
+            ->with(Mockery::pattern('~^EHLO .+?\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -355,7 +355,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
             ->andReturn("220 server.com foo\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^EHLO .+?\r\n$~D')
+            ->with(Mockery::pattern('~^EHLO .+?\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
@@ -417,7 +417,7 @@ class Swift_Transport_EsmtpTransport_ExtensionSupportTest extends Swift_Transpor
             ->andReturn("220 server.com foo\r\n");
         $buf->shouldReceive('write')
             ->once()
-            ->with('~^EHLO .+?\r\n$~D')
+            ->with(Mockery::pattern('~^EHLO .+?\r\n$~D'))
             ->andReturn(1);
         $buf->shouldReceive('readLine')
             ->once()
