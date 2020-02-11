@@ -36,11 +36,10 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTe
             );
     }
 
-    /**
-     * @expectedException \Swift_TransportException
-     */
     public function testAuthenticationFailureSendRset()
     {
+        $this->expectException(\Swift_TransportException::class);
+
         $cram = $this->getAuthenticator();
 
         $this->agent->shouldReceive('executeCommand')

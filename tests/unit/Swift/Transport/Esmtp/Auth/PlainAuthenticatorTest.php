@@ -41,11 +41,10 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
             );
     }
 
-    /**
-     * @expectedException \Swift_TransportException
-     */
     public function testAuthenticationFailureSendRset()
     {
+        $this->expectException(\Swift_TransportException::class);
+
         $plain = $this->getAuthenticator();
 
         $this->agent->shouldReceive('executeCommand')

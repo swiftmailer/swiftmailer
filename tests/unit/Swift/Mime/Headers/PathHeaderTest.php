@@ -17,11 +17,10 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('chris@swiftmailer.org', $header->getAddress());
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testAddressMustComplyWithRfc2822()
     {
+        $this->expectException(\Exception::class);
+
         $header = $this->getHeader('Return-Path');
         $header->setAddress('chr is@swiftmailer.org');
     }
@@ -48,11 +47,10 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('<chris@xn--swftmailer-78a.org>', $header->getFieldBody());
     }
 
-    /**
-     * @expectedException \Swift_AddressEncoderException
-     */
     public function testAddressMustBeEncodable()
     {
+        $this->expectException(\Swift_AddressEncoderException::class);
+
         $header = $this->getHeader('Return-Path');
         $header->setAddress('chrïs@swiftmailer.org');
         $header->getFieldBody();

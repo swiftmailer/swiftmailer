@@ -64,11 +64,10 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PH
         $this->assertSame('=C3=A4=C3=B6=C3=BC=C3=9F', $encoder->encodeString('äöüß'));
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testCharsetChangeNotImplemented()
     {
+        $this->expectException(\RuntimeException::class);
+
         $this->encoder->charsetChanged('utf-8');
         $this->encoder->charsetChanged('charset');
         $this->encoder->encodeString('foo');
