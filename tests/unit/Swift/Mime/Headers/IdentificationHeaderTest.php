@@ -101,8 +101,8 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
 
     public function testInvalidIdLeftThrowsException()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('"a b c" is not valid id-left');
+        $this->expectException(\Swift_RfcComplianceException::class);
+        $this->expectExceptionMessage('Invalid ID given <a b c@d>');
 
         $header = $this->getHeader('References');
         $header->setId('a b c@d');
@@ -142,8 +142,8 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
 
     public function testInvalidIdRightThrowsException()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('"b c d" is not valid id-right');
+        $this->expectException(\Swift_RfcComplianceException::class);
+        $this->expectExceptionMessage('Invalid ID given <a@b c d>');
 
         $header = $this->getHeader('References');
         $header->setId('a@b c d');
@@ -151,8 +151,8 @@ class Swift_Mime_Headers_IdentificationHeaderTest extends \PHPUnit\Framework\Tes
 
     public function testMissingAtSignThrowsException()
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('"abc" is does not contain @');
+        $this->expectException(\Swift_RfcComplianceException::class);
+        $this->expectExceptionMessage('Invalid ID given <abc>');
 
         /* -- RFC 2822, 3.6.4.
      msg-id          =       [CFWS] "<" id-left "@" id-right ">" [CFWS]
