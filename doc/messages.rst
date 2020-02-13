@@ -820,7 +820,7 @@ Requesting a Read Receipt
 
 It is possible to request a read-receipt to be sent to an address when the
 email is opened. To request a read receipt set the address with
-``setReadReceiptTo()``:
+``setReadReceiptTo()``::
 
     $message->setReadReceiptTo('your@address.tld');
 
