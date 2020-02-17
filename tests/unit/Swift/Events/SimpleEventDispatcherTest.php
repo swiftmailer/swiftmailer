@@ -96,7 +96,7 @@ class Swift_Events_SimpleEventDispatcherTest extends \PHPUnit\Framework\TestCase
                        ->method('sendPerformed')
                        ->with($evt);
         $otherListener->expects($this->never())
-                    ->method('sendPerformed');
+                       ->method('sendPerformed');
 
         $this->dispatcher->dispatchEvent($evt, 'sendPerformed');
     }
