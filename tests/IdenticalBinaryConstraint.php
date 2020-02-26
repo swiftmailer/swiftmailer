@@ -43,7 +43,7 @@ class IdenticalBinaryConstraint extends \PHPUnit\Framework\Constraint\Constraint
      *
      * @return string
      */
-    private function asHexString($binary)
+    private function asHexString($binary) : string
     {
         $hex = '';
 
