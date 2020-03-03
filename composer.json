@@ -23,7 +23,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
-        "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
+        "symfony/phpunit-bridge": "^4.4|^5.0"
     },
     "suggest": {
         "ext-intl": "Needed to support internationalized email addresses"
