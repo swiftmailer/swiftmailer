@@ -177,7 +177,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      * @param string $name
      * @param int    $index
      *
-     * @return Swift_Mime_Header
+     * @return Swift_Mime_Header|null
      */
     public function get($name, $index = 0)
     {
