@@ -832,6 +832,43 @@ abstract class Swift_Transport_AbstractSmtpTest extends \SwiftMailerTestCase
         }
     }
 
+    public function testBadDataResponseSendRset()
+    {
+        $buf = $this->getBuffer();
+        $smtp = $this->getTransport($buf);
+        $message = $this->createMessage();
+
+        $message->shouldReceive('getFrom')
+                ->once()
+                ->andReturn(['me@domain.com' => 'Me']);
+        $message->shouldReceive('getTo')
+                ->once()
+                ->andReturn(['foo@bar' => null]);
+        $buf->shouldReceive('write')
+            ->once()
+            ->with("DATA\r\n")
+            ->andReturn(1);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(1)
+            ->andReturn('451 Bad'."\r\n");
+        $buf->shouldReceive('write')
+            ->once()
+            ->with("RSET\r\n")
+            ->andReturn(2);
+        $buf->shouldReceive('readLine')
+            ->once()
+            ->with(2)
+            ->andReturn('250 OK'."\r\n");
+
+        $this->finishBuffer($buf);
+        try {
+            $smtp->start();
+            $smtp->send($message);
+        } catch (Swift_TransportException $e) {
+        }
+    }
+
     public function testMessageIsStreamedToBufferForData()
     {
         $buf = $this->getBuffer();
