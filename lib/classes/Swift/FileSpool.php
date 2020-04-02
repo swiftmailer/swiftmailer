@@ -162,17 +162,24 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
                 continue;
             }
 
-            /* We try a rename, it's an atomic operation, and avoid locking the file */
+            if (!$handle = @fopen($file, 'r+')) {
+                continue;
+            }
+
+            if (!flock($handle, LOCK_EX | LOCK_NB )) {
+                /* This message has just been catched by another process */
+                continue;
+            }
             if (rename($file, $file.'.sending')) {
                 $message = unserialize(file_get_contents($file.'.sending'));
+
 
                 $count += $transport->send($message, $failedRecipients);
 
                 unlink($file.'.sending');
-            } else {
-                /* This message has just been catched by another process */
-                continue;
             }
+
+            fclose ($handle);
 
             if ($this->getMessageLimit() && $count >= $this->getMessageLimit()) {
                 break;
