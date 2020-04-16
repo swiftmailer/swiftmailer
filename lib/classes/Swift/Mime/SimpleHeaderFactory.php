@@ -53,6 +53,8 @@ class Swift_Mime_SimpleHeaderFactory implements Swift_Mime_CharsetObserver
      * @param array|string|null $addresses
      *
      * @return Swift_Mime_Header
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function createMailboxHeader($name, $addresses = null)
     {

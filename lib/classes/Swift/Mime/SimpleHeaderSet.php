@@ -65,6 +65,8 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
      *
      * @param string       $name
      * @param array|string $addresses
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function addMailboxHeader($name, $addresses = null)
     {

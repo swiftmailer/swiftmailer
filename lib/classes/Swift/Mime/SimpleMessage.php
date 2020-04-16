@@ -149,6 +149,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      * @param string $name    optional
      *
      * @return $this
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function setSender($address, $name = null)
     {
@@ -203,6 +205,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      * @param string       $name      optional
      *
      * @return $this
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function setFrom($addresses, $name = null)
     {
@@ -257,6 +261,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      * @param string $name      optional
      *
      * @return $this
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function setReplyTo($addresses, $name = null)
     {
@@ -312,6 +318,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      * @param string $name      optional
      *
      * @return $this
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function setTo($addresses, $name = null)
     {
@@ -364,6 +372,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      * @param string $name      optional
      *
      * @return $this
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function setCc($addresses, $name = null)
     {
@@ -416,6 +426,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      * @param string $name      optional
      *
      * @return $this
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function setBcc($addresses, $name = null)
     {
@@ -496,6 +508,8 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      * @param array $addresses
      *
      * @return $this
+     *
+     * @throws Swift_RfcComplianceException
      */
     public function setReadReceiptTo($addresses)
     {
