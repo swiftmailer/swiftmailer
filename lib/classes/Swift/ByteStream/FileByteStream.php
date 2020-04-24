@@ -81,7 +81,7 @@ class Swift_ByteStream_FileByteStream extends Swift_ByteStream_AbstractFilterabl
 
             // If we read one byte after reaching the end of the file
             // feof() will return false and an empty string is returned
-            if ('' === $bytes && feof($fp)) {
+            if (false === $bytes && feof($fp)) {
                 $this->resetReadHandle();
 
                 return false;
