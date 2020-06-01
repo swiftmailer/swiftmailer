@@ -20,6 +20,7 @@ class Swift_Mailer
 
     /**
      * Create a new Mailer using $transport for delivery.
+     * @param Swift_Transport $transport
      */
     public function __construct(Swift_Transport $transport)
     {
