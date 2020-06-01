@@ -102,10 +102,9 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
                 }
 
                 return fclose($fp);
-            } else {
-                /* The file already exists, we try a longer fileName */
-                $fileName .= $this->getRandomString(1);
             }
+            /* The file already exists, we try a longer fileName */
+            $fileName .= $this->getRandomString(1);
         }
 
         throw new Swift_IoException(sprintf('Unable to create a file for enqueuing Message in "%s".', $this->path));
