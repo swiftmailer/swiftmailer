@@ -42,7 +42,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     public function addSignature(Swift_Mime_SimpleHeaderSet $headers)
     {
-        $header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
+        $header = new Swift_Signers_DKIMSigner('DKIM-Signature');
         $headerVal = $this->dkimHandler->getSignatureHeader();
         if (false === $headerVal || is_int($headerVal)) {
             throw new Swift_SwiftException('OpenDKIM Error: '.$this->dkimHandler->getError());
