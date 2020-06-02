@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Swift Mailer is a for sending e-mails from PHP applications.
+Swift Mailer is a component based library for sending e-mails from PHP applications.
 
 System Requirements
 -------------------
