@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------
+
+by fabpot at 2020-04-24T09:51:03Z
+
+Shouldn't we also use `@fread()` now instead of `fread()` as the migration doc mention that it now raises a notice?
+
+---------------------------------------------------------------------------
+
+by fourhundredfour at 2020-04-24T09:57:04Z
+
+Since Swiftmailer is a library, I think that the error message should not be suppressed so that the user, which uses swiftmailer in his project, knows that there are for example insufficient permissions to that stream.
+
+---------------------------------------------------------------------------
+
+by fourhundredfour at 2020-04-29T21:52:45Z
+
+Any updates? @fabpot
