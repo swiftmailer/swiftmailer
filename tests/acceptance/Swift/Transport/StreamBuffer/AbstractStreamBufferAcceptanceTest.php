@@ -25,11 +25,11 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
         $this->initializeBuffer();
 
         $line = $this->buffer->readLine(0);
-        $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
+        $this->assertMatchesRegularExpression('/^[0-9]{3}.*?\r\n$/D', $line);
         $seq = $this->buffer->write("QUIT\r\n");
         $this->assertTrue((bool) $seq);
         $line = $this->buffer->readLine($seq);
-        $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
+        $this->assertMatchesRegularExpression('/^[0-9]{3}.*?\r\n$/D', $line);
         $this->buffer->terminate();
     }
 
@@ -38,17 +38,17 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest e
         $this->initializeBuffer();
 
         $line = $this->buffer->readLine(0);
-        $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
+        $this->assertMatchesRegularExpression('/^[0-9]{3}.*?\r\n$/D', $line);
 
         $seq = $this->buffer->write("HELO foo\r\n");
         $this->assertTrue((bool) $seq);
         $line = $this->buffer->readLine($seq);
-        $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
+        $this->assertMatchesRegularExpression('/^[0-9]{3}.*?\r\n$/D', $line);
 
         $seq = $this->buffer->write("QUIT\r\n");
         $this->assertTrue((bool) $seq);
         $line = $this->buffer->readLine($seq);
-        $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
+        $this->assertMatchesRegularExpression('/^[0-9]{3}.*?\r\n$/D', $line);
         $this->buffer->terminate();
     }
 

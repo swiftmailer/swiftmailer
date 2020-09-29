@@ -679,7 +679,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
 
         $message->attach($attachment);
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '~^'.
             'Return-Path: <chris@w3style.co.uk>'."\r\n".
             'Message-ID: <'.$id.'>'."\r\n".
@@ -750,7 +750,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
 
         $cid = $file->getId();
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '~^'.
             'Return-Path: <chris@w3style.co.uk>'."\r\n".
             'Message-ID: <'.$id.'>'."\r\n".
@@ -834,7 +834,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
 
         $cid = $file->getId();
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '~^'.
             'Return-Path: <chris@w3style.co.uk>'."\r\n".
             'Message-ID: <'.$id.'>'."\r\n".
@@ -915,7 +915,7 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
 
         $message->detach($attachment);
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '~^'.
             'Return-Path: <chris@w3style.co.uk>'."\r\n".
             'Message-ID: <'.$id.'>'."\r\n".

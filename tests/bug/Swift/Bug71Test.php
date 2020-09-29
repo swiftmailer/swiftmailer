@@ -12,9 +12,9 @@ class Swift_Bug71Test extends \PHPUnit\Framework\TestCase
     public function testCallingToStringAfterSettingNewBodyReflectsChanges()
     {
         $this->message->setBody('BODY1');
-        $this->assertRegExp('/BODY1/', $this->message->toString());
+        $this->assertMatchesRegularExpression('/BODY1/', $this->message->toString());
 
         $this->message->setBody('BODY2');
-        $this->assertRegExp('/BODY2/', $this->message->toString());
+        $this->assertMatchesRegularExpression('/BODY2/', $this->message->toString());
     }
 }

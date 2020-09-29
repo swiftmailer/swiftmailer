@@ -28,7 +28,7 @@ class Swift_Bug35Test extends \PHPUnit\Framework\TestCase
         $date = preg_quote($message->getDate()->format('r'), '~');
         $boundary = $message->getBoundary();
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
         '~^'.
         'Sender: Other <other@domain.tld>'."\r\n".
         'Message-ID: <'.$id.'>'."\r\n".

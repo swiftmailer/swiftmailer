@@ -77,7 +77,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest extends \SwiftMailerTestCase
         $nonAsciiChar = pack('C', 0x8F);
         $header = $this->getHeader('X-Test', $this->getEncoder('Q', true));
         $header->setValue($nonAsciiChar);
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '~^[^:\x00-\x20\x80-\xFF]+: [^\x80-\xFF\r\n]+\r\n$~s',
             $header->toString()
             );
@@ -94,7 +94,7 @@ class Swift_Mime_Headers_UnstructuredHeaderTest extends \SwiftMailerTestCase
         $nonAsciiChar = pack('C', 0x8F);
         $header = $this->getHeader('X-Test', $this->getEncoder('Q', true));
         $header->setValue($nonAsciiChar);
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '~^X-Test: \=?.*?\?.*?\?.*?\?=\r\n$~s',
             $header->toString()
             );

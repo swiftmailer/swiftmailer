@@ -542,7 +542,7 @@ OEL;
         $expected = str_replace("\n", "\r\n", $expected);
 
         $actual = self::getBodyOfMessage($actual);
-        if (!$this->assertRegExp('%^'.$expected.'$\s*%m', $actual)) {
+        if (!$this->assertMatchesRegularExpression('%^'.$expected.'$\s*%m', $actual)) {
             return false;
         }
 

@@ -88,7 +88,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->andReturn(false);
 
             $this->encoder->encodeByteStream($os, $is);
-            $this->assertRegExp('~^[a-zA-Z0-9/\+]{2}==$~', $collection->content,
+            $this->assertMatchesRegularExpression('~^[a-zA-Z0-9/\+]{2}==$~', $collection->content,
                 '%s: A single byte should have 2 bytes of padding'
                 );
         }
@@ -109,7 +109,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->andReturn(false);
 
             $this->encoder->encodeByteStream($os, $is);
-            $this->assertRegExp('~^[a-zA-Z0-9/\+]{3}=$~', $collection->content,
+            $this->assertMatchesRegularExpression('~^[a-zA-Z0-9/\+]{3}=$~', $collection->content,
                 '%s: Two bytes should have 1 byte of padding'
                 );
         }
@@ -130,7 +130,7 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
                ->andReturn(false);
 
             $this->encoder->encodeByteStream($os, $is);
-            $this->assertRegExp('~^[a-zA-Z0-9/\+]{4}$~', $collection->content,
+            $this->assertMatchesRegularExpression('~^[a-zA-Z0-9/\+]{4}$~', $collection->content,
                 '%s: Three bytes should have no padding'
                 );
         }
