@@ -41,7 +41,7 @@ class Swift_Bug76Test extends \PHPUnit\Framework\TestCase
     {
         $lines = file($filePath);
         foreach ($lines as $line) {
-            $this->assertTrue((strlen(trim($line)) <= 76), $message);
+            $this->assertTrue((\strlen(trim($line)) <= 76), $message);
         }
     }
 

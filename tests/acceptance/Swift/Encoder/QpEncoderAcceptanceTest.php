@@ -37,7 +37,7 @@ class Swift_Encoder_QpEncoderAcceptanceTest extends \PHPUnit\Framework\TestCase
                     $encodedText = $encoder->encodeString($text);
 
                     foreach (explode("\r\n", $encodedText) as $line) {
-                        $this->assertLessThanOrEqual(76, strlen($line));
+                        $this->assertLessThanOrEqual(76, \strlen($line));
                     }
 
                     $this->assertEquals(

@@ -1,11 +1,11 @@
 <?php
 
-require_once dirname(__DIR__).'/vendor/autoload.php';
+require_once \dirname(__DIR__).'/vendor/autoload.php';
 
 // Disable garbage collector to prevent segfaults
 gc_disable();
 
-set_include_path(get_include_path().PATH_SEPARATOR.dirname(__DIR__).'/lib');
+set_include_path(get_include_path().PATH_SEPARATOR.\dirname(__DIR__).'/lib');
 
 Mockery::getConfiguration()->allowMockingNonExistentMethods(true);
 

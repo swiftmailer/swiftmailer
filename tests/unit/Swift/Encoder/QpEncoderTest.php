@@ -30,7 +30,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
                     */
 
         foreach (array_merge(range(33, 60), range(62, 126)) as $ordinal) {
-            $char = chr($ordinal);
+            $char = \chr($ordinal);
 
             $charStream = $this->createCharStream();
             $charStream->shouldReceive('flushContents')
@@ -76,8 +76,8 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
                     intermediate transport agents.
                     */
 
-        $HT = chr(0x09); //9
-        $SPACE = chr(0x20); //32
+        $HT = \chr(0x09); //9
+        $SPACE = \chr(0x20); //32
 
         //HT
         $string = 'a'.$HT.$HT."\r\n".'b';
@@ -89,12 +89,12 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
                     ->once()
                     ->with($string);
 
-        $charStream->shouldReceive('readBytes')->once()->andReturn([ord('a')]);
+        $charStream->shouldReceive('readBytes')->once()->andReturn([\ord('a')]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x09]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x09]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0D]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0A]);
-        $charStream->shouldReceive('readBytes')->once()->andReturn([ord('b')]);
+        $charStream->shouldReceive('readBytes')->once()->andReturn([\ord('b')]);
         $charStream->shouldReceive('readBytes')->once()->andReturn(false);
 
         $encoder = new Swift_Encoder_QpEncoder($charStream);
@@ -113,12 +113,12 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
                     ->once()
                     ->with($string);
 
-        $charStream->shouldReceive('readBytes')->once()->andReturn([ord('a')]);
+        $charStream->shouldReceive('readBytes')->once()->andReturn([\ord('a')]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x20]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x20]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0D]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0A]);
-        $charStream->shouldReceive('readBytes')->once()->andReturn([ord('b')]);
+        $charStream->shouldReceive('readBytes')->once()->andReturn([\ord('b')]);
         $charStream->shouldReceive('readBytes')->once()->andReturn(false);
 
         $encoder = new Swift_Encoder_QpEncoder($charStream);
@@ -166,13 +166,13 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
                     ->once()
                     ->with($string);
 
-        $charStream->shouldReceive('readBytes')->once()->andReturn([ord('a')]);
+        $charStream->shouldReceive('readBytes')->once()->andReturn([\ord('a')]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0D]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0A]);
-        $charStream->shouldReceive('readBytes')->once()->andReturn([ord('b')]);
+        $charStream->shouldReceive('readBytes')->once()->andReturn([\ord('b')]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0D]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0A]);
-        $charStream->shouldReceive('readBytes')->once()->andReturn([ord('c')]);
+        $charStream->shouldReceive('readBytes')->once()->andReturn([\ord('c')]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0D]);
         $charStream->shouldReceive('readBytes')->once()->andReturn([0x0A]);
         $charStream->shouldReceive('readBytes')->once()->andReturn(false);
@@ -206,7 +206,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         for ($i = 0; $i < 140; ++$i) {
             $charStream->shouldReceive('readBytes')
                        ->once()
-                       ->andReturn([ord('a')]);
+                       ->andReturn([\ord('a')]);
 
             if (75 == $i) {
                 $output .= "=\r\n";
@@ -237,7 +237,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         for ($i = 0; $i < 100; ++$i) {
             $charStream->shouldReceive('readBytes')
                        ->once()
-                       ->andReturn([ord('a')]);
+                       ->andReturn([\ord('a')]);
 
             if (53 == $i) {
                 $output .= "=\r\n";
@@ -259,7 +259,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         */
 
         foreach (range(0, 32) as $ordinal) {
-            $char = chr($ordinal);
+            $char = \chr($ordinal);
 
             $charStream = $this->createCharStream();
             $charStream->shouldReceive('flushContents')
@@ -315,7 +315,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         */
 
         foreach (range(127, 255) as $ordinal) {
-            $char = chr($ordinal);
+            $char = \chr($ordinal);
 
             $charStream = $this->createCharStream();
             $charStream->shouldReceive('flushContents')
@@ -353,7 +353,7 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         for ($i = 0; $i < 140; ++$i) {
             $charStream->shouldReceive('readBytes')
                        ->once()
-                       ->andReturn([ord('a')]);
+                       ->andReturn([\ord('a')]);
 
             if (53 == $i || 53 + 75 == $i) {
                 $output .= "=\r\n";

@@ -42,7 +42,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
      */
     public function __construct($subject = null, $body = null, $contentType = null, $charset = null)
     {
-        call_user_func_array(
+        \call_user_func_array(
             [$this, 'Swift_Mime_SimpleMessage::__construct'],
             Swift_DependencyContainer::getInstance()
                 ->createDependenciesFor('mime.message')
@@ -212,7 +212,7 @@ class Swift_Message extends Swift_Mime_SimpleMessage
         $this->savedMessage = ['headers' => []];
         $this->savedMessage['body'] = $this->getBody();
         $this->savedMessage['children'] = $this->getChildren();
-        if (count($this->savedMessage['children']) > 0 && '' != $this->getBody()) {
+        if (\count($this->savedMessage['children']) > 0 && '' != $this->getBody()) {
             $this->setChildren(array_merge([$this->becomeMimePart()], $this->savedMessage['children']));
             $this->setBody('');
         }

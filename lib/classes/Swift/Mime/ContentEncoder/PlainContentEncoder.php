@@ -37,7 +37,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
      * Creates a new PlainContentEncoder with $name (probably 7bit or 8bit).
      *
      * @param string $name
-     * @param bool   $canonical If canonicalization transformation should be done.
+     * @param bool   $canonical if canonicalization transformation should be done
      */
     public function __construct($name, $canonical = false)
     {
@@ -84,7 +84,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
 
             $is->write($wrapped);
         }
-        if (strlen($leftOver)) {
+        if (\strlen($leftOver)) {
             $is->write($leftOver);
         }
     }
@@ -134,8 +134,8 @@ class Swift_Mime_ContentEncoder_PlainContentEncoder implements Swift_Mime_Conten
             $chunks = preg_split('/(?<=\s)/', $originalLine);
 
             foreach ($chunks as $chunk) {
-                if (0 != strlen($currentLine)
-                    && strlen($currentLine.$chunk) > $length) {
+                if (0 != \strlen($currentLine)
+                    && \strlen($currentLine.$chunk) > $length) {
                     $lines[] = '';
                     $currentLine = &$lines[$lineCount++];
                 }

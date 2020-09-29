@@ -7,12 +7,12 @@ class Swift_Transport_StreamBuffer_SslSocketAcceptanceTest extends Swift_Transpo
     protected function setUp(): void
     {
         $streams = stream_get_transports();
-        if (!in_array('ssl', $streams)) {
+        if (!\in_array('ssl', $streams)) {
             $this->markTestSkipped(
                 'SSL is not configured for your system.  It is not possible to run this test'
              );
         }
-        if (!defined('SWIFT_SSL_HOST')) {
+        if (!\defined('SWIFT_SSL_HOST')) {
             $this->markTestSkipped(
                 'Cannot run test without an SSL enabled SMTP host to connect to (define '.
                 'SWIFT_SSL_HOST in tests/acceptance.conf.php if you wish to run this test)'

@@ -83,7 +83,7 @@ class Swift_DependencyContainer
      */
     public function has($itemName)
     {
-        return array_key_exists($itemName, $this->store)
+        return \array_key_exists($itemName, $this->store)
             && isset($this->store[$itemName]['lookupType']);
     }
 
@@ -373,7 +373,7 @@ class Swift_DependencyContainer
     /** Resolve a single dependency with an collections */
     private function lookupRecursive($item)
     {
-        if (is_array($item)) {
+        if (\is_array($item)) {
             $collection = [];
             foreach ($item as $k => $v) {
                 $collection[$k] = $this->lookupRecursive($v);

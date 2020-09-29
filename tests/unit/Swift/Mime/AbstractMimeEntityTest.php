@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__, 3).'/fixtures/MimeEntityFixture.php';
+require_once \dirname(__DIR__, 3).'/fixtures/MimeEntityFixture.php';
 
 abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
 {
@@ -1014,7 +1014,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $encoder->expects($this->any())
                 ->method('encodeString')
                 ->willReturnCallback(function () {
-                    $args = func_get_args();
+                    $args = \func_get_args();
 
                     return array_shift($args);
                 });
@@ -1038,7 +1038,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $set->shouldReceive('has')
             ->zeroOrMoreTimes()
             ->andReturnUsing(function ($key) use ($headers) {
-                return array_key_exists($key, $headers);
+                return \array_key_exists($key, $headers);
             });
 
         return $set;

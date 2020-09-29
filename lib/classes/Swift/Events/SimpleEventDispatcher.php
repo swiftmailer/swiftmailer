@@ -123,9 +123,9 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
     private function prepareBubbleQueue(Swift_Events_EventObject $evt)
     {
         $this->bubbleQueue = [];
-        $evtClass = get_class($evt);
+        $evtClass = \get_class($evt);
         foreach ($this->listeners as $listener) {
-            if (array_key_exists($evtClass, $this->eventMap)
+            if (\array_key_exists($evtClass, $this->eventMap)
                 && ($listener instanceof $this->eventMap[$evtClass])) {
                 $this->bubbleQueue[] = $listener;
             }

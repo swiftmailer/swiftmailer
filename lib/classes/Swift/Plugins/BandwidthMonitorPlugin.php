@@ -54,7 +54,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
     public function commandSent(Swift_Events_CommandEvent $evt)
     {
         $command = $evt->getCommand();
-        $this->out += strlen($command);
+        $this->out += \strlen($command);
     }
 
     /**
@@ -63,7 +63,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
     public function responseReceived(Swift_Events_ResponseEvent $evt)
     {
         $response = $evt->getResponse();
-        $this->in += strlen($response);
+        $this->in += \strlen($response);
     }
 
     /**
@@ -73,7 +73,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      */
     public function write($bytes)
     {
-        $this->out += strlen($bytes);
+        $this->out += \strlen($bytes);
         foreach ($this->mirrors as $stream) {
             $stream->write($bytes);
         }

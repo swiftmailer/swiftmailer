@@ -42,7 +42,7 @@ class Swift_Plugins_MessageLogger implements Swift_Events_SendListener
      */
     public function countMessages()
     {
-        return count($this->messages);
+        return \count($this->messages);
     }
 
     /**

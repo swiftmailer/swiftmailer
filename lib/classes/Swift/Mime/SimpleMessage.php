@@ -152,7 +152,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function setSender($address, $name = null)
     {
-        if (!is_array($address) && isset($name)) {
+        if (!\is_array($address) && isset($name)) {
             $address = [$address => $name];
         }
 
@@ -206,7 +206,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function setFrom($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
+        if (!\is_array($addresses) && isset($name)) {
             $addresses = [$addresses => $name];
         }
 
@@ -260,7 +260,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function setReplyTo($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
+        if (!\is_array($addresses) && isset($name)) {
             $addresses = [$addresses => $name];
         }
 
@@ -315,7 +315,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function setTo($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
+        if (!\is_array($addresses) && isset($name)) {
             $addresses = [$addresses => $name];
         }
 
@@ -367,7 +367,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function setCc($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
+        if (!\is_array($addresses) && isset($name)) {
             $addresses = [$addresses => $name];
         }
 
@@ -419,7 +419,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function setBcc($addresses, $name = null)
     {
-        if (!is_array($addresses) && isset($name)) {
+        if (!\is_array($addresses) && isset($name)) {
             $addresses = [$addresses => $name];
         }
 
@@ -568,7 +568,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function toString()
     {
-        if (count($children = $this->getChildren()) > 0 && '' != $this->getBody()) {
+        if (\count($children = $this->getChildren()) > 0 && '' != $this->getBody()) {
             $this->setChildren(array_merge([$this->becomeMimePart()], $children));
             $string = parent::toString();
             $this->setChildren($children);
@@ -596,7 +596,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
      */
     public function toByteStream(Swift_InputByteStream $is)
     {
-        if (count($children = $this->getChildren()) > 0 && '' != $this->getBody()) {
+        if (\count($children = $this->getChildren()) > 0 && '' != $this->getBody()) {
             $this->setChildren(array_merge([$this->becomeMimePart()], $children));
             parent::toByteStream($is);
             $this->setChildren($children);

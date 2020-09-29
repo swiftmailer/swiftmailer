@@ -38,7 +38,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                     */
 
         foreach (array_merge(range(33, 60), range(62, 126)) as $ordinal) {
-            $char = chr($ordinal);
+            $char = \chr($ordinal);
 
             $os = $this->createOutputByteStream(true);
             $charStream = $this->createCharacterStream();
@@ -91,8 +91,8 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                     intermediate transport agents.
                     */
 
-        $HT = chr(0x09); //9
-        $SPACE = chr(0x20); //32
+        $HT = \chr(0x09); //9
+        $SPACE = \chr(0x20); //32
 
         //HT
         $os = $this->createOutputByteStream(true);
@@ -110,7 +110,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                    ->with($os);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn([ord('a')]);
+                   ->andReturn([\ord('a')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
                    ->andReturn([0x09]);
@@ -125,7 +125,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                    ->andReturn([0x0A]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn([ord('b')]);
+                   ->andReturn([\ord('b')]);
         $charStream->shouldReceive('readBytes')
                    ->zeroOrMoreTimes()
                    ->andReturn(false);
@@ -151,7 +151,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                    ->with($os);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn([ord('a')]);
+                   ->andReturn([\ord('a')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
                    ->andReturn([0x20]);
@@ -166,7 +166,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                    ->andReturn([0x0A]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn([ord('b')]);
+                   ->andReturn([\ord('b')]);
         $charStream->shouldReceive('readBytes')
                    ->zeroOrMoreTimes()
                    ->andReturn(false);
@@ -221,7 +221,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                    ->with($os);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn([ord('a')]);
+                   ->andReturn([\ord('a')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
                    ->andReturn([0x0D]);
@@ -230,7 +230,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                    ->andReturn([0x0A]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn([ord('b')]);
+                   ->andReturn([\ord('b')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
                    ->andReturn([0x0D]);
@@ -239,7 +239,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
                    ->andReturn([0x0A]);
         $charStream->shouldReceive('readBytes')
                    ->once()
-                   ->andReturn([ord('c')]);
+                   ->andReturn([\ord('c')]);
         $charStream->shouldReceive('readBytes')
                    ->once()
                    ->andReturn([0x0D]);
@@ -284,7 +284,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         for ($seq = 0; $seq <= 140; ++$seq) {
             $charStream->shouldReceive('readBytes')
                        ->once()
-                       ->andReturn([ord('a')]);
+                       ->andReturn([\ord('a')]);
         }
         $charStream->shouldReceive('readBytes')
                    ->zeroOrMoreTimes()
@@ -314,7 +314,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         for ($seq = 0; $seq <= 100; ++$seq) {
             $charStream->shouldReceive('readBytes')
                        ->once()
-                       ->andReturn([ord('a')]);
+                       ->andReturn([\ord('a')]);
         }
         $charStream->shouldReceive('readBytes')
                    ->zeroOrMoreTimes()
@@ -332,7 +332,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         */
 
         foreach (range(0, 32) as $ordinal) {
-            $char = chr($ordinal);
+            $char = \chr($ordinal);
 
             $os = $this->createOutputByteStream(true);
             $charStream = $this->createCharacterStream();
@@ -366,7 +366,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         According to Rule (1 & 2)
         */
 
-        $char = chr(61);
+        $char = \chr(61);
 
         $os = $this->createOutputByteStream(true);
         $charStream = $this->createCharacterStream();
@@ -400,7 +400,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         */
 
         foreach (range(127, 255) as $ordinal) {
-            $char = chr($ordinal);
+            $char = \chr($ordinal);
 
             $os = $this->createOutputByteStream(true);
             $charStream = $this->createCharacterStream();
@@ -447,7 +447,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderTest extends \SwiftMailerTestCas
         for ($seq = 0; $seq <= 140; ++$seq) {
             $charStream->shouldReceive('readBytes')
                        ->once()
-                       ->andReturn([ord('a')]);
+                       ->andReturn([\ord('a')]);
         }
         $charStream->shouldReceive('readBytes')
                     ->zeroOrMoreTimes()

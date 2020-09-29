@@ -52,10 +52,10 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
      */
     public function __construct($stack = null)
     {
-        if (is_array($stack)) {
+        if (\is_array($stack)) {
             $this->array = $stack;
-            $this->arraySize = count($stack);
-        } elseif (is_string($stack)) {
+            $this->arraySize = \count($stack);
+        } elseif (\is_string($stack)) {
             $this->write($stack);
         } else {
             $this->array = [];
@@ -102,7 +102,7 @@ class Swift_ByteStream_ArrayByteStream implements Swift_InputByteStream, Swift_O
         foreach ($to_add as $value) {
             $this->array[] = $value;
         }
-        $this->arraySize = count($this->array);
+        $this->arraySize = \count($this->array);
 
         foreach ($this->mirrors as $stream) {
             $stream->write($bytes);

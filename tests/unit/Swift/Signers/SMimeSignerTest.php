@@ -596,7 +596,7 @@ OEL;
 
         $headers = self::getHeadersOfMessage($content);
         foreach ($headers as $headerName => $value) {
-            if (!in_array($headerName, ['content-type', 'content-transfer-encoding', 'content-disposition'])) {
+            if (!\in_array($headerName, ['content-type', 'content-transfer-encoding', 'content-disposition'])) {
                 continue;
             }
 
@@ -604,7 +604,7 @@ OEL;
             $headerName = array_map('ucfirst', $headerName);
             $headerName = implode('-', $headerName);
 
-            if (strlen($value) > 62) {
+            if (\strlen($value) > 62) {
                 $value = wordwrap($value, 62, "\n ");
             }
 

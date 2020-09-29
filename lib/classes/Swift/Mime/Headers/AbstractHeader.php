@@ -216,7 +216,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
                 // ... otherwise it needs encoding
                 // Determine space remaining on line if first line
                 if ($shorten) {
-                    $usedLength = strlen($header->getFieldName().': ');
+                    $usedLength = \strlen($header->getFieldName().': ');
                 } else {
                     $usedLength = 0;
                 }
@@ -271,7 +271,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
                 }
 
                 if (-1 == $usedLength) {
-                    $usedLength = strlen($header->getFieldName().': ') + strlen($value);
+                    $usedLength = \strlen($header->getFieldName().': ') + \strlen($value);
                 }
                 $value .= $this->getTokenAsEncodedWord($token, $usedLength);
 
@@ -313,14 +313,14 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
             if ($this->tokenNeedsEncoding($token)) {
                 $encodedToken .= $token;
             } else {
-                if (strlen($encodedToken) > 0) {
+                if (\strlen($encodedToken) > 0) {
                     $tokens[] = $encodedToken;
                     $encodedToken = '';
                 }
                 $tokens[] = $token;
             }
         }
-        if (strlen($encodedToken)) {
+        if (\strlen($encodedToken)) {
             $tokens[] = $encodedToken;
         }
 
@@ -342,7 +342,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         if (isset($this->lang)) {
             $charsetDecl .= '*'.$this->lang;
         }
-        $encodingWrapperLength = strlen(
+        $encodingWrapperLength = \strlen(
             '=?'.$charsetDecl.'?'.$this->encoder->getName().'??='
             );
 
@@ -458,8 +458,8 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         foreach ($tokens as $i => $token) {
             // Line longer than specified maximum or token was just a new line
             if (("\r\n" == $token) ||
-                ($i > 0 && strlen($currentLine.$token) > $this->lineLength)
-                && 0 < strlen($currentLine)) {
+                ($i > 0 && \strlen($currentLine.$token) > $this->lineLength)
+                && 0 < \strlen($currentLine)) {
                 $headerLines[] = '';
                 $currentLine = &$headerLines[$lineCount++];
             }

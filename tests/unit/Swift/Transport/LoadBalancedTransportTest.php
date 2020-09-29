@@ -808,7 +808,7 @@ FIXME: Does not work anymore after upgrading Mockery
      */
     public function varsAreReferences(&$ref1, &$ref2)
     {
-        if (is_object($ref2)) {
+        if (\is_object($ref2)) {
             return $ref1 === $ref2;
         }
         if ($ref1 !== $ref2) {

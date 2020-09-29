@@ -107,7 +107,7 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoder implements Swift_Mime_Con
         // transform =0D=0A to CRLF
         $string = str_replace(["\t=0D=0A", ' =0D=0A', '=0D=0A'], ["=09\r\n", "=20\r\n", "\r\n"], $string);
 
-        switch (ord(substr($string, -1))) {
+        switch (\ord(substr($string, -1))) {
             case 0x09:
                 $string = substr_replace($string, '=09', -1);
                 break;

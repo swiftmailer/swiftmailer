@@ -36,7 +36,7 @@ class Swift_Bug111Test extends \PHPUnit\Framework\TestCase
         $headers->addTextHeader('X-SMTPAPI', $json);
         $header = $headers->get('X-SMTPAPI');
 
-        $this->assertEquals('Swift_Mime_Headers_UnstructuredHeader', get_class($header));
+        $this->assertEquals('Swift_Mime_Headers_UnstructuredHeader', \get_class($header));
         $this->assertEquals($json, $header->getFieldBody());
     }
 }

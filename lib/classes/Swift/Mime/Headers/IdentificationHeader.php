@@ -96,7 +96,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     public function setId($id)
     {
-        $this->setIds(is_array($id) ? $id : [$id]);
+        $this->setIds(\is_array($id) ? $id : [$id]);
     }
 
     /**
@@ -108,7 +108,7 @@ class Swift_Mime_Headers_IdentificationHeader extends Swift_Mime_Headers_Abstrac
      */
     public function getId()
     {
-        if (count($this->ids) > 0) {
+        if (\count($this->ids) > 0) {
             return $this->ids[0];
         }
     }

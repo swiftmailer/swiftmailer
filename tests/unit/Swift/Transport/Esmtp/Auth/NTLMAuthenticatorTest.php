@@ -8,7 +8,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
 
     protected function setUp(): void
     {
-        if (!function_exists('openssl_encrypt') || !function_exists('bcmul')) {
+        if (!\function_exists('openssl_encrypt') || !\function_exists('bcmul')) {
             $this->markTestSkipped('One of the required functions is not available.');
         }
     }

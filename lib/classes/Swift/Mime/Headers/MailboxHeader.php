@@ -261,7 +261,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
         $actualMailboxes = [];
 
         foreach ($mailboxes as $key => $value) {
-            if (is_string($key)) {
+            if (\is_string($key)) {
                 //key is email addr
                 $address = $key;
                 $name = $value;
@@ -347,7 +347,7 @@ class Swift_Mime_Headers_MailboxHeader extends Swift_Mime_Headers_AbstractHeader
      *
      * @param string $address
      *
-     * @throws Swift_RfcComplianceException If invalid.
+     * @throws Swift_RfcComplianceException if invalid
      */
     private function assertValidAddress($address)
     {

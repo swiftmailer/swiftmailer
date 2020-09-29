@@ -31,7 +31,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     public function __construct($privateKey, $domainName, $selector)
     {
-        if (!extension_loaded('opendkim')) {
+        if (!\extension_loaded('opendkim')) {
             throw new Swift_SwiftException('php-opendkim extension not found');
         }
 
@@ -44,7 +44,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     {
         $header = new Swift_Mime_Headers_OpenDKIMHeader('DKIM-Signature');
         $headerVal = $this->dkimHandler->getSignatureHeader();
-        if (false === $headerVal || is_int($headerVal)) {
+        if (false === $headerVal || \is_int($headerVal)) {
             throw new Swift_SwiftException('OpenDKIM Error: '.$this->dkimHandler->getError());
         }
         $header->setValue($headerVal);
@@ -176,7 +176,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
             }
         }
         $this->dropFirstLF = false;
-        if (strlen($string)) {
+        if (\strlen($string)) {
             $this->dkimHandler->body($string);
         }
     }

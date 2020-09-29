@@ -1,8 +1,8 @@
 #!/usr/bin/php
 
 <?php
-define('APACHE_MIME_TYPES_URL', 'https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types');
-define('FREEDESKTOP_XML_URL', 'https://raw.github.com/minad/mimemagic/master/script/freedesktop.org.xml');
+\define('APACHE_MIME_TYPES_URL', 'https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types');
+\define('FREEDESKTOP_XML_URL', 'https://raw.github.com/minad/mimemagic/master/script/freedesktop.org.xml');
 
 function generateUpToDateMimeArray()
 {
@@ -109,7 +109,7 @@ function generateUpToDateMimeArray()
             $extensions = explode(' ', strtolower($extensions));
 
             // force array for foreach
-            if (!is_array($extensions)) {
+            if (!\is_array($extensions)) {
                 $extensions = [$extensions];
             }
 
@@ -118,7 +118,7 @@ function generateUpToDateMimeArray()
                 $mime_type = $matches[1][$i];
 
                 // check if string length lower than 10
-                if (strlen($extension) < 10) {
+                if (\strlen($extension) < 10) {
                     if (!isset($valid_mime_types[$mime_type])) {
                         // generate array for mimetype to extension resolver (only first match)
                         $valid_mime_types[$extension] = "'{$extension}' => '{$mime_type}'";
@@ -156,7 +156,7 @@ function generateUpToDateMimeArray()
             $extension = strtolower(trim($node->glob['ddpattern'][0], '*.'));
 
             // skip none glob extensions and check if string length between 1 and 10
-            if (false !== strpos($extension, '.') || strlen($extension) < 1 || strlen($extension) > 9) {
+            if (false !== strpos($extension, '.') || \strlen($extension) < 1 || \strlen($extension) > 9) {
                 continue;
             }
 

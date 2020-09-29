@@ -140,16 +140,16 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     {
         $lowerName = strtolower($name);
 
-        if (!array_key_exists($lowerName, $this->headers)) {
+        if (!\array_key_exists($lowerName, $this->headers)) {
             return false;
         }
 
-        if (func_num_args() < 2) {
+        if (\func_num_args() < 2) {
             // index was not specified, so we only need to check that there is at least one header value set
-            return (bool) count($this->headers[$lowerName]);
+            return (bool) \count($this->headers[$lowerName]);
         }
 
-        return array_key_exists($index, $this->headers[$lowerName]);
+        return \array_key_exists($index, $this->headers[$lowerName]);
     }
 
     /**
@@ -183,7 +183,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     {
         $name = strtolower($name);
 
-        if (func_num_args() < 2) {
+        if (\func_num_args() < 2) {
             if ($this->has($name)) {
                 $values = array_values($this->headers[$name]);
 
@@ -215,7 +215,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
         }
 
         $lowerName = strtolower($name);
-        if (!array_key_exists($lowerName, $this->headers)) {
+        if (!\array_key_exists($lowerName, $this->headers)) {
             return [];
         }
 
@@ -343,7 +343,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     /** Test if the headers can be sorted */
     private function canSort()
     {
-        return count($this->order) > 0;
+        return \count($this->order) > 0;
     }
 
     /** uksort() algorithm for Header ordering */
@@ -351,8 +351,8 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     {
         $lowerA = strtolower($a);
         $lowerB = strtolower($b);
-        $aPos = array_key_exists($lowerA, $this->order) ? $this->order[$lowerA] : -1;
-        $bPos = array_key_exists($lowerB, $this->order) ? $this->order[$lowerB] : -1;
+        $aPos = \array_key_exists($lowerA, $this->order) ? $this->order[$lowerA] : -1;
+        $bPos = \array_key_exists($lowerB, $this->order) ? $this->order[$lowerB] : -1;
 
         if (-1 === $aPos && -1 === $bPos) {
             // just be sure to be determinist here
@@ -371,7 +371,7 @@ class Swift_Mime_SimpleHeaderSet implements Swift_Mime_CharsetObserver
     /** Test if the given Header is always displayed */
     private function isDisplayed(Swift_Mime_Header $header)
     {
-        return array_key_exists(strtolower($header->getFieldName()), $this->required);
+        return \array_key_exists(strtolower($header->getFieldName()), $this->required);
     }
 
     /** Notify all Headers of the new charset */

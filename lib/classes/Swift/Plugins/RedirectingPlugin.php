@@ -112,7 +112,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
         }
 
         foreach ((array) $this->recipient as $recipient) {
-            if (!array_key_exists($recipient, $to)) {
+            if (!\array_key_exists($recipient, $to)) {
                 $message->addTo($recipient);
             }
         }
@@ -155,7 +155,7 @@ class Swift_Plugins_RedirectingPlugin implements Swift_Events_SendListener
      */
     protected function isWhitelisted($recipient)
     {
-        if (in_array($recipient, (array) $this->recipient)) {
+        if (\in_array($recipient, (array) $this->recipient)) {
             return true;
         }
 

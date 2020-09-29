@@ -56,7 +56,7 @@ abstract class Swift
         if (self::$inits && !self::$initialized) {
             self::$initialized = true;
             foreach (self::$inits as $init) {
-                call_user_func($init);
+                \call_user_func($init);
             }
         }
     }

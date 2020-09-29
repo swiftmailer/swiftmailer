@@ -33,7 +33,7 @@ class Swift_Bug206Test extends \PHPUnit\Framework\TestCase
             $email => $name,
         ]);
 
-        $headerBody = substr($mailboxHeader->toString(), 3, strlen($expected));
+        $headerBody = substr($mailboxHeader->toString(), 3, \strlen($expected));
 
         $this->assertEquals($expected, $headerBody);
     }

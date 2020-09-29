@@ -49,11 +49,11 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
         $last_size = $size = 0;
         foreach ($search as $i => $search_element) {
             if (null !== $tree) {
-                $tree[-1] = min(count($replace) - 1, $i - 1);
+                $tree[-1] = min(\count($replace) - 1, $i - 1);
                 $tree[-2] = $last_size;
             }
             $tree = &$this->tree;
-            if (is_array($search_element)) {
+            if (\is_array($search_element)) {
                 foreach ($search_element as $k => $char) {
                     $this->index[$char] = true;
                     if (!isset($tree[$char])) {
@@ -74,19 +74,19 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
             }
         }
         if (null !== $i) {
-            $tree[-1] = min(count($replace) - 1, $i);
+            $tree[-1] = min(\count($replace) - 1, $i);
             $tree[-2] = $last_size;
             $this->treeMaxLen = $size;
         }
         foreach ($replace as $rep) {
-            if (!is_array($rep)) {
+            if (!\is_array($rep)) {
                 $rep = [$rep];
             }
             $this->replace[] = $rep;
         }
-        for ($i = count($this->replace) - 1; $i >= 0; --$i) {
+        for ($i = \count($this->replace) - 1; $i >= 0; --$i) {
             $this->replace[$i] = $rep = $this->filter($this->replace[$i], $i);
-            $this->repSize[$i] = count($rep);
+            $this->repSize[$i] = \count($rep);
         }
     }
 
@@ -119,7 +119,7 @@ class Swift_StreamFilters_ByteArrayReplacementFilter implements Swift_StreamFilt
         }
 
         $newBuffer = [];
-        $buf_size = count($buffer);
+        $buf_size = \count($buffer);
         $last_size = 0;
         for ($i = 0; $i < $buf_size; ++$i) {
             $search_pos = $this->tree;

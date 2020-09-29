@@ -159,7 +159,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
     {
         $this->prepareCache($nsKey);
 
-        return array_key_exists($itemKey, $this->contents[$nsKey]);
+        return \array_key_exists($itemKey, $this->contents[$nsKey]);
     }
 
     /**
@@ -190,7 +190,7 @@ class Swift_KeyCache_ArrayKeyCache implements Swift_KeyCache
      */
     private function prepareCache($nsKey)
     {
-        if (!array_key_exists($nsKey, $this->contents)) {
+        if (!\array_key_exists($nsKey, $this->contents)) {
             $this->contents[$nsKey] = [];
         }
     }

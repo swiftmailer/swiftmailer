@@ -210,7 +210,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
 
         if ($evt) {
-            if ($sent == count($to) + count($cc) + count($bcc)) {
+            if ($sent == \count($to) + \count($cc) + \count($bcc)) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
             } elseif ($sent > 0) {
                 $evt->setResult(Swift_Events_SendEvent::RESULT_TENTATIVE);
@@ -318,7 +318,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
      * @param int[]    $codes
      * @param string[] $failures An array of failures by-reference
      * @param bool     $pipeline Do not wait for response
-     * @param string   $address  The address, if command is RCPT TO.
+     * @param string   $address  the address, if command is RCPT TO
      *
      * @return string|null The server response, or null if pipelining is enabled
      */
@@ -449,7 +449,7 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
 
         list($code) = sscanf($response, '%3d');
-        $valid = (empty($wanted) || in_array($code, $wanted));
+        $valid = (empty($wanted) || \in_array($code, $wanted));
 
         if ($evt = $this->eventDispatcher->createResponseEvent($this, $response,
             $valid)) {
@@ -496,9 +496,9 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
         }
 
         if (0 != $sent) {
-            $sent += count($failedRecipients);
+            $sent += \count($failedRecipients);
             $this->doDataCommand($failedRecipients);
-            $sent -= count($failedRecipients);
+            $sent -= \count($failedRecipients);
 
             $this->streamMessage($message);
         } else {
