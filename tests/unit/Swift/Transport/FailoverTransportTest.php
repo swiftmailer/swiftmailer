@@ -85,7 +85,7 @@ class Swift_Transport_FailoverTransportTest extends \SwiftMailerTestCase
         $t2->shouldReceive('send')
            ->once()
            ->with($message, \Mockery::any())
-           ->andReturnUsing(function () use (&$connectionState2, $e) {
+           ->andReturnUsing(function () use (&$connectionState2) {
                if ($connectionState2) {
                    return 1;
                }
@@ -189,7 +189,7 @@ class Swift_Transport_FailoverTransportTest extends \SwiftMailerTestCase
         $t2->shouldReceive('send')
            ->times(4)
            ->with(\Mockery::anyOf($message1, $message2, $message3, $message4), \Mockery::any())
-           ->andReturnUsing(function () use (&$connectionState2, $e) {
+           ->andReturnUsing(function () use (&$connectionState2) {
                if ($connectionState2) {
                    return 1;
                }

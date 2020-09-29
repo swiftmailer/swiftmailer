@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(dirname(dirname(__DIR__))).'/fixtures/MimeEntityFixture.php';
+require_once dirname(__DIR__, 3).'/fixtures/MimeEntityFixture.php';
 
 abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
 {

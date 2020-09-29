@@ -16,10 +16,10 @@ class Swift_MessageTest extends \PHPUnit\Framework\TestCase
     public function testCloningWithSigners()
     {
         $message1 = new Swift_Message('subj', 'body', 'ctype');
-        $signer = new Swift_Signers_DKIMSigner(dirname(dirname(__DIR__)).'/_samples/dkim/dkim.test.priv', 'test.example', 'example');
+        $signer = new Swift_Signers_DKIMSigner(dirname(__DIR__, 2).'/_samples/dkim/dkim.test.priv', 'test.example', 'example');
         $message1->attachSigner($signer);
         $message2 = new Swift_Message('subj', 'body', 'ctype');
-        $signer = new Swift_Signers_DKIMSigner(dirname(dirname(__DIR__)).'/_samples/dkim/dkim.test.priv', 'test.example', 'example');
+        $signer = new Swift_Signers_DKIMSigner(dirname(__DIR__, 2).'/_samples/dkim/dkim.test.priv', 'test.example', 'example');
         $message2->attachSigner($signer);
         $message1_clone = clone $message1;
 

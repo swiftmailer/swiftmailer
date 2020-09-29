@@ -68,7 +68,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
     protected function si2bin($si, $bits = 32)
     {
         $bin = null;
-        if ($si >= -pow(2, $bits - 1) && ($si <= pow(2, $bits - 1))) {
+        if ($si >= -2 ** ($bits - 1) && ($si <= 2 ** ($bits - 1))) {
             // positive or zero
             if ($si >= 0) {
                 $bin = base_convert($si, 10, 2);
@@ -79,7 +79,7 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticator implements Swift_Transport_Es
                 }
             } else {
                 // negative
-                $si = -$si - pow(2, $bits);
+                $si = -$si - 2 ** $bits;
                 $bin = base_convert($si, 10, 2);
                 $bin_length = strlen($bin);
                 if ($bin_length > $bits) {

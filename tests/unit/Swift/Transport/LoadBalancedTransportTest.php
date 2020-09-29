@@ -614,7 +614,7 @@ FIXME: Does not work anymore after upgrading Mockery
         $t1->shouldReceive('send')
            ->once()
            ->with($message2, \Mockery::any())
-           ->andReturnUsing(function () use (&$connectionState1, $e) {
+           ->andReturnUsing(function () use (&$connectionState1) {
                if ($connectionState1) {
                    return 10;
                }
