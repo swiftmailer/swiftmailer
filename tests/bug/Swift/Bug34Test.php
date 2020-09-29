@@ -29,7 +29,7 @@ class Swift_Bug34Test extends \PHPUnit\Framework\TestCase
         $boundary = $message->getBoundary();
         $cidVal = $image->getId();
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
         '~^'.
         'Sender: Other <other@domain.tld>'."\r\n".
         'Message-ID: <'.$id.'>'."\r\n".

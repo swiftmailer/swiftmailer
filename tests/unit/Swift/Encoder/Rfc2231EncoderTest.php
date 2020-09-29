@@ -39,7 +39,7 @@ class Swift_Encoder_Rfc2231EncoderTest extends \SwiftMailerTestCase
         $encoded = $encoder->encodeString($string);
 
         foreach (explode("\r\n", $encoded) as $line) {
-            $this->assertRegExp($this->rfc2045Token, $line,
+            $this->assertMatchesRegularExpression($this->rfc2045Token, $line,
                 '%s: Encoder should always return a valid RFC 2045 token.');
         }
     }
@@ -69,7 +69,7 @@ class Swift_Encoder_Rfc2231EncoderTest extends \SwiftMailerTestCase
         $encoded = $encoder->encodeString($string);
 
         foreach (explode("\r\n", $encoded) as $line) {
-            $this->assertRegExp($this->rfc2045Token, $line,
+            $this->assertMatchesRegularExpression($this->rfc2045Token, $line,
                 '%s: Encoder should always return a valid RFC 2045 token.');
         }
     }

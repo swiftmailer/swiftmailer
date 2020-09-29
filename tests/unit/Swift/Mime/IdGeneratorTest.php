@@ -24,7 +24,7 @@ class Swift_Mime_IdGeneratorTest extends \PHPUnit\Framework\TestCase
 
         $id = $idGenerator->generateId();
         $this->assertTrue($emailValidator->isValid($id, new RFCValidation()));
-        $this->assertRegExp('/^.{32}@example.net$/', $id);
+        $this->assertMatchesRegularExpression('/^.{32}@example.net$/', $id);
 
         $anotherId = $idGenerator->generateId();
         $this->assertNotEquals($id, $anotherId);

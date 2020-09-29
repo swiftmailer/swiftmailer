@@ -187,6 +187,6 @@ class Swift_Bug38Test extends \PHPUnit\Framework\TestCase
         while (false !== $bytes = $stream->read(8192)) {
             $string .= $bytes;
         }
-        $this->assertRegExp($pattern, $string, $message);
+        $this->assertMatchesRegularExpression($pattern, $string, $message);
     }
 }

@@ -166,7 +166,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $entity = $this->createEntity($this->createHeaderSet(),
             $this->createEncoder(), $this->createCache()
             );
-        $this->assertRegExp('/^.*?@.*?$/D', $entity->getId());
+        $this->assertMatchesRegularExpression('/^.*?@.*?$/D', $entity->getId());
     }
 
     public function testGenerateIdCreatesNewId()
@@ -367,7 +367,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $entity = $this->createEntity($this->createHeaderSet(),
             $this->createEncoder(), $this->createCache()
             );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '/^[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?\ ]{0,69}[a-zA-Z0-9\'\(\)\+_\-,\.\/:=\?]$/D',
             $entity->getBoundary()
             );
@@ -608,7 +608,7 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $entity->setBoundary('xxx');
         $entity->setChildren([$part, $attachment]);
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             '~^'.
             "Content-Type: multipart/mixed; boundary=\"xxx\"\r\n".
             "\r\n\r\n--xxx\r\n".

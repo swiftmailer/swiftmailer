@@ -19,8 +19,8 @@ class Swift_Plugins_Reporters_HtmlReporterTest extends \PHPUnit\Framework\TestCa
             );
         $html = ob_get_clean();
 
-        $this->assertRegExp('~ok|pass~i', $html, '%s: Reporter should indicate pass');
-        $this->assertRegExp('~foo@bar\.tld~', $html, '%s: Reporter should show address');
+        $this->assertMatchesRegularExpression('~ok|pass~i', $html, '%s: Reporter should indicate pass');
+        $this->assertMatchesRegularExpression('~foo@bar\.tld~', $html, '%s: Reporter should show address');
     }
 
     public function testReportingFail()
@@ -31,8 +31,8 @@ class Swift_Plugins_Reporters_HtmlReporterTest extends \PHPUnit\Framework\TestCa
             );
         $html = ob_get_clean();
 
-        $this->assertRegExp('~fail~i', $html, '%s: Reporter should indicate fail');
-        $this->assertRegExp('~zip@button~', $html, '%s: Reporter should show address');
+        $this->assertMatchesRegularExpression('~fail~i', $html, '%s: Reporter should indicate fail');
+        $this->assertMatchesRegularExpression('~zip@button~', $html, '%s: Reporter should show address');
     }
 
     public function testMultipleReports()
@@ -46,9 +46,9 @@ class Swift_Plugins_Reporters_HtmlReporterTest extends \PHPUnit\Framework\TestCa
             );
         $html = ob_get_clean();
 
-        $this->assertRegExp('~ok|pass~i', $html, '%s: Reporter should indicate pass');
-        $this->assertRegExp('~foo@bar\.tld~', $html, '%s: Reporter should show address');
-        $this->assertRegExp('~fail~i', $html, '%s: Reporter should indicate fail');
-        $this->assertRegExp('~zip@button~', $html, '%s: Reporter should show address');
+        $this->assertMatchesRegularExpression('~ok|pass~i', $html, '%s: Reporter should indicate pass');
+        $this->assertMatchesRegularExpression('~foo@bar\.tld~', $html, '%s: Reporter should show address');
+        $this->assertMatchesRegularExpression('~fail~i', $html, '%s: Reporter should indicate fail');
+        $this->assertMatchesRegularExpression('~zip@button~', $html, '%s: Reporter should show address');
     }
 }
