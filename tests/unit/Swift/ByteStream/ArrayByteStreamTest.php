@@ -132,18 +132,18 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
         $is1 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
         $is2 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
 
-        $is1->expects($this->at(0))
+        $is1->expects($this->exactly(2))
             ->method('write')
-            ->with('x');
-        $is1->expects($this->at(1))
+            ->withConsecutive(
+                ['x'],
+                ['y']
+            );
+        $is2->expects($this->exactly(2))
             ->method('write')
-            ->with('y');
-        $is2->expects($this->at(0))
-            ->method('write')
-            ->with('x');
-        $is2->expects($this->at(1))
-            ->method('write')
-            ->with('y');
+            ->withConsecutive(
+                ['x'],
+                ['y']
+            );
 
         $bs->bind($is1);
         $bs->bind($is2);
@@ -175,12 +175,12 @@ class Swift_ByteStream_ArrayByteStreamTest extends \PHPUnit\Framework\TestCase
         $is1 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
         $is2 = $this->getMockBuilder('Swift_InputByteStream')->getMock();
 
-        $is1->expects($this->at(0))
+        $is1->expects($this->exactly(2))
             ->method('write')
-            ->with('x');
-        $is1->expects($this->at(1))
-            ->method('write')
-            ->with('y');
+            ->withConsecutive(
+                ['x'],
+                ['y']
+            );
         $is2->expects($this->once())
             ->method('write')
             ->with('x');

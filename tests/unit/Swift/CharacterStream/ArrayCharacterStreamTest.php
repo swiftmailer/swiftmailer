@@ -271,6 +271,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         $reader->shouldReceive('validateByteSequence')->once()->with([0xD0], 1)->andReturn(1);
         $reader->shouldReceive('validateByteSequence')->once()->with([0xD0], 1)->andReturn(1);
 
+        $stream->flushContents();
         $stream->importByteStream($os);
     }
 
@@ -302,6 +303,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         $reader->shouldReceive('validateByteSequence')->once()->with([0xD0], 1)->andReturn(1);
         $reader->shouldReceive('validateByteSequence')->once()->with([0xD0], 1)->andReturn(1);
 
+        $stream->flushContents();
         $stream->importByteStream($os);
 
         $this->assertIdenticalBinary(pack('C*', 0xD0, 0x94), $stream->read(1));
