@@ -27,7 +27,7 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
                    ->andReturn([\ord('a')], [0x20], [0x09], [0x20], [\ord('b')], false);
 
         $encoder = $this->createEncoder($charStream);
-        $this->assertNotRegExp('~[ \t]~', $encoder->encodeString("a \t b"),
+        $this->assertDoesNotMatchRegularExpression('~[ \t]~', $encoder->encodeString("a \t b"),
             '%s: encoded-words in headers cannot contain LWSP as per RFC 2047.'
             );
     }

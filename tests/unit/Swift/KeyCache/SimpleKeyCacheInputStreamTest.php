@@ -7,15 +7,13 @@ class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends \PHPUnit\Framework\Te
     public function testStreamWritesToCacheInAppendMode()
     {
         $cache = $this->getMockBuilder('Swift_KeyCache')->getMock();
-        $cache->expects($this->at(0))
+        $cache->expects($this->exactly(3))
               ->method('setString')
-              ->with($this->nsKey, 'foo', 'a', Swift_KeyCache::MODE_APPEND);
-        $cache->expects($this->at(1))
-              ->method('setString')
-              ->with($this->nsKey, 'foo', 'b', Swift_KeyCache::MODE_APPEND);
-        $cache->expects($this->at(2))
-              ->method('setString')
-              ->with($this->nsKey, 'foo', 'c', Swift_KeyCache::MODE_APPEND);
+              ->withConsecutive(
+                  [$this->nsKey, 'foo', 'a', Swift_KeyCache::MODE_APPEND],
+                  [$this->nsKey, 'foo', 'b', Swift_KeyCache::MODE_APPEND],
+                  [$this->nsKey, 'foo', 'c', Swift_KeyCache::MODE_APPEND]
+              );
 
         $stream = new Swift_KeyCache_SimpleKeyCacheInputStream();
         $stream->setKeyCache($cache);
@@ -45,15 +43,13 @@ class Swift_KeyCache_SimpleKeyCacheInputStreamTest extends \PHPUnit\Framework\Te
     public function testClonedStreamStillReferencesSameCache()
     {
         $cache = $this->getMockBuilder('Swift_KeyCache')->getMock();
-        $cache->expects($this->at(0))
+        $cache->expects($this->exactly(3))
               ->method('setString')
-              ->with($this->nsKey, 'foo', 'a', Swift_KeyCache::MODE_APPEND);
-        $cache->expects($this->at(1))
-              ->method('setString')
-              ->with($this->nsKey, 'foo', 'b', Swift_KeyCache::MODE_APPEND);
-        $cache->expects($this->at(2))
-              ->method('setString')
-              ->with('test', 'bar', 'x', Swift_KeyCache::MODE_APPEND);
+              ->withConsecutive(
+                  [$this->nsKey, 'foo', 'a', Swift_KeyCache::MODE_APPEND],
+                  [$this->nsKey, 'foo', 'b', Swift_KeyCache::MODE_APPEND],
+                  ['test', 'bar', 'x', Swift_KeyCache::MODE_APPEND]
+              );
 
         $stream = new Swift_KeyCache_SimpleKeyCacheInputStream();
         $stream->setKeyCache($cache);

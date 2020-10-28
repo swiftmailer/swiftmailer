@@ -80,18 +80,18 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit\Framework\T
         $is1 = $this->createMockInputStream();
         $is2 = $this->createMockInputStream();
 
-        $is1->expects($this->at(0))
+        $is1->expects($this->exactly(2))
             ->method('write')
-            ->with('x');
-        $is1->expects($this->at(1))
+            ->withConsecutive(
+                ['x'],
+                ['y']
+            );
+        $is2->expects($this->exactly(2))
             ->method('write')
-            ->with('y');
-        $is2->expects($this->at(0))
-            ->method('write')
-            ->with('x');
-        $is2->expects($this->at(1))
-            ->method('write')
-            ->with('y');
+            ->withConsecutive(
+                ['x'],
+                ['y']
+            );
 
         $file->bind($is1);
         $file->bind($is2);
@@ -125,12 +125,12 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit\Framework\T
         $is1 = $this->createMockInputStream();
         $is2 = $this->createMockInputStream();
 
-        $is1->expects($this->at(0))
+        $is1->expects($this->exactly(2))
             ->method('write')
-            ->with('x');
-        $is1->expects($this->at(1))
-            ->method('write')
-            ->with('y');
+            ->withConsecutive(
+                ['x'],
+                ['y']
+            );
         $is2->expects($this->once())
             ->method('write')
             ->with('x');

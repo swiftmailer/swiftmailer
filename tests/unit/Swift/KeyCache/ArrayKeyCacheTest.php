@@ -87,15 +87,9 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit\Framework\TestCase
     public function testByteStreamCanBeImported()
     {
         $os = $this->createOutputStream();
-        $os->expects($this->at(0))
+        $os->expects($this->exactly(3))
            ->method('read')
-           ->willReturn('abc');
-        $os->expects($this->at(1))
-           ->method('read')
-           ->willReturn('def');
-        $os->expects($this->at(2))
-           ->method('read')
-           ->willReturn(false);
+           ->willReturnOnConsecutiveCalls('abc', 'def', false);
 
         $is = $this->createKeyCacheInputStream();
         $cache = $this->createCache($is);
@@ -108,26 +102,14 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit\Framework\TestCase
     public function testByteStreamCanBeAppended()
     {
         $os1 = $this->createOutputStream();
-        $os1->expects($this->at(0))
+        $os1->expects($this->exactly(3))
             ->method('read')
-            ->willReturn('abc');
-        $os1->expects($this->at(1))
-            ->method('read')
-            ->willReturn('def');
-        $os1->expects($this->at(2))
-            ->method('read')
-            ->willReturn(false);
+            ->willReturnOnConsecutiveCalls('abc', 'def', false);
 
         $os2 = $this->createOutputStream();
-        $os2->expects($this->at(0))
+        $os2->expects($this->exactly(3))
             ->method('read')
-            ->willReturn('xyz');
-        $os2->expects($this->at(1))
-            ->method('read')
-            ->willReturn('uvw');
-        $os2->expects($this->at(2))
-            ->method('read')
-            ->willReturn(false);
+            ->willReturnOnConsecutiveCalls('xyz', 'uvw', false);
 
         $is = $this->createKeyCacheInputStream(true);
 
@@ -146,15 +128,9 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit\Framework\TestCase
     public function testByteStreamAndStringCanBeAppended()
     {
         $os = $this->createOutputStream();
-        $os->expects($this->at(0))
+        $os->expects($this->exactly(3))
            ->method('read')
-           ->willReturn('abc');
-        $os->expects($this->at(1))
-           ->method('read')
-           ->willReturn('def');
-        $os->expects($this->at(2))
-           ->method('read')
-           ->willReturn(false);
+           ->willReturnOnConsecutiveCalls('abc', 'def', false);
 
         $is = $this->createKeyCacheInputStream(true);
 
