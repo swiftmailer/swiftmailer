@@ -7,7 +7,7 @@ class Swift_Smoke_HtmlWithAttachmentSmokeTest extends SwiftMailerSmokeTestCase
 {
     private $attFile;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 

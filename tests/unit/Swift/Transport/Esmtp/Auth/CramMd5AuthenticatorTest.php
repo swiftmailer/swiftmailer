@@ -4,7 +4,7 @@ class Swift_Transport_Esmtp_Auth_CramMd5AuthenticatorTest extends \SwiftMailerTe
 {
     private $agent;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->agent = $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
     }
