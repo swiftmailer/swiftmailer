@@ -1,7 +1,7 @@
 Changelog
 =========
 
-6.2.4 (2020-XX-XX)
+6.2.4 (2020-12-08)
 ------------------
 
  * Prevent flushing of the bubble queue when event handler raises another event
