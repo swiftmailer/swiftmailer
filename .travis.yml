@@ -11,12 +11,18 @@ before_script:
 
 script: ./vendor/bin/simple-phpunit
 
+env:
+    global:
+        - SYMFONY_PHPUNIT_REMOVE_RETURN_TYPEHINT=1
+
 matrix:
     include:
+        - php: 7.0
+        - php: 7.1
         - php: 7.2
         - php: 7.3
         - php: 7.4
-        - php: nightly #php 8
+        - php: 8.0
     fast_finish: true
 
 cache:

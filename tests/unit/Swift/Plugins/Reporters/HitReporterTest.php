@@ -5,7 +5,7 @@ class Swift_Plugins_Reporters_HitReporterTest extends \PHPUnit\Framework\TestCas
     private $hitReporter;
     private $message;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->hitReporter = new Swift_Plugins_Reporters_HitReporter();
         $this->message = $this->getMockBuilder('Swift_Mime_SimpleMessage')->disableOriginalConstructor()->getMock();

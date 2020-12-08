@@ -6,7 +6,7 @@ class Swift_KeyCache_DiskKeyCacheAcceptanceTest extends \PHPUnit\Framework\TestC
     private $key1;
     private $key2;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->key1 = uniqid(microtime(true), true);
         $this->key2 = uniqid(microtime(true), true);

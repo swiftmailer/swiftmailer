@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.0.0",
         "egulias/email-validator": "^2.0",
         "symfony/polyfill-iconv": "^1.0",
         "symfony/polyfill-mbstring": "^1.0",
@@ -36,7 +36,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "6.3-dev"
+            "dev-master": "6.2-dev"
         }
     }
 }

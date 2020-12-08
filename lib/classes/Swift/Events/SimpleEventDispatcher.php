@@ -127,7 +127,7 @@ class Swift_Events_SimpleEventDispatcher implements Swift_Events_EventDispatcher
                 $bubbleQueue[] = $listener;
             }
         }
-        
+
         return $bubbleQueue;
     }
 

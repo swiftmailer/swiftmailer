@@ -7,7 +7,7 @@ class Swift_Smoke_InternationalSmokeTest extends SwiftMailerSmokeTestCase
 {
     private $_attFile;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp(); // For skip
         $this->attFile = __DIR__.'/../../../_samples/files/textfile.zip';

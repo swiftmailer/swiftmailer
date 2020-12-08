@@ -2,7 +2,7 @@
 
 class Swift_Bug35Test extends \PHPUnit\Framework\TestCase
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         Swift_Preferences::getInstance()->setCharset('utf-8');
     }
