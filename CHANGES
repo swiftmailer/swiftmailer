@@ -4,6 +4,8 @@ Changelog
 6.2.4 (2020-XX-XX)
 ------------------
 
+ * Prevent flushing of the bubble queue when event handler raises another event
+ * Add support for PHP 8
  * Code cleanups
 
 6.2.3 (2019-11-12)
