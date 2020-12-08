@@ -286,4 +286,9 @@ class Swift_KeyCache_DiskKeyCache implements Swift_KeyCache
             $this->clearAll($nsKey);
         }
     }
+
+    public function __wakeup()
+    {
+        $this->keys = [];
+    }
 }
