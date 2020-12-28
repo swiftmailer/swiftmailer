@@ -6,7 +6,7 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit\Framework\
     protected $server;
     protected $randomHighPort;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!\defined('SWIFT_SMTP_HOST')) {
             $this->markTestSkipped(
@@ -56,7 +56,7 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit\Framework\
         $this->assertMatchesRegularExpression('/Connection to .* Timed Out/', $e->getMessage());
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->server) {
             stream_socket_shutdown($this->server, STREAM_SHUT_RDWR);

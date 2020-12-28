@@ -4,7 +4,7 @@ class Swift_Encoder_Base64EncoderTest extends \PHPUnit\Framework\TestCase
 {
     private $encoder;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->encoder = new Swift_Encoder_Base64Encoder();
     }

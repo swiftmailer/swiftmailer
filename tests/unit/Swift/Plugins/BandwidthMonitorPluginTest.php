@@ -6,7 +6,7 @@ class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit\Framework\TestCa
 
     private $_bytes = 0;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->monitor = new Swift_Plugins_BandwidthMonitorPlugin();
     }
