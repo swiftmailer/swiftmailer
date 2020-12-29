@@ -2,9 +2,9 @@
 
 class Swift_Plugins_BandwidthMonitorPluginTest extends \PHPUnit\Framework\TestCase
 {
-    private $_monitor;
+    private $monitor;
 
-    private $_bytes = 0;
+    private $bytes = 0;
 
     protected function setUp()
     {
