@@ -2,7 +2,7 @@
 
 class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
-    private $_testFile;
+    private $testFile;
 
     protected function setUp()
     {
