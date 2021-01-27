@@ -25,7 +25,10 @@ class Swift_SmtpTransport extends Swift_Transport_EsmtpTransport
     /**
      * @param string $host
      * @param int    $port
-     * @param string $encryption
+     * @param string|null $encryption SMTP encryption mode:
+     *        - null for plain SMTP (no encryption),
+     *        - 'tls' for SMTP with STARTTLS (best effort encryption),
+     *        - 'ssl' for SMTPS = SMTP over TLS (always encrypted).
      */
     public function __construct($host = 'localhost', $port = 25, $encryption = null)
     {
