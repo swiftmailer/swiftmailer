@@ -197,14 +197,13 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 
         $to = (array) $message->getTo();
         $cc = (array) $message->getCc();
-        $tos = array_merge($to, $cc);
         $bcc = (array) $message->getBcc();
+        $tos = array_merge($to, $cc, $bcc);
 
         $message->setBcc([]);
 
         try {
             $sent += $this->sendTo($message, $reversePath, $tos, $failedRecipients);
-            $sent += $this->sendBcc($message, $reversePath, $bcc, $failedRecipients);
         } finally {
             $message->setBcc($bcc);
         }
@@ -517,20 +516,6 @@ abstract class Swift_Transport_AbstractSmtpTransport implements Swift_Transport
 
         return $this->doMailTransaction($message, $reversePath, array_keys($to),
             $failedRecipients);
-    }
-
-    /** Send a message to all Bcc: recipients */
-    private function sendBcc(Swift_Mime_SimpleMessage $message, $reversePath, array $bcc, array &$failedRecipients)
-    {
-        $sent = 0;
-        foreach ($bcc as $forwardPath => $name) {
-            $message->setBcc([$forwardPath => $name]);
-            $sent += $this->doMailTransaction(
-                $message, $reversePath, [$forwardPath], $failedRecipients
-                );
-        }
-
-        return $sent;
     }
 
     /**
