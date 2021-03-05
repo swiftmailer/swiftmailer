@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+
+by J05HI at 2019-05-29T07:13:59Z
+
+@fabpot Are there any news for accepting this?
+
+---------------------------------------------------------------------------
+
+by thirsch at 2019-09-10T16:19:09Z
+
+As a side effect, this also fixes #1073.
+
+---------------------------------------------------------------------------
+
+by Thorsten-C at 2020-10-28T17:26:32Z
+
+I agree, if there are BCC-recipients, Swift should not split it into separate mails.
+Stripping BCC is handled at the destination email server.
+
+---------------------------------------------------------------------------
+
+by linushstge at 2021-02-25T17:16:55Z
+
+Any reason why this great PR is not merged yet?
+Would fix #1073, #1074 and #1132
