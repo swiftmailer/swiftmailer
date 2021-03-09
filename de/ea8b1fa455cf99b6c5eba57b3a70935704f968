@@ -1,0 +1,35 @@
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2021-03-09T11:38:10Z
+
+Why can't we allow `^3.0`?
+
+---------------------------------------------------------------------------
+
+by driesvints at 2021-03-09T11:48:25Z
+
+@GrahamCampbell because the `MessageIDValidation` class was introduced in v3.1
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2021-03-09T11:52:51Z
+
+Seems better to allow a wider version range, given all the 2.x versions are allowed, also.
+
+---------------------------------------------------------------------------
+
+by driesvints at 2021-03-09T11:56:42Z
+
+@GrahamCampbell I don't see the need for it.
+
+---------------------------------------------------------------------------
+
+by michaljusiega at 2021-03-09T11:57:44Z
+
+@GrahamCampbell see for more https://github.com/symfony/symfony/pull/39685
+
+---------------------------------------------------------------------------
+
+by GrahamCampbell at 2021-03-09T12:09:12Z
+
+Ah, I see. 3.0.0 is actually broken. In which case, 👍 for this PR, as is.
