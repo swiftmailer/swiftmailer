@@ -4,7 +4,7 @@ Changelog
 6.2.7 (2021-XX-XX)
 ------------------
 
- * n/a
+ * Allow egulias/email-validator 3.1+
 
 6.2.6 (2021-03-05)
 ------------------
