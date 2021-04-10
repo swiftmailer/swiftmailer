@@ -1,5 +1,5 @@
-Introduction
-============
+Swiftmailer: A feature-rich PHP Mailer
+======================================
 
 Swift Mailer is a component based library for sending e-mails from PHP applications.
 
