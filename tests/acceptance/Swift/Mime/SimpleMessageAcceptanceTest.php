@@ -2,7 +2,7 @@
 
 class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit\Framework\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         Swift_Preferences::getInstance()->setCharset(null); //TODO: Test with the charset defined
     }
