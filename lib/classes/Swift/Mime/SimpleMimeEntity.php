@@ -365,6 +365,16 @@ class Swift_Mime_SimpleMimeEntity implements Swift_Mime_CharsetObserver, Swift_M
     }
 
     /**
+     * Get the body of this entity.
+     *
+     * @return Swift_ByteStream_FileByteStream
+     */
+    public function getRawBody()
+    {
+        return $this->body;
+    }
+
+    /**
      * Set the body of this entity, either as a string, or as an instance of
      * {@link Swift_OutputByteStream}.
      *
