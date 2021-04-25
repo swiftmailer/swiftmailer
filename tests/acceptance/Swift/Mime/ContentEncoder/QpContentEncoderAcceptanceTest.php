@@ -5,7 +5,7 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit\
     private $samplesDir;
     private $factory;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->samplesDir = realpath(__DIR__.'/../../../../_samples/charsets');
         $this->factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();

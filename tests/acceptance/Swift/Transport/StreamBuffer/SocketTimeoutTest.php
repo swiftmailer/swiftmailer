@@ -6,7 +6,7 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit\Framework\
     protected $server;
     protected $randomHighPort;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         if (!\defined('SWIFT_SMTP_HOST')) {
             $this->markTestSkipped(

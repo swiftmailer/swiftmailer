@@ -4,7 +4,7 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit\Framework\T
 {
     private $testFile;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->testFile = sys_get_temp_dir().'/swift-test-file'.__CLASS__;
         file_put_contents($this->testFile, 'abcdefghijklm');
