@@ -260,6 +260,16 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
         $this->assertEquals('<some data>', $attachment->getBody());
     }
 
+    public function testFilePathCanBeReadFromRawBody()
+    {
+        $file = $this->createFileStream('/foo/file.ext', '<some data>');
+        $attachment = $this->createAttachment($this->createHeaderSet(),
+            $this->createEncoder(), $this->createCache()
+            );
+        $attachment->setFile($file);
+        $this->assertEquals('/foo/file.ext', $attachment->getRawBody()->getPath());
+    }
+
     public function testFluidInterface()
     {
         $attachment = $this->createAttachment($this->createHeaderSet(),
