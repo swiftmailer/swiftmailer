@@ -45,6 +45,7 @@ $swift_mime_types = [
     'air' => 'application/vnd.adobe.air-application-installer-package+zip',
     'ait' => 'application/vnd.dvb.ait',
     'ami' => 'application/vnd.amiga.ami',
+    'amp' => 'text/x-amp-html',
     'apk' => 'application/vnd.android.package-archive',
     'appcache' => 'text/cache-manifest',
     'apr' => 'application/vnd.lotus-approach',
