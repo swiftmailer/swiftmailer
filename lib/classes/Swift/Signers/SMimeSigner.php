@@ -496,13 +496,13 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
         foreach ($headerLines as $headerLine) {
             // Handle headers that span multiple lines
             if (false === strpos($headerLine, ':')) {
-                $headers[$currentHeaderName] .= ' '.trim($headerLine);
+                $headers[$currentHeaderName] .= ' '.trim($headerLine ?? '');
                 continue;
             }
 
             $header = explode(':', $headerLine, 2);
-            $currentHeaderName = strtolower($header[0]);
-            $headers[$currentHeaderName] = trim($header[1]);
+            $currentHeaderName = strtolower($header[0] ?? '');
+            $headers[$currentHeaderName] = trim($header[1] ?? '');
         }
 
         // Read the entire email body into a byte stream

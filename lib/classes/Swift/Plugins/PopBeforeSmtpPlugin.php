@@ -137,7 +137,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
                 $this->socket = $socket;
 
                 if (false === $greeting = fgets($this->socket)) {
-                    throw new Swift_Plugins_Pop_Pop3Exception(sprintf('Failed to connect to POP3 host [%s]', trim($greeting)));
+                    throw new Swift_Plugins_Pop_Pop3Exception(sprintf('Failed to connect to POP3 host [%s]', trim($greeting ?? '')));
                 }
 
                 $this->assertOk($greeting);
@@ -205,11 +205,11 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     private function command($command)
     {
         if (!fwrite($this->socket, $command)) {
-            throw new Swift_Plugins_Pop_Pop3Exception(sprintf('Failed to write command [%s] to POP3 host', trim($command)));
+            throw new Swift_Plugins_Pop_Pop3Exception(sprintf('Failed to write command [%s] to POP3 host', trim($command ?? '')));
         }
 
         if (false === $response = fgets($this->socket)) {
-            throw new Swift_Plugins_Pop_Pop3Exception(sprintf('Failed to read from POP3 host after command [%s]', trim($command)));
+            throw new Swift_Plugins_Pop_Pop3Exception(sprintf('Failed to read from POP3 host after command [%s]', trim($command ?? '')));
         }
 
         $this->assertOk($response);
@@ -220,14 +220,14 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     private function assertOk($response)
     {
         if ('+OK' != substr($response, 0, 3)) {
-            throw new Swift_Plugins_Pop_Pop3Exception(sprintf('POP3 command failed [%s]', trim($response)));
+            throw new Swift_Plugins_Pop_Pop3Exception(sprintf('POP3 command failed [%s]', trim($response ?? '')));
         }
     }
 
     private function getHostString()
     {
         $host = $this->host;
-        switch (strtolower($this->crypto)) {
+        switch (strtolower($this->crypto ?? '')) {
             case 'ssl':
                 $host = 'ssl://'.$host;
                 break;
