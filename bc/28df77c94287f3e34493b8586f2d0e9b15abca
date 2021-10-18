@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------
+
+by driesvints at 2021-10-18T14:39:33Z
+
+The reason why no builds are being run, most likely, is due to GitHub Actions still need to be enabled on this repository.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2021-10-18T14:43:18Z
+
+@driesvints Thank you so much for wokring on this. Actions are enabled, so I'm not sure why that does not work. Trying to figure it out.
+
+---------------------------------------------------------------------------
+
+by driesvints at 2021-10-18T14:45:59Z
+
+@fabpot is there an "enable" button here? https://github.com/swiftmailer/swiftmailer/actions
+
+---------------------------------------------------------------------------
+
+by fabpot at 2021-10-18T14:48:55Z
+
+@driesvints It is enabled. Apparently, we need to have something on master first. So, can I merge this PR?
