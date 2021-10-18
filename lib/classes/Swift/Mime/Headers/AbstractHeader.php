@@ -309,7 +309,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
         $encodedToken = '';
         // Split at all whitespace boundaries
-        foreach (preg_split('~(?=[\t ])~', $string) as $token) {
+        foreach (preg_split('~(?=[\t ])~', $string ?? '') as $token) {
             if ($this->tokenNeedsEncoding($token)) {
                 $encodedToken .= $token;
             } else {
@@ -354,10 +354,10 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         $encodedTextLines = explode("\r\n",
             $this->encoder->encodeString(
                 $token, $firstLineOffset, 75 - $encodingWrapperLength, $this->charset
-                )
+            ) ?? ''
         );
 
-        if ('iso-2022-jp' !== strtolower($this->charset)) {
+        if ('iso-2022-jp' !== strtolower($this->charset ?? '')) {
             // special encoding for iso-2022-jp using mb_encode_mimeheader
             foreach ($encodedTextLines as $lineNum => $line) {
                 $encodedTextLines[$lineNum] = '=?'.$charsetDecl.
@@ -378,7 +378,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
      */
     protected function generateTokenLines($token)
     {
-        return preg_split('~(\r\n)~', $token, -1, PREG_SPLIT_DELIM_CAPTURE);
+        return preg_split('~(\r\n)~', $token ?? '', -1, PREG_SPLIT_DELIM_CAPTURE);
     }
 
     /**
@@ -429,7 +429,7 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
         $tokens = [];
 
         // Generate atoms; split at all invisible boundaries followed by WSP
-        foreach (preg_split('~(?=[ \t])~', $string) as $token) {
+        foreach (preg_split('~(?=[ \t])~', $string ?? '') as $token) {
             $newTokens = $this->generateTokenLines($token);
             foreach ($newTokens as $newToken) {
                 $tokens[] = $newToken;
@@ -472,5 +472,15 @@ abstract class Swift_Mime_Headers_AbstractHeader implements Swift_Mime_Header
 
         // Implode with FWS (RFC 2822, 2.2.3)
         return implode("\r\n", $headerLines)."\r\n";
+    }
+
+    /**
+     * Make a deep copy of object.
+     */
+    public function __clone()
+    {
+        if ($this->encoder) {
+            $this->encoder = clone $this->encoder;
+        }
     }
 }

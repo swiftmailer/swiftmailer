@@ -644,7 +644,7 @@ OEL;
             }
 
             $header = explode(':', $headerLine, 2);
-            $currentHeaderName = strtolower($header[0]);
+            $currentHeaderName = strtolower($header[0] ?? '');
             $headers[$currentHeaderName] = trim($header[1]);
         }
 

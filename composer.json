@@ -23,7 +23,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
-        "symfony/phpunit-bridge": "^4.4|^5.0"
+        "symfony/phpunit-bridge": "^4.4|^5.4"
     },
     "suggest": {
         "ext-intl": "Needed to support internationalized email addresses"
@@ -38,5 +38,7 @@
         "branch-alias": {
             "dev-master": "6.2-dev"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
