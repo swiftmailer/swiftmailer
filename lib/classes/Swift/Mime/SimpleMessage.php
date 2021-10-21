@@ -49,7 +49,7 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart
             ]);
         $this->getHeaders()->setAlwaysDisplayed(['Date', 'Message-ID', 'From']);
         $this->getHeaders()->addTextHeader('MIME-Version', '1.0');
-        $this->setDate(new DateTimeImmutable());
+        $this->setDate(new DateTimeImmutable('now', new DateTimeZone('UTC')));
         $this->setId($this->getId());
         $this->getHeaders()->addMailboxHeader('From');
     }
