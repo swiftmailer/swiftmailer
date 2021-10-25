@@ -12,7 +12,7 @@ It provides the same features with support for modern PHP code and support for t
 System Requirements
 -------------------
 
-Swift Mailer supports PHP 7.0 - 8.1 (``proc_*`` functions must be
+Swift Mailer supports PHP 7.0 to PHP 8.1 included (``proc_*`` functions must be
 available).
 
 Swift Mailer does not work when used with function overloading as implemented
