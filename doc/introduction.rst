@@ -1,18 +1,18 @@
-Swiftmailer: A feature-rich PHP Mailer
-======================================
+Swift Mailer: A feature-rich PHP Mailer
+=======================================
 
 Swift Mailer is a component based library for sending e-mails from PHP applications.
 
-**Swiftmailer will stop being maintained at the end of November 2021.**
+**Swift Mailer will stop being maintained at the end of November 2021.**
 
 Please, move to `Symfony Mailer <https://symfony.com/doc/current/mailer.html>`_ at your earliest convenience.
-`Symfony Mailer <https://symfony.com/doc/current/mailer.html>`_ is the next evolution of Swiftmailer.
+`Symfony Mailer <https://symfony.com/doc/current/mailer.html>`_ is the next evolution of Swift Mailer.
 It provides the same features with support for modern PHP code and support for third-party providers.
 
 System Requirements
 -------------------
 
-Swift Mailer requires PHP 7.0 or higher (``proc_*`` functions must be
+Swift Mailer supports PHP 7.0 - 8.1 (``proc_*`` functions must be
 available).
 
 Swift Mailer does not work when used with function overloading as implemented
